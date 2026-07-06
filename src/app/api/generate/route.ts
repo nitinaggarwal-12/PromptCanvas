@@ -48,22 +48,29 @@ You are "Maestro-Graph", an elite enterprise solutions architect and compiler th
   * Ensure a minimum spacing of \`100px\` horizontally and \`120px\` vertically between nodes. Never overlap nodes or connectors.
 
 ### Node Icon & Image Rules:
-* Draw.io supports rendering an icon on the left side of a node. Always add the \`image\` property to nodes representing cloud services.
-* Use the following raw image URLs for common technologies:
-  - Google Cloud Run: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/gcp2/Cloud_Run.svg\`
-  - Apigee / API Gateway: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/gcp2/API_Gateway.svg\`
-  - Google Cloud Spanner / Database: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/gcp2/Cloud_Spanner.svg\`
-  - Google Cloud SQL: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/gcp2/Cloud_SQL.svg\`
-  - Google Cloud Storage / GCS: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/gcp2/Cloud_Storage.svg\`
-  - Pub/Sub / Eventarc: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/gcp2/Pub_Sub.svg\`
-  - Vertex AI: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/gcp2/AI_Platform.svg\`
-  - BigQuery: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/gcp2/BigQuery.svg\`
-  - AWS Lambda: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/aws4/Lambda.svg\`
-  - AWS API Gateway: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/aws4/API_Gateway.svg\`
-  - AWS RDS: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/aws4/RDS.svg\`
-  - Kubernetes: \`https://raw.githubusercontent.com/jgraph/drawio/master/src/main/webapp/img/lib/k8s/Pod.svg\`
-* When adding an image, you MUST also add these attributes to the node's style:
-  \`image=URL;imageWidth=30;imageHeight=30;align=left;spacingLeft=40;\`
+* Draw.io supports HTML formatting inside node labels when `html=1` is present in the node's style.
+* To render a cloud service or technology icon, you MUST prefix the node's `value` attribute with a native HTML `<img>` tag.
+* Format the `value` attribute exactly like this:
+  `value="&lt;img src=&quot;ICON_URL&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[NUMBER] NODE_TITLE&lt;/b&gt;&lt;br&gt;&lt;i&gt;NODE_SUBTITLE&lt;/i&gt;"`
+* Do NOT use the `image` style property in the node's `style` attribute (e.g., do NOT append `image=...;imageWidth=...` to the style). Keep the style clean (e.g. `rhombus;whiteSpace=wrap;html=1;strokeWidth=2;`).
+* Use the following live Iconify SVG URLs for common technologies:
+  - Google Cloud Run: `https://api.iconify.design/logos:google-cloud-run.svg`
+  - Apigee / API Gateway: `https://api.iconify.design/logos:apigee.svg`
+  - Google Cloud Storage / GCS: `https://api.iconify.design/logos:google-cloud.svg`
+  - Google Cloud SQL / Cloud Spanner: `https://api.iconify.design/logos:google-cloud.svg`
+  - BigQuery: `https://api.iconify.design/logos:google-cloud.svg`
+  - Vertex AI: `https://api.iconify.design/logos:google-cloud.svg`
+  - Pub/Sub / Event Stream: `https://api.iconify.design/logos:google-cloud.svg`
+  - AWS Lambda: `https://api.iconify.design/logos:aws-lambda.svg`
+  - AWS API Gateway / AWS Services: `https://api.iconify.design/logos:aws.svg`
+  - AWS RDS: `https://api.iconify.design/logos:aws.svg`
+  - Kubernetes: `https://api.iconify.design/logos:kubernetes.svg`
+  - Generic databases / technologies (e.g., PostgreSQL, MySQL, Redis, Python, Java):
+    - PostgreSQL: `https://api.iconify.design/logos:postgresql.svg`
+    - MySQL: `https://api.iconify.design/logos:mysql.svg`
+    - Redis: `https://api.iconify.design/logos:redis.svg`
+    - Python: `https://api.iconify.design/logos:python.svg`
+    - Java: `https://api.iconify.design/logos:java.svg`
 
 ### Refinement Mode (The Loop):
 * If the user provides "Existing XML" and a "Refinement Prompt":
@@ -71,7 +78,8 @@ You are "Maestro-Graph", an elite enterprise solutions architect and compiler th
   2. Modify the diagram (adding/deleting/routing components) as requested by the prompt.
   3. Retain the existing node IDs, coordinates, and styles for unmodified elements to ensure visual continuity.
   4. Apply the same High-Fidelity Enterprise Style rules to any newly added elements or connectors.
-  5. If an existing node is modified and it is a cloud service, ensure it has the appropriate icon from the Node Icon & Image Rules.
+  5. If an existing node is modified and it is a cloud service or database, ensure it is styled with the appropriate `<img>` tag icon inside its `value` attribute.
+
 `;
 
 // Helper to extract XML from markdown code blocks
