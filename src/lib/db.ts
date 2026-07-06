@@ -22,45 +22,53 @@ export interface DiagramVersion {
 
 // Resolve database path, allowing override via environment variable to prevent Fast Refresh triggers
 const dbPath = process.env.DATABASE_PATH || join(process.cwd(), 'dev.db');
-let db: DatabaseSync;
+let dbInstance: DatabaseSync | null = null;
 
-try {
-  db = new DatabaseSync(dbPath);
-  
-  // Enable foreign key support
-  db.exec('PRAGMA foreign_keys = ON;');
-  
-  // Initialize tables
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS diagrams (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
-      updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
-    );
-  `);
+function getDb(): DatabaseSync {
+  if (dbInstance) {
+    return dbInstance;
+  }
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS diagram_versions (
-      id TEXT PRIMARY KEY,
-      diagram_id TEXT NOT NULL,
-      version_number INTEGER NOT NULL,
-      xml_content TEXT NOT NULL,
-      comment TEXT,
-      created_by TEXT DEFAULT 'User',
-      created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
-      FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
-    );
-  `);
-  
-  console.log(`Database initialized successfully at ${dbPath}`);
-} catch (error) {
-  console.error('Failed to initialize SQLite database:', error);
-  throw error;
+  try {
+    dbInstance = new DatabaseSync(dbPath);
+    
+    // Enable foreign key support
+    dbInstance.exec('PRAGMA foreign_keys = ON;');
+    
+    // Initialize tables
+    dbInstance.exec(`
+      CREATE TABLE IF NOT EXISTS diagrams (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
+      );
+    `);
+
+    dbInstance.exec(`
+      CREATE TABLE IF NOT EXISTS diagram_versions (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL,
+        version_number INTEGER NOT NULL,
+        xml_content TEXT NOT NULL,
+        comment TEXT,
+        created_by TEXT DEFAULT 'User',
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
+      );
+    `);
+    
+    console.log(`Database initialized successfully at ${dbPath}`);
+    return dbInstance;
+  } catch (error) {
+    console.error('Failed to initialize SQLite database:', error);
+    throw error;
+  }
 }
 
 // Helper: List all diagrams (sorted by updated_at desc)
 export function listDiagrams(): Diagram[] {
+  const db = getDb();
   const stmt = db.prepare(`
     SELECT * FROM diagrams 
     ORDER BY updated_at DESC
@@ -70,6 +78,7 @@ export function listDiagrams(): Diagram[] {
 
 // Helper: Get a single diagram by ID
 export function getDiagram(id: string): Diagram | null {
+  const db = getDb();
   const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ?');
   const result = stmt.get(id);
   return (result as unknown as Diagram) || null;
@@ -77,6 +86,7 @@ export function getDiagram(id: string): Diagram | null {
 
 // Helper: Create a new diagram with an optional initial XML
 export function createDiagram(name: string, initialXml?: string, comment?: string): { diagram: Diagram; version: DiagramVersion | null } {
+  const db = getDb();
   const diagramId = uuidv4();
   
   // Start transaction manually since node:sqlite doesn't have a built-in transaction helper yet
@@ -132,6 +142,7 @@ export function saveDiagramVersion(
   comment: string | null,
   createdBy: string = 'User'
 ): DiagramVersion {
+  const db = getDb();
   db.exec('BEGIN TRANSACTION;');
   
   try {
@@ -180,6 +191,7 @@ export function saveDiagramVersion(
 
 // Helper: Get all versions of a diagram (sorted by version_number desc)
 export function getDiagramVersions(diagramId: string): DiagramVersion[] {
+  const db = getDb();
   const stmt = db.prepare(`
     SELECT * FROM diagram_versions 
     WHERE diagram_id = ? 
@@ -190,6 +202,7 @@ export function getDiagramVersions(diagramId: string): DiagramVersion[] {
 
 // Helper: Get a specific version by ID
 export function getDiagramVersion(versionId: string): DiagramVersion | null {
+  const db = getDb();
   const stmt = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
   const result = stmt.get(versionId);
   return (result as unknown as DiagramVersion) || null;
@@ -197,6 +210,7 @@ export function getDiagramVersion(versionId: string): DiagramVersion | null {
 
 // Helper: Get the latest version of a diagram
 export function getLatestDiagramVersion(diagramId: string): DiagramVersion | null {
+  const db = getDb();
   const stmt = db.prepare(`
     SELECT * FROM diagram_versions 
     WHERE diagram_id = ? 
@@ -209,6 +223,7 @@ export function getLatestDiagramVersion(diagramId: string): DiagramVersion | nul
 
 // Helper: Delete a diagram (cascades to versions)
 export function deleteDiagram(id: string): void {
+  const db = getDb();
   const stmt = db.prepare('DELETE FROM diagrams WHERE id = ?');
   stmt.run(id);
 }
