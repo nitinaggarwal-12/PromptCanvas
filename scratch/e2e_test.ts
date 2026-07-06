@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import { rmSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
-const SCREENSHOT_DIR = '/Users/nitinagga/.gemini/jetski/brain/c2825139-791a-4f89-8d0a-75f82531dc4c/screenshots_phase6';
+const SCREENSHOT_DIR = '/Users/nitinagga/.gemini/jetski/brain/c3c45669-fafd-4030-bd6a-a7ce32ba43e8/screenshots_phase6';
 
 // Helper to sleep/wait (Mandatory Settling Delays)
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -277,7 +277,29 @@ async function runE2ETest() {
     console.log('📸 Capturing: 07_back_to_active.png');
     await page.screenshot({ path: join(SCREENSHOT_DIR, '07_back_to_active.png') });
 
-    console.log('\n🎉 E2E Test Suite Completed Successfully! All 7 screenshots captured! 🎉');
+    // --- STEP 8: Security Audit ---
+    console.log('\n--- STEP 8: Security Audit ---');
+    console.log('Clicking "Audit Security" button...');
+    await page.$eval('#audit-diagram-btn', el => (el as HTMLButtonElement).click());
+    
+    console.log('Waiting for AI Security Audit report to compile (up to 30s)...');
+    await page.waitForFunction(
+      () => document.body.textContent?.includes('Maestro Architecture Audit Report'),
+      { timeout: 35000 }
+    );
+    await sleep(1500); // 1500ms settling delay
+    
+    console.log('📸 Capturing: 08_security_audit.png');
+    await page.screenshot({ path: join(SCREENSHOT_DIR, '08_security_audit.png') });
+    
+    console.log('Closing Audit Modal...');
+    await page.$eval('#close-audit-modal-btn', el => (el as HTMLButtonElement).click());
+    await sleep(800); // 800ms modal close transition settling delay
+    
+    console.log('📸 Capturing: 09_audit_modal_closed.png');
+    await page.screenshot({ path: join(SCREENSHOT_DIR, '09_audit_modal_closed.png') });
+
+    console.log('\n🎉 E2E Test Suite Completed Successfully! All 9 screenshots captured! 🎉');
 
   } catch (error) {
     console.error('\n❌ E2E Test Suite Failed:', error);

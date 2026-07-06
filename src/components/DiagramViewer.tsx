@@ -6,6 +6,15 @@ interface DiagramViewerProps {
   xml: string;
 }
 
+function htmlEscape(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 export default function DiagramViewer({ xml }: DiagramViewerProps) {
   // Construct the isolated HTML document for the iframe
   const iframeHtml = `
@@ -52,7 +61,7 @@ export default function DiagramViewer({ xml }: DiagramViewerProps) {
     <body>
       <div 
         class="mxgraph" 
-        data-mxgraph="${JSON.stringify({
+        data-mxgraph="${htmlEscape(JSON.stringify({
           xml: xml,
           lightbox: false,
           nav: true,
@@ -62,7 +71,7 @@ export default function DiagramViewer({ xml }: DiagramViewerProps) {
           border: 0,
           transparent: true,
           zoom: 1
-        }).replace(/"/g, '&quot;')}"
+        }))}"
       ></div>
       
       <!-- Diagnostic & Dynamic Script Loader to prevent scale(NaN,NaN) race conditions -->

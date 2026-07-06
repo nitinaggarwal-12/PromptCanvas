@@ -16,9 +16,11 @@ import {
   MessageSquare, 
   X,
   Loader2,
-  FileText
+  FileText,
+  Shield
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
+
 
 // Define Types (matching our DB schema + API responses)
 interface Diagram {
@@ -75,6 +77,11 @@ export default function Dashboard() {
   
   // Chat History
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+
+  // Audit States
+  const [isAuditing, setIsAuditing] = useState(false);
+  const [auditReport, setAuditReport] = useState<string | null>(null);
+  const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   
 
   
@@ -425,6 +432,65 @@ export default function Dashboard() {
     }
   };
 
+  // Audit the active diagram
+  const handleAuditDiagram = async () => {
+    if (!activeDiagram) return;
+    setIsAuditing(true);
+    try {
+      const res = await fetch('/api/audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ diagramId: activeDiagram.id })
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || errorData.details || 'Failed to audit diagram');
+      }
+      const data = await res.json();
+      setAuditReport(data.report);
+      setIsAuditModalOpen(true);
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Failed to generate architecture audit.');
+    } finally {
+      setIsAuditing(false);
+    }
+  };
+
+  // Helper to render basic markdown safely in modal
+  const renderAuditMarkdown = (text: string) => {
+    if (!text) return null;
+    return text.split('\n').map((line, i) => {
+      let rendered = line;
+      // Bold: **text** -> <strong>text</strong>
+      rendered = rendered.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // Headers
+      if (rendered.trim().startsWith('### ')) {
+        return <h4 key={i} className="font-bold text-sm text-teal-accent mt-3 mb-1.5">{rendered.trim().slice(4)}</h4>;
+      }
+      if (rendered.trim().startsWith('## ')) {
+        return <h3 key={i} className="font-bold text-base text-white mt-4 mb-2 border-b border-panel-border/30 pb-1">{rendered.trim().slice(3)}</h3>;
+      }
+      if (rendered.trim().startsWith('# ')) {
+        return <h2 key={i} className="font-bold text-lg text-white mt-4 mb-2">{rendered.trim().slice(2)}</h2>;
+      }
+      // Bullet points
+      if (rendered.trim().startsWith('* ')) {
+        return <div key={i} className="pl-4 text-xs text-slate-300 min-h-[1.4em]">• {rendered.trim().slice(2)}</div>;
+      }
+      if (rendered.trim().startsWith('- ')) {
+        return <div key={i} className="pl-4 text-xs text-slate-300 min-h-[1.4em]">• {rendered.trim().slice(2)}</div>;
+      }
+      return (
+        <div 
+          key={i} 
+          className="text-xs text-slate-300 min-h-[1.2em] leading-relaxed my-0.5" 
+          dangerouslySetInnerHTML={{ __html: rendered }} 
+        />
+      );
+    });
+  };
+
   // --- UI Helpers ---
   const displayedVersion = previewVersion || activeVersion;
 
@@ -561,6 +627,19 @@ export default function Dashboard() {
           {/* Quick Actions (only if diagram active) */}
           {activeDiagram && (
             <div className="flex items-center gap-2">
+              <button
+                id="audit-diagram-btn"
+                onClick={handleAuditDiagram}
+                disabled={isAuditing}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all disabled:opacity-50 cursor-pointer text-teal-accent border-teal-accent/30 hover:border-teal-accent/50"
+              >
+                {isAuditing ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Shield className="w-3.5 h-3.5" />
+                )}
+                <span>{isAuditing ? 'Auditing...' : 'Audit Security'}</span>
+              </button>
               <button
                 onClick={() => setIsInlineEditorOpen(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
@@ -956,6 +1035,42 @@ export default function Dashboard() {
               src="https://embed.diagrams.net/?embed=1&ui=dark&spin=1&proto=json"
               className="w-full h-full border-0 bg-transparent"
             />
+          </div>
+        </div>
+      )}
+
+      {/* 4. Audit Report Modal */}
+      {isAuditModalOpen && auditReport && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
+          <div className="glass-panel border-panel-border rounded-xl p-6 w-full max-w-2xl max-h-[85vh] shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between mb-4 border-b border-panel-border/40 pb-3 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <Shield className="w-5 h-5 text-teal-accent" />
+                <h3 className="font-bold text-lg text-white">Maestro Architecture Audit Report</h3>
+              </div>
+              <button 
+                id="close-audit-modal-btn"
+                onClick={() => setIsAuditModalOpen(false)}
+                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto pr-1 select-text scrollbar-thin">
+              <div className="space-y-2">
+                {renderAuditMarkdown(auditReport)}
+              </div>
+            </div>
+            
+            <div className="mt-4 border-t border-panel-border/30 pt-3 flex justify-end shrink-0">
+              <button
+                onClick={() => setIsAuditModalOpen(false)}
+                className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all cursor-pointer"
+              >
+                Dismiss
+              </button>
+            </div>
           </div>
         </div>
       )}
