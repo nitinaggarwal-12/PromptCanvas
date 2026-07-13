@@ -868,7 +868,7 @@ export default function Dashboard() {
                   placeholder={activeDiagram ? "e.g., Add an Apigee Gateway in front of Cloud Run..." : "Select a diagram first..."}
                   disabled={!activeDiagram || isGenerating}
                   rows={2}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg pl-3 pr-10 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none resize-none transition-all disabled:opacity-50"
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg pl-3 pr-10 py-2.5 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -1429,22 +1429,22 @@ export default function Dashboard() {
                   value={newDiagramName}
                   onChange={(e) => setNewDiagramName(e.target.value)}
                   placeholder="e.g., Google Cloud E-Commerce"
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none transition-all"
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
                   autoFocus
                 />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                  Initial AI Prompt <span className="text-slate-600 font-normal">(Optional)</span>
+                  Initial AI Prompt <span className="text-slate-400 font-normal">(Optional)</span>
                 </label>
                 <textarea
                   rows={3}
                   value={newDiagramPrompt}
                   onChange={(e) => setNewDiagramPrompt(e.target.value)}
                   placeholder="e.g., Act as a GCP Data Architect. Design a simple 5-node streaming data pipeline with Cloud Storage, Pub/Sub, Dataflow, BigQuery, and Looker..."
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg p-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none transition-all resize-none"
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg p-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
                 />
-                <p className="text-[11px] text-slate-500 mt-1">Leave empty to start with a clean minimal slate.</p>
+                <p className="text-[11px] text-slate-400 mt-1">Leave empty to start with a clean minimal slate.</p>
               </div>
               <button
                 type="submit"
@@ -1479,7 +1479,7 @@ export default function Dashboard() {
                   onChange={(e) => setSaveComment(e.target.value)}
                   placeholder="e.g., Connected Apigee Gateway to Cloud Run"
                   rows={3}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none resize-none transition-all"
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all"
                   autoFocus
                 />
               </div>
