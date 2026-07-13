@@ -1451,34 +1451,117 @@ export default function Dashboard() {
               </div>
             )}
 
-            {/* Viewport Content Area */}
             <div className="flex-1 w-full h-full relative overflow-hidden">
               
               {!activeDiagram ? (
-                <div className="w-full h-full flex items-center justify-center p-8 relative">
-                  {/* Dark Grid Background */}
+                <div className="w-full h-full overflow-y-auto p-8 md:p-12 relative flex items-center justify-center bg-gradient-to-b from-[#090d16] to-[#05080e]">
+                  {/* Subtle Grid overlay */}
                   <div 
-                    className="absolute inset-0 opacity-2"
+                    className="absolute inset-0 opacity-[0.03] pointer-events-none"
                     style={{
                       backgroundImage: `
-                        linear-gradient(to right, rgba(20, 184, 166, 0.05) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(20, 184, 166, 0.05) 1px, transparent 1px)
+                        linear-gradient(to right, rgba(20, 184, 166, 0.5) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(20, 184, 166, 0.5) 1px, transparent 1px)
                       `,
-                      backgroundSize: '20px 20px'
+                      backgroundSize: '30px 30px'
                     }}
                   />
-                  <div className="text-center z-10 max-w-md p-6 glass-panel rounded-2xl border-dashed border-panel-border">
-                    <Sparkles className="w-12 h-12 text-teal-accent mx-auto mb-4 animate-pulse" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Create Your First Diagram</h3>
-                    <p className="text-sm text-slate-400 mb-6">
-                      Maestro Sketch translates natural language prompts into professional Draw.io architecture diagrams.
-                    </p>
-                    <button
-                      onClick={openCreateModal}
-                      className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover cursor-pointer"
-                    >
-                      Get Started
-                    </button>
+
+                  <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-5 gap-8 items-start z-10">
+                    {/* Welcome & Scratch Onboarding (Left Column) */}
+                    <div className="md:col-span-2 space-y-6">
+                      <div className="space-y-2">
+                        <span className="text-[10px] font-bold text-teal-accent uppercase tracking-wider px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/20">
+                          Active Workspace
+                        </span>
+                        <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight pt-2">
+                          Welcome to <br />
+                          <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-accent to-cyan-400">
+                            Maestro Sketch
+                          </span>
+                        </h2>
+                        <p className="text-xs text-slate-400 leading-relaxed pt-1">
+                          Translate raw system descriptions into professional Draw.io cloud architectures instantly. Audited for compliance, version-controlled, and editable.
+                        </p>
+                      </div>
+
+                      {/* Launch Card */}
+                      <div className="glass-panel border-panel-border/80 hover:border-teal-500/40 rounded-xl p-5 space-y-4 hover:scale-[1.01] transition-all duration-300">
+                        <div className="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-accent">
+                          <Plus className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-sm text-white">Start from scratch</h4>
+                          <p className="text-[11px] text-slate-400 mt-1">Initialize a clean slate diagram canvas with your custom prompt inputs.</p>
+                        </div>
+                        <button
+                          onClick={openCreateModal}
+                          className="w-full py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold text-xs transition-all glow-teal-hover cursor-pointer"
+                        >
+                          Create New Diagram
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Presets Onboarding (Right Column) */}
+                    <div className="md:col-span-3 space-y-4">
+                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Quick Start Presets</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {[
+                          {
+                            name: "GCP Serverless App",
+                            prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture. It should include: a Global HTTPS Load Balancer, Cloud CDN, Cloud Run for the frontend/backend services, Cloud SQL (PostgreSQL) for relational data, and Cloud Storage for static media assets.",
+                            provider: "GCP",
+                            color: "bg-teal-500/10 text-teal-400 border-teal-500/20"
+                          },
+                          {
+                            name: "AWS Kubernetes Cluster",
+                            prompt: "Act as an AWS Solutions Architect. Design a microservices architecture hosted on EKS (Elastic Kubernetes Service). It should include: an Application Load Balancer, Amazon API Gateway, EKS worker nodes running services, RDS PostgreSQL for main DB, DynamoDB for session state, and ElastiCache Redis for caching.",
+                            provider: "AWS",
+                            color: "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                          },
+                          {
+                            name: "AI RAG GCP Pipeline",
+                            prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system on GCP. It should include: a Cloud Run API service, Cloud SQL with pgvector extension for storing vector embeddings, Vertex AI Search for document retrieval, Vertex AI Gemini API for LLM reasoning, and Cloud Storage for source documents.",
+                            provider: "AI / GCP",
+                            color: "bg-purple-500/10 text-purple-400 border-purple-500/20"
+                          },
+                          {
+                            name: "CI/CD Build Pipeline",
+                            prompt: "Act as a DevOps Architect. Design a secure CI/CD build and deploy pipeline. It should include: GitHub repository triggering a GitHub Actions Runner, compilation/testing step, containerizing with Docker, pushing images to Artifact Registry, deploying using Terraform Cloud to a target Kubernetes cluster, and monitoring with Prometheus/Grafana.",
+                            provider: "DevOps",
+                            color: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+                          }
+                        ].map((preset, idx) => (
+                          <div 
+                            key={idx}
+                            className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-xl p-4 flex flex-col justify-between hover:scale-[1.01] transition-all group"
+                          >
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${preset.color}`}>
+                                  {preset.provider}
+                                </span>
+                              </div>
+                              <h5 className="font-bold text-xs text-white group-hover:text-teal-accent transition-colors mb-1">{preset.name}</h5>
+                              <p className="text-[10px] text-slate-500 line-clamp-3 leading-relaxed mb-4">{preset.prompt}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setNewDiagramName(preset.name);
+                                setNewDiagramPrompt(preset.prompt);
+                                setSelectedTemplate((idx + 1).toString());
+                                setIsCreateModalOpen(true);
+                              }}
+                              className="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-[10px] font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1 cursor-pointer"
+                            >
+                              <span>Launch Preset</span>
+                              <ArrowRight className="w-2.5 h-2.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : isInlineEditorOpen ? (
