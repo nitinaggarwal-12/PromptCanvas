@@ -97,6 +97,53 @@ function htmlEscape(str: string): string {
     .replace(/>/g, '&gt;');
 }
 
+const TEMPLATE_PROMPTS = [
+  {
+    name: "Clean Slate (Empty Workspace)",
+    prompt: ""
+  },
+  {
+    name: "Serverless Web Application (GCP)",
+    prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture. It should include: a Global HTTPS Load Balancer, Cloud CDN, Cloud Run for the frontend/backend services, Cloud SQL (PostgreSQL) for relational data, and Cloud Storage for static media assets."
+  },
+  {
+    name: "Real-time Streaming Analytics (GCP)",
+    prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store the structured results in BigQuery, and visualize it with Looker."
+  },
+  {
+    name: "Microservices Kubernetes Cluster (AWS)",
+    prompt: "Act as an AWS Solutions Architect. Design a microservices architecture hosted on EKS (Elastic Kubernetes Service). It should include: an Application Load Balancer, Amazon API Gateway, EKS worker nodes running services, RDS PostgreSQL for main DB, DynamoDB for session state, and ElastiCache Redis for caching."
+  },
+  {
+    name: "Data Lakehouse (AWS)",
+    prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for ad-hoc querying, Amazon Redshift for data warehousing, and Amazon QuickSight for business intelligence."
+  },
+  {
+    name: "AI Retrieval-Augmented Generation / RAG (GCP)",
+    prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system on GCP. It should include: a Cloud Run API service, Cloud SQL with pgvector extension for storing vector embeddings, Vertex AI Search for document retrieval, Vertex AI Gemini API for LLM reasoning, and Cloud Storage for source documents."
+  },
+  {
+    name: "Event-Driven Microservices (AWS)",
+    prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store for each microservice."
+  },
+  {
+    name: "Multi-Region Disaster Recovery (GCP)",
+    prompt: "Act as a GCP Resilience Engineer. Design a multi-region highly-available architecture. It should have: a Global Load Balancer, active-active services in us-east1 and us-west1 using Cloud Run, Cloud Spanner as a multi-region distributed database, and Cloud Storage with multi-region replication."
+  },
+  {
+    name: "Secure VPC Network Infrastructure (AWS)",
+    prompt: "Act as an AWS Network Security Engineer. Design a secure VPC network. It should include: a VPC with Public and Private Subnets across two Availability Zones, an Internet Gateway, NAT Gateways for private subnet outbound traffic, Bastion Host for secure SSH access, and an Application Load Balancer routing to an Autoscaling Group of EC2 instances in private subnets."
+  },
+  {
+    name: "IoT Telemetry Ingestion (GCP)",
+    prompt: "Act as an IoT Architect. Design a telemetry ingestion pipeline on GCP. It should ingest data from IoT devices via Pub/Sub, trigger Cloud Functions for validation and normalization, store raw time-series data in Cloud Bigtable, and connect to Grafana for live monitoring."
+  },
+  {
+    name: "CI/CD Pipeline Architecture",
+    prompt: "Act as a DevOps Architect. Design a secure CI/CD build and deploy pipeline. It should include: GitHub repository triggering a GitHub Actions Runner, compilation/testing step, containerizing with Docker, pushing images to Artifact Registry, deploying using Terraform Cloud to a target Kubernetes cluster, and monitoring with Prometheus/Grafana."
+  }
+];
+
 export default function Dashboard() {
   // --- State ---
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
@@ -122,8 +169,16 @@ export default function Dashboard() {
   // Form Inputs
   const [newDiagramName, setNewDiagramName] = useState('');
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [promptInput, setPromptInput] = useState('');
   const [saveComment, setSaveComment] = useState('');
+
+  const openCreateModal = () => {
+    setNewDiagramName('');
+    setNewDiagramPrompt('');
+    setSelectedTemplate('0');
+    setIsCreateModalOpen(true);
+  };
   
   // Loading States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
@@ -678,7 +733,7 @@ export default function Dashboard() {
         <div className="p-3">
           <button
             id="new-diagram-btn"
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={openCreateModal}
             className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover ${
               !isSidebarOpen && 'p-2'
             }`}
@@ -1088,7 +1143,7 @@ export default function Dashboard() {
                       Maestro Sketch translates natural language prompts into professional Draw.io architecture diagrams.
                     </p>
                     <button
-                      onClick={() => setIsCreateModalOpen(true)}
+                      onClick={openCreateModal}
                       className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover cursor-pointer"
                     >
                       Get Started
@@ -1434,13 +1489,43 @@ export default function Dashboard() {
                 />
               </div>
               <div>
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Choose a Template Prompt</label>
+                <select
+                  value={selectedTemplate}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedTemplate(val);
+                    if (val !== 'custom') {
+                      const idx = parseInt(val, 10);
+                      setNewDiagramPrompt(TEMPLATE_PROMPTS[idx].prompt);
+                    }
+                  }}
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3 py-2.5 text-sm text-slate-100 focus:outline-none transition-all mb-3 cursor-pointer"
+                >
+                  {TEMPLATE_PROMPTS.map((t, idx) => (
+                    <option key={idx} value={idx.toString()}>{t.name}</option>
+                  ))}
+                  <option value="custom">Custom Prompt (Type below...)</option>
+                </select>
+              </div>
+              <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">
                   Initial AI Prompt <span className="text-slate-400 font-normal">(Optional)</span>
                 </label>
                 <textarea
                   rows={3}
                   value={newDiagramPrompt}
-                  onChange={(e) => setNewDiagramPrompt(e.target.value)}
+                  onChange={(e) => {
+                    const promptVal = e.target.value;
+                    setNewDiagramPrompt(promptVal);
+                    // Match with predefined template or set to custom
+                    const matchedIdx = TEMPLATE_PROMPTS.findIndex(t => t.prompt === promptVal);
+                    if (matchedIdx !== -1) {
+                      setSelectedTemplate(matchedIdx.toString());
+                    } else {
+                      setSelectedTemplate('custom');
+                    }
+                  }}
                   placeholder="e.g., Act as a GCP Data Architect. Design a simple 5-node streaming data pipeline with Cloud Storage, Pub/Sub, Dataflow, BigQuery, and Looker..."
                   className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg p-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
                 />
