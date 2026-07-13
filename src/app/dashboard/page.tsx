@@ -99,6 +99,60 @@ function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
   return items;
 }
 
+interface VersionChanges {
+  added: string[];
+  removed: string[];
+  modified: string[];
+}
+
+function computeVersionDiff(currentXml: string, parentXml: string): VersionChanges {
+  const currentItems = parseXmlNodesAndEdges(currentXml);
+  const parentItems = parseXmlNodesAndEdges(parentXml);
+
+  const currentMap = new Map(currentItems.map(item => [item.id, item]));
+  const parentMap = new Map(parentItems.map(item => [item.id, item]));
+
+  const added: string[] = [];
+  const removed: string[] = [];
+  const modified: string[] = [];
+
+  // Find added or modified items
+  currentMap.forEach((curr, id) => {
+    const parent = parentMap.get(id);
+    if (!parent) {
+      if (curr.isEdge) {
+        // Resolve source/target labels if possible
+        const srcLabel = currentMap.get(curr.source || '')?.label || 'Component';
+        const tgtLabel = currentMap.get(curr.target || '')?.label || 'Component';
+        added.push(`Connection: ${srcLabel} ➔ ${tgtLabel}`);
+      } else {
+        added.push(curr.label);
+      }
+    } else if (parent.label !== curr.label) {
+      if (curr.isEdge) {
+        modified.push(`Connection: "${parent.label}" renamed to "${curr.label}"`);
+      } else {
+        modified.push(`Component: "${parent.label}" renamed to "${curr.label}"`);
+      }
+    }
+  });
+
+  // Find removed items
+  parentMap.forEach((parent, id) => {
+    if (!currentMap.has(id)) {
+      if (parent.isEdge) {
+        const srcLabel = parentMap.get(parent.source || '')?.label || 'Component';
+        const tgtLabel = parentMap.get(parent.target || '')?.label || 'Component';
+        removed.push(`Connection: ${srcLabel} ➔ ${tgtLabel}`);
+      } else {
+        removed.push(parent.label);
+      }
+    }
+  });
+
+  return { added, removed, modified };
+}
+
 function htmlEscape(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -1237,6 +1291,51 @@ export default function Dashboard() {
                     </p>
                   </div>
                 )}
+
+                {/* Audit Trail of Changes */}
+                {(() => {
+                  const sorted = activeDiagram?.versions
+                    ?.slice()
+                    .sort((a, b) => a.version_number - b.version_number) || [];
+                  const curIdx = sorted.findIndex(v => v.id === displayedVersion.id);
+                  const parent = curIdx > 0 ? sorted[curIdx - 1] : null;
+
+                  const diff = parent 
+                    ? computeVersionDiff(displayedVersion.xml_content, parent.xml_content)
+                    : { added: parseXmlNodesAndEdges(displayedVersion.xml_content).map(i => i.isEdge ? `Connection` : i.label), removed: [], modified: [] };
+
+                  const hasChanges = diff.added.length > 0 || diff.removed.length > 0 || diff.modified.length > 0;
+
+                  return (
+                    <div className="space-y-1.5 pt-2 border-t border-panel-border/30">
+                      <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Audit Trail (Components Changes)</span>
+                      {!hasChanges ? (
+                        <p className="text-[10px] text-slate-500 italic">No structural changes detected.</p>
+                      ) : (
+                        <div className="space-y-1 max-h-36 overflow-y-auto pr-1 bg-bg-dark/40 p-2 rounded border border-panel-border/30 font-mono text-[9px]">
+                          {diff.added.map((item, i) => (
+                            <div key={`add-${i}`} className="flex items-start gap-1.5 text-emerald-400 font-medium">
+                              <span className="text-emerald-500 font-extrabold shrink-0">+</span>
+                              <span>Added {item}</span>
+                            </div>
+                          ))}
+                          {diff.modified.map((item, i) => (
+                            <div key={`mod-${i}`} className="flex items-start gap-1.5 text-amber-400 font-medium">
+                              <span className="text-amber-500 font-extrabold shrink-0">~</span>
+                              <span>{item}</span>
+                            </div>
+                          ))}
+                          {diff.removed.map((item, i) => (
+                            <div key={`rem-${i}`} className="flex items-start gap-1.5 text-rose-400 font-medium">
+                              <span className="text-rose-500 font-extrabold shrink-0">-</span>
+                              <span className="line-through opacity-70">Removed {item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 <div className="pt-2 flex gap-1.5">
                   {displayedVersion.ai_reasoning && (

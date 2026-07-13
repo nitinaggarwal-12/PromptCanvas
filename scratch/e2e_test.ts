@@ -240,20 +240,18 @@ async function runE2ETest() {
 
     // --- STEP 6: Preview Past Version ---
     console.log('\n--- STEP 6: Preview Past Version ---');
-    console.log('Clicking "Preview" on version v2...');
-    // DOM-level click on the Preview button for v2
+    console.log('Clicking timeline card for version v2...');
+    // DOM-level click on the version timeline item directly
     await page.evaluate(() => {
-      const cards = Array.from(document.querySelectorAll('.group'));
+      const cards = Array.from(document.querySelectorAll('.cursor-pointer, .group'));
       const v2Card = cards.find(card => {
         const dot = card.querySelector('.rounded-full');
         return dot && dot.textContent?.trim() === '2';
       });
       if (v2Card) {
-        const previewBtn = Array.from(v2Card.querySelectorAll('button')).find(btn => btn.textContent?.includes('Preview'));
-        if (previewBtn) (previewBtn as HTMLButtonElement).click();
-        else throw new Error('Preview button not found in v2 card');
+        (v2Card as HTMLElement).click();
       } else {
-        throw new Error('v2 card not found');
+        throw new Error('v2 timeline item not found');
       }
     });
     
