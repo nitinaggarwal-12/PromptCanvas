@@ -436,6 +436,9 @@ export default function Dashboard() {
               })
             });
             await loadDiagramDetails(data.diagram.id);
+          } else if (genData.version) {
+            // If backend already saved it directly, just reload details
+            await loadDiagramDetails(data.diagram.id);
           }
         } catch (genErr) {
           console.error('[Create Modal] Error generating initial prompt:', genErr);
