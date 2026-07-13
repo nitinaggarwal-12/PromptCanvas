@@ -17,7 +17,15 @@ import {
   X,
   Loader2,
   FileText,
-  Shield
+  Shield,
+  LayoutGrid,
+  Settings,
+  ShieldAlert,
+  Network,
+  ArrowRight,
+  Settings2,
+  Database,
+  Info
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
 
@@ -172,6 +180,7 @@ export default function Dashboard() {
   const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [promptInput, setPromptInput] = useState('');
   const [saveComment, setSaveComment] = useState('');
+  const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings'>('editor');
 
   const openCreateModal = () => {
     setNewDiagramName('');
@@ -697,18 +706,333 @@ export default function Dashboard() {
     });
   };
 
+  const renderTemplatesView = () => {
+    return (
+      <div className="flex-1 overflow-y-auto p-8 bg-bg-dark select-none animate-fade-in">
+        <div className="max-w-5xl mx-auto space-y-8">
+          <div>
+            <h1 className="text-2xl font-extrabold text-white">Architectural Blueprint Library</h1>
+            <p className="text-sm text-slate-400 mt-1">Select an out-of-the-box cloud architecture template to bootstrap your canvas instantly.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {TEMPLATE_PROMPTS.slice(1).map((t, idx) => {
+              const isAws = t.name.includes('AWS');
+              const isGcp = t.name.includes('GCP');
+              const provider = isAws ? 'AWS' : isGcp ? 'GCP' : 'DevOps';
+              const providerColor = isAws 
+                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
+                : isGcp 
+                  ? 'bg-teal-500/10 text-teal-400 border-teal-500/20' 
+                  : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
+
+              return (
+                <div key={idx} className="glass-panel border-panel-border/50 hover:border-teal-500/30 rounded-xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01]">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${providerColor}`}>
+                        {provider}
+                      </span>
+                      <Sparkles className="w-3.5 h-3.5 text-teal-accent/30 group-hover:text-teal-accent transition-colors" />
+                    </div>
+                    <h3 className="font-bold text-sm text-white group-hover:text-teal-accent transition-colors mb-2">
+                      {t.name}
+                    </h3>
+                    <p className="text-xs text-slate-400 line-clamp-4 leading-relaxed mb-4">
+                      {t.prompt}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setNewDiagramName(t.name);
+                      setNewDiagramPrompt(t.prompt);
+                      setSelectedTemplate((idx + 1).toString());
+                      setIsCreateModalOpen(true);
+                    }}
+                    className="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-semibold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Use Template</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderAuditCenterView = () => {
+    return (
+      <div className="flex-1 overflow-hidden flex bg-bg-dark select-none animate-fade-in">
+        <div className="w-80 border-r border-panel-border/30 flex flex-col bg-[#0b0f19]">
+          <div className="p-5 border-b border-panel-border/30">
+            <h2 className="font-extrabold text-white text-base">Security & Compliance</h2>
+            <p className="text-xs text-slate-400 mt-1">Audit node connections against safety benchmarks.</p>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-2">
+            {diagrams.length === 0 ? (
+              <p className="text-xs text-slate-500 text-center py-8">Create a diagram first to run compliance audits.</p>
+            ) : (
+              diagrams.map((d) => {
+                const isActive = activeDiagram?.id === d.id;
+                return (
+                  <div
+                    key={d.id}
+                    onClick={() => loadDiagramDetails(d.id)}
+                    className={`p-3 rounded-lg border transition-all cursor-pointer ${
+                      isActive 
+                        ? 'bg-teal-glow/15 border-teal-accent/30 text-white' 
+                        : 'border-transparent hover:bg-slate-hover/40 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold truncate max-w-[150px]">{d.name}</span>
+                      <span className="text-[9px] font-bold text-teal-400 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20">
+                        Active
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-1.5">
+                      <Shield className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Click to load report</span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-8 flex flex-col justify-between">
+          <div className="max-w-3xl space-y-6">
+            {activeDiagram ? (
+              <>
+                <div className="flex items-center justify-between border-b border-panel-border/30 pb-4">
+                  <div>
+                    <span className="text-[10px] font-bold text-teal-accent uppercase tracking-wider">Active Asset</span>
+                    <h2 className="text-xl font-bold text-white mt-0.5">{activeDiagram.name}</h2>
+                  </div>
+                  <button
+                    onClick={handleAuditDiagram}
+                    disabled={isAuditing}
+                    className="px-3.5 py-1.5 rounded-lg bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    {isAuditing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldAlert className="w-3.5 h-3.5" />}
+                    <span>{isAuditing ? 'Auditing...' : 'Run Compliance Audit'}</span>
+                  </button>
+                </div>
+
+                {auditReport ? (
+                  <div className="glass-panel border-panel-border/40 rounded-xl p-6 space-y-4">
+                    <div className="flex items-center gap-4 bg-teal-500/5 border border-teal-500/10 rounded-lg p-4 mb-4">
+                      <div className="w-12 h-12 rounded-full border-4 border-teal-accent flex items-center justify-center font-extrabold text-sm text-teal-accent shrink-0">
+                        85%
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-white uppercase tracking-wider">Compliance Grade: Good</h4>
+                        <p className="text-[11px] text-slate-400 mt-0.5">Diagram satisfies basic network isolation principles. Re-audit after making revisions.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs text-slate-300 space-y-2 border-t border-panel-border/30 pt-4 max-h-[400px] overflow-y-auto pr-2">
+                      {renderAuditMarkdown(auditReport)}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="glass-panel border-dashed border-panel-border rounded-xl p-12 text-center max-w-lg mx-auto">
+                    <ShieldAlert className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+                    <h3 className="text-sm font-bold text-white mb-2">No Compliance Report</h3>
+                    <p className="text-xs text-slate-400 mb-6">
+                      This diagram has not been audited yet. Let the Gemini compliance engine review your component connections for vulnerabilities.
+                    </p>
+                    <button
+                      onClick={handleAuditDiagram}
+                      disabled={isAuditing}
+                      className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 text-xs font-bold transition-all flex items-center gap-1.5 mx-auto cursor-pointer"
+                    >
+                      {isAuditing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldAlert className="w-3.5 h-3.5" />}
+                      <span>Audit Security Node</span>
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-20 max-w-sm mx-auto">
+                <Network className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-sm font-bold text-slate-400 mb-2">No Diagram Selected</h3>
+                <p className="text-xs text-slate-500">
+                  Select a diagram from the left panel directory to audit or run compliance reports.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSettingsView = () => {
+    return (
+      <div className="flex-1 overflow-y-auto p-8 bg-bg-dark select-none animate-fade-in">
+        <div className="max-w-xl mx-auto space-y-8">
+          <div>
+            <h1 className="text-2xl font-extrabold text-white">System Settings</h1>
+            <p className="text-sm text-slate-400 mt-1">Configure your LLM connection model, keys, database status, and prompt preferences.</p>
+          </div>
+
+          <div className="glass-panel border-panel-border/50 rounded-xl p-6 space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
+                <Settings2 className="w-4 h-4 text-teal-accent" />
+                <span>AI Model Configuration</span>
+              </h3>
+              
+              <div className="space-y-1">
+                <label className="block text-xs font-semibold text-slate-400">Gemini LLM Version</label>
+                <select
+                  value="gemini-2.5-flash"
+                  disabled
+                  className="w-full bg-[#0b0f19] border border-panel-border rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none opacity-80"
+                >
+                  <option value="gemini-2.5-flash">Gemini 2.5 Flash (Default — Recommended)</option>
+                  <option value="gemini-2.5-pro">Gemini 2.5 Pro (Advance Reasoning)</option>
+                </select>
+                <p className="text-[10px] text-slate-500 mt-1">Model is locked to gemini-2.5-flash for optimized rendering speed.</p>
+              </div>
+
+              <div className="space-y-1 pt-2">
+                <label className="block text-xs font-semibold text-slate-400">Gemini API Key Connection</label>
+                <div className="flex items-center gap-2 bg-[#0b0f19] border border-panel-border rounded-lg px-3 py-2 text-xs text-emerald-400">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Key Connected and Authenticated</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-panel-border/30">
+              <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
+                <Database className="w-4 h-4 text-teal-accent" />
+                <span>Database Connection</span>
+              </h3>
+
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="block text-slate-500 text-[10px]">SQLite Database</span>
+                  <span className="font-semibold text-white mt-1 block truncate" title="/Users/nitinagga/.gemini/jetski/dev.db">dev.db (Active)</span>
+                </div>
+                <div>
+                  <span className="block text-slate-500 text-[10px]">Database Status</span>
+                  <span className="font-semibold text-emerald-400 mt-1 block">Healthy (Online)</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-panel-border/30">
+              <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
+                <Info className="w-4 h-4 text-teal-accent" />
+                <span>Product Build Details</span>
+              </h3>
+
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="block text-slate-500 text-[10px]">App Version</span>
+                  <span className="font-semibold text-white mt-1 block">v0.1.0-alpha (Maestro Sketch)</span>
+                </div>
+                <div>
+                  <span className="block text-slate-500 text-[10px]">Framework</span>
+                  <span className="font-semibold text-white mt-1 block">Next.js 16 (App Router)</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // --- UI Helpers ---
   const displayedVersion = previewVersion || activeVersion;
 
   return (
     <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
       
-      {/* 1. SIDEBAR: Diagram List */}
-      <aside 
-        className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 ${
-          isSidebarOpen ? 'w-64' : 'w-0 -translate-x-full md:w-16 md:translate-x-0'
-        }`}
-      >
+      {/* 0. NAVIGATION DOCK (VS Code style thin sidebar) */}
+      <nav className="w-16 bg-[#080d16]/90 border-r border-panel-border/30 flex flex-col items-center py-5 justify-between select-none shrink-0 z-30">
+        <div className="flex flex-col items-center gap-6 w-full">
+          {/* Brand Icon */}
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center mb-2">
+            <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
+              <Network className="w-5 h-5 text-teal-accent" />
+            </div>
+          </div>
+
+          {/* Nav Items */}
+          <button
+            onClick={() => setCurrentTab('editor')}
+            title="Design Canvas"
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              currentTab === 'editor'
+                ? 'bg-teal-accent text-bg-dark font-bold'
+                : 'text-slate-400 hover:text-white hover:bg-slate-hover'
+            }`}
+          >
+            <Network className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={() => setCurrentTab('templates')}
+            title="Templates Presets"
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              currentTab === 'templates'
+                ? 'bg-teal-accent text-bg-dark font-bold'
+                : 'text-slate-400 hover:text-white hover:bg-slate-hover'
+            }`}
+          >
+            <LayoutGrid className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={() => setCurrentTab('audit')}
+            title="Security Audit Hub"
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              currentTab === 'audit'
+                ? 'bg-teal-accent text-bg-dark font-bold'
+                : 'text-slate-400 hover:text-white hover:bg-slate-hover'
+            }`}
+          >
+            <ShieldAlert className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="flex flex-col items-center gap-4 w-full">
+          <button
+            onClick={() => setCurrentTab('settings')}
+            title="Settings & API Config"
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              currentTab === 'settings'
+                ? 'bg-teal-accent text-bg-dark font-bold'
+                : 'text-slate-400 hover:text-white hover:bg-slate-hover'
+            }`}
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+
+          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400">
+            NA
+          </div>
+        </div>
+      </nav>
+
+      {currentTab === 'editor' && (
+        <>
+          <aside 
+            className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 ${
+            isSidebarOpen ? 'w-64' : 'w-0 -translate-x-full md:w-16 md:translate-x-0'
+          }`}
+        >
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border">
           {isSidebarOpen ? (
@@ -1462,6 +1786,12 @@ export default function Dashboard() {
           </section>
         </div>
       </main>
+        </>
+      )}
+
+      {currentTab === 'templates' && renderTemplatesView()}
+      {currentTab === 'audit' && renderAuditCenterView()}
+      {currentTab === 'settings' && renderSettingsView()}
 
       {/* --- MODALS --- */}
 
