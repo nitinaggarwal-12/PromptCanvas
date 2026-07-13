@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { 
   Plus, 
   Trash2, 
@@ -966,12 +967,16 @@ export default function Dashboard() {
       {/* 0. NAVIGATION DOCK (VS Code style thin sidebar) */}
       <nav className="w-16 bg-[#080d16]/90 border-r border-panel-border/30 flex flex-col items-center py-5 justify-between select-none shrink-0 z-30">
         <div className="flex flex-col items-center gap-6 w-full">
-          {/* Brand Icon */}
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center mb-2">
+          {/* Brand Icon (Click to go back to landing page) */}
+          <Link
+            href="/"
+            title="Back to Landing Page"
+            className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center mb-2 hover:scale-105 transition-transform"
+          >
             <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
               <Network className="w-5 h-5 text-teal-accent" />
             </div>
-          </div>
+          </Link>
 
           {/* Nav Items */}
           <button
@@ -1198,10 +1203,67 @@ export default function Dashboard() {
           {/* A. LEFT PANE: Chat & Prompt Panel */}
           <section className="w-80 border-r border-panel-border flex flex-col bg-panel-dark/30 h-full shrink-0">
             {/* Panel Title */}
-            <div className="p-3 border-b border-panel-border flex items-center gap-2 bg-panel-dark/20">
-              <MessageSquare className="w-4 h-4 text-teal-accent" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">AI Architect Assistant</span>
+            <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20">
+              <div className="flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-teal-accent" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">AI Architect Assistant</span>
+              </div>
             </div>
+
+            {/* Selected Version Details & Prompt Card */}
+            {activeDiagram && displayedVersion && (
+              <div className="p-4 border-b border-panel-border bg-slate-900/40 space-y-3 shrink-0 animate-fade-in">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-teal-accent">
+                    {previewVersion ? `Preview Snapshot: v${previewVersion.version_number}` : `Active Draft: v${activeVersion?.version_number}`}
+                  </span>
+                  <span className="text-[10px] text-slate-500">
+                    {new Date(displayedVersion.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Change Description</span>
+                  <p className="text-xs text-slate-300 leading-normal bg-bg-dark/40 px-2 py-1.5 rounded border border-panel-border/30">
+                    {displayedVersion.comment || 'Initial version'}
+                  </p>
+                </div>
+
+                {displayedVersion.prompt && (
+                  <div className="space-y-1">
+                    <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Prompt Applied</span>
+                    <p className="text-xs text-slate-300 bg-[#090d16] border border-panel-border/30 rounded p-2 italic leading-relaxed">
+                      &ldquo;{displayedVersion.prompt}&rdquo;
+                    </p>
+                  </div>
+                )}
+
+                <div className="pt-2 flex gap-1.5">
+                  {displayedVersion.ai_reasoning && (
+                    <button
+                      onClick={() => {
+                        setInspectVersion(displayedVersion);
+                        setIsInspectModalOpen(true);
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-[9px] font-bold transition-all cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Inspect Plan</span>
+                    </button>
+                  )}
+                  
+                  {previewVersion && (
+                    <button
+                      onClick={() => handleRestoreVersion(previewVersion)}
+                      className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[9px] font-bold transition-all cursor-pointer"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Restore version</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -1357,9 +1419,7 @@ export default function Dashboard() {
                           .sort((a, b) => b.version_number - a.version_number)
                           .map((v) => {
                             const isLatest = v.id === activeVersion?.id;
-                            const commentText = v.comment || (v.created_by.toLowerCase() === 'ai' ? 'AI Generated' : 'Manually edited');
-                            const truncatedComment = commentText.length > 38 ? commentText.substring(0, 38) + '...' : commentText;
-                            const label = `v${v.version_number}: ${truncatedComment} ${isLatest ? '(Active Draft)' : '(Preview)'}`;
+                            const label = `v${v.version_number}${isLatest ? ' (Active Draft)' : ' (Preview)'}`;
                             return (
                               <option key={v.id} value={v.id} className="bg-slate-900 text-slate-200 py-1.5 font-medium">
                                 {label}
@@ -1801,12 +1861,21 @@ export default function Dashboard() {
                     .map((v) => {
                       const isActive = activeVersion?.id === v.id;
                       const isPreviewing = previewVersion?.id === v.id;
-                      const isAi = v.created_by.toLowerCase() === 'ai';
                       
                       return (
-                        <div key={v.id} className="flex gap-4 relative z-10 group">
+                        <div 
+                          key={v.id} 
+                          onClick={() => {
+                            if (v.id === activeVersion?.id) {
+                              setPreviewVersion(null);
+                            } else {
+                              setPreviewVersion(v);
+                            }
+                          }}
+                          className="flex gap-3 relative z-10 group cursor-pointer"
+                        >
                           {/* Timeline dot */}
-                          <div className={`w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold border-2 ${
+                          <div className={`w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold border-2 transition-all ${
                             isPreviewing
                               ? 'bg-amber-500 border-amber-400 text-bg-dark'
                               : isActive && !previewVersion
@@ -1817,64 +1886,20 @@ export default function Dashboard() {
                           </div>
 
                           {/* Version Card */}
-                          <div className={`flex-1 p-3 rounded-lg border transition-all ${
+                          <div className={`flex-1 px-3 py-2 rounded-lg border transition-all ${
                             isPreviewing
-                              ? 'bg-amber-500/5 border-amber-500/40'
+                              ? 'bg-amber-500/5 border-amber-500/40 shadow-sm'
                               : isActive && !previewVersion
-                              ? 'bg-teal-glow border-teal-accent/30'
-                              : 'bg-panel-dark/40 border-panel-border hover:border-slate-700'
+                              ? 'bg-teal-glow/10 border-teal-accent/30 shadow-sm'
+                              : 'bg-panel-dark/20 border-panel-border/30 hover:border-slate-700'
                           }`}>
-                            <div className="flex items-center justify-between gap-2 mb-1.5">
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
-                                isAi ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                              }`}>
-                                {isAi ? 'Gemini AI' : 'User'}
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-xs font-bold text-slate-200">
+                                Version v{v.version_number}
                               </span>
                               <span className="text-[9px] text-slate-500">
-                                {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                               </span>
-                            </div>
-                            
-                            <p className="text-xs text-slate-300 leading-normal mb-2">
-                              {v.comment || 'No description provided.'}
-                            </p>
-
-                            <div className="flex items-center gap-1.5 border-t border-panel-border/40 pt-2 mt-2">
-                              <button
-                                onClick={() => setPreviewVersion(v)}
-                                disabled={isPreviewing}
-                                className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-all cursor-pointer ${
-                                  isPreviewing
-                                    ? 'bg-amber-500 text-bg-dark'
-                                    : 'hover:bg-slate-hover text-slate-400 hover:text-white'
-                                }`}
-                              >
-                                <Eye className="w-3 h-3" />
-                                <span>{isPreviewing ? 'Previewing' : 'Preview'}</span>
-                              </button>
-                              
-                              {!isActive && (
-                                <button
-                                  onClick={() => handleRestoreVersion(v)}
-                                  className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium hover:bg-slate-hover text-slate-400 hover:text-teal-accent transition-all cursor-pointer"
-                                >
-                                  <RotateCcw className="w-3 h-3" />
-                                  <span>Restore</span>
-                                </button>
-                              )}
-                              
-                              {(v.prompt || v.ai_reasoning) && (
-                                <button
-                                  onClick={() => {
-                                    setInspectVersion(v);
-                                    setIsInspectModalOpen(true);
-                                  }}
-                                  className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium hover:bg-slate-hover text-slate-400 hover:text-purple-400 transition-all cursor-pointer"
-                                >
-                                  <Sparkles className="w-3 h-3 text-purple-400" />
-                                  <span>Inspect AI</span>
-                                </button>
-                              )}
                             </div>
                           </div>
                         </div>
