@@ -36,7 +36,6 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
-  overflow: hidden; /* Prevent page-level scrolling, we want a desktop app feel */
 }
 
 /* Custom Scrollbar for Premium Feel */
