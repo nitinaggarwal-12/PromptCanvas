@@ -25,37 +25,39 @@ export default function LandingPage() {
       <div className="absolute bottom-[-10%] left-[20%] w-[55vw] h-[55vw] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none z-0" />
 
       {/* Header/Navigation */}
-      <header className="relative w-full max-w-8xl mx-auto h-20 px-6 md:px-12 flex items-center justify-between z-10 border-b border-panel-border/30 bg-[#070a13]/50 backdrop-blur-md sticky top-0">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
-            <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
-              <Network className="w-5 h-5 text-teal-accent" />
+      <header className="sticky top-0 w-full z-50 border-b border-panel-border/30 bg-[#070a13]/80 backdrop-blur-md">
+        <div className="w-full max-w-8xl mx-auto h-20 px-6 md:px-12 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
+              <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
+                <Network className="w-5 h-5 text-teal-accent" />
+              </div>
+            </div>
+            <div>
+              <span className="font-extrabold text-lg tracking-wider text-white bg-clip-text bg-gradient-to-r from-white to-slate-300">
+                MAESTRO
+              </span>
+              <span className="font-light text-lg tracking-wider text-teal-400">
+                SKETCH
+              </span>
             </div>
           </div>
-          <div>
-            <span className="font-extrabold text-lg tracking-wider text-white bg-clip-text bg-gradient-to-r from-white to-slate-300">
-              MAESTRO
-            </span>
-            <span className="font-light text-lg tracking-wider text-teal-400">
-              SKETCH
-            </span>
+
+          <nav className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
+            <a href="#features" className="hover:text-teal-400 transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
+            <a href="#templates" className="hover:text-teal-400 transition-colors">Templates</a>
+            <a href="#value" className="hover:text-teal-400 transition-colors">Why Maestro</a>
+          </nav>
+
+          <div className="flex items-center gap-4">
+            <Link
+              href="/dashboard"
+              className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
+            >
+              Launch App
+            </Link>
           </div>
-        </div>
-
-        <nav className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
-          <a href="#features" className="hover:text-teal-400 transition-colors">Features</a>
-          <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
-          <a href="#templates" className="hover:text-teal-400 transition-colors">Templates</a>
-          <a href="#value" className="hover:text-teal-400 transition-colors">Why Maestro</a>
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard"
-            className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
-          >
-            Launch App
-          </Link>
         </div>
       </header>
 
