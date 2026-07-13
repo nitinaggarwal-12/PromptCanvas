@@ -18,6 +18,8 @@ export interface DiagramVersion {
   comment: string | null;
   created_by: string;
   created_at: string;
+  prompt?: string | null;
+  ai_reasoning?: string | null;
 }
 
 // Resolve database path, allowing override via environment variable to prevent Fast Refresh triggers
@@ -54,9 +56,19 @@ function getDb(): DatabaseSync {
         comment TEXT,
         created_by TEXT DEFAULT 'User',
         created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        prompt TEXT,
+        ai_reasoning TEXT,
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
       );
     `);
+
+    // Migration: Add columns to existing databases if they are missing
+    try {
+      dbInstance.exec("ALTER TABLE diagram_versions ADD COLUMN prompt TEXT;");
+    } catch {}
+    try {
+      dbInstance.exec("ALTER TABLE diagram_versions ADD COLUMN ai_reasoning TEXT;");
+    } catch {}
     
     console.log(`Database initialized successfully at ${dbPath}`);
     return dbInstance;
@@ -85,7 +97,13 @@ export function getDiagram(id: string): Diagram | null {
 }
 
 // Helper: Create a new diagram with an optional initial XML
-export function createDiagram(name: string, initialXml?: string, comment?: string): { diagram: Diagram; version: DiagramVersion | null } {
+export function createDiagram(
+  name: string, 
+  initialXml?: string, 
+  comment?: string,
+  prompt?: string | null,
+  aiReasoning?: string | null
+): { diagram: Diagram; version: DiagramVersion | null } {
   const db = getDb();
   const diagramId = uuidv4();
   
@@ -106,8 +124,8 @@ export function createDiagram(name: string, initialXml?: string, comment?: strin
     if (initialXml !== undefined) {
       const versionId = uuidv4();
       const insertVersion = db.prepare(`
-        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `);
       insertVersion.run(
         versionId,
@@ -115,7 +133,9 @@ export function createDiagram(name: string, initialXml?: string, comment?: strin
         1,
         initialXml,
         comment || 'Initial version',
-        'AI'
+        'AI',
+        prompt || null,
+        aiReasoning || null
       );
       
       const getVersion = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
@@ -140,7 +160,9 @@ export function saveDiagramVersion(
   diagramId: string,
   xmlContent: string,
   comment: string | null,
-  createdBy: string = 'User'
+  createdBy: string = 'User',
+  prompt?: string | null,
+  aiReasoning?: string | null
 ): DiagramVersion {
   const db = getDb();
   db.exec('BEGIN TRANSACTION;');
@@ -158,8 +180,8 @@ export function saveDiagramVersion(
     // Insert new version
     const versionId = uuidv4();
     const insertVersion = db.prepare(`
-      INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
     insertVersion.run(
       versionId,
@@ -167,7 +189,9 @@ export function saveDiagramVersion(
       nextVersionNumber,
       xmlContent,
       comment,
-      createdBy
+      createdBy,
+      prompt || null,
+      aiReasoning || null
     );
     
     // Update diagram's updated_at timestamp

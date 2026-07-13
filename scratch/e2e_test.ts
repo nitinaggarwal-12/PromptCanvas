@@ -69,8 +69,8 @@ async function runE2ETest() {
   try {
     // --- STEP 1: Empty State ---
     console.log('\n--- STEP 1: Empty State ---');
-    console.log('Navigating to http://localhost:3000...');
-    await page.goto('http://localhost:3000', { waitUntil: 'networkidle2' });
+    console.log('Navigating to http://localhost:3000/dashboard...');
+    await page.goto('http://localhost:3000/dashboard', { waitUntil: 'networkidle2' });
     
     // Wait for the empty state button to render
     await page.waitForSelector('#new-diagram-btn', { timeout: 10000 });
@@ -295,10 +295,10 @@ async function runE2ETest() {
     console.log('Clicking "Audit Security" button...');
     await page.$eval('#audit-diagram-btn', el => (el as HTMLButtonElement).click());
     
-    console.log('Waiting for AI Security Audit report to compile (up to 30s)...');
+    console.log('Waiting for AI Security Audit report to compile (up to 50s)...');
     await page.waitForFunction(
       () => document.body.textContent?.includes('Maestro Architecture Audit Report'),
-      { timeout: 35000 }
+      { timeout: 50000 }
     );
     await sleep(1500); // 1500ms settling delay
     

@@ -47,6 +47,8 @@ interface DiagramVersion {
   comment: string | null;
   created_by: string;
   created_at: string;
+  prompt?: string | null;
+  ai_reasoning?: string | null;
 }
 
 interface ChatMessage {
@@ -173,6 +175,8 @@ export default function Dashboard() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isInlineEditorOpen, setIsInlineEditorOpen] = useState(false);
+  const [inspectVersion, setInspectVersion] = useState<DiagramVersion | null>(null);
+  const [isInspectModalOpen, setIsInspectModalOpen] = useState(false);
   
   // Form Inputs
   const [newDiagramName, setNewDiagramName] = useState('');
@@ -1775,6 +1779,19 @@ export default function Dashboard() {
                                   <span>Restore</span>
                                 </button>
                               )}
+                              
+                              {(v.prompt || v.ai_reasoning) && (
+                                <button
+                                  onClick={() => {
+                                    setInspectVersion(v);
+                                    setIsInspectModalOpen(true);
+                                  }}
+                                  className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium hover:bg-slate-hover text-slate-400 hover:text-purple-400 transition-all cursor-pointer"
+                                >
+                                  <Sparkles className="w-3 h-3 text-purple-400" />
+                                  <span>Inspect AI</span>
+                                </button>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1944,6 +1961,53 @@ export default function Dashboard() {
                 className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all cursor-pointer"
               >
                 Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Inspect AI Action Modal */}
+      {isInspectModalOpen && inspectVersion && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
+          <div className="glass-panel border-panel-border rounded-xl p-6 w-full max-w-2xl max-h-[85vh] shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between mb-4 border-b border-panel-border/40 pb-3 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <Sparkles className="w-5 h-5 text-purple-400" />
+                <h3 className="font-bold text-lg text-white">AI Action Inspection — Version v{inspectVersion.version_number}</h3>
+              </div>
+              <button 
+                onClick={() => setIsInspectModalOpen(false)}
+                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto pr-1 select-text space-y-6 scrollbar-thin">
+              {/* Prompt Section */}
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-teal-accent uppercase tracking-wider">Natural Language Prompt</h4>
+                <div className="bg-[#0b0f19] border border-panel-border/40 rounded-lg p-4 text-xs text-slate-200 leading-relaxed italic">
+                  &ldquo;{inspectVersion.prompt || 'No original prompt stored.'}&rdquo;
+                </div>
+              </div>
+
+              {/* Reasoning Plan Section */}
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">AI Planning & Reasoning Plan</h4>
+                <div className="bg-[#0b0f19] border border-panel-border/40 rounded-lg p-4 text-xs text-slate-300 leading-relaxed font-mono whitespace-pre-wrap max-h-[400px] overflow-y-auto">
+                  {inspectVersion.ai_reasoning || 'No step-by-step reasoning plan stored for this revision.'}
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 border-t border-panel-border/30 pt-3 flex justify-end shrink-0">
+              <button
+                onClick={() => setIsInspectModalOpen(false)}
+                className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all cursor-pointer"
+              >
+                Close Inspector
               </button>
             </div>
           </div>

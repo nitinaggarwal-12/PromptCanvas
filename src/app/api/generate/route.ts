@@ -6,7 +6,12 @@ const SYSTEM_PROMPT = `
 You are "Maestro-Graph", an elite enterprise solutions architect and compiler that translates natural language system descriptions into valid, production-grade Draw.io (mxGraph) XML.
 
 ### Output Constraints:
-1. Return ONLY a valid XML block wrapped in \`\`\`xml and \`\`\`. No explanations, no markdown introduction, no conversational text.
+1. Your response MUST contain exactly two sections in Markdown:
+   - A section under header "### AI Architectural Plan & Reasoning" detailing:
+     * Your prompt understanding and design objectives.
+     * Architectural layout decisions (layer assignment, vertical spacing coordinates).
+     * Security and resilience considerations (compliance checks, self-healing nodes, network isolation).
+   - A section under header "### Draw.io XML" containing only a valid Draw.io XML block wrapped in \`\`\`xml and \`\`\`.
 2. The XML must start with \`<mxfile host="embed.diagrams.net">\` and contain a \`<diagram>\` and \`<mxGraphModel>\`.
 
 ### STRICT XML TEMPLATE (DO NOT DEVIATE):
@@ -106,19 +111,39 @@ CRITICAL SYNTAX PROHIBITIONS:
 
 `;
 
-// Helper to extract XML from markdown code blocks
-function extractXml(text: string): string | null {
-  const match = text.match(/```xml\s*([\s\S]*?)\s*```/);
-  if (match && match[1]) {
-    return match[1].trim();
-  }
-  // Fallback if not wrapped in code blocks but contains XML
-  if (text.includes('<mxfile') && text.includes('</mxfile>')) {
+// Helper to extract AI Reasoning Plan and XML from response text
+function parseAiResponse(text: string): { xml: string | null; reasoning: string | null } {
+  let xml: string | null = null;
+  let reasoning: string | null = null;
+
+  // Extract XML block
+  const xmlMatch = text.match(/```xml\s*([\s\S]*?)\s*```/);
+  if (xmlMatch && xmlMatch[1]) {
+    xml = xmlMatch[1].trim();
+  } else if (text.includes('<mxfile') && text.includes('</mxfile>')) {
     const start = text.indexOf('<mxfile');
     const end = text.indexOf('</mxfile>') + 9;
-    return text.substring(start, end).trim();
+    xml = text.substring(start, end).trim();
   }
-  return null;
+
+  // Extract reasoning text
+  const reasoningHeader = "### AI Architectural Plan & Reasoning";
+  const xmlHeader = "### Draw.io XML";
+  
+  if (text.includes(reasoningHeader)) {
+    const startIdx = text.indexOf(reasoningHeader) + reasoningHeader.length;
+    let endIdx = text.length;
+    if (text.includes(xmlHeader)) {
+      endIdx = text.indexOf(xmlHeader);
+    } else if (text.includes("```xml")) {
+      endIdx = text.indexOf("```xml");
+    }
+    if (endIdx > startIdx) {
+      reasoning = text.substring(startIdx, endIdx).trim();
+    }
+  }
+
+  return { xml, reasoning };
 }
 
 export async function POST(request: Request) {
@@ -189,8 +214,8 @@ ${prompt}
       responseText = response.text || '';
     }
 
-    // Extract the XML from the AI response
-    const xml = extractXml(responseText);
+    // Extract the XML and reasoning from the AI response
+    const { xml, reasoning } = parseAiResponse(responseText);
     if (!xml) {
       console.error('Gemini response did not contain a valid XML block:', responseText);
       return NextResponse.json(
@@ -209,12 +234,13 @@ ${prompt}
         diagramId,
         xml,
         `AI Refined: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`,
-        'AI'
+        'AI',
+        prompt,
+        reasoning
       );
       return NextResponse.json({ version });
     } else {
       // Create a new diagram
-      // Generate a short name from the prompt (first 40 characters)
       const diagramName = prompt.length > 45 
         ? `${prompt.slice(0, 40)}...` 
         : prompt;
@@ -222,7 +248,9 @@ ${prompt}
       const { diagram, version } = createDiagram(
         diagramName,
         xml,
-        `AI Generated: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`
+        `AI Generated: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`,
+        prompt,
+        reasoning
       );
       return NextResponse.json({ diagram, version }, { status: 201 });
     }

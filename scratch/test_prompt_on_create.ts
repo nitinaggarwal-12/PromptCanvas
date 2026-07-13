@@ -25,8 +25,8 @@ async function runPromptOnCreateSuite() {
   await page.setViewport({ width: 1440, height: 950 });
 
   try {
-    console.log('Navigating to http://localhost:3000...');
-    await page.goto('http://localhost:3000', { waitUntil: 'networkidle2' });
+    console.log('Navigating to http://localhost:3000/dashboard...');
+    await page.goto('http://localhost:3000/dashboard', { waitUntil: 'networkidle2' });
     await sleep(2000);
 
     // Step 1: Click "+ New Diagram" button in left sidebar
