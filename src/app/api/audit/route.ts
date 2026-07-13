@@ -42,10 +42,11 @@ export async function POST(request: Request) {
 
     const report = response.text || 'No audit report generated.';
     return NextResponse.json({ report });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Audit failed:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: 'Audit Failed', details: error.message || String(error) },
+      { error: 'Audit Failed', details: errorMessage },
       { status: 500 }
     );
   }

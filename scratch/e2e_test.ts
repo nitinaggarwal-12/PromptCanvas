@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import { rmSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
-const SCREENSHOT_DIR = '/Users/nitinagga/.gemini/jetski/brain/c3c45669-fafd-4030-bd6a-a7ce32ba43e8/screenshots_phase6';
+const SCREENSHOT_DIR = '/Users/nitinagga/.gemini/jetski/brain/57227f71-af5c-418d-8f2b-c3e2b3572380/screenshots_v1';
 
 // Helper to sleep/wait (Mandatory Settling Delays)
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -145,18 +145,31 @@ async function runE2ETest() {
     });
     
     // Wait for AI generation to complete (the timeline dot '2' should appear)
-    console.log('Waiting for Gemini 2.5-flash response and Draw.io render (up to 35s)...');
+    console.log('Waiting for Gemini 2.5-flash response and Draw.io render (up to 90s)...');
     await page.waitForFunction(
       () => {
         const dots = Array.from(document.querySelectorAll('.rounded-full'));
         return dots.some(dot => dot.textContent?.trim() === '2');
       },
-      { timeout: 40000 }
+      { timeout: 90000 }
     );
     await sleep(2000); // 2000ms settling delay for the Draw.io vector engine to render the new XML
     
     console.log('📸 Capturing: 03_ai_generated.png');
     await page.screenshot({ path: join(SCREENSHOT_DIR, '03_ai_generated.png') });
+
+    // --- STEP 3B: Outline & Nodes Tree Inspector ---
+    console.log('\n--- STEP 3B: Outline & Nodes Tree Inspector ---');
+    console.log('Switching to Outline view...');
+    await page.$eval('#view-mode-outline-btn', el => (el as HTMLButtonElement).click());
+    await sleep(1000); // 1000ms settling delay
+    
+    console.log('📸 Capturing: 03b_outline_view.png');
+    await page.screenshot({ path: join(SCREENSHOT_DIR, '03b_outline_view.png') });
+
+    console.log('Switching back to 2D Canvas view...');
+    await page.$eval('#view-mode-canvas-btn', el => (el as HTMLButtonElement).click());
+    await sleep(800); // 800ms settling delay
 
     // --- STEP 4: Inline Editor ---
     console.log('\n--- STEP 4: Inline Editor ---');
