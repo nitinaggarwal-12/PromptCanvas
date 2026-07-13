@@ -1,1624 +1,375 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
+import Link from 'next/link';
 import { 
-  Plus, 
-  Trash2, 
-  Send, 
-  RotateCcw, 
-  Eye, 
-  Edit3, 
-  ExternalLink, 
-  History, 
   Sparkles, 
-  ChevronLeft, 
-  ChevronRight, 
-  MessageSquare, 
-  X,
-  Loader2,
-  FileText,
-  Shield
+  ArrowRight, 
+  Shield, 
+  Zap, 
+  History, 
+  FileText, 
+  CheckCircle2, 
+  Play,
+  Network,
+  X
 } from 'lucide-react';
-import DiagramViewer from '@/components/DiagramViewer';
 
-
-// Define Types (matching our DB schema + API responses)
-interface Diagram {
-  id: string;
-  name: string;
-  created_at: string;
-  updated_at: string;
-  versions?: DiagramVersion[];
-}
-
-interface DiagramVersion {
-  id: string;
-  diagram_id: string;
-  version_number: number;
-  xml_content: string;
-  comment: string | null;
-  created_by: string;
-  created_at: string;
-}
-
-interface ChatMessage {
-  id: string;
-  sender: 'user' | 'ai';
-  text: string;
-  timestamp: string;
-  versionNumber?: number;
-}
-
-interface DiagramNodeItem {
-  id: string;
-  label: string;
-  isEdge: boolean;
-  source?: string;
-  target?: string;
-  style?: string;
-}
-
-function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
-  if (!xml) return [];
-  const items: DiagramNodeItem[] = [];
-  
-  // Match all mxCell elements
-  const regex = /<mxCell\s+([^>]+)>/g;
-  let match;
-  while ((match = regex.exec(xml)) !== null) {
-    const attrsStr = match[1];
-    const getId = attrsStr.match(/id="([^"]*)"/)?.[1];
-    const getValue = attrsStr.match(/value="([^"]*)"/)?.[1];
-    const isEdge = attrsStr.includes('edge="1"');
-    const getSource = attrsStr.match(/source="([^"]*)"/)?.[1];
-    const getTarget = attrsStr.match(/target="([^"]*)"/)?.[1];
-    const getStyle = attrsStr.match(/style="([^"]*)"/)?.[1];
-    
-    if (getId && getId !== '0' && getId !== '1') {
-      items.push({
-        id: getId,
-        label: getValue || (isEdge ? 'Connection' : 'Unnamed Component'),
-        isEdge,
-        source: getSource,
-        target: getTarget,
-        style: getStyle
-      });
-    }
-  }
-  return items;
-}
-
-function htmlEscape(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-const TEMPLATE_PROMPTS = [
-  {
-    name: "Clean Slate (Empty Workspace)",
-    prompt: ""
-  },
-  {
-    name: "Serverless Web Application (GCP)",
-    prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture. It should include: a Global HTTPS Load Balancer, Cloud CDN, Cloud Run for the frontend/backend services, Cloud SQL (PostgreSQL) for relational data, and Cloud Storage for static media assets."
-  },
-  {
-    name: "Real-time Streaming Analytics (GCP)",
-    prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store the structured results in BigQuery, and visualize it with Looker."
-  },
-  {
-    name: "Microservices Kubernetes Cluster (AWS)",
-    prompt: "Act as an AWS Solutions Architect. Design a microservices architecture hosted on EKS (Elastic Kubernetes Service). It should include: an Application Load Balancer, Amazon API Gateway, EKS worker nodes running services, RDS PostgreSQL for main DB, DynamoDB for session state, and ElastiCache Redis for caching."
-  },
-  {
-    name: "Data Lakehouse (AWS)",
-    prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for ad-hoc querying, Amazon Redshift for data warehousing, and Amazon QuickSight for business intelligence."
-  },
-  {
-    name: "AI Retrieval-Augmented Generation / RAG (GCP)",
-    prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system on GCP. It should include: a Cloud Run API service, Cloud SQL with pgvector extension for storing vector embeddings, Vertex AI Search for document retrieval, Vertex AI Gemini API for LLM reasoning, and Cloud Storage for source documents."
-  },
-  {
-    name: "Event-Driven Microservices (AWS)",
-    prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store for each microservice."
-  },
-  {
-    name: "Multi-Region Disaster Recovery (GCP)",
-    prompt: "Act as a GCP Resilience Engineer. Design a multi-region highly-available architecture. It should have: a Global Load Balancer, active-active services in us-east1 and us-west1 using Cloud Run, Cloud Spanner as a multi-region distributed database, and Cloud Storage with multi-region replication."
-  },
-  {
-    name: "Secure VPC Network Infrastructure (AWS)",
-    prompt: "Act as an AWS Network Security Engineer. Design a secure VPC network. It should include: a VPC with Public and Private Subnets across two Availability Zones, an Internet Gateway, NAT Gateways for private subnet outbound traffic, Bastion Host for secure SSH access, and an Application Load Balancer routing to an Autoscaling Group of EC2 instances in private subnets."
-  },
-  {
-    name: "IoT Telemetry Ingestion (GCP)",
-    prompt: "Act as an IoT Architect. Design a telemetry ingestion pipeline on GCP. It should ingest data from IoT devices via Pub/Sub, trigger Cloud Functions for validation and normalization, store raw time-series data in Cloud Bigtable, and connect to Grafana for live monitoring."
-  },
-  {
-    name: "CI/CD Pipeline Architecture",
-    prompt: "Act as a DevOps Architect. Design a secure CI/CD build and deploy pipeline. It should include: GitHub repository triggering a GitHub Actions Runner, compilation/testing step, containerizing with Docker, pushing images to Artifact Registry, deploying using Terraform Cloud to a target Kubernetes cluster, and monitoring with Prometheus/Grafana."
-  }
-];
-
-export default function Dashboard() {
-  // --- State ---
-  const [diagrams, setDiagrams] = useState<Diagram[]>([]);
-  const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
-  const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
-  const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
-  
-  // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [viewMode, setViewMode] = useState<'canvas' | 'outline'>('canvas');
-  const [outlineEdits, setOutlineEdits] = useState<Record<string, string>>({});
-  
-  // UI Panels
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(true);
-  
-  // Modals
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const [isInlineEditorOpen, setIsInlineEditorOpen] = useState(false);
-  
-  // Form Inputs
-  const [newDiagramName, setNewDiagramName] = useState('');
-  const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState('0');
-  const [promptInput, setPromptInput] = useState('');
-  const [saveComment, setSaveComment] = useState('');
-
-  const openCreateModal = () => {
-    setNewDiagramName('');
-    setNewDiagramPrompt('');
-    setSelectedTemplate('0');
-    setIsCreateModalOpen(true);
-  };
-  
-  // Loading States
-  const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  
-  // Chat History
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-
-  // Audit States
-  const [isAuditing, setIsAuditing] = useState(false);
-  const [auditReport, setAuditReport] = useState<string | null>(null);
-  const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
-  
-
-  
-  // Refs
-  const chatEndRef = useRef<HTMLDivElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const childWindowRef = useRef<Window | null>(null);
-  const activeXmlRef = useRef('');
-  
-  // State for editor integration
-  const [pendingXml, setPendingXml] = useState<string | null>(null);
-
-  // Sync active version XML to ref
-  useEffect(() => {
-    if (activeVersion) {
-      activeXmlRef.current = activeVersion.xml_content;
-    }
-  }, [activeVersion]);
-
-  // Listen for messages from Draw.io editors (both iframe and popup tab)
-  useEffect(() => {
-    const handleWindowMessage = (evt: MessageEvent) => {
-      const iframe = iframeRef.current;
-      const childWindow = childWindowRef.current;
-      
-      const isFromIframe = iframe && evt.source === iframe.contentWindow;
-      const isFromChild = childWindow && evt.source === childWindow;
-      
-      if (!isFromIframe && !isFromChild) return;
-      
-      interface DrawIoEvent {
-        event?: string;
-        xml?: string;
-        data?: string;
-        action?: string;
-      }
-      let msg: DrawIoEvent = {};
-      try {
-        msg = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data;
-      } catch {
-        return; // Not JSON
-      }
-      
-      const sourceWindow = isFromIframe ? iframe.contentWindow : childWindow;
-      
-      if (msg.event === 'init') {
-        console.log('[Draw.io Embed] ✉️ Received: init. Sending: load...');
-        sourceWindow?.postMessage(JSON.stringify({
-          action: 'load',
-          xml: activeXmlRef.current
-        }), '*');
-      }
-      
-      if (msg.event === 'save') {
-        console.log('[Draw.io Embed] ✉️ Received: save. Opening Save Version modal...');
-        if (msg.xml) {
-          setPendingXml(msg.xml);
-          setIsSaveModalOpen(true);
-        }
-      }
-      
-      if (msg.event === 'export') {
-        console.log('[Draw.io Embed] ✉️ Received: export. Opening Save Version modal...');
-        const xmlContent = msg.data || msg.xml;
-        if (xmlContent) {
-          setPendingXml(xmlContent);
-          setIsSaveModalOpen(true);
-        }
-      }
-      
-      if (msg.event === 'exit') {
-        console.log('[Draw.io Embed] ✉️ Received: exit. Closing editor...');
-        if (isFromIframe) {
-          setIsInlineEditorOpen(false);
-        } else if (isFromChild) {
-          childWindow?.close();
-          childWindowRef.current = null;
-        }
-      }
-    };
-    
-    window.addEventListener('message', handleWindowMessage);
-    return () => {
-      window.removeEventListener('message', handleWindowMessage);
-    };
-  }, []);
-
-  const openInNewTab = () => {
-    if (!activeDiagram || !activeVersion) return;
-    
-    if (childWindowRef.current && !childWindowRef.current.closed) {
-      childWindowRef.current.focus();
-      return;
-    }
-    
-    const child = window.open(
-      'https://embed.diagrams.net/?embed=1&proto=json&ui=dark',
-      '_blank'
-    );
-    
-    childWindowRef.current = child;
-  };
-
-  // --- Effects ---
-  // Fetch all diagrams on mount
-  useEffect(() => {
-    fetchDiagrams();
-  }, []);
-
-  // Fetch active diagram details when ID changes
-  const loadDiagramDetails = async (id: string) => {
-    try {
-      const res = await fetch(`/api/diagrams/${id}`);
-      if (!res.ok) throw new Error('Failed to fetch diagram details');
-      const data: Diagram = await res.json();
-      
-      setActiveDiagram(data);
-      setZoom(1);
-      setPan({ x: 0, y: 0 });
-      setViewMode('canvas');
-      setOutlineEdits({});
-      
-      // Set the latest version as active
-      if (data.versions && data.versions.length > 0) {
-        const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
-        setActiveVersion(sortedVersions[0]);
-        setPreviewVersion(null); // Clear preview
-        
-        // Reconstruct chat history from version comments
-        const messages: ChatMessage[] = data.versions
-          .sort((a, b) => a.version_number - b.version_number)
-          .map((v) => ({
-            id: v.id,
-            sender: v.created_by.toLowerCase() === 'ai' ? 'ai' : 'user',
-            text: v.created_by.toLowerCase() === 'ai' 
-              ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Generated'}"`
-              : `Manually edited diagram: "${v.comment || 'Saved changes'}"`,
-            timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            versionNumber: v.version_number
-          }));
-        setChatMessages(messages);
-      } else {
-        setActiveVersion(null);
-        setPreviewVersion(null);
-        setChatMessages([]);
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error loading diagram details');
-    }
-  };
-
-  // Scroll chat to bottom
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages, isGenerating]);
-
-  // --- API Handlers ---
-  async function fetchDiagrams() {
-    setIsLoadingDiagrams(true);
-    try {
-      const res = await fetch('/api/diagrams');
-      if (!res.ok) throw new Error('Failed to fetch diagrams');
-      const data = await res.json();
-      setDiagrams(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoadingDiagrams(false);
-    }
-  }
-
-  const handleCreateDiagram = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newDiagramName.trim()) return;
-    
-    try {
-      // Phase 7: Clean Minimal Starter Slate for Version v1 (No 15-node RAG/ERP clutter!)
-      const defaultXml = `
-        <mxfile host="embed.diagrams.net">
-          <diagram id="clean_workspace" name="Clean Architecture Workspace">
-            <mxGraphModel dx="1193" dy="853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="950" math="0" shadow="0">
-              <root>
-                <mxCell id="0" />
-                <mxCell id="1" parent="0" />
-                <mxCell id="welcome_node" value="&lt;b&gt;[1] New Architecture Workspace&lt;/b&gt;&lt;br&gt;&lt;i&gt;Type a prompt in the AI box below to design your system with Gemini!&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontFamily=Helvetica;fontSize=14;" vertex="1" parent="1">
-                  <mxGeometry x="350" y="250" width="300" height="80" as="geometry" />
-                </mxCell>
-              </root>
-            </mxGraphModel>
-          </diagram>
-        </mxfile>
-      `.trim();
-
-      const res = await fetch('/api/diagrams', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newDiagramName,
-          xml: defaultXml,
-          comment: 'Initial canvas created'
-        })
-      });
-      
-      if (!res.ok) throw new Error('Failed to create diagram');
-      const data = await res.json();
-      
-      const promptToGenerate = newDiagramPrompt.trim();
-      setNewDiagramName('');
-      setNewDiagramPrompt('');
-      setIsCreateModalOpen(false);
-      
-      // Refresh list and select the new diagram
-      await fetchDiagrams();
-      await loadDiagramDetails(data.diagram.id);
-
-      // If user provided an initial prompt in the modal, automatically generate Version v2!
-      if (promptToGenerate) {
-        setIsGenerating(true);
-        try {
-          const genRes = await fetch('/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              prompt: promptToGenerate,
-              existingXml: defaultXml,
-              diagramId: data.diagram.id
-            })
-          });
-
-          if (!genRes.ok) throw new Error('Failed to generate diagram from initial prompt');
-          const genData = await genRes.json();
-
-          if (genData.xml) {
-            await fetch(`/api/diagrams/${data.diagram.id}/versions`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                xml: genData.xml,
-                comment: `AI Refined: "${promptToGenerate.substring(0, 50)}${promptToGenerate.length > 50 ? '...' : ''}"`,
-                createdBy: 'AI'
-              })
-            });
-            await loadDiagramDetails(data.diagram.id);
-          } else if (genData.version) {
-            // If backend already saved it directly, just reload details
-            await loadDiagramDetails(data.diagram.id);
-          }
-        } catch (genErr) {
-          console.error('[Create Modal] Error generating initial prompt:', genErr);
-          alert('Diagram created, but AI generation failed. You can retry from the prompt bar below.');
-        } finally {
-          setIsGenerating(false);
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error creating diagram');
-    }
-  };
-
-  const handleDeleteDiagram = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent selecting the diagram
-    if (!confirm('Are you sure you want to delete this diagram and all its version history?')) return;
-    
-    try {
-      const res = await fetch(`/api/diagrams/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Failed to delete diagram');
-      
-      if (activeDiagram?.id === id) {
-        setActiveDiagram(null);
-        setActiveVersion(null);
-        setPreviewVersion(null);
-        setChatMessages([]);
-      }
-      
-      fetchDiagrams();
-    } catch (err) {
-      console.error(err);
-      alert('Error deleting diagram');
-    }
-  };
-
-  // Mock AI Generation Loop (Phase 2 Mock, to be replaced by Gemini in Phase 5)
-  const handleSendPrompt = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!promptInput.trim() || !activeDiagram) return;
-    
-    const userPrompt = promptInput.trim();
-    setPromptInput('');
-    
-    // Add user message to chat
-    const userMessage: ChatMessage = {
-      id: Math.random().toString(),
-      sender: 'user',
-      text: userPrompt,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    setChatMessages(prev => [...prev, userMessage]);
-    
-    setIsGenerating(true);
-    
-    try {
-      // Call the AI generate API (refinement mode)
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: userPrompt,
-          diagramId: activeDiagram.id
-        })
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || errorData.details || 'Failed to generate diagram refinement');
-      }
-      
-      // Reload diagram details to get the new version and update the chat/timeline
-      await loadDiagramDetails(activeDiagram.id);
-    } catch (err: unknown) {
-      console.error('AI generation error:', err);
-      const errMsg = err instanceof Error ? err.message : 'An unexpected error occurred during diagram generation.';
-      // Add an error message from the AI to the chat
-      const errorMessage: ChatMessage = {
-        id: Math.random().toString(),
-        sender: 'ai',
-        text: `❌ Error: ${errMsg}`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setChatMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  // Save Version Handler (for manual edits)
-  const handleSaveVersion = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeDiagram || !saveComment.trim()) return;
-    
-    const xmlToSave = pendingXml !== null ? pendingXml : activeVersion?.xml_content;
-    if (!xmlToSave) return;
-    
-    setIsSaving(true);
-    try {
-      const res = await fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          xmlContent: xmlToSave,
-          comment: saveComment,
-          createdBy: 'User'
-        }
-      )});
-      
-      if (!res.ok) throw new Error('Failed to save version');
-      
-      setSaveComment('');
-      setPendingXml(null);
-      setIsSaveModalOpen(false);
-      
-      // If inline editor was open, close it
-      if (isInlineEditorOpen) {
-        setIsInlineEditorOpen(false);
-      }
-      
-      // Reload details
-      await loadDiagramDetails(activeDiagram.id);
-    } catch (err) {
-      console.error(err);
-      alert('Failed to save version');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // Save Version Handler for Outline Editor quick edits
-  const handleSaveOutlineEdits = async () => {
-    if (!activeDiagram || !activeVersion) return;
-    const editedIds = Object.keys(outlineEdits);
-    if (editedIds.length === 0) return;
-
-    setIsSaving(true);
-    try {
-      let updatedXml = activeVersion.xml_content;
-      for (const id of editedIds) {
-        const newLabel = outlineEdits[id];
-        const cellRegex = new RegExp(`(<mxCell[^>]*id="${id}"[^>]*)value="[^"]*"`, 'g');
-        if (cellRegex.test(updatedXml)) {
-          updatedXml = updatedXml.replace(cellRegex, `$1value="${htmlEscape(newLabel)}"`);
-        } else {
-          const insertRegex = new RegExp(`(<mxCell[^>]*id="${id}"[^>]*?)(/?>)`, 'g');
-          updatedXml = updatedXml.replace(insertRegex, `$1 value="${htmlEscape(newLabel)}"$2`);
-        }
-      }
-
-      const res = await fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          xmlContent: updatedXml,
-          comment: `Updated ${editedIds.length} node label(s) via Outline Editor`,
-          createdBy: 'User'
-        })
-      });
-      
-      if (!res.ok) throw new Error('Failed to save outline edits');
-      
-      setOutlineEdits({});
-      await loadDiagramDetails(activeDiagram.id);
-    } catch (err) {
-      console.error(err);
-      alert('Failed to save outline edits');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // Restore a past version
-  const handleRestoreVersion = async (version: DiagramVersion) => {
-    if (!activeDiagram) return;
-    if (!confirm(`Are you sure you want to restore version v${version.version_number} as the active working draft? This will create a new version v${(activeDiagram.versions?.length || 0) + 1}.`)) return;
-    
-    try {
-      const res = await fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          xmlContent: version.xml_content,
-          comment: `Restored version v${version.version_number}`,
-          createdBy: 'User'
-        })
-      });
-      
-      if (!res.ok) throw new Error('Failed to restore version');
-      
-      // Reload details
-      await loadDiagramDetails(activeDiagram.id);
-    } catch (err) {
-      console.error(err);
-      alert('Failed to restore version');
-    }
-  };
-
-  // Audit the active diagram
-  const handleAuditDiagram = async () => {
-    if (!activeDiagram) return;
-    setIsAuditing(true);
-    try {
-      const res = await fetch('/api/audit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ diagramId: activeDiagram.id })
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || errorData.details || 'Failed to audit diagram');
-      }
-      const data = await res.json();
-      setAuditReport(data.report);
-      setIsAuditModalOpen(true);
-    } catch (err: unknown) {
-      console.error(err);
-      const errMsg = err instanceof Error ? err.message : 'Failed to generate architecture audit.';
-      alert(errMsg);
-    } finally {
-      setIsAuditing(false);
-    }
-  };
-
-  // Helper to render basic markdown safely in modal
-  const renderAuditMarkdown = (text: string) => {
-    if (!text) return null;
-    return text.split('\n').map((line, i) => {
-      let rendered = line;
-      // Bold: **text** -> <strong>text</strong>
-      rendered = rendered.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      // Headers
-      if (rendered.trim().startsWith('### ')) {
-        return <h4 key={i} className="font-bold text-sm text-teal-accent mt-3 mb-1.5">{rendered.trim().slice(4)}</h4>;
-      }
-      if (rendered.trim().startsWith('## ')) {
-        return <h3 key={i} className="font-bold text-base text-white mt-4 mb-2 border-b border-panel-border/30 pb-1">{rendered.trim().slice(3)}</h3>;
-      }
-      if (rendered.trim().startsWith('# ')) {
-        return <h2 key={i} className="font-bold text-lg text-white mt-4 mb-2">{rendered.trim().slice(2)}</h2>;
-      }
-      // Bullet points
-      if (rendered.trim().startsWith('* ')) {
-        return <div key={i} className="pl-4 text-xs text-slate-300 min-h-[1.4em]">• {rendered.trim().slice(2)}</div>;
-      }
-      if (rendered.trim().startsWith('- ')) {
-        return <div key={i} className="pl-4 text-xs text-slate-300 min-h-[1.4em]">• {rendered.trim().slice(2)}</div>;
-      }
-      return (
-        <div 
-          key={i} 
-          className="text-xs text-slate-300 min-h-[1.2em] leading-relaxed my-0.5" 
-          dangerouslySetInnerHTML={{ __html: rendered }} 
-        />
-      );
-    });
-  };
-
-  // --- UI Helpers ---
-  const displayedVersion = previewVersion || activeVersion;
-
+export default function LandingPage() {
   return (
-    <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#070a13] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-hidden">
       
-      {/* 1. SIDEBAR: Diagram List */}
-      <aside 
-        className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 ${
-          isSidebarOpen ? 'w-64' : 'w-0 -translate-x-full md:w-16 md:translate-x-0'
-        }`}
-      >
-        {/* Sidebar Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border">
-          {isSidebarOpen ? (
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-teal-accent" />
-              <span className="font-bold text-lg tracking-wider bg-gradient-to-r from-teal-accent to-cyan-400 bg-clip-text text-transparent">
-                MAESTRO
-              </span>
+      {/* Background Glows */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-[120px] pointer-events-none z-0" />
+      <div className="absolute top-[40%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none z-0" />
+      <div className="absolute bottom-[-10%] left-[20%] w-[55vw] h-[55vw] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none z-0" />
+
+      {/* Header/Navigation */}
+      <header className="relative w-full max-w-7xl mx-auto h-20 px-6 md:px-12 flex items-center justify-between z-10 border-b border-panel-border/30 bg-[#070a13]/50 backdrop-blur-md sticky top-0">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
+            <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
+              <Network className="w-5 h-5 text-teal-accent" />
             </div>
-          ) : (
-            <Sparkles className="w-5 h-5 text-teal-accent mx-auto" />
-          )}
-          {isSidebarOpen && (
-            <button 
-              id="collapse-sidebar-btn"
-              onClick={() => setIsSidebarOpen(false)}
-              className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-          )}
+          </div>
+          <div>
+            <span className="font-extrabold text-lg tracking-wider text-white bg-clip-text bg-gradient-to-r from-white to-slate-300">
+              MAESTRO
+            </span>
+            <span className="font-light text-lg tracking-wider text-teal-400">
+              SKETCH
+            </span>
+          </div>
         </div>
 
-        {/* New Diagram Button */}
-        <div className="p-3">
-          <button
-            id="new-diagram-btn"
-            onClick={openCreateModal}
-            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover ${
-              !isSidebarOpen && 'p-2'
-            }`}
+        <nav className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
+          <a href="#features" className="hover:text-teal-400 transition-colors">Features</a>
+          <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
+          <a href="#templates" className="hover:text-teal-400 transition-colors">Templates</a>
+          <a href="#value" className="hover:text-teal-400 transition-colors">Why Maestro</a>
+        </nav>
+
+        <div className="flex items-center gap-4">
+          <Link
+            href="/dashboard"
+            className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
           >
-            <Plus className="w-5 h-5" />
-            {isSidebarOpen && <span>New Diagram</span>}
-          </button>
+            Launch App
+          </Link>
         </div>
+      </header>
 
-        {/* Diagram List */}
-        <div className="flex-1 overflow-y-auto px-2 space-y-1">
-          {isLoadingDiagrams ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-5 h-5 animate-spin text-teal-accent" />
-            </div>
-          ) : diagrams.length === 0 ? (
-            isSidebarOpen && (
-              <p className="text-xs text-slate-500 text-center py-8">No diagrams yet. Create one!</p>
-            )
-          ) : (
-            diagrams.map((d) => (
-              <div
-                key={d.id}
-                onClick={() => loadDiagramDetails(d.id)}
-                className={`group flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-all ${
-                  activeDiagram?.id === d.id 
-                    ? 'bg-teal-glow text-teal-accent border border-teal-accent/30' 
-                    : 'hover:bg-slate-hover text-slate-300 border border-transparent'
-                }`}
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <FileText className={`w-4 h-4 shrink-0 ${activeDiagram?.id === d.id ? 'text-teal-accent' : 'text-slate-400'}`} />
-                  {isSidebarOpen && (
-                    <span className="text-sm font-medium truncate">{d.name}</span>
-                  )}
-                </div>
-                {isSidebarOpen && (
-                  <button
-                    onClick={(e) => handleDeleteDiagram(d.id, e)}
-                    className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-        
-        {/* Toggle Expand Sidebar */}
-        {!isSidebarOpen && (
-          <div className="p-3 border-t border-panel-border flex justify-center">
-            <button 
-              onClick={() => setIsSidebarOpen(true)}
-              className="p-1.5 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+      {/* Hero Section */}
+      <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center z-10">
+        <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold tracking-wide animate-pulse">
+            <Sparkles className="w-3.5 h-3.5" /> Powered by Gemini 2.5 Flash & Draw.io
           </div>
-        )}
-      </aside>
-
-      {/* 2. MAIN WORKSPACE: Split Pane */}
-      <main className="flex-1 flex flex-col min-w-0 h-full">
-        
-        {/* Top Navbar */}
-        <header className="h-16 border-b border-panel-border flex items-center justify-between px-6 bg-panel-dark/50 backdrop-blur">
-          <div className="flex items-center gap-4">
-            {/* Sidebar toggle if collapsed */}
-            {!isSidebarOpen && (
-              <button 
-                onClick={() => setIsSidebarOpen(true)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            )}
-            <div>
-              <h2 className="font-semibold text-base text-white">
-                {activeDiagram ? activeDiagram.name : 'Select or Create a Diagram'}
-              </h2>
-              {activeDiagram && activeVersion && (
-                <p className="text-xs text-slate-400">
-                  {previewVersion ? (
-                    <span className="text-amber-400 font-medium">Previewing v{previewVersion.version_number} (Read Only)</span>
-                  ) : (
-                    <span>Active: v{activeVersion?.version_number}</span>
-                  )}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Quick Actions (only if diagram active) */}
-          {activeDiagram && (
-            <div className="flex items-center gap-2">
-              <button
-                id="audit-diagram-btn"
-                onClick={handleAuditDiagram}
-                disabled={isAuditing}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all disabled:opacity-50 cursor-pointer text-teal-accent border-teal-accent/30 hover:border-teal-accent/50"
-              >
-                {isAuditing ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Shield className="w-3.5 h-3.5" />
-                )}
-                <span>{isAuditing ? 'Auditing...' : 'Audit Security'}</span>
-              </button>
-              <button
-                onClick={() => setIsInlineEditorOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>Edit Inline</span>
-              </button>
-              <button
-                onClick={openInNewTab}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Open in New Tab</span>
-              </button>
-            </div>
-          )}
-        </header>
-
-        {/* Workspace Body: Split Pane */}
-        <div className="flex-1 flex min-h-0 relative">
           
-          {/* A. LEFT PANE: Chat & Prompt Panel */}
-          <section className="w-80 border-r border-panel-border flex flex-col bg-panel-dark/30 h-full shrink-0">
-            {/* Panel Title */}
-            <div className="p-3 border-b border-panel-border flex items-center gap-2 bg-panel-dark/20">
-              <MessageSquare className="w-4 h-4 text-teal-accent" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">AI Architect Assistant</span>
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
+            Sketch Cloud <br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-400">
+              Architecture with AI
+            </span>
+          </h1>
+
+          <p className="text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed">
+            Translate complex natural language prompts into professional, multi-tier Draw.io architecture diagrams. Audited for security, version-controlled, and instantly editable.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto pt-2">
+            <Link
+              href="/dashboard"
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
+            >
+              <span>Build First Diagram</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <a
+              href="#how-it-works"
+              className="px-8 py-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-teal-500/40 text-slate-300 font-semibold text-center transition-all flex items-center justify-center gap-2 hover:bg-slate-800"
+            >
+              <Play className="w-4 h-4 text-teal-400" />
+              <span>Watch Demo</span>
+            </a>
+          </div>
+
+          {/* Quick highlights */}
+          <div className="grid grid-cols-3 gap-6 pt-8 border-t border-panel-border/30 w-full">
+            <div>
+              <p className="text-2xl md:text-3xl font-extrabold text-white">100%</p>
+              <p className="text-xs text-slate-500 mt-1">Interactive Vector SVG</p>
+            </div>
+            <div>
+              <p className="text-2xl md:text-3xl font-extrabold text-white">&lt; 60s</p>
+              <p className="text-xs text-slate-500 mt-1">From Text to Diagram</p>
+            </div>
+            <div>
+              <p className="text-2xl md:text-3xl font-extrabold text-white">Built-in</p>
+              <p className="text-xs text-slate-500 mt-1">Gemini Security Auditor</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Pixar Graphics Container */}
+        <div className="lg:col-span-5 relative w-full flex justify-center lg:justify-end">
+          {/* Neon Glow Frame behind the picture */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-teal-500 to-indigo-500 rounded-2xl blur-[20px] opacity-30 transform scale-95" />
+          
+          <div className="relative glass-panel-teal rounded-2xl p-2.5 overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-[1.02] max-w-md w-full">
+            <img 
+              src="/pixar_robot_architect.jpg" 
+              alt="AI Robot Cloud Architect Sketching"
+              className="w-full h-auto rounded-[10px] object-cover border border-teal-500/20"
+            />
+            {/* Soft Overlay */}
+            <div className="absolute inset-2.5 rounded-[10px] bg-gradient-to-t from-[#070a13]/70 via-transparent to-transparent pointer-events-none flex flex-col justify-end p-4">
+              <span className="text-xs font-bold text-teal-300 uppercase tracking-widest">Sketch Assistant</span>
+              <p className="text-sm font-semibold text-white mt-0.5">Meet Maestro, your automated 3D cloud design helper</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* The Problem & Solution Section */}
+      <section id="value" className="relative py-24 bg-slate-950/40 border-y border-panel-border/30">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">The Problem & The Cure</h2>
+            <p className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              Diagramming is critical, <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-amber-400">but building them by hand is a bottleneck.</span>
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
+            {/* The Hard Way */}
+            <div className="glass-panel border-red-500/10 rounded-2xl p-8 flex flex-col justify-between hover:border-red-500/20 transition-all">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 mb-6">
+                  <X className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-4">The Manual Bottleneck</h3>
+                <ul className="space-y-3.5 text-slate-400 text-sm">
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
+                    <span>Dragging, connecting, and formatting 20+ nodes manually in Draw.io takes hours.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
+                    <span>Keeping static PDF/PNG images synchronized with production system changes is almost impossible.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
+                    <span>Verifying design compliance, network segmentation, and safety requires manual architectural reviews.</span>
+                  </li>
+                </ul>
+              </div>
+              <p className="text-xs text-red-400/70 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
             </div>
 
-            {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {!activeDiagram ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-4">
-                  <Sparkles className="w-8 h-8 text-slate-600 mb-2" />
-                  <p className="text-sm text-slate-500">Select a diagram from the sidebar to start designing with AI.</p>
+            {/* The Maestro Way */}
+            <div className="glass-panel border-teal-500/20 rounded-2xl p-8 flex flex-col justify-between hover:border-teal-500/40 transition-all shadow-xl shadow-teal-500/5">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-6">
+                  <CheckCircle2 className="w-6 h-6" />
                 </div>
-              ) : chatMessages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-4">
-                  <MessageSquare className="w-8 h-8 text-slate-600 mb-2" />
-                  <p className="text-sm text-slate-500">Ask the AI to generate your first architecture diagram!</p>
-                </div>
-              ) : (
-                chatMessages.map((msg) => (
-                  <div 
-                    key={msg.id}
-                    className={`flex flex-col max-w-[85%] ${
-                      msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
-                    }`}
-                  >
-                    <div className={`p-3 rounded-lg text-sm leading-relaxed ${
-                      msg.sender === 'user'
-                        ? 'bg-teal-accent text-bg-dark font-medium rounded-tr-none'
-                        : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border'
-                    }`}>
-                      {msg.text}
-                    </div>
-                    <span className="text-[10px] text-slate-500 mt-1 px-1">
-                      {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
-                    </span>
-                  </div>
-                ))
-              )}
-              {isGenerating && (
-                <div className="flex items-center gap-2 mr-auto bg-slate-hover/50 border border-panel-border p-3 rounded-lg rounded-tl-none max-w-[85%]">
-                  <Loader2 className="w-4 h-4 animate-spin text-teal-accent" />
-                  <span className="text-xs text-slate-400 animate-pulse">Maestro-Graph is sketching...</span>
-                </div>
-              )}
-              <div ref={chatEndRef} />
+                <h3 className="text-lg font-bold text-white mb-4">Maestro Sketch Automation</h3>
+                <ul className="space-y-3.5 text-slate-300 text-sm">
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span>Describe your stack in natural text. Maestro creates valid, fully-spaced XML layouts in seconds.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span>Iterate seamlessly. Ask the AI to &quot;add an ALB,&quot; &quot;connect DB to Redis,&quot; or &quot;redesign for GCP.&quot;</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span>Audits are built-in. Let the Gemini security auditor analyze node connections for security risks automatically.</span>
+                  </li>
+                </ul>
+              </div>
+              <p className="text-xs text-teal-400 mt-8 font-semibold tracking-wide">Result: High-fidelity, live architecture maps created at the speed of thought.</p>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Prompt Input Form */}
-            <div className="p-3 border-t border-panel-border bg-panel-dark/40">
-              <form onSubmit={handleSendPrompt} className="relative">
-                <textarea
-                  value={promptInput}
-                  onChange={(e) => setPromptInput(e.target.value)}
-                  placeholder={activeDiagram ? "e.g., Add an Apigee Gateway in front of Cloud Run..." : "Select a diagram first..."}
-                  disabled={!activeDiagram || isGenerating}
-                  rows={2}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg pl-3 pr-10 py-2.5 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendPrompt(e);
-                    }
-                  }}
-                />
-                <button
-                  type="submit"
-                  disabled={!activeDiagram || isGenerating || !promptInput.trim()}
-                  className="absolute right-2.5 bottom-3.5 p-1.5 rounded-md bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                </button>
-              </form>
-              <p className="text-[10px] text-slate-500 mt-1.5 text-center">
-                Press Enter to send. Gemini 2.0 Flash will refine your active diagram.
+      {/* Features Grid Section */}
+      <section id="features" className="relative py-24 max-w-7xl mx-auto px-6 md:px-12 z-10">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">Product Capabilities</h2>
+          <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            Designed for Architects, <br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-indigo-400">Built with Industrial Safety.</span>
+          </h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          {/* Card 1 */}
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+            <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-4 group-hover:scale-110 transition-transform">
+              <Zap className="w-5 h-5" />
+            </div>
+            <h4 className="font-bold text-white text-base mb-2">Prompt-to-Architecture</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Feed raw text prompts detailing databases, runtimes, security layers, or ingress. Maestro renders standard, color-coded diagrams aligned to logical enterprise tiers.
+            </p>
+          </div>
+
+          {/* Card 2 */}
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
+              <FileText className="w-5 h-5" />
+            </div>
+            <h4 className="font-bold text-white text-base mb-2">Ready-To-Go Templates</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Launch with 10 production-grade blueprints (Data Lakehouse, AWS EKS Microservices, RAG/Gemini AI pipelines, VPC networks) to instantly experiment and validate stacks.
+            </p>
+          </div>
+
+          {/* Card 3 */}
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition-transform">
+              <History className="w-5 h-5" />
+            </div>
+            <h4 className="font-bold text-white text-base mb-2">Infinite Version History</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Every AI generation or manual update creates a historical snapshot. Compare versions, trace comments, and revert to previous states in one click.
+            </p>
+          </div>
+
+          {/* Card 4 */}
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+            <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-4 group-hover:scale-110 transition-transform">
+              <Shield className="w-5 h-5" />
+            </div>
+            <h4 className="font-bold text-white text-base mb-2">Gemini Compliance Audit</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Run security compliance reports directly in the app. Gemini audits your drawing&apos;s nodes and edges for single points of failure, unencrypted links, or exposed ports.
+            </p>
+          </div>
+
+          {/* Card 5 */}
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
+              <Network className="w-5 h-5" />
+            </div>
+            <h4 className="font-bold text-white text-base mb-2">Interactive 2D Canvas</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Smooth vector-based renderer with panning, scroll-to-zoom, infinite grids, and an interactive side-tree nodes inspector that displays node connections clearly.
+            </p>
+          </div>
+
+          {/* Card 6 */}
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition-transform">
+              <FileText className="w-5 h-5" />
+            </div>
+            <h4 className="font-bold text-white text-base mb-2">Pure Open XML Output</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Export designs as fully valid Draw.io XML schemas. Copy, modify, share, or open them in your standard desktop Draw.io client with absolutely no vendor lock-in.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      {/* How it Works Section */}
+      <section id="how-it-works" className="relative py-24 bg-slate-950/40 border-y border-panel-border/30">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">The Workflow</h2>
+            <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              Create and Refine in Three Steps
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+            
+            {/* Step 1 */}
+            <div className="relative flex flex-col items-center text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-bold text-lg shadow-lg shadow-teal-500/10">
+                1
+              </div>
+              <h4 className="font-bold text-white text-base">Select or Input Prompt</h4>
+              <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
+                Choose a pre-defined architecture template or enter a custom prompt describing your microservices, compute instances, database types, and connectors.
               </p>
             </div>
-          </section>
 
-          {/* B. CENTER PANE: Diagram Viewport & In-Place Editor */}
-          <section className="flex-1 flex flex-col bg-bg-dark h-full relative overflow-hidden min-w-0">
-            
-            {/* Center Pane Top Control Bar (v1 Inline & Outline Controls) */}
-            {activeDiagram && (
-              <div className="h-12 border-b border-panel-border flex items-center justify-between px-4 bg-panel-dark/60 backdrop-blur z-20 shrink-0">
-                <div className="flex items-center gap-3">
-                  {/* View Mode Toggle */}
-                  <div className="flex items-center bg-bg-dark/90 p-0.5 rounded-lg border border-panel-border">
-                    <button
-                      id="view-mode-canvas-btn"
-                      onClick={() => {
-                        setViewMode('canvas');
-                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                        viewMode === 'canvas' && !isInlineEditorOpen
-                          ? 'bg-teal-accent text-bg-dark shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>2D Canvas</span>
-                    </button>
-                    <button
-                      id="view-mode-outline-btn"
-                      onClick={() => {
-                        setViewMode('outline');
-                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                        viewMode === 'outline' && !isInlineEditorOpen
-                          ? 'bg-teal-accent text-bg-dark shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      <span>Outline & Nodes</span>
-                    </button>
-                  </div>
-
-                  {/* Mode Badge */}
-                  {isInlineEditorOpen ? (
-                    <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center gap-1.5 animate-pulse">
-                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 inline-block" />
-                      IN-PLACE INLINE EDITOR ACTIVE
-                    </span>
-                  ) : viewMode === 'outline' ? (
-                    <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                      STRUCTURAL TREE INSPECTOR
-                    </span>
-                  ) : (
-                    <div className="flex items-center gap-1.5" data-testid="interactive-version-dropdown">
-                      <label htmlFor="version-dropdown-selector" className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider hidden sm:inline">Version:</label>
-                      <select
-                        id="version-dropdown-selector"
-                        value={previewVersion ? previewVersion.id : (activeVersion?.id || '')}
-                        onChange={(e) => {
-                          const selectedId = e.target.value;
-                          const targetVersion = activeDiagram?.versions?.find(v => v.id === selectedId);
-                          if (targetVersion) {
-                            if (targetVersion.id === activeVersion?.id) {
-                              // If they select the latest/active version, return to active draft
-                              setPreviewVersion(null);
-                            } else {
-                              // Otherwise enter preview mode for the selected version
-                              setPreviewVersion(targetVersion);
-                            }
-                          }
-                        }}
-                        className={`text-xs px-2.5 py-1 rounded-md font-bold border focus:outline-none transition-all cursor-pointer ${
-                          previewVersion
-                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
-                            : 'bg-slate-800/90 text-teal-300 border-slate-700 hover:border-slate-600 shadow-sm'
-                        }`}
-                      >
-                        {activeDiagram?.versions
-                          ?.slice()
-                          .sort((a, b) => b.version_number - a.version_number)
-                          .map((v) => {
-                            const isLatest = v.id === activeVersion?.id;
-                            const commentText = v.comment || (v.created_by.toLowerCase() === 'ai' ? 'AI Generated' : 'Manually edited');
-                            const truncatedComment = commentText.length > 38 ? commentText.substring(0, 38) + '...' : commentText;
-                            const label = `v${v.version_number}: ${truncatedComment} ${isLatest ? '(Active Draft)' : '(Preview)'}`;
-                            return (
-                              <option key={v.id} value={v.id} className="bg-slate-900 text-slate-200 py-1.5 font-medium">
-                                {label}
-                              </option>
-                            );
-                          })}
-                      </select>
-                    </div>
-                  )}
-                </div>
-
-                {/* Right Controls: Zoom/Pan in Canvas mode, Save/Exit in Edit mode */}
-                <div className="flex items-center gap-2">
-                  {isInlineEditorOpen ? (
-                    <div className="flex items-center gap-2">
-                      <button
-                        id="inline-save-exit-btn"
-                        onClick={() => {
-                          console.log('[Dashboard] 🚀 "Save & Exit" button clicked! Sending export action to iframe...');
-                          const msg = { action: 'export', format: 'xml' };
-                          iframeRef.current?.contentWindow?.postMessage(JSON.stringify(msg), '*');
-                          iframeRef.current?.contentWindow?.postMessage(msg, '*');
-                        }}
-                        className="px-3.5 py-1.5 rounded-md bg-teal-accent hover:bg-teal-hover text-bg-dark text-xs font-bold transition-all cursor-pointer shadow-lg glow-teal-hover flex items-center gap-1.5"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        <span>Save & Exit</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (confirm('Are you sure you want to exit inline editing? Any unsaved changes will be lost.')) {
-                            setIsInlineEditorOpen(false);
-                          }
-                        }}
-                        className="p-1.5 rounded-md hover:bg-slate-hover text-slate-400 hover:text-white transition-all cursor-pointer"
-                        title="Exit Editor"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : viewMode === 'canvas' ? (
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center bg-bg-dark/80 rounded-lg border border-panel-border px-1 py-0.5 text-xs text-slate-300">
-                        <button
-                          onClick={() => setZoom(z => Math.max(0.4, Number((z - 0.1).toFixed(1))))}
-                          className="p-1 hover:text-teal-accent transition-colors cursor-pointer font-bold"
-                          title="Zoom Out"
-                        >
-                          -
-                        </button>
-                        <span className="w-12 text-center font-mono text-[11px] text-teal-accent font-bold">
-                          {Math.round(zoom * 100)}%
-                        </span>
-                        <button
-                          onClick={() => setZoom(z => Math.min(2.5, Number((z + 0.1).toFixed(1))))}
-                          className="p-1 hover:text-teal-accent transition-colors cursor-pointer font-bold"
-                          title="Zoom In"
-                        >
-                          +
-                        </button>
-                        <div className="h-3 w-[1px] bg-panel-border mx-1" />
-                        <button
-                          onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
-                          className="px-2 py-0.5 text-[10px] hover:text-white transition-colors cursor-pointer font-medium"
-                          title="Reset Zoom & Pan"
-                        >
-                          Reset
-                        </button>
-                      </div>
-                      <button
-                        onClick={() => setIsInlineEditorOpen(true)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-teal-accent/10 border border-teal-accent/30 hover:bg-teal-accent/20 text-teal-accent text-xs font-semibold transition-all cursor-pointer"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        <span>Edit Inline</span>
-                      </button>
-                    </div>
-                  ) : (
-                    /* Outline Mode Action Button */
-                    <button
-                      onClick={() => setIsInlineEditorOpen(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-teal-accent/10 border border-teal-accent/30 hover:bg-teal-accent/20 text-teal-accent text-xs font-semibold transition-all cursor-pointer"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                      <span>Edit Inline</span>
-                    </button>
-                  )}
-                </div>
+            {/* Step 2 */}
+            <div className="relative flex flex-col items-center text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-bold text-lg shadow-lg shadow-teal-500/10">
+                2
               </div>
-            )}
-
-            {/* Viewport Content Area */}
-            <div className="flex-1 w-full h-full relative overflow-hidden">
-              
-              {!activeDiagram ? (
-                <div className="w-full h-full flex items-center justify-center p-8 relative">
-                  {/* Dark Grid Background */}
-                  <div 
-                    className="absolute inset-0 opacity-2"
-                    style={{
-                      backgroundImage: `
-                        linear-gradient(to right, rgba(20, 184, 166, 0.05) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(20, 184, 166, 0.05) 1px, transparent 1px)
-                      `,
-                      backgroundSize: '20px 20px'
-                    }}
-                  />
-                  <div className="text-center z-10 max-w-md p-6 glass-panel rounded-2xl border-dashed border-panel-border">
-                    <Sparkles className="w-12 h-12 text-teal-accent mx-auto mb-4 animate-pulse" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Create Your First Diagram</h3>
-                    <p className="text-sm text-slate-400 mb-6">
-                      Maestro Sketch translates natural language prompts into professional Draw.io architecture diagrams.
-                    </p>
-                    <button
-                      onClick={openCreateModal}
-                      className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover cursor-pointer"
-                    >
-                      Get Started
-                    </button>
-                  </div>
-                </div>
-              ) : isInlineEditorOpen ? (
-                /* Phase 2: In-Place Inline Editor */
-                <div className="w-full h-full relative z-10 flex flex-col bg-bg-dark animate-fade-in">
-                  <iframe
-                    ref={iframeRef}
-                    src="https://embed.diagrams.net/?embed=1&ui=dark&spin=1&proto=json"
-                    className="w-full h-full border-0 bg-transparent"
-                    title="In-Place Draw.io Editor"
-                  />
-                </div>
-              ) : viewMode === 'outline' ? (
-                /* Phase 3: Outline & Nodes Tree Inspector */
-                <div className="w-full h-full relative z-10 overflow-y-auto p-6 bg-panel-dark/20 animate-fade-in">
-                  {(() => {
-                    const items = parseXmlNodesAndEdges(displayedVersion?.xml_content || '');
-                    const nodes = items.filter(i => !i.isEdge);
-                    const edges = items.filter(i => i.isEdge);
-                    const editedCount = Object.keys(outlineEdits).length;
-
-                    return (
-                      <div className="max-w-4xl mx-auto space-y-6">
-                        {/* Outline Header & Stats */}
-                        <div className="glass-panel border-panel-border p-4 rounded-xl flex items-center justify-between bg-panel-dark/40">
-                          <div className="flex items-center gap-6">
-                            <div>
-                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Components</span>
-                              <span className="text-lg font-extrabold text-white">{nodes.length} <span className="text-xs font-normal text-slate-400">Nodes</span></span>
-                            </div>
-                            <div className="h-8 w-[1px] bg-panel-border" />
-                            <div>
-                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Routing</span>
-                              <span className="text-lg font-extrabold text-teal-accent">{edges.length} <span className="text-xs font-normal text-slate-400">Connections</span></span>
-                            </div>
-                            <div className="h-8 w-[1px] bg-panel-border" />
-                            <div>
-                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Snapshot</span>
-                              <span className="text-sm font-bold text-slate-200">v{displayedVersion?.version_number} <span className="text-xs text-slate-500">({displayedVersion?.created_by})</span></span>
-                            </div>
-                          </div>
-
-                          {/* Quick Save Outline Edits Button */}
-                          {editedCount > 0 && !previewVersion && (
-                            <button
-                              onClick={handleSaveOutlineEdits}
-                              disabled={isSaving}
-                              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs transition-all shadow-lg glow-teal-hover cursor-pointer"
-                            >
-                              {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-                              <span>Save {editedCount} Label Edit(s)</span>
-                            </button>
-                          )}
-                        </div>
-
-                        {/* Nodes List */}
-                        <div>
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                            <FileText className="w-3.5 h-3.5 text-teal-accent" />
-                            <span>Architecture Nodes ({nodes.length})</span>
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {nodes.map(node => {
-                              const currentLabel = outlineEdits[node.id] !== undefined ? outlineEdits[node.id] : node.label;
-                              const isEdited = outlineEdits[node.id] !== undefined && outlineEdits[node.id] !== node.label;
-
-                              return (
-                                <div key={node.id} className={`p-3 rounded-lg border transition-all ${
-                                  isEdited ? 'bg-teal-glow/20 border-teal-accent/50' : 'bg-panel-dark/40 border-panel-border hover:border-slate-700'
-                                }`}>
-                                  <div className="flex items-center justify-between gap-2 mb-2">
-                                    <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-                                      {node.id}
-                                    </span>
-                                    {isEdited && (
-                                      <span className="text-[9px] font-bold text-teal-400 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/30">
-                                        Modified
-                                      </span>
-                                    )}
-                                  </div>
-                                  
-                                  {previewVersion ? (
-                                    <div className="text-sm font-semibold text-white truncate py-1">{currentLabel}</div>
-                                  ) : (
-                                    <input
-                                      type="text"
-                                      value={currentLabel}
-                                      onChange={(e) => setOutlineEdits(prev => ({ ...prev, [node.id]: e.target.value }))}
-                                      placeholder="Node label..."
-                                      className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded px-2.5 py-1.5 text-sm font-medium text-white focus:outline-none transition-all"
-                                    />
-                                  )}
-                                  <div className="text-[10px] text-slate-500 mt-1.5 truncate">
-                                    Style: {node.style?.split(';')[0] || 'Default'}
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-
-                        {/* Connections / Edges List */}
-                        {edges.length > 0 && (
-                          <div>
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                              <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
-                              <span>Flow Connections ({edges.length})</span>
-                            </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {edges.map(edge => (
-                                <div key={edge.id} className="p-3 rounded-lg bg-panel-dark/30 border border-panel-border flex items-center justify-between text-xs">
-                                  <div className="flex items-center gap-2 min-w-0 font-mono text-slate-300">
-                                    <span className="px-1.5 py-0.5 rounded bg-slate-800/80 text-[10px] text-slate-400">{edge.source || 'root'}</span>
-                                    <span className="text-teal-accent">➔</span>
-                                    <span className="px-1.5 py-0.5 rounded bg-slate-800/80 text-[10px] text-slate-400">{edge.target || 'root'}</span>
-                                  </div>
-                                  {edge.label && edge.label !== 'Connection' && (
-                                    <span className="text-[11px] font-medium text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
-                                      {edge.label}
-                                    </span>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
-                </div>
-              ) : (
-                /* Phase 1: 2D Interactive Canvas with AI Studio Radial Grid */
-                <div 
-                  className="w-full h-full flex items-center justify-center p-8 relative overflow-auto select-none cursor-grab active:cursor-grabbing"
-                  onMouseDown={(e) => {
-                    if (e.target === e.currentTarget || (e.target as HTMLElement).id === 'radial-grid-background') {
-                      const startX = e.clientX - pan.x;
-                      const startY = e.clientY - pan.y;
-                      const handleMouseMove = (moveEvent: MouseEvent) => {
-                        setPan({
-                          x: moveEvent.clientX - startX,
-                          y: moveEvent.clientY - startY
-                        });
-                      };
-                      const handleMouseUp = () => {
-                        window.removeEventListener('mousemove', handleMouseMove);
-                        window.removeEventListener('mouseup', handleMouseUp);
-                      };
-                      window.addEventListener('mousemove', handleMouseMove);
-                      window.addEventListener('mouseup', handleMouseUp);
-                    }
-                  }}
-                >
-                  {/* AI Studio Inspired Infinite Radial Dot Grid */}
-                  <div 
-                    id="radial-grid-background"
-                    className="absolute inset-0 pointer-events-auto transition-opacity duration-300"
-                    style={{
-                      backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
-                      backgroundSize: `${20 * zoom}px ${20 * zoom}px`,
-                      backgroundPosition: `${pan.x}px ${pan.y}px`,
-                      color: 'rgba(20, 184, 166, 0.22)',
-                    }}
-                  />
-
-                  <div 
-                    className="w-full h-full flex items-center justify-center relative z-10 transition-transform duration-150 ease-out pointer-events-none"
-                    style={{
-                      transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-                      transformOrigin: 'center center'
-                    }}
-                  >
-                    <div className="w-full h-full pointer-events-auto">
-                      <DiagramViewer xml={displayedVersion?.xml_content || ''} />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            {/* Reset preview banner if active */}
-            {previewVersion && (
-              <div className="bg-amber-500/15 border-t border-amber-500/30 px-4 py-2 flex items-center justify-between text-xs text-amber-300 z-10 animate-fade-in shrink-0">
-                <span>You are previewing a historical snapshot (v{previewVersion.version_number}).</span>
-                <button 
-                  onClick={() => setPreviewVersion(null)}
-                  className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-600 text-bg-dark font-semibold transition-all cursor-pointer"
-                >
-                  Back to Active Draft
-                </button>
-              </div>
-            )}
-          </section>
-
-          {/* C. RIGHT PANE: Version History Timeline */}
-          <section 
-            className={`glass-panel border-l border-panel-border flex flex-col transition-all duration-300 z-20 ${
-              isHistoryOpen ? 'w-80' : 'w-0 translate-x-full md:w-16 md:translate-x-0'
-            }`}
-          >
-            {/* Header */}
-            <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border bg-panel-dark/20">
-              {isHistoryOpen && (
-                <div className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-teal-accent" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">Version History</span>
-                </div>
-              )}
-              {isHistoryOpen ? (
-                <button 
-                  onClick={() => setIsHistoryOpen(false)}
-                  className="p-1 rounded hover:bg-slate-hover text-slate-400"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              ) : (
-                <button 
-                  onClick={() => setIsHistoryOpen(true)}
-                  className="p-1.5 rounded hover:bg-slate-hover text-slate-400 mx-auto"
-                >
-                  <History className="w-4 h-4 text-teal-accent" />
-                </button>
-              )}
+              <h4 className="font-bold text-white text-base">Gemini Generates XML</h4>
+              <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
+                Our backend compiler calls Gemini 2.5 Flash, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
+              </p>
             </div>
 
-            {/* Timeline List */}
-            {isHistoryOpen && (
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 relative">
-                {/* Vertical line connector */}
-                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-800" />
-
-                {!activeDiagram || !activeDiagram.versions || activeDiagram.versions.length === 0 ? (
-                  <p className="text-xs text-slate-500 text-center py-8 relative z-10">No versions saved yet.</p>
-                ) : (
-                  activeDiagram.versions
-                    .sort((a, b) => b.version_number - a.version_number)
-                    .map((v) => {
-                      const isActive = activeVersion?.id === v.id;
-                      const isPreviewing = previewVersion?.id === v.id;
-                      const isAi = v.created_by.toLowerCase() === 'ai';
-                      
-                      return (
-                        <div key={v.id} className="flex gap-4 relative z-10 group">
-                          {/* Timeline dot */}
-                          <div className={`w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold border-2 ${
-                            isPreviewing
-                              ? 'bg-amber-500 border-amber-400 text-bg-dark'
-                              : isActive && !previewVersion
-                              ? 'bg-teal-accent border-teal-400 text-bg-dark'
-                              : 'bg-bg-dark border-slate-700 text-slate-400 group-hover:border-teal-accent/50'
-                          }`}>
-                            {v.version_number}
-                          </div>
-
-                          {/* Version Card */}
-                          <div className={`flex-1 p-3 rounded-lg border transition-all ${
-                            isPreviewing
-                              ? 'bg-amber-500/5 border-amber-500/40'
-                              : isActive && !previewVersion
-                              ? 'bg-teal-glow border-teal-accent/30'
-                              : 'bg-panel-dark/40 border-panel-border hover:border-slate-700'
-                          }`}>
-                            <div className="flex items-center justify-between gap-2 mb-1.5">
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
-                                isAi ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                              }`}>
-                                {isAi ? 'Gemini AI' : 'User'}
-                              </span>
-                              <span className="text-[9px] text-slate-500">
-                                {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                              </span>
-                            </div>
-                            
-                            <p className="text-xs text-slate-300 leading-normal mb-2">
-                              {v.comment || 'No description provided.'}
-                            </p>
-
-                            <div className="flex items-center gap-1.5 border-t border-panel-border/40 pt-2 mt-2">
-                              <button
-                                onClick={() => setPreviewVersion(v)}
-                                disabled={isPreviewing}
-                                className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-all cursor-pointer ${
-                                  isPreviewing
-                                    ? 'bg-amber-500 text-bg-dark'
-                                    : 'hover:bg-slate-hover text-slate-400 hover:text-white'
-                                }`}
-                              >
-                                <Eye className="w-3 h-3" />
-                                <span>{isPreviewing ? 'Previewing' : 'Preview'}</span>
-                              </button>
-                              
-                              {!isActive && (
-                                <button
-                                  onClick={() => handleRestoreVersion(v)}
-                                  className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium hover:bg-slate-hover text-slate-400 hover:text-teal-accent transition-all cursor-pointer"
-                                >
-                                  <RotateCcw className="w-3 h-3" />
-                                  <span>Restore</span>
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })
-                )}
+            {/* Step 3 */}
+            <div className="relative flex flex-col items-center text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-bold text-lg shadow-lg shadow-teal-500/10">
+                3
               </div>
-            )}
-          </section>
-        </div>
-      </main>
-
-      {/* --- MODALS --- */}
-
-      {/* 1. Create Diagram Modal */}
-      {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-panel border-panel-border rounded-xl p-6 w-full max-w-sm shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg text-white">Create New Diagram</h3>
-              <button 
-                onClick={() => setIsCreateModalOpen(false)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <h4 className="font-bold text-white text-base">Audit, Tweak, and Iterate</h4>
+              <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
+                Audit the security of your diagram instantly. Add new nodes using the chat prompt interface, edit components, or click &quot;Open in New Tab&quot; to edit visually in Draw.io.
+              </p>
             </div>
-            <form onSubmit={handleCreateDiagram} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Diagram Name</label>
-                <input
-                  type="text"
-                  required
-                  value={newDiagramName}
-                  onChange={(e) => setNewDiagramName(e.target.value)}
-                  placeholder="e.g., Google Cloud E-Commerce"
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Choose a Template Prompt</label>
-                <select
-                  value={selectedTemplate}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSelectedTemplate(val);
-                    if (val !== 'custom') {
-                      const idx = parseInt(val, 10);
-                      setNewDiagramPrompt(TEMPLATE_PROMPTS[idx].prompt);
-                    }
-                  }}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3 py-2.5 text-sm text-slate-100 focus:outline-none transition-all mb-3 cursor-pointer"
-                >
-                  {TEMPLATE_PROMPTS.map((t, idx) => (
-                    <option key={idx} value={idx.toString()}>{t.name}</option>
-                  ))}
-                  <option value="custom">Custom Prompt (Type below...)</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                  Initial AI Prompt <span className="text-slate-400 font-normal">(Optional)</span>
-                </label>
-                <textarea
-                  rows={3}
-                  value={newDiagramPrompt}
-                  onChange={(e) => {
-                    const promptVal = e.target.value;
-                    setNewDiagramPrompt(promptVal);
-                    // Match with predefined template or set to custom
-                    const matchedIdx = TEMPLATE_PROMPTS.findIndex(t => t.prompt === promptVal);
-                    if (matchedIdx !== -1) {
-                      setSelectedTemplate(matchedIdx.toString());
-                    } else {
-                      setSelectedTemplate('custom');
-                    }
-                  }}
-                  placeholder="e.g., Act as a GCP Data Architect. Design a simple 5-node streaming data pipeline with Cloud Storage, Pub/Sub, Dataflow, BigQuery, and Looker..."
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg p-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
-                />
-                <p className="text-[11px] text-slate-400 mt-1">Leave empty to start with a clean minimal slate.</p>
-              </div>
-              <button
-                type="submit"
-                className="w-full py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover"
-              >
-                Create Canvas
-              </button>
-            </form>
+
           </div>
         </div>
-      )}
+      </section>
 
-      {/* 2. Save Version Modal (Mock) */}
-      {isSaveModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-panel border-panel-border rounded-xl p-6 w-full max-w-sm shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg text-white">Save New Version</h3>
-              <button 
-                onClick={() => setIsSaveModalOpen(false)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <form onSubmit={handleSaveVersion} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">What changes did you make?</label>
-                <textarea
-                  required
-                  value={saveComment}
-                  onChange={(e) => setSaveComment(e.target.value)}
-                  placeholder="e.g., Connected Apigee Gateway to Cloud Run"
-                  rows={3}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all"
-                  autoFocus
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="w-full py-2 rounded-lg bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
-                <span>{isSaving ? 'Saving...' : 'Save Version'}</span>
-              </button>
-            </form>
+      {/* CTA Bottom Banner */}
+      <section className="relative py-24 z-10 max-w-5xl mx-auto px-6 text-center">
+        <div className="glass-panel-teal rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl">
+          {/* Subtle Glows inside CTA */}
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-teal-500/5 via-indigo-500/5 to-transparent pointer-events-none" />
+          
+          <Sparkles className="w-12 h-12 text-teal-accent mx-auto mb-6 animate-pulse" />
+          
+          <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-3xl mx-auto">
+            Design Compliant Cloud Stacks at the Speed of Thought
+          </h2>
+          
+          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+            Stop drawing connectors manually. Leverage Gemini AI to build, audit, and version Draw.io architecture diagrams automatically.
+          </p>
+
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/dashboard"
+              className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Launch Free Workspace</span>
+              <ArrowRight className="w-4.5 h-4.5" />
+            </Link>
           </div>
         </div>
-      )}
+      </section>
 
-      {/* 4. Audit Report Modal */}
-      {isAuditModalOpen && auditReport && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-panel border-panel-border rounded-xl p-6 w-full max-w-2xl max-h-[85vh] shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between mb-4 border-b border-panel-border/40 pb-3 shrink-0">
-              <div className="flex items-center gap-2.5">
-                <Shield className="w-5 h-5 text-teal-accent" />
-                <h3 className="font-bold text-lg text-white">Maestro Architecture Audit Report</h3>
-              </div>
-              <button 
-                id="close-audit-modal-btn"
-                onClick={() => setIsAuditModalOpen(false)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white transition-all cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto pr-1 select-text scrollbar-thin">
-              <div className="space-y-2">
-                {renderAuditMarkdown(auditReport)}
-              </div>
-            </div>
-            
-            <div className="mt-4 border-t border-panel-border/30 pt-3 flex justify-end shrink-0">
-              <button
-                onClick={() => setIsAuditModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all cursor-pointer"
-              >
-                Dismiss
-              </button>
-            </div>
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-panel-border/30 bg-slate-950/60 py-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2">
+            <Network className="w-5 h-5 text-teal-accent" />
+            <span className="font-extrabold tracking-wider text-xs text-white">MAESTRO SKETCH</span>
+          </div>
+          <p className="text-xs text-slate-500">
+            &copy; 2026 Maestro Sketch. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
+          </p>
+          <div className="flex gap-6 text-xs text-slate-400">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
           </div>
         </div>
-      )}
+      </footer>
 
     </div>
   );
