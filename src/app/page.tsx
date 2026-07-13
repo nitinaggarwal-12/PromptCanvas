@@ -25,7 +25,7 @@ export default function LandingPage() {
       <div className="absolute bottom-[-10%] left-[20%] w-[55vw] h-[55vw] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none z-0" />
 
       {/* Header/Navigation */}
-      <header className="relative w-full max-w-7xl mx-auto h-20 px-6 md:px-12 flex items-center justify-between z-10 border-b border-panel-border/30 bg-[#070a13]/50 backdrop-blur-md sticky top-0">
+      <header className="relative w-full max-w-8xl mx-auto h-20 px-6 md:px-12 flex items-center justify-between z-10 border-b border-panel-border/30 bg-[#070a13]/50 backdrop-blur-md sticky top-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
             <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
@@ -60,7 +60,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center z-10">
+      <section className="relative w-full max-w-8xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold tracking-wide animate-pulse">
             <Sparkles className="w-3.5 h-3.5" /> Powered by Gemini 2.5 Flash & Draw.io
@@ -85,13 +85,13 @@ export default function LandingPage() {
               <span>Build First Diagram</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <a
-              href="#how-it-works"
+            <Link
+              href="/dashboard?tour=true"
               className="px-8 py-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-teal-500/40 text-slate-300 font-semibold text-center transition-all flex items-center justify-center gap-2 hover:bg-slate-800"
             >
               <Play className="w-4 h-4 text-teal-400" />
-              <span>Watch Demo</span>
-            </a>
+              <span>Watch Tour</span>
+            </Link>
           </div>
 
           {/* Quick highlights */}
@@ -133,7 +133,7 @@ export default function LandingPage() {
 
       {/* The Problem & Solution Section */}
       <section id="value" className="relative py-24 bg-slate-950/40 border-y border-panel-border/30">
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
+        <div className="w-full max-w-8xl mx-auto px-6 md:px-12">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">The Problem & The Cure</h2>
             <p className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
@@ -197,7 +197,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Grid Section */}
-      <section id="features" className="relative py-24 max-w-7xl mx-auto px-6 md:px-12 z-10">
+      <section id="features" className="relative py-24 max-w-8xl mx-auto px-6 md:px-12 z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">Product Capabilities</h2>
           <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
@@ -279,7 +279,7 @@ export default function LandingPage() {
 
       {/* How it Works Section */}
       <section id="how-it-works" className="relative py-24 bg-slate-950/40 border-y border-panel-border/30">
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
+        <div className="w-full max-w-8xl mx-auto px-6 md:px-12">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">The Workflow</h2>
             <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
@@ -327,7 +327,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Bottom Banner */}
-      <section className="relative py-24 z-10 max-w-5xl mx-auto px-6 text-center">
+      <section className="relative py-24 z-10 max-w-6xl mx-auto px-6 text-center">
         <div className="glass-panel-teal rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl">
           {/* Subtle Glows inside CTA */}
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-teal-500/5 via-indigo-500/5 to-transparent pointer-events-none" />
@@ -356,7 +356,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-panel-border/30 bg-slate-950/60 py-12">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="max-w-8xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <Network className="w-5 h-5 text-teal-accent" />
             <span className="font-extrabold tracking-wider text-xs text-white">MAESTRO SKETCH</span>

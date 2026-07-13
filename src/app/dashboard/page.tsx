@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   Plus, 
@@ -217,21 +217,65 @@ export default function Dashboard() {
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
   
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
+  // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [viewMode, setViewMode] = useState<'canvas' | 'outline'>('canvas');
+  const [viewMode, setViewMode] = useState<'canvas' | 'outline'>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const viewParam = params.get('view');
+      if (viewParam === 'outline') return 'outline';
+    }
+    return 'canvas';
+  });
   const [outlineEdits, setOutlineEdits] = useState<Record<string, string>>({});
+  
+  // Tour States
+  const [tourStep, setTourStep] = useState<number | null>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tour') === 'true') {
+        return 1;
+      }
+    }
+    return null;
+  });
+
+  const getTourClass = (step: number | null, targetStep: number, baseClass: string) => {
+    if (step === targetStep) {
+      return `${baseClass} relative z-50 ring-4 ring-teal-500/40 shadow-[0_0_30px_rgba(20,184,166,0.3)] transition-all duration-300`;
+    }
+    return baseClass;
+  };
   
   // UI Panels
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
   
   // Modals
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('modal') === 'create';
+    }
+    return false;
+  });
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const [isInlineEditorOpen, setIsInlineEditorOpen] = useState(false);
+  const [isInlineEditorOpen, setIsInlineEditorOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('edit') === 'true';
+    }
+    return false;
+  });
   const [inspectVersion, setInspectVersion] = useState<DiagramVersion | null>(null);
-  const [isInspectModalOpen, setIsInspectModalOpen] = useState(false);
+  const [isInspectModalOpen, setIsInspectModalOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('modal') === 'inspect';
+    }
+    return false;
+  });
   
   // Form Inputs
   const [newDiagramName, setNewDiagramName] = useState('');
@@ -239,7 +283,16 @@ export default function Dashboard() {
   const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [promptInput, setPromptInput] = useState('');
   const [saveComment, setSaveComment] = useState('');
-  const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings'>('editor');
+  const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings'>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam && ['editor', 'templates', 'audit', 'settings'].includes(tabParam)) {
+        return tabParam as 'editor' | 'templates' | 'audit' | 'settings';
+      }
+    }
+    return 'editor';
+  });
 
   const openCreateModal = () => {
     setNewDiagramName('');
@@ -363,14 +416,8 @@ export default function Dashboard() {
     childWindowRef.current = child;
   };
 
-  // --- Effects ---
-  // Fetch all diagrams on mount
-  useEffect(() => {
-    fetchDiagrams();
-  }, []);
-
   // Fetch active diagram details when ID changes
-  const loadDiagramDetails = async (id: string) => {
+  const loadDiagramDetails = useCallback(async (id: string) => {
     try {
       const res = await fetch(`/api/diagrams/${id}`);
       if (!res.ok) throw new Error('Failed to fetch diagram details');
@@ -379,14 +426,29 @@ export default function Dashboard() {
       setActiveDiagram(data);
       setZoom(1);
       setPan({ x: 0, y: 0 });
-      setViewMode('canvas');
       setOutlineEdits({});
       
       // Set the latest version as active
       if (data.versions && data.versions.length > 0) {
         const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
         setActiveVersion(sortedVersions[0]);
-        setPreviewVersion(null); // Clear preview
+        
+        // Restore previewVersion if specified in URL query
+        const params = new URLSearchParams(window.location.search);
+        const previewId = params.get('preview');
+        const matchVer = data.versions.find(v => v.id === previewId);
+        if (matchVer && matchVer.id !== sortedVersions[0].id) {
+          setPreviewVersion(matchVer);
+        } else {
+          setPreviewVersion(null);
+        }
+
+        // Restore inspectVersion if specified in URL query
+        const inspectVerId = params.get('inspect_ver');
+        const matchInspect = data.versions.find(v => v.id === inspectVerId);
+        if (matchInspect) {
+          setInspectVersion(matchInspect);
+        }
         
         // Reconstruct chat history from version comments
         const messages: ChatMessage[] = data.versions
@@ -410,7 +472,93 @@ export default function Dashboard() {
       console.error(err);
       alert('Error loading diagram details');
     }
-  };
+  }, []);
+
+  // --- Effects ---
+  // Synchronize initial diagram selection once diagrams list loads
+  useEffect(() => {
+    if (diagrams.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const diagramId = params.get('diagram');
+      if (diagramId) {
+        const exists = diagrams.some(d => d.id === diagramId);
+        if (exists && (!activeDiagram || activeDiagram.id !== diagramId)) {
+          setTimeout(() => {
+            loadDiagramDetails(diagramId);
+          }, 0);
+        }
+      }
+    }
+  }, [diagrams, activeDiagram, loadDiagramDetails]);
+
+  // Real-time URL query parameter synchronizer
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams();
+
+    // Tab
+    if (currentTab !== 'editor') {
+      params.set('tab', currentTab);
+    }
+
+    // Active Diagram
+    if (activeDiagram) {
+      params.set('diagram', activeDiagram.id);
+    }
+
+    // View Mode
+    if (viewMode !== 'canvas') {
+      params.set('view', viewMode);
+    }
+
+    // Inline Editor
+    if (isInlineEditorOpen) {
+      params.set('edit', 'true');
+    }
+
+    // Preview snapshot version
+    if (previewVersion) {
+      params.set('preview', previewVersion.id);
+    }
+
+    // Create Modal
+    if (isCreateModalOpen) {
+      params.set('modal', 'create');
+    }
+
+    // Inspect modal
+    if (isInspectModalOpen) {
+      params.set('modal', 'inspect');
+      if (inspectVersion) {
+        params.set('inspect_ver', inspectVersion.id);
+      }
+    }
+
+    // Tour Step
+    if (tourStep !== null) {
+      params.set('tour', 'true');
+    }
+
+    const newSearch = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    window.history.replaceState(null, '', newSearch);
+  }, [
+    currentTab,
+    activeDiagram,
+    viewMode,
+    isInlineEditorOpen,
+    previewVersion,
+    isCreateModalOpen,
+    isInspectModalOpen,
+    inspectVersion,
+    tourStep
+  ]);
+
+  // Fetch all diagrams on mount
+  useEffect(() => {
+    fetchDiagrams();
+  }, []);
+
+
 
   // Scroll chat to bottom
   useEffect(() => {
@@ -1019,7 +1167,10 @@ export default function Dashboard() {
     <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
       
       {/* 0. NAVIGATION DOCK (VS Code style thin sidebar) */}
-      <nav className="w-16 bg-[#080d16]/90 border-r border-panel-border/30 flex flex-col items-center py-5 justify-between select-none shrink-0 z-30">
+      <nav 
+        id="tour-nav-dock"
+        className={getTourClass(tourStep, 2, "w-16 bg-[#080d16]/90 border-r border-panel-border/30 flex flex-col items-center py-5 justify-between select-none shrink-0 z-30")}
+      >
         <div className="flex flex-col items-center gap-6 w-full">
           {/* Brand Icon (Click to go back to landing page) */}
           <Link
@@ -1224,7 +1375,7 @@ export default function Dashboard() {
                 id="audit-diagram-btn"
                 onClick={handleAuditDiagram}
                 disabled={isAuditing}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all disabled:opacity-50 cursor-pointer text-teal-accent border-teal-accent/30 hover:border-teal-accent/50"
+                className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all disabled:opacity-50 cursor-pointer text-teal-accent border-teal-accent/30 hover:border-teal-accent/50")}
               >
                 {isAuditing ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1255,7 +1406,10 @@ export default function Dashboard() {
         <div className="flex-1 flex min-h-0 relative">
           
           {/* A. LEFT PANE: Chat & Prompt Panel */}
-          <section className="w-80 border-r border-panel-border flex flex-col bg-panel-dark/30 h-full shrink-0">
+          <section 
+            id="tour-ai-panel"
+            className={getTourClass(tourStep, 3, "w-80 border-r border-panel-border flex flex-col bg-panel-dark/30 h-full shrink-0")}
+          >
             {/* Panel Title */}
             <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20">
               <div className="flex items-center gap-2">
@@ -1610,7 +1764,10 @@ export default function Dashboard() {
               </div>
             )}
 
-            <div className="flex-1 w-full h-full relative overflow-hidden">
+            <div 
+              id="tour-canvas-viewport"
+              className={getTourClass(tourStep, 4, "flex-1 w-full h-full relative overflow-hidden")}
+            >
               
               {!activeDiagram ? (
                 <div className="w-full h-full overflow-y-auto p-8 md:p-12 relative flex items-center justify-center bg-gradient-to-b from-[#090d16] to-[#05080e]">
@@ -1917,9 +2074,10 @@ export default function Dashboard() {
 
           {/* C. RIGHT PANE: Version History Timeline */}
           <section 
-            className={`glass-panel border-l border-panel-border flex flex-col transition-all duration-300 z-20 ${
+            id="tour-history-timeline"
+            className={getTourClass(tourStep, 5, `glass-panel border-l border-panel-border flex flex-col transition-all duration-300 z-20 ${
               isHistoryOpen ? 'w-80' : 'w-0 translate-x-full md:w-16 md:translate-x-0'
-            }`}
+            }`)}
           >
             {/* Header */}
             <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border bg-panel-dark/20">
@@ -2219,6 +2377,214 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Interactive Onboarding Guided Tour Overlay */}
+      {tourStep !== null && (
+        <>
+          {/* Backdrop Mask */}
+          <div 
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-[1px] z-40 transition-opacity duration-300"
+            onClick={() => setTourStep(null)}
+          />
+
+          {/* Tour Step Cards */}
+          {tourStep === 1 && (
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] bg-slate-900 border border-panel-border p-6 rounded-2xl shadow-2xl shadow-teal-500/10 z-50 text-center space-y-4 animate-fade-in animate-duration-200">
+              <div className="w-12 h-12 rounded-full bg-teal-500/10 flex items-center justify-center mx-auto text-teal-accent">
+                <Sparkles className="w-6 h-6 animate-pulse" />
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="text-lg font-bold text-white">Welcome to Maestro Sketch!</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Let&apos;s take a quick 1-minute guided tour to learn how to generate, edit, and audit production-ready cloud architecture diagrams.
+                </p>
+              </div>
+              <div className="pt-2 flex items-center gap-2">
+                <button
+                  onClick={() => setTourStep(null)}
+                  className="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all cursor-pointer"
+                >
+                  Skip Tour
+                </button>
+                <button
+                  id="tour-next-btn"
+                  onClick={() => setTourStep(2)}
+                  className="flex-1 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark text-xs font-bold transition-all glow-teal-hover cursor-pointer"
+                >
+                  Start Guided Tour
+                </button>
+              </div>
+            </div>
+          )}
+
+          {tourStep === 2 && (
+            <div className="fixed left-20 top-24 w-80 bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200">
+              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
+                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">1. Navigation Dock</h4>
+                <span className="text-[10px] text-slate-500">Step 2 of 6</span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Use this thin sidebar to toggle between different workspaces: the main interactive canvas, the template preset blueprints, the safety audit reports center, and your settings.
+              </p>
+              <div className="pt-2 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setTourStep(1)}
+                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                >
+                  Back
+                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setTourStep(null)}
+                    className="px-3 py-1.5 rounded bg-transparent hover:bg-slate-800 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                  >
+                    Skip
+                  </button>
+                  <button
+                    id="tour-next-btn"
+                    onClick={() => setTourStep(3)}
+                    className="px-3 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all cursor-pointer"
+                  >
+                    Next Step
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tourStep === 3 && (
+            <div className="fixed left-[340px] top-40 w-80 bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200">
+              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
+                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">2. AI Assistant Panel</h4>
+                <span className="text-[10px] text-slate-500">Step 3 of 6</span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Chat with Gemini here to modify your layout, inspect the prompt details, and see an automated audit trail listing every component created, renamed, or deleted.
+              </p>
+              <div className="pt-2 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setTourStep(2)}
+                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                >
+                  Back
+                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setTourStep(null)}
+                    className="px-3 py-1.5 rounded bg-transparent hover:bg-slate-800 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                  >
+                    Skip
+                  </button>
+                  <button
+                    id="tour-next-btn"
+                    onClick={() => setTourStep(4)}
+                    className="px-3 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all cursor-pointer"
+                  >
+                    Next Step
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tourStep === 4 && (
+            <div className="fixed left-1/2 bottom-12 -translate-x-1/2 w-[420px] bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200 text-center">
+              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
+                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">3. Infinite Design Canvas</h4>
+                <span className="text-[10px] text-slate-500">Step 4 of 6</span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Drag to pan and scroll to zoom. You can view components as a canvas or structure tree, or click <b className="text-teal-400">Edit Inline</b> to make manual visual modifications directly inside Draw.io.
+              </p>
+              <div className="pt-2 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setTourStep(3)}
+                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                >
+                  Back
+                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setTourStep(null)}
+                    className="px-3 py-1.5 rounded bg-transparent hover:bg-slate-800 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                  >
+                    Skip
+                  </button>
+                  <button
+                    id="tour-next-btn"
+                    onClick={() => setTourStep(5)}
+                    className="px-3 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all cursor-pointer"
+                  >
+                    Next Step
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tourStep === 5 && (
+            <div className="fixed right-80 top-48 w-80 bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200">
+              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
+                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">4. Version Control</h4>
+                <span className="text-[10px] text-slate-500">Step 5 of 6</span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Every prompt and edit generates a new version snapshot. Click any version to preview past drafts, view the changes audit trail, or roll back instantly.
+              </p>
+              <div className="pt-2 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setTourStep(4)}
+                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                >
+                  Back
+                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setTourStep(null)}
+                    className="px-3 py-1.5 rounded bg-transparent hover:bg-slate-800 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                  >
+                    Skip
+                  </button>
+                  <button
+                    id="tour-next-btn"
+                    onClick={() => setTourStep(6)}
+                    className="px-3 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all cursor-pointer"
+                  >
+                    Next Step
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tourStep === 6 && (
+            <div className="fixed right-20 top-24 w-80 bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200">
+              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
+                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">5. Automated Audits</h4>
+                <span className="text-[10px] text-slate-500">Step 6 of 6</span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Run security and vulnerability audits at any time. The system will audit your architecture layout for common compliance risks and compile safety ratings.
+              </p>
+              <div className="pt-2 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setTourStep(5)}
+                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                >
+                  Back
+                </button>
+                <button
+                  id="tour-next-btn"
+                  onClick={() => setTourStep(null)}
+                  className="px-5 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all glow-teal-hover cursor-pointer"
+                >
+                  Finish Tour
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
     </div>
