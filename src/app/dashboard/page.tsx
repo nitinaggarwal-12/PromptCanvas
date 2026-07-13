@@ -37,6 +37,41 @@ interface DiagramVersion {
   created_at: string;
 }
 
+const TEMPLATE_PROMPTS = [
+  {
+    name: "Clean Slate (Empty Workspace)",
+    prompt: ""
+  },
+  {
+    name: "Serverless Web Application (GCP)",
+    prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture. It should include: a Global HTTPS Load Balancer, Cloud CDN, Cloud Run for the frontend/backend services, Cloud SQL (PostgreSQL) for relational data, and Cloud Storage for static media assets."
+  },
+  {
+    name: "Real-time Streaming Analytics (GCP)",
+    prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store the structured results in BigQuery, and visualize it with Looker."
+  },
+  {
+    name: "Microservices Kubernetes Cluster (AWS)",
+    prompt: "Act as an AWS Solutions Architect. Design a microservices architecture hosted on EKS (Elastic Kubernetes Service). It should include: an Application Load Balancer, Amazon API Gateway, EKS worker nodes running services, RDS PostgreSQL for main DB, DynamoDB for session state, and ElastiCache Redis for caching."
+  },
+  {
+    name: "Data Lakehouse (AWS)",
+    prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for ad-hoc querying, Amazon Redshift for data warehousing, and Amazon QuickSight for business intelligence."
+  },
+  {
+    name: "AI Retrieval-Augmented Generation / RAG (GCP)",
+    prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system on GCP. It should include: a Cloud Run API service, Cloud SQL with pgvector extension for storing vector embeddings, Vertex AI Search for document retrieval, Vertex AI Gemini API for LLM reasoning, and Cloud Storage for source documents."
+  },
+  {
+    name: "Event-Driven Microservices (AWS)",
+    prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store for each microservice."
+  },
+  {
+    name: "Multi-Region Disaster Recovery (GCP)",
+    prompt: "Act as a GCP Architect. Design a highly available, multi-region disaster recovery architecture. It should include: DNS routing via Cloud DNS, HTTPS Load Balancing across two regions, active-passive Cloud Spanner database synchronization, Cloud Storage dual-region backups, and GKE multi-cluster service mesh configs."
+  }
+];
+
 export default function Dashboard() {
   const router = useRouter();
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
@@ -47,6 +82,7 @@ export default function Dashboard() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newDiagramName, setNewDiagramName] = useState('');
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [isCreating, setIsCreating] = useState(false);
 
   const fetchDiagrams = async () => {
@@ -144,7 +180,7 @@ export default function Dashboard() {
       <div className="absolute bottom-0 left-0 w-[45vw] h-[45vw] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
 
       {/* Header Bar */}
-      <header className="w-full border-b border-panel-border/30 h-16 bg-[#070a13]/70 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-30 shrink-0">
+      <header className="w-full border-b border-panel-border/30 h-20 bg-[#070a13]/70 backdrop-blur-md px-12 md:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
@@ -165,9 +201,10 @@ export default function Dashboard() {
             onClick={() => {
               setNewDiagramName('');
               setNewDiagramPrompt('');
+              setSelectedTemplate('0');
               setIsCreateModalOpen(true);
             }}
-            className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs transition-all glow-teal-hover flex items-center gap-1.5 cursor-pointer"
+            className="px-5 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-sm transition-all glow-teal-hover flex items-center gap-2 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Create New Workspace</span>
@@ -176,28 +213,28 @@ export default function Dashboard() {
       </header>
 
       {/* Main Portal View */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-8 py-10 space-y-10 relative z-10">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-12 md:px-16 py-12 space-y-12 relative z-10">
         
         {/* Page Title Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight">Enterprise Operations Portal</h1>
-            <p className="text-xs text-slate-400 mt-1">High-level telemetry, security compliance matrices, and active diagram workspaces.</p>
+            <h1 className="text-4xl font-extrabold text-white tracking-tight">Enterprise Operations Portal</h1>
+            <p className="text-sm text-slate-400 mt-1.5">High-level telemetry, security compliance matrices, and active diagram workspaces.</p>
           </div>
           
           {/* Quick Metrics */}
-          <div className="flex items-center gap-6 bg-slate-900/40 border border-panel-border/30 rounded-xl px-5 py-3 shadow-md backdrop-blur-sm">
+          <div className="flex items-center gap-6 bg-slate-900/40 border border-panel-border/30 rounded-xl px-6 py-4 shadow-md backdrop-blur-sm">
             <div className="text-center">
-              <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Compliance Matrix</span>
-              <span className="text-sm font-extrabold text-teal-accent flex items-center gap-1 mt-0.5 justify-center">
-                <Shield className="w-3.5 h-3.5 text-teal-accent" />
+              <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Compliance Matrix</span>
+              <span className="text-base font-extrabold text-teal-accent flex items-center gap-1 mt-0.5 justify-center">
+                <Shield className="w-4 h-4 text-teal-accent" />
                 <span>94.2%</span>
               </span>
             </div>
             <div className="h-8 w-[1px] bg-panel-border/50" />
             <div className="text-center">
-              <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Deployments Active</span>
-              <span className="text-sm font-extrabold text-white mt-0.5 block">18 Units</span>
+              <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Deployments Active</span>
+              <span className="text-base font-extrabold text-white mt-0.5 block">18 Units</span>
             </div>
           </div>
         </div>
@@ -239,9 +276,9 @@ export default function Dashboard() {
                 <metric.icon className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{metric.name}</span>
-                <span className="text-xl font-extrabold text-white block">{metric.value}</span>
-                <span className="text-[10px] text-slate-400 block">{metric.sub}</span>
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">{metric.name}</span>
+                <span className="text-3xl font-extrabold text-white block">{metric.value}</span>
+                <span className="text-xs text-slate-400 block">{metric.sub}</span>
               </div>
             </div>
           ))}
@@ -252,11 +289,11 @@ export default function Dashboard() {
           {/* Chart 1: Activity by Team */}
           <div className="glass-panel border-panel-border/30 rounded-xl p-5 space-y-4">
             <div>
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
                 <BarChart3 className="w-4 h-4 text-teal-accent" />
                 <span>Usecase Allocation Matrix</span>
               </h3>
-              <p className="text-[10px] text-slate-500 mt-0.5">Distribution of designs across active business departments.</p>
+              <p className="text-xs text-slate-500 mt-0.5">Distribution of designs across active business departments.</p>
             </div>
             
             <div className="space-y-3 pt-2">
@@ -267,9 +304,9 @@ export default function Dashboard() {
                 { name: "Retail Database Store", count: 2, pct: 10, color: "bg-amber-400" }
               ].map((team, idx) => (
                 <div key={idx} className="space-y-1.5">
-                  <div className="flex justify-between text-[11px]">
+                  <div className="flex justify-between text-xs">
                     <span className="font-semibold text-slate-300">{team.name}</span>
-                    <span className="text-slate-400 font-bold">{team.count} ({team.pct}%)</span>
+                    <span className="text-slate-300 font-extrabold">{team.count} ({team.pct}%)</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full bg-bg-dark border border-panel-border/30 overflow-hidden">
                     <div className={`h-full rounded-full ${team.color}`} style={{ width: `${team.pct}%` }} />
@@ -282,30 +319,30 @@ export default function Dashboard() {
           {/* Chart 2: Security compliance scorecard */}
           <div className="glass-panel border-panel-border/30 rounded-xl p-5 space-y-4">
             <div>
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
                 <Shield className="w-4 h-4 text-purple-400" />
                 <span>Security Compliance Scorecard</span>
               </h3>
-              <p className="text-[10px] text-slate-500 mt-0.5">Average security ratings calculated by Gemini.</p>
+              <p className="text-xs text-slate-500 mt-0.5">Average security ratings calculated by Gemini.</p>
             </div>
 
             <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-4 bg-bg-dark/40 border border-panel-border/30 rounded-xl p-4">
-                <span className="text-3xl font-extrabold text-teal-accent">A-</span>
+              <div className="flex items-center gap-5 bg-bg-dark/40 border border-panel-border/30 rounded-xl p-5">
+                <span className="text-5xl font-extrabold text-teal-accent">A-</span>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Global Compliance Grade</span>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Excellent posture. Minor risks identified in database subnets.</p>
+                  <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block">Global Compliance Grade</span>
+                  <p className="text-xs text-slate-400 mt-0.5">Excellent posture. Minor risks identified in database subnets.</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="bg-[#0b0f19] border border-panel-border/30 rounded-lg p-3">
-                  <span className="text-xs font-bold text-emerald-400 block">0</span>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-wider mt-1 block">Critical Risks</span>
+                  <span className="text-sm font-bold text-emerald-400 block">0</span>
+                  <span className="text-[10px] text-slate-500 uppercase tracking-wider mt-1 block">Critical Risks</span>
                 </div>
                 <div className="bg-[#0b0f19] border border-panel-border/30 rounded-lg p-3">
-                  <span className="text-xs font-bold text-amber-400 block">3</span>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-wider mt-1 block">Warnings</span>
+                  <span className="text-sm font-bold text-amber-400 block">3</span>
+                  <span className="text-[10px] text-slate-500 uppercase tracking-wider mt-1 block">Warnings</span>
                 </div>
               </div>
             </div>
@@ -314,11 +351,11 @@ export default function Dashboard() {
           {/* Card 3: Quick Start Presets Launcher */}
           <div className="glass-panel border-panel-border/30 rounded-xl p-5 space-y-4">
             <div>
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-teal-accent animate-pulse" />
                 <span>Quick Launch Templates</span>
               </h3>
-              <p className="text-[10px] text-slate-500 mt-0.5">Select a pre-designed cloud architecture template to build instantly.</p>
+              <p className="text-xs text-slate-500 mt-0.5">Select a pre-designed cloud architecture template to build instantly.</p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 pt-1">
@@ -337,8 +374,8 @@ export default function Dashboard() {
                   }}
                   className={`glass-panel ${tpl.color} rounded-lg p-3 flex flex-col justify-between cursor-pointer hover:scale-[1.02] transition-all`}
                 >
-                  <span className="font-bold text-[11px] text-white block">{tpl.name}</span>
-                  <span className="text-[9px] text-slate-500 block leading-tight mt-1 line-clamp-2">{tpl.desc}</span>
+                  <span className="font-bold text-xs text-white block">{tpl.name}</span>
+                  <span className="text-[10px] text-slate-500 block leading-tight mt-1 line-clamp-2">{tpl.desc}</span>
                 </div>
               ))}
             </div>
@@ -349,8 +386,8 @@ export default function Dashboard() {
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-panel-border/30 pb-3">
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight">Active Architecture Workspaces</h2>
-              <p className="text-[10px] text-slate-500 mt-0.5">Review, audit, or delete active enterprise canvas files.</p>
+              <h2 className="text-xl font-bold text-white tracking-tight">Active Architecture Workspaces</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Review, audit, or delete active enterprise canvas files.</p>
             </div>
 
             {/* Search Bar */}
@@ -361,7 +398,7 @@ export default function Dashboard() {
                 placeholder="Search diagrams by name..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-[#0b0f19]/80 border border-panel-border/50 focus:border-teal-500/50 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-300 focus:outline-none transition-all placeholder-slate-600"
+                className="w-full bg-[#0b0f19]/80 border border-panel-border/50 focus:border-teal-500/50 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-300 focus:outline-none transition-all placeholder-slate-600"
               />
             </div>
           </div>
@@ -384,9 +421,10 @@ export default function Dashboard() {
                 onClick={() => {
                   setNewDiagramName('');
                   setNewDiagramPrompt('');
+                  setSelectedTemplate('0');
                   setIsCreateModalOpen(true);
                 }}
-                className="px-4 py-2 rounded-lg bg-teal-accent/15 hover:bg-teal-accent text-teal-300 hover:text-bg-dark font-bold text-xs transition-all border border-teal-500/20 hover:border-transparent flex items-center gap-1.5 cursor-pointer"
+                className="px-5 py-2.5 rounded-lg bg-teal-accent/15 hover:bg-teal-accent text-teal-300 hover:text-bg-dark font-bold text-sm transition-all border border-teal-500/20 hover:border-transparent flex items-center gap-2 cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Create Diagram</span>
@@ -397,13 +435,13 @@ export default function Dashboard() {
               <div className="overflow-x-auto w-full">
                 <table className="w-full border-collapse text-left text-xs">
                   <thead>
-                    <tr className="bg-panel-dark/40 border-b border-panel-border/50 text-slate-500 uppercase tracking-wider font-bold">
-                      <th className="px-6 py-4">Workspace Title</th>
-                      <th className="px-6 py-4">Vulnerability Score</th>
-                      <th className="px-6 py-4">Versions Saved</th>
-                      <th className="px-6 py-4">Deployment Platform</th>
-                      <th className="px-6 py-4">Last Modified</th>
-                      <th className="px-6 py-4 text-right">Actions</th>
+                    <tr className="bg-panel-dark/40 border-b border-panel-border/50 text-slate-400 uppercase tracking-wider font-extrabold text-[10px]">
+                      <th className="px-8 py-5">Workspace Title</th>
+                      <th className="px-8 py-5">Vulnerability Score</th>
+                      <th className="px-8 py-5">Versions Saved</th>
+                      <th className="px-8 py-5">Deployment Platform</th>
+                      <th className="px-8 py-5">Last Modified</th>
+                      <th className="px-8 py-5 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-panel-border/30">
@@ -419,26 +457,26 @@ export default function Dashboard() {
                           onClick={() => router.push(`/workspace?diagram=${diagram.id}`)}
                           className="hover:bg-slate-900/30 transition-all cursor-pointer group"
                         >
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded bg-teal-500/10 flex items-center justify-center text-teal-accent">
-                                <Network className="w-4 h-4" />
+                          <td className="px-8 py-5">
+                            <div className="flex items-center gap-3.5">
+                              <div className="w-9 h-9 rounded bg-teal-500/10 flex items-center justify-center text-teal-accent">
+                                <Network className="w-5 h-5" />
                               </div>
                               <div>
-                                <span className="font-bold text-white group-hover:text-teal-accent transition-colors block text-sm">{diagram.name}</span>
-                                <span className="text-[10px] text-slate-500 block truncate max-w-xs">{diagram.id}</span>
+                                <span className="font-extrabold text-white group-hover:text-teal-accent transition-colors block text-base">{diagram.name}</span>
+                                <span className="text-xs text-slate-500 block truncate max-w-xs">{diagram.id}</span>
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                              <Shield className="w-3 h-3" />
+                          <td className="px-8 py-5">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                              <Shield className="w-3.5 h-3.5" />
                               <span>Secured</span>
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-slate-300 font-semibold">{verCount} version{verCount > 1 ? 's' : ''}</td>
-                          <td className="px-6 py-4">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${
+                          <td className="px-8 py-5 text-slate-300 font-bold text-sm">{verCount} version{verCount > 1 ? 's' : ''}</td>
+                          <td className="px-8 py-5">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold border ${
                               platform === 'GCP' ? 'bg-teal-500/10 text-teal-400 border-teal-500/20' :
                               platform === 'AWS' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
                               'bg-purple-500/10 text-purple-400 border-purple-500/20'
@@ -446,24 +484,24 @@ export default function Dashboard() {
                               {platform}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-slate-400 font-medium">
+                          <td className="px-8 py-5 text-slate-400 font-bold text-sm">
                             {new Date(diagram.updated_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(diagram.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </td>
-                          <td className="px-6 py-4 text-right" onClick={e => e.stopPropagation()}>
-                            <div className="flex items-center justify-end gap-2">
+                          <td className="px-8 py-5 text-right" onClick={e => e.stopPropagation()}>
+                            <div className="flex items-center justify-end gap-3">
                               <button
                                 onClick={() => router.push(`/workspace?diagram=${diagram.id}`)}
-                                className="px-2.5 py-1.5 rounded hover:bg-teal-accent hover:text-bg-dark text-slate-300 text-[10px] font-bold transition-all border border-slate-700 hover:border-transparent flex items-center gap-1 cursor-pointer"
+                                className="px-3.5 py-2 rounded hover:bg-teal-accent hover:text-bg-dark text-slate-300 text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center gap-1.5 cursor-pointer animate-duration-150"
                               >
                                 <span>Launch Canvas</span>
-                                <ArrowRight className="w-3 h-3" />
+                                <ArrowRight className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={(e) => handleDeleteDiagram(diagram.id, e)}
-                                className="p-1.5 rounded hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
+                                className="p-2 rounded hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
                                 title="Delete Diagram Workspace"
                               >
-                                <Trash2 className="w-3.5 h-3.5" />
+                                <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
                           </td>
@@ -480,8 +518,8 @@ export default function Dashboard() {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-panel-border/30 bg-[#070a13] py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+      <footer className="border-t border-panel-border/30 bg-[#070a13] py-10 mt-16">
+        <div className="max-w-[1600px] mx-auto px-12 md:px-16 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <Network className="w-4 h-4 text-slate-600" />
             <span className="font-bold text-slate-400">MAESTRO SKETCH</span>
@@ -493,50 +531,73 @@ export default function Dashboard() {
       {/* CREATE WORKSPACE MODAL */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-panel border-panel-border rounded-xl p-6 w-full max-w-md shadow-2xl relative">
-            <h3 className="font-extrabold text-lg text-white mb-2 flex items-center gap-2">
-              <Plus className="w-5 h-5 text-teal-accent" />
-              <span>Create Diagram Workspace</span>
-            </h3>
-            <p className="text-xs text-slate-400 mb-6">Initialize a clean architecture design canvas with your custom name and prompts.</p>
+          <div className="glass-panel border-panel-border rounded-xl p-8 w-full max-w-xl shadow-2xl relative space-y-6">
+            <div>
+              <h3 className="font-extrabold text-2xl text-white flex items-center gap-2.5">
+                <Plus className="w-6 h-6 text-teal-accent" />
+                <span>Create Diagram Workspace</span>
+              </h3>
+              <p className="text-sm text-slate-400 mt-1.5">Initialize a clean architecture design canvas with your custom name and prompts.</p>
+            </div>
             
-            <form onSubmit={handleCreateDiagram} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-300">Workspace Name</label>
+            <form onSubmit={handleCreateDiagram} className="space-y-5">
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-300">Workspace Name</label>
                 <input
                   type="text"
                   placeholder="e.g., Google Cloud E-Commerce"
                   value={newDiagramName}
                   onChange={(e) => setNewDiagramName(e.target.value)}
                   required
-                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none transition-all placeholder-slate-600"
+                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none transition-all placeholder-slate-600"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-300">Initial AI Prompt (Optional)</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-300">Choose a Template Prompt</label>
+                <select
+                  value={selectedTemplate}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedTemplate(val);
+                    if (val !== 'custom') {
+                      const idx = parseInt(val, 10);
+                      setNewDiagramPrompt(TEMPLATE_PROMPTS[idx].prompt);
+                    }
+                  }}
+                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none transition-all cursor-pointer"
+                >
+                  {TEMPLATE_PROMPTS.map((t, idx) => (
+                    <option key={idx} value={idx.toString()}>{t.name}</option>
+                  ))}
+                  <option value="custom">Custom Prompt (Type below...)</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-300">Initial AI Prompt (Optional)</label>
                 <textarea
                   placeholder="e.g., Act as a Solutions Architect. Design a serverless backend using Cloud Run..."
                   value={newDiagramPrompt}
                   onChange={(e) => setNewDiagramPrompt(e.target.value)}
-                  className="w-full h-24 bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none transition-all placeholder-slate-600 resize-none leading-relaxed"
+                  className="w-full h-28 bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none transition-all placeholder-slate-600 resize-none leading-relaxed"
                 />
               </div>
 
-              <div className="pt-4 border-t border-panel-border/30 flex justify-end gap-2">
+              <div className="pt-5 border-t border-panel-border/30 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
+                  className="px-6 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-bold transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs transition-all glow-teal-hover flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-sm transition-all glow-teal-hover flex items-center gap-2 cursor-pointer disabled:opacity-50"
                 >
-                  {isCreating && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  {isCreating && <Loader2 className="w-4 h-4 animate-spin" />}
                   <span>{isCreating ? 'Creating...' : 'Create Canvas'}</span>
                 </button>
               </div>
