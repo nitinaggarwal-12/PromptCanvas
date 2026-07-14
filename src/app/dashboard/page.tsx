@@ -142,14 +142,35 @@ export default function Dashboard() {
         </mxfile>
       `.trim();
 
+      const promptToGenerate = newDiagramPrompt.trim();
+
+      if (promptToGenerate) {
+        // AI Generated Version 1 directly!
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: newDiagramName.trim(),
+            prompt: promptToGenerate
+          })
+        });
+
+        if (!res.ok) throw new Error('Failed to generate diagram');
+        const data = await res.json();
+        
+        setIsCreateModalOpen(false);
+        router.push(`/workspace?diagram=${data.diagram.id}`);
+        return;
+      }
+
+      // Clean Slate Version 1
       const res = await fetch('/api/diagrams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: newDiagramName,
           xml: defaultXml,
-          comment: 'Initial canvas created',
-          prompt: newDiagramPrompt.trim() || null
+          comment: 'Initial canvas created'
         })
       });
 
@@ -157,8 +178,6 @@ export default function Dashboard() {
       const newDiagram = await res.json();
       
       setIsCreateModalOpen(false);
-      
-      // Route immediately to workspace canvas
       router.push(`/workspace?diagram=${newDiagram.diagram.id}`);
     } catch (err) {
       console.error(err);
@@ -174,23 +193,26 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen w-screen bg-[#070a13] text-slate-100 flex flex-col overflow-x-hidden font-sans relative">
+    <div className="min-h-screen w-screen bg-[#070a13] text-slate-100 flex flex-col overflow-x-clip font-sans relative selection:bg-teal-500/30 selection:text-teal-200">
       {/* Background radial overlays */}
-      <div className="absolute top-0 right-0 w-[50vw] h-[50vw] rounded-full bg-teal-500/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[45vw] h-[45vw] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-[130px] pointer-events-none z-0" />
+      <div className="absolute bottom-0 left-0 w-[45vw] h-[45vw] rounded-full bg-indigo-500/10 blur-[130px] pointer-events-none z-0" />
+
+      {/* Blueprint Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.015)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30 pointer-events-none z-0" />
 
       {/* Header Bar */}
-      <header className="w-full border-b border-panel-border/30 h-20 bg-[#070a13]/70 backdrop-blur-md px-12 md:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
+      <header className="w-full border-b border-panel-border/30 h-20 bg-[#070a13]/80 backdrop-blur-md px-12 md:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
               <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
-                <Network className="w-4.5 h-4.5 text-teal-accent" />
+                <Network className="w-5 h-5 text-teal-accent" />
               </div>
             </div>
-            <span className="font-extrabold tracking-wider text-xs text-white uppercase">Maestro Sketch</span>
+            <span className="font-extrabold tracking-wider text-sm text-white uppercase">Maestro Sketch</span>
           </Link>
-          <span className="text-[10px] font-bold text-teal-accent uppercase tracking-widest px-2.5 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">
+          <span className="text-[11px] font-extrabold text-teal-accent uppercase tracking-widest px-3 py-1 rounded bg-teal-500/10 border border-teal-500/20">
             Premium Portal
           </span>
         </div>
@@ -204,81 +226,85 @@ export default function Dashboard() {
               setSelectedTemplate('0');
               setIsCreateModalOpen(true);
             }}
-            className="px-5 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-sm transition-all glow-teal-hover flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-sm tracking-wide transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center gap-2 cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4.5 h-4.5" />
             <span>Create New Workspace</span>
           </button>
         </div>
       </header>
 
       {/* Main Portal View */}
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-12 md:px-16 py-12 space-y-12 relative z-10">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-12 md:px-16 py-14 space-y-12 relative z-10">
         
         {/* Page Title Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-extrabold text-white tracking-tight">Enterprise Operations Portal</h1>
-            <p className="text-sm text-slate-400 mt-1.5">High-level telemetry, security compliance matrices, and active diagram workspaces.</p>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-none">Enterprise Operations Portal</h1>
+            <p className="text-base text-slate-400">High-level telemetry, security compliance matrices, and active diagram workspaces.</p>
           </div>
           
-          {/* Quick Metrics */}
-          <div className="flex items-center gap-6 bg-slate-900/40 border border-panel-border/30 rounded-xl px-6 py-4 shadow-md backdrop-blur-sm">
+          {/* Quick Telemetry Box */}
+          <div className="flex items-center gap-8 bg-slate-900/60 border border-panel-border/30 rounded-xl px-8 py-5 shadow-xl shadow-teal-500/[0.02] backdrop-blur-sm">
             <div className="text-center">
-              <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Compliance Matrix</span>
-              <span className="text-base font-extrabold text-teal-accent flex items-center gap-1 mt-0.5 justify-center">
-                <Shield className="w-4 h-4 text-teal-accent" />
+              <span className="block text-xs text-slate-500 font-extrabold uppercase tracking-wider">Compliance Matrix</span>
+              <span className="text-lg font-black text-teal-accent flex items-center gap-1.5 mt-1 justify-center">
+                <Shield className="w-5 h-5 text-teal-accent" />
                 <span>94.2%</span>
               </span>
             </div>
-            <div className="h-8 w-[1px] bg-panel-border/50" />
+            <div className="h-10 w-[1px] bg-panel-border/50" />
             <div className="text-center">
-              <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Deployments Active</span>
-              <span className="text-base font-extrabold text-white mt-0.5 block">18 Units</span>
+              <span className="block text-xs text-slate-500 font-extrabold uppercase tracking-wider">Deployments Active</span>
+              <span className="text-lg font-black text-white mt-1 block">18 Units</span>
             </div>
           </div>
         </div>
 
         {/* 1. Summary Metrics Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
               name: "Active Workspaces",
               value: diagrams.length,
               sub: "Diagram architectures stored",
               icon: Layers,
-              color: "text-teal-400 bg-teal-500/10"
+              color: "text-teal-400 bg-teal-500/10",
+              border: "hover:border-teal-500/35 hover:shadow-teal-500/5"
             },
             {
               name: "Security Health Index",
               value: "A- Grade",
               sub: "Compliance rating active",
               icon: Shield,
-              color: "text-purple-400 bg-purple-500/10"
+              color: "text-purple-400 bg-purple-500/10",
+              border: "hover:border-purple-500/35 hover:shadow-purple-500/5"
             },
             {
               name: "Active Team Nodes",
               value: "4 Units",
               sub: "DevOps, SecOps, Core Infrastructure",
               icon: Users,
-              color: "text-indigo-400 bg-indigo-500/10"
+              color: "text-indigo-400 bg-indigo-500/10",
+              border: "hover:border-indigo-500/35 hover:shadow-indigo-500/5"
             },
             {
               name: "Database Storage",
               value: "SQLite Local",
               sub: "Isolated dev.db connected",
               icon: Database,
-              color: "text-amber-400 bg-amber-500/10"
+              color: "text-amber-400 bg-amber-500/10",
+              border: "hover:border-amber-500/35 hover:shadow-amber-500/5"
             }
           ].map((metric, idx) => (
-            <div key={idx} className="glass-panel border-panel-border/30 rounded-xl p-5 flex items-start gap-4">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${metric.color}`}>
-                <metric.icon className="w-5 h-5" />
+            <div key={idx} className={`glass-panel border-panel-border/30 rounded-xl p-5 flex items-start gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${metric.border}`}>
+              <div className={`w-11 h-11 rounded-lg flex items-center justify-center shrink-0 ${metric.color}`}>
+                <metric.icon className="w-5.5 h-5.5" />
               </div>
               <div className="space-y-1">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">{metric.name}</span>
-                <span className="text-3xl font-extrabold text-white block">{metric.value}</span>
-                <span className="text-xs text-slate-400 block">{metric.sub}</span>
+                <span className="text-3xl font-black text-white block tracking-tight leading-none mt-0.5">{metric.value}</span>
+                <span className="text-xs text-slate-400 block pt-0.5">{metric.sub}</span>
               </div>
             </div>
           ))}
@@ -287,28 +313,28 @@ export default function Dashboard() {
         {/* 2. Custom Analytical Visual Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Chart 1: Activity by Team */}
-          <div className="glass-panel border-panel-border/30 rounded-xl p-5 space-y-4">
+          <div className="glass-panel border-panel-border/30 rounded-xl p-6 space-y-5">
             <div>
-              <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <BarChart3 className="w-4 h-4 text-teal-accent" />
+              <h3 className="text-base font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <BarChart3 className="w-5 h-5 text-teal-accent" />
                 <span>Usecase Allocation Matrix</span>
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">Distribution of designs across active business departments.</p>
+              <p className="text-sm text-slate-400 mt-1">Distribution of designs across active business departments.</p>
             </div>
             
-            <div className="space-y-3 pt-2">
+            <div className="space-y-4 pt-2">
               {[
                 { name: "Enterprise Core Architecture", count: 5, pct: 45, color: "bg-teal-400" },
                 { name: "DevOps Build Pipelines", count: 4, pct: 30, color: "bg-indigo-400" },
                 { name: "AI RAG & Analytics Core", count: 3, pct: 15, color: "bg-purple-400" },
                 { name: "Retail Database Store", count: 2, pct: 10, color: "bg-amber-400" }
               ].map((team, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
+                <div key={idx} className="space-y-2">
+                  <div className="flex justify-between text-sm">
                     <span className="font-semibold text-slate-300">{team.name}</span>
-                    <span className="text-slate-300 font-extrabold">{team.count} ({team.pct}%)</span>
+                    <span className="text-slate-200 font-extrabold">{team.count} ({team.pct}%)</span>
                   </div>
-                  <div className="w-full h-1.5 rounded-full bg-bg-dark border border-panel-border/30 overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-bg-dark border border-panel-border/30 overflow-hidden">
                     <div className={`h-full rounded-full ${team.color}`} style={{ width: `${team.pct}%` }} />
                   </div>
                 </div>
@@ -317,53 +343,53 @@ export default function Dashboard() {
           </div>
 
           {/* Chart 2: Security compliance scorecard */}
-          <div className="glass-panel border-panel-border/30 rounded-xl p-5 space-y-4">
+          <div className="glass-panel border-panel-border/30 rounded-xl p-6 space-y-5">
             <div>
-              <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <Shield className="w-4 h-4 text-purple-400" />
+              <h3 className="text-base font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <Shield className="w-5 h-5 text-purple-400" />
                 <span>Security Compliance Scorecard</span>
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">Average security ratings calculated by Gemini.</p>
+              <p className="text-sm text-slate-400 mt-1">Average security ratings calculated by Gemini.</p>
             </div>
 
-            <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-5 bg-bg-dark/40 border border-panel-border/30 rounded-xl p-5">
-                <span className="text-5xl font-extrabold text-teal-accent">A-</span>
+            <div className="space-y-5 pt-2">
+              <div className="flex items-center gap-6 bg-bg-dark/40 border border-panel-border/30 rounded-xl p-5">
+                <span className="text-6xl font-black text-teal-accent leading-none">A-</span>
                 <div>
                   <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block">Global Compliance Grade</span>
-                  <p className="text-xs text-slate-400 mt-0.5">Excellent posture. Minor risks identified in database subnets.</p>
+                  <p className="text-sm text-slate-300 mt-1.5">Excellent posture. Minor risks identified in database subnets.</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="bg-[#0b0f19] border border-panel-border/30 rounded-lg p-3">
-                  <span className="text-sm font-bold text-emerald-400 block">0</span>
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wider mt-1 block">Critical Risks</span>
+                <div className="bg-[#0b0f19] border border-panel-border/30 rounded-lg p-3.5">
+                  <span className="text-xl font-black text-emerald-400 block leading-none">0</span>
+                  <span className="text-xs text-slate-500 uppercase tracking-wider mt-1.5 block font-bold">Critical Risks</span>
                 </div>
-                <div className="bg-[#0b0f19] border border-panel-border/30 rounded-lg p-3">
-                  <span className="text-sm font-bold text-amber-400 block">3</span>
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wider mt-1 block">Warnings</span>
+                <div className="bg-[#0b0f19] border border-panel-border/30 rounded-lg p-3.5">
+                  <span className="text-xl font-black text-amber-400 block leading-none">3</span>
+                  <span className="text-xs text-slate-500 uppercase tracking-wider mt-1.5 block font-bold">Warnings</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Card 3: Quick Start Presets Launcher */}
-          <div className="glass-panel border-panel-border/30 rounded-xl p-5 space-y-4">
+          <div className="glass-panel border-panel-border/30 rounded-xl p-6 space-y-5">
             <div>
-              <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-teal-accent animate-pulse" />
+              <h3 className="text-base font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-5 h-5 text-teal-accent animate-pulse" />
                 <span>Quick Launch Templates</span>
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">Select a pre-designed cloud architecture template to build instantly.</p>
+              <p className="text-sm text-slate-400 mt-1">Select a pre-designed cloud architecture template to build instantly.</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="grid grid-cols-2 gap-4 pt-1">
               {[
-                { name: "GCP Serverless", desc: "Global CDN, Cloud Run, Cloud Storage", color: "border-teal-500/20 hover:border-teal-500/40" },
-                { name: "AWS Kubernetes", desc: "ALB, EKS Worker nodes, RDS Postgre", color: "border-amber-500/20 hover:border-amber-500/40" },
-                { name: "AI RAG Pipeline", desc: "pgvector DB, Vertex AI, Gemini models", color: "border-purple-500/20 hover:border-purple-500/40" },
-                { name: "DevOps CI/CD", desc: "GitHub Actions, Terraform builds", color: "border-indigo-500/20 hover:border-indigo-500/40" }
+                { name: "GCP Serverless", desc: "Global CDN, Cloud Run, Cloud Storage", color: "border-teal-500/20 hover:border-teal-500/40 hover:shadow-teal-500/[0.03]" },
+                { name: "AWS Kubernetes", desc: "ALB, EKS Worker nodes, RDS Postgre", color: "border-amber-500/20 hover:border-amber-500/40 hover:shadow-amber-500/[0.03]" },
+                { name: "AI RAG Pipeline", desc: "pgvector DB, Vertex AI, Gemini models", color: "border-purple-500/20 hover:border-purple-500/40 hover:shadow-purple-500/[0.03]" },
+                { name: "DevOps CI/CD", desc: "GitHub Actions, Terraform builds", color: "border-indigo-500/20 hover:border-indigo-500/40 hover:shadow-indigo-500/[0.03]" }
               ].map((tpl, idx) => (
                 <div 
                   key={idx}
@@ -372,10 +398,10 @@ export default function Dashboard() {
                     setNewDiagramPrompt(`Act as an Architect. Design a ${tpl.name} layout with ${tpl.desc}`);
                     setIsCreateModalOpen(true);
                   }}
-                  className={`glass-panel ${tpl.color} rounded-lg p-3 flex flex-col justify-between cursor-pointer hover:scale-[1.02] transition-all`}
+                  className={`glass-panel ${tpl.color} rounded-lg p-4 flex flex-col justify-between cursor-pointer hover:scale-[1.03] hover:shadow-lg transition-all duration-300 min-h-[105px] h-full`}
                 >
-                  <span className="font-bold text-xs text-white block">{tpl.name}</span>
-                  <span className="text-[10px] text-slate-500 block leading-tight mt-1 line-clamp-2">{tpl.desc}</span>
+                  <span className="font-extrabold text-sm text-white block leading-snug">{tpl.name}</span>
+                  <span className="text-xs text-slate-400 block leading-relaxed mt-1.5 line-clamp-2">{tpl.desc}</span>
                 </div>
               ))}
             </div>
@@ -530,31 +556,31 @@ export default function Dashboard() {
 
       {/* CREATE WORKSPACE MODAL */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-panel border-panel-border rounded-xl p-8 w-full max-w-xl shadow-2xl relative space-y-6">
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
+          <div className="glass-panel border-panel-border rounded-2xl p-10 w-full max-w-2xl shadow-2xl relative space-y-7">
             <div>
-              <h3 className="font-extrabold text-2xl text-white flex items-center gap-2.5">
-                <Plus className="w-6 h-6 text-teal-accent" />
+              <h3 className="font-extrabold text-3xl text-white flex items-center gap-3">
+                <Plus className="w-7 h-7 text-teal-accent" />
                 <span>Create Diagram Workspace</span>
               </h3>
-              <p className="text-sm text-slate-400 mt-1.5">Initialize a clean architecture design canvas with your custom name and prompts.</p>
+              <p className="text-base text-slate-400 mt-2">Initialize a clean architecture design canvas with your custom name and prompts.</p>
             </div>
             
-            <form onSubmit={handleCreateDiagram} className="space-y-5">
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-300">Workspace Name</label>
+            <form onSubmit={handleCreateDiagram} className="space-y-6">
+              <div className="space-y-2.5">
+                <label className="block text-base font-bold text-slate-200">Workspace Name</label>
                 <input
                   type="text"
                   placeholder="e.g., Google Cloud E-Commerce"
                   value={newDiagramName}
                   onChange={(e) => setNewDiagramName(e.target.value)}
                   required
-                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none transition-all placeholder-slate-600"
+                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all placeholder-slate-600"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-300">Choose a Template Prompt</label>
+              <div className="space-y-2.5">
+                <label className="block text-base font-bold text-slate-200">Choose a Template Prompt</label>
                 <select
                   value={selectedTemplate}
                   onChange={(e) => {
@@ -565,7 +591,7 @@ export default function Dashboard() {
                       setNewDiagramPrompt(TEMPLATE_PROMPTS[idx].prompt);
                     }
                   }}
-                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none transition-all cursor-pointer"
+                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all cursor-pointer"
                 >
                   {TEMPLATE_PROMPTS.map((t, idx) => (
                     <option key={idx} value={idx.toString()}>{t.name}</option>
@@ -574,30 +600,30 @@ export default function Dashboard() {
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-300">Initial AI Prompt (Optional)</label>
+              <div className="space-y-2.5">
+                <label className="block text-base font-bold text-slate-200">Initial AI Prompt (Optional)</label>
                 <textarea
                   placeholder="e.g., Act as a Solutions Architect. Design a serverless backend using Cloud Run..."
                   value={newDiagramPrompt}
                   onChange={(e) => setNewDiagramPrompt(e.target.value)}
-                  className="w-full h-28 bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none transition-all placeholder-slate-600 resize-none leading-relaxed"
+                  className="w-full h-36 bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all placeholder-slate-600 resize-none leading-relaxed"
                 />
               </div>
 
-              <div className="pt-5 border-t border-panel-border/30 flex justify-end gap-3">
+              <div className="pt-6 border-t border-panel-border/30 flex justify-end gap-3.5">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-6 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-bold transition-all cursor-pointer"
+                  className="px-8 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-base font-bold transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="px-6 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-sm transition-all glow-teal-hover flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="px-8 py-3 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-base transition-all shadow-xl shadow-teal-500/15 flex items-center gap-2 cursor-pointer disabled:opacity-50"
                 >
-                  {isCreating && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {isCreating && <Loader2 className="w-5 h-5 animate-spin" />}
                   <span>{isCreating ? 'Creating...' : 'Create Canvas'}</span>
                 </button>
               </div>

@@ -69,6 +69,28 @@ interface DiagramNodeItem {
   style?: string;
 }
 
+function cleanHtmlLabel(label: string): string {
+  if (!label) return '';
+  
+  // 1. Decode standard HTML entities
+  let decoded = label
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/&apos;/g, "'")
+    .replace(/&#xa;/g, ' ');
+
+  // 2. Replace <br> variants with visual separators
+  decoded = decoded.replace(/<br\s*\/?>/gi, ' — ');
+
+  // 3. Strip all other HTML tags
+  const stripped = decoded.replace(/<[^>]+>/g, '');
+
+  // 4. Normalize spacing
+  return stripped.trim().replace(/\s+/g, ' ');
+}
+
 function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
   if (!xml) return [];
   const items: DiagramNodeItem[] = [];
@@ -86,9 +108,10 @@ function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
     const getStyle = attrsStr.match(/style="([^"]*)"/)?.[1];
     
     if (getId && getId !== '0' && getId !== '1') {
+      const rawValue = getValue || (isEdge ? 'Connection' : 'Unnamed Component');
       items.push({
         id: getId,
-        label: getValue || (isEdge ? 'Connection' : 'Unnamed Component'),
+        label: isEdge ? rawValue : cleanHtmlLabel(rawValue),
         isEdge,
         source: getSource,
         target: getTarget,
@@ -215,6 +238,61 @@ export default function Dashboard() {
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
+  
+  const suggestions = React.useMemo(() => {
+    if (!activeDiagram) return [];
+    
+    const name = (activeDiagram.name || '').toLowerCase();
+    const xml = (activeVersion?.xml_content || '').toLowerCase();
+
+    // 1. AWS/Kubernetes
+    if (name.includes('aws') || name.includes('eks') || name.includes('kubernetes') || xml.includes('eks') || xml.includes('aws.svg') || xml.includes('logos:aws')) {
+      return [
+        'Add an Application Load Balancer (ALB)',
+        'Secure database with RDS Multi-AZ replication',
+        'Integrate AWS WAF to block web exploits',
+        'Add CloudWatch monitoring & alert dashboards'
+      ];
+    }
+
+    // 2. GCP / Serverless
+    if (name.includes('gcp') || name.includes('serverless') || xml.includes('cloud-run') || xml.includes('google-cloud') || xml.includes('apigee') || xml.includes('gcs')) {
+      return [
+        'Add Cloud Armor for WAF security',
+        'Set up Cloud Memorystore for Redis caching',
+        'Integrate Pub/Sub for event-driven flows',
+        'Attach Cloud Monitoring alert policies'
+      ];
+    }
+
+    // 3. AI / RAG / Big Data
+    if (name.includes('rag') || name.includes('pipeline') || name.includes('bigquery') || xml.includes('bigquery') || xml.includes('vector') || xml.includes('vertex') || xml.includes('llm')) {
+      return [
+        'Add Cloud Storage bucket for raw data ingestion',
+        'Integrate LangChain orchestrator with Vertex AI',
+        'Enforce DLP API to redact PII data',
+        'Set up BigQuery cache with BI Engine'
+      ];
+    }
+
+    // 4. CI/CD / DevOps
+    if (name.includes('ci/cd') || name.includes('build') || name.includes('devops') || xml.includes('github') || xml.includes('jenkins') || xml.includes('sonar')) {
+      return [
+        'Add SonarQube for static code analysis',
+        'Integrate Slack notifications for build alerts',
+        'Enforce artifact signing with Cosign',
+        'Set up staging deploy step in pipeline'
+      ];
+    }
+
+    // 5. General Fallback
+    return [
+      'Add an HTTPS Load Balancer at ingress',
+      'Integrate Redis Cache for fast query response',
+      'Enforce IAM roles & service network isolation',
+      'Attach Prometheus & Grafana dashboard metrics'
+    ];
+  }, [activeDiagram, activeVersion?.xml_content]);
   
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
@@ -614,6 +692,35 @@ export default function Dashboard() {
         </mxfile>
       `.trim();
 
+      const promptToGenerate = newDiagramPrompt.trim();
+
+      if (promptToGenerate) {
+        setIsGenerating(true);
+        setIsCreateModalOpen(false);
+        try {
+          const res = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: newDiagramName.trim(),
+              prompt: promptToGenerate
+            })
+          });
+          if (!res.ok) throw new Error('Failed to generate diagram');
+          const data = await res.json();
+          setNewDiagramName('');
+          setNewDiagramPrompt('');
+          await fetchDiagrams();
+          await loadDiagramDetails(data.diagram.id);
+        } catch (genErr) {
+          console.error(genErr);
+          alert('Error generating template diagram.');
+        } finally {
+          setIsGenerating(false);
+        }
+        return;
+      }
+
       const res = await fetch('/api/diagrams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -627,54 +734,12 @@ export default function Dashboard() {
       if (!res.ok) throw new Error('Failed to create diagram');
       const data = await res.json();
       
-      const promptToGenerate = newDiagramPrompt.trim();
       setNewDiagramName('');
       setNewDiagramPrompt('');
       setIsCreateModalOpen(false);
       
-      // Refresh list and select the new diagram
       await fetchDiagrams();
       await loadDiagramDetails(data.diagram.id);
-
-      // If user provided an initial prompt in the modal, automatically generate Version v2!
-      if (promptToGenerate) {
-        setIsGenerating(true);
-        try {
-          const genRes = await fetch('/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              prompt: promptToGenerate,
-              existingXml: defaultXml,
-              diagramId: data.diagram.id
-            })
-          });
-
-          if (!genRes.ok) throw new Error('Failed to generate diagram from initial prompt');
-          const genData = await genRes.json();
-
-          if (genData.xml) {
-            await fetch(`/api/diagrams/${data.diagram.id}/versions`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                xml: genData.xml,
-                comment: `AI Refined: "${promptToGenerate.substring(0, 50)}${promptToGenerate.length > 50 ? '...' : ''}"`,
-                createdBy: 'AI'
-              })
-            });
-            await loadDiagramDetails(data.diagram.id);
-          } else if (genData.version) {
-            // If backend already saved it directly, just reload details
-            await loadDiagramDetails(data.diagram.id);
-          }
-        } catch (genErr) {
-          console.error('[Create Modal] Error generating initial prompt:', genErr);
-          alert('Diagram created, but AI generation failed. You can retry from the prompt bar below.');
-        } finally {
-          setIsGenerating(false);
-        }
-      }
     } catch (err) {
       console.error(err);
       alert('Error creating diagram');
@@ -1574,6 +1639,27 @@ export default function Dashboard() {
 
             {/* Prompt Input Form */}
             <div className="p-3 border-t border-panel-border bg-panel-dark/40">
+              {activeDiagram && suggestions.length > 0 && (
+                <div className="mb-2">
+                  <h5 className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-teal-accent" />
+                    <span>Suggested Next Actions</span>
+                  </h5>
+                  <div className="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto pr-1">
+                    {suggestions.map((suggestion, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setPromptInput(suggestion)}
+                        className="text-[9px] bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 hover:text-teal-accent border border-slate-700/60 hover:border-teal-500/30 px-2 py-1 rounded transition-all truncate text-left cursor-pointer max-w-full"
+                        title={suggestion}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               <form onSubmit={handleSendPrompt} className="relative">
                 <textarea
                   value={promptInput}
@@ -1655,43 +1741,14 @@ export default function Dashboard() {
                       STRUCTURAL TREE INSPECTOR
                     </span>
                   ) : (
-                    <div className="flex items-center gap-1.5" data-testid="interactive-version-dropdown">
-                      <label htmlFor="version-dropdown-selector" className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider hidden sm:inline">Version:</label>
-                      <select
-                        id="version-dropdown-selector"
-                        value={previewVersion ? previewVersion.id : (activeVersion?.id || '')}
-                        onChange={(e) => {
-                          const selectedId = e.target.value;
-                          const targetVersion = activeDiagram?.versions?.find(v => v.id === selectedId);
-                          if (targetVersion) {
-                            if (targetVersion.id === activeVersion?.id) {
-                              // If they select the latest/active version, return to active draft
-                              setPreviewVersion(null);
-                            } else {
-                              // Otherwise enter preview mode for the selected version
-                              setPreviewVersion(targetVersion);
-                            }
-                          }
-                        }}
-                        className={`text-xs px-2.5 py-1 rounded-md font-bold border focus:outline-none transition-all cursor-pointer ${
-                          previewVersion
-                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
-                            : 'bg-slate-800/90 text-teal-300 border-slate-700 hover:border-slate-600 shadow-sm'
-                        }`}
-                      >
-                        {activeDiagram?.versions
-                          ?.slice()
-                          .sort((a, b) => b.version_number - a.version_number)
-                          .map((v) => {
-                            const isLatest = v.id === activeVersion?.id;
-                            const label = `v${v.version_number}${isLatest ? ' (Active Draft)' : ' (Preview)'}`;
-                            return (
-                              <option key={v.id} value={v.id} className="bg-slate-900 text-slate-200 py-1.5 font-medium">
-                                {label}
-                              </option>
-                            );
-                          })}
-                      </select>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`px-2.5 py-1 rounded text-xs font-bold border ${
+                        previewVersion
+                          ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                          : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
+                      }`}>
+                        {previewVersion ? `v${previewVersion.version_number} (Preview)` : `v${activeVersion?.version_number || 1} (Active Draft)`}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -2085,99 +2142,101 @@ export default function Dashboard() {
           </section>
 
           {/* C. RIGHT PANE: Version History Timeline */}
-          <section 
-            id="tour-history-timeline"
-            className={getTourClass(tourStep, 5, `glass-panel border-l border-panel-border flex flex-col transition-all duration-300 z-20 ${
-              isHistoryOpen ? 'w-80' : 'w-0 translate-x-full md:w-16 md:translate-x-0'
-            }`)}
-          >
-            {/* Header */}
-            <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border bg-panel-dark/20">
-              {isHistoryOpen && (
-                <div className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-teal-accent" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">Version History</span>
-                </div>
-              )}
-              {isHistoryOpen ? (
-                <button 
-                  onClick={() => setIsHistoryOpen(false)}
-                  className="p-1 rounded hover:bg-slate-hover text-slate-400"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              ) : (
-                <button 
-                  onClick={() => setIsHistoryOpen(true)}
-                  className="p-1.5 rounded hover:bg-slate-hover text-slate-400 mx-auto"
-                >
-                  <History className="w-4 h-4 text-teal-accent" />
-                </button>
-              )}
-            </div>
-
-            {/* Timeline List */}
-            {isHistoryOpen && (
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 relative">
-                {/* Vertical line connector */}
-                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-800" />
-
-                {!activeDiagram || !activeDiagram.versions || activeDiagram.versions.length === 0 ? (
-                  <p className="text-xs text-slate-500 text-center py-8 relative z-10">No versions saved yet.</p>
+          {activeDiagram && (
+            <section 
+              id="tour-history-timeline"
+              className={getTourClass(tourStep, 5, `glass-panel border-l border-panel-border flex flex-col transition-all duration-300 z-20 ${
+                isHistoryOpen ? 'w-80' : 'w-0 translate-x-full md:w-16 md:translate-x-0'
+              }`)}
+            >
+              {/* Header */}
+              <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border bg-panel-dark/20">
+                {isHistoryOpen && (
+                  <div className="flex items-center gap-2">
+                    <History className="w-4 h-4 text-teal-accent" />
+                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">Version History</span>
+                  </div>
+                )}
+                {isHistoryOpen ? (
+                  <button 
+                    onClick={() => setIsHistoryOpen(false)}
+                    className="p-1 rounded hover:bg-slate-hover text-slate-400"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 ) : (
-                  activeDiagram.versions
-                    .sort((a, b) => b.version_number - a.version_number)
-                    .map((v) => {
-                      const isActive = activeVersion?.id === v.id;
-                      const isPreviewing = previewVersion?.id === v.id;
-                      
-                      return (
-                        <div 
-                          key={v.id} 
-                          onClick={() => {
-                            if (v.id === activeVersion?.id) {
-                              setPreviewVersion(null);
-                            } else {
-                              setPreviewVersion(v);
-                            }
-                          }}
-                          className="flex gap-3 relative z-10 group cursor-pointer"
-                        >
-                          {/* Timeline dot */}
-                          <div className={`w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold border-2 transition-all ${
-                            isPreviewing
-                              ? 'bg-amber-500 border-amber-400 text-bg-dark'
-                              : isActive && !previewVersion
-                              ? 'bg-teal-accent border-teal-400 text-bg-dark'
-                              : 'bg-bg-dark border-slate-700 text-slate-400 group-hover:border-teal-accent/50'
-                          }`}>
-                            {v.version_number}
-                          </div>
-
-                          {/* Version Card */}
-                          <div className={`flex-1 px-3 py-2 rounded-lg border transition-all ${
-                            isPreviewing
-                              ? 'bg-amber-500/5 border-amber-500/40 shadow-sm'
-                              : isActive && !previewVersion
-                              ? 'bg-teal-glow/10 border-teal-accent/30 shadow-sm'
-                              : 'bg-panel-dark/20 border-panel-border/30 hover:border-slate-700'
-                          }`}>
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="text-xs font-bold text-slate-200">
-                                Version v{v.version_number}
-                              </span>
-                              <span className="text-[9px] text-slate-500">
-                                {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })
+                  <button 
+                    onClick={() => setIsHistoryOpen(true)}
+                    className="p-1.5 rounded hover:bg-slate-hover text-slate-400 mx-auto"
+                  >
+                    <History className="w-4 h-4 text-teal-accent" />
+                  </button>
                 )}
               </div>
-            )}
-          </section>
+
+              {/* Timeline List */}
+              {isHistoryOpen && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 relative">
+                  {/* Vertical line connector */}
+                  <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-800" />
+
+                  {!activeDiagram.versions || activeDiagram.versions.length === 0 ? (
+                    <p className="text-xs text-slate-500 text-center py-8 relative z-10">No versions saved yet.</p>
+                  ) : (
+                    activeDiagram.versions
+                      .sort((a, b) => b.version_number - a.version_number)
+                      .map((v) => {
+                        const isActive = activeVersion?.id === v.id;
+                        const isPreviewing = previewVersion?.id === v.id;
+                        
+                        return (
+                          <div 
+                            key={v.id} 
+                            onClick={() => {
+                              if (v.id === activeVersion?.id) {
+                                setPreviewVersion(null);
+                              } else {
+                                setPreviewVersion(v);
+                              }
+                            }}
+                            className="flex gap-3 relative z-10 group cursor-pointer"
+                          >
+                            {/* Timeline dot */}
+                            <div className={`w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold border-2 transition-all ${
+                              isPreviewing
+                                ? 'bg-amber-500 border-amber-400 text-bg-dark'
+                                : isActive && !previewVersion
+                                ? 'bg-teal-accent border-teal-400 text-bg-dark'
+                                : 'bg-bg-dark border-slate-700 text-slate-400 group-hover:border-teal-accent/50'
+                            }`}>
+                              {v.version_number}
+                            </div>
+
+                            {/* Version Card */}
+                            <div className={`flex-1 px-3 py-2 rounded-lg border transition-all ${
+                              isPreviewing
+                                ? 'bg-amber-500/5 border-amber-500/40 shadow-sm'
+                                : isActive && !previewVersion
+                                ? 'bg-teal-glow/10 border-teal-accent/30 shadow-sm'
+                                : 'bg-panel-dark/20 border-panel-border/30 hover:border-slate-700'
+                            }`}>
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="text-xs font-bold text-slate-200">
+                                  Version v{v.version_number}
+                                </span>
+                                <span className="text-[9px] text-slate-500">
+                                  {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                  )}
+                </div>
+              )}
+            </section>
+          )}
         </div>
       </main>
         </>

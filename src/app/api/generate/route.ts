@@ -149,7 +149,7 @@ function parseAiResponse(text: string): { xml: string | null; reasoning: string 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { prompt, diagramId } = body;
+    const { prompt, diagramId, name } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -241,9 +241,9 @@ ${prompt}
       return NextResponse.json({ version });
     } else {
       // Create a new diagram
-      const diagramName = prompt.length > 45 
+      const diagramName = name || (prompt.length > 45 
         ? `${prompt.slice(0, 40)}...` 
-        : prompt;
+        : prompt);
         
       const { diagram, version } = createDiagram(
         diagramName,

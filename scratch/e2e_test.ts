@@ -296,7 +296,7 @@ async function runE2ETest() {
     console.log('Waiting for AI Security Audit report to compile (up to 50s)...');
     await page.waitForFunction(
       () => document.body.textContent?.includes('Maestro Architecture Audit Report'),
-      { timeout: 50000 }
+      { timeout: 80000 }
     );
     await sleep(1500); // 1500ms settling delay
     

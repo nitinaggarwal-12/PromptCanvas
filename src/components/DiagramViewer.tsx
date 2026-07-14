@@ -15,7 +15,7 @@ function htmlEscape(str: string): string {
     .replace(/>/g, '&gt;');
 }
 
-export default function DiagramViewer({ xml }: DiagramViewerProps) {
+export default React.memo(function DiagramViewer({ xml }: DiagramViewerProps) {
   // Construct the isolated HTML document for the iframe
   const iframeHtml = `
     <!DOCTYPE html>
@@ -146,4 +146,4 @@ export default function DiagramViewer({ xml }: DiagramViewerProps) {
       />
     </div>
   );
-}
+});
