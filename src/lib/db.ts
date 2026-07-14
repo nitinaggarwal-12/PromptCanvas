@@ -155,6 +155,30 @@ export async function ensureTablesExist(): Promise<void> {
         'Auto-seeded Cloud RAG Embeddings Blueprint',
         'Design a Retrieval-Augmented Generation (RAG) system with Cloud Run API, Cloud SQL (pgvector), and Gemini LLM.'
       );
+      await seedDiagram(
+        'Gemini Enterprise Portal',
+        GEMINI_ENTERPRISE_XML,
+        'Auto-seeded Gemini Multi-User Enterprise App',
+        'Design a secure enterprise application integrated with Gemini Ultra model API, context caching, and redis grounding store.'
+      );
+      await seedDiagram(
+        'NotebookLM Source Grounding',
+        NOTEBOOK_LM_XML,
+        'Auto-seeded NotebookLM Semantic Grounding Workspace',
+        'Design NotebookLM uploader pipeline chunking sources, storing in vector storage, and generating podcast audio overview.'
+      );
+      await seedDiagram(
+        'Multi-Agent Design Orchestrator',
+        AGENT_DESIGNER_XML,
+        'Auto-seeded Agentic Planner Blueprint',
+        'Design a multi-agent orchestrator designing diagrams with code-execution sandbox, critic reflection loops, and short-term memory.'
+      );
+      await seedDiagram(
+        'Deep Research Agent Pipeline',
+        DEEP_RESEARCH_XML,
+        'Auto-seeded Deep Research Loop Blueprint',
+        'Design a deep research agent performing scraper sub-queries, evaluating sources, and generating markdown reports.'
+      );
       console.log('✅ Default diagrams seeded successfully!');
     }
   } catch (seedErr) {
@@ -562,3 +586,119 @@ async function seedDiagram(name: string, xml: string, comment: string, prompt: s
     `).run(versionId, diagramId, 1, xml, comment, 'AI', prompt);
   }
 }
+
+const GEMINI_ENTERPRISE_XML = `
+<mxfile host="embed.diagrams.net">
+  <diagram id="gemini_enterprise" name="Gemini Enterprise Application">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="client" value="&lt;b&gt;[1] Enterprise Web Client&lt;/b&gt;&lt;br&gt;&lt;i&gt;SSO Authenticated portal&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="250" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway" value="&lt;b&gt;[2] Enterprise Gateway &amp; WAF&lt;/b&gt;&lt;br&gt;&lt;i&gt;PII Scrubbing &amp; guardrails&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="250" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="gemini_llm" value="&lt;b&gt;[3] Gemini Ultra Model API&lt;/b&gt;&lt;br&gt;&lt;i&gt;Context caching enabled&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="250" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rag_store" value="&lt;b&gt;[4] Vector RAG &amp; Cache&lt;/b&gt;&lt;br&gt;&lt;i&gt;Redis Enterprise Store&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="240" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="HTTPS API" style="edge=1;source=client;target=gateway;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e2" value="Route Prompt" style="edge=1;source=gateway;target=gemini_llm;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e3" value="Grounding Query" style="edge=1;source=gemini_llm;target=rag_store;strokeWidth=2;" edge="1" parent="1" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+
+const NOTEBOOK_LM_XML = `
+<mxfile host="embed.diagrams.net">
+  <diagram id="notebook_lm" name="NotebookLM Document Workspace">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="900">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sources" value="&lt;b&gt;[1] Multi-Source Uploader&lt;/b&gt;&lt;br&gt;&lt;i&gt;PDFs, URLs, Slides ingestion&lt;/i&gt;" style="rounded=1;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="250" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="chunker" value="&lt;b&gt;[2] Chunking &amp; Embeddings&lt;/b&gt;&lt;br&gt;&lt;i&gt;Semantic clustering engine&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="250" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vectors" value="&lt;b&gt;[3] Vector Storage&lt;/b&gt;&lt;br&gt;&lt;i&gt;Hierarchical source indexes&lt;/i&gt;" style="shape=cylinder;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="240" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="podcast" value="&lt;b&gt;[4] Audio Overview Gen&lt;/b&gt;&lt;br&gt;&lt;i&gt;Text-To-Speech Deep Speaker&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="250" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="Upload" style="edge=1;source=sources;target=chunker;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e2" value="Store Index" style="edge=1;source=chunker;target=vectors;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e3" value="Generate Podcast" style="edge=1;source=vectors;target=podcast;strokeWidth=2;" edge="1" parent="1" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+
+const AGENT_DESIGNER_XML = `
+<mxfile host="embed.diagrams.net">
+  <diagram id="agent_designer" name="Multi-Agent Design Orchestrator">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="950">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="designer" value="&lt;b&gt;[1] Agentic UI Canvas&lt;/b&gt;&lt;br&gt;&lt;i&gt;Visual workflow editor&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="280" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="orchestrator" value="&lt;b&gt;[2] Router Orchestrator&lt;/b&gt;&lt;br&gt;&lt;i&gt;Goal decomp &amp; delegation&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="280" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="code_agent" value="&lt;b&gt;[3] Code Sandbox Agent&lt;/b&gt;&lt;br&gt;&lt;i&gt;Safe execution environment&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="200" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="eval_agent" value="&lt;b&gt;[4] Critic &amp; Validator Agent&lt;/b&gt;&lt;br&gt;&lt;i&gt;Self-reflection E2E checks&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="360" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="memory" value="&lt;b&gt;[5] Short-term Ephemeral Memory&lt;/b&gt;&lt;br&gt;&lt;i&gt;Shared workspace context&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="910" y="270" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="Deploy Prompt" style="edge=1;source=designer;target=orchestrator;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e2" value="Delegate Task" style="edge=1;source=orchestrator;target=code_agent;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e3" value="Request Review" style="edge=1;source=code_agent;target=eval_agent;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e4" value="Commit Logs" style="edge=1;source=eval_agent;target=memory;strokeWidth=2;" edge="1" parent="1" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+
+const DEEP_RESEARCH_XML = `
+<mxfile host="embed.diagrams.net">
+  <diagram id="deep_research" name="Deep Research Agent Pipeline">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="950">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="trigger" value="&lt;b&gt;[1] Query Trigger Input&lt;/b&gt;&lt;br&gt;&lt;i&gt;High-level prompt topic&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="250" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="searcher" value="&lt;b&gt;[2] Search &amp; Web Scrapers&lt;/b&gt;&lt;br&gt;&lt;i&gt;Recursive sub-queries engine&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="250" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="evaluator" value="&lt;b&gt;[3] Source Quality Evaluator&lt;/b&gt;&lt;br&gt;&lt;i&gt;Cross-references &amp; factual scoring&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="250" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="summarizer" value="&lt;b&gt;[4] Markdown Synthesis Gen&lt;/b&gt;&lt;br&gt;&lt;i&gt;Structured consensus report&lt;/i&gt;" style="shape=cylinder;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="240" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="Initiate Research" style="edge=1;source=trigger;target=searcher;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e2" value="Fetch Results" style="edge=1;source=searcher;target=evaluator;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e3" value="Compile report" style="edge=1;source=evaluator;target=summarizer;strokeWidth=2;" edge="1" parent="1" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();

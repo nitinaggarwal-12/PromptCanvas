@@ -10,7 +10,6 @@ import {
   Eye, 
   Edit3, 
   ExternalLink, 
-  History, 
   Sparkles, 
   ChevronLeft, 
   ChevronRight, 
@@ -372,7 +371,6 @@ export default function Dashboard() {
   
   // UI Panels
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(true);
   
   // Modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(() => {
@@ -1032,13 +1030,13 @@ export default function Dashboard() {
   const renderTemplatesView = () => {
     return (
       <div className="flex-1 overflow-y-auto p-8 bg-bg-dark select-none animate-fade-in">
-        <div className="max-w-5xl mx-auto space-y-8">
+        <div className="max-w-[1600px] mx-auto space-y-8">
           <div>
             <h1 className="text-2xl font-extrabold text-white">Architectural Blueprint Library</h1>
             <p className="text-sm text-slate-400 mt-1">Select an out-of-the-box cloud architecture template to bootstrap your canvas instantly.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {TEMPLATE_PROMPTS.slice(1).map((t, idx) => {
               const isAws = t.name.includes('AWS');
               const isGcp = t.name.includes('GCP');
@@ -1199,14 +1197,15 @@ export default function Dashboard() {
   const renderSettingsView = () => {
     return (
       <div className="flex-1 overflow-y-auto p-8 bg-bg-dark select-none animate-fade-in">
-        <div className="max-w-xl mx-auto space-y-8">
+        <div className="max-w-[1200px] mx-auto space-y-8">
           <div>
             <h1 className="text-2xl font-extrabold text-white">System Settings</h1>
             <p className="text-sm text-slate-400 mt-1">Configure your LLM connection model, keys, database status, and prompt preferences.</p>
           </div>
 
-          <div className="glass-panel border-panel-border/50 rounded-xl p-6 space-y-6">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Card 1: AI Model Configuration */}
+            <div className="glass-panel border-panel-border/50 rounded-xl p-6 space-y-6">
               <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
                 <Settings2 className="w-4 h-4 text-teal-accent" />
                 <span>AI Model Configuration</span>
@@ -1234,38 +1233,41 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-panel-border/30">
-              <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
-                <Database className="w-4 h-4 text-teal-accent" />
-                <span>Database Connection</span>
-              </h3>
+            {/* Card 2: Database & Build Details */}
+            <div className="glass-panel border-panel-border/50 rounded-xl p-6 space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
+                  <Database className="w-4 h-4 text-teal-accent" />
+                  <span>Database Connection</span>
+                </h3>
 
-              <div className="grid grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="block text-slate-500 text-[10px]">SQLite Database</span>
-                  <span className="font-semibold text-white mt-1 block truncate" title="/Users/nitinagga/.gemini/jetski/dev.db">dev.db (Active)</span>
-                </div>
-                <div>
-                  <span className="block text-slate-500 text-[10px]">Database Status</span>
-                  <span className="font-semibold text-emerald-400 mt-1 block">Healthy (Online)</span>
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <span className="block text-slate-500 text-[10px]">SQLite Database</span>
+                    <span className="font-semibold text-white mt-1 block truncate" title="/Users/nitinagga/.gemini/jetski/dev.db">dev.db (Active)</span>
+                  </div>
+                  <div>
+                    <span className="block text-slate-500 text-[10px]">Database Status</span>
+                    <span className="font-semibold text-emerald-400 mt-1 block">Healthy (Online)</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="space-y-4 pt-4 border-t border-panel-border/30">
-              <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
-                <Info className="w-4 h-4 text-teal-accent" />
-                <span>Product Build Details</span>
-              </h3>
+              <div className="space-y-4 pt-4 border-t border-panel-border/30">
+                <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
+                  <Info className="w-4 h-4 text-teal-accent" />
+                  <span>Product Build Details</span>
+                </h3>
 
-              <div className="grid grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="block text-slate-500 text-[10px]">App Version</span>
-                  <span className="font-semibold text-white mt-1 block">v0.1.0-alpha (Maestro Sketch)</span>
-                </div>
-                <div>
-                  <span className="block text-slate-500 text-[10px]">Framework</span>
-                  <span className="font-semibold text-white mt-1 block">Next.js 16 (App Router)</span>
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <span className="block text-slate-500 text-[10px]">App Version</span>
+                    <span className="font-semibold text-white mt-1 block">v0.1.0-alpha (Maestro Sketch)</span>
+                  </div>
+                  <div>
+                    <span className="block text-slate-500 text-[10px]">Framework</span>
+                    <span className="font-semibold text-white mt-1 block">Next.js 16 (App Router)</span>
+                  </div>
                 </div>
               </div>
             </div>
