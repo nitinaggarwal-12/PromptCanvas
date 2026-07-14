@@ -1,6 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { mkdirSync } from 'fs';
 
 // Define TypeScript interfaces for our models
 export interface Diagram {
@@ -32,6 +33,9 @@ function getDb(): DatabaseSync {
   }
 
   try {
+    // Ensure parent directory exists before creating/opening the DB file
+    mkdirSync(dirname(dbPath), { recursive: true });
+    
     dbInstance = new DatabaseSync(dbPath);
     
     // Enable foreign key support
