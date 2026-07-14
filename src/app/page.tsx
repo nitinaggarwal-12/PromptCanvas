@@ -25,6 +25,9 @@ export default function LandingPage() {
       <div className="absolute top-[40%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none z-0" />
       <div className="absolute bottom-[-10%] left-[20%] w-[55vw] h-[55vw] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none z-0" />
 
+      {/* Blueprint Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 pointer-events-none z-0" />
+
       {/* Header/Navigation */}
       <header className="sticky top-0 w-full z-50 border-b border-panel-border/30 bg-[#070a13]/80 backdrop-blur-md">
         <div className="w-full max-w-8xl mx-auto h-20 px-6 md:px-12 flex items-center justify-between">
@@ -97,19 +100,19 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Quick highlights */}
-          <div className="grid grid-cols-3 gap-6 pt-8 border-t border-panel-border/30 w-full">
-            <div>
-              <p className="text-2xl md:text-3xl font-extrabold text-white">100%</p>
-              <p className="text-xs text-slate-500 mt-1">Interactive Vector SVG</p>
+          {/* Quick highlights - Floating capsules */}
+          <div className="grid grid-cols-3 gap-6 pt-10 border-t border-panel-border/30 w-full z-10">
+            <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-teal-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-teal-500/5">
+              <p className="text-3xl font-black text-white">100%</p>
+              <p className="text-xs text-slate-400 mt-1 font-medium">Interactive Vector SVG</p>
             </div>
-            <div>
-              <p className="text-2xl md:text-3xl font-extrabold text-white">&lt; 60s</p>
-              <p className="text-xs text-slate-500 mt-1">From Text to Diagram</p>
+            <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-indigo-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-indigo-500/5">
+              <p className="text-3xl font-black text-white">&lt; 60s</p>
+              <p className="text-xs text-slate-400 mt-1 font-medium">From Text to Diagram</p>
             </div>
-            <div>
-              <p className="text-2xl md:text-3xl font-extrabold text-white">Built-in</p>
-              <p className="text-xs text-slate-500 mt-1">Gemini Security Auditor</p>
+            <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-purple-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-purple-500/5">
+              <p className="text-3xl font-black text-white">Built-in</p>
+              <p className="text-xs text-slate-400 mt-1 font-medium">Gemini Security Auditor</p>
             </div>
           </div>
         </div>
@@ -149,7 +152,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
             {/* The Hard Way */}
-            <div className="glass-panel border-red-500/10 rounded-2xl p-8 flex flex-col justify-between hover:border-red-500/20 transition-all">
+            <div className="glass-panel border-red-500/10 rounded-2xl p-8 flex flex-col justify-between hover:border-red-500/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-red-500/5 transition-all duration-300">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 mb-6">
                   <X className="w-6 h-6" />
@@ -174,7 +177,7 @@ export default function LandingPage() {
             </div>
 
             {/* The Maestro Way */}
-            <div className="glass-panel border-teal-500/20 rounded-2xl p-8 flex flex-col justify-between hover:border-teal-500/40 transition-all shadow-xl shadow-teal-500/5">
+            <div className="glass-panel border-teal-500/25 rounded-2xl p-8 flex flex-col justify-between hover:border-teal-500/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-300">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-6">
                   <CheckCircle2 className="w-6 h-6" />
@@ -214,7 +217,7 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Card 1 */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-teal-500/5">
             <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-4 group-hover:scale-110 transition-transform">
               <Zap className="w-5 h-5" />
             </div>
@@ -225,7 +228,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 2 */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+          <div className="glass-panel border-panel-border/40 hover:border-indigo-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/5">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
               <FileText className="w-5 h-5" />
             </div>
@@ -236,7 +239,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 3 */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+          <div className="glass-panel border-panel-border/40 hover:border-purple-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-purple-500/5">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition-transform">
               <History className="w-5 h-5" />
             </div>
@@ -247,7 +250,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 4 */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-teal-500/5">
             <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-4 group-hover:scale-110 transition-transform">
               <Shield className="w-5 h-5" />
             </div>
@@ -258,7 +261,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 5 */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+          <div className="glass-panel border-panel-border/40 hover:border-indigo-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/5">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
               <Network className="w-5 h-5" />
             </div>
@@ -269,7 +272,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 6 */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-2xl p-6 transition-all group hover:scale-[1.01]">
+          <div className="glass-panel border-panel-border/40 hover:border-purple-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-purple-500/5">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition-transform">
               <FileText className="w-5 h-5" />
             </div>
@@ -292,11 +295,13 @@ export default function LandingPage() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+            {/* Desktop workflow connector line */}
+            <div className="hidden md:block absolute top-6 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-teal-500/30 via-indigo-500/40 to-teal-500/30 border-t border-dashed border-panel-border/30 z-0" />
             
             {/* Step 1 */}
-            <div className="relative flex flex-col items-center text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-bold text-lg shadow-lg shadow-teal-500/10">
+            <div className="relative flex flex-col items-center text-center space-y-4 z-10">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 1
               </div>
               <h4 className="font-bold text-white text-base">Select or Input Prompt</h4>
@@ -306,8 +311,8 @@ export default function LandingPage() {
             </div>
 
             {/* Step 2 */}
-            <div className="relative flex flex-col items-center text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-bold text-lg shadow-lg shadow-teal-500/10">
+            <div className="relative flex flex-col items-center text-center space-y-4 z-10">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 2
               </div>
               <h4 className="font-bold text-white text-base">Gemini Generates XML</h4>
@@ -317,8 +322,8 @@ export default function LandingPage() {
             </div>
 
             {/* Step 3 */}
-            <div className="relative flex flex-col items-center text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-bold text-lg shadow-lg shadow-teal-500/10">
+            <div className="relative flex flex-col items-center text-center space-y-4 z-10">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 3
               </div>
               <h4 className="font-bold text-white text-base">Audit, Tweak, and Iterate</h4>
@@ -333,9 +338,9 @@ export default function LandingPage() {
 
       {/* CTA Bottom Banner */}
       <section className="relative py-24 z-10 max-w-6xl mx-auto px-6 text-center">
-        <div className="glass-panel-teal rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl">
-          {/* Subtle Glows inside CTA */}
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-teal-500/5 via-indigo-500/5 to-transparent pointer-events-none" />
+        <div className="rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl bg-[#090d16] bg-[radial-gradient(circle_at_top_right,rgba(20,184,166,0.08),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.08),transparent_50%)] border border-teal-500/20">
+          {/* Decorative Grid inside CTA Card */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.015)_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-30 pointer-events-none" />
           
           <Sparkles className="w-12 h-12 text-teal-accent mx-auto mb-6 animate-pulse" />
           
