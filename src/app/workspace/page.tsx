@@ -1421,89 +1421,14 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
       
-      {/* 0. NAVIGATION DOCK (VS Code style thin sidebar) */}
-      <nav 
-        id="tour-nav-dock"
-        className={getTourClass(tourStep, 2, "w-16 bg-[#080d16]/90 border-r border-panel-border/30 flex flex-col items-center py-5 justify-between select-none shrink-0 z-30")}
+      {/* Unified Sidebar Navigation & Library */}
+      <aside 
+        className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 ${
+          isSidebarOpen ? 'w-64' : 'w-16'
+        }`}
       >
-        <div className="flex flex-col items-center gap-6 w-full">
-          {/* Brand Icon (Click to go back to landing page) */}
-          <Link
-            href="/dashboard"
-            title="Back to Operations Dashboard"
-            className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center mb-2 hover:scale-105 transition-transform"
-          >
-            <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
-              <Network className="w-5 h-5 text-teal-accent" />
-            </div>
-          </Link>
-
-          {/* Nav Items */}
-          <button
-            onClick={() => setCurrentTab('editor')}
-            title="Design Canvas"
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-              currentTab === 'editor'
-                ? 'bg-teal-accent text-bg-dark font-bold'
-                : 'text-slate-400 hover:text-white hover:bg-slate-hover'
-            }`}
-          >
-            <Network className="w-5 h-5" />
-          </button>
-
-          <button
-            onClick={() => setCurrentTab('templates')}
-            title="Templates Presets"
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-              currentTab === 'templates'
-                ? 'bg-teal-accent text-bg-dark font-bold'
-                : 'text-slate-400 hover:text-white hover:bg-slate-hover'
-            }`}
-          >
-            <LayoutGrid className="w-5 h-5" />
-          </button>
-
-          <button
-            onClick={() => setCurrentTab('audit')}
-            title="Security Audit Hub"
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-              currentTab === 'audit'
-                ? 'bg-teal-accent text-bg-dark font-bold'
-                : 'text-slate-400 hover:text-white hover:bg-slate-hover'
-            }`}
-          >
-            <ShieldAlert className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="flex flex-col items-center gap-4 w-full">
-          <button
-            onClick={() => setCurrentTab('settings')}
-            title="Settings & API Config"
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-              currentTab === 'settings'
-                ? 'bg-teal-accent text-bg-dark font-bold'
-                : 'text-slate-400 hover:text-white hover:bg-slate-hover'
-            }`}
-          >
-            <Settings className="w-5 h-5" />
-          </button>
-
-          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400">
-            NA
-          </div>
-        </div>
-      </nav>
-
-      {currentTab === 'editor' && (
-        <>
-          <aside 
-            className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 ${
-            isSidebarOpen ? 'w-64' : 'w-0 -translate-x-full md:w-16 md:translate-x-0'
-          }`}
-        >
         {/* Sidebar Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
           {isSidebarOpen ? (
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-teal-accent" />
@@ -1525,19 +1450,69 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* New Diagram Button */}
-        <div className="p-3">
-          <button
-            id="new-diagram-btn"
-            onClick={openCreateModal}
-            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover ${
-              !isSidebarOpen && 'p-2'
-            }`}
-          >
-            <Plus className="w-5 h-5" />
-            {isSidebarOpen && <span>New Diagram</span>}
-          </button>
+        {/* Tab Navigation Menu */}
+        <div className="p-3 space-y-1 shrink-0">
+          {[
+            { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
+            { id: 'editor', name: 'Design Canvas', icon: Network },
+            { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid },
+            { id: 'audit', name: 'Security Audit Hub', icon: ShieldAlert },
+            { id: 'settings', name: 'Settings & Config', icon: Settings }
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = currentTab === item.id;
+            
+            const buttonContent = (
+              <div className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                isActive 
+                  ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
+              }`}>
+                <Icon className="w-4 h-4 shrink-0" />
+                {isSidebarOpen && <span className="truncate">{item.name}</span>}
+              </div>
+            );
+
+            if (item.href) {
+              return (
+                <Link key={item.id} href={item.href} className="block">
+                  {buttonContent}
+                </Link>
+              );
+            }
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setCurrentTab(item.id as 'editor' | 'templates' | 'audit' | 'settings');
+                  if (!isSidebarOpen) setIsSidebarOpen(true);
+                }}
+                className="w-full text-left block"
+              >
+                {buttonContent}
+              </button>
+            );
+          })}
         </div>
+
+        <div className="border-t border-panel-border/30 my-1 shrink-0" />
+
+        {currentTab === 'editor' && (
+          <>
+            {/* New Diagram Button */}
+            <div className="p-3 shrink-0">
+              <button
+                id="new-diagram-btn"
+                onClick={openCreateModal}
+                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover ${
+                  !isSidebarOpen && 'p-2'
+                }`}
+              >
+                <Plus className="w-5 h-5" />
+                {isSidebarOpen && <span>New Diagram</span>}
+              </button>
+            </div>
 
         {/* Search Bar */}
         {isSidebarOpen && (
@@ -1679,6 +1654,8 @@ export default function Dashboard() {
             </div>
           )}
         </div>
+          </>
+        )}
         
         {/* Toggle Expand Sidebar */}
         {!isSidebarOpen && (
@@ -2523,8 +2500,6 @@ export default function Dashboard() {
           </>
         )}
       </main>
-        </>
-      )}
 
       {currentTab === 'templates' && renderTemplatesView()}
       {currentTab === 'audit' && renderAuditCenterView()}

@@ -16,7 +16,12 @@ import {
   FileText,
   Sparkles,
   BarChart3,
-  Loader2
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+  LayoutGrid,
+  ShieldAlert,
+  Settings
 } from 'lucide-react';
 
 interface Diagram {
@@ -77,6 +82,7 @@ export default function Dashboard() {
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -193,16 +199,89 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen w-screen bg-[#070a13] text-slate-100 flex flex-col overflow-x-clip font-sans relative selection:bg-teal-500/30 selection:text-teal-200">
-      {/* Background radial overlays */}
-      <div className="absolute top-0 right-0 w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-[130px] pointer-events-none z-0" />
-      <div className="absolute bottom-0 left-0 w-[45vw] h-[45vw] rounded-full bg-indigo-500/10 blur-[130px] pointer-events-none z-0" />
+    <div className="flex h-screen w-screen bg-[#070a13] text-slate-100 overflow-hidden font-sans relative selection:bg-teal-500/30 selection:text-teal-200">
+      
+      {/* Unified Sidebar Navigation */}
+      <aside 
+        className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 shrink-0 ${
+          isSidebarOpen ? 'w-64' : 'w-16'
+        }`}
+      >
+        {/* Sidebar Header */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
+          {isSidebarOpen ? (
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-teal-accent" />
+              <span className="font-bold text-lg tracking-wider bg-gradient-to-r from-teal-accent to-cyan-400 bg-clip-text text-transparent">
+                MAESTRO
+              </span>
+            </div>
+          ) : (
+            <Sparkles className="w-5 h-5 text-teal-accent mx-auto" />
+          )}
+          {isSidebarOpen && (
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          )}
+        </div>
 
-      {/* Blueprint Grid Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.015)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30 pointer-events-none z-0" />
+        {/* Tab Navigation Menu */}
+        <div className="p-3 space-y-1 shrink-0">
+          {[
+            { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
+            { id: 'editor', name: 'Design Canvas', icon: Network, href: '/workspace' },
+            { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid, href: '/workspace?tab=templates' },
+            { id: 'audit', name: 'Security Audit Hub', icon: ShieldAlert, href: '/workspace?tab=audit' },
+            { id: 'settings', name: 'Settings & Config', icon: Settings, href: '/workspace?tab=settings' }
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = item.id === 'dashboard';
+            
+            return (
+              <Link key={item.id} href={item.href} className="block">
+                <div className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  isActive 
+                    ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
+                }`}>
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {isSidebarOpen && <span className="truncate">{item.name}</span>}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
 
-      {/* Header Bar */}
-      <header className="w-full border-b border-panel-border/30 h-20 bg-[#070a13]/80 backdrop-blur-md px-12 md:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
+        <div className="border-t border-panel-border/30 my-1 shrink-0" />
+        
+        {/* Toggle Expand Sidebar */}
+        {!isSidebarOpen && (
+          <div className="p-3 border-t border-panel-border flex justify-center mt-auto">
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-1.5 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </aside>
+
+      {/* Main Dashboard Portal Container */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto relative">
+        {/* Background radial overlays */}
+        <div className="absolute top-0 right-0 w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-[130px] pointer-events-none z-0" />
+        <div className="absolute bottom-0 left-0 w-[45vw] h-[45vw] rounded-full bg-indigo-500/10 blur-[130px] pointer-events-none z-0" />
+
+        {/* Blueprint Grid Overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.015)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30 pointer-events-none z-0" />
+
+        {/* Header Bar */}
+        <header className="w-full border-b border-panel-border/30 h-16 bg-[#070a13]/80 backdrop-blur-md px-12 md:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
@@ -553,6 +632,7 @@ export default function Dashboard() {
           <span>&copy; {new Date().getFullYear()} Google DeepMind Team. All rights reserved.</span>
         </div>
       </footer>
+      </div> {/* Closes main portal container */}
 
       {/* CREATE WORKSPACE MODAL */}
       {isCreateModalOpen && (
