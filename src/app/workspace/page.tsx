@@ -1278,7 +1278,7 @@ export default function Dashboard() {
   // --- UI Helpers ---
   const renderEmptyWorkspaceDashboard = () => {
     return (
-      <div className="w-full h-full overflow-y-auto p-12 md:p-20 relative flex items-center justify-center bg-gradient-to-b from-[#070b12] to-[#030509]">
+      <div className="w-full h-full overflow-y-auto py-12 px-6 md:py-20 relative bg-gradient-to-b from-[#070b12] to-[#030509]">
         {/* Subtle Tech Grid overlay */}
         <div 
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -1294,7 +1294,7 @@ export default function Dashboard() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-teal-500/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-5 gap-12 items-center z-10 relative">
+        <div className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12 z-10 relative">
           
           {/* Welcome & Scratch Onboarding (Left Column - 2 Tiers) */}
           <div className="lg:col-span-2 space-y-8">
