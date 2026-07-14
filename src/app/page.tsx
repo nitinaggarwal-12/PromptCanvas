@@ -81,14 +81,14 @@ export default function LandingPage() {
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto pt-2">
             <Link
-              href="/dashboard"
+              href="/workspace?modal=create"
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
             >
               <span>Build First Diagram</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="/dashboard?tour=true"
+              href="/workspace?tour=true"
               className="px-8 py-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-teal-500/40 text-slate-300 font-semibold text-center transition-all flex items-center justify-center gap-2 hover:bg-slate-800"
             >
               <Play className="w-4 h-4 text-teal-400" />
@@ -346,7 +346,7 @@ export default function LandingPage() {
 
           <div className="mt-8 flex justify-center">
             <Link
-              href="/dashboard"
+              href="/workspace?modal=create"
               className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Launch Free Workspace</span>

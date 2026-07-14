@@ -30,7 +30,7 @@ async function runTourTest() {
 
   try {
     console.log('\n--- STEP 1: Launching Tour Welcome Overlay ---');
-    await page.goto('http://localhost:3000/dashboard?tour=true', { waitUntil: 'networkidle2' });
+    await page.goto('http://localhost:3000/workspace?tour=true', { waitUntil: 'networkidle2' });
     await sleep(1500); // Wait for page compiling/settling
     
     // Capture Welcome Overlay

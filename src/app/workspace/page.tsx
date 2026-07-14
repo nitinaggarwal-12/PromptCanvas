@@ -243,7 +243,13 @@ export default function Dashboard() {
 
   const getTourClass = (step: number | null, targetStep: number, baseClass: string) => {
     if (step === targetStep) {
-      return `${baseClass} relative z-50 ring-4 ring-teal-500/40 shadow-[0_0_30px_rgba(20,184,166,0.3)] transition-all duration-300`;
+      // Strip any conflicting z-index utilities (e.g. z-20, z-30) from base class
+      const cleanedBase = baseClass.replace(/\bz-\d+\b/g, '');
+      // Ensure positioning context exists so z-index functions correctly
+      const hasPosition = /\b(relative|absolute|fixed|sticky)\b/.test(cleanedBase);
+      const positionClass = hasPosition ? '' : 'relative';
+      
+      return `${cleanedBase} ${positionClass} z-50 ring-4 ring-teal-500/40 shadow-[0_0_30px_rgba(20,184,166,0.4)] transition-all duration-300`;
     }
     return baseClass;
   };
