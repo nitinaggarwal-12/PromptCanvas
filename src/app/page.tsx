@@ -18,7 +18,7 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#070a13] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-hidden">
+    <div className="min-h-screen bg-[#070a13] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-clip">
       
       {/* Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-[120px] pointer-events-none z-0" />
