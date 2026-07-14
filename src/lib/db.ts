@@ -92,6 +92,14 @@ export async function ensureTablesExist(): Promise<void> {
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
       );
     `);
+
+    // Schema Evolution Migrations
+    await pool.query(`
+      ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS prompt TEXT;
+    `);
+    await pool.query(`
+      ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS ai_reasoning TEXT;
+    `);
   } else {
     const db = getSqliteDb();
     db.exec(`
@@ -117,6 +125,18 @@ export async function ensureTablesExist(): Promise<void> {
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
       );
     `);
+
+    // Schema Evolution Migrations
+    try {
+      db.exec('ALTER TABLE diagram_versions ADD COLUMN prompt TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE diagram_versions ADD COLUMN ai_reasoning TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
   }
 
   // Seeding trigger: if no diagrams exist, seed defaults!

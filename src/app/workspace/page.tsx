@@ -592,6 +592,12 @@ export default function Dashboard() {
     } catch (err) {
       console.error(err);
       alert('Error loading diagram details');
+      setActiveDiagram(null);
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        params.delete('diagram');
+        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+      }
     }
   }, []);
 
@@ -607,6 +613,10 @@ export default function Dashboard() {
           setTimeout(() => {
             loadDiagramDetails(diagramId);
           }, 0);
+        } else if (!exists) {
+          const newParams = new URLSearchParams(window.location.search);
+          newParams.delete('diagram');
+          window.history.replaceState({}, '', `${window.location.pathname}?${newParams.toString()}`);
         }
       }
     }
