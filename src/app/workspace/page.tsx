@@ -426,6 +426,7 @@ export default function Dashboard() {
   // Loading States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   
   // Chat History
@@ -1278,7 +1279,7 @@ export default function Dashboard() {
   // --- UI Helpers ---
   const renderEmptyWorkspaceDashboard = () => {
     return (
-      <div className="w-full h-full overflow-y-auto py-12 px-6 md:py-20 relative bg-gradient-to-b from-[#070b12] to-[#030509]">
+      <div className="w-full h-full overflow-y-auto py-12 px-6 md:py-16 relative bg-gradient-to-b from-[#070b12] to-[#030509] select-none">
         {/* Subtle Tech Grid overlay */}
         <div 
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -1292,13 +1293,12 @@ export default function Dashboard() {
         />
         {/* Glowing Radial Background lights */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-teal-500/5 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12 z-10 relative">
+        <div className="max-w-[1600px] mx-auto space-y-12 z-10 relative">
           
-          {/* Welcome & Scratch Onboarding (Left Column - 2 Tiers) */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="space-y-4">
+          {/* Top Row: Welcome Header & Start from Scratch Card (Horizontal) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center bg-slate-900/30 border border-panel-border/30 rounded-2xl p-8 backdrop-blur-sm">
+            <div className="lg:col-span-2 space-y-4">
               <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-teal-accent uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Next-Gen Architecture Compiler</span>
@@ -1309,51 +1309,53 @@ export default function Dashboard() {
                   With Pure Intent.
                 </span>
               </h2>
-              <p className="text-sm text-slate-400 leading-relaxed max-w-md pt-2">
+              <p className="text-sm text-slate-400 leading-relaxed max-w-2xl pt-1">
                 Translate complex system descriptions into production-grade interactive architecture diagrams. Formatted for compliance, version-controlled, and instantly editable.
               </p>
             </div>
 
-            {/* Launch Card */}
-            <div className="glass-panel border-panel-border/80 hover:border-teal-500/40 rounded-2xl p-6 space-y-5 hover:scale-[1.01] transition-all duration-300 shadow-xl shadow-black/40">
-              <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent border border-teal-500/20">
-                <Plus className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-bold text-base text-white">Start from Scratch</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">Initialize a clean-slate architecture workspace and design inline with Draw.io.</p>
+            {/* Launch Card (Horizontal on right side of hero) */}
+            <div className="glass-panel border-panel-border/60 hover:border-teal-500/40 rounded-xl p-5 flex flex-col justify-between h-full hover:scale-[1.01] transition-all duration-300 shadow-xl">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-accent border border-teal-500/20 shrink-0">
+                  <Plus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-white">Start from Scratch</h4>
+                  <p className="text-[10px] text-slate-400 leading-tight">Initialize a clean slate workspace.</p>
+                </div>
               </div>
               <button
                 onClick={openCreateModal}
-                className="w-full py-3 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs uppercase tracking-wider transition-all shadow-lg glow-teal-hover cursor-pointer"
+                className="w-full mt-4 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs uppercase tracking-wider transition-all shadow-lg cursor-pointer"
               >
                 Create New Canvas
               </button>
             </div>
           </div>
 
-          {/* Presets Onboarding (Right Column - 3 Tiers) */}
-          <div className="lg:col-span-3 space-y-6">
+          {/* Bottom Row: Quick Start Presets (Horizontal Grid) */}
+          <div className="space-y-6">
             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
               <LayoutGrid className="w-3.5 h-3.5 text-teal-accent" />
               <span>Bootstrap with a Quick Start Template</span>
             </h4>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {TEMPLATE_PROMPTS.slice(1).map((t, idx) => {
                 const isAws = t.name.includes('AWS');
                 const isGcp = t.name.includes('GCP');
                 const provider = isAws ? 'AWS' : isGcp ? 'GCP' : 'DevOps';
                 const providerColor = isAws 
-                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-amber-500/5' 
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
                   : isGcp 
-                    ? 'bg-teal-500/10 text-teal-400 border-teal-500/20 shadow-teal-500/5' 
-                    : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-indigo-500/5';
+                    ? 'bg-teal-500/10 text-teal-400 border-teal-500/20' 
+                    : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
 
                 return (
                   <div 
                     key={idx} 
-                    className="glass-panel border-panel-border/60 hover:border-teal-500/30 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01] hover:shadow-lg hover:shadow-black/25"
+                    className="glass-panel border-panel-border/60 hover:border-teal-500/30 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01] hover:shadow-lg"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
@@ -1374,7 +1376,7 @@ export default function Dashboard() {
                         setNewDiagramName(t.name);
                         setNewDiagramPrompt(t.prompt);
                         setSelectedTemplate((idx + 1).toString());
-                        setIsGenerating(true);
+                        setGeneratingTemplateIdx(idx);
                         try {
                           const res = await fetch('/api/generate', {
                             method: 'POST',
@@ -1392,13 +1394,13 @@ export default function Dashboard() {
                           console.error(err);
                           alert('Error launching preset');
                         } finally {
-                          setIsGenerating(false);
+                          setGeneratingTemplateIdx(null);
                         }
                       }}
-                      disabled={isGenerating}
+                      disabled={generatingTemplateIdx !== null}
                       className="w-full py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-[10px] uppercase tracking-wider font-bold transition-all border border-slate-700/60 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
-                      {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : (
+                      {generatingTemplateIdx === idx ? <Loader2 className="w-3 h-3 animate-spin" /> : (
                         <>
                           <span>Launch Preset</span>
                           <ArrowRight className="w-3 h-3" />
@@ -1463,12 +1465,12 @@ export default function Dashboard() {
             const isActive = currentTab === item.id;
             
             const buttonContent = (
-              <div className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              <div className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
                 isActive 
                   ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
                   : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
               }`}>
-                <Icon className="w-4 h-4 shrink-0" />
+                <Icon className="w-4.5 h-4.5 shrink-0" />
                 {isSidebarOpen && <span className="truncate">{item.name}</span>}
               </div>
             );
@@ -1671,8 +1673,9 @@ export default function Dashboard() {
       </aside>
 
       {/* 2. MAIN WORKSPACE: Split Pane */}
-      <main className="flex-1 flex flex-col min-w-0 h-full">
-        {!activeDiagram ? (
+      {currentTab === 'editor' && (
+        <main className="flex-1 flex flex-col min-w-0 h-full">
+          {!activeDiagram ? (
           renderEmptyWorkspaceDashboard()
         ) : (
           <>
@@ -2399,107 +2402,11 @@ export default function Dashboard() {
               </div>
             )}
           </section>
-
-          {/* C. RIGHT PANE: Version History Timeline */}
-          {activeDiagram && (
-            <section 
-              id="tour-history-timeline"
-              className={getTourClass(tourStep, 5, `glass-panel border-l border-panel-border flex flex-col transition-all duration-300 z-20 ${
-                isHistoryOpen ? 'w-80' : 'w-0 translate-x-full md:w-16 md:translate-x-0'
-              }`)}
-            >
-              {/* Header */}
-              <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border bg-panel-dark/20">
-                {isHistoryOpen && (
-                  <div className="flex items-center gap-2">
-                    <History className="w-4 h-4 text-teal-accent" />
-                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">Version History</span>
-                  </div>
-                )}
-                {isHistoryOpen ? (
-                  <button 
-                    onClick={() => setIsHistoryOpen(false)}
-                    className="p-1 rounded hover:bg-slate-hover text-slate-400"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                ) : (
-                  <button 
-                    onClick={() => setIsHistoryOpen(true)}
-                    className="p-1.5 rounded hover:bg-slate-hover text-slate-400 mx-auto"
-                  >
-                    <History className="w-4 h-4 text-teal-accent" />
-                  </button>
-                )}
-              </div>
-
-              {/* Timeline List */}
-              {isHistoryOpen && (
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 relative">
-                  {/* Vertical line connector */}
-                  <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-800" />
-
-                  {!activeDiagram.versions || activeDiagram.versions.length === 0 ? (
-                    <p className="text-xs text-slate-500 text-center py-8 relative z-10">No versions saved yet.</p>
-                  ) : (
-                    activeDiagram.versions
-                      .sort((a, b) => b.version_number - a.version_number)
-                      .map((v) => {
-                        const isActive = activeVersion?.id === v.id;
-                        const isPreviewing = previewVersion?.id === v.id;
-                        
-                        return (
-                          <div 
-                            key={v.id} 
-                            onClick={() => {
-                              if (v.id === activeVersion?.id) {
-                                setPreviewVersion(null);
-                              } else {
-                                setPreviewVersion(v);
-                              }
-                            }}
-                            className="flex gap-3 relative z-10 group cursor-pointer"
-                          >
-                            {/* Timeline dot */}
-                            <div className={`w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold border-2 transition-all ${
-                              isPreviewing
-                                ? 'bg-amber-500 border-amber-400 text-bg-dark'
-                                : isActive && !previewVersion
-                                ? 'bg-teal-accent border-teal-400 text-bg-dark'
-                                : 'bg-bg-dark border-slate-700 text-slate-400 group-hover:border-teal-accent/50'
-                            }`}>
-                              {v.version_number}
-                            </div>
-
-                            {/* Version Card */}
-                            <div className={`flex-1 px-3 py-2 rounded-lg border transition-all ${
-                              isPreviewing
-                                ? 'bg-amber-500/5 border-amber-500/40 shadow-sm'
-                                : isActive && !previewVersion
-                                ? 'bg-teal-glow/10 border-teal-accent/30 shadow-sm'
-                                : 'bg-panel-dark/20 border-panel-border/30 hover:border-slate-700'
-                            }`}>
-                              <div className="flex items-center justify-between gap-2">
-                                <span className="text-xs font-bold text-slate-200">
-                                  Version v{v.version_number}
-                                </span>
-                                <span className="text-[9px] text-slate-500">
-                                  {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })
-                  )}
-                </div>
-              )}
-            </section>
-          )}
         </div>
           </>
         )}
       </main>
+      )}
 
       {currentTab === 'templates' && renderTemplatesView()}
       {currentTab === 'audit' && renderAuditCenterView()}

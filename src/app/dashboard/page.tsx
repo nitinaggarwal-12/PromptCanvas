@@ -30,6 +30,8 @@ interface Diagram {
   created_at: string;
   updated_at: string;
   versions?: DiagramVersion[];
+  xml_content?: string;
+  prompt?: string | null;
 }
 
 interface DiagramVersion {
@@ -243,12 +245,12 @@ export default function Dashboard() {
             
             return (
               <Link key={item.id} href={item.href} className="block">
-                <div className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                <div className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
                   isActive 
                     ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
                     : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
                 }`}>
-                  <Icon className="w-4 h-4 shrink-0" />
+                  <Icon className="w-4.5 h-4.5 shrink-0" />
                   {isSidebarOpen && <span className="truncate">{item.name}</span>}
                 </div>
               </Link>
