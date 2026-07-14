@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   try {
     const { versionId } = await params;
     
-    const version = getDiagramVersion(versionId);
+    const version = await getDiagramVersion(versionId);
     if (!version) {
       return NextResponse.json(
         { error: `Diagram version with ID ${versionId} not found` },

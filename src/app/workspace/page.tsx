@@ -1276,6 +1276,146 @@ export default function Dashboard() {
   };
 
   // --- UI Helpers ---
+  const renderEmptyWorkspaceDashboard = () => {
+    return (
+      <div className="w-full h-full overflow-y-auto p-12 md:p-20 relative flex items-center justify-center bg-gradient-to-b from-[#070b12] to-[#030509]">
+        {/* Subtle Tech Grid overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(20, 184, 166, 0.6) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(20, 184, 166, 0.6) 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px'
+          }}
+        />
+        {/* Glowing Radial Background lights */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-teal-500/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+
+        <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-5 gap-12 items-center z-10 relative">
+          
+          {/* Welcome & Scratch Onboarding (Left Column - 2 Tiers) */}
+          <div className="lg:col-span-2 space-y-8">
+            <div className="space-y-4">
+              <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-teal-accent uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Next-Gen Architecture Compiler</span>
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-none">
+                Design Systems <br />
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-accent via-cyan-400 to-indigo-400">
+                  With Pure Intent.
+                </span>
+              </h2>
+              <p className="text-sm text-slate-400 leading-relaxed max-w-md pt-2">
+                Translate complex system descriptions into production-grade interactive architecture diagrams. Formatted for compliance, version-controlled, and instantly editable.
+              </p>
+            </div>
+
+            {/* Launch Card */}
+            <div className="glass-panel border-panel-border/80 hover:border-teal-500/40 rounded-2xl p-6 space-y-5 hover:scale-[1.01] transition-all duration-300 shadow-xl shadow-black/40">
+              <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent border border-teal-500/20">
+                <Plus className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="font-bold text-base text-white">Start from Scratch</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">Initialize a clean-slate architecture workspace and design inline with Draw.io.</p>
+              </div>
+              <button
+                onClick={openCreateModal}
+                className="w-full py-3 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs uppercase tracking-wider transition-all shadow-lg glow-teal-hover cursor-pointer"
+              >
+                Create New Canvas
+              </button>
+            </div>
+          </div>
+
+          {/* Presets Onboarding (Right Column - 3 Tiers) */}
+          <div className="lg:col-span-3 space-y-6">
+            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <LayoutGrid className="w-3.5 h-3.5 text-teal-accent" />
+              <span>Bootstrap with a Quick Start Template</span>
+            </h4>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {TEMPLATE_PROMPTS.slice(1).map((t, idx) => {
+                const isAws = t.name.includes('AWS');
+                const isGcp = t.name.includes('GCP');
+                const provider = isAws ? 'AWS' : isGcp ? 'GCP' : 'DevOps';
+                const providerColor = isAws 
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-amber-500/5' 
+                  : isGcp 
+                    ? 'bg-teal-500/10 text-teal-400 border-teal-500/20 shadow-teal-500/5' 
+                    : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-indigo-500/5';
+
+                return (
+                  <div 
+                    key={idx} 
+                    className="glass-panel border-panel-border/60 hover:border-teal-500/30 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01] hover:shadow-lg hover:shadow-black/25"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${providerColor}`}>
+                          {provider}
+                        </span>
+                        <Sparkles className="w-3.5 h-3.5 text-teal-accent/30 group-hover:text-teal-accent transition-colors" />
+                      </div>
+                      <h3 className="font-bold text-xs text-white group-hover:text-teal-accent transition-colors mb-2 leading-snug">
+                        {t.name}
+                      </h3>
+                      <p className="text-[11px] text-slate-400 line-clamp-3 leading-relaxed mb-4">
+                        {t.prompt}
+                      </p>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        setNewDiagramName(t.name);
+                        setNewDiagramPrompt(t.prompt);
+                        setSelectedTemplate((idx + 1).toString());
+                        setIsGenerating(true);
+                        try {
+                          const res = await fetch('/api/generate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              name: t.name,
+                              prompt: t.prompt
+                            })
+                          });
+                          if (!res.ok) throw new Error('Failed to generate template');
+                          const data = await res.json();
+                          await fetchDiagrams();
+                          await loadDiagramDetails(data.diagram.id);
+                        } catch (err) {
+                          console.error(err);
+                          alert('Error launching preset');
+                        } finally {
+                          setIsGenerating(false);
+                        }
+                      }}
+                      disabled={isGenerating}
+                      className="w-full py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-[10px] uppercase tracking-wider font-bold transition-all border border-slate-700/60 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : (
+                        <>
+                          <span>Launch Preset</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    );
+  };
+
   const displayedVersion = previewVersion || activeVersion;
 
   return (
@@ -1555,9 +1695,12 @@ export default function Dashboard() {
 
       {/* 2. MAIN WORKSPACE: Split Pane */}
       <main className="flex-1 flex flex-col min-w-0 h-full">
-        
-        {/* Top Navbar */}
-        <header className="h-16 border-b border-panel-border flex items-center justify-between px-6 bg-panel-dark/50 backdrop-blur">
+        {!activeDiagram ? (
+          renderEmptyWorkspaceDashboard()
+        ) : (
+          <>
+            {/* Top Navbar */}
+            <header className="h-16 border-b border-panel-border flex items-center justify-between px-6 bg-panel-dark/50 backdrop-blur">
           <div className="flex items-center gap-4">
             {/* Sidebar toggle if collapsed */}
             {!isSidebarOpen && (
@@ -2377,6 +2520,8 @@ export default function Dashboard() {
             </section>
           )}
         </div>
+          </>
+        )}
       </main>
         </>
       )}

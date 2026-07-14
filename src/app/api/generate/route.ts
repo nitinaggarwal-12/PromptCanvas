@@ -169,7 +169,7 @@ export async function POST(request: Request) {
     if (diagramId) {
       // Refinement Loop
       isRefinement = true;
-      const latestVersion = getLatestDiagramVersion(diagramId);
+      const latestVersion = await getLatestDiagramVersion(diagramId);
       if (!latestVersion) {
         return NextResponse.json(
           { error: `Diagram with ID ${diagramId} has no versions to refine` },
@@ -230,7 +230,7 @@ ${prompt}
 
     if (isRefinement && diagramId) {
       // Save as a new version
-      const version = saveDiagramVersion(
+      const version = await saveDiagramVersion(
         diagramId,
         xml,
         `AI Refined: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`,
@@ -245,7 +245,7 @@ ${prompt}
         ? `${prompt.slice(0, 40)}...` 
         : prompt);
         
-      const { diagram, version } = createDiagram(
+      const { diagram, version } = await createDiagram(
         diagramName,
         xml,
         `AI Generated: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`,

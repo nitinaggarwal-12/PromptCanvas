@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'diagramId is required' }, { status: 400 });
     }
 
-    const latestVersion = getLatestDiagramVersion(diagramId);
+    const latestVersion = await getLatestDiagramVersion(diagramId);
     if (!latestVersion) {
       return NextResponse.json({ error: 'Diagram has no versions to audit' }, { status: 404 });
     }

@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import { rmSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
-const SCREENSHOT_DIR = '/Users/nitinagga/.gemini/jetski/brain/57227f71-af5c-418d-8f2b-c3e2b3572380/screenshots_v1';
+const SCREENSHOT_DIR = '/Users/nitinagga/.gemini/jetski/brain/5bf245c3-5d88-44e5-b952-6a18dfe48f5d/screenshots_tour';
 
 // Helper to sleep/wait (Mandatory Settling Delays)
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

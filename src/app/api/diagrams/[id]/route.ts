@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   try {
     const { id } = await params;
     
-    const diagram = getDiagram(id);
+    const diagram = await getDiagram(id);
     if (!diagram) {
       return NextResponse.json(
         { error: `Diagram with ID ${id} not found` },
@@ -20,7 +20,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       );
     }
 
-    const versions = getDiagramVersions(id);
+    const versions = await getDiagramVersions(id);
 
     return NextResponse.json({
       ...diagram,
@@ -40,7 +40,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
   try {
     const { id } = await params;
     
-    const diagram = getDiagram(id);
+    const diagram = await getDiagram(id);
     if (!diagram) {
       return NextResponse.json(
         { error: `Diagram with ID ${id} not found` },
@@ -48,7 +48,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       );
     }
 
-    deleteDiagram(id);
+    await deleteDiagram(id);
 
     return NextResponse.json({ message: `Diagram ${id} deleted successfully` });
   } catch (error) {

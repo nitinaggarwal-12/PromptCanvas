@@ -4,7 +4,7 @@ import { listDiagrams, createDiagram } from '@/lib/db';
 // GET /api/diagrams - List all diagrams
 export async function GET() {
   try {
-    const diagrams = listDiagrams();
+    const diagrams = await listDiagrams();
     return NextResponse.json(diagrams);
   } catch (error) {
     console.error('Failed to list diagrams:', error);
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { diagram, version } = createDiagram(name, xml, comment);
+    const { diagram, version } = await createDiagram(name, xml, comment);
 
     return NextResponse.json({ diagram, version }, { status: 201 });
   } catch (error) {

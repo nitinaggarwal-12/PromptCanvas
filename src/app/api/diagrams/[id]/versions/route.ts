@@ -13,7 +13,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     const { id: diagramId } = await params;
     
     // Verify diagram exists
-    const diagram = getDiagram(diagramId);
+    const diagram = await getDiagram(diagramId);
     if (!diagram) {
       return NextResponse.json(
         { error: `Diagram with ID ${diagramId} not found` },
@@ -31,7 +31,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
-    const newVersion = saveDiagramVersion(
+    const newVersion = await saveDiagramVersion(
       diagramId,
       xmlContent,
       comment,
