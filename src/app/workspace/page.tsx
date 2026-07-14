@@ -26,7 +26,10 @@ import {
   ArrowRight,
   Settings2,
   Database,
-  Info
+  Info,
+  Search,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
 
@@ -89,6 +92,27 @@ function cleanHtmlLabel(label: string): string {
 
   // 4. Normalize spacing
   return stripped.trim().replace(/\s+/g, ' ');
+}
+
+function formatRelativeTime(dateStr: string): string {
+  if (!dateStr) return '';
+  const normalized = dateStr.replace(' ', 'T');
+  const date = new Date(normalized);
+  if (isNaN(date.getTime())) return '';
+
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHrs = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHrs / 24);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHrs < 24) return `${diffHrs}h ago`;
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  
+  return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
 function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
@@ -307,6 +331,20 @@ export default function Dashboard() {
     return 'canvas';
   });
   const [outlineEdits, setOutlineEdits] = useState<Record<string, string>>({});
+  const [sidebarSearch, setSidebarSearch] = useState('');
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
+
+  const filteredSidebarDiagrams = React.useMemo(() => {
+    return diagrams.filter(d => d.name.toLowerCase().includes(sidebarSearch.toLowerCase()));
+  }, [diagrams, sidebarSearch]);
+
+  const recentDiagrams = React.useMemo(() => {
+    return filteredSidebarDiagrams.slice(0, 7); // Cap at 7 recent diagrams
+  }, [filteredSidebarDiagrams]);
+
+  const archiveDiagrams = React.useMemo(() => {
+    return filteredSidebarDiagrams.slice(7);
+  }, [filteredSidebarDiagrams]);
   
   // Tour States
   const [tourStep, setTourStep] = useState<number | null>(() => {
@@ -1361,43 +1399,144 @@ export default function Dashboard() {
           </button>
         </div>
 
+        {/* Search Bar */}
+        {isSidebarOpen && (
+          <div className="px-3 mb-2">
+            <div className="relative">
+              <input
+                type="text"
+                value={sidebarSearch}
+                onChange={(e) => setSidebarSearch(e.target.value)}
+                placeholder="Search diagrams..."
+                className="w-full bg-bg-dark border border-panel-border/80 focus:border-teal-accent rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all"
+              />
+              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
+              {sidebarSearch && (
+                <button
+                  onClick={() => setSidebarSearch('')}
+                  className="absolute right-2 top-2 p-0.5 rounded text-slate-500 hover:text-white"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Diagram List */}
-        <div className="flex-1 overflow-y-auto px-2 space-y-1">
+        <div className="flex-1 overflow-y-auto px-2 space-y-4">
           {isLoadingDiagrams ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-5 h-5 animate-spin text-teal-accent" />
             </div>
-          ) : diagrams.length === 0 ? (
+          ) : filteredSidebarDiagrams.length === 0 ? (
             isSidebarOpen && (
-              <p className="text-xs text-slate-500 text-center py-8">No diagrams yet. Create one!</p>
+              <p className="text-xs text-slate-500 text-center py-8">No matching diagrams found.</p>
             )
           ) : (
-            diagrams.map((d) => (
-              <div
-                key={d.id}
-                onClick={() => loadDiagramDetails(d.id)}
-                className={`group flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-all ${
-                  activeDiagram?.id === d.id 
-                    ? 'bg-teal-glow text-teal-accent border border-teal-accent/30' 
-                    : 'hover:bg-slate-hover text-slate-300 border border-transparent'
-                }`}
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <FileText className={`w-4 h-4 shrink-0 ${activeDiagram?.id === d.id ? 'text-teal-accent' : 'text-slate-400'}`} />
-                  {isSidebarOpen && (
-                    <span className="text-sm font-medium truncate">{d.name}</span>
+            <div className="space-y-4">
+              {/* Recent Designs */}
+              <div className="space-y-1">
+                {isSidebarOpen && (
+                  <h4 className="px-2.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    Recent Designs
+                  </h4>
+                )}
+                {recentDiagrams.map((d) => (
+                  <div
+                    key={d.id}
+                    onClick={() => loadDiagramDetails(d.id)}
+                    className={`group flex flex-col p-2 rounded-lg cursor-pointer transition-all border ${
+                      activeDiagram?.id === d.id 
+                        ? 'bg-teal-glow/10 text-teal-accent border-teal-accent/30 shadow-sm' 
+                        : 'hover:bg-slate-hover/40 text-slate-300 border-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <FileText className={`w-3.5 h-3.5 shrink-0 ${
+                          activeDiagram?.id === d.id 
+                            ? 'text-teal-accent' 
+                            : d.name.toLowerCase().includes('aws')
+                              ? 'text-amber-400'
+                              : d.name.toLowerCase().includes('gcp')
+                                ? 'text-teal-400'
+                                : 'text-slate-400'
+                        }`} />
+                        {isSidebarOpen && (
+                          <span className="text-xs font-semibold truncate leading-tight">{d.name}</span>
+                        )}
+                      </div>
+                      {isSidebarOpen && (
+                        <button
+                          onClick={(e) => handleDeleteDiagram(d.id, e)}
+                          className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-all cursor-pointer shrink-0"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                    {isSidebarOpen && (
+                      <div className="flex items-center gap-1.5 pl-[22px] mt-0.5 text-[10px] text-slate-500">
+                        <span>{formatRelativeTime(d.updated_at)}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Archive Section */}
+              {isSidebarOpen && archiveDiagrams.length > 0 && (
+                <div className="border-t border-panel-border/30 pt-2">
+                  <button
+                    onClick={() => setIsArchiveOpen(!isArchiveOpen)}
+                    className="w-full flex items-center justify-between px-2.5 py-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider hover:text-white transition-colors"
+                  >
+                    <span>Older Designs ({archiveDiagrams.length})</span>
+                    {isArchiveOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                  </button>
+                  {isArchiveOpen && (
+                    <div className="space-y-1 mt-1.5">
+                      {archiveDiagrams.map((d) => (
+                        <div
+                          key={d.id}
+                          onClick={() => loadDiagramDetails(d.id)}
+                          className={`group flex flex-col p-2 rounded-lg cursor-pointer transition-all border ${
+                            activeDiagram?.id === d.id 
+                              ? 'bg-teal-glow/10 text-teal-accent border-teal-accent/30 shadow-sm' 
+                              : 'hover:bg-slate-hover/40 text-slate-300 border-transparent'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between w-full gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <FileText className={`w-3.5 h-3.5 shrink-0 ${
+                                activeDiagram?.id === d.id 
+                                  ? 'text-teal-accent' 
+                                  : d.name.toLowerCase().includes('aws')
+                                    ? 'text-amber-400'
+                                    : d.name.toLowerCase().includes('gcp')
+                                      ? 'text-teal-400'
+                                      : 'text-slate-400'
+                              }`} />
+                              <span className="text-xs font-semibold truncate leading-tight">{d.name}</span>
+                            </div>
+                            <button
+                              onClick={(e) => handleDeleteDiagram(d.id, e)}
+                              className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-all cursor-pointer shrink-0"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-1.5 pl-[22px] mt-0.5 text-[10px] text-slate-500">
+                            <span>{formatRelativeTime(d.updated_at)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
-                {isSidebarOpen && (
-                  <button
-                    onClick={(e) => handleDeleteDiagram(d.id, e)}
-                    className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-            ))
+              )}
+            </div>
           )}
         </div>
         
