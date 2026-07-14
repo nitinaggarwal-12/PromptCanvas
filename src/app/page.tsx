@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -119,9 +120,11 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gradient-to-tr from-teal-500 to-indigo-500 rounded-2xl blur-[20px] opacity-30 transform scale-95" />
           
           <div className="relative glass-panel-teal rounded-2xl p-2.5 overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-[1.02] max-w-md w-full">
-            <img 
+            <Image 
               src="/pixar_robot_architect.jpg" 
               alt="AI Robot Cloud Architect Sketching"
+              width={500}
+              height={350}
               className="w-full h-auto rounded-[10px] object-cover border border-teal-500/20"
             />
             {/* Soft Overlay */}
