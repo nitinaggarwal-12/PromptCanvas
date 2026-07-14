@@ -68,18 +68,18 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative w-full max-w-8xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold tracking-wide animate-pulse">
-            <Sparkles className="w-3.5 h-3.5" /> Powered by Gemini 2.5 Flash & Draw.io
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
+            <Sparkles className="w-4 h-4" /> Powered by Gemini 2.5 Flash & Draw.io
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
             Sketch Cloud <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-400">
               Architecture with AI
             </span>
           </h1>
 
-          <p className="text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed">
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed">
             Translate complex natural language prompts into professional, multi-tier Draw.io architecture diagrams. Audited for security, version-controlled, and instantly editable.
           </p>
 
@@ -103,16 +103,16 @@ export default function LandingPage() {
           {/* Quick highlights - Floating capsules */}
           <div className="grid grid-cols-3 gap-6 pt-10 border-t border-panel-border/30 w-full z-10">
             <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-teal-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-teal-500/5">
-              <p className="text-3xl font-black text-white">100%</p>
-              <p className="text-xs text-slate-400 mt-1 font-medium">Interactive Vector SVG</p>
+              <p className="text-4xl font-black text-white">100%</p>
+              <p className="text-sm text-slate-400 mt-1 font-semibold">Interactive Vector SVG</p>
             </div>
             <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-indigo-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-indigo-500/5">
-              <p className="text-3xl font-black text-white">&lt; 60s</p>
-              <p className="text-xs text-slate-400 mt-1 font-medium">From Text to Diagram</p>
+              <p className="text-4xl font-black text-white">&lt; 60s</p>
+              <p className="text-sm text-slate-400 mt-1 font-semibold">From Text to Diagram</p>
             </div>
             <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-purple-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-purple-500/5">
-              <p className="text-3xl font-black text-white">Built-in</p>
-              <p className="text-xs text-slate-400 mt-1 font-medium">Gemini Security Auditor</p>
+              <p className="text-4xl font-black text-white">Built-in</p>
+              <p className="text-sm text-slate-400 mt-1 font-semibold">Gemini Security Auditor</p>
             </div>
           </div>
         </div>
@@ -143,8 +143,8 @@ export default function LandingPage() {
       <section id="value" className="relative py-24 bg-slate-950/40 border-y border-panel-border/30">
         <div className="w-full max-w-8xl mx-auto px-6 md:px-12">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">The Problem & The Cure</h2>
-            <p className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-3">The Problem & The Cure</h2>
+            <p className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
               Diagramming is critical, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-amber-400">but building them by hand is a bottleneck.</span>
             </p>
@@ -157,8 +157,8 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 mb-6">
                   <X className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-4">The Manual Bottleneck</h3>
-                <ul className="space-y-3.5 text-slate-400 text-sm">
+                <h3 className="text-xl font-bold text-white mb-4">The Manual Bottleneck</h3>
+                <ul className="space-y-3.5 text-slate-400 text-base">
                   <li className="flex items-start gap-2.5">
                     <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
                     <span>Dragging, connecting, and formatting 20+ nodes manually in Draw.io takes hours.</span>
@@ -173,7 +173,7 @@ export default function LandingPage() {
                   </li>
                 </ul>
               </div>
-              <p className="text-xs text-red-400/70 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
+              <p className="text-sm text-red-400/70 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
             </div>
 
             {/* The Maestro Way */}
@@ -182,8 +182,8 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-6">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-4">Maestro Sketch Automation</h3>
-                <ul className="space-y-3.5 text-slate-300 text-sm">
+                <h3 className="text-xl font-bold text-white mb-4">Maestro Sketch Automation</h3>
+                <ul className="space-y-3.5 text-slate-300 text-base">
                   <li className="flex items-start gap-2.5">
                     <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
                     <span>Describe your stack in natural text. Maestro creates valid, fully-spaced XML layouts in seconds.</span>
@@ -198,7 +198,7 @@ export default function LandingPage() {
                   </li>
                 </ul>
               </div>
-              <p className="text-xs text-teal-400 mt-8 font-semibold tracking-wide">Result: High-fidelity, live architecture maps created at the speed of thought.</p>
+              <p className="text-sm text-teal-400 mt-8 font-semibold tracking-wide">Result: High-fidelity, live architecture maps created at the speed of thought.</p>
             </div>
           </div>
         </div>
@@ -207,8 +207,8 @@ export default function LandingPage() {
       {/* Features Grid Section */}
       <section id="features" className="relative py-24 max-w-8xl mx-auto px-6 md:px-12 z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">Product Capabilities</h2>
-          <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+          <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-3">Product Capabilities</h2>
+          <h3 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
             Designed for Architects, <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-indigo-400">Built with Industrial Safety.</span>
           </h3>
@@ -221,8 +221,8 @@ export default function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-4 group-hover:scale-110 transition-transform">
               <Zap className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-base mb-2">Prompt-to-Architecture</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h4 className="font-bold text-white text-lg mb-2">Prompt-to-Architecture</h4>
+            <p className="text-sm text-slate-400 leading-relaxed">
               Feed raw text prompts detailing databases, runtimes, security layers, or ingress. Maestro renders standard, color-coded diagrams aligned to logical enterprise tiers.
             </p>
           </div>
@@ -232,8 +232,8 @@ export default function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
               <FileText className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-base mb-2">Ready-To-Go Templates</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h4 className="font-bold text-white text-lg mb-2">Ready-To-Go Templates</h4>
+            <p className="text-sm text-slate-400 leading-relaxed">
               Launch with 10 production-grade blueprints (Data Lakehouse, AWS EKS Microservices, RAG/Gemini AI pipelines, VPC networks) to instantly experiment and validate stacks.
             </p>
           </div>
@@ -243,8 +243,8 @@ export default function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition-transform">
               <History className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-base mb-2">Infinite Version History</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h4 className="font-bold text-white text-lg mb-2">Infinite Version History</h4>
+            <p className="text-sm text-slate-400 leading-relaxed">
               Every AI generation or manual update creates a historical snapshot. Compare versions, trace comments, and revert to previous states in one click.
             </p>
           </div>
@@ -254,8 +254,8 @@ export default function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-4 group-hover:scale-110 transition-transform">
               <Shield className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-base mb-2">Gemini Compliance Audit</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h4 className="font-bold text-white text-lg mb-2">Gemini Compliance Audit</h4>
+            <p className="text-sm text-slate-400 leading-relaxed">
               Run security compliance reports directly in the app. Gemini audits your drawing&apos;s nodes and edges for single points of failure, unencrypted links, or exposed ports.
             </p>
           </div>
@@ -265,8 +265,8 @@ export default function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
               <Network className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-base mb-2">Interactive 2D Canvas</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h4 className="font-bold text-white text-lg mb-2">Interactive 2D Canvas</h4>
+            <p className="text-sm text-slate-400 leading-relaxed">
               Smooth vector-based renderer with panning, scroll-to-zoom, infinite grids, and an interactive side-tree nodes inspector that displays node connections clearly.
             </p>
           </div>
@@ -276,8 +276,8 @@ export default function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition-transform">
               <FileText className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-base mb-2">Pure Open XML Output</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h4 className="font-bold text-white text-lg mb-2">Pure Open XML Output</h4>
+            <p className="text-sm text-slate-400 leading-relaxed">
               Export designs as fully valid Draw.io XML schemas. Copy, modify, share, or open them in your standard desktop Draw.io client with absolutely no vendor lock-in.
             </p>
           </div>
@@ -304,8 +304,8 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 1
               </div>
-              <h4 className="font-bold text-white text-base">Select or Input Prompt</h4>
-              <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
+              <h4 className="font-bold text-white text-lg">Select or Input Prompt</h4>
+              <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
                 Choose a pre-defined architecture template or enter a custom prompt describing your microservices, compute instances, database types, and connectors.
               </p>
             </div>
@@ -315,8 +315,8 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 2
               </div>
-              <h4 className="font-bold text-white text-base">Gemini Generates XML</h4>
-              <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
+              <h4 className="font-bold text-white text-lg">Gemini Generates XML</h4>
+              <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
                 Our backend compiler calls Gemini 2.5 Flash, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
               </p>
             </div>
@@ -326,8 +326,8 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 3
               </div>
-              <h4 className="font-bold text-white text-base">Audit, Tweak, and Iterate</h4>
-              <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
+              <h4 className="font-bold text-white text-lg">Audit, Tweak, and Iterate</h4>
+              <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
                 Audit the security of your diagram instantly. Add new nodes using the chat prompt interface, edit components, or click &quot;Open in New Tab&quot; to edit visually in Draw.io.
               </p>
             </div>
@@ -344,11 +344,11 @@ export default function LandingPage() {
           
           <Sparkles className="w-12 h-12 text-teal-accent mx-auto mb-6 animate-pulse" />
           
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-3xl mx-auto">
+          <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight max-w-4xl mx-auto">
             Design Compliant Cloud Stacks at the Speed of Thought
           </h2>
           
-          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+          <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto mt-5 leading-relaxed">
             Stop drawing connectors manually. Leverage Gemini AI to build, audit, and version Draw.io architecture diagrams automatically.
           </p>
 
@@ -365,16 +365,16 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-panel-border/30 bg-slate-950/60 py-12">
+      <footer className="relative z-10 border-t border-panel-border/30 bg-slate-950/60 py-14">
         <div className="max-w-8xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <Network className="w-5 h-5 text-teal-accent" />
-            <span className="font-extrabold tracking-wider text-xs text-white">MAESTRO SKETCH</span>
+            <span className="font-extrabold tracking-wider text-sm text-white">MAESTRO SKETCH</span>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-sm text-slate-500">
             &copy; 2026 Maestro Sketch. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
           </p>
-          <div className="flex gap-6 text-xs text-slate-400">
+          <div className="flex gap-6 text-sm text-slate-400">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
           </div>
