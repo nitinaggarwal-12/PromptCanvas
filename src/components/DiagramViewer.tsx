@@ -142,7 +142,7 @@ export default React.memo(function DiagramViewer({ xml }: DiagramViewerProps) {
         srcDoc={iframeHtml}
         className="w-full h-full border-0 bg-transparent"
         title="Draw.io Diagram Viewer"
-        sandbox="allow-scripts allow-popups allow-forms allow-same-origin"
+        sandbox="allow-scripts allow-popups allow-forms"
       />
     </div>
   );
