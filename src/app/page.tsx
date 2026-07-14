@@ -157,8 +157,8 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 mb-6">
                   <X className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4">The Manual Bottleneck</h3>
-                <ul className="space-y-3.5 text-slate-400 text-base">
+                <h3 className="text-2xl font-extrabold text-white mb-4">The Manual Bottleneck</h3>
+                <ul className="space-y-3.5 text-slate-400 text-lg">
                   <li className="flex items-start gap-2.5">
                     <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
                     <span>Dragging, connecting, and formatting 20+ nodes manually in Draw.io takes hours.</span>
@@ -173,7 +173,7 @@ export default function LandingPage() {
                   </li>
                 </ul>
               </div>
-              <p className="text-sm text-red-400/70 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
+              <p className="text-base text-red-400/70 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
             </div>
 
             {/* The Maestro Way */}
@@ -182,8 +182,8 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-6">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4">Maestro Sketch Automation</h3>
-                <ul className="space-y-3.5 text-slate-300 text-base">
+                <h3 className="text-2xl font-extrabold text-white mb-4">Maestro Sketch Automation</h3>
+                <ul className="space-y-3.5 text-slate-300 text-lg">
                   <li className="flex items-start gap-2.5">
                     <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
                     <span>Describe your stack in natural text. Maestro creates valid, fully-spaced XML layouts in seconds.</span>
@@ -198,7 +198,7 @@ export default function LandingPage() {
                   </li>
                 </ul>
               </div>
-              <p className="text-sm text-teal-400 mt-8 font-semibold tracking-wide">Result: High-fidelity, live architecture maps created at the speed of thought.</p>
+              <p className="text-base text-teal-400 mt-8 font-semibold tracking-wide">Result: High-fidelity, live architecture maps created at the speed of thought.</p>
             </div>
           </div>
         </div>
