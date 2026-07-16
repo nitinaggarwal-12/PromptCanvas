@@ -1139,6 +1139,7 @@ export default function Dashboard() {
     html = parseTables(html);
     
     // Headers (Note: we match escaped &lt;h etc if they were parsed, but here we generate valid HTML)
+    html = html.replace(/^#### (.*$)/gim, '<h4 class="text-base font-extrabold text-white mt-5 mb-2 pb-0.5 flex items-center gap-1">$1</h4>');
     html = html.replace(/^### (.*$)/gim, '<h3 class="text-lg font-extrabold text-teal-accent mt-6 mb-2 border-b border-panel-border/30 pb-1 flex items-center gap-2">$1</h3>');
     html = html.replace(/^## (.*$)/gim, '<h2 class="text-xl font-black text-white mt-8 mb-3 border-b border-panel-border pb-1.5">$1</h2>');
     html = html.replace(/^# (.*$)/gim, '<h1 class="text-2xl font-black text-teal-accent mt-10 mb-4">$1</h1>');
