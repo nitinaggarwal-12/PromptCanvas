@@ -31,7 +31,8 @@ import {
   Search,
   ChevronDown,
   ChevronUp,
-  Hand
+  Hand,
+  BookOpen
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
 
@@ -413,12 +414,19 @@ export default function Dashboard() {
   const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [promptInput, setPromptInput] = useState('');
   const [saveComment, setSaveComment] = useState('');
-  const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings'>(() => {
+  const [activeSteps, setActiveSteps] = useState<{ [key: number]: 'create' | 'modify' | 'business' | 'technical' }>({
+    1: 'create',
+    2: 'create',
+    3: 'create',
+    4: 'create',
+    5: 'create'
+  });
+  const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tabParam = params.get('tab');
-      if (tabParam && ['editor', 'templates', 'audit', 'settings'].includes(tabParam)) {
-        return tabParam as 'editor' | 'templates' | 'audit' | 'settings';
+      if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
+        return tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
       }
     }
     return 'editor';
@@ -1324,6 +1332,134 @@ export default function Dashboard() {
     );
   };
 
+  const renderWalkthroughView = () => {
+    const scenarios = [
+      {
+        id: 1,
+        title: 'Multi-Agent RAG with Advanced Grounding',
+        desc: 'Enterprise RAG pipeline with router orchestrator, chunking/embedding sub-agents, Vertex Vector Search, Redis grounding store, and semantic cache.',
+        createPrompt: 'Design an enterprise Multi-Agent RAG system. It should include: a secure Client Web portal, an API Gateway with JWT Auth and PII filters, a Router/Orchestrator Agent, specialized Document Chunking and Embedding Agents, a Vector Database (Vertex AI Vector Search), a grounding store (Redis), a compliance/QC feedback loops, and a connection to external Enterprise Knowledge base.',
+        modifyPrompt: 'Add a Redis Semantic Cache layer between the API Gateway and the Router Orchestrator Agent to speed up response times.'
+      },
+      {
+        id: 2,
+        title: 'Event-Driven E-Commerce Order Fulfillment Pipeline',
+        desc: 'Decoupled asynchronous processing pipeline using Saga Pattern Orchestration, Kafka Event Broker, microservices, and Dead-Letter Queues (DLQ).',
+        createPrompt: 'Design an event-driven E-Commerce Order Fulfillment Pipeline. It should include: Web/Mobile Clients, API Gateway, Saga Pattern Orchestrator, Kafka Event Broker, Order Service, Payment Service with secure compliance, Inventory Service, Dead-Letter Queues (DLQ), and a fraud checking compliance loop pointing back to the Orchestrator.',
+        modifyPrompt: 'Add an auto-scaling container orchestration layer to host the order and payment microservices.'
+      },
+      {
+        id: 3,
+        title: 'High-Availability Hybrid Multi-Cloud System',
+        desc: 'Global active-active cross-cloud load balancing and data replication across AWS and GCP, with real-time failover routing and security rules.',
+        createPrompt: 'Design a high-availability Hybrid Multi-Cloud Web Application. It should include: DNS routing (Route 53) distributing traffic between AWS and GCP, Global HTTPS Load Balancers on both clouds, frontend container apps, distributed SQL Database (Cloud Spanner/Aurora) with cross-cloud replication, and a centralized monitoring/observability agent.',
+        modifyPrompt: 'Add Cloud Armor WAF security rules in front of the GCP Load Balancer.'
+      },
+      {
+        id: 4,
+        title: 'Decentralized Data Mesh Analytics Platform',
+        desc: 'Distributed domain architectures with central data governance, data lineage (Dataplex), automated Airflow orchestration, and modeling pipelines (dbt).',
+        createPrompt: 'Design a decentralized Data Mesh Analytics Platform. It should include: Multiple domain data ingestion systems, a central Data Governance and Lineage orchestrator (GCP Dataplex), distributed dbt modeling pipelines, separate domain warehouses (BigQuery/Snowflake), Apache Airflow workflow manager, and automated IAM access control compliance loops.',
+        modifyPrompt: 'Add a central data catalog service to allow users to search and discover data assets across domains.'
+      },
+      {
+        id: 5,
+        title: 'Zero-Trust HIPAA & PCI-DSS Compliant Payment Gateway',
+        desc: 'Auditable transaction system utilizing VPC isolation, tokenization, AWS KMS envelope encryption, dedicated logging vaults, and risk guardrails.',
+        createPrompt: 'Design a zero-trust, HIPAA & PCI-DSS compliant Payment Gateway. It should include: Client payment interfaces, AWS API Gateway with Shield DDoS protection, isolated VPC compute instances for tokenization, AWS KMS for envelope encryption, a dedicated auditing and logging vault (CloudTrail/CloudWatch), and automated risk compliance self-healing loops.',
+        modifyPrompt: 'Add an isolated hardware security module (HSM) instance inside a private subnet to store root keys.'
+      }
+    ];
+
+    const stepLabels = [
+      { id: 'create', name: '1. Diagram (v1)' },
+      { id: 'modify', name: '2. Diagram (v2)' },
+      { id: 'business', name: '3. Business Brief' },
+      { id: 'technical', name: '4. Technical Brief' }
+    ] as const;
+
+    return (
+      <div className="flex-1 overflow-y-auto p-8 bg-bg-dark select-none animate-fade-in">
+        <div className="max-w-[1600px] mx-auto space-y-8">
+          
+          <div className="border-b border-panel-border/30 pb-6">
+            <h2 className="text-2xl font-black text-white flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-teal-accent" />
+              <span>Visual Onboarding Walkthrough</span>
+            </h2>
+            <p className="text-xs text-slate-400 mt-2 max-w-2xl">
+              Explore 5 pre-compiled, high-demand enterprise architectures. See how Maestro accepts prompts, refines diagrams, and compiles complete Business and Technical briefs automatically.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-10">
+            {scenarios.map((sc) => {
+              const currentStep = activeSteps[sc.id] || 'create';
+              const imgUrl = `/walkthrough/scenario_${sc.id}_${currentStep}.png`;
+
+              return (
+                <div key={sc.id} className="glass-panel border-panel-border p-6 rounded-xl bg-panel-dark/40 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  {/* Left Controls/Prompts */}
+                  <div className="lg:col-span-4 flex flex-col justify-between space-y-6">
+                    <div>
+                      <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                        SCENARIO 0{sc.id}
+                      </span>
+                      <h3 className="font-extrabold text-white text-lg mt-2">{sc.title}</h3>
+                      <p className="text-xs text-slate-400 mt-1">{sc.desc}</p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="bg-bg-dark/60 border border-panel-border/30 rounded-lg p-3">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Creation Prompt</div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed font-mono whitespace-pre-wrap">{sc.createPrompt}</p>
+                      </div>
+
+                      <div className="bg-bg-dark/60 border border-panel-border/30 rounded-lg p-3">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Refinement Prompt</div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed font-mono whitespace-pre-wrap">{sc.modifyPrompt}</p>
+                      </div>
+                    </div>
+
+                    {/* Step Switchers */}
+                    <div className="grid grid-cols-2 gap-2">
+                      {stepLabels.map((lbl) => (
+                        <button
+                          key={lbl.id}
+                          onClick={() => setActiveSteps(prev => ({ ...prev, [sc.id]: lbl.id }))}
+                          className={`px-3 py-2 rounded-lg text-xs font-bold text-center transition-all cursor-pointer ${
+                            currentStep === lbl.id
+                              ? 'bg-teal-accent text-bg-dark font-extrabold shadow-md border-transparent'
+                              : 'bg-bg-dark border border-panel-border/30 text-slate-400 hover:text-white hover:border-slate-500'
+                          }`}
+                        >
+                          {lbl.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right Image Viewer */}
+                  <div className="lg:col-span-8 bg-bg-dark/80 rounded-xl border border-panel-border/40 overflow-hidden relative shadow-inner flex items-center justify-center p-2 min-h-[450px]">
+                    <img 
+                      src={imgUrl} 
+                      alt={`${sc.title} - ${currentStep}`}
+                      className="max-w-full max-h-[500px] object-contain rounded-lg border border-panel-border/20 shadow-lg select-none"
+                      onError={(e) => {
+                        e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 500'%3E%3Crect width='100%25' height='100%25' fill='%230f172a'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='14' fill='%23475569'%3EPuppeteer generating walkthrough screenshot...%3C/text%3E%3C/svg%3E";
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
+      </div>
+    );
+  };
+
   const renderAuditCenterView = () => {
     return (
       <div className="flex-1 overflow-hidden flex bg-bg-dark select-none animate-fade-in">
@@ -1700,6 +1836,7 @@ export default function Dashboard() {
             { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
             { id: 'editor', name: 'Design Canvas', icon: Network },
             { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid },
+            { id: 'walkthrough', name: 'Visual Walkthrough', icon: BookOpen },
             { id: 'audit', name: 'Security Audit Hub', icon: ShieldAlert },
             { id: 'settings', name: 'Settings & Config', icon: Settings }
           ].map((item) => {
@@ -1729,7 +1866,7 @@ export default function Dashboard() {
               <button
                 key={item.id}
                 onClick={() => {
-                  setCurrentTab(item.id as 'editor' | 'templates' | 'audit' | 'settings');
+                  setCurrentTab(item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
                   if (!isSidebarOpen) setIsSidebarOpen(true);
                 }}
                 className="w-full text-left block"
@@ -2820,6 +2957,7 @@ export default function Dashboard() {
       )}
 
       {currentTab === 'templates' && renderTemplatesView()}
+      {currentTab === 'walkthrough' && renderWalkthroughView()}
       {currentTab === 'audit' && renderAuditCenterView()}
       {currentTab === 'settings' && renderSettingsView()}
 
