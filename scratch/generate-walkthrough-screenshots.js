@@ -49,9 +49,16 @@ function sleep(ms) {
 }
 
 async function injectFrameworkSafeInput(page, inputSelector, text) {
+  const exists = await page.evaluate((selector) => {
+    return !!document.querySelector(selector);
+  }, inputSelector);
+  
+  if (!exists) {
+    throw new Error(`Element not found for selector: ${inputSelector}`);
+  }
+
   await page.evaluate(({ selector, value }) => {
-    const el = document.querySelector(selector) || document.activeElement;
-    if (!el) return;
+    const el = document.querySelector(selector);
     el.focus();
 
     if (el.tagName.toLowerCase() === 'textarea' || el.tagName.toLowerCase() === 'input') {
