@@ -92,6 +92,21 @@ async function clickButtonWithText(page, text) {
   }, text);
 }
 
+async function clickSidebarDiagram(page, name) {
+  return await page.evaluate((diagName) => {
+    const items = Array.from(document.querySelectorAll('span'));
+    const item = items.find(el => el.innerText.includes(diagName));
+    if (item) {
+      const container = item.closest('div[class*="cursor-pointer"]');
+      if (container) {
+        container.click();
+        return true;
+      }
+    }
+    return false;
+  }, name);
+}
+
 const targetUrl = process.argv[2] || 'https://promptcanvas-production-235c.up.railway.app';
 
 (async () => {
@@ -144,6 +159,10 @@ const targetUrl = process.argv[2] || 'https://promptcanvas-production-235c.up.ra
       // Wait for Gemini API and Draw.io render (35-45s)
       console.log(`⏳ Waiting for diagram generation (up to 50s)...`);
       await sleep(40000);
+      
+      console.log(`Clicking the diagram "${sc.name}" in the sidebar to ensure it loads...`);
+      await clickSidebarDiagram(page, sc.name);
+      await sleep(4000); // Wait for canvas to render after selection
       
       // Capture Created diagram screenshot
       const createPath = path.join(SCREENSHOT_DIR, `scenario_${sc.index}_create.png`);

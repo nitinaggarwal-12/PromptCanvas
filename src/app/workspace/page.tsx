@@ -1974,7 +1974,7 @@ export default function Dashboard() {
                     </div>
                     {isSidebarOpen && (
                       <div className="flex items-center gap-1.5 pl-[22px] mt-0.5 text-[10px] text-slate-500">
-                        <span>{formatRelativeTime(d.updated_at)}</span>
+                        <span suppressHydrationWarning>{formatRelativeTime(d.updated_at)}</span>
                       </div>
                     )}
                   </div>
@@ -2024,7 +2024,7 @@ export default function Dashboard() {
                             </button>
                           </div>
                           <div className="flex items-center gap-1.5 pl-[22px] mt-0.5 text-[10px] text-slate-500">
-                            <span>{formatRelativeTime(d.updated_at)}</span>
+                            <span suppressHydrationWarning>{formatRelativeTime(d.updated_at)}</span>
                           </div>
                         </div>
                       ))}
