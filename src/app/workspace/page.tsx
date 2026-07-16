@@ -55,6 +55,8 @@ interface DiagramVersion {
   created_at: string;
   prompt?: string | null;
   ai_reasoning?: string | null;
+  business_usecase?: string | null;
+  technical_usecase?: string | null;
 }
 
 interface ChatMessage {

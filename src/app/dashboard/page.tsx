@@ -42,6 +42,10 @@ interface DiagramVersion {
   comment: string | null;
   created_by: string;
   created_at: string;
+  prompt?: string | null;
+  ai_reasoning?: string | null;
+  business_usecase?: string | null;
+  technical_usecase?: string | null;
 }
 
 const TEMPLATE_PROMPTS = [
