@@ -286,6 +286,159 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Templates Gallery Section */}
+      <section id="templates" className="relative py-24 max-w-8xl mx-auto px-6 md:px-16 z-10">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-3">Pre-designed Stacks</h2>
+          <h3 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+            Bootstrap with Production-Grade Blueprints
+          </h3>
+          <p className="text-lg text-slate-400 mt-4 max-w-2xl mx-auto">
+            Choose from standard patterns across GCP and AWS. Instantly generate, customize, and audit logical system tiers.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Template 1: AI RAG Pipeline */}
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-teal-500/5 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">GCP Cloud</span>
+              </div>
+              <h4 className="font-bold text-white text-lg mb-2">Vertex AI Retrieval-Augmented Generation (RAG)</h4>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Multi-tier pipeline featuring Cloud Run API service, pgvector-enabled Cloud SQL database, Vertex AI Search indexing, and Gemini reasoning engine.
+              </p>
+            </div>
+            <Link
+              href="/workspace?modal=create&template=5"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors"
+            >
+              <span>Launch blueprint</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Template 2: Microservices Cluster */}
+          <div className="glass-panel border-panel-border/40 hover:border-indigo-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-indigo-500/5 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                  <Network className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20">AWS Cloud</span>
+              </div>
+              <h4 className="font-bold text-white text-lg mb-2">Kubernetes Microservices Cluster (EKS)</h4>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Elastic Kubernetes Service setup with ALB ingress controller, Amazon API Gateway, EKS worker nodes, DynamoDB state session, and Redis caching.
+              </p>
+            </div>
+            <Link
+              href="/workspace?modal=create&template=3"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+            >
+              <span>Launch blueprint</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Template 3: Serverless App */}
+          <div className="glass-panel border-panel-border/40 hover:border-purple-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-purple-500/5 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">GCP Cloud</span>
+              </div>
+              <h4 className="font-bold text-white text-lg mb-2">Serverless Web Application</h4>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Global HTTPS Load Balancer with Cloud CDN, Cloud Run compute for microservices, Cloud SQL (PostgreSQL), and Cloud Storage for assets.
+              </p>
+            </div>
+            <Link
+              href="/workspace?modal=create&template=1"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-400 hover:text-purple-300 transition-colors"
+            >
+              <span>Launch blueprint</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Template 4: Data Lakehouse */}
+          <div className="glass-panel border-panel-border/40 hover:border-teal-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-teal-500/5 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent group-hover:scale-110 transition-transform">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20">AWS Cloud</span>
+              </div>
+              <h4 className="font-bold text-white text-lg mb-2">Modern AWS Data Lakehouse</h4>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Amazon S3 raw/processed tiers, AWS Glue Catalog schema database, Athena ad-hoc serverless querying, Redshift warehouse, and QuickSight BI.
+              </p>
+            </div>
+            <Link
+              href="/workspace?modal=create&template=4"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors"
+            >
+              <span>Launch blueprint</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Template 5: Streaming Analytics */}
+          <div className="glass-panel border-panel-border/40 hover:border-indigo-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-indigo-500/5 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                  <History className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">GCP Cloud</span>
+              </div>
+              <h4 className="font-bold text-white text-lg mb-2">Real-time Streaming Analytics</h4>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Streaming ingestion via Cloud Pub/Sub, serverless stream/batch ETL processing with Cloud Dataflow, BigQuery storage, and Looker visualization dashboards.
+              </p>
+            </div>
+            <Link
+              href="/workspace?modal=create&template=2"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+            >
+              <span>Launch blueprint</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Template 6: Event-Driven Microservices */}
+          <div className="glass-panel border-panel-border/40 hover:border-purple-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-purple-500/5 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20">AWS Cloud</span>
+              </div>
+              <h4 className="font-bold text-white text-lg mb-2">Event-Driven Microservices</h4>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Amazon EventBridge bus, decoupling with SQS queues and SNS topics, serverless event handlers via AWS Lambda, and DynamoDB for storage.
+              </p>
+            </div>
+            <Link
+              href="/workspace?modal=create&template=6"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-400 hover:text-purple-300 transition-colors"
+            >
+              <span>Launch blueprint</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* How it Works Section */}
       <section id="how-it-works" className="relative py-32 bg-slate-950/40 border-y border-panel-border/30">
         <div className="w-full max-w-8xl mx-auto px-6 md:px-16">
