@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getDiagramVersion, updateDiagramVersionUseCases } from '@/lib/db';
 
+const ai = new GoogleGenAI({});
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -107,7 +109,6 @@ ${version.xml_content}
 \`\`\`
 `.trim();
 
-    const ai = new GoogleGenAI({});
     console.log(`Generating in-place metadata for version ${versionId}...`);
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getLatestDiagramVersion } from '@/lib/db';
 
+const ai = new GoogleGenAI({});
+
 const AUDIT_PROMPT = `
 You are "Maestro-Audit", an elite enterprise solutions architect and cybersecurity auditor.
 Analyze the following Draw.io (mxGraph) XML diagram and provide a professional, structured audit report.
@@ -29,7 +31,6 @@ export async function POST(request: Request) {
 
     const xmlContent = latestVersion.xml_content;
 
-    const ai = new GoogleGenAI({});
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [

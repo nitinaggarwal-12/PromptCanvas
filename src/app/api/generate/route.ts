@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { createDiagram, saveDiagramVersion, getLatestDiagramVersion } from '@/lib/db';
 
+const ai = new GoogleGenAI({});
+
 const SYSTEM_PROMPT = `
 You are "Maestro-Graph", an elite enterprise solutions architect and compiler that translates natural language system descriptions into valid, production-grade Draw.io (mxGraph) XML.
 
@@ -186,9 +188,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Initialize Google Gen AI client
     // Note: GoogleGenAI automatically picks up GEMINI_API_KEY or falls back to Google Cloud ADC
-    const ai = new GoogleGenAI({});
 
     let responseText = '';
     let isRefinement = false;
