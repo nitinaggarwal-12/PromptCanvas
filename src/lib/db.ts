@@ -607,6 +607,29 @@ export async function syncDatabase(
   }
 }
 
+// Helper: Update a diagram version's business and technical use cases
+export async function updateDiagramVersionUseCases(
+  versionId: string,
+  businessUsecase: string,
+  technicalUsecase: string
+): Promise<void> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query(
+      'UPDATE diagram_versions SET business_usecase = $1, technical_usecase = $2 WHERE id = $3',
+      [businessUsecase, technicalUsecase, versionId]
+    );
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      'UPDATE diagram_versions SET business_usecase = ?, technical_usecase = ? WHERE id = ?'
+    );
+    stmt.run(businessUsecase, technicalUsecase, versionId);
+  }
+}
+
+
 
 const AWS_VPC_XML = `
 <mxfile host="embed.diagrams.net">
