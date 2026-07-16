@@ -216,14 +216,16 @@ export default function Dashboard() {
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
           {isSidebarOpen ? (
-            <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
               <Sparkles className="w-5 h-5 text-teal-accent" />
               <span className="font-bold text-lg tracking-wider bg-gradient-to-r from-teal-accent to-cyan-400 bg-clip-text text-transparent">
-                MAESTRO
+                PROMPT CANVAS
               </span>
-            </div>
+            </Link>
           ) : (
-            <Sparkles className="w-5 h-5 text-teal-accent mx-auto" />
+            <Link href="/">
+              <Sparkles className="w-5 h-5 text-teal-accent mx-auto hover:opacity-90 transition-opacity" />
+            </Link>
           )}
           {isSidebarOpen && (
             <button 
@@ -295,7 +297,7 @@ export default function Dashboard() {
                 <Network className="w-5 h-5 text-teal-accent" />
               </div>
             </div>
-            <span className="font-extrabold tracking-wider text-sm text-white uppercase">Maestro Sketch</span>
+            <span className="font-extrabold tracking-wider text-sm text-white uppercase">Prompt Canvas</span>
           </Link>
           <span className="text-[11px] font-extrabold text-teal-accent uppercase tracking-widest px-3 py-1 rounded bg-teal-500/10 border border-teal-500/20">
             Premium Portal
@@ -633,7 +635,7 @@ export default function Dashboard() {
         <div className="max-w-[1600px] mx-auto px-12 md:px-16 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <Network className="w-4 h-4 text-slate-600" />
-            <span className="font-bold text-slate-400">MAESTRO SKETCH</span>
+            <span className="font-bold text-slate-400">PROMPT CANVAS</span>
           </div>
           <span>&copy; {new Date().getFullYear()} Google DeepMind Team. All rights reserved.</span>
         </div>

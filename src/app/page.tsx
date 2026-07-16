@@ -31,7 +31,17 @@ export default function LandingPage() {
       {/* Header/Navigation */}
       <header className="sticky top-0 w-full z-50 border-b border-panel-border/30 bg-[#070a13]/80 backdrop-blur-md">
         <div className="w-full max-w-8xl mx-auto h-20 px-6 md:px-12 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <Link 
+            href="/" 
+            className="flex items-center gap-3 hover:opacity-90 transition-opacity"
+            onClick={(e) => {
+              if (window.location.pathname === '/') {
+                e.preventDefault();
+                window.history.pushState(null, '', '/');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+          >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
               <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
                 <Network className="w-5 h-5 text-teal-accent" />
@@ -39,19 +49,19 @@ export default function LandingPage() {
             </div>
             <div>
               <span className="font-extrabold text-lg tracking-wider text-white bg-clip-text bg-gradient-to-r from-white to-slate-300">
-                MAESTRO
+                PROMPT
               </span>
               <span className="font-light text-lg tracking-wider text-teal-400">
-                SKETCH
+                CANVAS
               </span>
             </div>
-          </div>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
             <a href="#features" className="hover:text-teal-400 transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
             <a href="#templates" className="hover:text-teal-400 transition-colors">Templates</a>
-            <a href="#value" className="hover:text-teal-400 transition-colors">Why Maestro</a>
+            <a href="#value" className="hover:text-teal-400 transition-colors">Why PromptCanvas</a>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -134,7 +144,7 @@ export default function LandingPage() {
             {/* Soft Overlay */}
             <div className="absolute inset-2.5 rounded-[10px] bg-gradient-to-t from-[#070a13]/70 via-transparent to-transparent pointer-events-none flex flex-col justify-end p-4">
               <span className="text-xs font-bold text-teal-300 uppercase tracking-widest">Sketch Assistant</span>
-              <p className="text-sm font-semibold text-white mt-0.5">Meet Maestro, your automated 3D cloud design helper</p>
+              <p className="text-sm font-semibold text-white mt-0.5">Meet PromptCanvas, your automated 3D cloud design helper</p>
             </div>
           </div>
         </div>
@@ -177,17 +187,17 @@ export default function LandingPage() {
               <p className="text-base text-red-400/70 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
             </div>
 
-            {/* The Maestro Way */}
+            {/* The PromptCanvas Way */}
             <div className="glass-panel border-teal-500/25 rounded-2xl p-8 flex flex-col justify-between hover:border-teal-500/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-300">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-6">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-extrabold text-white mb-4">Maestro Sketch Automation</h3>
+                <h3 className="text-2xl font-extrabold text-white mb-4">PromptCanvas Automation</h3>
                 <ul className="space-y-3.5 text-slate-300 text-lg">
                   <li className="flex items-start gap-2.5">
                     <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
-                    <span>Describe your stack in natural text. Maestro creates valid, fully-spaced XML layouts in seconds.</span>
+                    <span>Describe your stack in natural text. PromptCanvas creates valid, fully-spaced XML layouts in seconds.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
@@ -224,7 +234,7 @@ export default function LandingPage() {
             </div>
             <h4 className="font-bold text-white text-lg mb-2">Prompt-to-Architecture</h4>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Feed raw text prompts detailing databases, runtimes, security layers, or ingress. Maestro renders standard, color-coded diagrams aligned to logical enterprise tiers.
+              Feed raw text prompts detailing databases, runtimes, security layers, or ingress. PromptCanvas renders standard, color-coded diagrams aligned to logical enterprise tiers.
             </p>
           </div>
 
@@ -523,10 +533,10 @@ export default function LandingPage() {
         <div className="max-w-8xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <Network className="w-5 h-5 text-teal-accent" />
-            <span className="font-extrabold tracking-wider text-sm text-white">MAESTRO SKETCH</span>
+            <span className="font-extrabold tracking-wider text-sm text-white">PROMPT CANVAS</span>
           </div>
           <p className="text-sm text-slate-500">
-            &copy; 2026 Maestro Sketch. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
+            &copy; 2026 Prompt Canvas. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
           </p>
           <div className="flex gap-6 text-sm text-slate-400">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>

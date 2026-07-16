@@ -1388,7 +1388,7 @@ export default function Dashboard() {
               <span>Visual Onboarding Walkthrough</span>
             </h2>
             <p className="text-xs text-slate-400 mt-2 max-w-2xl">
-              Explore 5 pre-compiled, high-demand enterprise architectures. See how Maestro accepts prompts, refines diagrams, and compiles complete Business and Technical briefs automatically.
+              Explore 5 pre-compiled, high-demand enterprise architectures. See how PromptCanvas accepts prompts, refines diagrams, and compiles complete Business and Technical briefs automatically.
             </p>
           </div>
 
@@ -1638,7 +1638,7 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
                     <span className="block text-slate-500 text-[10px]">App Version</span>
-                    <span className="font-semibold text-white mt-1 block">v0.1.0-alpha (Maestro Sketch)</span>
+                    <span className="font-semibold text-white mt-1 block">v0.1.0-alpha (PromptCanvas)</span>
                   </div>
                   <div>
                     <span className="block text-slate-500 text-[10px]">Framework</span>
@@ -1810,14 +1810,16 @@ export default function Dashboard() {
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
           {isSidebarOpen ? (
-            <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
               <Sparkles className="w-5 h-5 text-teal-accent" />
               <span className="font-bold text-lg tracking-wider bg-gradient-to-r from-teal-accent to-cyan-400 bg-clip-text text-transparent">
-                MAESTRO
+                PROMPT CANVAS
               </span>
-            </div>
+            </Link>
           ) : (
-            <Sparkles className="w-5 h-5 text-teal-accent mx-auto" />
+            <Link href="/">
+              <Sparkles className="w-5 h-5 text-teal-accent mx-auto hover:opacity-90 transition-opacity" />
+            </Link>
           )}
           {isSidebarOpen && (
             <button 
@@ -2272,7 +2274,7 @@ export default function Dashboard() {
               {isGenerating && (
                 <div className="flex items-center gap-2 mr-auto bg-slate-hover/50 border border-panel-border p-3 rounded-lg rounded-tl-none max-w-[85%]">
                   <Loader2 className="w-4 h-4 animate-spin text-teal-accent" />
-                  <span className="text-xs text-slate-400 animate-pulse">Maestro-Graph is sketching...</span>
+                  <span className="text-xs text-slate-400 animate-pulse">PromptCanvas-Graph is sketching...</span>
                 </div>
               )}
               <div ref={chatEndRef} />
@@ -2551,7 +2553,7 @@ export default function Dashboard() {
                         <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight pt-2">
                           Welcome to <br />
                           <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-accent to-cyan-400">
-                            Maestro Sketch
+                            PromptCanvas
                           </span>
                         </h2>
                         <p className="text-xs text-slate-400 leading-relaxed pt-1">
