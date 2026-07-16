@@ -101,6 +101,13 @@ const targetUrl = process.argv[2] || 'https://promptcanvas-production-235c.up.ra
   });
 
   const page = await browser.newPage();
+
+  page.on('console', msg => {
+    console.log(`[BROWSER CONSOLE] [${msg.type()}] ${msg.text()}`);
+  });
+  page.on('pageerror', err => {
+    console.error(`[BROWSER PAGE ERROR] ${err.toString()}`);
+  });
   
   try {
     for (const sc of scenarios) {
