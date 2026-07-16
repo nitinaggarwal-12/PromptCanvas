@@ -85,10 +85,17 @@ async function clickButtonWithText(page, text) {
   }, text);
 }
 
+const targetUrl = process.argv[2] || 'https://promptcanvas-production-235c.up.railway.app';
+
 (async () => {
+  const isMac = process.platform === 'darwin';
+  const chromePath = isMac 
+    ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    : '/usr/bin/google-chrome';
+
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    executablePath: fs.existsSync(chromePath) ? chromePath : undefined,
     defaultViewport: { width: 1440, height: 950 },
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
@@ -101,7 +108,7 @@ async function clickButtonWithText(page, text) {
       
       // Step 1: Navigate to Create Modal
       console.log(`Navigating to Create modal...`);
-      await page.goto('http://localhost:3000/workspace?modal=create', { waitUntil: 'networkidle2' });
+      await page.goto(`${targetUrl}/workspace?modal=create`, { waitUntil: 'networkidle2' });
       await sleep(1500); // Settling delay
       
       // Type Name and Prompt
