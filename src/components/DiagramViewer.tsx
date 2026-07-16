@@ -16,6 +16,9 @@ function htmlEscape(str: string): string {
 }
 
 export default React.memo(function DiagramViewer({ xml }: DiagramViewerProps) {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const scriptUrl = `${origin}/viewer-static.min.js`;
+
   // Construct the isolated HTML document for the iframe
   const iframeHtml = `
     <!DOCTYPE html>
@@ -93,7 +96,7 @@ export default React.memo(function DiagramViewer({ xml }: DiagramViewerProps) {
             console.log('[Iframe Diagnostic] 📦 Loading Draw.io viewer script dynamically...');
             const script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = 'https://viewer.diagrams.net/js/viewer-static.min.js';
+            script.src = '${scriptUrl}';
             
             script.onload = function() {
               console.log('[Iframe Diagnostic] ✅ Draw.io viewer script loaded successfully.');
@@ -136,7 +139,7 @@ export default React.memo(function DiagramViewer({ xml }: DiagramViewerProps) {
   `;
 
   return (
-    <div className="w-full h-full min-h-[350px] relative rounded-xl overflow-hidden bg-bg-dark">
+    <div className="w-[1400px] h-[1800px] relative rounded-xl overflow-hidden bg-bg-dark border border-panel-border/20 shadow-2xl">
       <iframe
         key={xml} // Force iframe reload when XML changes to guarantee clean re-rendering
         srcDoc={iframeHtml}

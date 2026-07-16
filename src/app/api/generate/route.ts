@@ -6,13 +6,21 @@ const SYSTEM_PROMPT = `
 You are "Maestro-Graph", an elite enterprise solutions architect and compiler that translates natural language system descriptions into valid, production-grade Draw.io (mxGraph) XML.
 
 ### Output Constraints:
-1. Your response MUST contain exactly two sections in Markdown:
+1. Your response MUST contain exactly four sections in Markdown:
    - A section under header "### AI Architectural Plan & Reasoning" detailing:
      * Your prompt understanding and design objectives.
      * Architectural layout decisions (layer assignment, vertical spacing coordinates).
-     * Security and resilience considerations (compliance checks, self-healing nodes, network isolation).
-   - A section under header "### Draw.io XML" containing only a valid Draw.io XML block wrapped in \`\`\`xml and \`\`\`.
-2. The XML must start with \`<mxfile host="embed.diagrams.net">\` and contain a \`<diagram>\` and \`<mxGraphModel>\`.
+     * Security and resilience considerations (compliance checks, self-healing loops).
+   - A section under header "### Business Use Case" detailing:
+     * Business Objectives & Goals.
+     * Key Stakeholders & Personas.
+     * Expected Value, ROI, and success metrics.
+   - A section under header "### Technical Use Case" detailing:
+     * Step-by-step system execution flows.
+     * Integration APIs, protocols, and security requirements.
+     * Error Handling, fallbacks, and recovery paths.
+   - A section under header "### Draw.io XML" containing only a valid Draw.io XML block wrapped in ```xml and ```.
+2. The XML must start with `<mxfile host="embed.diagrams.net">` and contain a `<diagram>` and `<mxGraphModel>`.
 
 ### STRICT XML TEMPLATE (DO NOT DEVIATE):
 Every node MUST be written EXACTLY in this format (no child tags other than <mxGeometry>):
@@ -111,10 +119,17 @@ CRITICAL SYNTAX PROHIBITIONS:
 
 `;
 
-// Helper to extract AI Reasoning Plan and XML from response text
-function parseAiResponse(text: string): { xml: string | null; reasoning: string | null } {
+// Helper to extract AI Reasoning Plan, Use Cases, and XML from response text
+function parseAiResponse(text: string): { 
+  xml: string | null; 
+  reasoning: string | null;
+  businessUsecase: string | null;
+  technicalUsecase: string | null;
+} {
   let xml: string | null = null;
   let reasoning: string | null = null;
+  let businessUsecase: string | null = null;
+  let technicalUsecase: string | null = null;
 
   // Extract XML block
   const xmlMatch = text.match(/```xml\s*([\s\S]*?)\s*```/);
@@ -126,24 +141,37 @@ function parseAiResponse(text: string): { xml: string | null; reasoning: string 
     xml = text.substring(start, end).trim();
   }
 
-  // Extract reasoning text
+  // Section Headers
   const reasoningHeader = "### AI Architectural Plan & Reasoning";
+  const businessHeader = "### Business Use Case";
+  const technicalHeader = "### Technical Use Case";
   const xmlHeader = "### Draw.io XML";
-  
-  if (text.includes(reasoningHeader)) {
-    const startIdx = text.indexOf(reasoningHeader) + reasoningHeader.length;
-    let endIdx = text.length;
-    if (text.includes(xmlHeader)) {
-      endIdx = text.indexOf(xmlHeader);
-    } else if (text.includes("```xml")) {
-      endIdx = text.indexOf("```xml");
-    }
-    if (endIdx > startIdx) {
-      reasoning = text.substring(startIdx, endIdx).trim();
-    }
-  }
 
-  return { xml, reasoning };
+  // Helper to extract a section between two headers, or to the end of string / XML block
+  const getSectionContent = (header: string): string | null => {
+    if (!text.includes(header)) return null;
+    const startIdx = text.indexOf(header) + header.length;
+    
+    // Find next header or code block start index
+    const markers = [reasoningHeader, businessHeader, technicalHeader, xmlHeader, "```xml"];
+    let endIdx = text.length;
+    
+    for (const marker of markers) {
+      if (marker !== header && text.includes(marker)) {
+        const idx = text.indexOf(marker);
+        if (idx > startIdx && idx < endIdx) {
+          endIdx = idx;
+        }
+      }
+    }
+    return text.substring(startIdx, endIdx).trim();
+  };
+
+  reasoning = getSectionContent(reasoningHeader);
+  businessUsecase = getSectionContent(businessHeader);
+  technicalUsecase = getSectionContent(technicalHeader);
+
+  return { xml, reasoning, businessUsecase, technicalUsecase };
 }
 
 export async function POST(request: Request) {
@@ -215,7 +243,7 @@ ${prompt}
     }
 
     // Extract the XML and reasoning from the AI response
-    const { xml, reasoning } = parseAiResponse(responseText);
+    const { xml, reasoning, businessUsecase, technicalUsecase } = parseAiResponse(responseText);
     if (!xml) {
       console.error('Gemini response did not contain a valid XML block:', responseText);
       return NextResponse.json(
@@ -236,7 +264,9 @@ ${prompt}
         `AI Refined: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`,
         'AI',
         prompt,
-        reasoning
+        reasoning,
+        businessUsecase,
+        technicalUsecase
       );
       return NextResponse.json({ version });
     } else {
@@ -250,7 +280,9 @@ ${prompt}
         xml,
         `AI Generated: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`,
         prompt,
-        reasoning
+        reasoning,
+        businessUsecase,
+        technicalUsecase
       );
       return NextResponse.json({ diagram, version }, { status: 201 });
     }

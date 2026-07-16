@@ -126,6 +126,7 @@ export default function LandingPage() {
             <Image 
               src="/pixar_robot_architect.jpg" 
               alt="AI Robot Cloud Architect Sketching"
+              priority
               width={500}
               height={350}
               className="w-full h-auto rounded-[10px] object-cover border border-teal-500/20"

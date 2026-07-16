@@ -22,6 +22,8 @@ export interface DiagramVersion {
   created_at: string | Date;
   prompt?: string | null;
   ai_reasoning?: string | null;
+  business_usecase?: string | null;
+  technical_usecase?: string | null;
 }
 
 // Database Connection Drivers
@@ -89,6 +91,8 @@ export async function ensureTablesExist(): Promise<void> {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         prompt TEXT,
         ai_reasoning TEXT,
+        business_usecase TEXT,
+        technical_usecase TEXT,
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
       );
     `);
@@ -99,6 +103,12 @@ export async function ensureTablesExist(): Promise<void> {
     `);
     await pool.query(`
       ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS ai_reasoning TEXT;
+    `);
+    await pool.query(`
+      ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS business_usecase TEXT;
+    `);
+    await pool.query(`
+      ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS technical_usecase TEXT;
     `);
   } else {
     const db = getSqliteDb();
@@ -122,6 +132,8 @@ export async function ensureTablesExist(): Promise<void> {
         created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
         prompt TEXT,
         ai_reasoning TEXT,
+        business_usecase TEXT,
+        technical_usecase TEXT,
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
       );
     `);
@@ -134,6 +146,16 @@ export async function ensureTablesExist(): Promise<void> {
     }
     try {
       db.exec('ALTER TABLE diagram_versions ADD COLUMN ai_reasoning TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE diagram_versions ADD COLUMN business_usecase TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE diagram_versions ADD COLUMN technical_usecase TEXT;');
     } catch {
       // Ignored if column already exists
     }
@@ -255,7 +277,9 @@ export async function createDiagram(
   initialXml?: string,
   comment?: string,
   prompt?: string | null,
-  aiReasoning?: string | null
+  aiReasoning?: string | null,
+  businessUsecase?: string | null,
+  technicalUsecase?: string | null
 ): Promise<{ diagram: Diagram; version: DiagramVersion | null }> {
   await ensureTablesExist();
   const diagramId = uuidv4();
@@ -271,8 +295,8 @@ export async function createDiagram(
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
         await client.query(`
-          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         `, [
           versionId,
           diagramId,
@@ -281,7 +305,9 @@ export async function createDiagram(
           comment || 'Initial version',
           'AI',
           prompt || null,
-          aiReasoning || null
+          aiReasoning || null,
+          businessUsecase || null,
+          technicalUsecase || null
         ]);
         const getVer = await client.query('SELECT * FROM diagram_versions WHERE id = $1', [versionId]);
         version = getVer.rows[0] as DiagramVersion;
@@ -308,8 +334,8 @@ export async function createDiagram(
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
         const insertVersion = db.prepare(`
-          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
         insertVersion.run(
           versionId,
@@ -319,7 +345,9 @@ export async function createDiagram(
           comment || 'Initial version',
           'AI',
           prompt || null,
-          aiReasoning || null
+          aiReasoning || null,
+          businessUsecase || null,
+          technicalUsecase || null
         );
         const getVersion = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
         version = getVersion.get(versionId) as unknown as DiagramVersion;
@@ -344,7 +372,9 @@ export async function saveDiagramVersion(
   comment: string | null,
   createdBy: string = 'User',
   prompt?: string | null,
-  aiReasoning?: string | null
+  aiReasoning?: string | null,
+  businessUsecase?: string | null,
+  technicalUsecase?: string | null
 ): Promise<DiagramVersion> {
   await ensureTablesExist();
   const versionId = uuidv4();
@@ -359,8 +389,8 @@ export async function saveDiagramVersion(
       const nextVersionNumber = (maxVer.rows[0].max_version || 0) + 1;
 
       await client.query(`
-        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       `, [
         versionId,
         diagramId,
@@ -369,7 +399,9 @@ export async function saveDiagramVersion(
         comment,
         createdBy,
         prompt || null,
-        aiReasoning || null
+        aiReasoning || null,
+        businessUsecase || null,
+        technicalUsecase || null
       ]);
 
       await client.query('UPDATE diagrams SET updated_at = CURRENT_TIMESTAMP WHERE id = $1', [diagramId]);
@@ -393,8 +425,8 @@ export async function saveDiagramVersion(
       const nextVersionNumber = versionResult.max_version + 1;
 
       const insertVersion = db.prepare(`
-        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       insertVersion.run(
         versionId,
@@ -404,7 +436,9 @@ export async function saveDiagramVersion(
         comment,
         createdBy,
         prompt || null,
-        aiReasoning || null
+        aiReasoning || null,
+        businessUsecase || null,
+        technicalUsecase || null
       );
 
       const updateDiagram = db.prepare("UPDATE diagrams SET updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");
@@ -494,8 +528,8 @@ const AWS_VPC_XML = `
         <mxCell id="rds" value="&lt;b&gt;[3] Amazon RDS (PostgreSQL)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Master-Replica Database&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="800" y="290" width="180" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="edge1" value="HTTPS" style="edge=1;source=alb;target=asg;strokeWidth=2;strokeColor=#567c73;" edge="1" parent="1" />
-        <mxCell id="edge2" value="SQL Query" style="edge=1;source=asg;target=rds;strokeWidth=2;strokeColor=#567c73;" edge="1" parent="1" />
+        <mxCell id="edge1" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#567c73;" edge="1" parent="1" source="alb" target="asg"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="edge2" value="SQL Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#567c73;" edge="1" parent="1" source="asg" target="rds"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -521,9 +555,9 @@ const GCP_ANALYTICS_XML = `
         <mxCell id="looker" value="&lt;b&gt;[4] Looker Dashboard&lt;/b&gt;&lt;br&gt;&lt;i&gt;Analytics Visualizer&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="920" y="250" width="160" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="e1" value="Stream" style="edge=1;source=pubsub;target=dataflow;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e2" value="Insert" style="edge=1;source=dataflow;target=bq;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e3" value="Query" style="edge=1;source=looker;target=bq;strokeWidth=2;style=dashed;" edge="1" parent="1" />
+        <mxCell id="e1" value="Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="pubsub" target="dataflow"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="Insert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="dataflow" target="bq"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;dashed=1;" edge="1" parent="1" source="looker" target="bq"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -549,9 +583,9 @@ const CICD_PIPELINE_XML = `
         <mxCell id="eks" value="&lt;b&gt;[4] AWS EKS (Kubernetes)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Production Cluster Deployment&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="910" y="195" width="220" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="e1" value="Commit Push" style="edge=1;source=github;target=runner;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e2" value="Push Container" style="edge=1;source=runner;target=registry;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e3" value="Helm Deploy" style="edge=1;source=registry;target=eks;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e1" value="Commit Push" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="github" target="runner"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="Push Container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="runner" target="registry"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="Helm Deploy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="registry" target="eks"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -577,9 +611,9 @@ const AI_RAG_XML = `
         <mxCell id="gemini" value="&lt;b&gt;[4] Vertex AI Gemini LLM&lt;/b&gt;&lt;br&gt;&lt;i&gt;Augmented inference engine&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="900" y="300" width="220" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="e1" value="POST Query" style="edge=1;source=ingress;target=embed;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e2" value="Cosine Similarity" style="edge=1;source=embed;target=pgvector;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e3" value="Prompt Context" style="edge=1;source=pgvector;target=gemini;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e1" value="POST Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="ingress" target="embed"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="Cosine Similarity" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="embed" target="pgvector"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="Prompt Context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="pgvector" target="gemini"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -626,9 +660,9 @@ const GEMINI_ENTERPRISE_XML = `
         <mxCell id="rag_store" value="&lt;b&gt;[4] Vector RAG &amp; Cache&lt;/b&gt;&lt;br&gt;&lt;i&gt;Redis Enterprise Store&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="920" y="240" width="180" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="e1" value="HTTPS API" style="edge=1;source=client;target=gateway;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e2" value="Route Prompt" style="edge=1;source=gateway;target=gemini_llm;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e3" value="Grounding Query" style="edge=1;source=gemini_llm;target=rag_store;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e1" value="HTTPS API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="client" target="gateway"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="Route Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="gateway" target="gemini_llm"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="Grounding Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="gemini_llm" target="rag_store"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -654,9 +688,9 @@ const NOTEBOOK_LM_XML = `
         <mxCell id="podcast" value="&lt;b&gt;[4] Audio Overview Gen&lt;/b&gt;&lt;br&gt;&lt;i&gt;Text-To-Speech Deep Speaker&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="880" y="250" width="200" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="e1" value="Upload" style="edge=1;source=sources;target=chunker;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e2" value="Store Index" style="edge=1;source=chunker;target=vectors;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e3" value="Generate Podcast" style="edge=1;source=vectors;target=podcast;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e1" value="Upload" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="sources" target="chunker"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="Store Index" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="chunker" target="vectors"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="Generate Podcast" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="vectors" target="podcast"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -685,10 +719,10 @@ const AGENT_DESIGNER_XML = `
         <mxCell id="memory" value="&lt;b&gt;[5] Short-term Ephemeral Memory&lt;/b&gt;&lt;br&gt;&lt;i&gt;Shared workspace context&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="910" y="270" width="200" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="e1" value="Deploy Prompt" style="edge=1;source=designer;target=orchestrator;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e2" value="Delegate Task" style="edge=1;source=orchestrator;target=code_agent;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e3" value="Request Review" style="edge=1;source=code_agent;target=eval_agent;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e4" value="Commit Logs" style="edge=1;source=eval_agent;target=memory;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e1" value="Deploy Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="designer" target="orchestrator"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="Delegate Task" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="orchestrator" target="code_agent"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="Request Review" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="code_agent" target="eval_agent"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" value="Commit Logs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="eval_agent" target="memory"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -714,9 +748,9 @@ const DEEP_RESEARCH_XML = `
         <mxCell id="summarizer" value="&lt;b&gt;[4] Markdown Synthesis Gen&lt;/b&gt;&lt;br&gt;&lt;i&gt;Structured consensus report&lt;/i&gt;" style="shape=cylinder;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="920" y="240" width="190" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="e1" value="Initiate Research" style="edge=1;source=trigger;target=searcher;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e2" value="Fetch Results" style="edge=1;source=searcher;target=evaluator;strokeWidth=2;" edge="1" parent="1" />
-        <mxCell id="e3" value="Compile report" style="edge=1;source=evaluator;target=summarizer;strokeWidth=2;" edge="1" parent="1" />
+        <mxCell id="e1" value="Initiate Research" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="trigger" target="searcher"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="Fetch Results" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="searcher" target="evaluator"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="Compile report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="evaluator" target="summarizer"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>

@@ -17,6 +17,8 @@ import {
   X,
   Loader2,
   FileText,
+  Briefcase,
+  Cpu,
   Shield,
   LayoutGrid,
   Settings,
@@ -28,7 +30,8 @@ import {
   Info,
   Search,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Hand
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
 
@@ -321,15 +324,20 @@ export default function Dashboard() {
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [viewMode, setViewMode] = useState<'canvas' | 'outline'>(() => {
+  const [isPanMode, setIsPanMode] = useState(false);
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  const [viewMode, setViewMode] = useState<'canvas' | 'outline' | 'business' | 'technical'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const viewParam = params.get('view');
       if (viewParam === 'outline') return 'outline';
+      if (viewParam === 'business') return 'business';
+      if (viewParam === 'technical') return 'technical';
     }
     return 'canvas';
   });
   const [outlineEdits, setOutlineEdits] = useState<Record<string, string>>({});
+  const [isMetadataGenerating, setIsMetadataGenerating] = useState(false);
   const [sidebarSearch, setSidebarSearch] = useState('');
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
 
@@ -483,7 +491,8 @@ export default function Dashboard() {
         console.log('[Draw.io Embed] ✉️ Received: init. Sending: load...');
         sourceWindow?.postMessage(JSON.stringify({
           action: 'load',
-          xml: activeXmlRef.current
+          xml: activeXmlRef.current,
+          fit: false
         }), '*');
       }
       
@@ -530,7 +539,7 @@ export default function Dashboard() {
     }
     
     const child = window.open(
-      'https://embed.diagrams.net/?embed=1&proto=json&ui=dark',
+      'https://embed.diagrams.net/?embed=1&proto=json&ui=dark&pv=0',
       '_blank'
     );
     
@@ -601,6 +610,64 @@ export default function Dashboard() {
     }
   }, []);
 
+  useEffect(() => {
+    let rootDiv: HTMLElement | null = null;
+    const handleScroll = () => {
+      if (rootDiv) {
+        if (rootDiv.scrollTop !== 0 || rootDiv.scrollLeft !== 0) {
+          rootDiv.scrollTop = 0;
+          rootDiv.scrollLeft = 0;
+        }
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      if (document.documentElement) {
+        document.documentElement.scrollTop = 0;
+      }
+      rootDiv = document.querySelector('.flex.h-screen.w-screen') as HTMLElement;
+      if (rootDiv) {
+        rootDiv.scrollTop = 0;
+        rootDiv.scrollLeft = 0;
+        rootDiv.addEventListener('scroll', handleScroll);
+      }
+    }
+
+    return () => {
+      if (rootDiv) {
+        rootDiv.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.getAttribute('contenteditable') === 'true')) {
+        return;
+      }
+      if (e.code === 'Space') {
+        setIsSpacePressed(true);
+        e.preventDefault();
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        setIsSpacePressed(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
   // --- Effects ---
   // Synchronize initial diagram selection once diagrams list loads
   useEffect(() => {
@@ -609,7 +676,7 @@ export default function Dashboard() {
       const diagramId = params.get('diagram');
       if (diagramId) {
         const exists = diagrams.some(d => d.id === diagramId);
-        if (exists && (!activeDiagram || activeDiagram.id !== diagramId)) {
+        if (exists && !activeDiagram) {
           setTimeout(() => {
             loadDiagramDetails(diagramId);
           }, 0);
@@ -676,8 +743,14 @@ export default function Dashboard() {
       params.set('tour', 'true');
     }
 
-    const newSearch = params.toString() ? `?${params.toString()}` : window.location.pathname;
-    window.history.replaceState(null, '', newSearch);
+    const currentSearch = window.location.search;
+    const currentPath = window.location.pathname;
+    const computedSearch = params.toString() ? `?${params.toString()}` : '';
+    const newSearch = computedSearch ? `${currentPath}${computedSearch}` : currentPath;
+
+    if (currentSearch !== computedSearch) {
+      window.history.replaceState(null, '', newSearch);
+    }
   }, [
     currentTab,
     activeDiagram,
@@ -802,6 +875,11 @@ export default function Dashboard() {
       if (!res.ok) throw new Error('Failed to delete diagram');
       
       if (activeDiagram?.id === id) {
+        if (typeof window !== 'undefined') {
+          const newParams = new URLSearchParams(window.location.search);
+          newParams.delete('diagram');
+          window.history.replaceState({}, '', `${window.location.pathname}?${newParams.toString()}`);
+        }
         setActiveDiagram(null);
         setActiveVersion(null);
         setPreviewVersion(null);
@@ -949,6 +1027,155 @@ export default function Dashboard() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // Generate in-place Business and Technical Use Case details with AI
+  const handleGenerateMetadata = async () => {
+    if (!displayedVersion) return;
+    setIsMetadataGenerating(true);
+    try {
+      const res = await fetch('/api/generate/usecases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ versionId: displayedVersion.id })
+      });
+      if (!res.ok) throw new Error('Failed to generate use cases');
+      const data = await res.json();
+      
+      // Update local state by reloading details
+      if (activeDiagram) {
+        await loadDiagramDetails(activeDiagram.id);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Failed to generate use cases. Please try again.');
+    } finally {
+      setIsMetadataGenerating(false);
+    }
+  };
+
+  // Basic HTML Markdown parsing helper
+  const parseMarkdown = (md: string): string => {
+    if (!md) return '';
+
+    const renderHtmlTable = (rows: string[]): string => {
+      if (rows.length < 2) return rows.join('\n');
+      const headerLine = rows[0];
+      const separatorLine = rows[1];
+      const contentLines = rows.slice(2);
+      if (!separatorLine.includes('-')) return rows.join('\n');
+
+      const parseCells = (line: string) => {
+        const parts = line.split('|');
+        return parts.slice(1, parts.length - 1).map(c => c.trim());
+      };
+
+      const headers = parseCells(headerLine);
+      const ths = headers.map(h => `<th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider border-b border-panel-border/40 text-slate-200 bg-slate-800/40">${h}</th>`).join('');
+
+      const trs = contentLines.map(line => {
+        const cells = parseCells(line);
+        const tds = cells.map(c => `<td class="px-4 py-3 border-b border-panel-border/20 text-slate-300">${c}</td>`).join('');
+        return `<tr class="hover:bg-slate-800/10 transition-colors">${tds}</tr>`;
+      }).join('');
+
+      return `
+        <div class="my-6 overflow-x-auto rounded-lg border border-panel-border/30 bg-panel-bg/20">
+          <table class="w-full border-collapse text-sm">
+            <thead>
+              <tr>${ths}</tr>
+            </thead>
+            <tbody class="divide-y divide-panel-border/10">
+              ${trs}
+            </tbody>
+          </table>
+        </div>
+      `.trim();
+    };
+
+    const parseTables = (text: string): string => {
+      const lines = text.split('\n');
+      let inTable = false;
+      let tableRows: string[] = [];
+      let result: string[] = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const isTableRow = line.startsWith('|') && line.endsWith('|');
+
+        if (isTableRow) {
+          if (!inTable) {
+            inTable = true;
+            tableRows = [line];
+          } else {
+            tableRows.push(line);
+          }
+        } else {
+          if (inTable) {
+            result.push(renderHtmlTable(tableRows));
+            inTable = false;
+            tableRows = [];
+          }
+          result.push(lines[i]);
+        }
+      }
+
+      if (inTable && tableRows.length > 0) {
+        result.push(renderHtmlTable(tableRows));
+      }
+
+      return result.join('\n');
+    };
+
+    // Replace HTML entities first to prevent rendering issues in custom markup
+    let html = md
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Parse tables
+    html = parseTables(html);
+    
+    // Headers (Note: we match escaped &lt;h etc if they were parsed, but here we generate valid HTML)
+    html = html.replace(/^### (.*$)/gim, '<h3 class="text-lg font-extrabold text-teal-accent mt-6 mb-2 border-b border-panel-border/30 pb-1 flex items-center gap-2">$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2 class="text-xl font-black text-white mt-8 mb-3 border-b border-panel-border pb-1.5">$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1 class="text-2xl font-black text-teal-accent mt-10 mb-4">$1</h1>');
+    
+    // Bold
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-extrabold">$1</strong>');
+    // Italic
+    html = html.replace(/\*(.*?)\*/g, '<em class="text-slate-400 italic">$1</em>');
+
+    // Inline code blocks (backticks)
+    // Note: since we escaped HTML entities first, we match escaped characters correctly inside code blocks.
+    html = html.replace(/`(.*?)`/g, '<code class="bg-slate-800 text-teal-accent px-1.5 py-0.5 rounded font-mono text-xs border border-panel-border/30">$1</code>');
+
+    // Numbered list items
+    html = html.replace(/^\s*(\d+)\.\s+(.*$)/gim, '<li class="text-slate-300 text-sm ml-5 list-decimal my-2 leading-relaxed">$2</li>');
+    
+    // Bullet points
+    html = html.replace(/^\s*[\-\*]\s+(.*$)/gim, '<li class="text-slate-300 text-sm ml-5 list-disc my-2 leading-relaxed">$1</li>');
+    
+    // Paragraphs (split by double lines, wrap non-html elements)
+    const lines = html.split('\n\n');
+    const parsedLines = lines.map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      if (
+        trimmed.startsWith('<h') || 
+        trimmed.startsWith('<li') || 
+        trimmed.startsWith('<ul') || 
+        trimmed.startsWith('<ol') ||
+        trimmed.startsWith('<div') ||
+        trimmed.startsWith('<table') ||
+        trimmed.startsWith('<t')
+      ) {
+        return trimmed;
+      }
+      return `<p class="text-slate-300 text-sm leading-relaxed my-3">${trimmed}</p>`;
+    });
+    
+    return parsedLines.join('\n');
   };
 
   // Restore a past version
@@ -2002,6 +2229,36 @@ export default function Dashboard() {
                       <FileText className="w-3.5 h-3.5" />
                       <span>Outline & Nodes</span>
                     </button>
+                    <button
+                      id="view-mode-business-btn"
+                      onClick={() => {
+                        setViewMode('business');
+                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
+                      }}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                        viewMode === 'business' && !isInlineEditorOpen
+                          ? 'bg-teal-accent text-bg-dark shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <Briefcase className="w-3.5 h-3.5" />
+                      <span>Business Use Case</span>
+                    </button>
+                    <button
+                      id="view-mode-technical-btn"
+                      onClick={() => {
+                        setViewMode('technical');
+                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
+                      }}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                        viewMode === 'technical' && !isInlineEditorOpen
+                          ? 'bg-teal-accent text-bg-dark shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <Cpu className="w-3.5 h-3.5" />
+                      <span>Technical Use Case</span>
+                    </button>
                   </div>
 
                   {/* Mode Badge */}
@@ -2013,6 +2270,14 @@ export default function Dashboard() {
                   ) : viewMode === 'outline' ? (
                     <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">
                       STRUCTURAL TREE INSPECTOR
+                    </span>
+                  ) : viewMode === 'business' ? (
+                    <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      BUSINESS USE CASE METADATA
+                    </span>
+                  ) : viewMode === 'technical' ? (
+                    <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                      TECHNICAL INTEGRATION WALKTHROUGH
                     </span>
                   ) : (
                     <div className="flex items-center gap-1.5">
@@ -2058,6 +2323,16 @@ export default function Dashboard() {
                     </div>
                   ) : viewMode === 'canvas' ? (
                     <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setIsPanMode(!isPanMode)}
+                        className={`p-1.5 rounded-md hover:bg-slate-hover transition-all cursor-pointer flex items-center justify-center ${
+                          (isPanMode || isSpacePressed) ? 'text-teal-accent bg-teal-500/10 border border-teal-500/20 shadow-[0_0_10px_rgba(20,184,166,0.15)]' : 'text-slate-400 border border-transparent'
+                        }`}
+                        title={(isPanMode || isSpacePressed) ? "Hand Tool (Pan Canvas) - Active (Press Spacebar to toggle)" : "Hand Tool (Pan Canvas) - Inactive (Hold Spacebar to pan temporarily)"}
+                      >
+                        <Hand className="w-4 h-4" />
+                      </button>
+
                       <div className="flex items-center bg-bg-dark/80 rounded-lg border border-panel-border px-1 py-0.5 text-xs text-slate-300">
                         <button
                           onClick={() => setZoom(z => Math.max(0.4, Number((z - 0.1).toFixed(1))))}
@@ -2228,7 +2503,7 @@ export default function Dashboard() {
                 <div className="w-full h-full relative z-10 flex flex-col bg-bg-dark animate-fade-in">
                   <iframe
                     ref={iframeRef}
-                    src="https://embed.diagrams.net/?embed=1&ui=dark&spin=1&proto=json"
+                    src="https://embed.diagrams.net/?embed=1&ui=dark&spin=1&proto=json&pv=0"
                     className="w-full h-full border-0 bg-transparent"
                     title="In-Place Draw.io Editor"
                   />
@@ -2351,6 +2626,104 @@ export default function Dashboard() {
                     );
                   })()}
                 </div>
+              ) : viewMode === 'business' ? (
+                /* Phase 4: Business Use Case Metadata Viewer */
+                <div className="w-full h-full relative z-10 overflow-y-auto p-8 bg-panel-dark/20 animate-fade-in">
+                  <div className="max-w-4xl mx-auto space-y-6">
+                    <div className="glass-panel border-panel-border p-6 rounded-xl bg-panel-dark/40">
+                      <div className="flex items-center gap-3 border-b border-panel-border pb-4 mb-6">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                          <Briefcase className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-extrabold text-white text-lg">Business Use Case Analysis</h3>
+                          <p className="text-xs text-slate-400">Strategic goals, target stakeholders, value propositions, and success KPIs</p>
+                        </div>
+                      </div>
+                      
+                      {displayedVersion?.business_usecase ? (
+                        <div 
+                          className="prose prose-invert max-w-none text-slate-300 text-sm space-y-4"
+                          dangerouslySetInnerHTML={{ __html: parseMarkdown(displayedVersion.business_usecase) }}
+                        />
+                      ) : (
+                        <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
+                          <Sparkles className="w-8 h-8 text-slate-500 animate-pulse" />
+                          <div>
+                            <h4 className="font-bold text-sm text-white">No Business Use Case Generated</h4>
+                            <p className="text-xs text-slate-400 mt-1 max-w-md">This version does not contain business metadata yet. Generate it now with Gemini.</p>
+                          </div>
+                          <button
+                            onClick={handleGenerateMetadata}
+                            disabled={isMetadataGenerating}
+                            className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs shadow-lg flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                          >
+                            {isMetadataGenerating ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <span>Generating use cases...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Sparkles className="w-4 h-4" />
+                                <span>Generate Use Cases with AI</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : viewMode === 'technical' ? (
+                /* Phase 5: Technical Use Case Integrations Viewer */
+                <div className="w-full h-full relative z-10 overflow-y-auto p-8 bg-panel-dark/20 animate-fade-in">
+                  <div className="max-w-4xl mx-auto space-y-6">
+                    <div className="glass-panel border-panel-border p-6 rounded-xl bg-panel-dark/40">
+                      <div className="flex items-center gap-3 border-b border-panel-border pb-4 mb-6">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                          <Cpu className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-extrabold text-white text-lg">Technical Integration Walkthrough</h3>
+                          <p className="text-xs text-slate-400">Sequential messaging flow, technical APIs, configurations, and fault tolerance</p>
+                        </div>
+                      </div>
+                      
+                      {displayedVersion?.technical_usecase ? (
+                        <div 
+                          className="prose prose-invert max-w-none text-slate-300 text-sm space-y-4"
+                          dangerouslySetInnerHTML={{ __html: parseMarkdown(displayedVersion.technical_usecase) }}
+                        />
+                      ) : (
+                        <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
+                          <Sparkles className="w-8 h-8 text-slate-500 animate-pulse" />
+                          <div>
+                            <h4 className="font-bold text-sm text-white">No Technical Walkthrough Generated</h4>
+                            <p className="text-xs text-slate-400 mt-1 max-w-md">This version does not contain technical walkthrough metadata yet. Generate it now with Gemini.</p>
+                          </div>
+                          <button
+                            onClick={handleGenerateMetadata}
+                            disabled={isMetadataGenerating}
+                            className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs shadow-lg flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                          >
+                            {isMetadataGenerating ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <span>Generating use cases...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Sparkles className="w-4 h-4" />
+                                <span>Generate Use Cases with AI</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               ) : (
                 /* Phase 1: 2D Interactive Canvas with AI Studio Radial Grid */
                 <div 
@@ -2385,6 +2758,29 @@ export default function Dashboard() {
                       color: 'rgba(20, 184, 166, 0.22)',
                     }}
                   />
+
+                  {/* Transparent Drag Overlay if Pan Mode is active */}
+                  {(isPanMode || isSpacePressed) && (
+                    <div 
+                      className="absolute inset-0 z-20 cursor-grab active:cursor-grabbing pointer-events-auto"
+                      onMouseDown={(e) => {
+                        const startX = e.clientX - pan.x;
+                        const startY = e.clientY - pan.y;
+                        const handleMouseMove = (moveEvent: MouseEvent) => {
+                          setPan({
+                            x: moveEvent.clientX - startX,
+                            y: moveEvent.clientY - startY
+                          });
+                        };
+                        const handleMouseUp = () => {
+                          window.removeEventListener('mousemove', handleMouseMove);
+                          window.removeEventListener('mouseup', handleMouseUp);
+                        };
+                        window.addEventListener('mousemove', handleMouseMove);
+                        window.addEventListener('mouseup', handleMouseUp);
+                      }}
+                    />
+                  )}
 
                   <div 
                     className="w-full h-full flex items-center justify-center relative z-10 transition-transform duration-150 ease-out pointer-events-none"
