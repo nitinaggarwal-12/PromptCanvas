@@ -512,6 +512,102 @@ export async function deleteDiagram(id: string): Promise<void> {
   }
 }
 
+// Helper: Sync complete database diagrams and versions
+export async function syncDatabase(
+  diagrams: Diagram[],
+  versions: DiagramVersion[]
+): Promise<void> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query('DELETE FROM diagram_versions');
+      await client.query('DELETE FROM diagrams');
+
+      for (const diag of diagrams) {
+        await client.query(
+          'INSERT INTO diagrams (id, name, created_at, updated_at) VALUES ($1, $2, $3, $4)',
+          [diag.id, diag.name, diag.created_at, diag.updated_at]
+        );
+      }
+
+      for (const ver of versions) {
+        await client.query(
+          `INSERT INTO diagram_versions (
+            id, diagram_id, version_number, xml_content, comment, created_by, created_at, prompt, ai_reasoning, business_usecase, technical_usecase
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+          [
+            ver.id,
+            ver.diagram_id,
+            ver.version_number,
+            ver.xml_content,
+            ver.comment,
+            ver.created_by,
+            ver.created_at,
+            ver.prompt || null,
+            ver.ai_reasoning || null,
+            ver.business_usecase || null,
+            ver.technical_usecase || null
+          ]
+        );
+      }
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error('Failed to sync database in PostgreSQL:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  } else {
+    const db = getSqliteDb();
+    db.exec('BEGIN TRANSACTION;');
+    try {
+      db.exec('DELETE FROM diagram_versions;');
+      db.exec('DELETE FROM diagrams;');
+
+      const insertDiag = db.prepare(
+        'INSERT INTO diagrams (id, name, created_at, updated_at) VALUES (?, ?, ?, ?)'
+      );
+      for (const diag of diagrams) {
+        insertDiag.run(diag.id, diag.name, diag.created_at as string, diag.updated_at as string);
+      }
+
+      const insertVer = db.prepare(
+        `INSERT INTO diagram_versions (
+          id, diagram_id, version_number, xml_content, comment, created_by, created_at, prompt, ai_reasoning, business_usecase, technical_usecase
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      );
+      for (const ver of versions) {
+        insertVer.run(
+          ver.id,
+          ver.diagram_id,
+          ver.version_number,
+          ver.xml_content,
+          ver.comment,
+          ver.created_by,
+          ver.created_at as string,
+          ver.prompt || null,
+          ver.ai_reasoning || null,
+          ver.business_usecase || null,
+          ver.technical_usecase || null
+        );
+      }
+
+      db.exec('COMMIT;');
+    } catch (error) {
+      db.exec('ROLLBACK;');
+      console.error('Failed to sync database in SQLite:', error);
+      throw error;
+    }
+  }
+}
+
+
 const AWS_VPC_XML = `
 <mxfile host="embed.diagrams.net">
   <diagram id="aws_vpc" name="AWS VPC SecureNetwork">
