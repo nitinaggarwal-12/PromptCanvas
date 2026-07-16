@@ -107,6 +107,40 @@ async function clickSidebarDiagram(page, name) {
   }, name);
 }
 
+async function waitForSidebarDiagram(page, name, timeoutMs = 90000) {
+  const start = Date.now();
+  console.log(`⏳ Waiting for diagram "${name}" to appear in sidebar...`);
+  while (Date.now() - start < timeoutMs) {
+    const found = await page.evaluate((diagName) => {
+      const items = Array.from(document.querySelectorAll('span'));
+      return items.some(el => el.innerText.includes(diagName));
+    }, name);
+    if (found) {
+      console.log(`✅ Diagram "${name}" appeared in sidebar.`);
+      return true;
+    }
+    await sleep(3000);
+  }
+  throw new Error(`Timeout waiting for diagram "${name}" to appear in sidebar`);
+}
+
+async function waitForRefinementComplete(page, timeoutMs = 90000) {
+  const start = Date.now();
+  console.log(`⏳ Waiting for refinement to complete...`);
+  while (Date.now() - start < timeoutMs) {
+    const isReady = await page.evaluate(() => {
+      const ta = document.querySelector('form textarea');
+      return ta && !ta.disabled;
+    });
+    if (isReady) {
+      console.log(`✅ Refinement complete.`);
+      return true;
+    }
+    await sleep(3000);
+  }
+  throw new Error(`Timeout waiting for refinement to complete`);
+}
+
 const targetUrl = process.argv[2] || 'https://promptcanvas-production-235c.up.railway.app';
 
 (async () => {
@@ -156,13 +190,12 @@ const targetUrl = process.argv[2] || 'https://promptcanvas-production-235c.up.ra
       console.log(`Submitting form...`);
       await page.click('button[type="submit"]');
       
-      // Wait for Gemini API and Draw.io render (35-45s)
-      console.log(`⏳ Waiting for diagram generation (up to 50s)...`);
-      await sleep(40000);
+      // Wait for Gemini API and Draw.io render dynamically
+      await waitForSidebarDiagram(page, sc.name);
       
       console.log(`Clicking the diagram "${sc.name}" in the sidebar to ensure it loads...`);
       await clickSidebarDiagram(page, sc.name);
-      await sleep(4000); // Wait for canvas to render after selection
+      await sleep(5000); // Wait for canvas to render after selection
       
       // Capture Created diagram screenshot
       const createPath = path.join(SCREENSHOT_DIR, `scenario_${sc.index}_create.png`);
@@ -177,9 +210,9 @@ const targetUrl = process.argv[2] || 'https://promptcanvas-production-235c.up.ra
       // Submit modification
       await page.click('form button[type="submit"]');
       
-      // Wait for Gemini API and Draw.io render (25-35s)
-      console.log(`⏳ Waiting for refinement (up to 40s)...`);
-      await sleep(35000);
+      // Wait for refinement dynamically
+      await waitForRefinementComplete(page);
+      await sleep(4000); // Settling delay for draw.io render
       
       // Capture Modified diagram screenshot
       const modifyPath = path.join(SCREENSHOT_DIR, `scenario_${sc.index}_modify.png`);
