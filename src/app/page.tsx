@@ -18,7 +18,7 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#070a13] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-clip">
+    <div className="relative min-h-screen bg-[#070a13] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-clip">
       
       {/* Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-[120px] pointer-events-none z-0" />
@@ -287,48 +287,48 @@ export default function LandingPage() {
       </section>
 
       {/* How it Works Section */}
-      <section id="how-it-works" className="relative py-24 bg-slate-950/40 border-y border-panel-border/30">
-        <div className="w-full max-w-8xl mx-auto px-6 md:px-12">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-3">The Workflow</h2>
-            <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+      <section id="how-it-works" className="relative py-32 bg-slate-950/40 border-y border-panel-border/30">
+        <div className="w-full max-w-8xl mx-auto px-6 md:px-16">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-4">The Workflow</h2>
+            <h3 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
               Create and Refine in Three Steps
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 relative z-10">
             {/* Desktop workflow connector line */}
-            <div className="hidden md:block absolute top-6 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-teal-500/30 via-indigo-500/40 to-teal-500/30 border-t border-dashed border-panel-border/30 z-0" />
+            <div className="hidden md:block absolute top-8 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-teal-500/30 via-indigo-500/40 to-teal-500/30 border-t border-dashed border-panel-border/30 z-0" />
             
             {/* Step 1 */}
-            <div className="relative flex flex-col items-center text-center space-y-4 z-10">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
+            <div className="relative flex flex-col items-center text-center space-y-5 z-10">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-2xl shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 1
               </div>
-              <h4 className="font-bold text-white text-lg">Select or Input Prompt</h4>
-              <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+              <h4 className="font-bold text-white text-xl md:text-2xl">Select or Input Prompt</h4>
+              <p className="text-base text-slate-400 max-w-sm leading-relaxed">
                 Choose a pre-defined architecture template or enter a custom prompt describing your microservices, compute instances, database types, and connectors.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="relative flex flex-col items-center text-center space-y-4 z-10">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
+            <div className="relative flex flex-col items-center text-center space-y-5 z-10">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-2xl shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 2
               </div>
-              <h4 className="font-bold text-white text-lg">Gemini Generates XML</h4>
-              <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+              <h4 className="font-bold text-white text-xl md:text-2xl">Gemini Generates XML</h4>
+              <p className="text-base text-slate-400 max-w-sm leading-relaxed">
                 Our backend compiler calls Gemini 2.5 Flash, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="relative flex flex-col items-center text-center space-y-4 z-10">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-lg shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
+            <div className="relative flex flex-col items-center text-center space-y-5 z-10">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-2xl shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 3
               </div>
-              <h4 className="font-bold text-white text-lg">Audit, Tweak, and Iterate</h4>
-              <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+              <h4 className="font-bold text-white text-xl md:text-2xl">Audit, Tweak, and Iterate</h4>
+              <p className="text-base text-slate-400 max-w-sm leading-relaxed">
                 Audit the security of your diagram instantly. Add new nodes using the chat prompt interface, edit components, or click &quot;Open in New Tab&quot; to edit visually in Draw.io.
               </p>
             </div>
