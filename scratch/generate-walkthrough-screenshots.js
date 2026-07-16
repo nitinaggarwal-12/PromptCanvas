@@ -107,7 +107,7 @@ async function clickSidebarDiagram(page, name) {
   }, name);
 }
 
-async function waitForSidebarDiagram(page, name, timeoutMs = 90000) {
+async function waitForSidebarDiagram(page, name, timeoutMs = 120000) {
   const start = Date.now();
   console.log(`⏳ Waiting for diagram "${name}" to appear in sidebar...`);
   while (Date.now() - start < timeoutMs) {
@@ -124,7 +124,7 @@ async function waitForSidebarDiagram(page, name, timeoutMs = 90000) {
   throw new Error(`Timeout waiting for diagram "${name}" to appear in sidebar`);
 }
 
-async function waitForRefinementComplete(page, timeoutMs = 90000) {
+async function waitForRefinementComplete(page, timeoutMs = 120000) {
   const start = Date.now();
   console.log(`⏳ Waiting for refinement to complete...`);
   while (Date.now() - start < timeoutMs) {
@@ -153,6 +153,7 @@ const targetUrl = process.argv[2] || 'https://promptcanvas-production-235c.up.ra
     headless: true,
     executablePath: fs.existsSync(chromePath) ? chromePath : undefined,
     defaultViewport: { width: 1440, height: 950 },
+    protocolTimeout: 240000,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
