@@ -145,7 +145,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} autoComplete="off" className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1.5">Full Name</label>
@@ -154,7 +154,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                 <input
                   id="auth-input-name"
                   type="text"
-                  autoComplete="off"
+                  autoComplete="name"
                   placeholder="Jane Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -172,7 +172,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                 id="auth-input-email"
                 type="email"
                 required
-                autoComplete="off"
+                autoComplete="email"
                 placeholder="name@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -190,10 +190,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                 type="password"
                 required
                 minLength={6}
-                autoComplete="new-password"
+                autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-sm text-white placeholder-slate-500 outline-none transition-colors"
               />
             </div>
             {mode === 'signup' && (
