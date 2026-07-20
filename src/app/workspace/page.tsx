@@ -2293,11 +2293,10 @@ function WorkspaceContent() {
         >
           {versionsDesc.map((v, idx) => {
             const isLatest = idx === 0;
-            const tag = isLatest ? '(Active Draft)' : '(Preview Snapshot)';
-            const commentExcerpt = v.comment ? ` - ${v.comment.length > 22 ? v.comment.slice(0, 22) + '...' : v.comment}` : '';
+            const label = isLatest ? `Version ${v.version_number} (Latest)` : `Version ${v.version_number}`;
             return (
               <option key={v.id} value={v.id} className="bg-[#0b101d] text-white py-1 font-semibold">
-                v{v.version_number} {tag}{commentExcerpt}
+                {label}
               </option>
             );
           })}
@@ -2633,11 +2632,6 @@ function WorkspaceContent() {
               <h2 className="font-semibold text-base text-white">
                 {activeDiagram ? activeDiagram.name : 'Select or Create a Diagram'}
               </h2>
-              {activeDiagram && activeVersion && (
-                <div className="flex items-center gap-2 mt-0.5">
-                  {renderVersionDropdown("top-header-version-dropdown")}
-                </div>
-              )}
             </div>
           </div>
 
@@ -2723,7 +2717,7 @@ function WorkspaceContent() {
             {activeDiagram && displayedVersion && (
               <div className="p-4 border-b border-panel-border bg-slate-900/40 space-y-3 shrink-0 animate-fade-in">
                 <div className="flex items-center justify-between gap-2">
-                  {renderVersionDropdown("sidebar-version-dropdown")}
+                  <span className="text-xs font-black text-teal-accent">Version {displayedVersion.version_number}</span>
                   <span className="text-[10px] text-slate-500 shrink-0">
                     {new Date(displayedVersion.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
@@ -3002,42 +2996,7 @@ function WorkspaceContent() {
                     </span>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <div className="relative flex items-center">
-                        <select
-                          id="canvas-version-select-dropdown"
-                          value={previewVersion ? previewVersion.id : (activeVersion?.id || '')}
-                          onChange={(e) => {
-                            const selectedId = e.target.value;
-                            if (!selectedId) return;
-                            const foundVer = activeDiagram?.versions?.find(v => v.id === selectedId);
-                            if (foundVer) {
-                              const isLatest = activeDiagram?.versions && activeDiagram.versions[0]?.id === foundVer.id;
-                              if (isLatest) {
-                                setPreviewVersion(null);
-                              } else {
-                                setPreviewVersion(foundVer);
-                              }
-                            }
-                          }}
-                          className="appearance-none pl-3 pr-8 py-1.5 rounded-xl text-xs font-black bg-[#0b101d] text-teal-300 border border-teal-500/40 hover:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400/30 cursor-pointer shadow-md transition-all"
-                        >
-                          {activeDiagram?.versions && activeDiagram.versions.length > 0 ? (
-                            activeDiagram.versions.map((ver, idx) => {
-                              const isLatest = idx === 0;
-                              return (
-                                <option key={ver.id} value={ver.id} className="bg-[#0b101d] text-slate-200 py-1.5 font-bold">
-                                  v{ver.version_number} {isLatest ? '(Active Draft)' : '(Preview Snapshot)'} {ver.comment ? `- ${ver.comment}` : ''}
-                                </option>
-                              );
-                            })
-                          ) : (
-                            <option value="" className="bg-[#0b101d] text-teal-300">
-                              v1 (Active Draft)
-                            </option>
-                          )}
-                        </select>
-                        <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
-                      </div>
+                      {renderVersionDropdown("diagram-top-version-dropdown")}
                     </div>
                   )}
                 </div>
