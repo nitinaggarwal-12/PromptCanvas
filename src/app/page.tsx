@@ -203,7 +203,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto pt-2">
             <Link
               id="hero-build-diagram-btn"
-              href={user ? "/workspace?modal=create" : "#"}
+              href={user ? "/dashboard" : "#"}
               onClick={handleBuildDiagramClick}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
             >
@@ -627,7 +627,8 @@ export default function LandingPage() {
 
           <div className="mt-8 flex justify-center">
             <Link
-              href="/workspace?modal=create"
+              href={user ? "/dashboard" : "#"}
+              onClick={handleBuildDiagramClick}
               className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Launch Free Workspace</span>
