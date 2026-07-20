@@ -448,11 +448,15 @@ function WorkspaceContent() {
   });
   const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough'>('editor');
   const searchParams = useSearchParams();
+  const isInitialTabLoadedRef = useRef(false);
 
   useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
-      setCurrentTab(tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
+    if (!isInitialTabLoadedRef.current) {
+      isInitialTabLoadedRef.current = true;
+      const tabParam = searchParams.get('tab');
+      if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
+        setCurrentTab(tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
+      }
     }
   }, [searchParams]);
 
@@ -1665,7 +1669,15 @@ function WorkspaceContent() {
                       <span className="text-[10px] font-black text-teal-accent uppercase tracking-widest">Active Asset</span>
                       <button
                         type="button"
-                        onClick={() => setCurrentTab('editor')}
+                        onClick={() => {
+                          setCurrentTab('editor');
+                          if (typeof window !== 'undefined') {
+                            const params = new URLSearchParams(window.location.search);
+                            params.delete('tab');
+                            const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+                            window.history.replaceState({}, '', newUrl);
+                          }
+                        }}
                         className="text-xs font-bold text-teal-300 hover:text-white bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                       >
                         <LayoutGrid className="w-3.5 h-3.5 text-teal-accent" />
@@ -2381,7 +2393,18 @@ function WorkspaceContent() {
               <button
                 key={item.id}
                 onClick={() => {
-                  setCurrentTab(item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
+                  const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
+                  setCurrentTab(newTab);
+                  if (typeof window !== 'undefined') {
+                    const params = new URLSearchParams(window.location.search);
+                    if (newTab === 'editor') {
+                      params.delete('tab');
+                    } else {
+                      params.set('tab', newTab);
+                    }
+                    const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+                    window.history.replaceState({}, '', newUrl);
+                  }
                   if (!isSidebarOpen) setIsSidebarOpen(true);
                 }}
                 className="w-full text-left block"
