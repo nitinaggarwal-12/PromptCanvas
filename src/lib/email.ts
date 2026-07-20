@@ -44,6 +44,8 @@ export async function sendMagicLinkEmail({
     try {
       const transporter = nodemailer.createTransport({
         service: 'gmail',
+        pool: true,
+        maxConnections: 5,
         auth: {
           user: smtpUser,
           pass: smtpPass,
