@@ -99,7 +99,7 @@ export function ContactUsModal({ isOpen, onClose, currentUser }: ContactUsModalP
               <Mail className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">Contact Creator</h3>
+              <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">Contact Us</h3>
               <p className="text-sm text-slate-300 mt-0.5">Direct channel to the PromptCanvas creator & engineering team</p>
             </div>
           </div>

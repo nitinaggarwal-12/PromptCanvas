@@ -298,12 +298,12 @@ export default function Dashboard() {
           })}
           <button
             type="button"
-            id="sidebar-contact-creator-btn"
+            id="sidebar-contact-us-btn"
             onClick={() => setIsContactOpen(true)}
             className="w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-hover/40 transition-all cursor-pointer"
           >
             <Mail className="w-4.5 h-4.5 shrink-0 text-teal-accent" />
-            {isSidebarOpen && <span className="truncate">Contact Creator</span>}
+            {isSidebarOpen && <span className="truncate">Contact Us</span>}
           </button>
         </div>
 
