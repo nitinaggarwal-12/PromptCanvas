@@ -8,7 +8,7 @@ export async function sendMagicLinkEmail({
   toEmail: string;
   magicLinkUrl: string;
 }) {
-  const smtpUser = process.env.SMTP_USER || 'nitinaggarwal12@gmail.com';
+  const smtpUser = process.env.SMTP_USER || 'vibeandcode.ai@gmail.com';
   const smtpPass = process.env.SMTP_PASS;
   const resendApiKey = process.env.RESEND_API_KEY;
 

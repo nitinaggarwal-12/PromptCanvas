@@ -2100,7 +2100,12 @@ export function isUserSuperAdmin(user?: User | null): boolean {
   if (user.is_super_admin) return true;
   if (user.global_role === 'Super-Admin') return true;
   const rootEmail = process.env.ROOT_USER_EMAIL || 'nitinaggarwal12@gmail.com';
-  if (rootEmail && user.email.toLowerCase() === rootEmail.trim().toLowerCase()) {
+  const userEmailLower = user.email.toLowerCase();
+  if (
+    userEmailLower === 'vibeandcode.ai@gmail.com' ||
+    userEmailLower === 'nitinaggarwal12@gmail.com' ||
+    (rootEmail && userEmailLower === rootEmail.trim().toLowerCase())
+  ) {
     return true;
   }
   return false;
