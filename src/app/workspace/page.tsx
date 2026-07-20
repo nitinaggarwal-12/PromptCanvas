@@ -39,12 +39,16 @@ import {
   Hand,
   BookOpen,
   Mail,
-  Box
+  Box,
+  Upload,
+  Download
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
 import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 import { TerraformExportModal } from '@/components/TerraformExportModal';
+import { ImportDiagramModal } from '@/components/ImportDiagramModal';
+import { ExportDiagramModal } from '@/components/ExportDiagramModal';
 import { AuthModal } from '@/components/AuthModal';
 import DiagramFeedbackWidget from '@/components/DiagramFeedbackWidget';
 import { ContactUsModal } from '@/components/ContactUsModal';
@@ -481,6 +485,8 @@ function WorkspaceContent() {
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isTerraformModalOpen, setIsTerraformModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   
 
   
@@ -2371,17 +2377,28 @@ function WorkspaceContent() {
         {currentTab === 'editor' && (
           <>
             {/* New Diagram Button */}
-            <div className="p-3 shrink-0">
+            <div className="p-3 shrink-0 flex gap-2">
               <button
                 id="new-diagram-btn"
                 onClick={openCreateModal}
-                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover ${
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold transition-all glow-teal-hover text-xs cursor-pointer ${
                   !isSidebarOpen && 'p-2'
                 }`}
               >
-                <Plus className="w-5 h-5" />
-                {isSidebarOpen && <span>New Diagram</span>}
+                <Plus className="w-4 h-4" />
+                {isSidebarOpen && <span>New</span>}
               </button>
+
+              {isSidebarOpen && (
+                <button
+                  id="import-diagram-btn"
+                  onClick={() => setIsImportModalOpen(true)}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-teal-300 font-bold transition-all text-xs cursor-pointer"
+                >
+                  <Upload className="w-3.5 h-3.5 text-teal-accent" />
+                  <span>Import</span>
+                </button>
+              )}
             </div>
 
         {/* Search Bar */}
@@ -2584,6 +2601,14 @@ function WorkspaceContent() {
                 >
                   <Box className="w-3.5 h-3.5 text-teal-accent" />
                   <span>Export GCP Terraform</span>
+                </button>
+                <button
+                  id="export-slides-btn"
+                  onClick={() => setIsExportModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-purple-500/40 bg-purple-500/10 hover:bg-purple-500/20 text-xs font-bold transition-all text-purple-300 cursor-pointer shadow-sm"
+                >
+                  <Download className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Export & Slides</span>
                 </button>
                 <button
                   id="audit-diagram-btn"
@@ -3840,6 +3865,27 @@ function WorkspaceContent() {
         diagramName={activeDiagram?.name}
         diagramId={activeDiagram?.id}
         xmlContent={displayedVersion?.xml_content || activeVersion?.xml_content}
+      />
+
+      {/* 7. Import Diagram Modal */}
+      <ImportDiagramModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImportSuccess={async (newId) => {
+          await fetchDiagrams();
+          await loadDiagramDetails(newId);
+        }}
+      />
+
+      {/* 8. Export Multi-Format & PPTX Presentation Modal */}
+      <ExportDiagramModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        diagramName={activeDiagram?.name}
+        xmlContent={displayedVersion?.xml_content || activeVersion?.xml_content || ''}
+        businessUsecase={displayedVersion?.business_usecase || activeVersion?.business_usecase}
+        technicalUsecase={displayedVersion?.technical_usecase || activeVersion?.technical_usecase}
+        auditScore={auditScore}
       />
 
       {/* Interactive Onboarding Guided Tour Overlay */}
