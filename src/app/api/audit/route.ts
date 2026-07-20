@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI, Type } from '@google/genai';
-import { getLatestDiagramVersion } from '@/lib/db';
+import { getLatestDiagramVersion, saveAuditReport, getAuditReportsForDiagram } from '@/lib/db';
 
 const ai = new GoogleGenAI({});
 
@@ -31,6 +31,23 @@ For each gap:
 The "report" string must be clean GitHub-style Markdown detailing the findings, strengths, risks, and recommendations.
 The "score" number must be a security score from 0 to 100 based on the severity of identified gaps.
 `;
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const diagramId = searchParams.get('diagramId');
+    if (!diagramId) {
+      return NextResponse.json({ error: 'diagramId query parameter is required' }, { status: 400 });
+    }
+
+    const reports = await getAuditReportsForDiagram(diagramId);
+    return NextResponse.json({ reports });
+  } catch (error: unknown) {
+    console.error('Failed to fetch audit reports:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: 'Failed to fetch reports', details: errorMessage }, { status: 500 });
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -110,10 +127,27 @@ export async function POST(request: Request) {
       };
     }
 
+    const score = parsedData.score || 82;
+    const report = parsedData.report || 'No detailed audit report generated.';
+    const gaps = parsedData.gaps || [];
+
+    // Save report to database for persistent audit history
+    const savedReport = await saveAuditReport({
+      diagramId,
+      versionNumber: latestVersion.version_number,
+      score,
+      report,
+      gaps,
+    });
+
+    const allReports = await getAuditReportsForDiagram(diagramId);
+
     return NextResponse.json({
-      score: parsedData.score || 82,
-      report: parsedData.report || 'No detailed audit report generated.',
-      gaps: parsedData.gaps || [],
+      score,
+      report,
+      gaps,
+      savedReport,
+      reportsHistory: allReports,
     });
   } catch (error: unknown) {
     console.error('Audit failed:', error);

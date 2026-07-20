@@ -130,6 +130,16 @@ export interface DiagramVersion {
   technical_usecase?: string | null;
 }
 
+export interface AuditReport {
+  id: string;
+  diagram_id: string;
+  version_number: number;
+  score: number;
+  report: string;
+  gaps: string;
+  created_at: string;
+}
+
 // Database Connection Drivers
 let pgPoolInstance: Pool | null = null;
 let sqliteDbInstance: DatabaseSync | null = null;
@@ -232,6 +242,18 @@ export async function ensureTablesExist(): Promise<void> {
         business_usecase TEXT,
         technical_usecase TEXT,
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS audit_reports (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL REFERENCES diagrams(id) ON DELETE CASCADE,
+        version_number INTEGER NOT NULL,
+        score INTEGER NOT NULL DEFAULT 85,
+        report TEXT NOT NULL,
+        gaps TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
@@ -414,6 +436,19 @@ export async function ensureTablesExist(): Promise<void> {
         ai_reasoning TEXT,
         business_usecase TEXT,
         technical_usecase TEXT,
+        FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS audit_reports (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL,
+        version_number INTEGER NOT NULL,
+        score INTEGER NOT NULL DEFAULT 85,
+        report TEXT NOT NULL,
+        gaps TEXT NOT NULL,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
       );
     `);
@@ -2449,5 +2484,60 @@ export async function updateUserGlobalRole(
     const stmt = db.prepare(`UPDATE users SET global_role = ?, is_super_admin = ? WHERE id = ?`);
     stmt.run(newRole, isSuper ? 1 : 0, userId);
     return getUserById(userId) as Promise<User>;
+  }
+}
+
+// Audit Report Persistence Helpers
+export async function saveAuditReport({
+  diagramId,
+  versionNumber,
+  score,
+  report,
+  gaps,
+}: {
+  diagramId: string;
+  versionNumber: number;
+  score: number;
+  report: string;
+  gaps: any[];
+}): Promise<AuditReport> {
+  await ensureTablesExist();
+  const id = uuidv4();
+  const gapsJson = JSON.stringify(gaps);
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `INSERT INTO audit_reports (id, diagram_id, version_number, score, report, gaps)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING *`,
+      [id, diagramId, versionNumber, score, report, gapsJson]
+    );
+    return res.rows[0];
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `INSERT INTO audit_reports (id, diagram_id, version_number, score, report, gaps)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    );
+    stmt.run(id, diagramId, versionNumber, score, report, gapsJson);
+    const getStmt = db.prepare(`SELECT * FROM audit_reports WHERE id = ?`);
+    return getStmt.get(id) as unknown as AuditReport;
+  }
+}
+
+export async function getAuditReportsForDiagram(diagramId: string): Promise<AuditReport[]> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `SELECT * FROM audit_reports WHERE diagram_id = $1 ORDER BY version_number DESC, created_at DESC`,
+      [diagramId]
+    );
+    return res.rows;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(`SELECT * FROM audit_reports WHERE diagram_id = ? ORDER BY version_number DESC, created_at DESC`);
+    return stmt.all(diagramId) as unknown as AuditReport[];
   }
 }
