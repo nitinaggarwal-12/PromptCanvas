@@ -2640,10 +2640,15 @@ function WorkspaceContent() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             )}
-            <div>
-              <h2 className="font-semibold text-base text-white">
+            <div className="flex items-center gap-3">
+              <h2 className="font-bold text-base text-white">
                 {activeDiagram ? activeDiagram.name : 'Select or Create a Diagram'}
               </h2>
+              {activeDiagram && activeVersion && (
+                <div className="flex items-center gap-2">
+                  {renderVersionDropdown("top-header-version-dropdown")}
+                </div>
+              )}
             </div>
           </div>
 
@@ -2653,56 +2658,99 @@ function WorkspaceContent() {
             {activeDiagram && (
               <>
                 <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
-                {/* Parallel Layout View Toggle for Current Version */}
-                <div className="flex items-center bg-bg-dark/90 p-0.5 rounded-lg border border-panel-border shadow-sm">
-                  <button
-                    type="button"
-                    onClick={() => setLayoutPreset('detailed')}
-                    className={`px-2.5 py-1 rounded text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                      layoutPreset === 'detailed'
-                        ? 'bg-slate-700 text-white shadow-sm font-extrabold'
-                        : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                    title="Standard Detailed Architecture Layout"
+                {/* 1. View & Perspective Dropdown */}
+                <div className="relative inline-flex items-center">
+                  <select
+                    value={`${viewMode}:${layoutPreset}`}
+                    onChange={(e) => {
+                      const [vMode, lPreset] = e.target.value.split(':');
+                      if (vMode && lPreset) {
+                        setViewMode(vMode as 'canvas' | 'outline' | 'business' | 'technical');
+                        setLayoutPreset(lPreset as 'detailed' | 'clean');
+                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
+                      }
+                    }}
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-3 pr-8 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30"
                   >
-                    <FileText className="w-3.5 h-3.5 text-slate-300" />
-                    <span>Detailed View</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setLayoutPreset('clean')}
-                    className={`px-2.5 py-1 rounded text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                      layoutPreset === 'clean'
-                        ? 'bg-teal-accent text-bg-dark font-black shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                    title="Option 2: Minimalist Clean Architecture Layout with hover tooltips"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Option 2: Clean View</span>
-                  </button>
+                    <option value="canvas:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                      📐 2D Canvas — Detailed View
+                    </option>
+                    <option value="canvas:clean" className="bg-[#0b101d] text-teal-300 py-1 font-bold">
+                      ✨ 2D Canvas — Option 2: Clean View
+                    </option>
+                    <option value="outline:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                      🌳 Structural Tree & Node Outline
+                    </option>
+                    <option value="business:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                      💼 Business Use Case Brief
+                    </option>
+                    <option value="technical:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                      ⚙️ Technical Integration Walkthrough
+                    </option>
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
                 </div>
-                <button
-                  id="export-terraform-btn"
-                  onClick={() => setIsTerraformModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-teal-500/40 bg-teal-500/10 hover:bg-teal-500/20 text-xs font-bold transition-all text-teal-300 cursor-pointer shadow-sm"
-                >
-                  <Box className="w-3.5 h-3.5 text-teal-accent" />
-                  <span>Export GCP Terraform</span>
-                </button>
-                <button
-                  id="export-slides-btn"
-                  onClick={() => setIsExportModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-purple-500/40 bg-purple-500/10 hover:bg-purple-500/20 text-xs font-bold transition-all text-purple-300 cursor-pointer shadow-sm"
-                >
-                  <Download className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Export & Slides</span>
-                </button>
+
+                {/* 2. Edit Options Dropdown */}
+                <div className="relative inline-flex items-center">
+                  <select
+                    value=""
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === 'inline') {
+                        setIsInlineEditorOpen(true);
+                      } else if (val === 'newtab') {
+                        openInNewTab();
+                      }
+                    }}
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-3 pr-8 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30"
+                  >
+                    <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
+                      ✏️ Edit Options ▾
+                    </option>
+                    <option value="inline" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                      ✏️ Edit Diagram Inline
+                    </option>
+                    <option value="newtab" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                      ↗️ Open Editor in New Tab
+                    </option>
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
+                </div>
+
+                {/* 3. Exporters Dropdown */}
+                <div className="relative inline-flex items-center">
+                  <select
+                    value=""
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === 'terraform') {
+                        setIsTerraformModalOpen(true);
+                      } else if (val === 'slides') {
+                        setIsExportModalOpen(true);
+                      }
+                    }}
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-8 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30"
+                  >
+                    <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
+                      📥 Export ▾
+                    </option>
+                    <option value="terraform" className="bg-[#0b101d] text-teal-300 py-1 font-bold">
+                      📦 Export GCP Terraform Code (.tf)
+                    </option>
+                    <option value="slides" className="bg-[#0b101d] text-purple-300 py-1 font-bold">
+                      📊 Export Presentation Deck & Files (PPTX, PDF, PNG, XML)
+                    </option>
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
+                </div>
+
+                {/* 4. Audit Security Primary CTA */}
                 <button
                   id="audit-diagram-btn"
                   onClick={handleAuditDiagram}
                   disabled={isAuditing}
-                  className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all disabled:opacity-50 cursor-pointer text-teal-accent border-teal-accent/30 hover:border-teal-accent/50")}
+                  className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50")}
                 >
                   {isAuditing ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -2710,20 +2758,6 @@ function WorkspaceContent() {
                     <Shield className="w-3.5 h-3.5" />
                   )}
                   <span>{isAuditing ? 'Auditing...' : 'Audit Security'}</span>
-                </button>
-                <button
-                  onClick={() => setIsInlineEditorOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
-                >
-                  <Edit3 className="w-3.5 h-3.5" />
-                  <span>Edit Inline</span>
-                </button>
-                <button
-                  onClick={openInNewTab}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Open in New Tab</span>
                 </button>
                 <button
                   id="header-contact-us-btn"
