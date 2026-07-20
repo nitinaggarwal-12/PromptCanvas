@@ -43,6 +43,7 @@ import {
   Upload,
   Download
 } from 'lucide-react';
+import { createMinimalistCleanVariant } from '@/lib/diagramCleaner';
 import DiagramViewer from '@/components/DiagramViewer';
 import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
@@ -467,10 +468,10 @@ function WorkspaceContent() {
     setIsCreateModalOpen(true);
   };
   
-  // Loading States
+  // Loading & Layout View Mode States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isGeneratingCleanVariant, setIsGeneratingCleanVariant] = useState(false);
+  const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean'>('detailed');
   const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   
@@ -1399,29 +1400,6 @@ function WorkspaceContent() {
     }
   };
 
-  const handleGenerateCleanVariant = async () => {
-    if (!activeDiagram) return;
-    setIsGeneratingCleanVariant(true);
-    try {
-      const res = await fetch('/api/diagrams/clean-variant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ diagramId: activeDiagram.id })
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Failed to generate clean variant');
-      }
-      await fetchDiagrams();
-      await loadDiagramDetails(activeDiagram.id);
-    } catch (err: unknown) {
-      console.error(err);
-      alert(err instanceof Error ? err.message : 'Failed to generate clean variant');
-    } finally {
-      setIsGeneratingCleanVariant(false);
-    }
-  };
-
   // Helper to render basic markdown safely in modal
   const renderAuditMarkdown = (text: string) => {
     if (!text) return null;
@@ -2290,6 +2268,16 @@ function WorkspaceContent() {
 
   const displayedVersion = previewVersion || activeVersion;
 
+  const currentXmlToRender = React.useMemo(() => {
+    const baseXml = displayedVersion?.xml_content || '';
+    if (!baseXml) return '';
+    if (layoutPreset === 'clean') {
+      const { cleanedXml } = createMinimalistCleanVariant(baseXml);
+      return cleanedXml;
+    }
+    return baseXml;
+  }, [displayedVersion, layoutPreset]);
+
   const renderVersionDropdown = (customId?: string) => {
     const versionsDesc = activeDiagram?.versions
       ? [...activeDiagram.versions].sort((a, b) => b.version_number - a.version_number)
@@ -2665,20 +2653,35 @@ function WorkspaceContent() {
             {activeDiagram && (
               <>
                 <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
-                <button
-                  id="clean-variant-btn"
-                  onClick={handleGenerateCleanVariant}
-                  disabled={isGeneratingCleanVariant}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-cyan-500/40 bg-cyan-500/10 hover:bg-cyan-500/20 text-xs font-bold transition-all text-cyan-300 cursor-pointer shadow-sm disabled:opacity-50"
-                  title="Generate Option 2: Minimalist Clean View with hover tooltips"
-                >
-                  {isGeneratingCleanVariant ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
-                  ) : (
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                  )}
-                  <span>Option 2: Clean View</span>
-                </button>
+                {/* Parallel Layout View Toggle for Current Version */}
+                <div className="flex items-center bg-bg-dark/90 p-0.5 rounded-lg border border-panel-border shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => setLayoutPreset('detailed')}
+                    className={`px-2.5 py-1 rounded text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      layoutPreset === 'detailed'
+                        ? 'bg-slate-700 text-white shadow-sm font-extrabold'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                    title="Standard Detailed Architecture Layout"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-slate-300" />
+                    <span>Detailed View</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLayoutPreset('clean')}
+                    className={`px-2.5 py-1 rounded text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      layoutPreset === 'clean'
+                        ? 'bg-teal-accent text-bg-dark font-black shadow-sm'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                    title="Option 2: Minimalist Clean Architecture Layout with hover tooltips"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Option 2: Clean View</span>
+                  </button>
+                </div>
                 <button
                   id="export-terraform-btn"
                   onClick={() => setIsTerraformModalOpen(true)}
@@ -3537,7 +3540,7 @@ function WorkspaceContent() {
                     }}
                   >
                     <div className="w-full h-full pointer-events-auto">
-                      <DiagramViewer xml={displayedVersion?.xml_content || ''} />
+                      <DiagramViewer xml={currentXmlToRender} />
                     </div>
                   </div>
                 </div>
