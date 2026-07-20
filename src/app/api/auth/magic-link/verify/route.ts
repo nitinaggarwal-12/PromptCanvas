@@ -45,7 +45,7 @@ export async function GET(request: Request) {
 
     await logUserEvent(user.id, 'MAGIC_LINK_LOGIN', null, 'Passwordless Session Verified');
 
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/workspace?setupPassword=true', request.url));
   } catch (error: unknown) {
     console.error('Magic link verification error:', error);
     const msg = error instanceof Error ? error.message : 'Invalid link';

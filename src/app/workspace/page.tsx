@@ -54,6 +54,7 @@ import { AuthModal } from '@/components/AuthModal';
 import DiagramFeedbackWidget from '@/components/DiagramFeedbackWidget';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
+import { PasswordSetupModal } from '@/components/PasswordSetupModal';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -451,6 +452,8 @@ function WorkspaceContent() {
   const searchParams = useSearchParams();
   const isInitialTabLoadedRef = useRef(false);
 
+  const [isPasswordSetupOpen, setIsPasswordSetupOpen] = useState(false);
+
   useEffect(() => {
     if (!isInitialTabLoadedRef.current) {
       isInitialTabLoadedRef.current = true;
@@ -458,6 +461,9 @@ function WorkspaceContent() {
       if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
         setCurrentTab(tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
       }
+    }
+    if (searchParams.get('setupPassword') === 'true') {
+      setIsPasswordSetupOpen(true);
     }
   }, [searchParams]);
 
@@ -3973,6 +3979,13 @@ function WorkspaceContent() {
         businessUsecase={displayedVersion?.business_usecase || activeVersion?.business_usecase}
         technicalUsecase={displayedVersion?.technical_usecase || activeVersion?.technical_usecase}
         auditScore={auditScore}
+      />
+
+      {/* 9. Password Setup & Browser Auto-Login Modal */}
+      <PasswordSetupModal
+        isOpen={isPasswordSetupOpen}
+        onClose={() => setIsPasswordSetupOpen(false)}
+        userEmail={currentUser?.email || ''}
       />
 
       {/* Interactive Onboarding Guided Tour Overlay */}
