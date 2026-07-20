@@ -131,9 +131,23 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
 
         {/* Error / Success Banners */}
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
+          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+              <span className="font-semibold">{error}</span>
+            </div>
+            {mode === 'signin' && error.includes('Invalid') && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('signup');
+                  setError(null);
+                }}
+                className="text-[11px] text-teal-400 hover:text-teal-300 hover:underline text-left font-bold mt-1 cursor-pointer"
+              >
+                Don&apos;t have an account yet? Click here to Sign Up instead →
+              </button>
+            )}
           </div>
         )}
 

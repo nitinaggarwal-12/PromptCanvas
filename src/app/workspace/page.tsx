@@ -585,6 +585,15 @@ export default function Dashboard() {
         setActiveDiagram(null);
         return;
       }
+      if (res.status === 404) {
+        setActiveDiagram(null);
+        if (typeof window !== 'undefined') {
+          const params = new URLSearchParams(window.location.search);
+          params.delete('diagram');
+          window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+        }
+        return;
+      }
       if (!res.ok) throw new Error('Failed to fetch diagram details');
       const data: Diagram = await res.json();
       
