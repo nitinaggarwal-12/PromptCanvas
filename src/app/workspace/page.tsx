@@ -1358,9 +1358,6 @@ function WorkspaceContent() {
         throw new Error(errorData.error || errorData.details || 'Failed to remediate security gaps');
       }
 
-      await fetchDiagrams();
-      await loadDiagramDetails(activeDiagram.id);
-
       // Re-run fresh audit after remediation!
       const auditRes = await fetch('/api/audit', {
         method: 'POST',
@@ -1370,10 +1367,17 @@ function WorkspaceContent() {
       if (auditRes.ok) {
         const auditData = await auditRes.json();
         setAuditReport(auditData.report);
-        setAuditScore(100); // 100% remediated!
-        setAuditGaps([]);
-        setSelectedGapIds([]);
+        setAuditScore(auditData.score);
+        setAuditGaps(auditData.gaps || []);
+        setSelectedGapIds((auditData.gaps || []).map((g: { id: string }) => g.id));
+        if (auditData.reportsHistory) {
+          setAuditHistory(auditData.reportsHistory);
+          if (auditData.reportsHistory.length > 0) {
+            setSelectedAuditReportId(auditData.reportsHistory[0].id);
+          }
+        }
       }
+      await loadDiagramDetails(activeDiagram.id);
     } catch (err: unknown) {
       console.error(err);
       const errMsg = err instanceof Error ? err.message : 'Failed to remediate security gaps.';

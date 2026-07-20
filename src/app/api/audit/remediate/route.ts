@@ -27,14 +27,18 @@ You are an expert enterprise cloud architect and cybersecurity engineer.
 You are given an existing Draw.io XML architecture diagram.
 
 ### Task:
-Modify the Draw.io XML to remediate and fix the following selected security gaps:
+Modify the Draw.io XML to fully remediate and resolve all of the following security gaps:
 
 ${remediationInstructions}
 
 ### Strict Rules:
 1. Preserve the overall structure and existing nodes of the architecture.
-2. Add necessary security components (e.g. Cloud Armor WAF, KMS Encryption, Private Subnet boundary, HA Failover Replica, SSL/TLS gateways) to resolve the gaps.
-3. Wire the new security nodes to the existing components with proper directional arrows (<mxCell edge="1".../>).
+2. Add explicit visual security component nodes in the Draw.io XML for each remediation:
+   - For WAF: Add "Cloud Armor WAF Security Policy" node in front of Load Balancer.
+   - For API Gateway: Add "API Gateway & Authentication" node in front of backend microservices.
+   - For Disaster Recovery / Database HA: Add "Cloud SQL Multi-AZ Regional Standby Replica" node wired to primary database.
+   - For Storage CMEK: Add "Cloud KMS (Customer-Managed Encryption Keys)" node connected to Cloud Storage bucket.
+3. Wire all newly added security nodes to adjacent components using proper directional arrows (<mxCell edge="1".../>).
 4. Return ONLY valid, well-formed Draw.io XML wrapped inside <mxfile>...</mxfile>. Do NOT wrap in markdown code blocks or text outside XML.
 `;
 
