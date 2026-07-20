@@ -25,6 +25,7 @@ import {
   Mail
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
+import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
 
 interface Diagram {
   id: string;
@@ -781,6 +782,9 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* AI GENERATION REAL-TIME PROGRESS MODAL */}
+      <AIGenerationProgressModal isOpen={isCreating} promptTitle={newDiagramPrompt || newDiagramName} />
 
       {/* User Profile Modal */}
       <UserProfileModal

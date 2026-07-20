@@ -41,6 +41,7 @@ import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 import { AuthModal } from '@/components/AuthModal';
 import DiagramFeedbackWidget from '@/components/DiagramFeedbackWidget';
 import { ContactUsModal } from '@/components/ContactUsModal';
+import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -2537,14 +2538,43 @@ export default function Dashboard() {
                       TECHNICAL INTEGRATION WALKTHROUGH
                     </span>
                   ) : (
-                    <div className="flex items-center gap-1.5">
-                      <span className={`px-2.5 py-1 rounded text-xs font-bold border ${
-                        previewVersion
-                          ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                          : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
-                      }`}>
-                        {previewVersion ? `v${previewVersion.version_number} (Preview)` : `v${activeVersion?.version_number || 1} (Active Draft)`}
-                      </span>
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex items-center">
+                        <select
+                          id="canvas-version-select-dropdown"
+                          value={previewVersion ? previewVersion.id : (activeVersion?.id || '')}
+                          onChange={(e) => {
+                            const selectedId = e.target.value;
+                            if (!selectedId) return;
+                            const foundVer = activeDiagram?.versions?.find(v => v.id === selectedId);
+                            if (foundVer) {
+                              const isLatest = activeDiagram?.versions && activeDiagram.versions[0]?.id === foundVer.id;
+                              if (isLatest) {
+                                setPreviewVersion(null);
+                              } else {
+                                setPreviewVersion(foundVer);
+                              }
+                            }
+                          }}
+                          className="appearance-none pl-3 pr-8 py-1.5 rounded-xl text-xs font-black bg-[#0b101d] text-teal-300 border border-teal-500/40 hover:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400/30 cursor-pointer shadow-md transition-all"
+                        >
+                          {activeDiagram?.versions && activeDiagram.versions.length > 0 ? (
+                            activeDiagram.versions.map((ver, idx) => {
+                              const isLatest = idx === 0;
+                              return (
+                                <option key={ver.id} value={ver.id} className="bg-[#0b101d] text-slate-200 py-1.5 font-bold">
+                                  v{ver.version_number} {isLatest ? '(Active Draft)' : '(Preview Snapshot)'} {ver.comment ? `- ${ver.comment}` : ''}
+                                </option>
+                              );
+                            })
+                          ) : (
+                            <option value="" className="bg-[#0b101d] text-teal-300">
+                              v1 (Active Draft)
+                            </option>
+                          )}
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -3147,18 +3177,29 @@ export default function Dashboard() {
                   placeholder="e.g., Act as a GCP Data Architect. Design a simple 5-node streaming data pipeline with Cloud Storage, Pub/Sub, Dataflow, BigQuery, and Looker..."
                   className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg p-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
                 />
-                <p className="text-[11px] text-slate-400 mt-1">Leave empty to start with a clean minimal slate.</p>
+                <p className="text-xs text-slate-400 mt-1.5">Leave empty to start with a clean minimal slate.</p>
               </div>
               <button
                 type="submit"
-                className="w-full py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold transition-all glow-teal-hover"
+                disabled={isGenerating}
+                className="w-full py-3.5 rounded-2xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-base transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
-                Create Canvas
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin text-[#070a13]" />
+                    <span>Synthesizing Architecture...</span>
+                  </>
+                ) : (
+                  <span>Create Canvas</span>
+                )}
               </button>
             </form>
           </div>
         </div>
       )}
+
+      {/* AI GENERATION REAL-TIME PROGRESS MODAL */}
+      <AIGenerationProgressModal isOpen={isGenerating} promptTitle={newDiagramPrompt || activeDiagram?.name} />
 
       {/* 2. Save Version Modal (Mock) */}
       {isSaveModalOpen && (
