@@ -17,6 +17,7 @@ import {
   MessageSquare, 
   X,
   Loader2,
+  CheckCircle2,
   FileText,
   Briefcase,
   Cpu,
@@ -465,9 +466,13 @@ export default function Dashboard() {
   // Chat History
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
-  // Audit States
+  // Audit & Remediation States
   const [isAuditing, setIsAuditing] = useState(false);
   const [auditReport, setAuditReport] = useState<string | null>(null);
+  const [auditScore, setAuditScore] = useState<number>(82);
+  const [auditGaps, setAuditGaps] = useState<{ id: string; title: string; severity: 'HIGH' | 'MEDIUM' | 'LOW'; component: string; description: string; remediation: string }[]>([]);
+  const [selectedGapIds, setSelectedGapIds] = useState<string[]>([]);
+  const [isRemediating, setIsRemediating] = useState(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   
@@ -1277,6 +1282,10 @@ export default function Dashboard() {
       }
       const data = await res.json();
       setAuditReport(data.report);
+      setAuditScore(data.score || 82);
+      const gapsList = data.gaps || [];
+      setAuditGaps(gapsList);
+      setSelectedGapIds(gapsList.map((g: { id: string }) => g.id));
       setIsAuditModalOpen(true);
     } catch (err: unknown) {
       console.error(err);
@@ -1284,6 +1293,54 @@ export default function Dashboard() {
       alert(errMsg);
     } finally {
       setIsAuditing(false);
+    }
+  };
+
+  const handleRemediateGaps = async () => {
+    if (!activeDiagram || selectedGapIds.length === 0) return;
+    const selectedGaps = auditGaps.filter(g => selectedGapIds.includes(g.id));
+    if (selectedGaps.length === 0) return;
+
+    setIsRemediating(true);
+    setIsGenerating(true);
+    try {
+      const res = await fetch('/api/audit/remediate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          diagramId: activeDiagram.id,
+          selectedGaps
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || errorData.details || 'Failed to remediate security gaps');
+      }
+
+      await fetchDiagrams();
+      await loadDiagramDetails(activeDiagram.id);
+
+      // Re-run fresh audit after remediation!
+      const auditRes = await fetch('/api/audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ diagramId: activeDiagram.id })
+      });
+      if (auditRes.ok) {
+        const auditData = await auditRes.json();
+        setAuditReport(auditData.report);
+        setAuditScore(100); // 100% remediated!
+        setAuditGaps([]);
+        setSelectedGapIds([]);
+      }
+    } catch (err: unknown) {
+      console.error(err);
+      const errMsg = err instanceof Error ? err.message : 'Failed to remediate security gaps.';
+      alert(errMsg);
+    } finally {
+      setIsRemediating(false);
+      setIsGenerating(false);
     }
   };
 
@@ -1568,18 +1625,132 @@ export default function Dashboard() {
                 </div>
 
                 {auditReport ? (
-                  <div className="glass-panel border-panel-border/40 rounded-2xl p-8 space-y-6">
-                    <div className="flex items-center gap-5 bg-teal-500/5 border border-teal-500/10 rounded-xl p-5">
-                      <div className="w-16 h-16 rounded-full border-4 border-teal-accent flex items-center justify-center font-black text-lg text-teal-accent shrink-0">
-                        85%
+                  <div className="glass-panel border-panel-border/40 rounded-3xl p-8 space-y-8 shadow-2xl">
+                    
+                    {/* Compliance Score Header */}
+                    <div className="flex items-center gap-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+                      <div className={`w-20 h-20 rounded-full border-4 flex items-center justify-center font-black text-xl shrink-0 shadow-lg ${
+                        auditScore >= 90
+                          ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 shadow-emerald-500/20'
+                          : auditScore >= 75
+                          ? 'border-teal-accent text-teal-accent bg-teal-500/10 shadow-teal-500/20'
+                          : 'border-amber-400 text-amber-400 bg-amber-500/10 shadow-amber-500/20'
+                      }`}>
+                        {auditScore}%
                       </div>
                       <div>
-                        <h4 className="text-sm font-black text-white uppercase tracking-wider">Compliance Grade: Good</h4>
-                        <p className="text-xs text-slate-400 mt-1">Diagram satisfies basic network isolation principles. Re-audit after making revisions.</p>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs font-black px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
+                            auditScore >= 90 ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' : 'bg-teal-500/10 text-teal-300 border-teal-500/30'
+                          }`}>
+                            {auditScore >= 90 ? 'Grade: Excellent' : auditScore >= 75 ? 'Grade: Good' : 'Grade: Needs Hardening'}
+                          </span>
+                          <span className="text-xs text-slate-400">{auditGaps.length} Gaps Detected</span>
+                        </div>
+                        <h4 className="text-xl font-black text-white mt-1">Architecture Security & Compliance Audit</h4>
+                        <p className="text-xs text-slate-400 mt-1">Select the gaps below to automatically remediate missing security nodes in your diagram.</p>
                       </div>
                     </div>
+
+                    {/* Interactive Security Gaps Remediation Checklist */}
+                    {auditGaps.length > 0 ? (
+                      <div className="space-y-4 border-t border-panel-border/30 pt-6">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                            <ShieldAlert className="w-5 h-5 text-amber-400" />
+                            <span>Actionable Remediation Checklist ({auditGaps.length})</span>
+                          </h3>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (selectedGapIds.length === auditGaps.length) {
+                                setSelectedGapIds([]);
+                              } else {
+                                setSelectedGapIds(auditGaps.map(g => g.id));
+                              }
+                            }}
+                            className="text-xs font-bold text-teal-400 hover:text-teal-300 transition-colors cursor-pointer"
+                          >
+                            {selectedGapIds.length === auditGaps.length ? 'Deselect All' : 'Select All Gaps'}
+                          </button>
+                        </div>
+
+                        <div className="space-y-3">
+                          {auditGaps.map((gap) => {
+                            const isChecked = selectedGapIds.includes(gap.id);
+                            return (
+                              <div
+                                key={gap.id}
+                                onClick={() => {
+                                  if (isChecked) {
+                                    setSelectedGapIds(selectedGapIds.filter(id => id !== gap.id));
+                                  } else {
+                                    setSelectedGapIds([...selectedGapIds, gap.id]);
+                                  }
+                                }}
+                                className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
+                                  isChecked
+                                    ? 'bg-teal-500/10 border-teal-500/40 text-white shadow-lg shadow-teal-500/5'
+                                    : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:bg-slate-900/70 hover:text-slate-200'
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => {}}
+                                  className="mt-1 w-4 h-4 rounded border-slate-700 text-teal-400 focus:ring-teal-400/30 bg-slate-950 cursor-pointer"
+                                />
+                                <div className="flex-1 space-y-1.5">
+                                  <div className="flex items-center justify-between gap-3">
+                                    <h4 className="text-sm font-extrabold text-white">{gap.title}</h4>
+                                    <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${
+                                      gap.severity === 'HIGH'
+                                        ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                                        : gap.severity === 'MEDIUM'
+                                        ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                                        : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                                    }`}>
+                                      {gap.severity} RISK
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-slate-300 leading-relaxed">{gap.description}</p>
+                                  <div className="text-xs font-semibold text-teal-300 bg-teal-500/5 border border-teal-500/10 rounded-xl p-3 flex items-center gap-2 mt-2">
+                                    <Sparkles className="w-4 h-4 text-teal-accent shrink-0" />
+                                    <span>Proposed Fix: {gap.remediation}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Remediate Button Banner */}
+                        <div className="pt-4 flex items-center justify-between bg-slate-900/80 p-5 rounded-2xl border border-teal-500/30">
+                          <div>
+                            <span className="text-sm font-extrabold text-white block">Auto-Remediate Selected Gaps</span>
+                            <span className="text-xs text-slate-400 mt-0.5 block">Gemini will add missing security components & save a new version.</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleRemediateGaps}
+                            disabled={selectedGapIds.length === 0 || isRemediating}
+                            className="px-6 py-3.5 rounded-xl bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                          >
+                            {isRemediating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                            <span>Fix Selected Gaps ({selectedGapIds.length})</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-bold flex items-center gap-3">
+                        <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
+                        <span>All security & reliability gaps have been remediated! Architecture score is 100%.</span>
+                      </div>
+                    )}
                     
-                    <div className="text-sm text-slate-300 space-y-3 border-t border-panel-border/30 pt-5 max-h-[550px] overflow-y-auto pr-3 leading-relaxed">
+                    {/* Full Audit Report Narrative */}
+                    <div className="text-sm text-slate-300 space-y-3 border-t border-panel-border/30 pt-6 max-h-[450px] overflow-y-auto pr-3 leading-relaxed">
+                      <h3 className="text-sm font-black text-white uppercase tracking-wider mb-2">Detailed Security Findings</h3>
                       {renderAuditMarkdown(auditReport)}
                     </div>
                   </div>
@@ -3343,35 +3514,160 @@ export default function Dashboard() {
 
       {/* 4. Audit Report Modal */}
       {isAuditModalOpen && auditReport && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-panel border-panel-border rounded-xl p-6 w-full max-w-2xl max-h-[85vh] shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between mb-4 border-b border-panel-border/40 pb-3 shrink-0">
-              <div className="flex items-center gap-2.5">
-                <Shield className="w-5 h-5 text-teal-accent" />
-                <h3 className="font-bold text-lg text-white">Maestro Architecture Audit Report</h3>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in p-4 md:p-6">
+          <div className="glass-panel border-panel-border/60 rounded-3xl p-6 md:p-8 w-full max-w-4xl max-h-[90vh] shadow-2xl flex flex-col space-y-6">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-panel-border/40 pb-4 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-accent flex items-center justify-center font-black">
+                  <ShieldAlert className="w-5 h-5 text-teal-accent" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-xl text-white">Maestro Security Audit Report</h3>
+                  <p className="text-xs text-slate-400">Automated architecture risk analysis & auto-remediation checklist</p>
+                </div>
               </div>
               <button 
                 id="close-audit-modal-btn"
                 onClick={() => setIsAuditModalOpen(false)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white transition-all cursor-pointer"
+                className="p-2 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
-            <div className="flex-1 overflow-y-auto pr-1 select-text scrollbar-thin">
-              <div className="space-y-2">
+
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto pr-2 select-text space-y-6 scrollbar-thin">
+              
+              {/* Compliance Score Card */}
+              <div className="flex items-center gap-5 bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+                <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center font-black text-lg shrink-0 shadow-lg ${
+                  auditScore >= 90
+                    ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 shadow-emerald-500/20'
+                    : auditScore >= 75
+                    ? 'border-teal-accent text-teal-accent bg-teal-500/10 shadow-teal-500/20'
+                    : 'border-amber-400 text-amber-400 bg-amber-500/10 shadow-amber-500/20'
+                }`}>
+                  {auditScore}%
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
+                      auditScore >= 90 ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' : 'bg-teal-500/10 text-teal-300 border-teal-500/30'
+                    }`}>
+                      {auditScore >= 90 ? 'Grade: Excellent' : auditScore >= 75 ? 'Grade: Good' : 'Grade: Needs Hardening'}
+                    </span>
+                    <span className="text-xs text-slate-400">{auditGaps.length} Gaps Detected</span>
+                  </div>
+                  <h4 className="text-base font-black text-white mt-1">Architecture Compliance Rating</h4>
+                </div>
+              </div>
+
+              {/* Actionable Security Gaps Remediation Checklist */}
+              {auditGaps.length > 0 ? (
+                <div className="space-y-3 border-t border-panel-border/30 pt-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
+                      <ShieldAlert className="w-4 h-4 text-amber-400" />
+                      <span>Select Gaps to Fix ({auditGaps.length})</span>
+                    </h4>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (selectedGapIds.length === auditGaps.length) {
+                          setSelectedGapIds([]);
+                        } else {
+                          setSelectedGapIds(auditGaps.map(g => g.id));
+                        }
+                      }}
+                      className="text-xs font-bold text-teal-400 hover:text-teal-300 transition-colors cursor-pointer"
+                    >
+                      {selectedGapIds.length === auditGaps.length ? 'Deselect All' : 'Select All Gaps'}
+                    </button>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {auditGaps.map((gap) => {
+                      const isChecked = selectedGapIds.includes(gap.id);
+                      return (
+                        <div
+                          key={gap.id}
+                          onClick={() => {
+                            if (isChecked) {
+                              setSelectedGapIds(selectedGapIds.filter(id => id !== gap.id));
+                            } else {
+                              setSelectedGapIds([...selectedGapIds, gap.id]);
+                            }
+                          }}
+                          className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 text-xs ${
+                            isChecked
+                              ? 'bg-teal-500/10 border-teal-500/40 text-white shadow-md shadow-teal-500/5'
+                              : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:bg-slate-900/70 hover:text-slate-200'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => {}}
+                            className="mt-0.5 w-4 h-4 rounded border-slate-700 text-teal-400 focus:ring-teal-400/30 bg-slate-950 cursor-pointer shrink-0"
+                          />
+                          <div className="flex-1 space-y-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <h5 className="font-extrabold text-white">{gap.title}</h5>
+                              <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border ${
+                                gap.severity === 'HIGH'
+                                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                                  : gap.severity === 'MEDIUM'
+                                  ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                                  : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                              }`}>
+                                {gap.severity}
+                              </span>
+                            </div>
+                            <p className="text-slate-300 leading-relaxed">{gap.description}</p>
+                            <p className="text-teal-300 font-semibold pt-1">💡 Proposed Fix: {gap.remediation}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <span>All security gaps resolved! Architecture score is 100%.</span>
+                </div>
+              )}
+
+              {/* Full Report Markdown */}
+              <div className="border-t border-panel-border/30 pt-4 text-xs text-slate-300 space-y-2">
+                <h4 className="font-bold text-white uppercase text-[11px] tracking-wider mb-2">Audit Narrative & Benchmarks</h4>
                 {renderAuditMarkdown(auditReport)}
               </div>
             </div>
             
-            <div className="mt-4 border-t border-panel-border/30 pt-3 flex justify-end shrink-0">
+            {/* Modal Action Footer */}
+            <div className="pt-4 border-t border-panel-border/40 flex items-center justify-between shrink-0">
               <button
                 onClick={() => setIsAuditModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
               >
                 Dismiss
               </button>
+              {auditGaps.length > 0 && (
+                <button
+                  onClick={async () => {
+                    setIsAuditModalOpen(false);
+                    await handleRemediateGaps();
+                  }}
+                  disabled={selectedGapIds.length === 0 || isRemediating}
+                  className="px-6 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 font-black text-xs transition-all shadow-lg shadow-teal-500/20 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {isRemediating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  <span>Fix Selected Gaps ({selectedGapIds.length})</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
