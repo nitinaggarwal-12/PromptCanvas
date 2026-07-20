@@ -13,12 +13,16 @@ export async function POST(request: Request) {
     const token = await createMagicLinkToken(email);
     const magicLinkUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/magic-link/verify?token=${token}`;
 
+    const isDev = process.env.NODE_ENV !== 'production' || process.env.ENABLE_DEV_MAGIC_LINK === 'true';
+
     console.log(`[Magic Link Auth] 🔑 Generated token for ${email}: ${magicLinkUrl}`);
 
     return NextResponse.json({
       success: true,
-      message: 'Magic login link sent! Check your inbox or click below to enter.',
-      magicLinkUrl, // Returned for instant direct testing & UX
+      message: isDev 
+        ? 'Magic login link generated! Click below or check server logs.'
+        : 'Magic login link sent! Please check your email inbox to sign in.',
+      ...(isDev ? { magicLinkUrl } : {}),
     });
   } catch (error: unknown) {
     console.error('Magic link creation error:', error);
