@@ -35,6 +35,9 @@ import {
   BookOpen
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
+import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
+import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
+import { AuthModal } from '@/components/AuthModal';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -267,6 +270,13 @@ export default function Dashboard() {
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
+  const [restrictedState, setRestrictedState] = useState<{
+    diagramId: string;
+    diagramName?: string;
+    pendingRequest?: any;
+  } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; email: string; name?: string | null } | null>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   
   const suggestions = React.useMemo(() => {
     if (!activeDiagram) return [];
@@ -560,9 +570,21 @@ export default function Dashboard() {
   const loadDiagramDetails = useCallback(async (id: string) => {
     try {
       const res = await fetch(`/api/diagrams/${id}`);
+      if (res.status === 403 || res.status === 401) {
+        const accessRes = await fetch(`/api/diagrams/${id}/access`);
+        const accessData = await accessRes.json();
+        setRestrictedState({
+          diagramId: id,
+          diagramName: 'Restricted Architecture Diagram',
+          pendingRequest: accessData.pendingRequest,
+        });
+        setActiveDiagram(null);
+        return;
+      }
       if (!res.ok) throw new Error('Failed to fetch diagram details');
       const data: Diagram = await res.json();
       
+      setRestrictedState(null);
       setActiveDiagram(data);
       setZoom(1);
       setPan({ x: 0, y: 0 });
@@ -679,25 +701,14 @@ export default function Dashboard() {
   }, []);
 
   // --- Effects ---
-  // Synchronize initial diagram selection once diagrams list loads
+  // Synchronize initial diagram selection once page loads
   useEffect(() => {
-    if (diagrams.length > 0) {
-      const params = new URLSearchParams(window.location.search);
-      const diagramId = params.get('diagram');
-      if (diagramId) {
-        const exists = diagrams.some(d => d.id === diagramId);
-        if (exists && !activeDiagram) {
-          setTimeout(() => {
-            loadDiagramDetails(diagramId);
-          }, 0);
-        } else if (!exists) {
-          const newParams = new URLSearchParams(window.location.search);
-          newParams.delete('diagram');
-          window.history.replaceState({}, '', `${window.location.pathname}?${newParams.toString()}`);
-        }
-      }
+    const params = new URLSearchParams(window.location.search);
+    const diagramId = params.get('diagram');
+    if (diagramId && !activeDiagram && !restrictedState) {
+      loadDiagramDetails(diagramId);
     }
-  }, [diagrams, activeDiagram, loadDiagramDetails]);
+  }, [activeDiagram, restrictedState, loadDiagramDetails]);
 
   // Real-time URL query parameter synchronizer
   useEffect(() => {
@@ -776,6 +787,12 @@ export default function Dashboard() {
   // Fetch all diagrams on mount
   useEffect(() => {
     fetchDiagrams();
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) setCurrentUser(data.user);
+      })
+      .catch(() => {});
   }, []);
 
 
@@ -1798,6 +1815,32 @@ export default function Dashboard() {
 
   const displayedVersion = previewVersion || activeVersion;
 
+  if (restrictedState) {
+    return (
+      <>
+        <AccessRestrictedScreen
+          diagramId={restrictedState.diagramId}
+          diagramName={restrictedState.diagramName}
+          pendingRequest={restrictedState.pendingRequest}
+          onAccessRequested={(req) => {
+            setRestrictedState((prev) => (prev ? { ...prev, pendingRequest: req } : null));
+          }}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          isAuthenticated={!!currentUser}
+        />
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          onSuccess={(u) => {
+            setCurrentUser(u);
+            setIsAuthOpen(false);
+            loadDiagramDetails(restrictedState.diagramId);
+          }}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
       
@@ -2089,37 +2132,40 @@ export default function Dashboard() {
           </div>
 
           {/* Quick Actions (only if diagram active) */}
-          {activeDiagram && (
-            <div className="flex items-center gap-2">
-              <button
-                id="audit-diagram-btn"
-                onClick={handleAuditDiagram}
-                disabled={isAuditing}
-                className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all disabled:opacity-50 cursor-pointer text-teal-accent border-teal-accent/30 hover:border-teal-accent/50")}
-              >
-                {isAuditing ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Shield className="w-3.5 h-3.5" />
-                )}
-                <span>{isAuditing ? 'Auditing...' : 'Audit Security'}</span>
-              </button>
-              <button
-                onClick={() => setIsInlineEditorOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>Edit Inline</span>
-              </button>
-              <button
-                onClick={openInNewTab}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Open in New Tab</span>
-              </button>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <AccessRequestsInbox user={currentUser} />
+            {activeDiagram && (
+              <>
+                <button
+                  id="audit-diagram-btn"
+                  onClick={handleAuditDiagram}
+                  disabled={isAuditing}
+                  className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all disabled:opacity-50 cursor-pointer text-teal-accent border-teal-accent/30 hover:border-teal-accent/50")}
+                >
+                  {isAuditing ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Shield className="w-3.5 h-3.5" />
+                  )}
+                  <span>{isAuditing ? 'Auditing...' : 'Audit Security'}</span>
+                </button>
+                <button
+                  onClick={() => setIsInlineEditorOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>Edit Inline</span>
+                </button>
+                <button
+                  onClick={openInNewTab}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open in New Tab</span>
+                </button>
+              </>
+            )}
+          </div>
         </header>
 
         {/* Workspace Body: Split Pane */}

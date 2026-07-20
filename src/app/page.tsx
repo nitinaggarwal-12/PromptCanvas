@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { AuthModal } from '@/components/AuthModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
+import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -125,6 +126,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             {user ? (
               <>
+                <AccessRequestsInbox user={user} />
                 <button
                   id="header-user-profile-btn"
                   onClick={() => setIsProfileOpen(true)}

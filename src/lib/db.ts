@@ -32,12 +32,36 @@ export interface UserLog {
   created_at: string | Date;
 }
 
+export interface DiagramCollaborator {
+  id: string;
+  diagram_id: string;
+  user_id: string;
+  access_level: 'Viewer' | 'Editor' | 'Owner';
+  created_at: string | Date;
+}
+
+export interface AccessRequest {
+  id: string;
+  diagram_id: string;
+  requester_user_id: string;
+  requested_role: 'Viewer' | 'Editor';
+  status: 'Pending' | 'Approved' | 'Denied';
+  message: string | null;
+  created_at: string | Date;
+  updated_at: string | Date;
+  // Joined fields for UI convenience
+  requester_email?: string;
+  requester_name?: string | null;
+  diagram_name?: string;
+}
+
 export interface Diagram {
   id: string;
   name: string;
   user_id?: string | null;
   created_at: string | Date;
   updated_at: string | Date;
+  access_level?: 'Viewer' | 'Editor' | 'Owner' | null;
 }
 
 export interface DiagramVersion {
@@ -159,6 +183,30 @@ export async function ensureTablesExist(): Promise<void> {
       );
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS diagram_collaborators (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL REFERENCES diagrams(id) ON DELETE CASCADE,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        access_level TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT unique_diagram_user UNIQUE (diagram_id, user_id)
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS access_requests (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL REFERENCES diagrams(id) ON DELETE CASCADE,
+        requester_user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        requested_role TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'Pending',
+        message TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Schema Evolution Migrations
     await pool.query(`
       ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS user_id TEXT;
@@ -236,6 +284,34 @@ export async function ensureTablesExist(): Promise<void> {
         business_usecase TEXT,
         technical_usecase TEXT,
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS diagram_collaborators (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        access_level TEXT NOT NULL,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        UNIQUE(diagram_id, user_id)
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS access_requests (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL,
+        requester_user_id TEXT NOT NULL,
+        requested_role TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'Pending',
+        message TEXT,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE,
+        FOREIGN KEY (requester_user_id) REFERENCES users(id) ON DELETE CASCADE
       );
     `);
 
@@ -336,81 +412,135 @@ export async function ensureTablesExist(): Promise<void> {
   tablesInitialized = true;
 }
 
-// Helper: List all diagrams for a given user (or public seeded ones)
+// Helper: Get diagram access level for a user ('Owner' | 'Editor' | 'Viewer' | null)
+export async function getUserDiagramAccess(
+  diagramId: string,
+  userId?: string | null
+): Promise<'Owner' | 'Editor' | 'Viewer' | null> {
+  await ensureTablesExist();
+
+  let diagram: Diagram | null = null;
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query('SELECT * FROM diagrams WHERE id = $1', [diagramId]);
+    diagram = (res.rows[0] as Diagram) || null;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ?');
+    diagram = (stmt.get(diagramId) as unknown as Diagram) || null;
+  }
+
+  if (!diagram) return null;
+
+  // Unowned public seed templates default to Viewer
+  if (!diagram.user_id) return 'Viewer';
+
+  if (!userId) return null;
+
+  // Check if owner
+  if (diagram.user_id === userId) return 'Owner';
+
+  // Check collaborators table
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      'SELECT access_level FROM diagram_collaborators WHERE diagram_id = $1 AND user_id = $2',
+      [diagramId, userId]
+    );
+    if (res.rows.length > 0) {
+      return res.rows[0].access_level as 'Viewer' | 'Editor' | 'Owner';
+    }
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      'SELECT access_level FROM diagram_collaborators WHERE diagram_id = ? AND user_id = ?'
+    );
+    const row = stmt.get(diagramId, userId) as any;
+    if (row) {
+      return row.access_level as 'Viewer' | 'Editor' | 'Owner';
+    }
+  }
+
+  return null;
+}
+
+// Helper: List all diagrams accessible by a given user (owned, shared, or public seeded ones)
 export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_content?: string; prompt?: string | null })[]> {
   await ensureTablesExist();
   
-  let query: string;
-  let params: any[] = [];
-
   if (userId) {
-    query = `
-      SELECT d.*, v.xml_content, v.prompt
+    const query = `
+      SELECT d.*, v.xml_content, v.prompt,
+        CASE 
+          WHEN d.user_id = $1 THEN 'Owner'
+          WHEN c.access_level IS NOT NULL THEN c.access_level
+          WHEN d.user_id IS NULL THEN 'Viewer'
+          ELSE NULL
+        END as access_level
       FROM diagrams d
+      LEFT JOIN diagram_collaborators c ON c.diagram_id = d.id AND c.user_id = $1
       LEFT JOIN diagram_versions v ON v.diagram_id = d.id 
       AND v.version_number = (
         SELECT MAX(version_number) 
         FROM diagram_versions 
         WHERE diagram_id = d.id
       )
-      WHERE d.user_id = $1 OR d.user_id IS NULL
+      WHERE d.user_id = $1 OR d.user_id IS NULL OR c.user_id = $1
       ORDER BY d.updated_at DESC
     `;
-    params = [userId];
-  } else {
-    query = `
-      SELECT d.*, v.xml_content, v.prompt
-      FROM diagrams d
-      LEFT JOIN diagram_versions v ON v.diagram_id = d.id 
-      AND v.version_number = (
-        SELECT MAX(version_number) 
-        FROM diagram_versions 
-        WHERE diagram_id = d.id
-      )
-      ORDER BY d.updated_at DESC
-    `;
-  }
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(query, params);
-    return res.rows;
-  } else {
-    const db = getSqliteDb();
-    if (userId) {
-      const sqliteQuery = query.replace('$1', '?');
-      const stmt = db.prepare(sqliteQuery);
-      return stmt.all(userId) as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
+    if (isPostgres()) {
+      const pool = getPgPool();
+      const res = await pool.query(query, [userId]);
+      return res.rows;
     } else {
+      const db = getSqliteDb();
+      const sqliteQuery = query.replaceAll('$1', '?');
+      const stmt = db.prepare(sqliteQuery);
+      return stmt.all(userId, userId, userId) as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
+    }
+  } else {
+    const query = `
+      SELECT d.*, v.xml_content, v.prompt, 'Viewer' as access_level
+      FROM diagrams d
+      LEFT JOIN diagram_versions v ON v.diagram_id = d.id 
+      AND v.version_number = (
+        SELECT MAX(version_number) 
+        FROM diagram_versions 
+        WHERE diagram_id = d.id
+      )
+      WHERE d.user_id IS NULL
+      ORDER BY d.updated_at DESC
+    `;
+    if (isPostgres()) {
+      const pool = getPgPool();
+      const res = await pool.query(query);
+      return res.rows;
+    } else {
+      const db = getSqliteDb();
       const stmt = db.prepare(query);
       return stmt.all() as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
     }
   }
 }
 
-// Helper: Get a single diagram by ID (scoped to user)
-export async function getDiagram(id: string, userId?: string): Promise<Diagram | null> {
+// Helper: Get a single diagram by ID (verifying owner or collaborator access)
+export async function getDiagram(id: string, userId?: string): Promise<(Diagram & { access_level?: string | null }) | null> {
   await ensureTablesExist();
+  
+  const accessLevel = await getUserDiagramAccess(id, userId);
+  if (!accessLevel) return null;
+
   if (isPostgres()) {
     const pool = getPgPool();
-    if (userId) {
-      const res = await pool.query('SELECT * FROM diagrams WHERE id = $1 AND (user_id = $2 OR user_id IS NULL)', [id, userId]);
-      return (res.rows[0] as Diagram) || null;
-    } else {
-      const res = await pool.query('SELECT * FROM diagrams WHERE id = $1', [id]);
-      return (res.rows[0] as Diagram) || null;
-    }
+    const res = await pool.query('SELECT * FROM diagrams WHERE id = $1', [id]);
+    const diag = (res.rows[0] as Diagram) || null;
+    return diag ? { ...diag, access_level: accessLevel } : null;
   } else {
     const db = getSqliteDb();
-    if (userId) {
-      const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ? AND (user_id = ? OR user_id IS NULL)');
-      const result = stmt.get(id, userId);
-      return (result as unknown as Diagram) || null;
-    } else {
-      const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ?');
-      const result = stmt.get(id);
-      return (result as unknown as Diagram) || null;
-    }
+    const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ?');
+    const result = stmt.get(id);
+    const diag = (result as unknown as Diagram) || null;
+    return diag ? { ...diag, access_level: accessLevel } : null;
   }
 }
 
@@ -945,6 +1075,257 @@ export async function getUserLogs(userId: string, limit: number = 50): Promise<U
     return stmt.all(userId, limit) as unknown as UserLog[];
   }
 }
+
+// ==========================================
+// ACCESS REQUESTS & COLLABORATOR DB FUNCTIONS
+// ==========================================
+
+export async function createAccessRequest(
+  diagramId: string,
+  requesterUserId: string,
+  requestedRole: 'Viewer' | 'Editor',
+  message?: string | null
+): Promise<AccessRequest> {
+  await ensureTablesExist();
+
+  const existing = await getAccessRequestStatus(diagramId, requesterUserId);
+
+  if (existing && existing.status === 'Pending') {
+    const id = existing.id;
+    if (isPostgres()) {
+      const pool = getPgPool();
+      const res = await pool.query(
+        `UPDATE access_requests
+         SET requested_role = $1, message = $2, updated_at = CURRENT_TIMESTAMP
+         WHERE id = $3
+         RETURNING *`,
+        [requestedRole, message || null, id]
+      );
+      await logUserEvent(requesterUserId, 'ACCESS_REQUEST_UPDATED', null, `Diagram: ${diagramId}`);
+      return res.rows[0] as AccessRequest;
+    } else {
+      const db = getSqliteDb();
+      const stmt = db.prepare(
+        `UPDATE access_requests
+         SET requested_role = ?, message = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now'))
+         WHERE id = ?`
+      );
+      stmt.run(requestedRole, message || null, id);
+      await logUserEvent(requesterUserId, 'ACCESS_REQUEST_UPDATED', null, `Diagram: ${diagramId}`);
+      const getReq = db.prepare('SELECT * FROM access_requests WHERE id = ?');
+      return getReq.get(id) as unknown as AccessRequest;
+    }
+  }
+
+  const id = uuidv4();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `INSERT INTO access_requests (id, diagram_id, requester_user_id, requested_role, message)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [id, diagramId, requesterUserId, requestedRole, message || null]
+    );
+    await logUserEvent(requesterUserId, 'ACCESS_REQUEST_CREATED', null, `Diagram: ${diagramId}`);
+    return res.rows[0] as AccessRequest;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `INSERT INTO access_requests (id, diagram_id, requester_user_id, requested_role, message)
+       VALUES (?, ?, ?, ?, ?)`
+    );
+    stmt.run(id, diagramId, requesterUserId, requestedRole, message || null);
+    await logUserEvent(requesterUserId, 'ACCESS_REQUEST_CREATED', null, `Diagram: ${diagramId}`);
+    const getReq = db.prepare('SELECT * FROM access_requests WHERE id = ?');
+    return getReq.get(id) as unknown as AccessRequest;
+  }
+}
+
+export async function getAccessRequestStatus(
+  diagramId: string,
+  requesterUserId: string
+): Promise<AccessRequest | null> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      'SELECT * FROM access_requests WHERE diagram_id = $1 AND requester_user_id = $2 ORDER BY created_at DESC LIMIT 1',
+      [diagramId, requesterUserId]
+    );
+    return (res.rows[0] as AccessRequest) || null;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      'SELECT * FROM access_requests WHERE diagram_id = ? AND requester_user_id = ? ORDER BY created_at DESC LIMIT 1'
+    );
+    const result = stmt.get(diagramId, requesterUserId);
+    return (result as unknown as AccessRequest) || null;
+  }
+}
+
+export async function getAccessRequestsForOwner(ownerUserId: string): Promise<AccessRequest[]> {
+  await ensureTablesExist();
+
+  const query = `
+    SELECT ar.*, u.email as requester_email, u.name as requester_name, d.name as diagram_name
+    FROM access_requests ar
+    JOIN diagrams d ON d.id = ar.diagram_id
+    JOIN users u ON u.id = ar.requester_user_id
+    WHERE d.user_id = $1 AND ar.status = 'Pending'
+    ORDER BY ar.created_at DESC
+  `;
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(query, [ownerUserId]);
+    return res.rows as AccessRequest[];
+  } else {
+    const db = getSqliteDb();
+    const sqliteQuery = query.replace('$1', '?');
+    const stmt = db.prepare(sqliteQuery);
+    return stmt.all(ownerUserId) as unknown as AccessRequest[];
+  }
+}
+
+export async function getUserAccessRequests(requesterUserId: string): Promise<AccessRequest[]> {
+  await ensureTablesExist();
+
+  const query = `
+    SELECT ar.*, d.name as diagram_name
+    FROM access_requests ar
+    JOIN diagrams d ON d.id = ar.diagram_id
+    WHERE ar.requester_user_id = $1
+    ORDER BY ar.created_at DESC
+  `;
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(query, [requesterUserId]);
+    return res.rows as AccessRequest[];
+  } else {
+    const db = getSqliteDb();
+    const sqliteQuery = query.replace('$1', '?');
+    const stmt = db.prepare(sqliteQuery);
+    return stmt.all(requesterUserId) as unknown as AccessRequest[];
+  }
+}
+
+export async function resolveAccessRequest(
+  requestId: string,
+  ownerUserId: string,
+  status: 'Approved' | 'Denied'
+): Promise<AccessRequest> {
+  await ensureTablesExist();
+
+  let reqRecord: (AccessRequest & { diagram_user_id?: string }) | null = null;
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `SELECT ar.*, d.user_id as diagram_user_id 
+       FROM access_requests ar 
+       JOIN diagrams d ON d.id = ar.diagram_id 
+       WHERE ar.id = $1`,
+      [requestId]
+    );
+    reqRecord = res.rows[0] || null;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `SELECT ar.*, d.user_id as diagram_user_id 
+       FROM access_requests ar 
+       JOIN diagrams d ON d.id = ar.diagram_id 
+       WHERE ar.id = ?`
+    );
+    reqRecord = (stmt.get(requestId) as any) || null;
+  }
+
+  if (!reqRecord) {
+    throw new Error('Access request not found.');
+  }
+
+  if (reqRecord.diagram_user_id !== ownerUserId) {
+    throw new Error('Unauthorized: You are not the owner of this architecture diagram.');
+  }
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query(
+        `UPDATE access_requests
+         SET status = $1, updated_at = CURRENT_TIMESTAMP
+         WHERE id = $2`,
+        [status, requestId]
+      );
+
+      if (status === 'Approved') {
+        const collabId = uuidv4();
+        await client.query(
+          `INSERT INTO diagram_collaborators (id, diagram_id, user_id, access_level)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (diagram_id, user_id) 
+           DO UPDATE SET access_level = $4`,
+          [collabId, reqRecord.diagram_id, reqRecord.requester_user_id, reqRecord.requested_role]
+        );
+      }
+      await client.query('COMMIT');
+
+      await logUserEvent(
+        ownerUserId,
+        `ACCESS_REQUEST_${status.toUpperCase()}`,
+        null,
+        `Request ID: ${requestId}, Requester: ${reqRecord.requester_user_id}`
+      );
+
+      const updatedRes = await pool.query('SELECT * FROM access_requests WHERE id = $1', [requestId]);
+      return updatedRes.rows[0] as AccessRequest;
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  } else {
+    const db = getSqliteDb();
+    db.exec('BEGIN TRANSACTION;');
+    try {
+      const updateStmt = db.prepare(
+        `UPDATE access_requests
+         SET status = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now'))
+         WHERE id = ?`
+      );
+      updateStmt.run(status, requestId);
+
+      if (status === 'Approved') {
+        const collabId = uuidv4();
+        const collabStmt = db.prepare(
+          `INSERT INTO diagram_collaborators (id, diagram_id, user_id, access_level)
+           VALUES (?, ?, ?, ?)
+           ON CONFLICT(diagram_id, user_id)
+           DO UPDATE SET access_level = excluded.access_level`
+        );
+        collabStmt.run(collabId, reqRecord.diagram_id, reqRecord.requester_user_id, reqRecord.requested_role);
+      }
+      db.exec('COMMIT;');
+
+      await logUserEvent(
+        ownerUserId,
+        `ACCESS_REQUEST_${status.toUpperCase()}`,
+        null,
+        `Request ID: ${requestId}, Requester: ${reqRecord.requester_user_id}`
+      );
+
+      const getReq = db.prepare('SELECT * FROM access_requests WHERE id = ?');
+      return getReq.get(requestId) as unknown as AccessRequest;
+    } catch (err) {
+      db.exec('ROLLBACK;');
+      throw err;
+    }
+  }
+}
+
 
 // Helper: Sync complete database diagrams and versions
 export async function syncDatabase(

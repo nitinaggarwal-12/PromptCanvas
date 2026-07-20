@@ -84,6 +84,7 @@ const TEMPLATE_PROMPTS = [
 ];
 
 import { UserProfileModal } from '@/components/UserProfileModal';
+import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -336,16 +337,19 @@ export default function Dashboard() {
 
         <div className="flex items-center gap-3">
           {user && (
-            <button
-              id="dashboard-user-profile-btn"
-              onClick={() => setIsProfileModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer"
-            >
-              <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
-                {(user.name || user.email)[0].toUpperCase()}
-              </div>
-              <span className="hidden sm:inline max-w-[120px] truncate">{user.name || user.email}</span>
-            </button>
+            <>
+              <AccessRequestsInbox user={user} />
+              <button
+                id="dashboard-user-profile-btn"
+                onClick={() => setIsProfileModalOpen(true)}
+                className="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer"
+              >
+                <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                  {(user.name || user.email)[0].toUpperCase()}
+                </div>
+                <span className="hidden sm:inline max-w-[120px] truncate">{user.name || user.email}</span>
+              </button>
+            </>
           )}
 
           <button
@@ -701,6 +705,7 @@ export default function Dashboard() {
               <div className="space-y-2.5">
                 <label className="block text-base font-bold text-slate-200">Workspace Name</label>
                 <input
+                  id="modal-diagram-name"
                   type="text"
                   placeholder="e.g., Google Cloud E-Commerce"
                   value={newDiagramName}
@@ -734,6 +739,7 @@ export default function Dashboard() {
               <div className="space-y-2.5">
                 <label className="block text-base font-bold text-slate-200">Initial AI Prompt (Optional)</label>
                 <textarea
+                  id="modal-diagram-prompt"
                   placeholder="e.g., Act as a Solutions Architect. Design a serverless backend using Cloud Run..."
                   value={newDiagramPrompt}
                   onChange={(e) => setNewDiagramPrompt(e.target.value)}
@@ -750,6 +756,7 @@ export default function Dashboard() {
                   Cancel
                 </button>
                 <button
+                  id="confirm-create-diagram-btn"
                   type="submit"
                   disabled={isCreating}
                   className="px-8 py-3 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-base transition-all shadow-xl shadow-teal-500/15 flex items-center gap-2 cursor-pointer disabled:opacity-50"
