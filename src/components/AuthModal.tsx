@@ -48,7 +48,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to send magic link');
 
-        setSuccessMsg(data.message || `Magic link dispatched! Please check your email inbox (${email}) to complete sign in.`);
+        setSuccessMsg(data.message || 'Magic link dispatched! Please check your inbox to complete sign in.');
         return;
       }
 

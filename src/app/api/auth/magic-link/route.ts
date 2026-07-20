@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `Magic link dispatched! Please check your email inbox (${email}) to complete sign in.`,
+      message: 'Magic link dispatched! Please check your inbox to complete sign in.',
     });
   } catch (error: unknown) {
     console.error('Magic link creation error:', error);
