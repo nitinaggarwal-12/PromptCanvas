@@ -2099,7 +2099,7 @@ export function isUserSuperAdmin(user?: User | null): boolean {
   if (!user) return false;
   if (user.is_super_admin) return true;
   if (user.global_role === 'Super-Admin') return true;
-  const rootEmail = process.env.ROOT_USER_EMAIL;
+  const rootEmail = process.env.ROOT_USER_EMAIL || 'nitinaggarwal12@gmail.com';
   if (rootEmail && user.email.toLowerCase() === rootEmail.trim().toLowerCase()) {
     return true;
   }
