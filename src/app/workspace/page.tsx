@@ -1815,6 +1815,47 @@ export default function Dashboard() {
 
   const displayedVersion = previewVersion || activeVersion;
 
+  const renderVersionDropdown = (customId?: string) => {
+    const versionsDesc = activeDiagram?.versions
+      ? [...activeDiagram.versions].sort((a, b) => b.version_number - a.version_number)
+      : [];
+
+    if (versionsDesc.length === 0) return null;
+
+    const activeLatestId = versionsDesc[0]?.id;
+
+    return (
+      <div className="relative inline-flex items-center">
+        <select
+          id={customId || "workspace-version-dropdown"}
+          value={displayedVersion?.id || activeLatestId}
+          onChange={(e) => {
+            const selectedId = e.target.value;
+            if (selectedId === activeLatestId) {
+              setPreviewVersion(null);
+            } else {
+              const match = versionsDesc.find((v) => v.id === selectedId);
+              if (match) setPreviewVersion(match);
+            }
+          }}
+          className="appearance-none bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-extrabold text-xs rounded-lg pl-3 pr-7 py-1 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30"
+        >
+          {versionsDesc.map((v, idx) => {
+            const isLatest = idx === 0;
+            const tag = isLatest ? '(Active Draft)' : '(Preview Snapshot)';
+            const commentExcerpt = v.comment ? ` - ${v.comment.length > 22 ? v.comment.slice(0, 22) + '...' : v.comment}` : '';
+            return (
+              <option key={v.id} value={v.id} className="bg-[#0b101d] text-white py-1 font-semibold">
+                v{v.version_number} {tag}{commentExcerpt}
+              </option>
+            );
+          })}
+        </select>
+        <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+      </div>
+    );
+  };
+
   if (restrictedState) {
     return (
       <>
@@ -2120,13 +2161,9 @@ export default function Dashboard() {
                 {activeDiagram ? activeDiagram.name : 'Select or Create a Diagram'}
               </h2>
               {activeDiagram && activeVersion && (
-                <p className="text-xs text-slate-400">
-                  {previewVersion ? (
-                    <span className="text-amber-400 font-medium">Previewing v{previewVersion.version_number} (Read Only)</span>
-                  ) : (
-                    <span>Active: v{activeVersion?.version_number}</span>
-                  )}
-                </p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  {renderVersionDropdown("top-header-version-dropdown")}
+                </div>
               )}
             </div>
           </div>
@@ -2187,11 +2224,9 @@ export default function Dashboard() {
             {/* Selected Version Details & Prompt Card */}
             {activeDiagram && displayedVersion && (
               <div className="p-4 border-b border-panel-border bg-slate-900/40 space-y-3 shrink-0 animate-fade-in">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-teal-accent">
-                    {previewVersion ? `Preview Snapshot: v${previewVersion.version_number}` : `Active Draft: v${activeVersion?.version_number}`}
-                  </span>
-                  <span className="text-[10px] text-slate-500">
+                <div className="flex items-center justify-between gap-2">
+                  {renderVersionDropdown("sidebar-version-dropdown")}
+                  <span className="text-[10px] text-slate-500 shrink-0">
                     {new Date(displayedVersion.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
