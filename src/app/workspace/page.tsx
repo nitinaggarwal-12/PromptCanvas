@@ -1309,6 +1309,7 @@ function WorkspaceContent() {
   // Audit the active diagram
   const handleAuditDiagram = async () => {
     if (!activeDiagram) return;
+    setCurrentTab('audit');
     setIsAuditing(true);
     try {
       const res = await fetch('/api/audit', {
@@ -1326,7 +1327,12 @@ function WorkspaceContent() {
       const gapsList = data.gaps || [];
       setAuditGaps(gapsList);
       setSelectedGapIds(gapsList.map((g: { id: string }) => g.id));
-      setIsAuditModalOpen(true);
+      if (data.reportsHistory) {
+        setAuditHistory(data.reportsHistory);
+        if (data.reportsHistory.length > 0) {
+          setSelectedAuditReportId(data.reportsHistory[0].id);
+        }
+      }
     } catch (err: unknown) {
       console.error(err);
       const errMsg = err instanceof Error ? err.message : 'Failed to generate architecture audit.';
@@ -1655,7 +1661,17 @@ function WorkspaceContent() {
               <>
                 <div className="flex items-center justify-between border-b border-panel-border/30 pb-5">
                   <div>
-                    <span className="text-[10px] font-black text-teal-accent uppercase tracking-widest">Active Asset</span>
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-[10px] font-black text-teal-accent uppercase tracking-widest">Active Asset</span>
+                      <button
+                        type="button"
+                        onClick={() => setCurrentTab('editor')}
+                        className="text-xs font-bold text-teal-300 hover:text-white bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      >
+                        <LayoutGrid className="w-3.5 h-3.5 text-teal-accent" />
+                        <span>View Architecture Diagram ➔</span>
+                      </button>
+                    </div>
                     <h2 className="text-3xl font-black text-white mt-1">{activeDiagram.name}</h2>
                   </div>
 
