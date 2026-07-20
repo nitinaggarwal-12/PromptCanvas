@@ -18,7 +18,7 @@ export async function GET() {
         id: user.id,
         email: user.email,
         name: user.name,
-        global_role: isSuper ? 'Super-Admin' : user.global_role || 'Author',
+        global_role: isSuper ? 'Admin' : (user.global_role === 'Super-Admin' ? 'Admin' : user.global_role || 'Author'),
         is_super_admin: isSuper,
         created_at: user.created_at,
       },

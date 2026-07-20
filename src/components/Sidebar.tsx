@@ -77,7 +77,7 @@ export function Sidebar({
             <Link href="/admin" className="block">
               <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-amber-400 hover:bg-amber-500/10 border border-amber-500/20 transition-all">
                 <ShieldCheck className="w-4 h-4 text-amber-400" />
-                <span>Super-Admin Hub</span>
+                <span>System Admin</span>
               </div>
             </Link>
           )}
