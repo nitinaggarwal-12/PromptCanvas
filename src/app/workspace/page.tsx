@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { 
   Plus, 
   Trash2, 
@@ -20,6 +21,9 @@ import {
   Briefcase,
   Cpu,
   Shield,
+  ShieldCheck,
+  User,
+  Users,
   LayoutGrid,
   Settings,
   ShieldAlert,
@@ -435,16 +439,15 @@ export default function Dashboard() {
     4: 'create',
     5: 'create'
   });
-  const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough'>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const tabParam = params.get('tab');
-      if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
-        return tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
-      }
+  const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough'>('editor');
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
+      setCurrentTab(tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
     }
-    return 'editor';
-  });
+  }, [searchParams]);
 
   const openCreateModal = () => {
     setNewDiagramName('');
@@ -1614,78 +1617,176 @@ export default function Dashboard() {
   };
 
   const renderSettingsView = () => {
+    const isRoot = currentUser?.email?.toLowerCase() === 'vibeandcode.ai@gmail.com' || currentUser?.email?.toLowerCase() === 'nitinaggarwal12@gmail.com' || (currentUser as any)?.is_super_admin;
+
     return (
-      <div className="flex-1 overflow-y-auto p-8 bg-bg-dark select-none animate-fade-in">
-        <div className="max-w-[1200px] mx-auto space-y-8">
-          <div>
-            <h1 className="text-2xl font-extrabold text-white">System Settings</h1>
-            <p className="text-sm text-slate-400 mt-1">Configure your LLM connection model, keys, database status, and prompt preferences.</p>
+      <div className="flex-1 overflow-y-auto p-8 md:p-12 bg-bg-dark select-none animate-fade-in font-sans">
+        <div className="max-w-8xl mx-auto space-y-10">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-panel-border/40 pb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-extrabold mb-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-teal-accent" />
+                <span>Security Governance & Config Hub</span>
+              </div>
+              <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">Settings & Security Governance</h1>
+              <p className="text-sm md:text-base text-slate-400 mt-1">Manage user access control, security policies, authentication engines, and AI compiler configurations.</p>
+            </div>
+            {isRoot && (
+              <Link
+                href="/admin"
+                className="px-6 py-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 font-extrabold text-sm flex items-center gap-2 transition-all cursor-pointer"
+              >
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span>Open System Admin Directory</span>
+              </Link>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Card 1: AI Model Configuration */}
-            <div className="glass-panel border-panel-border/50 rounded-xl p-6 space-y-6">
-              <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
-                <Settings2 className="w-4 h-4 text-teal-accent" />
-                <span>AI Model Configuration</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            {/* Card 1: User Identity & Access Governance */}
+            <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
+              <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
+                <User className="w-5 h-5 text-teal-accent" />
+                <span>User Identity & Access Governance</span>
               </h3>
-              
-              <div className="space-y-1">
-                <label className="block text-xs font-semibold text-slate-400">Gemini LLM Version</label>
-                <select
-                  value="gemini-2.5-flash"
-                  disabled
-                  className="w-full bg-[#0b0f19] border border-panel-border rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none opacity-80"
-                >
-                  <option value="gemini-2.5-flash">Gemini 2.5 Flash (Default — Recommended)</option>
-                  <option value="gemini-2.5-pro">Gemini 2.5 Pro (Advance Reasoning)</option>
-                </select>
-                <p className="text-[10px] text-slate-500 mt-1">Model is locked to gemini-2.5-flash for optimized rendering speed.</p>
-              </div>
 
-              <div className="space-y-1 pt-2">
-                <label className="block text-xs font-semibold text-slate-400">Gemini API Key Connection</label>
-                <div className="flex items-center gap-2 bg-[#0b0f19] border border-panel-border rounded-lg px-3 py-2 text-xs text-emerald-400">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Key Connected and Authenticated</span>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                  <div>
+                    <span className="text-xs font-bold text-slate-400 block">Authenticated Account</span>
+                    <span className="text-base font-black text-white mt-0.5 block">{currentUser?.email || 'Guest Session'}</span>
+                  </div>
+                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-500/10 text-teal-300 border border-teal-500/30">
+                    {(currentUser as any)?.global_role || 'Admin'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-400 block">Global Role Clearance</span>
+                    <span className="text-sm font-extrabold text-white mt-1 block">
+                      {isRoot ? 'Admin (Full Clearance)' : ((currentUser as any)?.global_role || 'Admin')}
+                    </span>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-400 block">Root System Status</span>
+                    <span className={`text-sm font-extrabold mt-1 block ${isRoot ? 'text-amber-400' : 'text-slate-300'}`}>
+                      {isRoot ? '⚡ Root Administrator' : 'Standard Author'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                  <span className="text-xs font-bold text-slate-400 block">Active Personal Workspace</span>
+                  <span className="text-sm font-bold text-teal-300 mt-1 block font-mono">
+                    Personal Workspace ({currentUser?.id ? `id: ${currentUser.id.substring(0, 8)}...` : 'Active'})
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Card 2: Database & Build Details */}
-            <div className="glass-panel border-panel-border/50 rounded-xl p-6 space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
-                  <Database className="w-4 h-4 text-teal-accent" />
-                  <span>Database Connection</span>
-                </h3>
+            {/* Card 2: Passwordless Magic Link & Security Policy */}
+            <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
+              <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
+                <ShieldCheck className="w-5 h-5 text-teal-accent" />
+                <span>Passwordless Magic Link & Security Policy</span>
+              </h3>
 
-                <div className="grid grid-cols-2 gap-4 text-xs">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
                   <div>
-                    <span className="block text-slate-500 text-[10px]">SQLite Database</span>
-                    <span className="font-semibold text-white mt-1 block truncate" title="/Users/nitinagga/.gemini/jetski/dev.db">dev.db (Active)</span>
+                    <span className="text-xs font-bold text-slate-400 block">Authentication Engine</span>
+                    <span className="text-sm font-extrabold text-white mt-0.5 block">Passwordless Magic Links + JWT Session</span>
                   </div>
-                  <div>
-                    <span className="block text-slate-500 text-[10px]">Database Status</span>
-                    <span className="font-semibold text-emerald-400 mt-1 block">Healthy (Online)</span>
+                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Active
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-400 block">Token Expiration (TTL)</span>
+                    <span className="text-sm font-extrabold text-white mt-1 block">15 Minutes (Single-Use)</span>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-400 block">SMTP Email Transport</span>
+                    <span className="text-sm font-extrabold text-emerald-400 mt-1 block truncate" title="vibeandcode.ai@gmail.com">
+                      vibeandcode.ai@gmail.com
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                  <span className="text-xs font-bold text-slate-400 block">Session Cookie Security</span>
+                  <span className="text-sm font-bold text-slate-200 mt-1 block">
+                    HttpOnly Cookie (`promptcanvas_session`), SameSite=Lax, PBKDF2 Password Hashing
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Multi-Tenant Workspace & RLS Waterfall */}
+            <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
+              <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
+                <Users className="w-5 h-5 text-indigo-400" />
+                <span>Multi-Tenant Workspace & Waterfall RLS</span>
+              </h3>
+
+              <div className="space-y-4">
+                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-400">Row Level Security (RLS) Policy</span>
+                    <span className="text-xs font-extrabold text-teal-400">Waterfall Enforcement</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Access control filters diagram queries by workspace ownership and membership (`Owner`, `Editor`, `Viewer`). Root admin credentials bypass workspace isolation.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-400 block">Personal Workspaces</span>
+                    <span className="text-sm font-extrabold text-white mt-1 block">Private (Owner Only)</span>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-400 block">Team Shared Workspaces</span>
+                    <span className="text-sm font-extrabold text-indigo-300 mt-1 block">Role-Based Member Access</span>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="space-y-4 pt-4 border-t border-panel-border/30">
-                <h3 className="text-sm font-bold text-white border-b border-panel-border/30 pb-2 flex items-center gap-2">
-                  <Info className="w-4 h-4 text-teal-accent" />
-                  <span>Product Build Details</span>
-                </h3>
+            {/* Card 4: AI Model & Database Infrastructure */}
+            <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
+              <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
+                <Cpu className="w-5 h-5 text-teal-accent" />
+                <span>AI Compiler & Infrastructure Telemetry</span>
+              </h3>
 
-                <div className="grid grid-cols-2 gap-4 text-xs">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
                   <div>
-                    <span className="block text-slate-500 text-[10px]">App Version</span>
-                    <span className="font-semibold text-white mt-1 block">v0.1.0-alpha (PromptCanvas)</span>
+                    <span className="text-xs font-bold text-slate-400 block">Active LLM Architecture Engine</span>
+                    <span className="text-sm font-extrabold text-white mt-0.5 block">Gemini 2.5 Flash (Google AI)</span>
                   </div>
-                  <div>
-                    <span className="block text-slate-500 text-[10px]">Framework</span>
-                    <span className="font-semibold text-white mt-1 block">Next.js 16 (App Router)</span>
+                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                    Connected
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-400 block">Database Storage</span>
+                    <span className="text-sm font-extrabold text-white mt-1 block truncate" title="/Users/nitinagga/.gemini/jetski/dev.db">
+                      SQLite Local (`dev.db`)
+                    </span>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                    <span className="text-xs font-bold text-slate-400 block">Database Health</span>
+                    <span className="text-sm font-extrabold text-emerald-400 mt-1 block">Healthy (Online)</span>
                   </div>
                 </div>
               </div>
