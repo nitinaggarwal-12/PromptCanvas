@@ -470,6 +470,7 @@ function WorkspaceContent() {
   // Loading States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingCleanVariant, setIsGeneratingCleanVariant] = useState(false);
   const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   
@@ -1395,6 +1396,29 @@ function WorkspaceContent() {
     } finally {
       setIsRemediating(false);
       setIsGenerating(false);
+    }
+  };
+
+  const handleGenerateCleanVariant = async () => {
+    if (!activeDiagram) return;
+    setIsGeneratingCleanVariant(true);
+    try {
+      const res = await fetch('/api/diagrams/clean-variant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ diagramId: activeDiagram.id })
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to generate clean variant');
+      }
+      await fetchDiagrams();
+      await loadDiagramDetails(activeDiagram.id);
+    } catch (err: unknown) {
+      console.error(err);
+      alert(err instanceof Error ? err.message : 'Failed to generate clean variant');
+    } finally {
+      setIsGeneratingCleanVariant(false);
     }
   };
 
@@ -2641,6 +2665,20 @@ function WorkspaceContent() {
             {activeDiagram && (
               <>
                 <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
+                <button
+                  id="clean-variant-btn"
+                  onClick={handleGenerateCleanVariant}
+                  disabled={isGeneratingCleanVariant}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-cyan-500/40 bg-cyan-500/10 hover:bg-cyan-500/20 text-xs font-bold transition-all text-cyan-300 cursor-pointer shadow-sm disabled:opacity-50"
+                  title="Generate Option 2: Minimalist Clean View with hover tooltips"
+                >
+                  {isGeneratingCleanVariant ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                  ) : (
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                  )}
+                  <span>Option 2: Clean View</span>
+                </button>
                 <button
                   id="export-terraform-btn"
                   onClick={() => setIsTerraformModalOpen(true)}
