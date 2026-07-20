@@ -32,12 +32,15 @@ import {
   ChevronDown,
   ChevronUp,
   Hand,
-  BookOpen
+  BookOpen,
+  Mail
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
 import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 import { AuthModal } from '@/components/AuthModal';
+import DiagramFeedbackWidget from '@/components/DiagramFeedbackWidget';
+import { ContactUsModal } from '@/components/ContactUsModal';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -462,6 +465,7 @@ export default function Dashboard() {
   const [isAuditing, setIsAuditing] = useState(false);
   const [auditReport, setAuditReport] = useState<string | null>(null);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   
 
   
@@ -612,18 +616,30 @@ export default function Dashboard() {
           setInspectVersion(matchInspect);
         }
         
-        // Reconstruct chat history from version comments
-        const messages: ChatMessage[] = data.versions
+        // Reconstruct complete chat history from all version prompts and comments
+        const messages: ChatMessage[] = [];
+        data.versions
           .sort((a, b) => a.version_number - b.version_number)
-          .map((v) => ({
-            id: v.id,
-            sender: v.created_by.toLowerCase() === 'ai' ? 'ai' : 'user',
-            text: v.created_by.toLowerCase() === 'ai' 
-              ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Generated'}"`
-              : `Manually edited diagram: "${v.comment || 'Saved changes'}"`,
-            timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            versionNumber: v.version_number
-          }));
+          .forEach((v) => {
+            if (v.prompt) {
+              messages.push({
+                id: `${v.id}_user_prompt`,
+                sender: 'user',
+                text: v.prompt,
+                timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                versionNumber: v.version_number
+              });
+            }
+            messages.push({
+              id: v.id,
+              sender: v.created_by.toLowerCase() === 'ai' ? 'ai' : 'user',
+              text: v.created_by.toLowerCase() === 'ai' 
+                ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Refined Architecture'}"`
+                : `Manually saved version v${v.version_number}: "${v.comment || 'Saved changes'}"`,
+              timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              versionNumber: v.version_number
+            });
+          });
         setChatMessages(messages);
       } else {
         setActiveVersion(null);
@@ -2173,6 +2189,7 @@ export default function Dashboard() {
             <AccessRequestsInbox user={currentUser} />
             {activeDiagram && (
               <>
+                <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
                 <button
                   id="audit-diagram-btn"
                   onClick={handleAuditDiagram}
@@ -2199,6 +2216,14 @@ export default function Dashboard() {
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Open in New Tab</span>
+                </button>
+                <button
+                  id="header-contact-us-btn"
+                  onClick={() => setIsContactOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all text-slate-300 hover:text-white cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5 text-teal-accent" />
+                  <span>Contact Us</span>
                 </button>
               </>
             )}
@@ -3455,6 +3480,12 @@ export default function Dashboard() {
           )}
         </>
       )}
+
+      <ContactUsModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+        currentUser={currentUser}
+      />
 
     </div>
   );

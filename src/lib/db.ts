@@ -55,6 +55,27 @@ export interface AccessRequest {
   diagram_name?: string;
 }
 
+export interface DiagramFeedback {
+  id: string;
+  diagram_id: string;
+  version_id?: string | null;
+  user_id: string;
+  rating: 'thumbs_up' | 'thumbs_down' | 'neutral';
+  feedback_tags: string[];
+  free_text_comment: string | null;
+  created_at: string | Date;
+}
+
+export interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  reason: string;
+  message: string;
+  user_id?: string | null;
+  created_at: string | Date;
+}
+
 export interface Diagram {
   id: string;
   name: string;
@@ -207,6 +228,45 @@ export async function ensureTablesExist(): Promise<void> {
       );
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS diagram_feedback (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL REFERENCES diagrams(id) ON DELETE CASCADE,
+        version_id TEXT REFERENCES diagram_versions(id) ON DELETE CASCADE,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        rating TEXT NOT NULL,
+        feedback_tags TEXT NOT NULL DEFAULT '[]',
+        free_text_comment TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await pool.query(`
+      CREATE OR REPLACE VIEW v_feedback_curation AS
+      SELECT 
+        rating,
+        feedback_tags,
+        free_text_comment,
+        diagram_id,
+        version_id,
+        user_id,
+        created_at
+      FROM diagram_feedback
+      ORDER BY created_at DESC;
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS contact_submissions (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        message TEXT NOT NULL,
+        user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Schema Evolution Migrations
     await pool.query(`
       ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS user_id TEXT;
@@ -312,6 +372,49 @@ export async function ensureTablesExist(): Promise<void> {
         updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
         FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE,
         FOREIGN KEY (requester_user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS diagram_feedback (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT NOT NULL,
+        version_id TEXT,
+        user_id TEXT NOT NULL,
+        rating TEXT NOT NULL,
+        feedback_tags TEXT NOT NULL DEFAULT '[]',
+        free_text_comment TEXT,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE,
+        FOREIGN KEY (version_id) REFERENCES diagram_versions(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+
+    db.exec(`
+      CREATE VIEW IF NOT EXISTS v_feedback_curation AS
+      SELECT 
+        rating,
+        feedback_tags,
+        free_text_comment,
+        diagram_id,
+        version_id,
+        user_id,
+        created_at
+      FROM diagram_feedback
+      ORDER BY created_at DESC;
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS contact_submissions (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        message TEXT NOT NULL,
+        user_id TEXT,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
       );
     `);
 
@@ -1323,6 +1426,183 @@ export async function resolveAccessRequest(
       db.exec('ROLLBACK;');
       throw err;
     }
+  }
+}
+
+// ==========================================
+// AI DIAGRAM FEEDBACK & CURATION FUNCTIONS
+// ==========================================
+
+export async function submitDiagramFeedback(
+  diagramId: string,
+  versionId: string | null,
+  userId: string,
+  rating: 'thumbs_up' | 'thumbs_down' | 'neutral',
+  feedbackTags: string[],
+  freeTextComment?: string | null
+): Promise<DiagramFeedback> {
+  await ensureTablesExist();
+
+  // Mandatory Validation for Thumbs Down
+  if (rating === 'thumbs_down') {
+    const hasTags = Array.isArray(feedbackTags) && feedbackTags.length > 0;
+    const hasComment = typeof freeTextComment === 'string' && freeTextComment.trim().length > 0;
+    if (!hasTags && !hasComment) {
+      throw new Error('For negative feedback (thumbs_down), at least one issue tag or comment is required.');
+    }
+  }
+
+  const id = uuidv4();
+  const tagsJson = JSON.stringify(feedbackTags || []);
+  const comment = freeTextComment ? freeTextComment.trim() : null;
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `INSERT INTO diagram_feedback (id, diagram_id, version_id, user_id, rating, feedback_tags, free_text_comment)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING *`,
+      [id, diagramId, versionId || null, userId, rating, tagsJson, comment]
+    );
+    await logUserEvent(userId, 'DIAGRAM_FEEDBACK_SUBMITTED', null, `Rating: ${rating}, Diagram: ${diagramId}`);
+    const row = res.rows[0];
+    return {
+      ...row,
+      feedback_tags: JSON.parse(row.feedback_tags || '[]'),
+    };
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `INSERT INTO diagram_feedback (id, diagram_id, version_id, user_id, rating, feedback_tags, free_text_comment)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+    );
+    stmt.run(id, diagramId, versionId || null, userId, rating, tagsJson, comment);
+    await logUserEvent(userId, 'DIAGRAM_FEEDBACK_SUBMITTED', null, `Rating: ${rating}, Diagram: ${diagramId}`);
+    
+    const getFb = db.prepare('SELECT * FROM diagram_feedback WHERE id = ?');
+    const row = getFb.get(id) as any;
+    return {
+      ...row,
+      feedback_tags: JSON.parse(row.feedback_tags || '[]'),
+    };
+  }
+}
+
+export async function getFeedbackCurationData(): Promise<{
+  totalCount: number;
+  ratingBreakdown: { thumbs_up: number; thumbs_down: number; neutral: number };
+  topPositiveTags: Record<string, number>;
+  topFailureTags: Record<string, number>;
+  recentComments: { rating: string; comment: string; createdAt: string; diagramId: string }[];
+}> {
+  await ensureTablesExist();
+
+  let rows: any[] = [];
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query('SELECT * FROM v_feedback_curation');
+    rows = res.rows;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('SELECT * FROM v_feedback_curation');
+    rows = stmt.all() as any[];
+  }
+
+  const ratingBreakdown = { thumbs_up: 0, thumbs_down: 0, neutral: 0 };
+  const topPositiveTags: Record<string, number> = {};
+  const topFailureTags: Record<string, number> = {};
+  const recentComments: { rating: string; comment: string; createdAt: string; diagramId: string }[] = [];
+
+  for (const row of rows) {
+    const r = row.rating as 'thumbs_up' | 'thumbs_down' | 'neutral';
+    if (ratingBreakdown[r] !== undefined) {
+      ratingBreakdown[r]++;
+    }
+
+    let tags: string[] = [];
+    try {
+      tags = typeof row.feedback_tags === 'string' ? JSON.parse(row.feedback_tags) : (row.feedback_tags || []);
+    } catch {
+      tags = [];
+    }
+
+    if (r === 'thumbs_up') {
+      tags.forEach((tag) => {
+        topPositiveTags[tag] = (topPositiveTags[tag] || 0) + 1;
+      });
+    } else if (r === 'thumbs_down') {
+      tags.forEach((tag) => {
+        topFailureTags[tag] = (topFailureTags[tag] || 0) + 1;
+      });
+    }
+
+    if (row.free_text_comment && row.free_text_comment.trim().length > 0) {
+      recentComments.push({
+        rating: row.rating,
+        comment: row.free_text_comment,
+        createdAt: row.created_at,
+        diagramId: row.diagram_id,
+      });
+    }
+  }
+
+  return {
+    totalCount: rows.length,
+    ratingBreakdown,
+    topPositiveTags,
+    topFailureTags,
+    recentComments: recentComments.slice(0, 30),
+  };
+}
+
+// ==========================================
+// CONTACT US FORM FUNCTIONS
+// ==========================================
+
+export async function submitContactForm(
+  name: string,
+  email: string,
+  reason: string,
+  message: string,
+  userId?: string | null
+): Promise<ContactSubmission> {
+  await ensureTablesExist();
+
+  if (!name || !name.trim()) throw new Error('Name is required.');
+  if (!email || !email.trim()) throw new Error('Email is required.');
+  if (!reason || !reason.trim()) throw new Error('Reason for contact is required.');
+  if (!message || !message.trim()) throw new Error('Message is required.');
+
+  const id = uuidv4();
+  const trimmedName = name.trim();
+  const trimmedEmail = email.trim();
+  const trimmedReason = reason.trim();
+  const trimmedMessage = message.trim();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `INSERT INTO contact_submissions (id, name, email, reason, message, user_id)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING *`,
+      [id, trimmedName, trimmedEmail, trimmedReason, trimmedMessage, userId || null]
+    );
+    if (userId) {
+      await logUserEvent(userId, 'CONTACT_FORM_SUBMITTED', null, `Reason: ${trimmedReason}`);
+    }
+    return res.rows[0] as ContactSubmission;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `INSERT INTO contact_submissions (id, name, email, reason, message, user_id)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    );
+    stmt.run(id, trimmedName, trimmedEmail, trimmedReason, trimmedMessage, userId || null);
+    if (userId) {
+      await logUserEvent(userId, 'CONTACT_FORM_SUBMITTED', null, `Reason: ${trimmedReason}`);
+    }
+    const getStmt = db.prepare('SELECT * FROM contact_submissions WHERE id = ?');
+    return getStmt.get(id) as unknown as ContactSubmission;
   }
 }
 

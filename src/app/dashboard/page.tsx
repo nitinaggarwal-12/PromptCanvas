@@ -21,8 +21,10 @@ import {
   ChevronRight,
   LayoutGrid,
   ShieldAlert,
-  Settings
+  Settings,
+  Mail
 } from 'lucide-react';
+import { ContactUsModal } from '@/components/ContactUsModal';
 
 interface Diagram {
   id: string;
@@ -94,6 +96,7 @@ export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null } | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -293,6 +296,15 @@ export default function Dashboard() {
               </Link>
             );
           })}
+          <button
+            type="button"
+            id="sidebar-contact-creator-btn"
+            onClick={() => setIsContactOpen(true)}
+            className="w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-hover/40 transition-all cursor-pointer"
+          >
+            <Mail className="w-4.5 h-4.5 shrink-0 text-teal-accent" />
+            {isSidebarOpen && <span className="truncate">Contact Creator</span>}
+          </button>
         </div>
 
         <div className="border-t border-panel-border/30 my-1 shrink-0" />
@@ -779,6 +791,13 @@ export default function Dashboard() {
           setUser(updatedUser);
         }}
         onLogout={handleLogout}
+      />
+
+      {/* Contact Us Modal */}
+      <ContactUsModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+        currentUser={user}
       />
     </div>
   );

@@ -16,11 +16,13 @@ import {
   Network,
   X,
   User,
-  LogOut
+  LogOut,
+  Mail
 } from 'lucide-react';
 import { AuthModal } from '@/components/AuthModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
+import { ContactUsModal } from '@/components/ContactUsModal';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -29,6 +31,7 @@ export default function LandingPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   const checkAuth = async () => {
     try {
@@ -124,6 +127,14 @@ export default function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <button
+              id="header-contact-us-btn"
+              onClick={() => setIsContactOpen(true)}
+              className="px-3.5 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-teal-500/40 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Mail className="w-3.5 h-3.5 text-teal-accent" />
+              <span>Contact Us</span>
+            </button>
             {user ? (
               <>
                 <AccessRequestsInbox user={user} />
@@ -663,6 +674,12 @@ export default function LandingPage() {
           setUser(updatedUser);
         }}
         onLogout={handleLogout}
+      />
+
+      <ContactUsModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+        currentUser={user}
       />
 
     </div>
