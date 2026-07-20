@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getLatestDiagramVersion, saveDiagramVersion } from '@/lib/db';
+import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 
 const ai = new GoogleGenAI({});
 
@@ -54,14 +55,9 @@ ${remediationInstructions}
 
     let rawXml = response.text?.trim() || '';
 
-    // Strip markdown code fences if present
-    if (rawXml.startsWith('```')) {
-      rawXml = rawXml.replace(/^```[a-z]*\n?/, '').replace(/\n?```$/, '').trim();
-    }
-
-    if (!rawXml.includes('<mxfile')) {
-      throw new Error('AI output did not contain valid Draw.io XML');
-    }
+    // Validate & Auto-Heal XML via AST Schema Healer
+    const healResult = validateAndHealDrawioXml(rawXml);
+    rawXml = healResult.xml;
 
     const comment = `Remediated ${selectedGaps.length} security gap(s) via Gemini`;
 

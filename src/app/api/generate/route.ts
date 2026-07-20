@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { createDiagram, saveDiagramVersion, getLatestDiagramVersion } from '@/lib/db';
+import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 
 const ai = new GoogleGenAI({});
 
@@ -168,6 +169,12 @@ function parseAiResponse(text: string): {
     }
     return text.substring(startIdx, endIdx).trim();
   };
+
+  // Heal & Validate XML using XML AST Auto-Healer
+  if (xml) {
+    const healResult = validateAndHealDrawioXml(xml);
+    xml = healResult.xml;
+  }
 
   reasoning = getSectionContent(reasoningHeader);
   businessUsecase = getSectionContent(businessHeader);

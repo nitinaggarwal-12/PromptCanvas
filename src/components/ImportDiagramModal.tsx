@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Upload, X, FileCode, CheckCircle2, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 
 interface ImportDiagramModalProps {
   isOpen: boolean;
@@ -43,21 +44,9 @@ export function ImportDiagramModal({ isOpen, onClose, onImportSuccess }: ImportD
       const fileText = await file.text();
       let xmlContent = fileText.trim();
 
-      // Basic validation for Draw.io XML
-      if (!xmlContent.includes('<mxfile') && !xmlContent.includes('<mxGraphModel')) {
-        // Wrap if missing header tags
-        xmlContent = `<mxfile host="PromptCanvas" modified="${new Date().toISOString()}" agent="Import">
-  <diagram id="imported_diagram" name="${diagramName || 'Imported Diagram'}">
-    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        ${xmlContent}
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
-      }
+      // Strict XML AST Validation & Auto-Healing
+      const healResult = validateAndHealDrawioXml(xmlContent);
+      xmlContent = healResult.xml;
 
       const res = await fetch('/api/diagrams', {
         method: 'POST',
