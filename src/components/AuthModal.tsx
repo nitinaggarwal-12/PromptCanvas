@@ -88,26 +88,26 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-[#0b101d] border border-slate-800/80 rounded-2xl p-6 md:p-8 shadow-2xl shadow-teal-500/10 text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-xl bg-[#0b101d] border border-slate-800/80 rounded-3xl p-8 md:p-10 shadow-2xl shadow-teal-500/10 text-white">
         {/* Close Button */}
         <button
           onClick={onClose}
           id="auth-modal-close-btn"
-          className="absolute top-4 right-4 p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
+          className="absolute top-5 right-5 p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="w-6 h-6" />
         </button>
 
         {/* Modal Header */}
-        <div className="text-center space-y-2 mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5" /> PromptCanvas Account
+        <div className="text-center space-y-3 mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 text-xs md:text-sm font-extrabold">
+            <Sparkles className="w-4 h-4" /> PromptCanvas Account
           </div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-white">
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
             {mode === 'signin' ? 'Welcome Back' : mode === 'signup' ? 'Create Your Account' : 'Passwordless Login'}
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-sm md:text-base text-slate-300">
             {mode === 'signin' 
               ? 'Sign in to access your saved architecture diagrams' 
               : mode === 'signup'
@@ -117,7 +117,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         </div>
 
         {/* Auth Mode Tabs */}
-        <div className="grid grid-cols-3 p-1 bg-slate-900/90 rounded-xl border border-slate-800 mb-6 gap-1">
+        <div className="grid grid-cols-3 p-1.5 bg-slate-900/90 rounded-2xl border border-slate-800 mb-8 gap-1.5">
           <button
             id="auth-tab-signin"
             type="button"
@@ -125,7 +125,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
               setMode('signin');
               setError(null);
             }}
-            className={`py-2 text-[11px] font-bold rounded-lg transition-all ${
+            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all ${
               mode === 'signin'
                 ? 'bg-gradient-to-r from-teal-400 to-emerald-400 text-[#070a13] shadow-md'
                 : 'text-slate-400 hover:text-white'
@@ -140,7 +140,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
               setMode('signup');
               setError(null);
             }}
-            className={`py-2 text-[11px] font-bold rounded-lg transition-all ${
+            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all ${
               mode === 'signup'
                 ? 'bg-gradient-to-r from-teal-400 to-indigo-500 text-[#070a13] shadow-md'
                 : 'text-slate-400 hover:text-white'
@@ -155,7 +155,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
               setMode('magiclink');
               setError(null);
             }}
-            className={`py-2 text-[11px] font-bold rounded-lg transition-all ${
+            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all ${
               mode === 'magiclink'
                 ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md'
                 : 'text-slate-400 hover:text-white'
@@ -167,10 +167,10 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
 
         {/* Error / Success Banners */}
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex flex-col gap-1">
+          <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex flex-col gap-1.5">
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-              <span className="font-semibold">{error}</span>
+              <AlertCircle className="w-5 h-5 shrink-0 text-rose-400" />
+              <span className="font-bold">{error}</span>
             </div>
             {mode === 'signin' && error.includes('Invalid') && (
               <button
@@ -179,7 +179,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                   setMode('signup');
                   setError(null);
                 }}
-                className="text-[11px] text-teal-400 hover:text-teal-300 hover:underline text-left font-bold mt-1 cursor-pointer"
+                className="text-xs text-teal-400 hover:text-teal-300 hover:underline text-left font-extrabold mt-1 cursor-pointer"
               >
                 Don&apos;t have an account yet? Click here to Sign Up instead →
               </button>
@@ -188,15 +188,15 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs flex flex-col gap-2">
+          <div className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-300 text-sm flex flex-col gap-2.5">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-teal-400" />
-              <span>{successMsg}</span>
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-teal-400" />
+              <span className="font-bold">{successMsg}</span>
             </div>
             {magicUrl && (
               <a
                 href={magicUrl}
-                className="mt-1 w-full py-2 px-3 rounded-lg bg-teal-400 text-[#070a13] font-bold text-center text-xs hover:bg-teal-300 transition-all shadow-md block"
+                className="mt-1 w-full py-3 px-4 rounded-xl bg-teal-400 text-[#070a13] font-black text-center text-sm hover:bg-teal-300 transition-all shadow-md block"
               >
                 🚀 Click Here to Log In Instantly →
               </a>
@@ -205,12 +205,12 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {mode === 'signup' && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Full Name</label>
+              <label className="block text-sm font-bold text-slate-200 mb-2">Full Name</label>
               <div className="relative">
-                <User className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+                <User className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
                 <input
                   id="auth-input-name"
                   type="text"
@@ -218,16 +218,16 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                   placeholder="Jane Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-sm text-white placeholder-slate-500 outline-none transition-colors"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-base text-white placeholder-slate-500 outline-none transition-colors"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Email Address</label>
+            <label className="block text-sm font-bold text-slate-200 mb-2">Email Address</label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+              <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
               <input
                 id="auth-input-email"
                 type="email"
@@ -236,16 +236,16 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                 placeholder="name@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-sm text-white placeholder-slate-500 outline-none transition-colors"
+                className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-base text-white placeholder-slate-500 outline-none transition-colors"
               />
             </div>
           </div>
 
           {mode !== 'magiclink' && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
+              <label className="block text-sm font-bold text-slate-200 mb-2">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+                <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
                 <input
                   id="auth-input-password"
                   type="password"
@@ -255,11 +255,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-sm text-white placeholder-slate-500 outline-none transition-colors"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-base text-white placeholder-slate-500 outline-none transition-colors"
                 />
               </div>
               {mode === 'signup' && (
-                <p className="mt-1 text-[11px] text-slate-500">Minimum 6 characters required.</p>
+                <p className="mt-1.5 text-xs text-slate-400">Minimum 6 characters required.</p>
               )}
             </div>
           )}
@@ -268,17 +268,17 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             id="auth-submit-btn"
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
+            className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-black text-base md:text-lg tracking-wide transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2.5 disabled:opacity-50 mt-4"
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
                 <span>{mode === 'signin' ? 'Signing In...' : mode === 'signup' ? 'Creating Account...' : 'Generating Link...'}</span>
               </>
             ) : (
               <>
                 <span>{mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Magic Link ✨'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-5 h-5" />
               </>
             )}
           </button>
