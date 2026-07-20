@@ -18,7 +18,6 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [magicUrl, setMagicUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -27,7 +26,6 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
       setName('');
       setError(null);
       setSuccessMsg(null);
-      setMagicUrl(null);
       setMode(initialMode);
     }
   }, [isOpen, initialMode]);
@@ -38,7 +36,6 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
     e.preventDefault();
     setError(null);
     setSuccessMsg(null);
-    setMagicUrl(null);
     setLoading(true);
 
     try {
@@ -51,10 +48,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to send magic link');
 
-        setSuccessMsg('Magic link generated! Click below to enter instantly.');
-        if (data.magicLinkUrl) {
-          setMagicUrl(data.magicLinkUrl);
-        }
+        setSuccessMsg(data.message || `Magic link dispatched! Please check your email inbox (${email}) to complete sign in.`);
         return;
       }
 
@@ -193,12 +187,14 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
               <CheckCircle2 className="w-5 h-5 shrink-0 text-teal-400" />
               <span className="font-bold">{successMsg}</span>
             </div>
-            {magicUrl && (
+            {mode === 'magiclink' && (
               <a
-                href={magicUrl}
-                className="mt-1 w-full py-3 px-4 rounded-xl bg-teal-400 text-[#070a13] font-black text-center text-sm hover:bg-teal-300 transition-all shadow-md block"
+                href="https://mail.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 w-full py-3 px-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 text-[#070a13] font-black text-center text-sm hover:from-teal-300 hover:to-indigo-400 transition-all shadow-md block"
               >
-                🚀 Click Here to Log In Instantly →
+                ✉️ Open Gmail Inbox ↗
               </a>
             )}
           </div>

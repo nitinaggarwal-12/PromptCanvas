@@ -17,16 +17,13 @@ export async function POST(request: Request) {
 
     console.log(`[Magic Link Auth] 🔑 Generated token for ${email}: ${magicLinkUrl}`);
 
-    // Dispatch email via Resend if RESEND_API_KEY is configured
+    // Dispatch email via Resend
     const { sendMagicLinkEmail } = await import('@/lib/email');
     await sendMagicLinkEmail({ toEmail: email, magicLinkUrl });
 
     return NextResponse.json({
       success: true,
-      message: isDev 
-        ? 'Magic login link generated! Click below or check your email inbox.'
-        : 'Magic login link sent! Please check your email inbox to sign in.',
-      ...(isDev ? { magicLinkUrl } : {}),
+      message: `Magic link dispatched! Please check your email inbox (${email}) to complete sign in.`,
     });
   } catch (error: unknown) {
     console.error('Magic link creation error:', error);
