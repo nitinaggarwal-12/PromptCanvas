@@ -5,9 +5,37 @@ import { mkdirSync } from 'fs';
 import { Pool } from 'pg';
 
 // Define TypeScript interfaces for our models
+export interface User {
+  id: string;
+  email: string;
+  password_hash: string;
+  salt: string;
+  name: string | null;
+  created_at: string | Date;
+  updated_at: string | Date;
+  last_login_at: string | Date | null;
+}
+
+export interface Session {
+  id: string;
+  user_id: string;
+  expires_at: string | Date;
+  created_at: string | Date;
+}
+
+export interface UserLog {
+  id: string;
+  user_id: string;
+  event_type: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string | Date;
+}
+
 export interface Diagram {
   id: string;
   name: string;
+  user_id?: string | null;
   created_at: string | Date;
   updated_at: string | Date;
 }
@@ -72,9 +100,43 @@ export async function ensureTablesExist(): Promise<void> {
   if (isPostgres()) {
     const pool = getPgPool();
     await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        salt TEXT NOT NULL,
+        name TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        last_login_at TIMESTAMP WITH TIME ZONE
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS sessions (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS user_logs (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        event_type TEXT NOT NULL,
+        ip_address TEXT,
+        user_agent TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS diagrams (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
+        user_id TEXT,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
@@ -99,6 +161,9 @@ export async function ensureTablesExist(): Promise<void> {
 
     // Schema Evolution Migrations
     await pool.query(`
+      ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS user_id TEXT;
+    `);
+    await pool.query(`
       ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS prompt TEXT;
     `);
     await pool.query(`
@@ -113,9 +178,45 @@ export async function ensureTablesExist(): Promise<void> {
   } else {
     const db = getSqliteDb();
     db.exec(`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        salt TEXT NOT NULL,
+        name TEXT,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        last_login_at TEXT
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS sessions (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        expires_at TEXT NOT NULL,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS user_logs (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        event_type TEXT NOT NULL,
+        ip_address TEXT,
+        user_agent TEXT,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+
+    db.exec(`
       CREATE TABLE IF NOT EXISTS diagrams (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
+        user_id TEXT,
         created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
         updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
       );
@@ -139,6 +240,11 @@ export async function ensureTablesExist(): Promise<void> {
     `);
 
     // Schema Evolution Migrations
+    try {
+      db.exec('ALTER TABLE diagrams ADD COLUMN user_id TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
     try {
       db.exec('ALTER TABLE diagram_versions ADD COLUMN prompt TEXT;');
     } catch {
@@ -230,48 +336,85 @@ export async function ensureTablesExist(): Promise<void> {
   tablesInitialized = true;
 }
 
-// Helper: List all diagrams (sorted by updated_at desc)
-export async function listDiagrams(): Promise<(Diagram & { xml_content?: string; prompt?: string | null })[]> {
+// Helper: List all diagrams for a given user (or public seeded ones)
+export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_content?: string; prompt?: string | null })[]> {
   await ensureTablesExist();
-  const query = `
-    SELECT d.*, v.xml_content, v.prompt
-    FROM diagrams d
-    LEFT JOIN diagram_versions v ON v.diagram_id = d.id 
-    AND v.version_number = (
-      SELECT MAX(version_number) 
-      FROM diagram_versions 
-      WHERE diagram_id = d.id
-    )
-    ORDER BY d.updated_at DESC
-  `;
+  
+  let query: string;
+  let params: any[] = [];
+
+  if (userId) {
+    query = `
+      SELECT d.*, v.xml_content, v.prompt
+      FROM diagrams d
+      LEFT JOIN diagram_versions v ON v.diagram_id = d.id 
+      AND v.version_number = (
+        SELECT MAX(version_number) 
+        FROM diagram_versions 
+        WHERE diagram_id = d.id
+      )
+      WHERE d.user_id = $1 OR d.user_id IS NULL
+      ORDER BY d.updated_at DESC
+    `;
+    params = [userId];
+  } else {
+    query = `
+      SELECT d.*, v.xml_content, v.prompt
+      FROM diagrams d
+      LEFT JOIN diagram_versions v ON v.diagram_id = d.id 
+      AND v.version_number = (
+        SELECT MAX(version_number) 
+        FROM diagram_versions 
+        WHERE diagram_id = d.id
+      )
+      ORDER BY d.updated_at DESC
+    `;
+  }
 
   if (isPostgres()) {
     const pool = getPgPool();
-    const res = await pool.query(query);
+    const res = await pool.query(query, params);
     return res.rows;
   } else {
     const db = getSqliteDb();
-    const stmt = db.prepare(query);
-    return stmt.all() as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
+    if (userId) {
+      const sqliteQuery = query.replace('$1', '?');
+      const stmt = db.prepare(sqliteQuery);
+      return stmt.all(userId) as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
+    } else {
+      const stmt = db.prepare(query);
+      return stmt.all() as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
+    }
   }
 }
 
-// Helper: Get a single diagram by ID
-export async function getDiagram(id: string): Promise<Diagram | null> {
+// Helper: Get a single diagram by ID (scoped to user)
+export async function getDiagram(id: string, userId?: string): Promise<Diagram | null> {
   await ensureTablesExist();
   if (isPostgres()) {
     const pool = getPgPool();
-    const res = await pool.query('SELECT * FROM diagrams WHERE id = $1', [id]);
-    return (res.rows[0] as Diagram) || null;
+    if (userId) {
+      const res = await pool.query('SELECT * FROM diagrams WHERE id = $1 AND (user_id = $2 OR user_id IS NULL)', [id, userId]);
+      return (res.rows[0] as Diagram) || null;
+    } else {
+      const res = await pool.query('SELECT * FROM diagrams WHERE id = $1', [id]);
+      return (res.rows[0] as Diagram) || null;
+    }
   } else {
     const db = getSqliteDb();
-    const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ?');
-    const result = stmt.get(id);
-    return (result as unknown as Diagram) || null;
+    if (userId) {
+      const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ? AND (user_id = ? OR user_id IS NULL)');
+      const result = stmt.get(id, userId);
+      return (result as unknown as Diagram) || null;
+    } else {
+      const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ?');
+      const result = stmt.get(id);
+      return (result as unknown as Diagram) || null;
+    }
   }
 }
 
-// Helper: Create a new diagram with an optional initial XML
+// Helper: Create a new diagram with an optional initial XML and userId
 export async function createDiagram(
   name: string,
   initialXml?: string,
@@ -279,7 +422,8 @@ export async function createDiagram(
   prompt?: string | null,
   aiReasoning?: string | null,
   businessUsecase?: string | null,
-  technicalUsecase?: string | null
+  technicalUsecase?: string | null,
+  userId?: string | null
 ): Promise<{ diagram: Diagram; version: DiagramVersion | null }> {
   await ensureTablesExist();
   const diagramId = uuidv4();
@@ -290,7 +434,7 @@ export async function createDiagram(
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query('INSERT INTO diagrams (id, name) VALUES ($1, $2)', [diagramId, name]);
+      await client.query('INSERT INTO diagrams (id, name, user_id) VALUES ($1, $2, $3)', [diagramId, name, userId || null]);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -328,8 +472,8 @@ export async function createDiagram(
     const db = getSqliteDb();
     db.exec('BEGIN TRANSACTION;');
     try {
-      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name) VALUES (?, ?)');
-      insertDiagram.run(diagramId, name);
+      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id) VALUES (?, ?, ?)');
+      insertDiagram.run(diagramId, name, userId || null);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -499,16 +643,306 @@ export async function getLatestDiagramVersion(diagramId: string): Promise<Diagra
   }
 }
 
-// Helper: Delete a diagram (cascades to versions)
-export async function deleteDiagram(id: string): Promise<void> {
+// Helper: Delete a diagram (cascades to versions, scoped to user)
+export async function deleteDiagram(id: string, userId?: string): Promise<void> {
   await ensureTablesExist();
   if (isPostgres()) {
     const pool = getPgPool();
-    await pool.query('DELETE FROM diagrams WHERE id = $1', [id]);
+    if (userId) {
+      await pool.query('DELETE FROM diagrams WHERE id = $1 AND (user_id = $2 OR user_id IS NULL)', [id, userId]);
+    } else {
+      await pool.query('DELETE FROM diagrams WHERE id = $1', [id]);
+    }
   } else {
     const db = getSqliteDb();
-    const stmt = db.prepare('DELETE FROM diagrams WHERE id = ?');
+    if (userId) {
+      const stmt = db.prepare('DELETE FROM diagrams WHERE id = ? AND (user_id = ? OR user_id IS NULL)');
+      stmt.run(id, userId);
+    } else {
+      const stmt = db.prepare('DELETE FROM diagrams WHERE id = ?');
+      stmt.run(id);
+    }
+  }
+}
+
+// ==========================================
+// USER & AUTHENTICATION DATABASE FUNCTIONS
+// ==========================================
+
+export async function createUser(
+  email: string,
+  passwordHash: string,
+  salt: string,
+  name?: string | null
+): Promise<User> {
+  await ensureTablesExist();
+  const id = uuidv4();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `INSERT INTO users (id, email, password_hash, salt, name)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [id, email.toLowerCase().trim(), passwordHash, salt, name || null]
+    );
+    return res.rows[0] as User;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `INSERT INTO users (id, email, password_hash, salt, name)
+       VALUES (?, ?, ?, ?, ?)`
+    );
+    stmt.run(id, email.toLowerCase().trim(), passwordHash, salt, name || null);
+    const getUser = db.prepare('SELECT * FROM users WHERE id = ?');
+    return getUser.get(id) as unknown as User;
+  }
+}
+
+export async function getUserByEmail(email: string): Promise<User | null> {
+  await ensureTablesExist();
+  const normalizedEmail = email.toLowerCase().trim();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query('SELECT * FROM users WHERE LOWER(email) = $1', [normalizedEmail]);
+    return (res.rows[0] as User) || null;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('SELECT * FROM users WHERE LOWER(email) = ?');
+    const result = stmt.get(normalizedEmail);
+    return (result as unknown as User) || null;
+  }
+}
+
+export async function getUserById(id: string): Promise<User | null> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    return (res.rows[0] as User) || null;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
+    const result = stmt.get(id);
+    return (result as unknown as User) || null;
+  }
+}
+
+export async function updateUserProfile(id: string, name: string | null): Promise<User | null> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `UPDATE users 
+       SET name = $1, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $2 
+       RETURNING *`,
+      [name, id]
+    );
+    return (res.rows[0] as User) || null;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `UPDATE users 
+       SET name = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) 
+       WHERE id = ?`
+    );
+    stmt.run(name, id);
+    return getUserById(id);
+  }
+}
+
+export async function updateUserPassword(id: string, passwordHash: string, salt: string): Promise<void> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query(
+      `UPDATE users 
+       SET password_hash = $1, salt = $2, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $3`,
+      [passwordHash, salt, id]
+    );
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `UPDATE users 
+       SET password_hash = ?, salt = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) 
+       WHERE id = ?`
+    );
+    stmt.run(passwordHash, salt, id);
+  }
+}
+
+export async function updateUserLastLogin(id: string): Promise<void> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query(
+      `UPDATE users 
+       SET last_login_at = CURRENT_TIMESTAMP 
+       WHERE id = $1`,
+      [id]
+    );
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `UPDATE users 
+       SET last_login_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) 
+       WHERE id = ?`
+    );
     stmt.run(id);
+  }
+}
+
+// Session Functions
+export async function createSession(userId: string, expiresAt: Date): Promise<Session> {
+  await ensureTablesExist();
+  const id = uuidv4();
+  const expiresStr = expiresAt.toISOString();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `INSERT INTO sessions (id, user_id, expires_at)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [id, userId, expiresAt]
+    );
+    return res.rows[0] as Session;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `INSERT INTO sessions (id, user_id, expires_at)
+       VALUES (?, ?, ?)`
+    );
+    stmt.run(id, userId, expiresStr);
+    const getSess = db.prepare('SELECT * FROM sessions WHERE id = ?');
+    return getSess.get(id) as unknown as Session;
+  }
+}
+
+export async function getSession(sessionId: string): Promise<(Session & { user?: User }) | null> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `SELECT s.*, u.email, u.name, u.created_at as user_created_at
+       FROM sessions s
+       JOIN users u ON u.id = s.user_id
+       WHERE s.id = $1 AND s.expires_at > CURRENT_TIMESTAMP`,
+      [sessionId]
+    );
+    if (res.rows.length === 0) return null;
+    const row = res.rows[0];
+    return {
+      id: row.id,
+      user_id: row.user_id,
+      expires_at: row.expires_at,
+      created_at: row.created_at,
+      user: {
+        id: row.user_id,
+        email: row.email,
+        name: row.name,
+        password_hash: '',
+        salt: '',
+        created_at: row.user_created_at,
+        updated_at: row.user_created_at,
+        last_login_at: null,
+      }
+    };
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `SELECT s.*, u.email, u.name, u.created_at as user_created_at
+       FROM sessions s
+       JOIN users u ON u.id = s.user_id
+       WHERE s.id = ? AND s.expires_at > (strftime('%Y-%m-%d %H:%M:%f', 'now'))`
+    );
+    const row = stmt.get(sessionId) as any;
+    if (!row) return null;
+    return {
+      id: row.id,
+      user_id: row.user_id,
+      expires_at: row.expires_at,
+      created_at: row.created_at,
+      user: {
+        id: row.user_id,
+        email: row.email,
+        name: row.name,
+        password_hash: '',
+        salt: '',
+        created_at: row.user_created_at,
+        updated_at: row.user_created_at,
+        last_login_at: null,
+      }
+    };
+  }
+}
+
+export async function deleteSession(sessionId: string): Promise<void> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query('DELETE FROM sessions WHERE id = $1', [sessionId]);
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('DELETE FROM sessions WHERE id = ?');
+    stmt.run(sessionId);
+  }
+}
+
+// User Logs Functions
+export async function logUserEvent(
+  userId: string,
+  eventType: string,
+  ipAddress?: string | null,
+  userAgent?: string | null
+): Promise<UserLog> {
+  await ensureTablesExist();
+  const id = uuidv4();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `INSERT INTO user_logs (id, user_id, event_type, ip_address, user_agent)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [id, userId, eventType, ipAddress || null, userAgent || null]
+    );
+    return res.rows[0] as UserLog;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `INSERT INTO user_logs (id, user_id, event_type, ip_address, user_agent)
+       VALUES (?, ?, ?, ?, ?)`
+    );
+    stmt.run(id, userId, eventType, ipAddress || null, userAgent || null);
+    const getLog = db.prepare('SELECT * FROM user_logs WHERE id = ?');
+    return getLog.get(id) as unknown as UserLog;
+  }
+}
+
+export async function getUserLogs(userId: string, limit: number = 50): Promise<UserLog[]> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      'SELECT * FROM user_logs WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2',
+      [userId, limit]
+    );
+    return res.rows as UserLog[];
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('SELECT * FROM user_logs WHERE user_id = ? ORDER BY created_at DESC LIMIT ?');
+    return stmt.all(userId, limit) as unknown as UserLog[];
   }
 }
 

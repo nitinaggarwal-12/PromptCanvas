@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -13,10 +14,67 @@ import {
   CheckCircle2, 
   Play,
   Network,
-  X
+  X,
+  User,
+  LogOut
 } from 'lucide-react';
+import { AuthModal } from '@/components/AuthModal';
+import { UserProfileModal } from '@/components/UserProfileModal';
 
 export default function LandingPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<{ id: string; email: string; name?: string | null } | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.authenticated && data.user) {
+        setUser(data.user);
+      } else {
+        setUser(null);
+      }
+    } catch {
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setUser(null);
+      setIsProfileOpen(false);
+    } catch (err) {
+      console.error('Failed to logout:', err);
+    }
+  };
+
+  const handleLaunchAppClick = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      setAuthMode('signin');
+      setIsAuthOpen(true);
+    }
+  };
+
+  const handleBuildDiagramClick = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      setAuthMode('signup');
+      setIsAuthOpen(true);
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-[#070a13] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-clip">
       
@@ -64,13 +122,49 @@ export default function LandingPage() {
             <a href="#value" className="hover:text-teal-400 transition-colors">Why PromptCanvas</a>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard"
-              className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
-            >
-              Launch App
-            </Link>
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                <button
+                  id="header-user-profile-btn"
+                  onClick={() => setIsProfileOpen(true)}
+                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all"
+                >
+                  <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                    {(user.name || user.email)[0].toUpperCase()}
+                  </div>
+                  <span className="hidden sm:inline max-w-[120px] truncate">{user.name || user.email}</span>
+                </button>
+                <Link
+                  id="header-launch-app-btn"
+                  href="/dashboard"
+                  className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
+                >
+                  Launch App
+                </Link>
+              </>
+            ) : (
+              <>
+                <button
+                  id="header-signin-btn"
+                  onClick={() => {
+                    setAuthMode('signin');
+                    setIsAuthOpen(true);
+                  }}
+                  className="px-4 py-2 text-sm text-slate-300 hover:text-white font-medium transition-colors"
+                >
+                  Sign In
+                </button>
+                <Link
+                  id="header-launch-app-btn"
+                  href="/dashboard"
+                  onClick={handleLaunchAppClick}
+                  className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
+                >
+                  Launch App
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -95,7 +189,9 @@ export default function LandingPage() {
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto pt-2">
             <Link
-              href="/workspace?modal=create"
+              id="hero-build-diagram-btn"
+              href={user ? "/workspace?modal=create" : "#"}
+              onClick={handleBuildDiagramClick}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
             >
               <span>Build First Diagram</span>
@@ -544,6 +640,28 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Modals */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialMode={authMode}
+        onSuccess={(loggedUser) => {
+          setUser(loggedUser);
+          setIsAuthOpen(false);
+          router.push('/dashboard');
+        }}
+      />
+
+      <UserProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        user={user}
+        onUpdateUser={(updatedUser) => {
+          setUser(updatedUser);
+        }}
+        onLogout={handleLogout}
+      />
 
     </div>
   );

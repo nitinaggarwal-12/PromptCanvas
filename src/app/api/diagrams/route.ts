@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { listDiagrams, createDiagram } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
 
-// GET /api/diagrams - List all diagrams
+// GET /api/diagrams - List diagrams (user-scoped or public seed)
 export async function GET() {
   try {
-    const diagrams = await listDiagrams();
+    const user = await getAuthenticatedUser();
+    const diagrams = await listDiagrams(user?.id);
     return NextResponse.json(diagrams);
   } catch (error) {
     console.error('Failed to list diagrams:', error);
@@ -15,11 +17,12 @@ export async function GET() {
   }
 }
 
-// POST /api/diagrams - Create a new diagram
+// POST /api/diagrams - Create a new diagram attached to authenticated user
 export async function POST(request: Request) {
   try {
+    const user = await getAuthenticatedUser();
     const body = await request.json();
-    const { name, xml, comment } = body;
+    const { name, xml, comment, prompt, aiReasoning, businessUsecase, technicalUsecase } = body;
 
     if (!name || typeof name !== 'string') {
       return NextResponse.json(
@@ -28,7 +31,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const { diagram, version } = await createDiagram(name, xml, comment);
+    const { diagram, version } = await createDiagram(
+      name,
+      xml,
+      comment,
+      prompt,
+      aiReasoning,
+      businessUsecase,
+      technicalUsecase,
+      user?.id || null
+    );
 
     return NextResponse.json({ diagram, version }, { status: 201 });
   } catch (error) {

@@ -83,12 +83,16 @@ const TEMPLATE_PROMPTS = [
   }
 ];
 
+import { UserProfileModal } from '@/components/UserProfileModal';
+
 export default function Dashboard() {
   const router = useRouter();
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [user, setUser] = useState<{ id: string; email: string; name?: string | null } | null>(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -96,6 +100,20 @@ export default function Dashboard() {
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [isCreating, setIsCreating] = useState(false);
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.authenticated && data.user) {
+        setUser(data.user);
+      } else {
+        setUser(null);
+      }
+    } catch {
+      setUser(null);
+    }
+  };
 
   const fetchDiagrams = async () => {
     setIsLoading(true);
@@ -112,10 +130,22 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    checkAuth();
     setTimeout(() => {
       fetchDiagrams();
     }, 0);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setUser(null);
+      setIsProfileModalOpen(false);
+      router.push('/');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
 
   const handleDeleteDiagram = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -304,7 +334,20 @@ export default function Dashboard() {
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {user && (
+            <button
+              id="dashboard-user-profile-btn"
+              onClick={() => setIsProfileModalOpen(true)}
+              className="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                {(user.name || user.email)[0].toUpperCase()}
+              </div>
+              <span className="hidden sm:inline max-w-[120px] truncate">{user.name || user.email}</span>
+            </button>
+          )}
+
           <button
             id="new-diagram-btn"
             onClick={() => {
@@ -719,6 +762,17 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        user={user}
+        onUpdateUser={(updatedUser) => {
+          setUser(updatedUser);
+        }}
+        onLogout={handleLogout}
+      />
     </div>
   );
 }

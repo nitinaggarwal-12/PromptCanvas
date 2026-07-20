@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDiagram, deleteDiagram, getDiagramVersions } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 interface RouteParams {
   params: Promise<{
@@ -7,12 +8,13 @@ interface RouteParams {
   }>;
 }
 
-// GET /api/diagrams/[id] - Get diagram details and its version history
+// GET /api/diagrams/[id] - Get diagram details and its version history (scoped to user)
 export async function GET(request: Request, { params }: RouteParams) {
   try {
+    const user = await getAuthenticatedUser();
     const { id } = await params;
     
-    const diagram = await getDiagram(id);
+    const diagram = await getDiagram(id, user?.id);
     if (!diagram) {
       return NextResponse.json(
         { error: `Diagram with ID ${id} not found` },
@@ -35,12 +37,13 @@ export async function GET(request: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/diagrams/[id] - Delete a diagram (cascades to versions)
+// DELETE /api/diagrams/[id] - Delete a diagram (scoped to user)
 export async function DELETE(request: Request, { params }: RouteParams) {
   try {
+    const user = await getAuthenticatedUser();
     const { id } = await params;
     
-    const diagram = await getDiagram(id);
+    const diagram = await getDiagram(id, user?.id);
     if (!diagram) {
       return NextResponse.json(
         { error: `Diagram with ID ${id} not found` },
@@ -48,7 +51,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       );
     }
 
-    await deleteDiagram(id);
+    await deleteDiagram(id, user?.id);
 
     return NextResponse.json({ message: `Diagram ${id} deleted successfully` });
   } catch (error) {
