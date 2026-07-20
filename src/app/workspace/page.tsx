@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { 
@@ -38,11 +38,13 @@ import {
   ChevronUp,
   Hand,
   BookOpen,
-  Mail
+  Mail,
+  Box
 } from 'lucide-react';
 import DiagramViewer from '@/components/DiagramViewer';
 import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
+import { TerraformExportModal } from '@/components/TerraformExportModal';
 import { AuthModal } from '@/components/AuthModal';
 import DiagramFeedbackWidget from '@/components/DiagramFeedbackWidget';
 import { ContactUsModal } from '@/components/ContactUsModal';
@@ -273,7 +275,7 @@ const TEMPLATE_PROMPTS = [
   }
 ];
 
-export default function Dashboard() {
+function WorkspaceContent() {
   // --- State ---
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
@@ -478,6 +480,7 @@ export default function Dashboard() {
   const [isRemediating, setIsRemediating] = useState(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isTerraformModalOpen, setIsTerraformModalOpen] = useState(false);
   
 
   
@@ -2575,6 +2578,14 @@ export default function Dashboard() {
               <>
                 <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
                 <button
+                  id="export-terraform-btn"
+                  onClick={() => setIsTerraformModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-teal-500/40 bg-teal-500/10 hover:bg-teal-500/20 text-xs font-bold transition-all text-teal-300 cursor-pointer shadow-sm"
+                >
+                  <Box className="w-3.5 h-3.5 text-teal-accent" />
+                  <span>Export GCP Terraform</span>
+                </button>
+                <button
                   id="audit-diagram-btn"
                   onClick={handleAuditDiagram}
                   disabled={isAuditing}
@@ -3822,6 +3833,15 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* 6. HCL GCP Terraform Export Modal */}
+      <TerraformExportModal
+        isOpen={isTerraformModalOpen}
+        onClose={() => setIsTerraformModalOpen(false)}
+        diagramName={activeDiagram?.name}
+        diagramId={activeDiagram?.id}
+        xmlContent={displayedVersion?.xml_content || activeVersion?.xml_content}
+      />
+
       {/* Interactive Onboarding Guided Tour Overlay */}
       {tourStep !== null && (
         <>
@@ -4037,5 +4057,18 @@ export default function Dashboard() {
       />
 
     </div>
+  );
+}
+
+export default function WorkspacePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#070a13] flex items-center justify-center text-teal-accent font-extrabold text-sm">
+        <Loader2 className="w-6 h-6 animate-spin text-teal-accent mr-2" />
+        <span>Loading Maestro Workspace...</span>
+      </div>
+    }>
+      <WorkspaceContent />
+    </Suspense>
   );
 }
