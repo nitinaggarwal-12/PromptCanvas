@@ -11,13 +11,14 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }: AuthModalProps) {
-  const [mode, setMode] = useState<'signin' | 'signup'>(initialMode);
+  const [mode, setMode] = useState<'signin' | 'signup' | 'magiclink'>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [magicUrl, setMagicUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -26,6 +27,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
       setName('');
       setError(null);
       setSuccessMsg(null);
+      setMagicUrl(null);
       setMode(initialMode);
     }
   }, [isOpen, initialMode]);
@@ -36,9 +38,26 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
     e.preventDefault();
     setError(null);
     setSuccessMsg(null);
+    setMagicUrl(null);
     setLoading(true);
 
     try {
+      if (mode === 'magiclink') {
+        const res = await fetch('/api/auth/magic-link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to send magic link');
+
+        setSuccessMsg('Magic link generated! Click below to enter instantly.');
+        if (data.magicLinkUrl) {
+          setMagicUrl(data.magicLinkUrl);
+        }
+        return;
+      }
+
       const endpoint = mode === 'signin' ? '/api/auth/signin' : '/api/auth/signup';
       const payload = mode === 'signin' 
         ? { email, password } 
@@ -86,17 +105,19 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             <Sparkles className="w-3.5 h-3.5" /> PromptCanvas Account
           </div>
           <h2 className="text-2xl font-extrabold tracking-tight text-white">
-            {mode === 'signin' ? 'Welcome Back' : 'Create Your Account'}
+            {mode === 'signin' ? 'Welcome Back' : mode === 'signup' ? 'Create Your Account' : 'Passwordless Login'}
           </h2>
           <p className="text-xs text-slate-400">
             {mode === 'signin' 
               ? 'Sign in to access your saved architecture diagrams' 
-              : 'Sign up to create, save, and export multi-cloud architecture diagrams'}
+              : mode === 'signup'
+              ? 'Sign up to create, save, and export multi-cloud architecture diagrams'
+              : 'Enter your email to receive an instant passwordless login link'}
           </p>
         </div>
 
         {/* Auth Mode Tabs */}
-        <div className="grid grid-cols-2 p-1 bg-slate-900/90 rounded-xl border border-slate-800 mb-6">
+        <div className="grid grid-cols-3 p-1 bg-slate-900/90 rounded-xl border border-slate-800 mb-6 gap-1">
           <button
             id="auth-tab-signin"
             type="button"
@@ -104,7 +125,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
               setMode('signin');
               setError(null);
             }}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
+            className={`py-2 text-[11px] font-bold rounded-lg transition-all ${
               mode === 'signin'
                 ? 'bg-gradient-to-r from-teal-400 to-emerald-400 text-[#070a13] shadow-md'
                 : 'text-slate-400 hover:text-white'
@@ -119,13 +140,28 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
               setMode('signup');
               setError(null);
             }}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
+            className={`py-2 text-[11px] font-bold rounded-lg transition-all ${
               mode === 'signup'
                 ? 'bg-gradient-to-r from-teal-400 to-indigo-500 text-[#070a13] shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             Sign Up
+          </button>
+          <button
+            id="auth-tab-magiclink"
+            type="button"
+            onClick={() => {
+              setMode('magiclink');
+              setError(null);
+            }}
+            className={`py-2 text-[11px] font-bold rounded-lg transition-all ${
+              mode === 'magiclink'
+                ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            ✨ Magic Link
           </button>
         </div>
 
@@ -152,9 +188,19 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-            <span>{successMsg}</span>
+          <div className="mb-4 p-3 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-teal-400" />
+              <span>{successMsg}</span>
+            </div>
+            {magicUrl && (
+              <a
+                href={magicUrl}
+                className="mt-1 w-full py-2 px-3 rounded-lg bg-teal-400 text-[#070a13] font-bold text-center text-xs hover:bg-teal-300 transition-all shadow-md block"
+              >
+                🚀 Click Here to Log In Instantly →
+              </a>
+            )}
           </div>
         )}
 
@@ -195,26 +241,28 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-              <input
-                id="auth-input-password"
-                type="password"
-                required
-                minLength={6}
-                autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-sm text-white placeholder-slate-500 outline-none transition-colors"
-              />
+          {mode !== 'magiclink' && (
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+                <input
+                  id="auth-input-password"
+                  type="password"
+                  required
+                  minLength={6}
+                  autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-teal-400 text-sm text-white placeholder-slate-500 outline-none transition-colors"
+                />
+              </div>
+              {mode === 'signup' && (
+                <p className="mt-1 text-[11px] text-slate-500">Minimum 6 characters required.</p>
+              )}
             </div>
-            {mode === 'signup' && (
-              <p className="mt-1 text-[11px] text-slate-500">Minimum 6 characters required.</p>
-            )}
-          </div>
+          )}
 
           <button
             id="auth-submit-btn"
@@ -225,11 +273,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>{mode === 'signin' ? 'Signing In...' : 'Creating Account...'}</span>
+                <span>{mode === 'signin' ? 'Signing In...' : mode === 'signup' ? 'Creating Account...' : 'Generating Link...'}</span>
               </>
             ) : (
               <>
-                <span>{mode === 'signin' ? 'Sign In' : 'Create Account'}</span>
+                <span>{mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Magic Link ✨'}</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
