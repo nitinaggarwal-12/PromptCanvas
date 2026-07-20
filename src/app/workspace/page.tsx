@@ -2172,10 +2172,20 @@ function WorkspaceContent() {
 
           {/* Bottom Row: Quick Start Presets (Horizontal Grid) */}
           <div className="space-y-6">
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-              <LayoutGrid className="w-3.5 h-3.5 text-teal-accent" />
-              <span>Bootstrap with a Quick Start Template</span>
-            </h4>
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                <LayoutGrid className="w-3.5 h-3.5 text-teal-accent" />
+                <span>Bootstrap with a Quick Start Template</span>
+              </h4>
+              <button
+                type="button"
+                onClick={() => setCurrentTab('templates')}
+                className="text-xs font-bold text-teal-300 hover:text-white bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 px-3 py-1 rounded-full transition-all flex items-center gap-1 cursor-pointer"
+              >
+                <span>View Full Gallery</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {TEMPLATE_PROMPTS.slice(1).map((t, idx) => {
