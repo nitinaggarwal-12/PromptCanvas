@@ -182,21 +182,9 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         )}
 
         {successMsg && (
-          <div className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-300 text-sm flex flex-col gap-2.5">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 shrink-0 text-teal-400" />
-              <span className="font-bold">{successMsg}</span>
-            </div>
-            {mode === 'magiclink' && (
-              <a
-                href="https://mail.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-1 w-full py-3 px-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 text-[#070a13] font-black text-center text-sm hover:from-teal-300 hover:to-indigo-400 transition-all shadow-md block"
-              >
-                ✉️ Open Gmail Inbox ↗
-              </a>
-            )}
+          <div className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-300 text-sm flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 shrink-0 text-teal-400" />
+            <span className="font-bold">{successMsg}</span>
           </div>
         )}
 
