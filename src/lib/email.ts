@@ -1,6 +1,5 @@
+import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
-
-const resendApiKey = process.env.RESEND_API_KEY;
 
 export async function sendMagicLinkEmail({
   toEmail,
@@ -9,12 +8,9 @@ export async function sendMagicLinkEmail({
   toEmail: string;
   magicLinkUrl: string;
 }) {
-  if (!resendApiKey) {
-    console.warn('[Resend Email] RESEND_API_KEY environment variable is missing. Email skipped.');
-    return { success: false, reason: 'Missing RESEND_API_KEY' };
-  }
-
-  const resend = new Resend(resendApiKey);
+  const smtpUser = process.env.SMTP_USER || 'nitinaggarwal12@gmail.com';
+  const smtpPass = process.env.SMTP_PASS;
+  const resendApiKey = process.env.RESEND_API_KEY;
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -43,19 +39,51 @@ export async function sendMagicLinkEmail({
     </html>
   `;
 
-  try {
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'PromptCanvas <onboarding@resend.dev>';
-    const data = await resend.emails.send({
-      from: fromEmail,
-      to: [toEmail],
-      subject: '✨ Your PromptCanvas Passwordless Sign-In Link',
-      html: htmlContent,
-    });
+  // 1. Try Gmail SMTP if app password is present
+  if (smtpPass) {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: smtpUser,
+          pass: smtpPass,
+        },
+      });
 
-    console.log(`[Resend Email] 🚀 Magic Link email dispatched to ${toEmail}. Message ID:`, data.data?.id);
-    return { success: true, id: data.data?.id };
-  } catch (error) {
-    console.error('[Resend Email Error]:', error);
-    return { success: false, error: error instanceof Error ? error.message : String(error) };
+      const info = await transporter.sendMail({
+        from: `PromptCanvas <${smtpUser}>`,
+        to: toEmail,
+        subject: '✨ Your PromptCanvas Passwordless Sign-In Link',
+        html: htmlContent,
+      });
+
+      console.log(`[SMTP Gmail Email] 🚀 Magic Link email sent to ${toEmail}. Message ID: ${info.messageId}`);
+      return { success: true, id: info.messageId };
+    } catch (err) {
+      console.error('[SMTP Gmail Error]:', err);
+    }
   }
+
+  // 2. Fallback to Resend API
+  if (resendApiKey) {
+    try {
+      const resend = new Resend(resendApiKey);
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'PromptCanvas <onboarding@resend.dev>';
+      const data = await resend.emails.send({
+        from: fromEmail,
+        to: [toEmail],
+        subject: '✨ Your PromptCanvas Passwordless Sign-In Link',
+        html: htmlContent,
+      });
+
+      console.log(`[Resend Email] 🚀 Magic Link email dispatched to ${toEmail}. Message ID:`, data.data?.id);
+      return { success: true, id: data.data?.id };
+    } catch (error) {
+      console.error('[Resend Email Error]:', error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  }
+
+  console.warn('[Email Dispatch] Neither SMTP_PASS nor RESEND_API_KEY is configured. Email skipped.');
+  return { success: false, reason: 'Missing email credentials' };
 }
