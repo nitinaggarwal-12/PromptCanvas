@@ -11,9 +11,39 @@ export interface User {
   password_hash: string;
   salt: string;
   name: string | null;
+  global_role?: 'Super-Admin' | 'Author' | 'Member';
+  is_super_admin?: boolean;
   created_at: string | Date;
   updated_at: string | Date;
   last_login_at: string | Date | null;
+}
+
+export interface Workspace {
+  id: string;
+  name: string;
+  owner_id: string;
+  created_at: string | Date;
+  updated_at: string | Date;
+  user_role?: 'Owner' | 'Admin' | 'Editor' | 'Viewer';
+  member_count?: number;
+}
+
+export interface WorkspaceMember {
+  id: string;
+  workspace_id: string;
+  user_id: string;
+  role: 'Owner' | 'Admin' | 'Editor' | 'Viewer';
+  created_at: string | Date;
+  user_email?: string;
+  user_name?: string | null;
+}
+
+export interface MagicLinkToken {
+  id: string;
+  email: string;
+  token: string;
+  expires_at: string | Date;
+  created_at: string | Date;
 }
 
 export interface Session {
@@ -80,6 +110,7 @@ export interface Diagram {
   id: string;
   name: string;
   user_id?: string | null;
+  workspace_id?: string | null;
   created_at: string | Date;
   updated_at: string | Date;
   access_level?: 'Viewer' | 'Editor' | 'Owner' | null;
@@ -267,9 +298,49 @@ export async function ensureTablesExist(): Promise<void> {
       );
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS workspaces (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        owner_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS workspace_members (
+        id TEXT PRIMARY KEY,
+        workspace_id TEXT NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        role TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT unique_workspace_user UNIQUE (workspace_id, user_id)
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS magic_link_tokens (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL,
+        token TEXT UNIQUE NOT NULL,
+        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Schema Evolution Migrations
     await pool.query(`
       ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS user_id TEXT;
+    `);
+    await pool.query(`
+      ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS workspace_id TEXT;
+    `);
+    await pool.query(`
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS global_role TEXT DEFAULT 'Author';
+    `);
+    await pool.query(`
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS is_super_admin BOOLEAN DEFAULT FALSE;
     `);
     await pool.query(`
       ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS prompt TEXT;
@@ -418,9 +489,58 @@ export async function ensureTablesExist(): Promise<void> {
       );
     `);
 
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS workspaces (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        owner_id TEXT NOT NULL,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS workspace_members (
+        id TEXT PRIMARY KEY,
+        workspace_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        role TEXT NOT NULL,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        UNIQUE(workspace_id, user_id)
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS magic_link_tokens (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL,
+        token TEXT UNIQUE NOT NULL,
+        expires_at TEXT NOT NULL,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
+      );
+    `);
+
     // Schema Evolution Migrations
     try {
       db.exec('ALTER TABLE diagrams ADD COLUMN user_id TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE diagrams ADD COLUMN workspace_id TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE users ADD COLUMN global_role TEXT DEFAULT "Author";');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE users ADD COLUMN is_super_admin INTEGER DEFAULT 0;');
     } catch {
       // Ignored if column already exists
     }
@@ -1970,3 +2090,359 @@ const DEEP_RESEARCH_XML = `
   </diagram>
 </mxfile>
 `.trim();
+
+// ==========================================
+// MULTI-TENANT WORKSPACE & AUTHORIZATION WATERFALL
+// ==========================================
+
+export function isUserSuperAdmin(user?: User | null): boolean {
+  if (!user) return false;
+  if (user.is_super_admin) return true;
+  if (user.global_role === 'Super-Admin') return true;
+  const rootEmail = process.env.ROOT_USER_EMAIL;
+  if (rootEmail && user.email.toLowerCase() === rootEmail.trim().toLowerCase()) {
+    return true;
+  }
+  return false;
+}
+
+export async function ensureUserPersonalWorkspace(userId: string, userEmail: string): Promise<Workspace> {
+  await ensureTablesExist();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const checkRes = await pool.query(
+      `SELECT * FROM workspaces WHERE owner_id = $1 AND name = 'Personal Workspace' LIMIT 1`,
+      [userId]
+    );
+    if (checkRes.rows.length > 0) {
+      return checkRes.rows[0] as Workspace;
+    }
+
+    const wsId = `ws_${uuidv4().slice(0, 8)}`;
+    const wsRes = await pool.query(
+      `INSERT INTO workspaces (id, name, owner_id) VALUES ($1, $2, $3) RETURNING *`,
+      [wsId, 'Personal Workspace', userId]
+    );
+    const ws = wsRes.rows[0] as Workspace;
+
+    const memId = uuidv4();
+    await pool.query(
+      `INSERT INTO workspace_members (id, workspace_id, user_id, role)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (workspace_id, user_id) DO UPDATE SET role = $4`,
+      [memId, wsId, userId, 'Owner']
+    );
+
+    return ws;
+  } else {
+    const db = getSqliteDb();
+    const checkStmt = db.prepare(`SELECT * FROM workspaces WHERE owner_id = ? AND name = 'Personal Workspace' LIMIT 1`);
+    const existing = checkStmt.get(userId) as any;
+    if (existing) return existing as Workspace;
+
+    const wsId = `ws_${uuidv4().slice(0, 8)}`;
+    const insertWs = db.prepare(`INSERT INTO workspaces (id, name, owner_id) VALUES (?, ?, ?)`);
+    insertWs.run(wsId, 'Personal Workspace', userId);
+
+    const memId = uuidv4();
+    const insertMem = db.prepare(`INSERT INTO workspace_members (id, workspace_id, user_id, role) VALUES (?, ?, ?, ?)`);
+    insertMem.run(memId, wsId, userId, 'Owner');
+
+    const getWs = db.prepare(`SELECT * FROM workspaces WHERE id = ?`);
+    return getWs.get(wsId) as unknown as Workspace;
+  }
+}
+
+export async function getWorkspaceUserRole(
+  workspaceId: string,
+  userId: string
+): Promise<'Owner' | 'Admin' | 'Editor' | 'Viewer' | null> {
+  await ensureTablesExist();
+
+  const user = await getUserById(userId);
+  if (isUserSuperAdmin(user)) {
+    return 'Owner';
+  }
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const memRes = await pool.query(
+      `SELECT role FROM workspace_members WHERE workspace_id = $1 AND user_id = $2`,
+      [workspaceId, userId]
+    );
+    if (memRes.rows.length > 0) {
+      return memRes.rows[0].role as 'Owner' | 'Admin' | 'Editor' | 'Viewer';
+    }
+
+    const wsRes = await pool.query(`SELECT owner_id FROM workspaces WHERE id = $1`, [workspaceId]);
+    if (wsRes.rows.length > 0 && wsRes.rows[0].owner_id === userId) {
+      return 'Owner';
+    }
+    return null;
+  } else {
+    const db = getSqliteDb();
+    const memStmt = db.prepare(`SELECT role FROM workspace_members WHERE workspace_id = ? AND user_id = ?`);
+    const mem = memStmt.get(workspaceId, userId) as any;
+    if (mem) return mem.role;
+
+    const wsStmt = db.prepare(`SELECT owner_id FROM workspaces WHERE id = ?`);
+    const ws = wsStmt.get(workspaceId) as any;
+    if (ws && ws.owner_id === userId) return 'Owner';
+    return null;
+  }
+}
+
+export async function canUserAccessWorkspace(
+  workspaceId: string,
+  userId: string,
+  requiredPermission: 'read' | 'write' | 'admin' = 'read'
+): Promise<boolean> {
+  const role = await getWorkspaceUserRole(workspaceId, userId);
+  if (!role) return false;
+
+  if (requiredPermission === 'read') return ['Owner', 'Admin', 'Editor', 'Viewer'].includes(role);
+  if (requiredPermission === 'write') return ['Owner', 'Admin', 'Editor'].includes(role);
+  if (requiredPermission === 'admin') return ['Owner', 'Admin'].includes(role);
+  return false;
+}
+
+export async function getUserWorkspaces(userId: string): Promise<{
+  personalWorkspace: Workspace;
+  sharedWorkspaces: Workspace[];
+  allWorkspaces: Workspace[];
+}> {
+  await ensureTablesExist();
+
+  const user = await getUserById(userId);
+  const personalWorkspace = await ensureUserPersonalWorkspace(userId, user?.email || '');
+
+  let rawWorkspaces: (Workspace & { user_role?: string; member_count?: number })[] = [];
+
+  if (isUserSuperAdmin(user)) {
+    if (isPostgres()) {
+      const pool = getPgPool();
+      const res = await pool.query(`SELECT * FROM workspaces ORDER BY created_at ASC`);
+      rawWorkspaces = res.rows.map(w => ({ ...w, user_role: 'Owner' }));
+    } else {
+      const db = getSqliteDb();
+      const stmt = db.prepare(`SELECT * FROM workspaces ORDER BY created_at ASC`);
+      rawWorkspaces = (stmt.all() as any[]).map(w => ({ ...w, user_role: 'Owner' }));
+    }
+  } else if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `SELECT DISTINCT w.*, wm.role as user_role
+       FROM workspaces w
+       LEFT JOIN workspace_members wm ON w.id = wm.workspace_id
+       WHERE w.owner_id = $1 OR wm.user_id = $1
+       ORDER BY w.created_at ASC`,
+      [userId]
+    );
+    rawWorkspaces = res.rows;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `SELECT DISTINCT w.*, wm.role as user_role
+       FROM workspaces w
+       LEFT JOIN workspace_members wm ON w.id = wm.workspace_id
+       WHERE w.owner_id = ? OR wm.user_id = ?
+       ORDER BY w.created_at ASC`
+    );
+    rawWorkspaces = stmt.all(userId, userId) as any[];
+  }
+
+  const seenIds = new Set<string>();
+  const uniqueWorkspaces: Workspace[] = [];
+
+  for (const w of rawWorkspaces) {
+    if (!seenIds.has(w.id)) {
+      seenIds.add(w.id);
+      uniqueWorkspaces.push({
+        ...w,
+        user_role: (w.owner_id === userId ? 'Owner' : w.user_role || 'Viewer') as any,
+      });
+    }
+  }
+
+  const sharedWorkspaces = uniqueWorkspaces.filter(
+    (w) => w.id !== personalWorkspace.id
+  );
+
+  return {
+    personalWorkspace,
+    sharedWorkspaces,
+    allWorkspaces: uniqueWorkspaces,
+  };
+}
+
+export async function createTeamWorkspace(name: string, ownerId: string): Promise<Workspace> {
+  await ensureTablesExist();
+  const wsId = `ws_${uuidv4().slice(0, 8)}`;
+  const trimmedName = name.trim();
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const wsRes = await pool.query(
+      `INSERT INTO workspaces (id, name, owner_id) VALUES ($1, $2, $3) RETURNING *`,
+      [wsId, trimmedName, ownerId]
+    );
+    const memId = uuidv4();
+    await pool.query(
+      `INSERT INTO workspace_members (id, workspace_id, user_id, role) VALUES ($1, $2, $3, $4)`,
+      [memId, wsId, ownerId, 'Owner']
+    );
+    return wsRes.rows[0] as Workspace;
+  } else {
+    const db = getSqliteDb();
+    const insertWs = db.prepare(`INSERT INTO workspaces (id, name, owner_id) VALUES (?, ?, ?)`);
+    insertWs.run(wsId, trimmedName, ownerId);
+
+    const memId = uuidv4();
+    const insertMem = db.prepare(`INSERT INTO workspace_members (id, workspace_id, user_id, role) VALUES (?, ?, ?, ?)`);
+    insertMem.run(memId, wsId, ownerId, 'Owner');
+
+    const getWs = db.prepare(`SELECT * FROM workspaces WHERE id = ?`);
+    return getWs.get(wsId) as unknown as Workspace;
+  }
+}
+
+export async function inviteWorkspaceMember(
+  workspaceId: string,
+  targetEmail: string,
+  role: 'Editor' | 'Viewer',
+  inviterUserId: string
+): Promise<WorkspaceMember> {
+  await ensureTablesExist();
+
+  const canInvite = await canUserAccessWorkspace(workspaceId, inviterUserId, 'admin');
+  if (!canInvite) {
+    throw new Error('Unauthorized. Only workspace Owners and Admins can invite team members.');
+  }
+
+  const targetUser = await getUserByEmail(targetEmail.trim());
+  if (!targetUser) {
+    throw new Error(`User with email "${targetEmail}" is not registered on PromptCanvas yet.`);
+  }
+
+  const memId = uuidv4();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `INSERT INTO workspace_members (id, workspace_id, user_id, role)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (workspace_id, user_id) DO UPDATE SET role = $4
+       RETURNING *`,
+      [memId, workspaceId, targetUser.id, role]
+    );
+    await logUserEvent(inviterUserId, 'WORKSPACE_MEMBER_INVITED', null, `Target: ${targetUser.id}, Role: ${role}`);
+    return {
+      ...res.rows[0],
+      user_email: targetUser.email,
+      user_name: targetUser.name,
+    };
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(
+      `INSERT INTO workspace_members (id, workspace_id, user_id, role)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT(workspace_id, user_id) DO UPDATE SET role = excluded.role`
+    );
+    stmt.run(memId, workspaceId, targetUser.id, role);
+    await logUserEvent(inviterUserId, 'WORKSPACE_MEMBER_INVITED', null, `Target: ${targetUser.id}, Role: ${role}`);
+    
+    const getMem = db.prepare(`SELECT * FROM workspace_members WHERE workspace_id = ? AND user_id = ?`);
+    const row = getMem.get(workspaceId, targetUser.id) as any;
+    return {
+      ...row,
+      user_email: targetUser.email,
+      user_name: targetUser.name,
+    };
+  }
+}
+
+export async function createMagicLinkToken(email: string): Promise<string> {
+  await ensureTablesExist();
+  const token = uuidv4();
+  const id = uuidv4();
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query(
+      `INSERT INTO magic_link_tokens (id, email, token, expires_at) VALUES ($1, $2, $3, $4)`,
+      [id, email.toLowerCase().trim(), token, expiresAt]
+    );
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(`INSERT INTO magic_link_tokens (id, email, token, expires_at) VALUES (?, ?, ?, ?)`);
+    stmt.run(id, email.toLowerCase().trim(), token, expiresAt.toISOString());
+  }
+
+  return token;
+}
+
+export async function verifyMagicLinkToken(token: string): Promise<string> {
+  await ensureTablesExist();
+  let email = '';
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `SELECT * FROM magic_link_tokens WHERE token = $1 AND expires_at > CURRENT_TIMESTAMP`,
+      [token]
+    );
+    if (res.rows.length === 0) {
+      throw new Error('Magic link is invalid or has expired. Please request a new link.');
+    }
+    email = res.rows[0].email;
+    await pool.query(`DELETE FROM magic_link_tokens WHERE token = $1`, [token]);
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(`SELECT * FROM magic_link_tokens WHERE token = ? AND expires_at > (strftime('%Y-%m-%d %H:%M:%f', 'now'))`);
+    const row = stmt.get(token) as any;
+    if (!row) {
+      throw new Error('Magic link is invalid or has expired. Please request a new link.');
+    }
+    email = row.email;
+    const delStmt = db.prepare(`DELETE FROM magic_link_tokens WHERE token = ?`);
+    delStmt.run(token);
+  }
+
+  return email;
+}
+
+export async function getSuperAdminAllUsers(): Promise<User[]> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(`SELECT id, email, name, global_role, is_super_admin, created_at, last_login_at FROM users ORDER BY created_at DESC`);
+    return res.rows as User[];
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(`SELECT id, email, name, global_role, is_super_admin, created_at, last_login_at FROM users ORDER BY created_at DESC`);
+    return stmt.all() as unknown as User[];
+  }
+}
+
+export async function updateUserGlobalRole(
+  userId: string,
+  newRole: 'Super-Admin' | 'Author' | 'Member'
+): Promise<User> {
+  await ensureTablesExist();
+  const isSuper = newRole === 'Super-Admin';
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `UPDATE users SET global_role = $1, is_super_admin = $2 WHERE id = $3 RETURNING *`,
+      [newRole, isSuper, userId]
+    );
+    return res.rows[0] as User;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(`UPDATE users SET global_role = ?, is_super_admin = ? WHERE id = ?`);
+    stmt.run(newRole, isSuper ? 1 : 0, userId);
+    return getUserById(userId) as Promise<User>;
+  }
+}
