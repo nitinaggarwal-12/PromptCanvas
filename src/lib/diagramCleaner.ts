@@ -60,13 +60,13 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
   const vertexPosMap: { [id: string]: { x: number; y: number; tier: number } } = {};
 
   for (const vertex of vertexCells) {
-    // Preserve natural node shapes with 10px clear perimeterSpacing buffer
+    // Preserve natural node shapes with perimeterSpacing=0 so arrowheads touch box edges directly
     let style = String(vertex['@_style'] || '');
     if (!style.includes('whiteSpace=wrap')) {
       style = `whiteSpace=wrap;html=1;${style}`;
     }
     style = style.replace(/;?perimeterSpacing=[^;]*/g, '');
-    style = `perimeter=rectanglePerimeter;perimeterSpacing=10;${style}`;
+    style = `perimeter=rectanglePerimeter;perimeterSpacing=0;${style}`;
     vertex['@_style'] = style;
 
     const rawValue = String(vertex['@_value'] || '');
@@ -206,10 +206,10 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
           style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
       } else if (tierDiff > 1) {
-        // Long-distance connection: route via right outer channel (if target/source is on right side) or left outer channel
+        // Long-distance connection: exit side, route outer channel, enter top border at distributed entryPort
         const isRightSide = tgtPos.x >= 700 || srcPos.x >= 700;
         const sideVal = isRightSide ? 1 : 0;
-        style += `;exitX=${sideVal};exitY=${exitPort};entryX=${sideVal};entryY=${entryPort};`;
+        style += `;exitX=${sideVal};exitY=${exitPort};entryX=${entryPort};entryY=0;`;
       } else if (srcPos.tier < tgtPos.tier) {
         style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
       } else {
