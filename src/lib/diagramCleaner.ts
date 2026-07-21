@@ -110,7 +110,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
   // 2. Compute Spaced Coordinates for Vertices
   const startY = 60;
-  const rowHeight = isDetailedView ? 240 : 210; // Extra height for Detailed View titles & subtitles
+  const rowHeight = isDetailedView ? 260 : 220; // Generous 260px vertical row spacing
   const nodeWidth = 240;
   const nodeHeight = isDetailedView ? 85 : 65;
   const gapX = 160; // Wide 160px horizontal gap between nodes to eliminate congestion
@@ -153,7 +153,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     if (!style.includes('orthogonalEdgeStyle')) {
       style = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${style}`;
     }
-    style += `;fontColor=#ffffff;fontStyle=1;labelBackgroundColor=none;labelBorderColor=none;labelWidth=150;fontSize=11;whiteSpace=wrap;html=1;`;
+    style += `;fontColor=#ffffff;fontStyle=1;labelBackgroundColor=none;labelBorderColor=none;labelWidth=150;fontSize=11;whiteSpace=wrap;verticalAlign=bottom;verticalLabelPosition=top;html=1;`;
 
     const srcId = String(edge['@_source'] || '');
     const tgtId = String(edge['@_target'] || '');
@@ -161,12 +161,16 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     const tgtPos = vertexPosMap[tgtId];
 
     if (srcPos && tgtPos) {
+      const tierDiff = Math.abs(srcPos.tier - tgtPos.tier);
       if (srcPos.tier === tgtPos.tier) {
         if (srcPos.x < tgtPos.x) {
           style += `;exitX=1;exitY=0.5;entryX=0;entryY=0.5;`;
         } else {
           style += `;exitX=0;exitY=0.5;entryX=1;entryY=0.5;`;
         }
+      } else if (tierDiff > 1) {
+        // Long-distance connection skipping intermediate tiers: route around right side outer channel
+        style += `;exitX=1;exitY=0.5;entryX=1;entryY=0.5;`;
       } else if (srcPos.tier < tgtPos.tier) {
         style += `;exitX=0.5;exitY=1;entryX=0.5;entryY=0;`;
       } else {
@@ -178,10 +182,15 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
     edge['@_style'] = style;
 
-    // Clear stale waypoints
+    // Shift edge label position by y=-14px so text floats cleanly ABOVE the arrow line
     edge.mxGeometry = {
       '@_relative': '1',
-      '@_as': 'geometry'
+      '@_as': 'geometry',
+      mxPoint: {
+        '@_as': 'offset',
+        '@_x': '0',
+        '@_y': '-14'
+      }
     };
   }
 }
