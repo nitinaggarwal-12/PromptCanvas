@@ -60,14 +60,13 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
   const vertexPosMap: { [id: string]: { x: number; y: number; tier: number } } = {};
 
   for (const vertex of vertexCells) {
-    // Preserve natural node shapes (diamonds for gateways/decisions, cylinders for DBs, etc.) as per Google Cloud standards
+    // Preserve natural node shapes with 10px clear perimeterSpacing buffer
     let style = String(vertex['@_style'] || '');
     if (!style.includes('whiteSpace=wrap')) {
       style = `whiteSpace=wrap;html=1;${style}`;
     }
-    if (!style.includes('perimeter=')) {
-      style = `perimeter=rectanglePerimeter;perimeterSpacing=4;${style}`;
-    }
+    style = style.replace(/;?perimeterSpacing=[^;]*/g, '');
+    style = `perimeter=rectanglePerimeter;perimeterSpacing=10;${style}`;
     vertex['@_style'] = style;
 
     const rawValue = String(vertex['@_value'] || '');
@@ -147,22 +146,28 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     style = style
       .replace(/;?fontColor=[^;]*/g, '')
       .replace(/;?labelBackgroundColor=[^;]*/g, '')
-      .replace(/;?labelBorderColor=[^;]*/g, '');
+      .replace(/;?labelBorderColor=[^;]*/g, '')
+      .replace(/;?verticalAlign=[^;]*/g, '')
+      .replace(/;?verticalLabelPosition=[^;]*/g, '')
+      .replace(/;?align=[^;]*/g, '');
     style = style.replace(/;?(exit|entry)[XY]=[^;]*/g, '');
 
     if (!style.includes('orthogonalEdgeStyle')) {
       style = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${style}`;
     }
-    style += `;fontColor=#ffffff;fontStyle=1;labelBackgroundColor=none;labelBorderColor=none;labelWidth=150;fontSize=11;whiteSpace=wrap;verticalAlign=bottom;verticalLabelPosition=top;html=1;`;
+    style += `;fontColor=#ffffff;fontStyle=1;labelBackgroundColor=none;labelBorderColor=none;labelWidth=150;fontSize=11;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
 
     const srcId = String(edge['@_source'] || '');
     const tgtId = String(edge['@_target'] || '');
     const srcPos = vertexPosMap[srcId];
     const tgtPos = vertexPosMap[tgtId];
 
+    let isHorizontal = false;
+
     if (srcPos && tgtPos) {
       const tierDiff = Math.abs(srcPos.tier - tgtPos.tier);
       if (srcPos.tier === tgtPos.tier) {
+        isHorizontal = true;
         if (srcPos.x < tgtPos.x) {
           style += `;exitX=1;exitY=0.5;entryX=0;entryY=0.5;`;
         } else {
@@ -182,14 +187,14 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
     edge['@_style'] = style;
 
-    // Shift edge label position by y=-14px so text floats cleanly ABOVE the arrow line
+    // Position edge label at exact line midpoint in open channels (y=-12 for horizontal, x=12 for vertical) so text never overlaps boxes
     edge.mxGeometry = {
       '@_relative': '1',
       '@_as': 'geometry',
       mxPoint: {
         '@_as': 'offset',
-        '@_x': '0',
-        '@_y': '-14'
+        '@_x': isHorizontal ? '0' : '12',
+        '@_y': isHorizontal ? '-12' : '0'
       }
     };
   }
