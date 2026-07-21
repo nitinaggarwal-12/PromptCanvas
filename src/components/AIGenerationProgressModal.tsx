@@ -33,32 +33,33 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
       setElapsedSeconds((prev) => prev + 1);
     }, 1000);
 
-    // Realistic progress curve matching Gemini LLM synthesis duration (~15-30s)
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev < 35) return prev + 5;
-        if (prev < 70) return prev + 3;
-        if (prev < 90) return prev + 2;
-        if (prev < 97) return prev + 1; // Slowly advance past 90s for complex prompts
-        return 97;
-      });
-    }, 800);
-
     return () => {
       clearInterval(timerInterval);
-      clearInterval(progressInterval);
     };
   }, [isOpen]);
 
-  // Sync active step checklist with elapsed seconds
+  // Smoothly sync progress percentage and step index with real elapsed seconds
   useEffect(() => {
     if (!isOpen) return;
-    if (elapsedSeconds < 4) {
+
+    if (elapsedSeconds < 8) {
       setStepIndex(0);
-    } else if (elapsedSeconds < 14) {
+      setProgress(Math.min(30, 10 + Math.floor(elapsedSeconds * 2.5)));
+    } else if (elapsedSeconds < 35) {
       setStepIndex(1);
-    } else {
+      // Smoothly advance from 30% to 70% over 27 seconds
+      const p = 30 + Math.floor(((elapsedSeconds - 8) / 27) * 40);
+      setProgress(Math.min(70, p));
+    } else if (elapsedSeconds < 75) {
       setStepIndex(2);
+      // Smoothly advance from 70% to 92% over 40 seconds
+      const p = 70 + Math.floor(((elapsedSeconds - 35) / 40) * 22);
+      setProgress(Math.min(92, p));
+    } else {
+      setStepIndex(3);
+      // Slowly advance past 92% up to 98% for extended 2-minute synthesis runs
+      const p = 92 + Math.floor(((elapsedSeconds - 75) / 45) * 6);
+      setProgress(Math.min(98, p));
     }
   }, [elapsedSeconds, isOpen]);
 
@@ -107,7 +108,7 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
           </div>
 
           <div className="flex items-center justify-between text-[11px] md:text-xs text-slate-400 font-mono">
-            <span>Est. Duration: ~15–25s (Elapsed: {elapsedSeconds}s)</span>
+            <span>Est. Duration: ~45–90s (Elapsed: {elapsedSeconds}s)</span>
             <span className="flex items-center gap-1.5 text-teal-300">
               <Loader2 className="w-3.5 h-3.5 animate-spin" /> Live Synthesis
             </span>
