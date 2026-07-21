@@ -511,13 +511,6 @@ function WorkspaceContent() {
   // State for editor integration
   const [pendingXml, setPendingXml] = useState<string | null>(null);
 
-  // Sync active version XML to ref
-  useEffect(() => {
-    if (activeVersion) {
-      activeXmlRef.current = activeVersion.xml_content;
-    }
-  }, [activeVersion]);
-
   // Listen for messages from Draw.io editors (both iframe and popup tab)
   useEffect(() => {
     const handleWindowMessage = (evt: MessageEvent) => {
@@ -2283,6 +2276,13 @@ function WorkspaceContent() {
     }
     return restoreDetailedView(baseXml);
   }, [displayedVersion, layoutPreset]);
+
+  // Sync active version XML to ref (respecting active view layout: Detailed View vs Clean View)
+  useEffect(() => {
+    if (currentXmlToRender) {
+      activeXmlRef.current = currentXmlToRender;
+    }
+  }, [currentXmlToRender]);
 
   const renderVersionDropdown = (customId?: string) => {
     const versionsDesc = activeDiagram?.versions
