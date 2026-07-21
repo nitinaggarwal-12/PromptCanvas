@@ -56,17 +56,12 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
   const vertexPosMap: { [id: string]: { x: number; y: number; tier: number } } = {};
 
   for (const vertex of vertexCells) {
-    // Normalize diamond/rhombus/cylinder shapes to sleek rounded rectangle cards
+    // Preserve natural node shapes (diamonds for gateways/decisions, cylinders for DBs, etc.) as per Google Cloud standards
     let style = String(vertex['@_style'] || '');
-    if (style.includes('rhombus') || style.includes('cylinder')) {
-      style = style
-        .replace(/shape=rhombus;?/g, '')
-        .replace(/rhombus;?/g, '')
-        .replace(/shape=cylinder;?/g, '')
-        .replace(/cylinder;?/g, '');
-      style = `rounded=1;arcSize=10;whiteSpace=wrap;html=1;${style}`;
+    if (!style.includes('whiteSpace=wrap')) {
+      style = `whiteSpace=wrap;html=1;${style}`;
     }
-    if (!style.includes('perimeter=rectanglePerimeter')) {
+    if (!style.includes('perimeter=')) {
       style = `perimeter=rectanglePerimeter;perimeterSpacing=4;${style}`;
     }
     vertex['@_style'] = style;
