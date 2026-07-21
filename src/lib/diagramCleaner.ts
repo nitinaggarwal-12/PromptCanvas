@@ -140,7 +140,28 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     }
   }
 
-  // 3. Process Edges & Perimeter Anchors
+  // 3. Process Edges & Multi-Port Edge Anchor Distribution
+  const srcEdgeCounts: { [id: string]: number } = {};
+  const tgtEdgeCounts: { [id: string]: number } = {};
+
+  for (const edge of edgeCells) {
+    const srcId = String(edge['@_source'] || '');
+    const tgtId = String(edge['@_target'] || '');
+    srcEdgeCounts[srcId] = (srcEdgeCounts[srcId] || 0) + 1;
+    tgtEdgeCounts[tgtId] = (tgtEdgeCounts[tgtId] || 0) + 1;
+  }
+
+  const srcEdgeIndex: { [id: string]: number } = {};
+  const tgtEdgeIndex: { [id: string]: number } = {};
+
+  const getDistributedAnchor = (idx: number, total: number): number => {
+    if (total <= 1) return 0.5;
+    if (total === 2) return idx === 1 ? 0.35 : 0.65;
+    if (total === 3) return idx === 1 ? 0.25 : (idx === 2 ? 0.5 : 0.75);
+    const step = 0.8 / (total - 1);
+    return Number((0.1 + (idx - 1) * step).toFixed(2));
+  };
+
   for (const edge of edgeCells) {
     let style = String(edge['@_style'] || '');
     style = style
@@ -162,6 +183,17 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     const srcPos = vertexPosMap[srcId];
     const tgtPos = vertexPosMap[tgtId];
 
+    srcEdgeIndex[srcId] = (srcEdgeIndex[srcId] || 0) + 1;
+    tgtEdgeIndex[tgtId] = (tgtEdgeIndex[tgtId] || 0) + 1;
+
+    const sIdx = srcEdgeIndex[srcId];
+    const sTotal = srcEdgeCounts[srcId] || 1;
+    const tIdx = tgtEdgeIndex[tgtId];
+    const tTotal = tgtEdgeCounts[tgtId] || 1;
+
+    const exitPort = getDistributedAnchor(sIdx, sTotal);
+    const entryPort = getDistributedAnchor(tIdx, tTotal);
+
     let isHorizontal = false;
 
     if (srcPos && tgtPos) {
@@ -169,25 +201,28 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
       if (srcPos.tier === tgtPos.tier) {
         isHorizontal = true;
         if (srcPos.x < tgtPos.x) {
-          style += `;exitX=1;exitY=0.5;entryX=0;entryY=0.5;`;
+          style += `;exitX=1;exitY=${exitPort};entryX=0;entryY=${entryPort};`;
         } else {
-          style += `;exitX=0;exitY=0.5;entryX=1;entryY=0.5;`;
+          style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
       } else if (tierDiff > 1) {
-        // Long-distance connection skipping intermediate tiers: route around right side outer channel
-        style += `;exitX=1;exitY=0.5;entryX=1;entryY=0.5;`;
+        // Long-distance connection: route via left outer channel (if x < 800) or right outer channel (if x >= 800)
+        const isLeftSide = srcPos.x < 800;
+        const sideVal = isLeftSide ? 0 : 1;
+        style += `;exitX=${sideVal};exitY=${exitPort};entryX=${sideVal};entryY=${entryPort};`;
       } else if (srcPos.tier < tgtPos.tier) {
-        style += `;exitX=0.5;exitY=1;entryX=0.5;entryY=0;`;
+        style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
       } else {
-        style += `;exitX=0.5;exitY=0;entryX=0.5;entryY=1;`;
+        // Upward feedback connection: exit top, enter bottom at distributed ports
+        style += `;exitX=${exitPort};exitY=0;entryX=${entryPort};entryY=1;`;
       }
     } else {
-      style += `;exitX=0.5;exitY=1;entryX=0.5;entryY=0;`;
+      style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
     }
 
     edge['@_style'] = style;
 
-    // Position edge label at exact line midpoint in open channels (y=-12 for horizontal, x=12 for vertical) so text never overlaps boxes
+    // Position edge label at exact line midpoint in open channels (y=-12 for horizontal, x=12 for vertical)
     edge.mxGeometry = {
       '@_relative': '1',
       '@_as': 'geometry',
