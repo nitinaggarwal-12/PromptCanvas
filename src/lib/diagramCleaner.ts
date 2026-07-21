@@ -204,3 +204,70 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
     modifiedNodesCount
   };
 }
+
+/**
+ * 🔍 Restores detailed labels, subtitles, and edge descriptions on XML diagrams
+ * so that switching to Detailed View always presents full architectural text.
+ */
+export function restoreDetailedView(xmlInput: string): string {
+  if (!xmlInput || typeof xmlInput !== 'string') return xmlInput;
+
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_',
+    allowBooleanAttributes: true,
+    parseTagValue: false,
+    parseAttributeValue: false,
+  });
+
+  let ast: any = null;
+  try {
+    ast = parser.parse(xmlInput);
+  } catch {
+    return xmlInput;
+  }
+
+  if (!ast.mxfile || !ast.mxfile.diagram || !ast.mxfile.diagram.mxGraphModel || !ast.mxfile.diagram.mxGraphModel.root) {
+    return xmlInput;
+  }
+
+  let root = ast.mxfile.diagram.mxGraphModel.root;
+  let cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
+
+  for (const cell of cells) {
+    const cellId = String(cell['@_id'] || '');
+    if (cellId === '0' || cellId === '1') continue;
+
+    // Restore Edge Label from Tooltip
+    if (cell['@_edge'] === '1' || cell['@_edge'] === true) {
+      if (cell['@_tooltip'] && !cell['@_value']) {
+        cell['@_value'] = cell['@_tooltip'];
+      }
+    } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
+      // Restore Vertex Subtitle from Tooltip if missing in value
+      const rawValue = String(cell['@_value'] || '');
+      const tooltip = String(cell['@_tooltip'] || '');
+
+      if (tooltip && tooltip.includes(' — ') && !rawValue.includes('<i>') && !rawValue.includes('&lt;i&gt;')) {
+        const parts = tooltip.split(' — ');
+        const title = parts[0];
+        const subtitle = parts.slice(1).join(' — ');
+        const imgMatch = rawValue.match(/<img[^>]*>/i);
+        const iconTag = imgMatch ? imgMatch[0] : '';
+        cell['@_value'] = `${iconTag}<b>${title}</b><br/><i>${subtitle}</i>`;
+      }
+    }
+  }
+
+  root.mxCell = cells;
+
+  const builder = new XMLBuilder({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_',
+    format: true,
+    indentBy: '  ',
+    suppressEmptyNode: true,
+  });
+
+  return builder.build(ast);
+}

@@ -43,7 +43,7 @@ import {
   Upload,
   Download
 } from 'lucide-react';
-import { createMinimalistCleanVariant } from '@/lib/diagramCleaner';
+import { createMinimalistCleanVariant, restoreDetailedView } from '@/lib/diagramCleaner';
 import DiagramViewer from '@/components/DiagramViewer';
 import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
@@ -2281,7 +2281,7 @@ function WorkspaceContent() {
       const { cleanedXml } = createMinimalistCleanVariant(baseXml);
       return cleanedXml;
     }
-    return baseXml;
+    return restoreDetailedView(baseXml);
   }, [displayedVersion, layoutPreset]);
 
   const renderVersionDropdown = (customId?: string) => {
