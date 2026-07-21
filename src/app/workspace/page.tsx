@@ -2665,7 +2665,7 @@ function WorkspaceContent() {
               <>
                 <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
                 {/* 1. View & Perspective Dropdown */}
-                <div className="relative inline-flex items-center shrink-0 w-auto">
+                <div className="relative inline-flex items-center shrink-0 w-[150px]">
                   <select
                     value={`${viewMode}:${layoutPreset}`}
                     onChange={(e) => {
@@ -2676,7 +2676,7 @@ function WorkspaceContent() {
                         if (isInlineEditorOpen) setIsInlineEditorOpen(false);
                       }
                     }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-auto shrink-0"
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[150px] truncate"
                   >
                     <option value="canvas:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
                       📐 2D Canvas — Detailed View
@@ -2698,7 +2698,7 @@ function WorkspaceContent() {
                 </div>
 
                 {/* 2. Edit Options Dropdown */}
-                <div className="relative inline-flex items-center shrink-0 w-auto">
+                <div className="relative inline-flex items-center shrink-0 w-[135px]">
                   <select
                     value=""
                     onChange={(e) => {
@@ -2709,7 +2709,7 @@ function WorkspaceContent() {
                         openInNewTab();
                       }
                     }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-auto shrink-0"
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[135px] truncate"
                   >
                     <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                       ✏️ Edit Options ▾
@@ -2725,7 +2725,7 @@ function WorkspaceContent() {
                 </div>
 
                 {/* 3. Exporters Dropdown */}
-                <div className="relative inline-flex items-center shrink-0 w-auto">
+                <div className="relative inline-flex items-center shrink-0 w-[130px]">
                   <select
                     value=""
                     onChange={(e) => {
@@ -2736,7 +2736,7 @@ function WorkspaceContent() {
                         setIsExportModalOpen(true);
                       }
                     }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-auto shrink-0"
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[130px] truncate"
                   >
                     <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                       📥 Export ▾
