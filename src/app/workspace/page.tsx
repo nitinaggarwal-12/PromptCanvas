@@ -2646,12 +2646,12 @@ function WorkspaceContent() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             )}
-            <div className="flex items-center gap-3">
-              <h2 className="font-bold text-base text-white">
+            <div className="flex items-center gap-3 shrink-0 max-w-[420px]">
+              <h2 className="font-bold text-base text-white whitespace-nowrap truncate max-w-[220px]" title={activeDiagram ? activeDiagram.name : ''}>
                 {activeDiagram ? activeDiagram.name : 'Select or Create a Diagram'}
               </h2>
               {activeDiagram && activeVersion && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   {renderVersionDropdown("top-header-version-dropdown")}
                 </div>
               )}
@@ -2659,13 +2659,13 @@ function WorkspaceContent() {
           </div>
 
           {/* Quick Actions (only if diagram active) */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <AccessRequestsInbox user={currentUser} />
             {activeDiagram && (
               <>
                 <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
                 {/* 1. View & Perspective Dropdown */}
-                <div className="relative inline-flex items-center">
+                <div className="relative inline-flex items-center shrink-0 w-auto">
                   <select
                     value={`${viewMode}:${layoutPreset}`}
                     onChange={(e) => {
@@ -2676,7 +2676,7 @@ function WorkspaceContent() {
                         if (isInlineEditorOpen) setIsInlineEditorOpen(false);
                       }
                     }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-3 pr-8 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30"
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-auto shrink-0"
                   >
                     <option value="canvas:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
                       📐 2D Canvas — Detailed View
@@ -2694,11 +2694,11 @@ function WorkspaceContent() {
                       ⚙️ Technical Integration Walkthrough
                     </option>
                   </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
+                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                 </div>
 
                 {/* 2. Edit Options Dropdown */}
-                <div className="relative inline-flex items-center">
+                <div className="relative inline-flex items-center shrink-0 w-auto">
                   <select
                     value=""
                     onChange={(e) => {
@@ -2709,7 +2709,7 @@ function WorkspaceContent() {
                         openInNewTab();
                       }
                     }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-3 pr-8 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30"
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-auto shrink-0"
                   >
                     <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                       ✏️ Edit Options ▾
@@ -2721,11 +2721,11 @@ function WorkspaceContent() {
                       ↗️ Open Editor in New Tab
                     </option>
                   </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
+                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                 </div>
 
                 {/* 3. Exporters Dropdown */}
-                <div className="relative inline-flex items-center">
+                <div className="relative inline-flex items-center shrink-0 w-auto">
                   <select
                     value=""
                     onChange={(e) => {
@@ -2736,7 +2736,7 @@ function WorkspaceContent() {
                         setIsExportModalOpen(true);
                       }
                     }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-8 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30"
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-auto shrink-0"
                   >
                     <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                       📥 Export ▾
@@ -2748,7 +2748,7 @@ function WorkspaceContent() {
                       📊 Export Presentation Deck & Files (PPTX, PDF, PNG, XML)
                     </option>
                   </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
+                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                 </div>
 
                 {/* 4. Audit Security Primary CTA */}
@@ -2756,7 +2756,7 @@ function WorkspaceContent() {
                   id="audit-diagram-btn"
                   onClick={handleAuditDiagram}
                   disabled={isAuditing}
-                  className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50")}
+                  className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50 shrink-0")}
                 >
                   {isAuditing ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -2989,96 +2989,36 @@ function WorkspaceContent() {
           {/* B. CENTER PANE: Diagram Viewport & In-Place Editor */}
           <section className="flex-1 flex flex-col bg-bg-dark h-full relative overflow-hidden min-w-0">
             
-            {/* Center Pane Top Control Bar (v1 Inline & Outline Controls) */}
+            {/* Center Pane Top Control Bar (Clean Status & Zoom Controls) */}
             {activeDiagram && (
               <div className="h-12 border-b border-panel-border flex items-center justify-between px-4 bg-panel-dark/60 backdrop-blur z-20 shrink-0">
                 <div className="flex items-center gap-3">
-                  {/* View Mode Toggle */}
-                  <div className="flex items-center bg-bg-dark/90 p-0.5 rounded-lg border border-panel-border">
-                    <button
-                      id="view-mode-canvas-btn"
-                      onClick={() => {
-                        setViewMode('canvas');
-                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                        viewMode === 'canvas' && !isInlineEditorOpen
-                          ? 'bg-teal-accent text-bg-dark shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>2D Canvas</span>
-                    </button>
-                    <button
-                      id="view-mode-outline-btn"
-                      onClick={() => {
-                        setViewMode('outline');
-                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                        viewMode === 'outline' && !isInlineEditorOpen
-                          ? 'bg-teal-accent text-bg-dark shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      <span>Outline & Nodes</span>
-                    </button>
-                    <button
-                      id="view-mode-business-btn"
-                      onClick={() => {
-                        setViewMode('business');
-                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                        viewMode === 'business' && !isInlineEditorOpen
-                          ? 'bg-teal-accent text-bg-dark shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      <Briefcase className="w-3.5 h-3.5" />
-                      <span>Business Use Case</span>
-                    </button>
-                    <button
-                      id="view-mode-technical-btn"
-                      onClick={() => {
-                        setViewMode('technical');
-                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                        viewMode === 'technical' && !isInlineEditorOpen
-                          ? 'bg-teal-accent text-bg-dark shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      <Cpu className="w-3.5 h-3.5" />
-                      <span>Technical Use Case</span>
-                    </button>
-                  </div>
-
-                  {/* Mode Badge */}
+                  {/* Mode Indicator Badge */}
                   {isInlineEditorOpen ? (
-                    <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center gap-1.5 animate-pulse">
+                    <span className="px-2.5 py-1 rounded text-[10px] font-extrabold bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center gap-1.5 animate-pulse">
                       <span className="w-1.5 h-1.5 rounded-full bg-teal-400 inline-block" />
                       IN-PLACE INLINE EDITOR ACTIVE
                     </span>
                   ) : viewMode === 'outline' ? (
-                    <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                    <span className="px-2.5 py-1 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-1.5">
+                      <FileText className="w-3 h-3 text-blue-400" />
                       STRUCTURAL TREE INSPECTOR
                     </span>
                   ) : viewMode === 'business' ? (
-                    <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <span className="px-2.5 py-1 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                      <Briefcase className="w-3 h-3 text-emerald-400" />
                       BUSINESS USE CASE METADATA
                     </span>
                   ) : viewMode === 'technical' ? (
-                    <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                    <span className="px-2.5 py-1 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center gap-1.5">
+                      <Cpu className="w-3 h-3 text-indigo-400" />
                       TECHNICAL INTEGRATION WALKTHROUGH
                     </span>
                   ) : (
-                    <div className="flex items-center gap-2">
-                      {renderVersionDropdown("diagram-top-version-dropdown")}
-                    </div>
+                    <span className="px-2.5 py-1 rounded text-[10px] font-bold bg-teal-500/15 text-teal-accent border border-teal-500/30 flex items-center gap-1.5">
+                      <Eye className="w-3 h-3 text-teal-accent" />
+                      {layoutPreset === 'clean' ? '✨ 2D CANVAS (OPTION 2: CLEAN VIEW)' : '📐 2D CANVAS (DETAILED VIEW)'}
+                    </span>
                   )}
                 </div>
 
@@ -3150,13 +3090,6 @@ function WorkspaceContent() {
                           Reset
                         </button>
                       </div>
-                      <button
-                        onClick={() => setIsInlineEditorOpen(true)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-teal-accent/10 border border-teal-accent/30 hover:bg-teal-accent/20 text-teal-accent text-xs font-semibold transition-all cursor-pointer"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        <span>Edit Inline</span>
-                      </button>
                     </div>
                   ) : (
                     /* Outline Mode Action Button */
