@@ -9,8 +9,9 @@ interface AIGenerationProgressModalProps {
 }
 
 export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationProgressModalProps) {
-  const [progress, setProgress] = useState(15);
+  const [progress, setProgress] = useState(10);
   const [stepIndex, setStepIndex] = useState(0);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const steps = [
     'Parsing system prompt & compliance requirements...',
@@ -21,28 +22,45 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
 
   useEffect(() => {
     if (!isOpen) {
-      setProgress(15);
+      setProgress(10);
       setStepIndex(0);
+      setElapsedSeconds(0);
       return;
     }
 
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 92) return 92; // Hold at 92% until server finishes
-        const next = prev + Math.floor(Math.random() * 12) + 8;
-        return next > 92 ? 92 : next;
-      });
-    }, 600);
+    // Live elapsed timer in seconds
+    const timerInterval = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
 
-    const stepInterval = setInterval(() => {
-      setStepIndex((prev) => (prev < steps.length - 2 ? prev + 1 : prev));
-    }, 1400);
+    // Realistic progress curve matching Gemini LLM synthesis duration (~15-30s)
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev < 35) return prev + 5;
+        if (prev < 70) return prev + 3;
+        if (prev < 90) return prev + 2;
+        if (prev < 97) return prev + 1; // Slowly advance past 90s for complex prompts
+        return 97;
+      });
+    }, 800);
 
     return () => {
-      clearInterval(interval);
-      clearInterval(stepInterval);
+      clearInterval(timerInterval);
+      clearInterval(progressInterval);
     };
   }, [isOpen]);
+
+  // Sync active step checklist with elapsed seconds
+  useEffect(() => {
+    if (!isOpen) return;
+    if (elapsedSeconds < 4) {
+      setStepIndex(0);
+    } else if (elapsedSeconds < 14) {
+      setStepIndex(1);
+    } else {
+      setStepIndex(2);
+    }
+  }, [elapsedSeconds, isOpen]);
 
   if (!isOpen) return null;
 
@@ -89,7 +107,7 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
           </div>
 
           <div className="flex items-center justify-between text-[11px] md:text-xs text-slate-400 font-mono">
-            <span>Est. Duration: 3-5 seconds</span>
+            <span>Est. Duration: ~15–25s (Elapsed: {elapsedSeconds}s)</span>
             <span className="flex items-center gap-1.5 text-teal-300">
               <Loader2 className="w-3.5 h-3.5 animate-spin" /> Live Synthesis
             </span>
