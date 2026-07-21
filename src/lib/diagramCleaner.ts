@@ -206,9 +206,9 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
           style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
       } else if (tierDiff > 1) {
-        // Long-distance connection: route via left outer channel (if x < 800) or right outer channel (if x >= 800)
-        const isLeftSide = srcPos.x < 800;
-        const sideVal = isLeftSide ? 0 : 1;
+        // Long-distance connection: route via right outer channel (if target/source is on right side) or left outer channel
+        const isRightSide = tgtPos.x >= 700 || srcPos.x >= 700;
+        const sideVal = isRightSide ? 1 : 0;
         style += `;exitX=${sideVal};exitY=${exitPort};entryX=${sideVal};entryY=${entryPort};`;
       } else if (srcPos.tier < tgtPos.tier) {
         style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
