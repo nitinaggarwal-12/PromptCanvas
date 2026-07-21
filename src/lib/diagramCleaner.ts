@@ -14,13 +14,17 @@ function formatEdgeLabelToMax2Lines(text: string): string {
   if (!text) return '';
   const clean = text.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
   if (!clean) return '';
-  if (clean.length <= 18) return clean;
 
-  const words = clean.split(' ');
-  if (words.length <= 2) return clean;
+  let formatted = clean;
+  if (clean.length > 18) {
+    const words = clean.split(' ');
+    if (words.length > 2) {
+      const mid = Math.ceil(words.length / 2);
+      formatted = `${words.slice(0, mid).join(' ')}<br/>${words.slice(mid).join(' ')}`;
+    }
+  }
 
-  const mid = Math.ceil(words.length / 2);
-  return `${words.slice(0, mid).join(' ')}<br/>${words.slice(mid).join(' ')}`;
+  return `<font color="#ffffff"><b>${formatted}</b></font>`;
 }
 
 /**
@@ -140,13 +144,16 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
   // 3. Process Edges & Perimeter Anchors
   for (const edge of edgeCells) {
     let style = String(edge['@_style'] || '');
-    style = style.replace(/;?labelBackgroundColor=[^;]*/g, '').replace(/;?labelBorderColor=[^;]*/g, '');
+    style = style
+      .replace(/;?fontColor=[^;]*/g, '')
+      .replace(/;?labelBackgroundColor=[^;]*/g, '')
+      .replace(/;?labelBorderColor=[^;]*/g, '');
     style = style.replace(/;?(exit|entry)[XY]=[^;]*/g, '');
 
     if (!style.includes('orthogonalEdgeStyle')) {
       style = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${style}`;
     }
-    style += `;labelBackgroundColor=none;labelBorderColor=none;labelWidth=150;fontSize=11;whiteSpace=wrap;html=1;`;
+    style += `;fontColor=#ffffff;fontStyle=1;labelBackgroundColor=none;labelBorderColor=none;labelWidth=150;fontSize=11;whiteSpace=wrap;html=1;`;
 
     const srcId = String(edge['@_source'] || '');
     const tgtId = String(edge['@_target'] || '');
