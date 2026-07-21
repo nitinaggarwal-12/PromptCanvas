@@ -2784,165 +2784,168 @@ function WorkspaceContent() {
           {/* A. LEFT PANE: Chat & Prompt Panel */}
           <section 
             id="tour-ai-panel"
-            className={getTourClass(tourStep, 3, "w-80 border-r border-panel-border flex flex-col bg-panel-dark/30 h-full shrink-0")}
+            className={getTourClass(tourStep, 3, "w-80 border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden")}
           >
             {/* Panel Title */}
-            <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20">
+            <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20 shrink-0">
               <div className="flex items-center gap-2">
                 <MessageSquare className="w-4 h-4 text-teal-accent" />
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">AI Architect Assistant</span>
               </div>
             </div>
 
-            {/* Selected Version Details & Prompt Card */}
-            {activeDiagram && displayedVersion && (
-              <div className="p-4 border-b border-panel-border bg-slate-900/40 space-y-3 shrink-0 animate-fade-in">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-black text-teal-accent">Version {displayedVersion.version_number}</span>
-                  <span className="text-[10px] text-slate-500 shrink-0">
-                    {new Date(displayedVersion.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-
-                <div className="space-y-1">
-                  <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Change Description</span>
-                  <p className="text-xs text-slate-300 leading-normal bg-bg-dark/40 px-2 py-1.5 rounded border border-panel-border/30">
-                    {displayedVersion.comment || 'Initial version'}
-                  </p>
-                </div>
-
-                {displayedVersion.prompt && (
-                  <div className="space-y-1">
-                    <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Prompt Applied</span>
-                    <p className="text-xs text-slate-300 bg-[#090d16] border border-panel-border/30 rounded p-2 italic leading-relaxed">
-                      &ldquo;{displayedVersion.prompt}&rdquo;
-                    </p>
-                  </div>
-                )}
-
-                {/* Audit Trail of Changes */}
-                {(() => {
-                  const sorted = activeDiagram?.versions
-                    ?.slice()
-                    .sort((a, b) => a.version_number - b.version_number) || [];
-                  const curIdx = sorted.findIndex(v => v.id === displayedVersion.id);
-                  const parent = curIdx > 0 ? sorted[curIdx - 1] : null;
-
-                  const diff = parent 
-                    ? computeVersionDiff(displayedVersion.xml_content, parent.xml_content)
-                    : { added: parseXmlNodesAndEdges(displayedVersion.xml_content).map(i => i.isEdge ? `Connection` : i.label), removed: [], modified: [] };
-
-                  const hasChanges = diff.added.length > 0 || diff.removed.length > 0 || diff.modified.length > 0;
-
-                  return (
-                    <div className="space-y-1.5 pt-2 border-t border-panel-border/30">
-                      <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Audit Trail (Components Changes)</span>
-                      {!hasChanges ? (
-                        <p className="text-[10px] text-slate-500 italic">No structural changes detected.</p>
-                      ) : (
-                        <div className="space-y-1 max-h-36 overflow-y-auto pr-1 bg-bg-dark/40 p-2 rounded border border-panel-border/30 font-mono text-[9px]">
-                          {diff.added.map((item, i) => (
-                            <div key={`add-${i}`} className="flex items-start gap-1.5 text-emerald-400 font-medium">
-                              <span className="text-emerald-500 font-extrabold shrink-0">+</span>
-                              <span>Added {item}</span>
-                            </div>
-                          ))}
-                          {diff.modified.map((item, i) => (
-                            <div key={`mod-${i}`} className="flex items-start gap-1.5 text-amber-400 font-medium">
-                              <span className="text-amber-500 font-extrabold shrink-0">~</span>
-                              <span>{item}</span>
-                            </div>
-                          ))}
-                          {diff.removed.map((item, i) => (
-                            <div key={`rem-${i}`} className="flex items-start gap-1.5 text-rose-400 font-medium">
-                              <span className="text-rose-500 font-extrabold shrink-0">-</span>
-                              <span className="line-through opacity-70">Removed {item}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                <div className="pt-2 flex gap-1.5">
-                  {displayedVersion.ai_reasoning && (
-                    <button
-                      onClick={() => {
-                        setInspectVersion(displayedVersion);
-                        setIsInspectModalOpen(true);
-                      }}
-                      className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-[9px] font-bold transition-all cursor-pointer"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Inspect Plan</span>
-                    </button>
-                  )}
-                  
-                  {previewVersion && (
-                    <button
-                      onClick={() => handleRestoreVersion(previewVersion)}
-                      className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[9px] font-bold transition-all cursor-pointer"
-                    >
-                      <RotateCcw className="w-3 h-3" />
-                      <span>Restore version</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {!activeDiagram ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-4">
-                  <Sparkles className="w-8 h-8 text-slate-600 mb-2" />
-                  <p className="text-sm text-slate-500">Select a diagram from the sidebar to start designing with AI.</p>
-                </div>
-              ) : chatMessages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-4">
-                  <MessageSquare className="w-8 h-8 text-slate-600 mb-2" />
-                  <p className="text-sm text-slate-500">Ask the AI to generate your first architecture diagram!</p>
-                </div>
-              ) : (
-                chatMessages.map((msg) => (
-                  <div 
-                    key={msg.id}
-                    className={`flex flex-col max-w-[85%] ${
-                      msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
-                    }`}
-                  >
-                    <div className={`p-3 rounded-lg text-sm leading-relaxed ${
-                      msg.sender === 'user'
-                        ? 'bg-teal-accent text-bg-dark font-medium rounded-tr-none'
-                        : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border'
-                    }`}>
-                      {msg.text}
-                    </div>
-                    <span className="text-[10px] text-slate-500 mt-1 px-1">
-                      {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
+            {/* Scrollable Upper Section: Version Details, Prompt Applied, Audit Trail & Chat History */}
+            <div className="flex-1 min-h-0 overflow-y-auto space-y-4">
+              {/* Selected Version Details & Prompt Card */}
+              {activeDiagram && displayedVersion && (
+                <div className="p-4 border-b border-panel-border bg-slate-900/40 space-y-3 animate-fade-in">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-black text-teal-accent">Version {displayedVersion.version_number}</span>
+                    <span className="text-[10px] text-slate-500 shrink-0">
+                      {new Date(displayedVersion.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                ))
-              )}
-              {isGenerating && (
-                <div className="flex items-center gap-2 mr-auto bg-slate-hover/50 border border-panel-border p-3 rounded-lg rounded-tl-none max-w-[85%]">
-                  <Loader2 className="w-4 h-4 animate-spin text-teal-accent" />
-                  <span className="text-xs text-slate-400 animate-pulse">PromptCanvas-Graph is sketching...</span>
+
+                  <div className="space-y-1">
+                    <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Change Description</span>
+                    <p className="text-xs text-slate-300 leading-normal bg-bg-dark/40 px-2 py-1.5 rounded border border-panel-border/30">
+                      {displayedVersion.comment || 'Initial version'}
+                    </p>
+                  </div>
+
+                  {displayedVersion.prompt && (
+                    <div className="space-y-1">
+                      <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Prompt Applied</span>
+                      <p className="text-xs text-slate-300 bg-[#090d16] border border-panel-border/30 rounded p-2 italic leading-relaxed max-h-24 overflow-y-auto select-text font-sans scrollbar-thin">
+                        &ldquo;{displayedVersion.prompt}&rdquo;
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Audit Trail of Changes */}
+                  {(() => {
+                    const sorted = activeDiagram?.versions
+                      ?.slice()
+                      .sort((a, b) => a.version_number - b.version_number) || [];
+                    const curIdx = sorted.findIndex(v => v.id === displayedVersion.id);
+                    const parent = curIdx > 0 ? sorted[curIdx - 1] : null;
+
+                    const diff = parent 
+                      ? computeVersionDiff(displayedVersion.xml_content, parent.xml_content)
+                      : { added: parseXmlNodesAndEdges(displayedVersion.xml_content).map(i => i.isEdge ? `Connection` : i.label), removed: [], modified: [] };
+
+                    const hasChanges = diff.added.length > 0 || diff.removed.length > 0 || diff.modified.length > 0;
+
+                    return (
+                      <div className="space-y-1.5 pt-2 border-t border-panel-border/30">
+                        <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Audit Trail (Components Changes)</span>
+                        {!hasChanges ? (
+                          <p className="text-[10px] text-slate-500 italic">No structural changes detected.</p>
+                        ) : (
+                          <div className="space-y-1 max-h-28 overflow-y-auto pr-1 bg-bg-dark/40 p-2 rounded border border-panel-border/30 font-mono text-[9px]">
+                            {diff.added.map((item, i) => (
+                              <div key={`add-${i}`} className="flex items-start gap-1.5 text-emerald-400 font-medium">
+                                <span className="text-emerald-500 font-extrabold shrink-0">+</span>
+                                <span>Added {item}</span>
+                              </div>
+                            ))}
+                            {diff.modified.map((item, i) => (
+                              <div key={`mod-${i}`} className="flex items-start gap-1.5 text-amber-400 font-medium">
+                                <span className="text-amber-500 font-extrabold shrink-0">~</span>
+                                <span>{item}</span>
+                              </div>
+                            ))}
+                            {diff.removed.map((item, i) => (
+                              <div key={`rem-${i}`} className="flex items-start gap-1.5 text-rose-400 font-medium">
+                                <span className="text-rose-500 font-extrabold shrink-0">-</span>
+                                <span className="line-through opacity-70">Removed {item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  <div className="pt-2 flex gap-1.5">
+                    {displayedVersion.ai_reasoning && (
+                      <button
+                        onClick={() => {
+                          setInspectVersion(displayedVersion);
+                          setIsInspectModalOpen(true);
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-[9px] font-bold transition-all cursor-pointer"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Inspect Plan</span>
+                      </button>
+                    )}
+                    
+                    {previewVersion && (
+                      <button
+                        onClick={() => handleRestoreVersion(previewVersion)}
+                        className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[9px] font-bold transition-all cursor-pointer"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Restore version</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
-              <div ref={chatEndRef} />
+
+              {/* Chat Messages */}
+              <div className="p-4 space-y-4">
+                {!activeDiagram ? (
+                  <div className="py-8 flex flex-col items-center justify-center text-center p-4">
+                    <Sparkles className="w-8 h-8 text-slate-600 mb-2" />
+                    <p className="text-sm text-slate-500">Select a diagram from the sidebar to start designing with AI.</p>
+                  </div>
+                ) : chatMessages.length === 0 ? (
+                  <div className="py-8 flex flex-col items-center justify-center text-center p-4">
+                    <MessageSquare className="w-8 h-8 text-slate-600 mb-2" />
+                    <p className="text-sm text-slate-500">Ask the AI to generate your first architecture diagram!</p>
+                  </div>
+                ) : (
+                  chatMessages.map((msg) => (
+                    <div 
+                      key={msg.id}
+                      className={`flex flex-col max-w-[85%] ${
+                        msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
+                      }`}
+                    >
+                      <div className={`p-3 rounded-lg text-sm leading-relaxed ${
+                        msg.sender === 'user'
+                          ? 'bg-teal-accent text-bg-dark font-medium rounded-tr-none'
+                          : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border'
+                      }`}>
+                        {msg.text}
+                      </div>
+                      <span className="text-[10px] text-slate-500 mt-1 px-1">
+                        {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
+                      </span>
+                    </div>
+                  ))
+                )}
+                {isGenerating && (
+                  <div className="flex items-center gap-2 mr-auto bg-slate-hover/50 border border-panel-border p-3 rounded-lg rounded-tl-none max-w-[85%]">
+                    <Loader2 className="w-4 h-4 animate-spin text-teal-accent" />
+                    <span className="text-xs text-slate-400 animate-pulse">PromptCanvas-Graph is sketching...</span>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
             </div>
 
-            {/* Prompt Input Form */}
-            <div className="p-3 border-t border-panel-border bg-panel-dark/40">
+            {/* Always-Pinned Sticky Bottom Prompt Input Form */}
+            <div className="p-3 border-t border-panel-border bg-panel-dark/95 backdrop-blur shrink-0 mt-auto shadow-lg z-10">
               {activeDiagram && suggestions.length > 0 && (
                 <div className="mb-2">
                   <h5 className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                    <Sparkles className="w-3 h-3 text-teal-accent" />
+                    <Sparkles className="w-3-h-3 text-teal-accent" />
                     <span>Suggested Next Actions</span>
                   </h5>
-                  <div className="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto pr-1">
+                  <div className="flex flex-wrap gap-1.5 max-h-[70px] overflow-y-auto pr-1">
                     {suggestions.map((suggestion, idx) => (
                       <button
                         key={idx}
