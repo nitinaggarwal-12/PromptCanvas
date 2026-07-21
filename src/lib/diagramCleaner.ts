@@ -107,40 +107,46 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     tiers[tierIdx].push(vertex);
   }
 
-  // 2. Compute Spaced Coordinates for Vertices
+  // 2. Compute Spaced Coordinates for Vertices (Max 2 nodes per sub-row to keep gutter channels open)
   const startY = 60;
   const rowHeight = isDetailedView ? 260 : 220; // Generous 260px vertical row spacing
   const nodeWidth = 240;
   const nodeHeight = isDetailedView ? 85 : 65;
   const gapX = 160; // Wide 160px horizontal gap between nodes to eliminate congestion
-  const canvasWidth = 1600;
+  const canvasWidth = 1000;
+  let currentY = startY;
 
   for (let tierIdx = 0; tierIdx <= 6; tierIdx++) {
     const nodesInTier = tiers[tierIdx];
     if (nodesInTier.length === 0) continue;
 
-    const currentY = startY + tierIdx * rowHeight;
-    const totalRowWidth = nodesInTier.length * nodeWidth + (nodesInTier.length - 1) * gapX;
-    let startX = Math.max(60, (canvasWidth - totalRowWidth) / 2);
+    // Break tier into sub-rows of at most 2 nodes
+    const maxPerRow = 2;
+    for (let r = 0; r < nodesInTier.length; r += maxPerRow) {
+      const rowNodes = nodesInTier.slice(r, r + maxPerRow);
+      const totalRowWidth = rowNodes.length * nodeWidth + (rowNodes.length - 1) * gapX;
+      const startX = Math.max(180, (canvasWidth - totalRowWidth) / 2);
 
-    for (let colIdx = 0; colIdx < nodesInTier.length; colIdx++) {
-      const vertex = nodesInTier[colIdx];
-      const currentX = startX + colIdx * (nodeWidth + gapX);
-      const vId = String(vertex['@_id'] || '');
+      for (let colIdx = 0; colIdx < rowNodes.length; colIdx++) {
+        const vertex = rowNodes[colIdx];
+        const currentX = startX + colIdx * (nodeWidth + gapX);
+        const vId = String(vertex['@_id'] || '');
 
-      if (!vertex.mxGeometry) {
-        vertex.mxGeometry = { '@_as': 'geometry' };
+        if (!vertex.mxGeometry) {
+          vertex.mxGeometry = { '@_as': 'geometry' };
+        }
+        vertex.mxGeometry['@_x'] = String(Math.round(currentX));
+        vertex.mxGeometry['@_y'] = String(Math.round(currentY));
+        vertex.mxGeometry['@_width'] = String(nodeWidth);
+        vertex.mxGeometry['@_height'] = String(nodeHeight);
+
+        vertexPosMap[vId] = { x: currentX, y: currentY, tier: tierIdx };
       }
-      vertex.mxGeometry['@_x'] = String(Math.round(currentX));
-      vertex.mxGeometry['@_y'] = String(Math.round(currentY));
-      vertex.mxGeometry['@_width'] = String(nodeWidth);
-      vertex.mxGeometry['@_height'] = String(nodeHeight);
-
-      vertexPosMap[vId] = { x: currentX, y: currentY, tier: tierIdx };
+      currentY += rowHeight;
     }
   }
 
-  // 3. Process Edges & Multi-Port Edge Anchor Distribution
+  // 3. Process Edges & Multi-Port Edge Anchor Distribution with Gutter Waypoints
   const srcEdgeCounts: { [id: string]: number } = {};
   const tgtEdgeCounts: { [id: string]: number } = {};
 
@@ -195,6 +201,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     const entryPort = getDistributedAnchor(tIdx, tTotal);
 
     let isHorizontal = false;
+    let customWaypoints: any[] | null = null;
 
     if (srcPos && tgtPos) {
       const tierDiff = Math.abs(srcPos.tier - tgtPos.tier);
@@ -206,10 +213,20 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
           style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
       } else if (tierDiff > 1) {
-        // Long-distance connection: exit side, route outer channel, enter top border at distributed entryPort
-        const isRightSide = tgtPos.x >= 700 || srcPos.x >= 700;
+        // Long-distance bypass connection: route through outer left or right gutter with explicit waypoints so lines NEVER pass through intermediate shapes
+        const isRightSide = tgtPos.x >= 450 || srcPos.x >= 450;
         const sideVal = isRightSide ? 1 : 0;
+        const gutterX = isRightSide ? 940 : 60;
+        const srcY = srcPos.y + exitPort * nodeHeight;
+        const tgtY = tgtPos.y - 35;
+        const tgtX = tgtPos.x + entryPort * nodeWidth;
+
         style += `;exitX=${sideVal};exitY=${exitPort};entryX=${entryPort};entryY=0;`;
+        customWaypoints = [
+          { '@_x': String(Math.round(gutterX)), '@_y': String(Math.round(srcY)) },
+          { '@_x': String(Math.round(gutterX)), '@_y': String(Math.round(tgtY)) },
+          { '@_x': String(Math.round(tgtX)), '@_y': String(Math.round(tgtY)) }
+        ];
       } else if (srcPos.tier < tgtPos.tier) {
         style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
       } else {
@@ -222,8 +239,8 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
     edge['@_style'] = style;
 
-    // Position edge label at exact line midpoint in open channels (y=-12 for horizontal, x=12 for vertical)
-    edge.mxGeometry = {
+    // Position edge label at exact line midpoint in open channels
+    const edgeGeo: any = {
       '@_relative': '1',
       '@_as': 'geometry',
       mxPoint: {
@@ -232,6 +249,18 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
         '@_y': isHorizontal ? '-12' : '0'
       }
     };
+
+    if (customWaypoints && customWaypoints.length > 0) {
+      edgeGeo.Array = {
+        '@_as': 'points',
+        mxPoint: customWaypoints.map(pt => ({
+          '@_x': pt['@_x'],
+          '@_y': pt['@_y']
+        }))
+      };
+    }
+
+    edge.mxGeometry = edgeGeo;
   }
 }
 
