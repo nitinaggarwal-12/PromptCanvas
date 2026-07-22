@@ -94,6 +94,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
       else if ([11].includes(nodeNum)) tierIdx = 5;
       else if ([12, 13].includes(nodeNum)) tierIdx = 6;
       else if ([14, 15, 16, 17, 18].includes(nodeNum)) tierIdx = 7;
+      else tierIdx = Math.min(7, Math.floor((nodeNum - 1) / 2.5)); // Dynamic scaling for N > 18 nodes
     } else {
       const lower = plainText.toLowerCase();
       if (lower.includes('browser') || lower.includes('client') || lower.includes('portal') || lower.includes('iot')) tierIdx = 0;
@@ -157,6 +158,9 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
   // Calculate Dynamic Outer Gutter X Coordinates guaranteed to be completely outside all shapes
   const dynamicRightGutterX = maxRightX + 100;
   const dynamicLeftGutterX = Math.max(40, minLeftX - 100);
+
+  let rightGutterLaneCount = 0;
+  let leftGutterLaneCount = 0;
 
   // Helper to check if a straight vertical path between src and tgt intersects any intermediate node
   const checkPathBlocked = (sPos: { x: number; y: number }, tPos: { x: number; y: number }, excludeSrcId: string, excludeTgtId: string): boolean => {
@@ -246,10 +250,18 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
           style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
       } else if (tierDiff > 1 || pathBlocked) {
-        // Route through dynamic outer left or right gutter with explicit waypoints so lines NEVER pass through intermediate shapes
+        // Route through staggered dynamic outer left or right highway lanes so bypass lines NEVER overlap each other or shapes
         const isRightSide = tgtPos.x >= 450 || srcPos.x >= 450;
         const sideVal = isRightSide ? 1 : 0;
-        const gutterX = isRightSide ? dynamicRightGutterX : dynamicLeftGutterX;
+        let gutterX = dynamicRightGutterX;
+        if (isRightSide) {
+          gutterX = dynamicRightGutterX + rightGutterLaneCount * 35;
+          rightGutterLaneCount = (rightGutterLaneCount + 1) % 4;
+        } else {
+          gutterX = dynamicLeftGutterX - leftGutterLaneCount * 35;
+          leftGutterLaneCount = (leftGutterLaneCount + 1) % 4;
+        }
+
         const srcY = srcPos.y + exitPort * nodeHeight;
         const tgtY = tgtPos.y - 35;
         const tgtX = tgtPos.x + entryPort * nodeWidth;
