@@ -280,9 +280,8 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
           style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
       } else if (tierDiff > 1 || hasObstacle) {
-        // Route through staggered dynamic outer left or right highway lanes so bypass lines NEVER overlap each other or shapes
+        // Route through 4-point Inter-Row Channel Waypoints: exit bottom into open row gap, travel to outer gutter highway, enter top of target
         const isRightSide = tgtPos.x >= 500 || srcPos.x >= 500;
-        const sideVal = isRightSide ? 1 : 0;
         let gutterX = dynamicRightGutterX;
         if (isRightSide) {
           gutterX = dynamicRightGutterX + rightGutterLaneCount * 35;
@@ -292,15 +291,17 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
           leftGutterLaneCount = (leftGutterLaneCount + 1) % 4;
         }
 
-        const srcY = srcPos.y + exitPort * nodeHeight;
-        const tgtY = tgtPos.y - 30;
-        const tgtX = tgtPos.x + entryPort * nodeWidth;
+        const srcExitX = srcPos.x + exitPort * nodeWidth;
+        const srcGapY = srcPos.y + nodeHeight + 25; // Open inter-row channel below src
+        const tgtGapY = tgtPos.y - 30;              // Open inter-row channel above tgt
+        const tgtEntryX = tgtPos.x + entryPort * nodeWidth;
 
-        style += `;exitX=${sideVal};exitY=${exitPort};entryX=${entryPort};entryY=0;`;
+        style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
         customWaypoints = [
-          { '@_x': String(Math.round(gutterX)), '@_y': String(Math.round(srcY)) },
-          { '@_x': String(Math.round(gutterX)), '@_y': String(Math.round(tgtY)) },
-          { '@_x': String(Math.round(tgtX)), '@_y': String(Math.round(tgtY)) }
+          { '@_x': String(Math.round(srcExitX)),  '@_y': String(Math.round(srcGapY)) },
+          { '@_x': String(Math.round(gutterX)),   '@_y': String(Math.round(srcGapY)) },
+          { '@_x': String(Math.round(gutterX)),   '@_y': String(Math.round(tgtGapY)) },
+          { '@_x': String(Math.round(tgtEntryX)), '@_y': String(Math.round(tgtGapY)) }
         ];
       } else if (srcPos.tier < tgtPos.tier) {
         style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
