@@ -164,19 +164,46 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
   let rightGutterLaneCount = 0;
   let leftGutterLaneCount = 0;
 
-  // Helper to check if a straight vertical path between src and tgt intersects any intermediate node
-  const checkPathBlocked = (sPos: { x: number; y: number }, tPos: { x: number; y: number }, excludeSrcId: string, excludeTgtId: string): boolean => {
-    const minY = Math.min(sPos.y, tPos.y);
-    const maxY = Math.max(sPos.y, tPos.y);
-    const lineX = sPos.x;
+  // Helper to check if ANY node sits between src and tgt either horizontally or vertically
+  const checkAnySegmentIntersectsNode = (
+    sPos: { x: number; y: number },
+    tPos: { x: number; y: number },
+    exSrcId: string,
+    exTgtId: string
+  ): boolean => {
+    const sX1 = sPos.x;
+    const sX2 = sPos.x + nodeWidth;
+    const sY1 = sPos.y;
+    const sY2 = sPos.y + nodeHeight;
+
+    const tX1 = tPos.x;
+    const tX2 = tPos.x + nodeWidth;
+    const tY1 = tPos.y;
+    const tY2 = tPos.y + nodeHeight;
 
     for (const vId in vertexPosMap) {
-      if (vId === excludeSrcId || vId === excludeTgtId) continue;
-      const pos = vertexPosMap[vId];
-      if (pos.y > minY + 20 && pos.y < maxY - 20) {
-        // If node horizontally overlaps lineX
-        if (lineX >= pos.x - 20 && lineX <= pos.x + nodeWidth + 20) {
-          return true;
+      if (vId === exSrcId || vId === exTgtId) continue;
+      const vPos = vertexPosMap[vId];
+      const vX1 = vPos.x - 10;
+      const vX2 = vPos.x + nodeWidth + 10;
+      const vY1 = vPos.y - 10;
+      const vY2 = vPos.y + nodeHeight + 10;
+
+      // Check horizontal segment intersection: if line travels horizontally between sPos and tPos
+      if (Math.abs(sPos.y - tPos.y) < nodeHeight + 30) {
+        const minX = Math.min(sX1, tX1);
+        const maxX = Math.max(sX2, tX2);
+        if (vPos.x > minX - 10 && vPos.x + nodeWidth < maxX + 10 && Math.abs(vPos.y - sPos.y) < nodeHeight + 30) {
+          return true; // Node sits in between src and tgt horizontally!
+        }
+      }
+
+      // Check vertical segment intersection: if line travels vertically between sPos and tPos
+      if (Math.abs(sPos.x - tPos.x) < nodeWidth + 30) {
+        const minY = Math.min(sY1, tY1);
+        const maxY = Math.max(sY2, tY2);
+        if (vPos.y > minY - 10 && vPos.y + nodeHeight < maxY + 10 && Math.abs(vPos.x - sPos.x) < nodeWidth + 30) {
+          return true; // Node sits in between src and tgt vertically!
         }
       }
     }
@@ -242,18 +269,19 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
     if (srcPos && tgtPos) {
       const tierDiff = Math.abs(srcPos.tier - tgtPos.tier);
-      const pathBlocked = checkPathBlocked(srcPos, tgtPos, srcId, tgtId);
+      const hasObstacle = checkAnySegmentIntersectsNode(srcPos, tgtPos, srcId, tgtId);
 
-      if (srcPos.tier === tgtPos.tier) {
+      if (srcPos.tier === tgtPos.tier && !hasObstacle) {
+        // Direct horizontal connection between adjacent nodes in same tier
         isHorizontal = true;
         if (srcPos.x < tgtPos.x) {
           style += `;exitX=1;exitY=${exitPort};entryX=0;entryY=${entryPort};`;
         } else {
           style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
-      } else if (tierDiff > 1 || pathBlocked) {
+      } else if (tierDiff > 1 || hasObstacle) {
         // Route through staggered dynamic outer left or right highway lanes so bypass lines NEVER overlap each other or shapes
-        const isRightSide = tgtPos.x >= 450 || srcPos.x >= 450;
+        const isRightSide = tgtPos.x >= 500 || srcPos.x >= 500;
         const sideVal = isRightSide ? 1 : 0;
         let gutterX = dynamicRightGutterX;
         if (isRightSide) {
@@ -265,7 +293,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
         }
 
         const srcY = srcPos.y + exitPort * nodeHeight;
-        const tgtY = tgtPos.y - 35;
+        const tgtY = tgtPos.y - 30;
         const tgtX = tgtPos.x + entryPort * nodeWidth;
 
         style += `;exitX=${sideVal};exitY=${exitPort};entryX=${entryPort};entryY=0;`;
