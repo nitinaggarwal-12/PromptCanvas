@@ -83,27 +83,30 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     const numMatch = mainTitle.match(/\[(\d+)\]/);
     const nodeNum = numMatch ? parseInt(numMatch[1], 10) : null;
 
-    let tierIdx = 2; // Default mid-tier
+    let tierIdx = 3; // Default mid-tier
 
     if (nodeNum !== null) {
       if (nodeNum === 1) tierIdx = 0;
       else if ([2, 3, 100].includes(nodeNum)) tierIdx = 1;
       else if ([4, 101, 103].includes(nodeNum)) tierIdx = 2;
       else if ([5, 6].includes(nodeNum)) tierIdx = 3;
-      else if ([7, 8].includes(nodeNum)) tierIdx = 4;
-      else if ([9, 10].includes(nodeNum)) tierIdx = 5;
-      else if ([11, 12, 13, 14, 15, 16, 17, 18].includes(nodeNum)) tierIdx = 6;
+      else if ([7, 8, 9, 10].includes(nodeNum)) tierIdx = 4;
+      else if ([11].includes(nodeNum)) tierIdx = 5;
+      else if ([12, 13].includes(nodeNum)) tierIdx = 6;
+      else if ([14, 15, 16, 17, 18].includes(nodeNum)) tierIdx = 7;
     } else {
       const lower = plainText.toLowerCase();
-      if (lower.includes('browser') || lower.includes('client') || lower.includes('portal')) tierIdx = 0;
-      else if (lower.includes('waf') || lower.includes('load balancer') || lower.includes('cdn')) tierIdx = 1;
-      else if (lower.includes('frontend') || lower.includes('vpc connector') || lower.includes('secret manager')) tierIdx = 2;
-      else if (lower.includes('backend') || lower.includes('sql') || lower.includes('microservice')) tierIdx = 3;
-      else if (lower.includes('storage') || lower.includes('db') || lower.includes('pub/sub')) tierIdx = 4;
-      else if (lower.includes('function') || lower.includes('queue') || lower.includes('logging')) tierIdx = 5;
-      else if (lower.includes('iam') || lower.includes('build') || lower.includes('security') || lower.includes('command')) tierIdx = 6;
+      if (lower.includes('browser') || lower.includes('client') || lower.includes('portal') || lower.includes('iot')) tierIdx = 0;
+      else if (lower.includes('waf') || lower.includes('load balancer') || lower.includes('apigee') || lower.includes('cdn')) tierIdx = 1;
+      else if (lower.includes('frontend') || lower.includes('ingress') || lower.includes('secret manager')) tierIdx = 2;
+      else if (lower.includes('backend') || lower.includes('compute') || lower.includes('vision') || lower.includes('microservice')) tierIdx = 3;
+      else if (lower.includes('storage') || lower.includes('db') || lower.includes('spanner') || lower.includes('bigquery') || lower.includes('sql')) tierIdx = 4;
+      else if (lower.includes('composer') || lower.includes('orchestrat') || lower.includes('iam')) tierIdx = 5;
+      else if (lower.includes('monitoring') || lower.includes('logging') || lower.includes('audit')) tierIdx = 6;
+      else if (lower.includes('dlq') || lower.includes('dead letter') || lower.includes('failover') || lower.includes('interlock') || lower.includes('compliance')) tierIdx = 7;
     }
 
+    tiers[tierIdx] = tiers[tierIdx] || [];
     tiers[tierIdx].push(vertex);
   }
 
@@ -116,8 +119,11 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
   const canvasWidth = 1000;
   let currentY = startY;
 
-  for (let tierIdx = 0; tierIdx <= 6; tierIdx++) {
-    const nodesInTier = tiers[tierIdx];
+  let maxRightX = 0;
+  let minLeftX = 1000;
+
+  for (let tierIdx = 0; tierIdx <= 7; tierIdx++) {
+    const nodesInTier = tiers[tierIdx] || [];
     if (nodesInTier.length === 0) continue;
 
     // Break tier into sub-rows of at most 2 nodes
@@ -141,10 +147,35 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
         vertex.mxGeometry['@_height'] = String(nodeHeight);
 
         vertexPosMap[vId] = { x: currentX, y: currentY, tier: tierIdx };
+        maxRightX = Math.max(maxRightX, currentX + nodeWidth);
+        minLeftX = Math.min(minLeftX, currentX);
       }
       currentY += rowHeight;
     }
   }
+
+  // Calculate Dynamic Outer Gutter X Coordinates guaranteed to be completely outside all shapes
+  const dynamicRightGutterX = maxRightX + 100;
+  const dynamicLeftGutterX = Math.max(40, minLeftX - 100);
+
+  // Helper to check if a straight vertical path between src and tgt intersects any intermediate node
+  const checkPathBlocked = (sPos: { x: number; y: number }, tPos: { x: number; y: number }, excludeSrcId: string, excludeTgtId: string): boolean => {
+    const minY = Math.min(sPos.y, tPos.y);
+    const maxY = Math.max(sPos.y, tPos.y);
+    const lineX = sPos.x;
+
+    for (const vId in vertexPosMap) {
+      if (vId === excludeSrcId || vId === excludeTgtId) continue;
+      const pos = vertexPosMap[vId];
+      if (pos.y > minY + 20 && pos.y < maxY - 20) {
+        // If node horizontally overlaps lineX
+        if (lineX >= pos.x - 20 && lineX <= pos.x + nodeWidth + 20) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
 
   // 3. Process Edges & Multi-Port Edge Anchor Distribution with Gutter Waypoints
   const srcEdgeCounts: { [id: string]: number } = {};
@@ -205,6 +236,8 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
     if (srcPos && tgtPos) {
       const tierDiff = Math.abs(srcPos.tier - tgtPos.tier);
+      const pathBlocked = checkPathBlocked(srcPos, tgtPos, srcId, tgtId);
+
       if (srcPos.tier === tgtPos.tier) {
         isHorizontal = true;
         if (srcPos.x < tgtPos.x) {
@@ -212,11 +245,11 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
         } else {
           style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
-      } else if (tierDiff > 1) {
-        // Long-distance bypass connection: route through outer left or right gutter with explicit waypoints so lines NEVER pass through intermediate shapes
+      } else if (tierDiff > 1 || pathBlocked) {
+        // Route through dynamic outer left or right gutter with explicit waypoints so lines NEVER pass through intermediate shapes
         const isRightSide = tgtPos.x >= 450 || srcPos.x >= 450;
         const sideVal = isRightSide ? 1 : 0;
-        const gutterX = isRightSide ? 940 : 60;
+        const gutterX = isRightSide ? dynamicRightGutterX : dynamicLeftGutterX;
         const srcY = srcPos.y + exitPort * nodeHeight;
         const tgtY = tgtPos.y - 35;
         const tgtX = tgtPos.x + entryPort * nodeWidth;
