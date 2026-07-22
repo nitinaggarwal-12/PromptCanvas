@@ -246,7 +246,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     if (!style.includes('orthogonalEdgeStyle')) {
       style = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${style}`;
     }
-    style += `;fontColor=#ffffff;fontStyle=1;labelBackgroundColor=none;labelBorderColor=none;labelWidth=150;fontSize=11;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
+    style += `;fontColor=#ffffff;fontStyle=1;labelBackgroundColor=#1e293b;labelBorderColor=#475569;labelWidth=140;fontSize=10;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
 
     const srcId = String(edge['@_source'] || '');
     const tgtId = String(edge['@_target'] || '');
