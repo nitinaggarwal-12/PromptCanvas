@@ -43,7 +43,7 @@ import {
   Upload,
   Download
 } from 'lucide-react';
-import { createMinimalistCleanVariant, restoreDetailedView } from '@/lib/diagramCleaner';
+import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant } from '@/lib/diagramCleaner';
 import DiagramViewer from '@/components/DiagramViewer';
 import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
@@ -477,7 +477,7 @@ function WorkspaceContent() {
   // Loading & Layout View Mode States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean'>('detailed');
+  const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean' | 'vendor'>('detailed');
   const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   
@@ -2270,6 +2270,9 @@ function WorkspaceContent() {
   const currentXmlToRender = React.useMemo(() => {
     const baseXml = displayedVersion?.xml_content || '';
     if (!baseXml) return '';
+    if (layoutPreset === 'vendor') {
+      return createVendorIconsVariant(baseXml);
+    }
     if (layoutPreset === 'clean') {
       const { cleanedXml } = createMinimalistCleanVariant(baseXml);
       return cleanedXml;
@@ -2665,24 +2668,27 @@ function WorkspaceContent() {
               <>
                 <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
                 {/* 1. View & Perspective Dropdown */}
-                <div className="relative inline-flex items-center shrink-0 w-[150px]">
+                <div className="relative inline-flex items-center shrink-0 w-[185px]">
                   <select
                     value={`${viewMode}:${layoutPreset}`}
                     onChange={(e) => {
                       const [vMode, lPreset] = e.target.value.split(':');
                       if (vMode && lPreset) {
                         setViewMode(vMode as 'canvas' | 'outline' | 'business' | 'technical');
-                        setLayoutPreset(lPreset as 'detailed' | 'clean');
+                        setLayoutPreset(lPreset as 'detailed' | 'clean' | 'vendor');
                         if (isInlineEditorOpen) setIsInlineEditorOpen(false);
                       }
                     }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[150px] truncate"
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[185px] truncate"
                   >
                     <option value="canvas:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
                       📐 2D Canvas — Detailed View
                     </option>
                     <option value="canvas:clean" className="bg-[#0b101d] text-teal-300 py-1 font-bold">
                       ✨ 2D Canvas — Option 2: Clean View
+                    </option>
+                    <option value="canvas:vendor" className="bg-[#0b101d] text-cyan-300 py-1 font-bold">
+                      🏷️ 2D Canvas — Option 3: Vendor Icons
                     </option>
                     <option value="outline:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
                       🌳 Structural Tree & Node Outline

@@ -438,11 +438,64 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
 }
 
 /**
- * 🔍 Restores detailed labels, subtitles, and edge descriptions on XML diagrams
- * and applies generous node spacing (gapX=160px, rowHeight=240px) so Detailed View is never congested.
+ * 🏷️ High-Definition Vendor Icon Registry.
+ * Resolves official SVG icons for Databricks, GCP, AWS, Azure, Fabric, Kafka, Snowflake, K8s, etc.
  */
+export function resolveVendorIconUrl(text: string): string {
+  if (!text) return 'https://api.iconify.design/logos:google-cloud.svg';
+  const lower = text.toLowerCase();
+
+  // Databricks Ecosystem
+  if (lower.includes('databricks') && (lower.includes('vector') || lower.includes('ai') || lower.includes('agent') || lower.includes('mosaic'))) {
+    return 'https://api.iconify.design/logos:databricks.svg';
+  }
+  if (lower.includes('databricks') || lower.includes('dlt') || lower.includes('delta live') || lower.includes('auto loader') || lower.includes('unity catalog')) {
+    return 'https://api.iconify.design/logos:databricks.svg';
+  }
+  if (lower.includes('delta lake') || lower.includes('bronze') || lower.includes('silver') || lower.includes('gold')) {
+    return 'https://api.iconify.design/logos:apache-spark.svg';
+  }
+  if (lower.includes('spark') || lower.includes('pyspark')) {
+    return 'https://api.iconify.design/logos:apache-spark.svg';
+  }
+
+  // Google Cloud Platform (GCP)
+  if (lower.includes('cloud run')) return 'https://api.iconify.design/logos:google-cloud-run.svg';
+  if (lower.includes('bigquery')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('vertex') || lower.includes('gemini')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('gcs') || lower.includes('cloud storage') || lower.includes('object storage')) return 'https://api.iconify.design/logos:google-cloud-storage.svg';
+  if (lower.includes('apigee') || lower.includes('api gateway')) return 'https://api.iconify.design/logos:apigee.svg';
+  if (lower.includes('pub/sub') || lower.includes('pubsub')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('spanner') || lower.includes('cloud sql') || lower.includes('bigtable')) return 'https://api.iconify.design/logos:google-cloud.svg';
+
+  // Amazon Web Services (AWS)
+  if (lower.includes('lambda')) return 'https://api.iconify.design/logos:aws-lambda.svg';
+  if (lower.includes('s3') || lower.includes('aws s3')) return 'https://api.iconify.design/logos:aws-s3.svg';
+  if (lower.includes('dynamodb')) return 'https://api.iconify.design/logos:aws-dynamodb.svg';
+  if (lower.includes('rds') || lower.includes('aurora')) return 'https://api.iconify.design/logos:aws-rds.svg';
+  if (lower.includes('ec2') || lower.includes('ecs') || lower.includes('eks')) return 'https://api.iconify.design/logos:aws-ec2.svg';
+  if (lower.includes('aws') || lower.includes('amazon')) return 'https://api.iconify.design/logos:aws.svg';
+
+  // Microsoft Azure & Fabric
+  if (lower.includes('fabric') || lower.includes('power bi')) return 'https://api.iconify.design/logos:microsoft-power-bi.svg';
+  if (lower.includes('azure') || lower.includes('event hub')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
+
+  // Common Tech Stack & Frameworks
+  if (lower.includes('kafka') || lower.includes('event stream')) return 'https://api.iconify.design/logos:kafka-icon.svg';
+  if (lower.includes('kubernetes') || lower.includes('k8s')) return 'https://api.iconify.design/logos:kubernetes.svg';
+  if (lower.includes('snowflake')) return 'https://api.iconify.design/logos:snowflake.svg';
+  if (lower.includes('postgresql') || lower.includes('postgres')) return 'https://api.iconify.design/logos:postgresql.svg';
+  if (lower.includes('mysql')) return 'https://api.iconify.design/logos:mysql.svg';
+  if (lower.includes('redis')) return 'https://api.iconify.design/logos:redis.svg';
+  if (lower.includes('grafana')) return 'https://api.iconify.design/logos:grafana.svg';
+  if (lower.includes('python')) return 'https://api.iconify.design/logos:python.svg';
+  if (lower.includes('docker')) return 'https://api.iconify.design/logos:docker-icon.svg';
+
+  return 'https://api.iconify.design/logos:google-cloud.svg'; // Fallback
+}
+
 export function restoreDetailedView(xmlInput: string): string {
-  if (!xmlInput || typeof xmlInput !== 'string') return xmlInput;
+  if (!xmlInput) return xmlInput;
 
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -477,21 +530,103 @@ export function restoreDetailedView(xmlInput: string): string {
         cell['@_value'] = formatEdgeLabelToMax2Lines(String(cell['@_value']));
       }
     } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
-      const rawValue = String(cell['@_value'] || '');
+      let rawValue = String(cell['@_value'] || '');
       const tooltip = String(cell['@_tooltip'] || '');
+
+      // Repair broken or missing image tags with official SVG vendor icons
+      const vendorIconUrl = resolveVendorIconUrl(rawValue + ' ' + tooltip);
+      const newImgTag = `<img src="${vendorIconUrl}" width="26" height="26" style="float:left;margin-right:8px;vertical-align:middle;"/>`;
+
+      if (rawValue.includes('<img')) {
+        rawValue = rawValue.replace(/<img[^>]*>/gi, newImgTag);
+      } else {
+        rawValue = `${newImgTag}${rawValue}`;
+      }
 
       if (tooltip && tooltip.includes(' — ') && !rawValue.includes('<i>') && !rawValue.includes('&lt;i&gt;')) {
         const parts = tooltip.split(' — ');
         const title = parts[0];
         const subtitle = parts.slice(1).join(' — ');
-        const imgMatch = rawValue.match(/<img[^>]*>/i);
-        const iconTag = imgMatch ? imgMatch[0] : '';
-        cell['@_value'] = `${iconTag}<b>${title}</b><br/><i>${subtitle}</i>`;
+        rawValue = `${newImgTag}<b>${title}</b><br/><i>${subtitle}</i>`;
       }
+
+      cell['@_value'] = rawValue;
     }
   }
 
-  // Apply Generous Node Layout for Detailed View as well (gapX=160px, rowHeight=240px)
+  // Apply Generous Node Layout for Detailed View as well
+  applyGenerousNodeLayout(cells, true);
+
+  root.mxCell = cells;
+
+  const builder = new XMLBuilder({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_',
+    format: true,
+    indentBy: '  ',
+    suppressEmptyNode: true,
+  });
+
+  return builder.build(ast);
+}
+
+/**
+ * 🏷️ Option 3: Vendor Icons View
+ * Replaces generic/broken node icons with official high-definition SVG vendor brand logos (Databricks, GCP, AWS, Azure, K8s, etc.)
+ */
+export function createVendorIconsVariant(xmlInput: string): string {
+  if (!xmlInput) return xmlInput;
+
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_',
+    allowBooleanAttributes: true,
+    parseTagValue: false,
+    parseAttributeValue: false,
+  });
+
+  let ast: any = null;
+  try {
+    ast = parser.parse(xmlInput);
+  } catch {
+    return xmlInput;
+  }
+
+  if (!ast.mxfile || !ast.mxfile.diagram || !ast.mxfile.diagram.mxGraphModel || !ast.mxfile.diagram.mxGraphModel.root) {
+    return xmlInput;
+  }
+
+  let root = ast.mxfile.diagram.mxGraphModel.root;
+  let cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
+
+  for (const cell of cells) {
+    const cellId = String(cell['@_id'] || '');
+    if (cellId === '0' || cellId === '1') continue;
+
+    if (cell['@_edge'] === '1' || cell['@_edge'] === true) {
+      if (cell['@_value']) {
+        cell['@_value'] = formatEdgeLabelToMax2Lines(String(cell['@_value']));
+      }
+    } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
+      let rawValue = String(cell['@_value'] || '');
+      const tooltip = String(cell['@_tooltip'] || '');
+
+      const vendorIconUrl = resolveVendorIconUrl(rawValue + ' ' + tooltip);
+      const vendorImgTag = `<img src="${vendorIconUrl}" width="30" height="30" style="float:left;margin-right:10px;vertical-align:middle;"/>`;
+
+      // Extract clean text title
+      let cleanText = rawValue.replace(/<img[^>]*>/gi, '').trim();
+
+      cell['@_value'] = `${vendorImgTag}<div style="display:inline-block;vertical-align:middle;">${cleanText}</div>`;
+
+      let style = String(cell['@_style'] || '');
+      if (!style.includes('html=1')) {
+        style += ';html=1;';
+      }
+      cell['@_style'] = style;
+    }
+  }
+
   applyGenerousNodeLayout(cells, true);
 
   root.mxCell = cells;
