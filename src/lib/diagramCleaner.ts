@@ -111,32 +111,34 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     tiers[tierIdx].push(vertex);
   }
 
-  // 2. Compute Spaced Coordinates for Vertices (Max 2 nodes per sub-row to keep gutter channels open)
-  const startY = 60;
-  const rowHeight = isDetailedView ? 260 : 220; // Generous 260px vertical row spacing
-  const nodeWidth = 240;
-  const nodeHeight = isDetailedView ? 85 : 65;
-  const gapX = 160; // Wide 160px horizontal gap between nodes to eliminate congestion
-  const canvasWidth = 1000;
+  // 2. Compute Spaced Coordinates for Vertices (Widescreen 16:9 Slide Ratio: max 3-4 nodes/row, tight 65px row gap)
+  const startY = 40;
+  const rowHeight = isDetailedView ? 140 : 120; // Tight 140px row height (75px node + 65px vertical gap, zero blank space)
+  const nodeWidth = 220;
+  const nodeHeight = isDetailedView ? 75 : 55;
+  const gapX = 90; // Balanced 90px horizontal gap between nodes
+  const canvasWidth = 1180;
   let currentY = startY;
 
   let maxRightX = 0;
-  let minLeftX = 1000;
+  let minLeftX = 1180;
 
   for (let tierIdx = 0; tierIdx <= 7; tierIdx++) {
     const nodesInTier = tiers[tierIdx] || [];
     if (nodesInTier.length === 0) continue;
 
-    // Break tier into sub-rows of at most 2 nodes
-    const maxPerRow = 2;
+    // Allow up to 3 nodes per sub-row for widescreen 16:9 balance
+    const maxPerRow = nodesInTier.length === 4 ? 4 : 3;
+    const currentGapX = nodesInTier.length === 4 ? 50 : gapX;
+
     for (let r = 0; r < nodesInTier.length; r += maxPerRow) {
       const rowNodes = nodesInTier.slice(r, r + maxPerRow);
-      const totalRowWidth = rowNodes.length * nodeWidth + (rowNodes.length - 1) * gapX;
-      const startX = Math.max(180, (canvasWidth - totalRowWidth) / 2);
+      const totalRowWidth = rowNodes.length * nodeWidth + (rowNodes.length - 1) * currentGapX;
+      const startX = Math.max(120, (canvasWidth - totalRowWidth) / 2);
 
       for (let colIdx = 0; colIdx < rowNodes.length; colIdx++) {
         const vertex = rowNodes[colIdx];
-        const currentX = startX + colIdx * (nodeWidth + gapX);
+        const currentX = startX + colIdx * (nodeWidth + currentGapX);
         const vId = String(vertex['@_id'] || '');
 
         if (!vertex.mxGeometry) {
