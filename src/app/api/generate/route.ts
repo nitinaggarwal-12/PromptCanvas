@@ -74,11 +74,11 @@ CRITICAL SYNTAX PROHIBITIONS:
   * Databases / Storages: Cylinders (\`shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;\`)
   * Bridges / Cross-Cloud / Tunnels: Rounded rectangles with dashed borders (\`rounded=1;whiteSpace=wrap;html=1;arcSize=10;dashed=1;dashPattern=8 8;strokeWidth=2;\`)
 * **Connectors & Edges**:
-  * Always use clean, straight orthogonal connector lines:
-    \`edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;\`
+  * Always use clean, straight orthogonal connector lines with automatic line-crossing arc bridges:
+    \`edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;\`
   * Always add concise 1-3 word text labels to connectors to explain interactions without text collisions.
   * For special feedback loops (e.g., self-healing loops), use red dashed lines with double arrowheads:
-    \`edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#EF4444;dashed=1;dashPattern=8 8;startArrow=classic;endArrow=classic;\`
+    \`edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#EF4444;dashed=1;dashPattern=8 8;startArrow=classic;endArrow=classic;\`
   * **Critical mxPoint Rule**: Never use \`<Object>\` tags to represent routing points in an edge's geometry. You **must** always use \`<mxPoint x="..." y="..." />\` (self-closing) inside the \`<Array as="points">\` container. Using \`<Object>\` is invalid and will cause a rendering crash.
 * **Grid & Layout Alignment**:
   * Organize nodes into clean, logical horizontal layers (tiers) or vertical columns.
