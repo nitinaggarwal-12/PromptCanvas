@@ -412,7 +412,9 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
         cell['@_tooltip'] = mainTitle;
       }
 
-      cell['@_value'] = `${iconTag}<b>${mainTitle}</b>`;
+      const vendorIconUrl = resolveVendorIconUrl(plainText + ' ' + mainTitle);
+      const cleanImgTag = `<img src="${vendorIconUrl}" width="26" height="26" style="float:left;margin-right:8px;vertical-align:middle;"/>`;
+      cell['@_value'] = `${cleanImgTag}<b>${mainTitle}</b>`;
       modifiedNodesCount++;
     }
   }
@@ -437,13 +439,21 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
   };
 }
 
-/**
- * 🏷️ High-Definition Vendor Icon Registry.
- * Resolves official SVG icons for Databricks, GCP, AWS, Azure, Fabric, Kafka, Snowflake, K8s, etc.
- */
 export function resolveVendorIconUrl(text: string): string {
   if (!text) return 'https://cdn.simpleicons.org/googlecloud/4285F4';
   const lower = text.toLowerCase();
+
+  // SAP & ERP Systems
+  if (lower.includes('sap') || lower.includes('s/4hana') || lower.includes('erp')) return 'https://cdn.simpleicons.org/sap/008FD3';
+
+  // Pharma & Clinical Systems (Veeva, Salesforce)
+  if (lower.includes('veeva') || lower.includes('salesforce') || lower.includes('etmf')) return 'https://cdn.simpleicons.org/salesforce/00A1E0';
+
+  // Identity & Security (Ping Identity, Okta, Auth0, OAuth)
+  if (lower.includes('ping') || lower.includes('okta') || lower.includes('oauth') || lower.includes('auth0') || lower.includes('anonymization')) return 'https://cdn.simpleicons.org/okta/007DC1';
+
+  // Healthcare & Regulatory (FDA, HealthLake, Clinical)
+  if (lower.includes('fda') || lower.includes('health') || lower.includes('gxp') || lower.includes('clinical') || lower.includes('esg')) return 'https://cdn.simpleicons.org/redhat/EE0000';
 
   // Databricks Ecosystem
   if (lower.includes('databricks') || lower.includes('dlt') || lower.includes('delta live') || lower.includes('auto loader') || lower.includes('unity catalog') || lower.includes('mosaic')) {
@@ -464,12 +474,16 @@ export function resolveVendorIconUrl(text: string): string {
   if (lower.includes('lambda')) return 'https://cdn.simpleicons.org/awslambda/FF9900';
   if (lower.includes('s3') || lower.includes('aws s3')) return 'https://cdn.simpleicons.org/amazons3/569A31';
   if (lower.includes('dynamodb')) return 'https://cdn.simpleicons.org/amazondynamodb/4053D6';
-  if (lower.includes('rds') || lower.includes('aurora')) return 'https://cdn.simpleicons.org/amazonrds/527FFF';
+  if (lower.includes('rds') || lower.includes('aurora') || lower.includes('redshift') || lower.includes('healthlake')) return 'https://cdn.simpleicons.org/amazonaws/FF9900';
   if (lower.includes('ec2') || lower.includes('ecs') || lower.includes('eks') || lower.includes('aws') || lower.includes('amazon')) return 'https://cdn.simpleicons.org/amazonaws/FF9900';
 
   // Microsoft Azure & Fabric
   if (lower.includes('fabric') || lower.includes('power bi')) return 'https://cdn.simpleicons.org/powerbi/F2C811';
-  if (lower.includes('azure') || lower.includes('event hub')) return 'https://cdn.simpleicons.org/microsoftazure/0089D6';
+  if (lower.includes('azure') || lower.includes('event hub') || lower.includes('apim')) return 'https://cdn.simpleicons.org/microsoftazure/0089D6';
+
+  // Enterprise SaaS & Operations
+  if (lower.includes('servicenow')) return 'https://cdn.simpleicons.org/servicenow/293E40';
+  if (lower.includes('workday')) return 'https://cdn.simpleicons.org/workday/00519B';
 
   // Common Tech Stack & Frameworks
   if (lower.includes('kafka') || lower.includes('event stream')) return 'https://cdn.simpleicons.org/apachekafka/231F20';

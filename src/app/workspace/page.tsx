@@ -2494,15 +2494,29 @@ function WorkspaceContent() {
   const currentXmlToRender = React.useMemo(() => {
     const baseXml = displayedVersion?.xml_content || '';
     if (!baseXml) return '';
+
+    let formattedXml = baseXml;
     if (layoutPreset === 'vendor') {
-      return createVendorIconsVariant(baseXml);
-    }
-    if (layoutPreset === 'clean') {
+      formattedXml = createVendorIconsVariant(baseXml);
+    } else if (layoutPreset === 'clean') {
       const { cleanedXml } = createMinimalistCleanVariant(baseXml);
-      return cleanedXml;
+      formattedXml = cleanedXml;
+    } else {
+      formattedXml = restoreDetailedView(baseXml);
     }
-    return restoreDetailedView(baseXml);
-  }, [displayedVersion, layoutPreset]);
+
+    // Apply Aspect Ratio Node Re-organization ON TOP of active view format!
+    if (selectedAspectRatio) {
+      formattedXml = rearrangeDiagramForAspectRatio(
+        formattedXml,
+        selectedAspectRatio,
+        customRatioW,
+        customRatioH
+      );
+    }
+
+    return formattedXml;
+  }, [displayedVersion, layoutPreset, selectedAspectRatio, customRatioW, customRatioH]);
 
   // Sync active version XML to ref (respecting active view layout: Detailed View vs Clean View)
   useEffect(() => {
