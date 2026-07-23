@@ -3755,8 +3755,13 @@ function WorkspaceContent() {
                       transformOrigin: 'center center'
                     }}
                   >
-                    <div className="w-full h-full pointer-events-auto">
-                      <DiagramViewer xml={currentXmlToRender} />
+                    <div className="w-full h-full pointer-events-auto flex items-center justify-center">
+                      <DiagramViewer
+                        xml={currentXmlToRender}
+                        aspectRatioId={selectedAspectRatio}
+                        customW={customRatioW}
+                        customH={customRatioH}
+                      />
                     </div>
                   </div>
                 </div>
