@@ -89,11 +89,11 @@ CRITICAL SYNTAX PROHIBITIONS:
 * Draw.io supports HTML formatting inside node labels when \`html=1\` is present in the node's style.
 * To render a cloud service or technology icon, you MUST prefix the node's \`value\` attribute with a native HTML \`<img>\` tag.
 * Format the \`value\` attribute exactly like this:
-  \`value="&lt;img src=&quot;ICON_URL&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[NUMBER] NODE_TITLE&lt;/b&gt;&lt;br&gt;&lt;i&gt;NODE_SUBTITLE&lt;/i&gt;"\`
+  \`value="&lt;img src=&quot;ICON_URL&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display='none'&quot;&gt;&lt;b&gt;[NUMBER] NODE_TITLE&lt;/b&gt;&lt;br&gt;&lt;i&gt;NODE_SUBTITLE&lt;/i&gt;"\`
 * Do NOT use the \`image\` style property in the node's \`style\` attribute (e.g., do NOT append \`image=...;imageWidth=...\` to the style). Keep the style clean (e.g. \`rhombus;whiteSpace=wrap;html=1;strokeWidth=2;\`).
 * Use the following live Iconify SVG URLs for common technologies:
   - Google Cloud Run: \`https://api.iconify.design/logos:google-cloud-run.svg\`
-  - Apigee / API Gateway: \`https://api.iconify.design/logos:apigee.svg\`
+  - Apigee / API Gateway: \`https://api.iconify.design/logos:google-cloud.svg\`
   - Google Cloud Storage / GCS: \`https://api.iconify.design/logos:google-cloud.svg\`
   - Google Cloud SQL / Cloud Spanner: \`https://api.iconify.design/logos:google-cloud.svg\`
   - BigQuery: \`https://api.iconify.design/logos:google-cloud.svg\`
