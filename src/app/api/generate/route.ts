@@ -118,6 +118,8 @@ CRITICAL SYNTAX PROHIBITIONS:
   - GitHub / CI/CD: \`https://api.iconify.design/logos:github-icon.svg\`
   - Kubernetes / K8s: \`https://api.iconify.design/logos:kubernetes.svg\`
   - Python / Data Science: \`https://api.iconify.design/logos:python.svg\`
+* **Dynamic Brand Slug Generator for New/Unknown Tools**: For any new, custom, or niche tool not listed above (e.g., Pinecone, Anthropic, Cohere, Qdrant, Supabase, Vercel, Railway, Notion), automatically slugify the brand name as \`https://api.iconify.design/logos:<brand_name_slug>.svg\` (or \`logos:<brand_name_slug>-icon.svg\`).
+* **Self-Healing Fallback Guarantee**: The inline \`onerror="this.style.display='none'"\` attribute guarantees that if a brand-new tool's SVG icon does not exist in the CDN registry, the image tag cleanly hides itself without breaking the layout or showing broken \`[?]\` box artifacts, preserving the node's custom title, subtitle, shape, and dark-mode styling!
 
 ### Refinement Mode vs. Complete Redesign (CRITICAL RULE):
 * If the user provides "Existing XML" and a prompt:
