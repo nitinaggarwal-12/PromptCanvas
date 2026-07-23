@@ -13,27 +13,45 @@ export interface AuditGap {
   remediation: string;
 }
 
-const AUDIT_PROMPT = `
+export type AuditCategory = 'security' | 'visual' | 'topology' | 'responsive' | 'accessibility' | 'vendor';
+
+const PROMPTS: Record<AuditCategory, string> = {
+  security: `
 You are "Maestro-Audit", an elite enterprise solutions architect and cybersecurity auditor.
-Analyze the provided Draw.io (mxGraph) XML diagram and generate a comprehensive security audit report with actionable gaps.
+Analyze the provided Draw.io (mxGraph) XML diagram for SECURITY & COMPLIANCE (HIPAA, GxP, SOC 2, PCI-DSS).
+Identify missing security controls (e.g. WAF, KMS Encryption, Private Subnets, API Gateways, DR Standby Replicas).
+If secure, return high score (90-100) and empty gaps array.
+`,
 
-Respond strictly in JSON matching the schema provided.
+  visual: `
+You are "Maestro-Visual", a world-class graphic designer and diagram layout auditor.
+Analyze the provided Draw.io (mxGraph) XML diagram for VISUAL LAYOUT & GEOMETRY (Overlapping shapes, arrow lines slicing text, compact node spacing, text overflow).
+If nodes and connector labels are spaced cleanly with zero overlaps, return high score (90-100) and empty gaps array.
+`,
 
-CRITICAL SCORE & GAP AUDITING RULES:
-1. Accurately evaluate the security posture of the architecture.
-2. If the diagram contains security components (e.g. WAF / Cloud Armor, HTTPS Load Balancer, Private Subnets, CMEK / KMS Encryption, API Gateway, DB Multi-AZ HA Failover Replicas), assign a high score between 90% and 100% (GRADE: EXCELLENT).
-3. The "gaps" array must contain ONLY genuine, unmitigated security or reliability gaps (0 to 5 items).
-4. If all major vulnerabilities have been remediated, return an EMPTY gaps array \`[]\` and a score of 100. Do NOT invent or force artificial gaps if the architecture is well-secured.
-5. For any remaining gaps:
-   - id: unique string e.g. "gap_1", "gap_2"
-   - title: concise title
-   - severity: "HIGH", "MEDIUM", or "LOW"
-   - component: component/node name
-   - description: short issue description
-   - remediation: concrete architectural instruction on how to fix it in the diagram
+  topology: `
+You are "Maestro-Topology", a chief cloud enterprise architecture reviewer.
+Analyze the provided Draw.io (mxGraph) XML diagram for CLOUD ARCHITECTURE TOPOLOGY & DATA FLOW ACCURACY (Well-Architected Framework, ingress ordering, load balancing, direct database exposure, missing gateways).
+If topology follows cloud best practices, return high score (90-100) and empty gaps array.
+`,
 
-6. The "report" string must be clean GitHub-style Markdown detailing findings, strengths, risks, and recommendations.
-`;
+  responsive: `
+You are "Maestro-Responsive", a multi-device UI/UX auditor.
+Analyze the provided Draw.io (mxGraph) XML diagram for RESPONSIVE FIT & ASPECT RATIO LEGIBILITY (16:9 presentation slides, 4:3 documents, 9:16 mobile viewports).
+Evaluate whether node coordinates and font scaling fit nicely inside target viewport dimensions.
+`,
+
+  accessibility: `
+You are "Maestro-Accessibility", an expert WCAG 2.1 AA accessibility auditor.
+Analyze the provided Draw.io (mxGraph) XML diagram for COLOR CONTRAST & ACCESSIBILITY (Contrast ratio between fontColor and shape fill / canvas background, colorblind stroke patterns, high-contrast dark and light themes).
+`,
+
+  vendor: `
+You are "Maestro-Vendor", a cloud branding and icon integrity auditor.
+Analyze the provided Draw.io (mxGraph) XML diagram for VENDOR ICON & BRAND LOGO COVERAGE (AWS, GCP, Azure, Kubernetes, Databricks, PostgreSQL official SVG logos).
+Score the percentage of nodes using official vendor logos.
+`
+};
 
 export async function GET(request: Request) {
   try {
@@ -54,7 +72,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { diagramId } = await request.json();
+    const { diagramId, auditCategory = 'security' } = await request.json();
     if (!diagramId) {
       return NextResponse.json({ error: 'diagramId is required' }, { status: 400 });
     }
@@ -65,6 +83,23 @@ export async function POST(request: Request) {
     }
 
     const xmlContent = latestVersion.xml_content;
+    const categoryKey = (PROMPTS[auditCategory as AuditCategory] ? auditCategory : 'security') as AuditCategory;
+    const selectedPrompt = PROMPTS[categoryKey];
+
+    const systemInstruction = `
+${selectedPrompt}
+
+Respond strictly in JSON matching the schema provided:
+- score: number (0-100)
+- report: clean markdown summary of findings, strengths, and recommendations
+- gaps: array of AuditGap objects:
+  - id: unique string
+  - title: concise title
+  - severity: "HIGH" | "MEDIUM" | "LOW"
+  - component: component/node name
+  - description: short issue description
+  - remediation: concrete instruction on how to fix it
+`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -72,7 +107,7 @@ export async function POST(request: Request) {
         { text: `Here is the Draw.io XML of the architecture:\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },
       ],
       config: {
-        systemInstruction: AUDIT_PROMPT,
+        systemInstruction,
         responseMimeType: 'application/json',
         responseSchema: {
           type: Type.OBJECT,
@@ -107,13 +142,13 @@ export async function POST(request: Request) {
     } catch (e) {
       console.error('Failed to parse audit JSON output:', e);
       parsedData = {
-        score: 95,
+        score: 92,
         report: textOutput,
         gaps: []
       };
     }
 
-    const score = typeof parsedData.score === 'number' ? parsedData.score : 95;
+    const score = typeof parsedData.score === 'number' ? parsedData.score : 92;
     const report = parsedData.report || 'No detailed audit report generated.';
     const gaps = parsedData.gaps || [];
 
@@ -129,6 +164,7 @@ export async function POST(request: Request) {
     const allReports = await getAuditReportsForDiagram(diagramId);
 
     return NextResponse.json({
+      auditCategory: categoryKey,
       score,
       report,
       gaps,

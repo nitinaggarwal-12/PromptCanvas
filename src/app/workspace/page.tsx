@@ -511,6 +511,7 @@ function WorkspaceContent() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   // Audit & Remediation States
+  const [selectedAuditCategory, setSelectedAuditCategory] = useState<'security' | 'visual' | 'topology' | 'responsive' | 'accessibility' | 'vendor'>('security');
   const [isAuditing, setIsAuditing] = useState(false);
   const [auditReport, setAuditReport] = useState<string | null>(null);
   const [auditScore, setAuditScore] = useState<number>(82);
@@ -1347,15 +1348,16 @@ function WorkspaceContent() {
   };
 
   // Audit the active diagram
-  const handleAuditDiagram = async () => {
+  const handleAuditDiagram = async (category?: string) => {
     if (!activeDiagram) return;
+    const catToUse = category || selectedAuditCategory;
     setCurrentTab('audit');
     setIsAuditing(true);
     try {
       const res = await fetch('/api/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ diagramId: activeDiagram.id })
+        body: JSON.stringify({ diagramId: activeDiagram.id, auditCategory: catToUse })
       });
       if (!res.ok) {
         const errorData = await res.json();
@@ -1898,14 +1900,42 @@ function WorkspaceContent() {
 
                     {/* Single Primary Action Button */}
                     <button
-                      onClick={handleAuditDiagram}
+                      onClick={() => handleAuditDiagram()}
                       disabled={isAuditing}
                       className="px-5 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-teal-500/10 hover:shadow-teal-500/20"
                     >
                       {isAuditing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldAlert className="w-4 h-4" />}
-                      <span>{isAuditing ? 'Auditing...' : 'Run Compliance Audit'}</span>
+                      <span>{isAuditing ? 'Auditing...' : 'Run Selected Audit'}</span>
                     </button>
                   </div>
+                </div>
+
+                {/* 6 Audit Dimension Tabs */}
+                <div className="flex flex-wrap items-center gap-2.5 pt-1 border-b border-panel-border/30 pb-4">
+                  {[
+                    { id: 'security', label: '🛡️ Security & Compliance', desc: 'GxP, HIPAA, SOC 2' },
+                    { id: 'visual', label: '🎨 Visual & Collision', desc: 'Overlaps & Text Slicing' },
+                    { id: 'topology', label: '⚡ Cloud Topology', desc: 'Well-Architected & Ingress' },
+                    { id: 'responsive', label: '📱 Responsive & Aspect Ratio', desc: '16:9, 4:3, 9:16 Fit' },
+                    { id: 'accessibility', label: '♿ WCAG Accessibility', desc: 'Contrast Ratio & Colorblind' },
+                    { id: 'vendor', label: '🏷️ Vendor Icon Coverage', desc: 'Official Brand Logos' },
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAuditCategory(cat.id as any);
+                        handleAuditDiagram(cat.id);
+                      }}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        selectedAuditCategory === cat.id
+                          ? 'bg-teal-500/20 text-teal-300 border border-teal-500/50 shadow-md shadow-teal-950/40'
+                          : 'bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white hover:bg-slate-800/80'
+                      }`}
+                    >
+                      <span>{cat.label}</span>
+                    </button>
+                  ))}
                 </div>
 
                 {/* Audit Version Delta Comparison Card */}
@@ -2086,7 +2116,7 @@ function WorkspaceContent() {
                         </div>
 
                         <button
-                          onClick={handleAuditDiagram}
+                          onClick={() => handleAuditDiagram()}
                           disabled={isAuditing}
                           className="px-7 py-3.5 rounded-2xl text-xs md:text-sm font-black bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 hover:from-teal-300 hover:to-emerald-300 text-slate-950 shadow-xl shadow-teal-500/25 transition-all flex items-center justify-center gap-2.5 cursor-pointer shrink-0 disabled:opacity-50 hover:scale-[1.02]"
                         >
@@ -3045,7 +3075,7 @@ function WorkspaceContent() {
                 {/* 4. Audit Security Primary CTA */}
                 <button
                   id="audit-diagram-btn"
-                  onClick={handleAuditDiagram}
+                  onClick={() => handleAuditDiagram()}
                   disabled={isAuditing}
                   className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50 shrink-0")}
                 >
