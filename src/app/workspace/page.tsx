@@ -1748,7 +1748,7 @@ function WorkspaceContent() {
           </div>
           
           {/* Directory Item List */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
+          <div className="flex-1 overflow-y-auto max-h-[calc(100vh-230px)] p-4 space-y-2.5 custom-scrollbar">
             {filteredDiagrams.length === 0 ? (
               <div className="text-center py-12 px-4 space-y-2">
                 <ShieldAlert className="w-8 h-8 text-slate-600 mx-auto" />
@@ -1768,7 +1768,7 @@ function WorkspaceContent() {
                   <div
                     key={d.id}
                     onClick={() => loadDiagramDetails(d.id)}
-                    className={`group p-3.5 rounded-xl border transition-all cursor-pointer relative overflow-hidden ${
+                    className={`group p-3 rounded-xl border transition-all cursor-pointer relative overflow-hidden ${
                       isActive 
                         ? 'bg-gradient-to-r from-teal-500/15 via-teal-500/10 to-transparent border-teal-500/50 text-white shadow-lg shadow-teal-950/40' 
                         : 'bg-slate-900/40 hover:bg-slate-800/60 border-slate-800/80 hover:border-slate-700/80 text-slate-300'
@@ -1782,19 +1782,29 @@ function WorkspaceContent() {
                       <span className="text-xs font-bold text-slate-100 group-hover:text-teal-200 transition-colors break-words leading-tight flex-1">
                         {d.name}
                       </span>
-                      {isActive ? (
-                        <span className="shrink-0 text-[10px] font-extrabold text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-md border border-teal-500/40">
-                          Selected
-                        </span>
-                      ) : hasAuditReport ? (
-                        <span className="shrink-0 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
-                          Audited
-                        </span>
-                      ) : (
-                        <span className="shrink-0 text-[10px] font-medium text-amber-400/90 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
-                          Pending Audit
-                        </span>
-                      )}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {isActive ? (
+                          <span className="text-[10px] font-extrabold text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-md border border-teal-500/40">
+                            Selected
+                          </span>
+                        ) : hasAuditReport ? (
+                          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                            Audited
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-medium text-amber-400/90 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+                            Pending Audit
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteDiagram(d.id, e)}
+                          title="Delete Asset"
+                          className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-all"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-800/50">
