@@ -512,6 +512,7 @@ function WorkspaceContent() {
 
   // Audit & Remediation States
   const [selectedAuditCategory, setSelectedAuditCategory] = useState<'security' | 'visual' | 'topology' | 'responsive' | 'accessibility' | 'vendor'>('security');
+  const [categoryAuditCache, setCategoryAuditCache] = useState<Record<string, { score: number; report: string; gaps: any[] }>>({});
   const [isAuditing, setIsAuditing] = useState(false);
   const [auditReport, setAuditReport] = useState<string | null>(null);
   const [auditScore, setAuditScore] = useState<number>(82);
@@ -1347,6 +1348,21 @@ function WorkspaceContent() {
     }
   };
 
+  // Instant Zero-Latency Category Audit Selector
+  const handleSelectCategoryTab = (catId: string) => {
+    setSelectedAuditCategory(catId as any);
+    const cached = categoryAuditCache[catId];
+    if (cached) {
+      // ⚡ INSTANT CACHE HIT! Zero network request, 0ms lag!
+      setAuditReport(cached.report);
+      setAuditScore(cached.score);
+      setAuditGaps(cached.gaps);
+      setSelectedGapIds(cached.gaps.map((g: { id: string }) => g.id));
+    } else {
+      handleAuditDiagram(catId);
+    }
+  };
+
   // Audit the active diagram
   const handleAuditDiagram = async (category?: string) => {
     if (!activeDiagram) return;
@@ -1369,6 +1385,11 @@ function WorkspaceContent() {
       const gapsList = data.gaps || [];
       setAuditGaps(gapsList);
       setSelectedGapIds(gapsList.map((g: { id: string }) => g.id));
+
+      // Cache audit result for instant tab switching!
+      const cachedEntry = { score: data.score || 82, report: data.report, gaps: gapsList };
+      setCategoryAuditCache((prev) => ({ ...prev, [catToUse]: cachedEntry }));
+
       if (data.reportsHistory) {
         setAuditHistory(data.reportsHistory);
         if (data.reportsHistory.length > 0) {
@@ -1923,10 +1944,7 @@ function WorkspaceContent() {
                     <button
                       key={cat.id}
                       type="button"
-                      onClick={() => {
-                        setSelectedAuditCategory(cat.id as any);
-                        handleAuditDiagram(cat.id);
-                      }}
+                      onClick={() => handleSelectCategoryTab(cat.id)}
                       className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                         selectedAuditCategory === cat.id
                           ? 'bg-teal-500/20 text-teal-300 border border-teal-500/50 shadow-md shadow-teal-950/40'
