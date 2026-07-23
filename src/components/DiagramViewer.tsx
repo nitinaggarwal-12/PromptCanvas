@@ -15,7 +15,7 @@ function htmlEscape(str: string): string {
     .replace(/>/g, '&gt;');
 }
 
-export default React.memo(function DiagramViewer({ xml }: DiagramViewerProps) {
+export default function DiagramViewer({ xml }: DiagramViewerProps) {
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
@@ -149,4 +149,4 @@ export default React.memo(function DiagramViewer({ xml }: DiagramViewerProps) {
       />
     </div>
   );
-});
+}

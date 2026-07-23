@@ -59,22 +59,23 @@ export function rearrangeDiagramForAspectRatio(
 
   const R = parseAspectRatioQuotient(aspectRatioId, customWidth, customHeight);
 
-  // Parse all vertex mxCell nodes (non-edge nodes with parent="1" or parent="0")
-  const nodeRegex = /<mxCell\s+[^>]*vertex="1"[^>]*>[\s\S]*?<mxGeometry\s+([^>]*)\/>\s*<\/mxCell>/g;
+  // Match all <mxCell ... vertex="1" ...> elements
+  const cellMatchRegex = /<mxCell\s+[^>]*vertex="1"[^>]*>[\s\S]*?<\/mxCell>/gi;
   const nodes: ParsedNode[] = [];
 
   let match: RegExpExecArray | null;
-  while ((match = nodeRegex.exec(xmlContent)) !== null) {
+  while ((match = cellMatchRegex.exec(xmlContent)) !== null) {
     const fullTag = match[0];
-    const geomAttrs = match[1];
-
     const idMatch = fullTag.match(/id="([^"]+)"/);
-    const xMatch = geomAttrs.match(/x="([^"]+)"/);
-    const yMatch = geomAttrs.match(/y="([^"]+)"/);
-    const wMatch = geomAttrs.match(/width="([^"]+)"/);
-    const hMatch = geomAttrs.match(/height="([^"]+)"/);
+    const geomMatch = fullTag.match(/<mxGeometry\s+([^>]*)\/>/);
 
-    if (idMatch) {
+    if (idMatch && geomMatch) {
+      const geomAttrs = geomMatch[1];
+      const xMatch = geomAttrs.match(/x="([^"]+)"/);
+      const yMatch = geomAttrs.match(/y="([^"]+)"/);
+      const wMatch = geomAttrs.match(/width="([^"]+)"/);
+      const hMatch = geomAttrs.match(/height="([^"]+)"/);
+
       nodes.push({
         id: idMatch[1],
         fullTag,
@@ -91,13 +92,13 @@ export function rearrangeDiagramForAspectRatio(
   // Sort nodes vertically into logical tiers by Y coordinate
   nodes.sort((a, b) => a.y - b.y);
 
-  // Group nodes into Y-tiers (nodes within 80px Y are considered same tier)
+  // Group nodes into Y-tiers (nodes within 90px Y are considered same tier)
   const tiers: ParsedNode[][] = [];
   nodes.forEach(node => {
     let placed = false;
     for (const tier of tiers) {
       const avgY = tier.reduce((sum, n) => sum + n.y, 0) / tier.length;
-      if (Math.abs(node.y - avgY) < 80) {
+      if (Math.abs(node.y - avgY) < 90) {
         tier.push(node);
         placed = true;
         break;
@@ -120,7 +121,7 @@ export function rearrangeDiagramForAspectRatio(
       tier.forEach(node => {
         const newX = Math.max(50, centerX - node.width / 2);
         const newY = currentY;
-        currentY += node.height + 70;
+        currentY += node.height + 60;
 
         updatedXml = replaceNodeCoordinates(updatedXml, node.id, newX, newY);
       });
@@ -133,7 +134,7 @@ export function rearrangeDiagramForAspectRatio(
     tiers.forEach(tier => {
       const maxCols = R > 2.0 ? 5 : 4;
       const totalTierWidth = Math.min(tier.length, maxCols) * 260;
-      const startX = Math.max(80, 700 - totalTierWidth / 2);
+      const startX = Math.max(80, 650 - totalTierWidth / 2);
 
       tier.forEach((node, idx) => {
         const col = idx % maxCols;
@@ -154,15 +155,15 @@ export function rearrangeDiagramForAspectRatio(
     const tierSpacingY = 140;
 
     tiers.forEach(tier => {
-      const maxCols = 3;
-      const totalTierWidth = Math.min(tier.length, maxCols) * 230;
-      const startX = Math.max(80, 500 - totalTierWidth / 2);
+      const maxCols = R <= 1.0 ? 2 : 3;
+      const totalTierWidth = Math.min(tier.length, maxCols) * 240;
+      const startX = Math.max(80, 450 - totalTierWidth / 2);
 
       tier.forEach((node, idx) => {
         const col = idx % maxCols;
         const row = Math.floor(idx / maxCols);
 
-        const newX = startX + col * 230;
+        const newX = startX + col * 240;
         const newY = currentY + row * 110;
 
         updatedXml = replaceNodeCoordinates(updatedXml, node.id, newX, newY);
@@ -177,10 +178,9 @@ export function rearrangeDiagramForAspectRatio(
 }
 
 function replaceNodeCoordinates(xml: string, nodeId: string, newX: number, newY: number): string {
-  // Regex to target the specific cell geometry
   const cellRegex = new RegExp(
     `(<mxCell\\s+[^>]*id="${escapeRegex(nodeId)}"[^>]*>[\\s\\S]*?<mxGeometry\\s+)([^>]*)(/>)`,
-    'g'
+    'gi'
   );
 
   return xml.replace(cellRegex, (match, prefix, geomAttrs, suffix) => {
