@@ -24,7 +24,7 @@ function formatEdgeLabelToMax2Lines(text: string): string {
     }
   }
 
-  return `<font color="#ffffff"><b>${formatted}</b></font>`;
+  return formatted;
 }
 
 /**
@@ -246,7 +246,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     if (!style.includes('orthogonalEdgeStyle')) {
       style = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${style}`;
     }
-    style += `;fontColor=#E2E8F0;fontStyle=1;labelBackgroundColor=none;fontSize=11;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
+    style += `;fontColor=#38BDF8;fontStyle=1;labelBackgroundColor=none;fontSize=11;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
 
     const srcId = String(edge['@_source'] || '');
     const tgtId = String(edge['@_target'] || '');

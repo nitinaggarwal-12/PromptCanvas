@@ -173,6 +173,27 @@ export function rearrangeDiagramForAspectRatio(
     });
   }
 
+  cells.forEach((cell: any) => {
+    if (cell['@_edge'] === '1' || cell['@_edge'] === true) {
+      if (cell['@_value']) {
+        let rawVal = String(cell['@_value']);
+        let cleanText = rawVal.replace(/<[^>]+>/g, '').replace(/&lt;[^&]+&gt;/g, '').trim();
+        cell['@_value'] = cleanText;
+      }
+
+      let style = String(cell['@_style'] || '');
+      style = style
+        .replace(/;?fontColor=[^;]*/g, '')
+        .replace(/;?labelBackgroundColor=[^;]*/g, '')
+        .replace(/;?labelBorderColor=[^;]*/g, '')
+        .replace(/;?fontSize=[^;]*/g, '')
+        .replace(/;?fontStyle=[^;]*/g, '');
+
+      style += ';labelBackgroundColor=none;fontColor=#38BDF8;fontSize=11;fontStyle=1;';
+      cell['@_style'] = style;
+    }
+  });
+
   root.mxCell = cells;
 
   const builder = new XMLBuilder({
