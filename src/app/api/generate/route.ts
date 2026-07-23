@@ -91,16 +91,33 @@ CRITICAL SYNTAX PROHIBITIONS:
 * Format the \`value\` attribute exactly like this:
   \`value="&lt;img src=&quot;ICON_URL&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display='none'&quot;&gt;&lt;b&gt;[NUMBER] NODE_TITLE&lt;/b&gt;&lt;br&gt;&lt;i&gt;NODE_SUBTITLE&lt;/i&gt;"\`
 * Do NOT use the \`image\` style property in the node's \`style\` attribute (e.g., do NOT append \`image=...;imageWidth=...\` to the style). Keep the style clean (e.g. \`rhombus;whiteSpace=wrap;html=1;strokeWidth=2;\`).
-* **Mandatory Vendor-Specific Icons**: You MUST select the exact vendor logo for each cloud provider or legacy tool mentioned:
+* **Mandatory Vendor-Specific Icons**: You MUST select the exact vendor logo for each cloud provider, database, AI model, or enterprise SaaS platform mentioned:
   - Azure (Azure APIM, Azure SQL, Azure Services): \`https://api.iconify.design/logos:microsoft-azure.svg\`
   - AWS (AWS HealthLake, Redshift, S3, EC2, Lambda): \`https://api.iconify.design/logos:aws.svg\`
-  - SAP (SAP S/4HANA, SAP ERP, SAP Inventory): \`https://api.iconify.design/logos:sap.svg\`
   - GCP (Google BigQuery, Vertex AI, Cloud Run, GCS): \`https://api.iconify.design/logos:google-cloud.svg\`
-  - Ping Identity / OAuth: \`https://api.iconify.design/logos:oauth.svg\`
-  - Python / Scripts: \`https://api.iconify.design/logos:python.svg\`
+  - SAP (SAP S/4HANA, SAP ERP, SAP Supply Chain): \`https://api.iconify.design/logos:sap.svg\`
+  - Salesforce / Veeva Vault: \`https://api.iconify.design/logos:salesforce.svg\`
+  - ServiceNow: \`https://api.iconify.design/logos:servicenow.svg\`
+  - Snowflake: \`https://api.iconify.design/logos:snowflake.svg\`
+  - Databricks: \`https://api.iconify.design/logos:databricks.svg\`
+  - Apache Kafka / Event Streaming: \`https://api.iconify.design/logos:kafka-icon.svg\`
+  - OpenAI / ChatGPT: \`https://api.iconify.design/logos:openai-icon.svg\`
+  - Hugging Face: \`https://api.iconify.design/logos:hugging-face-icon.svg\`
+  - PyTorch / ML Models: \`https://api.iconify.design/logos:pytorch-icon.svg\`
+  - TensorFlow: \`https://api.iconify.design/logos:tensorflow.svg\`
+  - MongoDB / NoSQL: \`https://api.iconify.design/logos:mongodb-icon.svg\`
+  - Elasticsearch / Vector: \`https://api.iconify.design/logos:elasticsearch.svg\`
   - PostgreSQL: \`https://api.iconify.design/logos:postgresql.svg\`
-  - Redis: \`https://api.iconify.design/logos:redis.svg\`
-  - Kubernetes: \`https://api.iconify.design/logos:kubernetes.svg\`
+  - Redis / Cache: \`https://api.iconify.design/logos:redis.svg\`
+  - Okta / Ping Identity / IAM: \`https://api.iconify.design/logos:okta-icon.svg\`
+  - Datadog / Telemetry: \`https://api.iconify.design/logos:datadog-icon.svg\`
+  - Prometheus / Grafana: \`https://api.iconify.design/logos:grafana.svg\`
+  - Stripe / Payments: \`https://api.iconify.design/logos:stripe.svg\`
+  - Shopify / Commerce: \`https://api.iconify.design/logos:shopify.svg\`
+  - Terraform / DevOps: \`https://api.iconify.design/logos:terraform-icon.svg\`
+  - GitHub / CI/CD: \`https://api.iconify.design/logos:github-icon.svg\`
+  - Kubernetes / K8s: \`https://api.iconify.design/logos:kubernetes.svg\`
+  - Python / Data Science: \`https://api.iconify.design/logos:python.svg\`
 
 ### Refinement Mode vs. Complete Redesign (CRITICAL RULE):
 * If the user provides "Existing XML" and a prompt:
