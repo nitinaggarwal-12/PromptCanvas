@@ -444,59 +444,59 @@ export function resolveVendorIconUrl(text: string): string {
   const lower = text.toLowerCase();
 
   // SAP & ERP Systems
-  if (lower.includes('sap') || lower.includes('s/4hana') || lower.includes('erp')) return 'https://cdn.simpleicons.org/sap/008FD3';
+  if (lower.includes('sap') || lower.includes('s/4hana') || lower.includes('erp')) return 'https://api.iconify.design/logos:sap.svg';
 
   // Pharma & Clinical Systems (Veeva, Salesforce)
-  if (lower.includes('veeva') || lower.includes('salesforce') || lower.includes('etmf')) return 'https://cdn.simpleicons.org/salesforce/00A1E0';
+  if (lower.includes('veeva') || lower.includes('salesforce') || lower.includes('etmf')) return 'https://api.iconify.design/logos:salesforce.svg';
 
   // Identity & Security (Ping Identity, Okta, Auth0, OAuth)
-  if (lower.includes('ping') || lower.includes('okta') || lower.includes('oauth') || lower.includes('auth0') || lower.includes('anonymization')) return 'https://cdn.simpleicons.org/okta/007DC1';
+  if (lower.includes('ping') || lower.includes('okta') || lower.includes('oauth') || lower.includes('auth0') || lower.includes('anonymization')) return 'https://api.iconify.design/logos:okta.svg';
 
   // Healthcare & Regulatory (FDA, HealthLake, Clinical)
-  if (lower.includes('fda') || lower.includes('health') || lower.includes('gxp') || lower.includes('clinical') || lower.includes('esg')) return 'https://cdn.simpleicons.org/redhat/EE0000';
+  if (lower.includes('fda') || lower.includes('health') || lower.includes('gxp') || lower.includes('clinical') || lower.includes('esg')) return 'https://api.iconify.design/logos:redhat.svg';
 
   // Databricks Ecosystem
   if (lower.includes('databricks') || lower.includes('dlt') || lower.includes('delta live') || lower.includes('auto loader') || lower.includes('unity catalog') || lower.includes('mosaic')) {
-    return 'https://cdn.simpleicons.org/databricks/FF3621';
+    return 'https://api.iconify.design/logos:databricks.svg';
   }
   if (lower.includes('delta lake') || lower.includes('bronze') || lower.includes('silver') || lower.includes('gold') || lower.includes('spark') || lower.includes('pyspark')) {
-    return 'https://cdn.simpleicons.org/apachespark/E25A1C';
+    return 'https://api.iconify.design/logos:apache-spark.svg';
   }
 
   // Google Cloud Platform (GCP)
-  if (lower.includes('cloud run')) return 'https://cdn.simpleicons.org/googlecloud/4285F4';
-  if (lower.includes('bigquery')) return 'https://cdn.simpleicons.org/googlebigquery/669DF6';
-  if (lower.includes('vertex') || lower.includes('gemini') || lower.includes('gcp')) return 'https://cdn.simpleicons.org/googlecloud/4285F4';
-  if (lower.includes('gcs') || lower.includes('cloud storage') || lower.includes('object storage')) return 'https://cdn.simpleicons.org/googlecloud/4285F4';
-  if (lower.includes('apigee') || lower.includes('api gateway')) return 'https://cdn.simpleicons.org/apigee/ED2025';
+  if (lower.includes('cloud run')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('bigquery')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('vertex') || lower.includes('gemini') || lower.includes('gcp')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('gcs') || lower.includes('cloud storage') || lower.includes('object storage')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('apigee') || lower.includes('api gateway')) return 'https://api.iconify.design/logos:google-cloud.svg';
 
   // Amazon Web Services (AWS)
-  if (lower.includes('lambda')) return 'https://cdn.simpleicons.org/awslambda/FF9900';
-  if (lower.includes('s3') || lower.includes('aws s3')) return 'https://cdn.simpleicons.org/amazons3/569A31';
-  if (lower.includes('dynamodb')) return 'https://cdn.simpleicons.org/amazondynamodb/4053D6';
-  if (lower.includes('rds') || lower.includes('aurora') || lower.includes('redshift') || lower.includes('healthlake')) return 'https://cdn.simpleicons.org/amazonaws/FF9900';
-  if (lower.includes('ec2') || lower.includes('ecs') || lower.includes('eks') || lower.includes('aws') || lower.includes('amazon')) return 'https://cdn.simpleicons.org/amazonaws/FF9900';
+  if (lower.includes('lambda')) return 'https://api.iconify.design/logos:aws-lambda.svg';
+  if (lower.includes('s3') || lower.includes('aws s3')) return 'https://api.iconify.design/logos:aws-s3.svg';
+  if (lower.includes('dynamodb')) return 'https://api.iconify.design/logos:aws-dynamodb.svg';
+  if (lower.includes('rds') || lower.includes('aurora') || lower.includes('redshift') || lower.includes('healthlake')) return 'https://api.iconify.design/logos:aws.svg';
+  if (lower.includes('ec2') || lower.includes('ecs') || lower.includes('eks') || lower.includes('aws') || lower.includes('amazon')) return 'https://api.iconify.design/logos:aws.svg';
 
   // Microsoft Azure & Fabric
-  if (lower.includes('fabric') || lower.includes('power bi')) return 'https://cdn.simpleicons.org/powerbi/F2C811';
-  if (lower.includes('azure') || lower.includes('event hub') || lower.includes('apim')) return 'https://cdn.simpleicons.org/microsoftazure/0089D6';
+  if (lower.includes('fabric') || lower.includes('power bi')) return 'https://api.iconify.design/logos:microsoft-power-bi.svg';
+  if (lower.includes('azure') || lower.includes('event hub') || lower.includes('apim')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
 
   // Enterprise SaaS & Operations
-  if (lower.includes('servicenow')) return 'https://cdn.simpleicons.org/servicenow/293E40';
-  if (lower.includes('workday')) return 'https://cdn.simpleicons.org/workday/00519B';
+  if (lower.includes('servicenow')) return 'https://api.iconify.design/logos:servicenow.svg';
+  if (lower.includes('workday')) return 'https://api.iconify.design/logos:workday.svg';
 
   // Common Tech Stack & Frameworks
-  if (lower.includes('kafka') || lower.includes('event stream')) return 'https://cdn.simpleicons.org/apachekafka/231F20';
-  if (lower.includes('kubernetes') || lower.includes('k8s')) return 'https://cdn.simpleicons.org/kubernetes/326CE5';
-  if (lower.includes('snowflake')) return 'https://cdn.simpleicons.org/snowflake/29B5E8';
-  if (lower.includes('postgresql') || lower.includes('postgres')) return 'https://cdn.simpleicons.org/postgresql/4169E1';
-  if (lower.includes('mysql')) return 'https://cdn.simpleicons.org/mysql/4479A1';
-  if (lower.includes('redis')) return 'https://cdn.simpleicons.org/redis/DC382D';
-  if (lower.includes('grafana')) return 'https://cdn.simpleicons.org/grafana/F46800';
-  if (lower.includes('python')) return 'https://cdn.simpleicons.org/python/3776AB';
-  if (lower.includes('docker')) return 'https://cdn.simpleicons.org/docker/2496ED';
+  if (lower.includes('kafka') || lower.includes('event stream')) return 'https://api.iconify.design/logos:kafka-icon.svg';
+  if (lower.includes('kubernetes') || lower.includes('k8s')) return 'https://api.iconify.design/logos:kubernetes.svg';
+  if (lower.includes('snowflake')) return 'https://api.iconify.design/logos:snowflake.svg';
+  if (lower.includes('postgresql') || lower.includes('postgres')) return 'https://api.iconify.design/logos:postgresql.svg';
+  if (lower.includes('mysql')) return 'https://api.iconify.design/logos:mysql.svg';
+  if (lower.includes('redis')) return 'https://api.iconify.design/logos:redis.svg';
+  if (lower.includes('grafana')) return 'https://api.iconify.design/logos:grafana.svg';
+  if (lower.includes('python')) return 'https://api.iconify.design/logos:python.svg';
+  if (lower.includes('docker')) return 'https://api.iconify.design/logos:docker.svg';
 
-  return 'https://cdn.simpleicons.org/googlecloud/4285F4'; // Fallback
+  return 'https://api.iconify.design/logos:google-cloud.svg'; // Fallback
 }
 
 export function restoreDetailedView(xmlInput: string, skipLayout: boolean = false): string {

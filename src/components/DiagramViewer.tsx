@@ -137,11 +137,11 @@ export default function DiagramViewer({
   return (
     <div className={`${containerDimensions} relative rounded-xl overflow-hidden bg-bg-dark border border-panel-border/20 shadow-2xl transition-all duration-300 mx-auto`}>
       <iframe
-        key={xml}
+        key={`${xml}_${aspectRatioId}`}
         srcDoc={iframeHtml}
         className="w-full h-full border-0 bg-transparent"
         title="Draw.io Diagram Viewer"
-        sandbox="allow-scripts allow-popups allow-forms"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
       />
     </div>
   );
