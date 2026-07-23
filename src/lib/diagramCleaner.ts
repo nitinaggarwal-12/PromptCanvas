@@ -552,6 +552,16 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
       } else if (cell['@_value']) {
         cell['@_value'] = formatEdgeLabelToMax2Lines(String(cell['@_value']));
       }
+
+      let style = String(cell['@_style'] || '');
+      style = style
+        .replace(/;?fontColor=[^;]*/g, '')
+        .replace(/;?labelBackgroundColor=[^;]*/g, '')
+        .replace(/;?labelBorderColor=[^;]*/g, '')
+        .replace(/;?fontSize=[^;]*/g, '')
+        .replace(/;?fontStyle=[^;]*/g, '');
+      style += ';labelBackgroundColor=none;fontColor=#38BDF8;fontStyle=1;fontSize=11;';
+      cell['@_style'] = style;
     } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
       let rawValue = String(cell['@_value'] || '');
       const tooltip = String(cell['@_tooltip'] || '');
