@@ -206,6 +206,52 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
     }
   }
 
+  // 6b. 📐 Visual Collision & Bounding Box Overlap Auto-Healer
+  const vertexNodes = cells.filter(
+    (c: any) => (c['@_vertex'] === '1' || c['@_vertex'] === true) && c.mxGeometry
+  );
+
+  for (let i = 0; i < vertexNodes.length; i++) {
+    for (let j = i + 1; j < vertexNodes.length; j++) {
+      const nodeA = vertexNodes[i];
+      const nodeB = vertexNodes[j];
+
+      const ax = Number(nodeA.mxGeometry['@_x'] || 0);
+      const ay = Number(nodeA.mxGeometry['@_y'] || 0);
+      const aw = Number(nodeA.mxGeometry['@_width'] || 160);
+      const ah = Number(nodeA.mxGeometry['@_height'] || 60);
+
+      const bx = Number(nodeB.mxGeometry['@_x'] || 0);
+      const by = Number(nodeB.mxGeometry['@_y'] || 0);
+      const bw = Number(nodeB.mxGeometry['@_width'] || 160);
+      const bh = Number(nodeB.mxGeometry['@_height'] || 60);
+
+      // Check 2D bounding box intersection (with 30px safety padding margin)
+      const isOverlapping =
+        ax < bx + bw + 30 &&
+        ax + aw + 30 > bx &&
+        ay < by + bh + 30 &&
+        ay + ah + 30 > by;
+
+      if (isOverlapping) {
+        // Heal collision by shifting nodeB horizontally or vertically
+        if (Math.abs(ay - by) < 40) {
+          // Same tier Y overlap: shift nodeB horizontally to the right
+          const newX = Math.round(ax + aw + 80);
+          nodeB.mxGeometry['@_x'] = String(newX);
+          isHealed = true;
+          healingLog.push(`Visual Healer: Shifted overlapping node id="${nodeB['@_id'] || j}" rightward to X=${newX}`);
+        } else {
+          // Vertical tier overlap: shift nodeB vertically downward
+          const newY = Math.round(ay + ah + 90);
+          nodeB.mxGeometry['@_y'] = String(newY);
+          isHealed = true;
+          healingLog.push(`Visual Healer: Shifted overlapping node id="${nodeB['@_id'] || j}" downward to Y=${newY}`);
+        }
+      }
+    }
+  }
+
   root.mxCell = cells;
 
   // 7. Re-serialize healed AST back to XML string
