@@ -494,6 +494,7 @@ function WorkspaceContent() {
   const [selectedAuditReportId, setSelectedAuditReportId] = useState<string | null>(null);
   const [showAuditDelta, setShowAuditDelta] = useState(false);
   const [auditSearchQuery, setAuditSearchQuery] = useState('');
+  const [auditFilterTab, setAuditFilterTab] = useState<'all' | 'audited' | 'pending'>('all');
   const [isRemediating, setIsRemediating] = useState(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -1627,9 +1628,15 @@ function WorkspaceContent() {
   };
 
   const renderAuditCenterView = () => {
-    const filteredDiagrams = diagrams.filter(d => 
-      d.name.toLowerCase().includes(auditSearchQuery.toLowerCase())
-    );
+    const filteredDiagrams = diagrams.filter(d => {
+      const matchesQuery = d.name.toLowerCase().includes(auditSearchQuery.toLowerCase());
+      if (!matchesQuery) return false;
+      const isSelected = activeDiagram?.id === d.id;
+      const hasReport = isSelected && (auditReport || auditHistory.length > 0);
+      if (auditFilterTab === 'audited') return hasReport;
+      if (auditFilterTab === 'pending') return !hasReport;
+      return true;
+    });
 
     return (
       <div className="flex-1 overflow-hidden flex bg-bg-dark select-none animate-fade-in font-sans">
@@ -1674,6 +1681,43 @@ function WorkspaceContent() {
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
+            </div>
+
+            {/* Quick Status Filter Pills */}
+            <div className="flex items-center gap-1.5 pt-1">
+              <button
+                type="button"
+                onClick={() => setAuditFilterTab('all')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                  auditFilterTab === 'all'
+                    ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                }`}
+              >
+                All ({diagrams.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setAuditFilterTab('pending')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                  auditFilterTab === 'pending'
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                }`}
+              >
+                Pending Audit
+              </button>
+              <button
+                type="button"
+                onClick={() => setAuditFilterTab('audited')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                  auditFilterTab === 'audited'
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                }`}
+              >
+                Audited
+              </button>
             </div>
           </div>
           
@@ -1988,12 +2032,75 @@ function WorkspaceContent() {
                     </div>
                   </div>
                 ) : (
-                  <div className="glass-panel border-dashed border-panel-border/60 rounded-2xl p-16 text-center max-w-xl mx-auto space-y-4">
-                    <ShieldAlert className="w-16 h-16 text-teal-accent/80 mx-auto" />
-                    <h3 className="text-xl font-black text-white">No Compliance Report Generated Yet</h3>
-                    <p className="text-sm text-slate-400 max-w-md mx-auto leading-relaxed">
-                      Click the <strong className="text-teal-300">&quot;Run Compliance Audit&quot;</strong> button in the top right to start a deep security analysis via Gemini.
-                    </p>
+                  <div className="space-y-8 animate-fade-in">
+                    {/* Pre-Flight Inspection Hero Card */}
+                    <div className="glass-panel p-8 md:p-10 rounded-3xl border border-teal-500/30 bg-gradient-to-r from-teal-950/30 via-slate-900/70 to-purple-950/20 relative overflow-hidden shadow-2xl space-y-6">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                        <div className="space-y-2.5 max-w-2xl">
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-black uppercase tracking-wider">
+                            <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                            <span>Pre-Audit Architecture Scan Ready</span>
+                          </div>
+                          <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+                            Security Inspection: {activeDiagram.name}
+                          </h3>
+                          <p className="text-sm text-slate-300 leading-relaxed">
+                            Run deep AI security audit on <strong className="text-white">{activeDiagram.name}</strong> to evaluate node topology, public ingress points, encryption protocols, and CIS / NIST policy compliance.
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={handleAuditDiagram}
+                          disabled={isAuditing}
+                          className="px-7 py-3.5 rounded-2xl text-xs md:text-sm font-black bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 hover:from-teal-300 hover:to-emerald-300 text-slate-950 shadow-xl shadow-teal-500/25 transition-all flex items-center justify-center gap-2.5 cursor-pointer shrink-0 disabled:opacity-50 hover:scale-[1.02]"
+                        >
+                          {isAuditing ? (
+                            <>
+                              <Loader2 className="w-5 h-5 animate-spin text-slate-950" />
+                              <span>Analyzing Architecture Topology...</span>
+                            </>
+                          ) : (
+                            <>
+                              <ShieldCheck className="w-5 h-5 text-slate-950" />
+                              <span>Run AI Security Audit Now</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Pre-Audit Readiness Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="glass-panel p-6 rounded-2xl border border-panel-border/40 bg-slate-900/40 space-y-3">
+                        <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400">
+                          <Cpu className="w-5 h-5" />
+                        </div>
+                        <h4 className="text-base font-extrabold text-white">Topology Pre-flight</h4>
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                          Parses raw diagram graph nodes to detect compute instances, databases, and network edge routers.
+                        </p>
+                      </div>
+
+                      <div className="glass-panel p-6 rounded-2xl border border-panel-border/40 bg-slate-900/40 space-y-3">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                          <ShieldAlert className="w-5 h-5" />
+                        </div>
+                        <h4 className="text-base font-extrabold text-white">CIS & NIST Policy Rules</h4>
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                          Evaluates architecture against CIS AWS/GCP Foundations & NIST SP 800-53 security controls.
+                        </p>
+                      </div>
+
+                      <div className="glass-panel p-6 rounded-2xl border border-panel-border/40 bg-slate-900/40 space-y-3">
+                        <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                          <Sparkles className="w-5 h-5" />
+                        </div>
+                        <h4 className="text-base font-extrabold text-white">AI Remediation Engine</h4>
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                          Generates interactive fix checklists with one-click node injection back into the architecture editor.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </>
