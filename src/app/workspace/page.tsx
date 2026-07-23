@@ -41,7 +41,9 @@ import {
   Mail,
   Box,
   Upload,
-  Download
+  Download,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant } from '@/lib/diagramCleaner';
 import DiagramViewer from '@/components/DiagramViewer';
@@ -379,6 +381,7 @@ function WorkspaceContent() {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanMode, setIsPanMode] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
+  const [canvasTheme, setCanvasTheme] = useState<'dark' | 'light'>('dark');
   const [viewMode, setViewMode] = useState<'canvas' | 'outline' | 'business' | 'technical'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -2907,6 +2910,27 @@ function WorkspaceContent() {
             {activeDiagram && (
               <>
                 <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
+                
+                {/* ☀️/🌙 Dark vs Light Canvas Theme Toggle */}
+                <button
+                  id="canvas-theme-toggle"
+                  onClick={() => setCanvasTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+                  title={`Switch to ${canvasTheme === 'dark' ? 'Light' : 'Dark'} Canvas Theme`}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
+                >
+                  {canvasTheme === 'dark' ? (
+                    <>
+                      <Sun className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Light Theme</span>
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Dark Theme</span>
+                    </>
+                  )}
+                </button>
+
                 {/* 1. View & Perspective Dropdown */}
                 <div className="relative inline-flex items-center shrink-0 w-[185px]">
                   <select
@@ -3778,6 +3802,7 @@ function WorkspaceContent() {
                         aspectRatioId={selectedAspectRatio}
                         customW={customRatioW}
                         customH={customRatioH}
+                        bgTheme={canvasTheme}
                       />
                     </div>
                   </div>

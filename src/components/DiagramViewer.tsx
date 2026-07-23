@@ -7,6 +7,7 @@ interface DiagramViewerProps {
   aspectRatioId?: string;
   customW?: number;
   customH?: number;
+  bgTheme?: 'dark' | 'light';
 }
 
 function htmlEscape(str: string): string {
@@ -23,6 +24,7 @@ export default function DiagramViewer({
   aspectRatioId = '16:9',
   customW = 16,
   customH = 10,
+  bgTheme = 'dark',
 }: DiagramViewerProps) {
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
@@ -43,6 +45,8 @@ export default function DiagramViewer({
     containerDimensions = `w-full max-w-[900px] h-[${calcH}px]`;
   }
 
+  const bgColor = bgTheme === 'light' ? '#FFFFFF' : '#0F172A';
+
   // Construct the isolated HTML document for the iframe
   const iframeHtml = `
     <!DOCTYPE html>
@@ -56,7 +60,7 @@ export default function DiagramViewer({
           width: 100%;
           height: 100%;
           overflow: auto;
-          background-color: transparent;
+          background-color: ${bgColor};
         }
         .mxgraph {
           width: 100%;
@@ -134,10 +138,12 @@ export default function DiagramViewer({
     </html>
   `;
 
+  const containerBgClass = bgTheme === 'light' ? 'bg-white border-slate-300 shadow-xl' : 'bg-[#0F172A] border-panel-border/20 shadow-2xl';
+
   return (
-    <div className={`${containerDimensions} relative rounded-xl overflow-hidden bg-bg-dark border border-panel-border/20 shadow-2xl transition-all duration-300 mx-auto`}>
+    <div className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}>
       <iframe
-        key={`${xml}_${aspectRatioId}`}
+        key={`${xml}_${aspectRatioId}_${bgTheme}`}
         srcDoc={iframeHtml}
         className="w-full h-full border-0 bg-transparent"
         title="Draw.io Diagram Viewer"
