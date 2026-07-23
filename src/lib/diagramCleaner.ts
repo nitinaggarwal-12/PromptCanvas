@@ -313,6 +313,24 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
       style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
     }
 
+    const isTargetRhombus = tgtPos && (vertexCells.find(v => String(v['@_id']) === tgtId)?.['@_style'] || '').includes('rhombus');
+    const isSourceRhombus = srcPos && (vertexCells.find(v => String(v['@_id']) === srcId)?.['@_style'] || '').includes('rhombus');
+
+    let lblX = 0;
+    let lblY = -18;
+
+    if (isTargetRhombus && isHorizontal) {
+      lblX = -50;
+      lblY = -18;
+    } else if (isSourceRhombus && isHorizontal) {
+      lblX = 50;
+      lblY = -18;
+    } else if (!isHorizontal) {
+      lblX = 28;
+      lblY = -10;
+      style += ';align=left;spacingLeft=8;';
+    }
+
     edge['@_style'] = style;
 
     // Position edge label safely in open inter-row / inter-column channels away from node boxes
@@ -321,8 +339,8 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
       '@_as': 'geometry',
       mxPoint: {
         '@_as': 'offset',
-        '@_x': customWaypoints ? '18' : (isHorizontal ? '0' : '15'),
-        '@_y': customWaypoints ? '0' : (isHorizontal ? '-16' : '-20')
+        '@_x': String(lblX),
+        '@_y': String(lblY)
       }
     };
 
@@ -419,8 +437,8 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
     }
   }
 
-  // Apply Generous Node Layout with expanded gaps (gapX=160px, rowHeight=210px)
-  applyGenerousNodeLayout(cells, false);
+  // Apply Generous Node Layout with identical grid structure across Options
+  applyGenerousNodeLayout(cells, true);
 
   root.mxCell = cells;
 
@@ -627,8 +645,18 @@ export function createVendorIconsVariant(xmlInput: string): string {
       cell['@_value'] = `${vendorImgTag}<div style="display:inline-block;vertical-align:middle;">${cleanText}</div>`;
 
       let style = String(cell['@_style'] || '');
-      if (!style.includes('html=1')) {
-        style += ';html=1;';
+      const comboText = (rawValue + ' ' + tooltip).toLowerCase();
+
+      if (comboText.includes('apigee') || comboText.includes('gateway') || comboText.includes('oauth') || comboText.includes('proxy') || comboText.includes('auth')) {
+        style = `rhombus;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFE6CC;strokeColor=#D79B00;fontColor=#000000;strokeWidth=2;html=1;`;
+      } else if (comboText.includes('database') || comboText.includes('data lake') || comboText.includes('bigquery') || comboText.includes('redshift') || comboText.includes('healthlake') || comboText.includes('sql') || comboText.includes('spanner')) {
+        style = `shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#000000;strokeWidth=2;html=1;`;
+      } else if (comboText.includes('cluster') || comboText.includes('orchestrat') || comboText.includes('synthesis') || comboText.includes('trial') || comboText.includes('ops')) {
+        style = `rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#E1D5E7;strokeColor=#9673A6;fontColor=#000000;strokeWidth=2;html=1;`;
+      } else {
+        if (!style.includes('html=1')) {
+          style += ';html=1;';
+        }
       }
       cell['@_style'] = style;
     }
