@@ -250,12 +250,14 @@ export async function ensureTablesExist(): Promise<void> {
         id TEXT PRIMARY KEY,
         diagram_id TEXT NOT NULL REFERENCES diagrams(id) ON DELETE CASCADE,
         version_number INTEGER NOT NULL,
+        audit_category TEXT DEFAULT 'security',
         score INTEGER NOT NULL DEFAULT 85,
         report TEXT NOT NULL,
         gaps TEXT NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    await pool.query(`ALTER TABLE audit_reports ADD COLUMN IF NOT EXISTS audit_category TEXT DEFAULT 'security';`);
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS diagram_collaborators (

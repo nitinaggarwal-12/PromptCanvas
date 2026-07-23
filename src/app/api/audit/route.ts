@@ -228,16 +228,21 @@ Respond strictly in JSON matching the schema provided:
     }
 
     // Save report to database for persistent audit history
-    const savedReport = await saveAuditReport({
-      diagramId,
-      versionNumber: latestVersion.version_number,
-      auditCategory: categoryKey,
-      score,
-      report,
-      gaps,
-    });
-
-    const allReports = await getAuditReportsForDiagram(diagramId);
+    let savedReport = null;
+    let allReports: any[] = [];
+    try {
+      savedReport = await saveAuditReport({
+        diagramId,
+        versionNumber: latestVersion.version_number,
+        auditCategory: categoryKey,
+        score,
+        report,
+        gaps,
+      });
+      allReports = await getAuditReportsForDiagram(diagramId);
+    } catch (dbErr) {
+      console.warn('Failed to save audit report to DB, returning live audit result:', dbErr);
+    }
 
     return NextResponse.json({
       auditCategory: categoryKey,
