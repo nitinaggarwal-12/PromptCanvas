@@ -2910,6 +2910,7 @@ function WorkspaceContent() {
                 {/* 1. View & Perspective Dropdown */}
                 <div className="relative inline-flex items-center shrink-0 w-[185px]">
                   <select
+                    id="view-mode-selector"
                     value={`${viewMode}:${layoutPreset}`}
                     onChange={(e) => {
                       const [vMode, lPreset] = e.target.value.split(':');

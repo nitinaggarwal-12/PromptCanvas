@@ -246,7 +246,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     if (!style.includes('orthogonalEdgeStyle')) {
       style = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${style}`;
     }
-    style += `;fontColor=#ffffff;fontStyle=1;labelBackgroundColor=#1e293b;labelBorderColor=#475569;labelWidth=140;fontSize=10;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
+    style += `;fontColor=#E2E8F0;fontStyle=1;labelBackgroundColor=none;fontSize=11;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
 
     const srcId = String(edge['@_source'] || '');
     const tgtId = String(edge['@_target'] || '');
@@ -381,8 +381,8 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
         const cleanEdgeText = fullEdgeValue.replace(/<[^>]+>/g, '').trim();
         if (cleanEdgeText) {
           cell['@_tooltip'] = cleanEdgeText;
+          cell['@_value'] = formatEdgeLabelToMax2Lines(cleanEdgeText);
         }
-        cell['@_value'] = '';
         modifiedNodesCount++;
       }
     } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
