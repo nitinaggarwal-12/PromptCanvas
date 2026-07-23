@@ -70,19 +70,19 @@ CRITICAL SYNTAX PROHIBITIONS:
   * Sub-Agents / Auxiliary / Connectors (Light Gray/White): Fill \`#F5F5F5\`, Stroke \`#CCCCCC\`, fontColor \`#000000\`
 * **Shapes**:
   * Standard Services / Compute / Agents: Rounded rectangles (\`rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;\`)
-  * Gateways / API Handlers: Diamonds (\`rhombus;whiteSpace=wrap;html=1;strokeWidth=2;\`)
+  * Gateways / API Handlers / Routers: Diamonds with generous padding (\`rhombus;whiteSpace=wrap;html=1;strokeWidth=2;\` with \`width=240\` and \`height=90\` so multi-line text never overflows the diamond border).
   * Databases / Storages: Cylinders (\`shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;\`)
   * Bridges / Cross-Cloud / Tunnels: Rounded rectangles with dashed borders (\`rounded=1;whiteSpace=wrap;html=1;arcSize=10;dashed=1;dashPattern=8 8;strokeWidth=2;\`)
 * **Connectors & Edges**:
   * Always use clean, straight orthogonal connector lines:
     \`edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;\`
-  * Always add descriptive text labels to connectors to explain the interaction (e.g. \`value="API Calls"\` or \`value="Context Retrieval"\`).
+  * Always add concise 1-3 word text labels to connectors to explain interactions without text collisions.
   * For special feedback loops (e.g., self-healing loops), use red dashed lines with double arrowheads:
     \`edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#EF4444;dashed=1;dashPattern=8 8;startArrow=classic;endArrow=classic;\`
   * **Critical mxPoint Rule**: Never use \`<Object>\` tags to represent routing points in an edge's geometry. You **must** always use \`<mxPoint x="..." y="..." />\` (self-closing) inside the \`<Array as="points">\` container. Using \`<Object>\` is invalid and will cause a rendering crash.
 * **Grid & Layout Alignment**:
   * Organize nodes into clean, logical horizontal layers (tiers) or vertical columns.
-  * Nodes in the same tier must share the exact same Y-coordinate, and nodes in the same column must share the exact same X-coordinate.
+  * Nodes in the same tier (such as the 3 worker clusters in Tier 3) MUST share the exact same Y-coordinate, spread across 3 horizontal columns (e.g., \`x=150\`, \`x=550\`, \`x=950\`).
   * Ensure a minimum spacing of \`220px\` horizontally and \`160px\` vertically between nodes. Never overlap nodes or connectors. Prohibit long-distance feedback lines from crossing middle nodes.
 
 ### Node Icon & Image Rules:
