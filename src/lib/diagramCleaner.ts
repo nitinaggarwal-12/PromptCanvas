@@ -315,14 +315,14 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
     edge['@_style'] = style;
 
-    // Position edge label at exact line midpoint in open channels
+    // Position edge label safely in open inter-row / inter-column channels away from node boxes
     const edgeGeo: any = {
       '@_relative': '1',
       '@_as': 'geometry',
       mxPoint: {
         '@_as': 'offset',
-        '@_x': isHorizontal ? '0' : '12',
-        '@_y': isHorizontal ? '-12' : '0'
+        '@_x': customWaypoints ? '18' : (isHorizontal ? '0' : '15'),
+        '@_y': customWaypoints ? '0' : (isHorizontal ? '-16' : '-20')
       }
     };
 
