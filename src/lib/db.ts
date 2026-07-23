@@ -2511,6 +2511,9 @@ export async function saveAuditReport({
 
   if (isPostgres()) {
     const pool = getPgPool();
+    try {
+      await pool.query(`ALTER TABLE audit_reports ADD COLUMN IF NOT EXISTS audit_category TEXT DEFAULT 'security';`);
+    } catch {}
     const res = await pool.query(
       `INSERT INTO audit_reports (id, diagram_id, version_number, audit_category, score, report, gaps)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -2541,6 +2544,9 @@ export async function getAuditReportsForDiagram(diagramId: string): Promise<Audi
   await ensureTablesExist();
   if (isPostgres()) {
     const pool = getPgPool();
+    try {
+      await pool.query(`ALTER TABLE audit_reports ADD COLUMN IF NOT EXISTS audit_category TEXT DEFAULT 'security';`);
+    } catch {}
     const res = await pool.query(
       `SELECT * FROM audit_reports WHERE diagram_id = $1 ORDER BY version_number DESC, created_at DESC`,
       [diagramId]
