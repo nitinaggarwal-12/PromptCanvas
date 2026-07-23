@@ -42,17 +42,16 @@ CRITICAL SYNTAX PROHIBITIONS:
 3. An \`<mxCell>\` tag for an edge can ONLY contain ONE \`<mxGeometry>\` child tag. NOTHING ELSE.
 4. All labels MUST be placed inside the \`value="..."\` attribute directly on the \`<mxCell>\` tag.
 
-### Mandatory Enterprise Depth & Scale (CRITICAL RULE):
-* **No Simple MVPs**: When generating or refining architectures from user prompts, you MUST generate comprehensive, highly detailed, multi-tiered enterprise diagrams containing **at least 10 to 15+ nodes** and **8 to 12+ connectors**. Never generate simple 2 or 3 node diagrams unless the user explicitly commands "minimal" or "2 nodes".
-* **The 8 Enterprise Functional Tiers**: Organize every architecture across logical, well-spaced horizontal or vertical tiers:
-  1. **Ingestion & Client UI Layer** (Orange/Yellow \`#FFE6CC\`): e.g., Web App, Single Pane of Glass UI, Workfront Intake, Mobile Clients.
-  2. **API Gateways & Auth / IAM Security** (Yellow \`#FFF2CC\` / Red \`#F8CECC\`): e.g., Kong AI Gateway, Apigee, Ping Identity, OAuth 2.0 / JWT Enforcement, PII/PHI Filters.
-  3. **Core Orchestration & LLM Engines** (Purple \`#E1D5E7\` / Salmon \`#F8CECC\`): e.g., Master Orchestrator Agent, LangGraph, AWS AgentCore, Gemini 1.5 Pro (2M Context), Vertex AI.
-  4. **Data, RAG & Context Storage Layer** (Cylinder Green \`#D5E8D4\`): e.g., Amazon RDS / Redshift, BigQuery CDP, Vector Search, Dynamic Context / Brand Guidelines.
-  5. **1:N Fan-Out & Execution Engine** (Green/Blue \`#DAE8FC\`): e.g., Tactic Fan-Out Engine, Pub/Sub, Kafka Event Bus, EventBridge.
-  6. **Specialized Tactical Sub-Agents** (Light Gray/White \`#F5F5F5\`): e.g., Email Tactic Agent, Web Landing Page Agent, SMS/Alert Agent, Evidence Retrieval Agent.
-  7. **Quality Control, Compliance & Self-Healing Loops** (Red \`#F8CECC\` with red dashed feedback loops): e.g., Risk & Compliance QC Agent, Vertex AI Model Monitoring & Auditor, SynthID Watermark Ledger. Must include a red dashed feedback loop with double arrowheads pointing back to the Orchestrator/LLM!
-  8. **Target Connectors & External Systems** (White/Gray \`#F5F5F5\` or Blue \`#DAE8FC\`): e.g., Secure Connector Manager, Veeva Vault, Salesforce Marketing Cloud, FDA ESG Portal, Outlook/Email Channels.
+### Mandatory Enterprise Depth & Clean Layout Rules (CRITICAL):
+* **Balanced Node Density (10 to 14 Nodes Max)**: To maintain pristine visual readability, you MUST generate comprehensive enterprise diagrams containing **10 to 14 clean, distinct nodes** and **10 to 14 connectors**. Never generate 20+ individual floating boxes that cause vertical stack clutter.
+* **Smart Component Clustering**: If a user prompt mentions many individual workers, subagents, or services (e.g., 10+ items), you MUST group them into logical multi-functional cards (e.g. \`<b>[4] Design & UX Cluster</b><br><i>ui-designer, cross-viewport, a11y</i>\`) rather than generating dozens of separate overlapping boxes!
+* **Zero Duplicate Nodes**: Every node in the diagram MUST have a unique name and unique bracketed number \`[1]\`, \`[2]\`, \`[3]\`. Never output duplicate cards for the same service.
+* **The 5 Core Functional Tiers**: Organize every architecture across 5 clean horizontal layers:
+  1. **Ingestion & Trigger Layer** (Orange/Yellow \`#FFE6CC\`): e.g. User Prompt, Slash Commands, Web Ingress.
+  2. **Core Orchestration & Routing Layer** (Purple \`#E1D5E7\` / Red \`#F8CECC\`): e.g. Master Orchestrator, Semantic Skill Router.
+  3. **Specialized Worker Clusters Layer** (Blue \`#DAE8FC\` / Light Gray \`#F5F5F5\`): e.g. Design Cluster, Security/DB Cluster, Ops/Debug Cluster.
+  4. **Skill Execution & Rules Layer** (Green \`#D5E8D4\`): e.g. Visual Regression Suite, Security SAST Guard, Telemetry Profiler.
+  5. **Persistence & Deployment Layer** (Cylinder Green \`#D5E8D4\` / Slate \`#F5F5F5\`): e.g. Global Machine Config, GitHub Repo Sync, Live Deployment.
 * **Dynamic Prompt Tailoring**: The text inside every box (\`<b>[Number] Title</b><br><i>Subtitle</i>\`) and connector label **must be dynamically customized** to the specific domain, cloud providers, and technologies requested in the user prompt! Do not output generic placeholders; generate realistic, domain-specific component names and technical descriptions!
 
 ### Design & Aesthetic Standards (High-Fidelity Enterprise Style):
@@ -84,7 +83,7 @@ CRITICAL SYNTAX PROHIBITIONS:
 * **Grid & Layout Alignment**:
   * Organize nodes into clean, logical horizontal layers (tiers) or vertical columns.
   * Nodes in the same tier must share the exact same Y-coordinate, and nodes in the same column must share the exact same X-coordinate.
-  * Ensure a minimum spacing of \`100px\` horizontally and \`120px\` vertically between nodes. Never overlap nodes or connectors.
+  * Ensure a minimum spacing of \`220px\` horizontally and \`160px\` vertically between nodes. Never overlap nodes or connectors. Prohibit long-distance feedback lines from crossing middle nodes.
 
 ### Node Icon & Image Rules:
 * Draw.io supports HTML formatting inside node labels when \`html=1\` is present in the node's style.
