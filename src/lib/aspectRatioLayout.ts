@@ -1,14 +1,16 @@
 /**
  * Aspect Ratio Auto-Layout Engine for PromptCanvas
  * Recalculates Draw.io mxGraph XML node geometry (x, y coordinates)
- * to fit targeted aspect ratios (16:9, 4:3, 1:1, 9:16, 21:9, or Custom W:H)
- * instantly on the client side without Gemini API calls.
+ * for top-level container groups (parent="1") to fit targeted aspect ratios
+ * (16:9, 4:3, 1:1, 9:16, 21:9, or Custom W:H) instantly on the client side.
  */
+
+import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 
 export interface AspectRatioOption {
   id: string;
   label: string;
-  ratio: number; // Width / Height quotient
+  ratio: number;
   description: string;
 }
 
@@ -37,7 +39,7 @@ export function parseAspectRatioQuotient(ratioStr: string, customW?: number, cus
 
 interface ParsedNode {
   id: string;
-  fullTag: string;
+  cell: any;
   x: number;
   y: number;
   width: number;
@@ -45,7 +47,8 @@ interface ParsedNode {
 }
 
 /**
- * Re-layouts Draw.io mxGraph XML nodes to fit the specified aspect ratio bounds.
+ * Re-layouts Draw.io mxGraph XML top-level container groups (parent="1")
+ * to fit targeted aspect ratio bounds.
  */
 export function rearrangeDiagramForAspectRatio(
   xmlContent: string,
@@ -59,150 +62,89 @@ export function rearrangeDiagramForAspectRatio(
 
   const R = parseAspectRatioQuotient(aspectRatioId, customWidth, customHeight);
 
-  // Match all <mxCell ...> tags that contain vertex="1"
-  const cellMatchRegex = /<mxCell\s+([\s\S]*?)>(?:[\s\S]*?<mxGeometry\s+([\s\S]*?)\/>)?[\s\S]*?<\/mxCell>/gi;
-  const nodes: ParsedNode[] = [];
-
-  let match: RegExpExecArray | null;
-  while ((match = cellMatchRegex.exec(xmlContent)) !== null) {
-    const cellAttrs = match[1];
-    const geomAttrs = match[2];
-
-    const isVertex = /vertex="1"/.test(cellAttrs);
-    const idMatch = cellAttrs.match(/id="([^"]+)"/);
-
-    if (isVertex && idMatch && geomAttrs) {
-      const id = idMatch[1];
-      const xMatch = geomAttrs.match(/x="([^"]+)"/);
-      const yMatch = geomAttrs.match(/y="([^"]+)"/);
-      const wMatch = geomAttrs.match(/width="([^"]+)"/);
-      const hMatch = geomAttrs.match(/height="([^"]+)"/);
-
-      nodes.push({
-        id,
-        fullTag: match[0],
-        x: xMatch ? parseFloat(xMatch[1]) : 100,
-        y: yMatch ? parseFloat(yMatch[1]) : 100,
-        width: wMatch ? parseFloat(wMatch[1]) : 200,
-        height: hMatch ? parseFloat(hMatch[1]) : 70,
-      });
-    }
-  }
-
-  if (nodes.length === 0) return xmlContent;
-
-  // Sort nodes vertically into logical tiers by Y coordinate
-  nodes.sort((a, b) => a.y - b.y);
-
-  // Group nodes into Y-tiers (nodes within 90px Y are considered same tier)
-  const tiers: ParsedNode[][] = [];
-  nodes.forEach(node => {
-    let placed = false;
-    for (const tier of tiers) {
-      const avgY = tier.reduce((sum, n) => sum + n.y, 0) / tier.length;
-      if (Math.abs(node.y - avgY) < 90) {
-        tier.push(node);
-        placed = true;
-        break;
-      }
-    }
-    if (!placed) {
-      tiers.push([node]);
-    }
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_',
+    allowBooleanAttributes: true,
+    parseTagValue: false,
+    parseAttributeValue: false,
   });
 
-  // Calculate new grid coordinates based on Aspect Ratio Quotient (R)
-  let updatedXml = xmlContent;
-
-  if (R < 0.85) {
-    // 📱 Vertical Mobile Flow (Single-Column Top-to-Bottom Stack)
-    let currentY = 80;
-    const centerX = 300;
-
-    tiers.forEach(tier => {
-      tier.forEach(node => {
-        const newX = Math.max(50, centerX - node.width / 2);
-        const newY = currentY;
-        currentY += node.height + 60;
-
-        updatedXml = replaceNodeCoordinates(updatedXml, node.id, newX, newY);
-      });
-    });
-  } else if (R >= 1.6) {
-    // 🖥️ Wide Horizontal Flow (16:9, 21:9, 16:10)
-    let currentY = 100;
-    const tierSpacingY = 160;
-
-    tiers.forEach(tier => {
-      const maxCols = R > 2.0 ? 5 : 4;
-      const totalTierWidth = Math.min(tier.length, maxCols) * 260;
-      const startX = Math.max(80, 650 - totalTierWidth / 2);
-
-      tier.forEach((node, idx) => {
-        const col = idx % maxCols;
-        const row = Math.floor(idx / maxCols);
-
-        const newX = startX + col * 260;
-        const newY = currentY + row * 100;
-
-        updatedXml = replaceNodeCoordinates(updatedXml, node.id, newX, newY);
-      });
-
-      const maxRowsInTier = Math.ceil(tier.length / maxCols);
-      currentY += maxRowsInTier * 100 + tierSpacingY;
-    });
-  } else {
-    // ⏹️ Balanced Matrix Grid (4:3, 1:1, 3:2, 5:4)
-    let currentY = 100;
-    const tierSpacingY = 140;
-
-    tiers.forEach(tier => {
-      const maxCols = R <= 1.0 ? 2 : 3;
-      const totalTierWidth = Math.min(tier.length, maxCols) * 240;
-      const startX = Math.max(80, 450 - totalTierWidth / 2);
-
-      tier.forEach((node, idx) => {
-        const col = idx % maxCols;
-        const row = Math.floor(idx / maxCols);
-
-        const newX = startX + col * 240;
-        const newY = currentY + row * 110;
-
-        updatedXml = replaceNodeCoordinates(updatedXml, node.id, newX, newY);
-      });
-
-      const maxRowsInTier = Math.ceil(tier.length / maxCols);
-      currentY += maxRowsInTier * 110 + tierSpacingY;
-    });
+  let ast: any = null;
+  try {
+    ast = parser.parse(xmlContent);
+  } catch {
+    return xmlContent;
   }
 
-  return updatedXml;
-}
+  const diagramObj = Array.isArray(ast.mxfile?.diagram) ? ast.mxfile.diagram[0] : ast.mxfile?.diagram;
+  if (!diagramObj || !diagramObj.mxGraphModel || !diagramObj.mxGraphModel.root) {
+    return xmlContent;
+  }
 
-function replaceNodeCoordinates(xml: string, nodeId: string, newX: number, newY: number): string {
-  const regex = new RegExp(
-    `(<mxCell\\s+[\\s\\S]*?id="${escapeRegex(nodeId)}"[\\s\\S]*?<mxGeometry\\s+)([\\s\\S]*?)(\\/>)`,
-    'gi'
+  let root = diagramObj.mxGraphModel.root;
+  let cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
+
+  // Filter top-level container vertices (parent="1" or parent is root)
+  const topLevelVertices = cells.filter(
+    (c: any) => (c['@_vertex'] === '1' || c['@_vertex'] === true) && 
+           (c['@_parent'] === '1' || !c['@_parent']) && 
+           c['@_id'] !== 'header_title' &&
+           c.mxGeometry
   );
 
-  return xml.replace(regex, (match, openTag, geomAttrs, closeTag) => {
-    let updatedGeom = geomAttrs;
-    if (/x="[^"]*"/.test(updatedGeom)) {
-      updatedGeom = updatedGeom.replace(/x="[^"]*"/, `x="${Math.round(newX)}"`);
-    } else {
-      updatedGeom = `x="${Math.round(newX)}" ${updatedGeom}`;
-    }
+  if (topLevelVertices.length === 0) return xmlContent;
 
-    if (/y="[^"]*"/.test(updatedGeom)) {
-      updatedGeom = updatedGeom.replace(/y="[^"]*"/, `y="${Math.round(newY)}"`);
-    } else {
-      updatedGeom = `y="${Math.round(newY)}" ${updatedGeom}`;
-    }
+  const parsedNodes: ParsedNode[] = topLevelVertices.map((cell: any) => ({
+    id: String(cell['@_id']),
+    cell,
+    x: parseFloat(cell.mxGeometry['@_x'] || '100'),
+    y: parseFloat(cell.mxGeometry['@_y'] || '100'),
+    width: parseFloat(cell.mxGeometry['@_width'] || '200'),
+    height: parseFloat(cell.mxGeometry['@_height'] || '70'),
+  }));
 
-    return `${openTag}${updatedGeom}${closeTag}`;
+  parsedNodes.sort((a, b) => a.x - b.x);
+
+  if (R < 0.85 || R <= 1.1) {
+    // 📱 9:16 Vertical & 1:1 Square: Stack top-level container groups into vertical rows
+    let currentY = 80;
+    const maxCols = R < 0.85 ? 1 : 2;
+
+    parsedNodes.forEach((node, idx) => {
+      const col = idx % maxCols;
+
+      const newX = Math.round(40 + col * (node.width + 40));
+      const newY = Math.round(currentY);
+
+      node.cell.mxGeometry['@_x'] = String(newX);
+      node.cell.mxGeometry['@_y'] = String(newY);
+
+      if (col === maxCols - 1 || idx === parsedNodes.length - 1) {
+        currentY += node.height + 60;
+      }
+    });
+  } else if (R >= 1.6) {
+    // 🖥️ 16:9 Widescreen: Horizontal Row Layout
+    let currentX = 40;
+    let currentY = 80;
+
+    parsedNodes.forEach((node) => {
+      node.cell.mxGeometry['@_x'] = String(currentX);
+      node.cell.mxGeometry['@_y'] = String(currentY);
+      currentX += node.width + 30;
+    });
+  }
+
+  root.mxCell = cells;
+
+  const builder = new XMLBuilder({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_',
+    format: true,
+    indentBy: '  ',
+    suppressEmptyNode: true,
   });
-}
 
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return builder.build(ast);
 }

@@ -42,6 +42,7 @@ export function AspectRatioSelector({
   return (
     <div className="relative inline-flex items-center shrink-0 w-[145px]">
       <select
+        id="aspect-ratio-selector"
         value={selectedRatio}
         onChange={handleSelectChange}
         title="Change Diagram Aspect Ratio & Auto-Organize Layout"
