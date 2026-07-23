@@ -28,7 +28,7 @@ export function parseAspectRatioQuotient(ratioStr: string, customW?: number, cus
   const preset = ASPECT_RATIO_PRESETS.find(p => p.id === ratioStr);
   if (preset) return preset.ratio;
   
-  if (ratioStr.includes(':')) {
+  if (ratioStr && ratioStr.includes(':')) {
     const [w, h] = ratioStr.split(':').map(Number);
     if (w && h && h > 0) return w / h;
   }
@@ -59,26 +59,28 @@ export function rearrangeDiagramForAspectRatio(
 
   const R = parseAspectRatioQuotient(aspectRatioId, customWidth, customHeight);
 
-  // Match all <mxCell ... vertex="1" ...> elements
-  const cellMatchRegex = /<mxCell\s+[^>]*vertex="1"[^>]*>[\s\S]*?<\/mxCell>/gi;
+  // Match all <mxCell ...> tags that contain vertex="1"
+  const cellMatchRegex = /<mxCell\s+([\s\S]*?)>(?:[\s\S]*?<mxGeometry\s+([\s\S]*?)\/>)?[\s\S]*?<\/mxCell>/gi;
   const nodes: ParsedNode[] = [];
 
   let match: RegExpExecArray | null;
   while ((match = cellMatchRegex.exec(xmlContent)) !== null) {
-    const fullTag = match[0];
-    const idMatch = fullTag.match(/id="([^"]+)"/);
-    const geomMatch = fullTag.match(/<mxGeometry\s+([^>]*)\/>/);
+    const cellAttrs = match[1];
+    const geomAttrs = match[2];
 
-    if (idMatch && geomMatch) {
-      const geomAttrs = geomMatch[1];
+    const isVertex = /vertex="1"/.test(cellAttrs);
+    const idMatch = cellAttrs.match(/id="([^"]+)"/);
+
+    if (isVertex && idMatch && geomAttrs) {
+      const id = idMatch[1];
       const xMatch = geomAttrs.match(/x="([^"]+)"/);
       const yMatch = geomAttrs.match(/y="([^"]+)"/);
       const wMatch = geomAttrs.match(/width="([^"]+)"/);
       const hMatch = geomAttrs.match(/height="([^"]+)"/);
 
       nodes.push({
-        id: idMatch[1],
-        fullTag,
+        id,
+        fullTag: match[0],
         x: xMatch ? parseFloat(xMatch[1]) : 100,
         y: yMatch ? parseFloat(yMatch[1]) : 100,
         width: wMatch ? parseFloat(wMatch[1]) : 200,
@@ -178,26 +180,26 @@ export function rearrangeDiagramForAspectRatio(
 }
 
 function replaceNodeCoordinates(xml: string, nodeId: string, newX: number, newY: number): string {
-  const cellRegex = new RegExp(
-    `(<mxCell\\s+[^>]*id="${escapeRegex(nodeId)}"[^>]*>[\\s\\S]*?<mxGeometry\\s+)([^>]*)(/>)`,
+  const regex = new RegExp(
+    `(<mxCell\\s+[\\s\\S]*?id="${escapeRegex(nodeId)}"[\\s\\S]*?<mxGeometry\\s+)([\\s\\S]*?)(\\/>)`,
     'gi'
   );
 
-  return xml.replace(cellRegex, (match, prefix, geomAttrs, suffix) => {
-    let updatedAttrs = geomAttrs;
-    if (/x="[^"]*"/.test(updatedAttrs)) {
-      updatedAttrs = updatedAttrs.replace(/x="[^"]*"/, `x="${Math.round(newX)}"`);
+  return xml.replace(regex, (match, openTag, geomAttrs, closeTag) => {
+    let updatedGeom = geomAttrs;
+    if (/x="[^"]*"/.test(updatedGeom)) {
+      updatedGeom = updatedGeom.replace(/x="[^"]*"/, `x="${Math.round(newX)}"`);
     } else {
-      updatedAttrs = `x="${Math.round(newX)}" ${updatedAttrs}`;
+      updatedGeom = `x="${Math.round(newX)}" ${updatedGeom}`;
     }
 
-    if (/y="[^"]*"/.test(updatedAttrs)) {
-      updatedAttrs = updatedAttrs.replace(/y="[^"]*"/, `y="${Math.round(newY)}"`);
+    if (/y="[^"]*"/.test(updatedGeom)) {
+      updatedGeom = updatedGeom.replace(/y="[^"]*"/, `y="${Math.round(newY)}"`);
     } else {
-      updatedAttrs = `y="${Math.round(newY)}" ${updatedAttrs}`;
+      updatedGeom = `y="${Math.round(newY)}" ${updatedGeom}`;
     }
 
-    return `${prefix}${updatedAttrs}${suffix}`;
+    return `${openTag}${updatedGeom}${closeTag}`;
   });
 }
 

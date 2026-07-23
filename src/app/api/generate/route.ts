@@ -91,24 +91,16 @@ CRITICAL SYNTAX PROHIBITIONS:
 * Format the \`value\` attribute exactly like this:
   \`value="&lt;img src=&quot;ICON_URL&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display='none'&quot;&gt;&lt;b&gt;[NUMBER] NODE_TITLE&lt;/b&gt;&lt;br&gt;&lt;i&gt;NODE_SUBTITLE&lt;/i&gt;"\`
 * Do NOT use the \`image\` style property in the node's \`style\` attribute (e.g., do NOT append \`image=...;imageWidth=...\` to the style). Keep the style clean (e.g. \`rhombus;whiteSpace=wrap;html=1;strokeWidth=2;\`).
-* Use the following live Iconify SVG URLs for common technologies:
-  - Google Cloud Run: \`https://api.iconify.design/logos:google-cloud-run.svg\`
-  - Apigee / API Gateway: \`https://api.iconify.design/logos:google-cloud.svg\`
-  - Google Cloud Storage / GCS: \`https://api.iconify.design/logos:google-cloud.svg\`
-  - Google Cloud SQL / Cloud Spanner: \`https://api.iconify.design/logos:google-cloud.svg\`
-  - BigQuery: \`https://api.iconify.design/logos:google-cloud.svg\`
-  - Vertex AI: \`https://api.iconify.design/logos:google-cloud.svg\`
-  - Pub/Sub / Event Stream: \`https://api.iconify.design/logos:google-cloud.svg\`
-  - AWS Lambda: \`https://api.iconify.design/logos:aws-lambda.svg\`
-  - AWS API Gateway / AWS Services: \`https://api.iconify.design/logos:aws.svg\`
-  - AWS RDS: \`https://api.iconify.design/logos:aws.svg\`
+* **Mandatory Vendor-Specific Icons**: You MUST select the exact vendor logo for each cloud provider or legacy tool mentioned:
+  - Azure (Azure APIM, Azure SQL, Azure Services): \`https://api.iconify.design/logos:microsoft-azure.svg\`
+  - AWS (AWS HealthLake, Redshift, S3, EC2, Lambda): \`https://api.iconify.design/logos:aws.svg\`
+  - SAP (SAP S/4HANA, SAP ERP, SAP Inventory): \`https://api.iconify.design/logos:sap.svg\`
+  - GCP (Google BigQuery, Vertex AI, Cloud Run, GCS): \`https://api.iconify.design/logos:google-cloud.svg\`
+  - Ping Identity / OAuth: \`https://api.iconify.design/logos:oauth.svg\`
+  - Python / Scripts: \`https://api.iconify.design/logos:python.svg\`
+  - PostgreSQL: \`https://api.iconify.design/logos:postgresql.svg\`
+  - Redis: \`https://api.iconify.design/logos:redis.svg\`
   - Kubernetes: \`https://api.iconify.design/logos:kubernetes.svg\`
-  - Generic databases / technologies (e.g., PostgreSQL, MySQL, Redis, Python, Java):
-    - PostgreSQL: \`https://api.iconify.design/logos:postgresql.svg\`
-    - MySQL: \`https://api.iconify.design/logos:mysql.svg\`
-    - Redis: \`https://api.iconify.design/logos:redis.svg\`
-    - Python: \`https://api.iconify.design/logos:python.svg\`
-    - Java: \`https://api.iconify.design/logos:java.svg\`
 
 ### Refinement Mode vs. Complete Redesign (CRITICAL RULE):
 * If the user provides "Existing XML" and a prompt:
