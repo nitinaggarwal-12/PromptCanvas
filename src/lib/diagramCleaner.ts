@@ -272,7 +272,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
       const isSameTier = srcPos.tier === tgtPos.tier;
       const hasObstacle = checkAnySegmentIntersectsNode(srcPos, tgtPos, srcId, tgtId);
 
-      if (isSameTier && Math.abs(srcPos.x - tgtPos.x) <= nodeWidth + 180 && !hasObstacle) {
+      if (isSameTier && Math.abs(srcPos.x - tgtPos.x) <= nodeWidth + gapX + 160 && !hasObstacle) {
         // Direct horizontal connection between adjacent columns in same tier
         isHorizontal = true;
         if (srcPos.x < tgtPos.x) {
@@ -299,7 +299,11 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
         ];
       } else {
         // Route through Open Inter-Row Channel Gap (exit bottom into open row gap, travel horizontally, enter top of target)
-        const gapY = Math.round(srcPos.y + nodeHeight + (tgtPos.y - (srcPos.y + nodeHeight)) / 2);
+        let gapY = Math.round(srcPos.y + nodeHeight + (tgtPos.y - (srcPos.y + nodeHeight)) / 2);
+        if (isSameTier || Math.abs(srcPos.y - tgtPos.y) < 20) {
+          gapY = srcPos.y + nodeHeight + 35; // Place in open channel below row if in same tier
+        }
+
         const sX = Math.round(srcPos.x + exitPort * nodeWidth);
         const tX = Math.round(tgtPos.x + entryPort * nodeWidth);
 
