@@ -231,6 +231,7 @@ Respond strictly in JSON matching the schema provided:
     const savedReport = await saveAuditReport({
       diagramId,
       versionNumber: latestVersion.version_number,
+      auditCategory: categoryKey,
       score,
       report,
       gaps,

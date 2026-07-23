@@ -1893,11 +1893,14 @@ function WorkspaceContent() {
                           }}
                           className="appearance-none pl-3 pr-8 py-2 rounded-xl text-xs font-black bg-[#0b101d] text-teal-300 border border-teal-500/40 hover:border-teal-400 focus:outline-none cursor-pointer shadow-md transition-all"
                         >
-                          {auditHistory.map((rep, idx) => (
-                            <option key={rep.id} value={rep.id} className="bg-[#0b101d] text-slate-200">
-                              Audit Report v{rep.version_number} ({rep.score}%) {idx === 0 ? '- (Latest)' : '- (Historical Snapshot)'}
-                            </option>
-                          ))}
+                          {auditHistory.map((rep, idx) => {
+                            const catLabel = rep.audit_category === 'visual' ? '🎨 Visual' : rep.audit_category === 'topology' ? '⚡ Topology' : rep.audit_category === 'responsive' ? '📱 Responsive' : rep.audit_category === 'accessibility' ? '♿ WCAG' : rep.audit_category === 'vendor' ? '🏷️ Vendor' : '🛡️ Security';
+                            return (
+                              <option key={rep.id} value={rep.id} className="bg-[#0b101d] text-slate-200">
+                                Audit v{rep.version_number} • {catLabel} ({rep.score}%) {idx === 0 ? '• (Latest)' : '• (Snapshot)'}
+                              </option>
+                            );
+                          })}
                         </select>
                         <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
                       </div>

@@ -2491,12 +2491,14 @@ export async function updateUserGlobalRole(
 export async function saveAuditReport({
   diagramId,
   versionNumber,
+  auditCategory = 'security',
   score,
   report,
   gaps,
 }: {
   diagramId: string;
   versionNumber: number;
+  auditCategory?: string;
   score: number;
   report: string;
   gaps: any[];
@@ -2508,19 +2510,26 @@ export async function saveAuditReport({
   if (isPostgres()) {
     const pool = getPgPool();
     const res = await pool.query(
-      `INSERT INTO audit_reports (id, diagram_id, version_number, score, report, gaps)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO audit_reports (id, diagram_id, version_number, audit_category, score, report, gaps)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [id, diagramId, versionNumber, score, report, gapsJson]
+      [id, diagramId, versionNumber, auditCategory, score, report, gapsJson]
     );
     return res.rows[0];
   } else {
     const db = getSqliteDb();
+    try {
+      const cols = db.prepare(`PRAGMA table_info(audit_reports)`).all() as any[];
+      if (!cols.some(c => c.name === 'audit_category')) {
+        db.exec(`ALTER TABLE audit_reports ADD COLUMN audit_category TEXT DEFAULT 'security';`);
+      }
+    } catch {}
+
     const stmt = db.prepare(
-      `INSERT INTO audit_reports (id, diagram_id, version_number, score, report, gaps)
-       VALUES (?, ?, ?, ?, ?, ?)`
+      `INSERT INTO audit_reports (id, diagram_id, version_number, audit_category, score, report, gaps)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
     );
-    stmt.run(id, diagramId, versionNumber, score, report, gapsJson);
+    stmt.run(id, diagramId, versionNumber, auditCategory, score, report, gapsJson);
     const getStmt = db.prepare(`SELECT * FROM audit_reports WHERE id = ?`);
     return getStmt.get(id) as unknown as AuditReport;
   }
@@ -2537,6 +2546,12 @@ export async function getAuditReportsForDiagram(diagramId: string): Promise<Audi
     return res.rows;
   } else {
     const db = getSqliteDb();
+    try {
+      const cols = db.prepare(`PRAGMA table_info(audit_reports)`).all() as any[];
+      if (!cols.some(c => c.name === 'audit_category')) {
+        db.exec(`ALTER TABLE audit_reports ADD COLUMN audit_category TEXT DEFAULT 'security';`);
+      }
+    } catch {}
     const stmt = db.prepare(`SELECT * FROM audit_reports WHERE diagram_id = ? ORDER BY version_number DESC, created_at DESC`);
     return stmt.all(diagramId) as unknown as AuditReport[];
   }
