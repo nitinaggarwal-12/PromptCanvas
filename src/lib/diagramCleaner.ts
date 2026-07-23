@@ -113,10 +113,10 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
   // 2. Compute Spaced Coordinates for Vertices (Widescreen 16:9 Slide Ratio: max 3-4 nodes/row, tight 65px row gap)
   const startY = 40;
-  const rowHeight = isDetailedView ? 140 : 120; // Tight 140px row height (75px node + 65px vertical gap, zero blank space)
+  const rowHeight = isDetailedView ? 155 : 135; // Spacious 155px row height (75px node + 80px vertical channel gap)
   const nodeWidth = 220;
   const nodeHeight = isDetailedView ? 75 : 55;
-  const gapX = 90; // Balanced 90px horizontal gap between nodes
+  const gapX = 140; // Spacious 140px horizontal gap between nodes
   const canvasWidth = 1180;
   let currentY = startY;
 
@@ -269,18 +269,19 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 
     if (srcPos && tgtPos) {
       const tierDiff = Math.abs(srcPos.tier - tgtPos.tier);
+      const isSameTier = srcPos.tier === tgtPos.tier;
       const hasObstacle = checkAnySegmentIntersectsNode(srcPos, tgtPos, srcId, tgtId);
 
-      if (srcPos.tier === tgtPos.tier && !hasObstacle) {
-        // Direct horizontal connection between adjacent nodes in same tier
+      if (isSameTier && Math.abs(srcPos.x - tgtPos.x) <= nodeWidth + 180 && !hasObstacle) {
+        // Direct horizontal connection between adjacent columns in same tier
         isHorizontal = true;
         if (srcPos.x < tgtPos.x) {
           style += `;exitX=1;exitY=${exitPort};entryX=0;entryY=${entryPort};`;
         } else {
           style += `;exitX=0;exitY=${exitPort};entryX=1;entryY=${entryPort};`;
         }
-      } else if (tierDiff > 1 || hasObstacle) {
-        // Route through 4-point Inter-Row Channel Waypoints: exit bottom into open row gap, travel to outer gutter highway, enter top of target
+      } else if (tierDiff > 2 || (srcPos.x < 300 && tgtPos.x > 800 && tierDiff > 1)) {
+        // Route through Outer Gutter Highway for long jumps
         const isRightSide = tgtPos.x >= 500 || srcPos.x >= 500;
         let gutterX = dynamicRightGutterX;
         if (isRightSide) {
@@ -291,23 +292,24 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
           leftGutterLaneCount = (leftGutterLaneCount + 1) % 4;
         }
 
-        const srcExitX = srcPos.x + exitPort * nodeWidth;
-        const srcGapY = srcPos.y + nodeHeight + 25; // Open inter-row channel below src
-        const tgtGapY = tgtPos.y - 30;              // Open inter-row channel above tgt
-        const tgtEntryX = tgtPos.x + entryPort * nodeWidth;
+        style += isRightSide ? `;exitX=1;exitY=${exitPort};entryX=1;entryY=${entryPort};` : `;exitX=0;exitY=${exitPort};entryX=0;entryY=${entryPort};`;
+        customWaypoints = [
+          { '@_x': String(Math.round(gutterX)), '@_y': String(Math.round(srcPos.y + nodeHeight / 2)) },
+          { '@_x': String(Math.round(gutterX)), '@_y': String(Math.round(tgtPos.y + nodeHeight / 2)) }
+        ];
+      } else {
+        // Route through Open Inter-Row Channel Gap (exit bottom into open row gap, travel horizontally, enter top of target)
+        const gapY = Math.round(srcPos.y + nodeHeight + (tgtPos.y - (srcPos.y + nodeHeight)) / 2);
+        const sX = Math.round(srcPos.x + exitPort * nodeWidth);
+        const tX = Math.round(tgtPos.x + entryPort * nodeWidth);
 
         style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
-        customWaypoints = [
-          { '@_x': String(Math.round(srcExitX)),  '@_y': String(Math.round(srcGapY)) },
-          { '@_x': String(Math.round(gutterX)),   '@_y': String(Math.round(srcGapY)) },
-          { '@_x': String(Math.round(gutterX)),   '@_y': String(Math.round(tgtGapY)) },
-          { '@_x': String(Math.round(tgtEntryX)), '@_y': String(Math.round(tgtGapY)) }
-        ];
-      } else if (srcPos.tier < tgtPos.tier) {
-        style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
-      } else {
-        // Upward feedback connection: exit top, enter bottom at distributed ports
-        style += `;exitX=${exitPort};exitY=0;entryX=${entryPort};entryY=1;`;
+        if (Math.abs(sX - tX) > 20) {
+          customWaypoints = [
+            { '@_x': String(sX), '@_y': String(gapY) },
+            { '@_x': String(tX), '@_y': String(gapY) }
+          ];
+        }
       }
     } else {
       style += `;exitX=${exitPort};exitY=1;entryX=${entryPort};entryY=0;`;
