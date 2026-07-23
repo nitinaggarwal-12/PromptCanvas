@@ -1,7 +1,7 @@
 /**
  * Aspect Ratio Auto-Layout Engine for PromptCanvas
  * Recalculates Draw.io mxGraph XML node geometry (x, y coordinates)
- * for top-level container groups (parent="1") to fit targeted aspect ratios
+ * for top-level nodes (parent="1") to fit targeted aspect ratios
  * (16:9, 4:3, 1:1, 9:16, 21:9, or Custom W:H) instantly on the client side.
  */
 
@@ -47,8 +47,8 @@ interface ParsedNode {
 }
 
 /**
- * Re-layouts Draw.io mxGraph XML top-level container groups (parent="1")
- * to fit targeted aspect ratio bounds.
+ * Re-layouts Draw.io mxGraph XML top-level nodes (parent="1")
+ * to fit targeted aspect ratio bounds cleanly.
  */
 export function rearrangeDiagramForAspectRatio(
   xmlContent: string,
@@ -85,7 +85,7 @@ export function rearrangeDiagramForAspectRatio(
   let root = diagramObj.mxGraphModel.root;
   let cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
 
-  // Filter top-level container vertices (parent="1" or parent is root)
+  // Filter top-level vertices (parent="1" or parent is root)
   const topLevelVertices = cells.filter(
     (c: any) => (c['@_vertex'] === '1' || c['@_vertex'] === true) && 
            (c['@_parent'] === '1' || !c['@_parent']) && 
@@ -100,39 +100,76 @@ export function rearrangeDiagramForAspectRatio(
     cell,
     x: parseFloat(cell.mxGeometry['@_x'] || '100'),
     y: parseFloat(cell.mxGeometry['@_y'] || '100'),
-    width: parseFloat(cell.mxGeometry['@_width'] || '200'),
-    height: parseFloat(cell.mxGeometry['@_height'] || '70'),
+    width: parseFloat(cell.mxGeometry['@_width'] || '220'),
+    height: parseFloat(cell.mxGeometry['@_height'] || '60'),
   }));
 
-  parsedNodes.sort((a, b) => a.x - b.x);
+  // Sort nodes naturally by ID or original position
+  parsedNodes.sort((a, b) => a.y - b.y || a.x - b.x);
 
-  if (R < 0.85 || R <= 1.1) {
-    // 📱 9:16 Vertical & 1:1 Square: Stack top-level container groups into vertical rows
-    let currentY = 80;
-    const maxCols = R < 0.85 ? 1 : 2;
+  if (R < 0.85) {
+    // 📱 9:16 Vertical Mobile Stack (2 columns per row, compact height so all nodes fit on screen)
+    const maxCols = 2;
+    const colWidth = 240;
+    const rowHeight = 95;
 
     parsedNodes.forEach((node, idx) => {
       const col = idx % maxCols;
+      const row = Math.floor(idx / maxCols);
 
-      const newX = Math.round(40 + col * (node.width + 40));
-      const newY = Math.round(currentY);
+      const newX = Math.round(30 + col * (colWidth + 20));
+      const newY = Math.round(80 + row * rowHeight);
 
       node.cell.mxGeometry['@_x'] = String(newX);
       node.cell.mxGeometry['@_y'] = String(newY);
-
-      if (col === maxCols - 1 || idx === parsedNodes.length - 1) {
-        currentY += node.height + 60;
-      }
     });
-  } else if (R >= 1.6) {
-    // 🖥️ 16:9 Widescreen: Horizontal Row Layout
-    let currentX = 40;
-    let currentY = 80;
+  } else if (R <= 1.15) {
+    // ⏹️ 1:1 Square Grid (3 columns per row, balanced square card matrix)
+    const maxCols = 3;
+    const colWidth = 230;
+    const rowHeight = 105;
 
-    parsedNodes.forEach((node) => {
-      node.cell.mxGeometry['@_x'] = String(currentX);
-      node.cell.mxGeometry['@_y'] = String(currentY);
-      currentX += node.width + 30;
+    parsedNodes.forEach((node, idx) => {
+      const col = idx % maxCols;
+      const row = Math.floor(idx / maxCols);
+
+      const newX = Math.round(40 + col * (colWidth + 25));
+      const newY = Math.round(80 + row * rowHeight);
+
+      node.cell.mxGeometry['@_x'] = String(newX);
+      node.cell.mxGeometry['@_y'] = String(newY);
+    });
+  } else if (R < 1.5) {
+    // 📊 4:3 Executive Slide Deck (3 columns per row, wide slide spacing)
+    const maxCols = 3;
+    const colWidth = 250;
+    const rowHeight = 115;
+
+    parsedNodes.forEach((node, idx) => {
+      const col = idx % maxCols;
+      const row = Math.floor(idx / maxCols);
+
+      const newX = Math.round(50 + col * (colWidth + 30));
+      const newY = Math.round(80 + row * rowHeight);
+
+      node.cell.mxGeometry['@_x'] = String(newX);
+      node.cell.mxGeometry['@_y'] = String(newY);
+    });
+  } else {
+    // 🖥️ 16:9 Widescreen Baseline (4 columns per row, spacious horizontal presenter layout)
+    const maxCols = 4;
+    const colWidth = 240;
+    const rowHeight = 110;
+
+    parsedNodes.forEach((node, idx) => {
+      const col = idx % maxCols;
+      const row = Math.floor(idx / maxCols);
+
+      const newX = Math.round(40 + col * (colWidth + 30));
+      const newY = Math.round(80 + row * rowHeight);
+
+      node.cell.mxGeometry['@_x'] = String(newX);
+      node.cell.mxGeometry['@_y'] = String(newY);
     });
   }
 

@@ -2496,13 +2496,15 @@ function WorkspaceContent() {
     if (!baseXml) return '';
 
     let formattedXml = baseXml;
+    const hasAspectRatio = Boolean(selectedAspectRatio);
+
     if (layoutPreset === 'vendor') {
       formattedXml = createVendorIconsVariant(baseXml);
     } else if (layoutPreset === 'clean') {
       const { cleanedXml } = createMinimalistCleanVariant(baseXml);
       formattedXml = cleanedXml;
     } else {
-      formattedXml = restoreDetailedView(baseXml);
+      formattedXml = restoreDetailedView(baseXml, hasAspectRatio);
     }
 
     // Apply Aspect Ratio Node Re-organization ON TOP of active view format!

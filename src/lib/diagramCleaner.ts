@@ -499,7 +499,7 @@ export function resolveVendorIconUrl(text: string): string {
   return 'https://cdn.simpleicons.org/googlecloud/4285F4'; // Fallback
 }
 
-export function restoreDetailedView(xmlInput: string): string {
+export function restoreDetailedView(xmlInput: string, skipLayout: boolean = false): string {
   if (!xmlInput) return xmlInput;
 
   const parser = new XMLParser({
@@ -559,8 +559,10 @@ export function restoreDetailedView(xmlInput: string): string {
     }
   }
 
-  // Apply Generous Node Layout for Detailed View as well
-  applyGenerousNodeLayout(cells, true);
+  // Apply Generous Node Layout ONLY if skipLayout is false!
+  if (!skipLayout) {
+    applyGenerousNodeLayout(cells, true);
+  }
 
   root.mxCell = cells;
 
