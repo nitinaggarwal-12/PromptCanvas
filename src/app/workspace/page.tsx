@@ -55,6 +55,8 @@ import DiagramFeedbackWidget from '@/components/DiagramFeedbackWidget';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
 import { PasswordSetupModal } from '@/components/PasswordSetupModal';
+import { AspectRatioSelector } from '@/components/AspectRatioSelector';
+import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -287,6 +289,9 @@ function WorkspaceContent() {
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
+  const [selectedAspectRatio, setSelectedAspectRatio] = useState<string>('16:9');
+  const [customRatioW, setCustomRatioW] = useState<number>(16);
+  const [customRatioH, setCustomRatioH] = useState<number>(10);
   const [restrictedState, setRestrictedState] = useState<{
     diagramId: string;
     diagramName?: string;
@@ -294,6 +299,24 @@ function WorkspaceContent() {
   } | null>(null);
   const [currentUser, setCurrentUser] = useState<{ id: string; email: string; name?: string | null } | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+
+  const handleAspectRatioChange = useCallback((ratioId: string, customW?: number, customH?: number) => {
+    setSelectedAspectRatio(ratioId);
+    if (customW) setCustomRatioW(customW);
+    if (customH) setCustomRatioH(customH);
+
+    const targetVersion = previewVersion || activeVersion;
+    if (targetVersion && targetVersion.xml_content) {
+      const reOrganizedXml = rearrangeDiagramForAspectRatio(targetVersion.xml_content, ratioId, customW, customH);
+      
+      if (previewVersion) {
+        setPreviewVersion(prev => prev ? { ...prev, xml_content: reOrganizedXml } : null);
+      }
+      if (activeVersion) {
+        setActiveVersion(prev => prev ? { ...prev, xml_content: reOrganizedXml } : null);
+      }
+    }
+  }, [previewVersion, activeVersion]);
   
   const suggestions = React.useMemo(() => {
     if (!activeDiagram) return [];
@@ -2929,6 +2952,16 @@ function WorkspaceContent() {
                     </option>
                   </select>
                   <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                </div>
+
+                {/* 2b. Aspect Ratio & Auto-Organization Selector */}
+                <div className="relative inline-flex items-center shrink-0">
+                  <AspectRatioSelector
+                    selectedRatio={selectedAspectRatio}
+                    customWidth={customRatioW}
+                    customHeight={customRatioH}
+                    onChangeRatio={handleAspectRatioChange}
+                  />
                 </div>
 
                 {/* 3. Exporters Dropdown */}
