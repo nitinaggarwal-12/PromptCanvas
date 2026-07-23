@@ -1674,7 +1674,7 @@ function WorkspaceContent() {
           <div className="p-5 border-b border-panel-border/30 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-widest text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
-                Security Control Center
+                Architecture Audit Hub
               </span>
               <span className="text-xs font-bold text-slate-400">
                 {filteredDiagrams.length} {filteredDiagrams.length === 1 ? 'Asset' : 'Assets'}
@@ -1683,7 +1683,7 @@ function WorkspaceContent() {
             <div>
               <h2 className="font-extrabold text-white text-lg tracking-tight flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-teal-400 shrink-0" />
-                <span>Security & Compliance</span>
+                <span>Architecture Audit Hub</span>
               </h2>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                 Audit node connections against safety benchmarks and cloud compliance frameworks.
@@ -1990,8 +1990,32 @@ function WorkspaceContent() {
                           </span>
                           <span className="text-xs text-slate-400">{auditGaps.length} Gaps Detected</span>
                         </div>
-                        <h4 className="text-xl font-black text-white mt-1">Architecture Security & Compliance Audit</h4>
-                        <p className="text-xs text-slate-400 mt-1">Select the gaps below to automatically remediate missing security nodes in your diagram.</p>
+                        <h4 className="text-xl font-black text-white mt-1">
+                          {selectedAuditCategory === 'visual'
+                            ? 'Visual Collision & Layout Geometry Audit'
+                            : selectedAuditCategory === 'topology'
+                            ? 'Cloud Architecture Topology & Data Flow Audit'
+                            : selectedAuditCategory === 'responsive'
+                            ? 'Responsive & Aspect Ratio Legibility Audit'
+                            : selectedAuditCategory === 'accessibility'
+                            ? 'WCAG 2.1 AA Accessibility & Contrast Audit'
+                            : selectedAuditCategory === 'vendor'
+                            ? 'Vendor Icon & Brand Logo Coverage Audit'
+                            : 'Architecture Security & Compliance Audit'}
+                        </h4>
+                        <p className="text-xs text-slate-400 mt-1">
+                          {selectedAuditCategory === 'visual'
+                            ? 'Select layout gaps below to automatically re-calculate spacing, eliminate text-over-line slicing, and widen inter-row channels.'
+                            : selectedAuditCategory === 'topology'
+                            ? 'Select topology gaps below to align ingress routing, redundancy, and service mesh connectivity with Well-Architected standards.'
+                            : selectedAuditCategory === 'responsive'
+                            ? 'Select responsive gaps below to optimize aspect ratio scaling across 16:9 slides, 4:3 documents, and 9:16 mobile viewports.'
+                            : selectedAuditCategory === 'accessibility'
+                            ? 'Select accessibility gaps below to apply high-contrast font colors (#38BDF8 / #0F172A) and colorblind safe stroke patterns.'
+                            : selectedAuditCategory === 'vendor'
+                            ? 'Select unbranded component gaps below to automatically attach official SVG vendor logos (Databricks, GCP, AWS, Azure, K8s).'
+                            : 'Select the gaps below to automatically remediate missing security nodes in your diagram.'}
+                        </p>
                       </div>
                     </div>
 
@@ -2677,7 +2701,7 @@ function WorkspaceContent() {
             { id: 'editor', name: 'Design Canvas', icon: Network },
             { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid },
             { id: 'walkthrough', name: 'Visual Walkthrough', icon: BookOpen },
-            { id: 'audit', name: 'Security Audit Hub', icon: ShieldAlert },
+            { id: 'audit', name: 'Audit Hub', icon: ShieldAlert },
             { id: 'settings', name: 'Settings & Config', icon: Settings }
           ].map((item) => {
             const Icon = item.icon;
