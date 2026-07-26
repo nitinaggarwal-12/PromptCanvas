@@ -113,3 +113,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 * **140px Column Pitch & Open Inter-Row Channel Routing**: Maintain a minimum $140\text{px}$ horizontal gap between columns (`gapX = 140px`) and route cross-tier/cross-column lines through open inter-row channel waypoints (`gapY = 80px`). Labels float $16\text{px}$ above horizontal channel segments in open space.
 * **Canvas Dark/Light Theme Synchronization**: Sync container backgrounds, iframe document bodies, and edge text contrast colors across Dark (`#0F172A`) and Light (`#FFFFFF`) themes.
 
+---
+
+# 🚀 Mandatory Git Push Protocol
+
+* **Always Push Commits**: Whenever code changes are staged and committed (`git commit`), you MUST immediately execute `git push` (or `git push origin main`) without exception. Never leave commits solely on the local machine so that live CI/CD deployments (e.g. Railway, Vercel) remain synchronized with the repository.
+
+
