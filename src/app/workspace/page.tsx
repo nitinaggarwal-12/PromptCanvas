@@ -59,6 +59,7 @@ import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModa
 import { PasswordSetupModal } from '@/components/PasswordSetupModal';
 import { AspectRatioSelector } from '@/components/AspectRatioSelector';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
+import { ARCHITECTURE_TYPES, getArchitectureTypeById } from '@/lib/architectureTypes';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -68,6 +69,7 @@ interface Diagram {
   created_at: string;
   updated_at: string;
   versions?: DiagramVersion[];
+  architecture_type?: string | null;
 }
 
 interface DiagramVersion {
@@ -299,7 +301,7 @@ function WorkspaceContent() {
     diagramName?: string;
     pendingRequest?: any;
   } | null>(null);
-  const [currentUser, setCurrentUser] = useState<{ id: string; email: string; name?: string | null } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const handleAspectRatioChange = useCallback((ratioId: string, customW?: number, customH?: number) => {
@@ -465,6 +467,9 @@ function WorkspaceContent() {
   const [newDiagramName, setNewDiagramName] = useState('');
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('0');
+  const [selectedArchType, setSelectedArchType] = useState('erd');
+  const [pendingArchType, setPendingArchType] = useState<string | null>(null);
+  const [isArchConsentModalOpen, setIsArchConsentModalOpen] = useState(false);
   const [promptInput, setPromptInput] = useState('');
   const [saveComment, setSaveComment] = useState('');
   const [activeSteps, setActiveSteps] = useState<{ [key: number]: 'create' | 'modify' | 'business' | 'technical' }>({
@@ -656,6 +661,11 @@ function WorkspaceContent() {
       
       setRestrictedState(null);
       setActiveDiagram(data);
+      if (data.architecture_type) {
+        setSelectedArchType(data.architecture_type);
+      } else {
+        setSelectedArchType('erd');
+      }
       setZoom(0.7);
       setPan({ x: 0, y: 0 });
       setOutlineEdits({});
@@ -967,7 +977,8 @@ function WorkspaceContent() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               name: newDiagramName.trim(),
-              prompt: promptToGenerate
+              prompt: promptToGenerate,
+              architectureType: selectedArchType
             })
           });
           if (!res.ok) throw new Error('Failed to generate diagram');
@@ -991,7 +1002,8 @@ function WorkspaceContent() {
         body: JSON.stringify({
           name: newDiagramName,
           xml: defaultXml,
-          comment: 'Initial canvas created'
+          comment: 'Initial canvas created',
+          architectureType: selectedArchType
         })
       });
       
@@ -3107,14 +3119,29 @@ function WorkspaceContent() {
                   <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                 </div>
 
-                {/* 2b. Aspect Ratio & Auto-Organization Selector */}
+                {/* 2b. Architecture Type Dropdown */}
                 <div className="relative inline-flex items-center shrink-0">
-                  <AspectRatioSelector
-                    selectedRatio={selectedAspectRatio}
-                    customWidth={customRatioW}
-                    customHeight={customRatioH}
-                    onChangeRatio={handleAspectRatioChange}
-                  />
+                  <select
+                    id="workspace-header-architecture-select"
+                    value={selectedArchType}
+                    disabled={isAnyAIBusy}
+                    onChange={(e) => {
+                      const newArchId = e.target.value;
+                      if (newArchId !== selectedArchType && !newArchId.startsWith('slot_')) {
+                        setPendingArchType(newArchId);
+                        setIsArchConsentModalOpen(true);
+                      }
+                    }}
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[240px] truncate"
+                    title="Switch Architecture Type"
+                  >
+                    {ARCHITECTURE_TYPES.map((t) => (
+                      <option key={t.id} value={t.id} className={t.id.startsWith('slot_') ? 'text-slate-500 font-normal bg-[#0b101d]' : 'text-slate-100 font-bold bg-[#0b101d]'}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                 </div>
 
                 {/* 3. Exporters Dropdown */}
@@ -3977,6 +4004,28 @@ function WorkspaceContent() {
                 />
               </div>
               <div>
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Architecture Type</label>
+                <select
+                  value={selectedArchType}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedArchType(val);
+                    const arch = getArchitectureTypeById(val);
+                    if (arch && !val.startsWith('slot_')) {
+                      setNewDiagramPrompt(arch.prompt);
+                      setSelectedTemplate('custom');
+                    }
+                  }}
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none transition-all font-semibold cursor-pointer mb-1"
+                >
+                  {ARCHITECTURE_TYPES.map((t) => (
+                    <option key={t.id} value={t.id} className={t.id.startsWith('slot_') ? 'text-slate-500 font-normal bg-[#0b101d]' : 'text-slate-100 font-bold bg-[#0b101d]'}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">Choose a Template Prompt</label>
                 <select
                   value={selectedTemplate}
@@ -4538,6 +4587,80 @@ function WorkspaceContent() {
         onClose={() => setIsContactOpen(false)}
         currentUser={currentUser}
       />
+
+      {/* Architecture Change Consent Modal */}
+      {isArchConsentModalOpen && pendingArchType && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
+          <div className="glass-panel border-panel-border rounded-2xl p-6 md:p-8 w-full max-w-md shadow-2xl space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center shrink-0 text-teal-400">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-xl font-black text-white">Generate Architecture?</h3>
+                <p className="text-xs text-teal-300 font-semibold uppercase tracking-wider">
+                  Switching to {getArchitectureTypeById(pendingArchType).name}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-sm text-slate-300 leading-relaxed bg-slate-900/60 p-4 rounded-xl border border-slate-800/80">
+              Do you consent to generating a brand new architectural diagram version for <strong>{activeDiagram?.name || 'this workspace'}</strong> using Gemini 2.5 Flash? This will create a new version in your version history.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                id="arch-consent-cancel-btn"
+                type="button"
+                onClick={() => {
+                  setIsArchConsentModalOpen(false);
+                  setPendingArchType(null);
+                }}
+                className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                id="arch-consent-confirm-btn"
+                type="button"
+                onClick={async () => {
+                  const archToGen = pendingArchType;
+                  setIsArchConsentModalOpen(false);
+                  setPendingArchType(null);
+                  if (archToGen && activeDiagram) {
+                    setSelectedArchType(archToGen);
+                    const archObj = getArchitectureTypeById(archToGen);
+                    setIsGenerating(true);
+                    try {
+                      const res = await fetch('/api/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          diagramId: activeDiagram.id,
+                          prompt: archObj.prompt,
+                          architectureType: archToGen
+                        })
+                      });
+                      if (!res.ok) throw new Error('Failed to generate new architecture version');
+                      await fetchDiagrams();
+                      await loadDiagramDetails(activeDiagram.id);
+                    } catch (err) {
+                      console.error(err);
+                      alert('Error generating architecture diagram version');
+                    } finally {
+                      setIsGenerating(false);
+                    }
+                  }
+                }}
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black text-sm transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.02] cursor-pointer flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Yes, Generate 2nd Diagram</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <AuthModal
         isOpen={isAuthOpen}

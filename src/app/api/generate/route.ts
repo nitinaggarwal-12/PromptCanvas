@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
-import { createDiagram, saveDiagramVersion, getLatestDiagramVersion } from '@/lib/db';
+import { createDiagram, saveDiagramVersion, getLatestDiagramVersion, updateDiagramArchitectureType } from '@/lib/db';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
@@ -209,7 +209,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { prompt, diagramId, name } = body;
+    const { prompt, diagramId, name, architectureType } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -288,6 +288,9 @@ ${prompt}
 
     if (isRefinement && diagramId) {
       // Save as a new version
+      if (architectureType) {
+        await updateDiagramArchitectureType(diagramId, architectureType);
+      }
       const version = await saveDiagramVersion(
         diagramId,
         xml,
@@ -312,7 +315,9 @@ ${prompt}
         prompt,
         reasoning,
         businessUsecase,
-        technicalUsecase
+        technicalUsecase,
+        user?.id || null,
+        architectureType || 'erd'
       );
       return NextResponse.json({ diagram, version }, { status: 201 });
     }

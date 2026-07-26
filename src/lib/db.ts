@@ -115,6 +115,7 @@ export interface Diagram {
   created_at: string | Date;
   updated_at: string | Date;
   access_level?: 'Viewer' | 'Editor' | 'Owner' | null;
+  architecture_type?: string | null;
 }
 
 export interface DiagramVersion {
@@ -362,6 +363,9 @@ export async function ensureTablesExist(): Promise<void> {
       ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS workspace_id TEXT;
     `);
     await pool.query(`
+      ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS architecture_type TEXT DEFAULT 'erd';
+    `);
+    await pool.query(`
       ALTER TABLE users ADD COLUMN IF NOT EXISTS global_role TEXT DEFAULT 'Author';
     `);
     await pool.query(`
@@ -569,6 +573,11 @@ export async function ensureTablesExist(): Promise<void> {
     }
     try {
       db.exec('ALTER TABLE diagrams ADD COLUMN workspace_id TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE diagrams ADD COLUMN architecture_type TEXT DEFAULT "erd";');
     } catch {
       // Ignored if column already exists
     }
@@ -818,7 +827,8 @@ export async function createDiagram(
   aiReasoning?: string | null,
   businessUsecase?: string | null,
   technicalUsecase?: string | null,
-  userId?: string | null
+  userId?: string | null,
+  architectureType?: string | null
 ): Promise<{ diagram: Diagram; version: DiagramVersion | null }> {
   await ensureTablesExist();
   const diagramId = uuidv4();
@@ -829,7 +839,7 @@ export async function createDiagram(
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query('INSERT INTO diagrams (id, name, user_id) VALUES ($1, $2, $3)', [diagramId, name, userId || null]);
+      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES ($1, $2, $3, $4)', [diagramId, name, userId || null, architectureType || 'erd']);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -867,8 +877,8 @@ export async function createDiagram(
     const db = getSqliteDb();
     db.exec('BEGIN TRANSACTION;');
     try {
-      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id) VALUES (?, ?, ?)');
-      insertDiagram.run(diagramId, name, userId || null);
+      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES (?, ?, ?, ?)');
+      insertDiagram.run(diagramId, name, userId || null, architectureType || 'erd');
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -1072,6 +1082,18 @@ export async function migrateGuestContent(guestUserId: string, newUserId: string
     const stmt = db.prepare('UPDATE diagrams SET user_id = ? WHERE user_id = ?');
     const info = stmt.run(newUserId, guestUserId);
     return Number(info.changes || 0);
+  }
+}
+
+export async function updateDiagramArchitectureType(diagramId: string, architectureType: string): Promise<void> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query('UPDATE diagrams SET architecture_type = $1 WHERE id = $2', [architectureType, diagramId]);
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('UPDATE diagrams SET architecture_type = ? WHERE id = ?');
+    stmt.run(architectureType, diagramId);
   }
 }
 

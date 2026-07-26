@@ -173,6 +173,14 @@ export default function LandingPage() {
             ) : (
               <>
                 <button
+                  id="header-explore-guest-btn"
+                  onClick={handleExploreAsGuest}
+                  className="px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 border border-slate-700 hover:border-teal-400 text-teal-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                >
+                  <User className="w-3.5 h-3.5 text-teal-400" />
+                  <span>Explore as a Guest</span>
+                </button>
+                <button
                   id="header-signin-btn"
                   onClick={() => {
                     setAuthMode('signin');
