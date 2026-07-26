@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, User, Mail, Lock, ShieldCheck, LogOut, CheckCircle2, AlertCircle, Loader2, Clock } from 'lucide-react';
+import { X, User, Mail, Lock, ShieldCheck, LogOut, CheckCircle2, AlertCircle, Loader2, Clock, ShieldAlert } from 'lucide-react';
 
 interface UserProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  user: { id: string; email: string; name?: string | null; created_at?: string | Date } | null;
+  user: { id: string; email: string; name?: string | null; created_at?: string | Date; is_guest?: boolean } | null;
   onUpdateUser: (updatedUser: { id: string; email: string; name?: string | null }) => void;
   onLogout: () => void;
 }
@@ -227,6 +227,17 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
         {/* Tab 1: Profile Info */}
         {activeTab === 'profile' && (
           <form onSubmit={handleUpdateProfile} className="space-y-5">
+            {user.is_guest && (
+              <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs md:text-sm space-y-2 mb-4">
+                <div className="flex items-center gap-2 font-bold text-amber-400">
+                  <ShieldAlert className="w-4 h-4 shrink-0" />
+                  <span>Exploring in Guest Mode</span>
+                </div>
+                <p className="leading-relaxed">
+                  Your diagrams are public and visible to all users unless deleted. To save your work and keep it private, create a login profile.
+                </p>
+              </div>
+            )}
             <div>
               <label className="block text-sm font-bold text-slate-200 mb-2">Email Address</label>
               <div className="relative">

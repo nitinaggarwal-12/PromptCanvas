@@ -13,6 +13,7 @@ export interface User {
   name: string | null;
   global_role?: 'Super-Admin' | 'Author' | 'Member';
   is_super_admin?: boolean;
+  is_guest?: boolean;
   created_at: string | Date;
   updated_at: string | Date;
   last_login_at: string | Date | null;
@@ -695,6 +696,9 @@ export async function getUserDiagramAccess(
   // Unowned public seed templates default to Viewer
   if (!diagram.user_id) return 'Viewer';
 
+  // Guest created diagrams are public and editable by all
+  if (diagram.user_id.startsWith('guest-')) return 'Editor';
+
   if (!userId) return null;
 
   // Check if owner
@@ -735,6 +739,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
           WHEN d.user_id = $1 THEN 'Owner'
           WHEN c.access_level IS NOT NULL THEN c.access_level
           WHEN d.user_id IS NULL THEN 'Viewer'
+          WHEN d.user_id LIKE 'guest-%' THEN 'Editor'
           ELSE NULL
         END as access_level
       FROM diagrams d
@@ -745,7 +750,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         FROM diagram_versions 
         WHERE diagram_id = d.id
       )
-      WHERE d.user_id = $1 OR d.user_id IS NULL OR c.user_id = $1
+      WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1
       ORDER BY d.updated_at DESC
     `;
     if (isPostgres()) {
@@ -768,7 +773,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         FROM diagram_versions 
         WHERE diagram_id = d.id
       )
-      WHERE d.user_id IS NULL
+      WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%'
       ORDER BY d.updated_at DESC
     `;
     if (isPostgres()) {
@@ -1039,19 +1044,34 @@ export async function deleteDiagram(id: string, userId?: string): Promise<void> 
   if (isPostgres()) {
     const pool = getPgPool();
     if (userId) {
-      await pool.query('DELETE FROM diagrams WHERE id = $1 AND (user_id = $2 OR user_id IS NULL)', [id, userId]);
+      await pool.query("DELETE FROM diagrams WHERE id = $1 AND (user_id = $2 OR user_id IS NULL OR user_id LIKE 'guest-%')", [id, userId]);
     } else {
-      await pool.query('DELETE FROM diagrams WHERE id = $1', [id]);
+      await pool.query("DELETE FROM diagrams WHERE id = $1 AND (user_id IS NULL OR user_id LIKE 'guest-%')", [id]);
     }
   } else {
     const db = getSqliteDb();
     if (userId) {
-      const stmt = db.prepare('DELETE FROM diagrams WHERE id = ? AND (user_id = ? OR user_id IS NULL)');
+      const stmt = db.prepare("DELETE FROM diagrams WHERE id = ? AND (user_id = ? OR user_id IS NULL OR user_id LIKE 'guest-%')");
       stmt.run(id, userId);
     } else {
-      const stmt = db.prepare('DELETE FROM diagrams WHERE id = ?');
+      const stmt = db.prepare("DELETE FROM diagrams WHERE id = ? AND (user_id IS NULL OR user_id LIKE 'guest-%')");
       stmt.run(id);
     }
+  }
+}
+
+export async function migrateGuestContent(guestUserId: string, newUserId: string): Promise<number> {
+  await ensureTablesExist();
+  if (!guestUserId || !guestUserId.startsWith('guest-') || !newUserId) return 0;
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query('UPDATE diagrams SET user_id = $1 WHERE user_id = $2', [newUserId, guestUserId]);
+    return res.rowCount || 0;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('UPDATE diagrams SET user_id = ? WHERE user_id = ?');
+    const info = stmt.run(newUserId, guestUserId);
+    return Number(info.changes || 0);
   }
 }
 

@@ -5,9 +5,10 @@ import {
   createUser, 
   createSession, 
   ensureUserPersonalWorkspace, 
-  logUserEvent 
+  logUserEvent,
+  migrateGuestContent
 } from '@/lib/db';
-import { setSessionCookie, SESSION_MAX_AGE_DAYS } from '@/lib/auth';
+import { setSessionCookie, SESSION_MAX_AGE_DAYS, getAuthenticatedUser } from '@/lib/auth';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -18,6 +19,7 @@ export async function GET(request: Request) {
   }
 
   try {
+    const oldUser = await getAuthenticatedUser();
     const email = await verifyMagicLinkToken(token);
     let user = await getUserByEmail(email);
 
@@ -42,6 +44,10 @@ export async function GET(request: Request) {
     expiresAt.setDate(expiresAt.getDate() + SESSION_MAX_AGE_DAYS);
     const session = await createSession(user.id, expiresAt);
     await setSessionCookie(session.id);
+
+    if (oldUser && oldUser.email.endsWith('@promptcanvas.guest')) {
+      await migrateGuestContent(oldUser.id, user.id);
+    }
 
     await logUserEvent(user.id, 'MAGIC_LINK_LOGIN', null, 'Passwordless Session Verified');
 

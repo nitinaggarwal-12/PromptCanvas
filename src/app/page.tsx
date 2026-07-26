@@ -26,7 +26,7 @@ import { ContactUsModal } from '@/components/ContactUsModal';
 
 export default function LandingPage() {
   const router = useRouter();
-  const [user, setUser] = useState<{ id: string; email: string; name?: string | null } | null>(null);
+  const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
@@ -75,6 +75,20 @@ export default function LandingPage() {
     if (!user) {
       e.preventDefault();
       setAuthMode('signup');
+      setIsAuthOpen(true);
+    }
+  };
+
+  const handleExploreAsGuest = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('/api/auth/guest', { method: 'POST' });
+      if (res.ok) {
+        router.push('/dashboard');
+      } else {
+        setIsAuthOpen(true);
+      }
+    } catch {
       setIsAuthOpen(true);
     }
   };
@@ -200,7 +214,7 @@ export default function LandingPage() {
             Translate complex natural language prompts into professional, multi-tier Draw.io architecture diagrams. Audited for security, version-controlled, and instantly editable.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto pt-2">
+          <div className="flex flex-wrap items-center gap-4 w-full pt-2">
             <Link
               id="hero-build-diagram-btn"
               href={user ? "/dashboard" : "#"}
@@ -210,6 +224,16 @@ export default function LandingPage() {
               <span>Build First Diagram</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
+            {(!user || user.email === 'dev@promptcanvas.local' || user.is_guest) && (
+              <button
+                id="hero-explore-guest-btn"
+                onClick={handleExploreAsGuest}
+                className="px-7 py-4 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-teal-400 text-teal-300 font-bold text-center transition-all flex items-center justify-center gap-2 hover:bg-slate-800 shadow-md cursor-pointer"
+              >
+                <User className="w-4 h-4 text-teal-400" />
+                <span>Explore as a Guest</span>
+              </button>
+            )}
             <Link
               href="/workspace?tour=true"
               className="px-8 py-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-teal-500/40 text-slate-300 font-semibold text-center transition-all flex items-center justify-center gap-2 hover:bg-slate-800"

@@ -524,6 +524,7 @@ function WorkspaceContent() {
   const [auditSearchQuery, setAuditSearchQuery] = useState('');
   const [auditFilterTab, setAuditFilterTab] = useState<'all' | 'audited' | 'pending'>('all');
   const [isRemediating, setIsRemediating] = useState(false);
+  const isAnyAIBusy = isGenerating || isAuditing || isRemediating || isMetadataGenerating || generatingTemplateIdx !== null;
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isTerraformModalOpen, setIsTerraformModalOpen] = useState(false);
@@ -1925,7 +1926,7 @@ function WorkspaceContent() {
                     {/* Single Primary Action Button */}
                     <button
                       onClick={() => handleAuditDiagram()}
-                      disabled={isAuditing}
+                      disabled={isAnyAIBusy}
                       className="px-5 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-teal-500/10 hover:shadow-teal-500/20"
                     >
                       {isAuditing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldAlert className="w-4 h-4" />}
@@ -2121,7 +2122,7 @@ function WorkspaceContent() {
                           <button
                             type="button"
                             onClick={handleRemediateGaps}
-                            disabled={selectedGapIds.length === 0 || isRemediating}
+                            disabled={selectedGapIds.length === 0 || isAnyAIBusy}
                             className="px-6 py-3.5 rounded-xl bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-50"
                           >
                             {isRemediating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
@@ -2162,7 +2163,7 @@ function WorkspaceContent() {
 
                         <button
                           onClick={() => handleAuditDiagram()}
-                          disabled={isAuditing}
+                          disabled={isAnyAIBusy}
                           className="px-7 py-3.5 rounded-2xl text-xs md:text-sm font-black bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 hover:from-teal-300 hover:to-emerald-300 text-slate-950 shadow-xl shadow-teal-500/25 transition-all flex items-center justify-center gap-2.5 cursor-pointer shrink-0 disabled:opacity-50 hover:scale-[1.02]"
                         >
                           {isAuditing ? (
@@ -2556,7 +2557,7 @@ function WorkspaceContent() {
                           setGeneratingTemplateIdx(null);
                         }
                       }}
-                      disabled={generatingTemplateIdx !== null}
+                      disabled={isAnyAIBusy}
                       className="w-full py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-[10px] uppercase tracking-wider font-bold transition-all border border-slate-700/60 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       {generatingTemplateIdx === idx ? <Loader2 className="w-3 h-3 animate-spin" /> : (
@@ -2961,6 +2962,25 @@ function WorkspaceContent() {
       {/* 2. MAIN WORKSPACE: Split Pane */}
       {currentTab === 'editor' && (
         <main className="flex-1 flex flex-col min-w-0 h-full">
+          {currentUser?.is_guest && (
+            <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2 px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0">
+              <div className="flex items-center gap-2 font-medium">
+                <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>
+                  <strong>Guest Mode Disclaimer:</strong> Content created as a Guest is visible to all users unless deleted.
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  setIsAuthOpen(true);
+                }}
+                className="px-3.5 py-1 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-extrabold rounded-lg shadow-md transition-all shrink-0 cursor-pointer flex items-center gap-1.5 text-xs"
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>Create Login Profile to Keep Private</span>
+              </button>
+            </div>
+          )}
           {!activeDiagram ? (
           renderEmptyWorkspaceDashboard()
         ) : (
@@ -2988,6 +3008,13 @@ function WorkspaceContent() {
               )}
             </div>
           </div>
+
+          {isAnyAIBusy && (
+            <div className="hidden lg:flex items-center gap-2 px-3.5 py-1 bg-amber-500/15 border border-amber-500/30 rounded-full text-amber-300 text-xs font-semibold animate-pulse">
+              <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+              <span>⚡ Gemini API active: Other AI options disabled until current request completes</span>
+            </div>
+          )}
 
           {/* Quick Actions (only if diagram active) */}
           <div className="flex items-center gap-2 shrink-0">
@@ -3102,7 +3129,8 @@ function WorkspaceContent() {
                         setIsExportModalOpen(true);
                       }
                     }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[130px] truncate"
+                    disabled={isAnyAIBusy}
+                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[130px] truncate disabled:opacity-50"
                   >
                     <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                       📥 Export ▾
@@ -3317,7 +3345,8 @@ function WorkspaceContent() {
                         key={idx}
                         type="button"
                         onClick={() => setPromptInput(suggestion)}
-                        className="text-[9px] bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 hover:text-teal-accent border border-slate-700/60 hover:border-teal-500/30 px-2 py-1 rounded transition-all truncate text-left cursor-pointer max-w-full"
+                        disabled={isAnyAIBusy}
+                        className="text-[9px] bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 hover:text-teal-accent border border-slate-700/60 hover:border-teal-500/30 px-2 py-1 rounded transition-all truncate text-left cursor-pointer max-w-full disabled:opacity-50"
                         title={suggestion}
                       >
                         {suggestion}
@@ -3331,7 +3360,7 @@ function WorkspaceContent() {
                   value={promptInput}
                   onChange={(e) => setPromptInput(e.target.value)}
                   placeholder={activeDiagram ? "e.g., Add an Apigee Gateway in front of Cloud Run..." : "Select a diagram first..."}
-                  disabled={!activeDiagram || isGenerating}
+                  disabled={!activeDiagram || isAnyAIBusy}
                   rows={2}
                   className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg pl-3 pr-10 py-2.5 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50"
                   onKeyDown={(e) => {
@@ -3343,7 +3372,7 @@ function WorkspaceContent() {
                 />
                 <button
                   type="submit"
-                  disabled={!activeDiagram || isGenerating || !promptInput.trim()}
+                  disabled={!activeDiagram || isAnyAIBusy || !promptInput.trim()}
                   className="absolute right-2.5 bottom-3.5 p-1.5 rounded-md bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
@@ -3747,7 +3776,7 @@ function WorkspaceContent() {
                           </div>
                           <button
                             onClick={handleGenerateMetadata}
-                            disabled={isMetadataGenerating}
+                            disabled={isAnyAIBusy}
                             className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs shadow-lg flex items-center gap-2 cursor-pointer disabled:opacity-50"
                           >
                             {isMetadataGenerating ? (
@@ -3796,7 +3825,7 @@ function WorkspaceContent() {
                           </div>
                           <button
                             onClick={handleGenerateMetadata}
-                            disabled={isMetadataGenerating}
+                            disabled={isAnyAIBusy}
                             className="px-4 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs shadow-lg flex items-center gap-2 cursor-pointer disabled:opacity-50"
                           >
                             {isMetadataGenerating ? (
@@ -3992,7 +4021,7 @@ function WorkspaceContent() {
               </div>
               <button
                 type="submit"
-                disabled={isGenerating}
+                disabled={isAnyAIBusy}
                 className="w-full py-3.5 rounded-2xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-base transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {isGenerating ? (
@@ -4200,7 +4229,7 @@ function WorkspaceContent() {
                     setIsAuditModalOpen(false);
                     await handleRemediateGaps();
                   }}
-                  disabled={selectedGapIds.length === 0 || isRemediating}
+                  disabled={selectedGapIds.length === 0 || isAnyAIBusy}
                   className="px-6 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 font-black text-xs transition-all shadow-lg shadow-teal-500/20 flex items-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {isRemediating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
@@ -4510,6 +4539,17 @@ function WorkspaceContent() {
         currentUser={currentUser}
       />
 
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={(u) => {
+          setCurrentUser(u);
+          setIsAuthOpen(false);
+          if (activeDiagram) {
+            loadDiagramDetails(activeDiagram.id);
+          }
+        }}
+      />
     </div>
   );
 }

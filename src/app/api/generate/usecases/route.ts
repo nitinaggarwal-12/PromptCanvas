@@ -1,10 +1,22 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getDiagramVersion, updateDiagramVersionUseCases } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
+import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 
 const ai = new GoogleGenAI({});
 
 export async function POST(request: Request) {
+  const user = await getAuthenticatedUser();
+  const lockKey = user?.id || 'anonymous_global';
+
+  if (!acquireGeminiLock(lockKey)) {
+    return NextResponse.json(
+      { error: 'An AI request is already in progress. Please wait for it to complete before initiating another.' },
+      { status: 429 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { versionId } = body;
@@ -150,5 +162,7 @@ ${version.xml_content}
       { error: 'Internal Server Error', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
+  } finally {
+    releaseGeminiLock(lockKey);
   }
 }

@@ -32,6 +32,26 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
 
   if (!isOpen) return null;
 
+  const handleGuestLogin = async () => {
+    setError(null);
+    setSuccessMsg(null);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/guest', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to start guest session');
+      setSuccessMsg('Guest session initialized! Redirecting...');
+      setTimeout(() => {
+        onSuccess(data.user);
+        onClose();
+      }, 500);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -267,6 +287,22 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             )}
           </button>
         </form>
+
+        <div className="pt-6 mt-6 border-t border-slate-800/80 text-center">
+          <button
+            id="auth-guest-btn"
+            type="button"
+            onClick={handleGuestLogin}
+            disabled={loading}
+            className="w-full py-3.5 px-6 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-teal-500/40 text-slate-300 hover:text-white font-extrabold text-sm md:text-base transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            <User className="w-4 h-4 text-teal-400" />
+            <span>Explore as a Guest (No email required)</span>
+          </button>
+          <p className="text-[11px] text-slate-400 mt-2.5 leading-relaxed">
+            Note: Content created as a Guest will be visible to all users unless deleted. To save your work privately, you can create a login profile anytime.
+          </p>
+        </div>
       </div>
     </div>
   );

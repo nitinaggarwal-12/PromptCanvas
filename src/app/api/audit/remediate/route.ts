@@ -2,10 +2,22 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getLatestDiagramVersion, saveDiagramVersion } from '@/lib/db';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+import { getAuthenticatedUser } from '@/lib/auth';
+import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 
 const ai = new GoogleGenAI({});
 
 export async function POST(request: Request) {
+  const user = await getAuthenticatedUser();
+  const lockKey = user?.id || 'anonymous_global';
+
+  if (!acquireGeminiLock(lockKey)) {
+    return NextResponse.json(
+      { error: 'An AI request is already in progress. Please wait for it to complete before initiating another.' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { diagramId, selectedGaps } = await request.json();
     if (!diagramId || !Array.isArray(selectedGaps) || selectedGaps.length === 0) {
@@ -81,5 +93,7 @@ ${remediationInstructions}
       { error: 'Remediation Failed', details: errorMessage },
       { status: 500 }
     );
+  } finally {
+    releaseGeminiLock(lockKey);
   }
 }

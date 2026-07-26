@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createUser, getUserByEmail, createSession, logUserEvent } from '@/lib/db';
-import { hashPassword, setSessionCookie, SESSION_MAX_AGE_DAYS } from '@/lib/auth';
+import { createUser, getUserByEmail, createSession, logUserEvent, migrateGuestContent } from '@/lib/db';
+import { hashPassword, setSessionCookie, SESSION_MAX_AGE_DAYS, getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
+    const oldUser = await getAuthenticatedUser();
     const body = await request.json();
     const { email, password, name } = body;
 
@@ -28,6 +29,10 @@ export async function POST(request: Request) {
     const session = await createSession(newUser.id, expiresAt);
 
     await setSessionCookie(session.id);
+
+    if (oldUser && oldUser.email.endsWith('@promptcanvas.guest')) {
+      await migrateGuestContent(oldUser.id, newUser.id);
+    }
 
     const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip');
     const userAgent = request.headers.get('user-agent');

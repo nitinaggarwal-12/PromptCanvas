@@ -20,6 +20,7 @@ export async function GET() {
         name: user.name,
         global_role: isSuper ? 'Admin' : (user.global_role === 'Super-Admin' ? 'Admin' : user.global_role || 'Author'),
         is_super_admin: isSuper,
+        is_guest: user.email.endsWith('@promptcanvas.guest'),
         created_at: user.created_at,
       },
     });

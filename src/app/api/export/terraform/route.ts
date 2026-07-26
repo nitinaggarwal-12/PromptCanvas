@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI, Type } from '@google/genai';
 import { getLatestDiagramVersion } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
+import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 
 const ai = new GoogleGenAI({});
 
@@ -20,6 +22,16 @@ Ensure all generated HCL is valid, executable, and follows Google Cloud Provider
 `;
 
 export async function POST(request: Request) {
+  const user = await getAuthenticatedUser();
+  const lockKey = user?.id || 'anonymous_global';
+
+  if (!acquireGeminiLock(lockKey)) {
+    return NextResponse.json(
+      { error: 'An AI request is already in progress. Please wait for it to complete before initiating another.' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { diagramId, xmlContent: customXml } = await request.json();
 
@@ -84,5 +96,7 @@ export async function POST(request: Request) {
       { error: 'Terraform Export Failed', details: errorMessage },
       { status: 500 }
     );
+  } finally {
+    releaseGeminiLock(lockKey);
   }
 }

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI, Type } from '@google/genai';
 import { getLatestDiagramVersion, saveAuditReport, getAuditReportsForDiagram } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
+import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 
 const ai = new GoogleGenAI({});
 
@@ -145,6 +147,16 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const user = await getAuthenticatedUser();
+  const lockKey = user?.id || 'anonymous_global';
+
+  if (!acquireGeminiLock(lockKey)) {
+    return NextResponse.json(
+      { error: 'An AI request is already in progress. Please wait for it to complete before initiating another.' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { diagramId, auditCategory = 'security' } = await request.json();
     if (!diagramId) {
@@ -259,5 +271,7 @@ Respond strictly in JSON matching the schema provided:
       { error: 'Audit Failed', details: errorMessage },
       { status: 500 }
     );
+  } finally {
+    releaseGeminiLock(lockKey);
   }
 }

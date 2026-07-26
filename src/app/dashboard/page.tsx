@@ -9,6 +9,7 @@ import {
   Network, 
   ArrowRight, 
   Shield, 
+  User,
   Users, 
   Layers, 
   Database,
@@ -26,6 +27,7 @@ import {
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
+import { AuthModal } from '@/components/AuthModal';
 
 interface Diagram {
   id: string;
@@ -95,9 +97,10 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [user, setUser] = useState<{ id: string; email: string; name?: string | null } | null>(null);
+  const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -380,6 +383,33 @@ export default function Dashboard() {
           </button>
         </div>
       </header>
+
+      {user?.is_guest && (
+        <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-12 md:px-16 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40">
+          <div className="flex items-center gap-2 font-medium">
+            <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>
+              <strong>Guest Mode Disclaimer:</strong> Content created as a Guest is visible to all users unless deleted.
+            </span>
+          </div>
+          <button
+            onClick={() => {
+              setIsAuthOpen(true);
+            }}
+            className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-extrabold rounded-lg shadow-md transition-all shrink-0 cursor-pointer flex items-center gap-1.5 text-xs"
+          >
+            <User className="w-3.5 h-3.5" />
+            <span>Create Login Profile to Keep Private</span>
+          </button>
+        </div>
+      )}
+
+      {isCreating && (
+        <div className="w-full bg-amber-500/15 border-b border-amber-500/30 py-2 px-12 md:px-16 flex items-center justify-center gap-2 text-amber-300 text-xs font-semibold animate-pulse z-40">
+          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+          <span>⚡ Gemini API active: Please wait for current generation to complete before starting another request.</span>
+        </div>
+      )}
 
       {/* Main Portal View */}
       <main className="flex-1 w-full max-w-[1600px] mx-auto px-12 md:px-16 py-14 space-y-12 relative z-10">
@@ -802,6 +832,17 @@ export default function Dashboard() {
         isOpen={isContactOpen}
         onClose={() => setIsContactOpen(false)}
         currentUser={user}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={(u) => {
+          setUser(u);
+          setIsAuthOpen(false);
+          fetchDiagrams();
+        }}
+        initialMode="signup"
       />
     </div>
   );
