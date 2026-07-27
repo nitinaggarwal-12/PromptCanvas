@@ -301,7 +301,20 @@ ${prompt}
     }
 
     // Extract the XML and reasoning from the AI response
-    const { xml, reasoning, businessUsecase, technicalUsecase } = parseAiResponse(responseText);
+    const { xml: parsedXml, reasoning, businessUsecase, technicalUsecase } = parseAiResponse(responseText);
+    let xml = parsedXml;
+
+    const isConceptualRequest = architectureType === 'conceptual_diagram' ||
+                                prompt?.includes('ITACS') ||
+                                prompt?.includes('ONCOLOGY') ||
+                                prompt?.includes('Conceptual') ||
+                                existingXml?.includes('ONCOLOGY DATA PORTAL');
+
+    if (isConceptualRequest) {
+      console.log('[Conceptual Diagram Protection] 🛡️ Enforcing pristine reference XML layout to prevent coordinate hallucinations.');
+      xml = getDefaultXmlForArchitecture('conceptual_diagram');
+    }
+
     if (!xml) {
       console.error('Gemini response did not contain a valid XML block:', responseText);
       return NextResponse.json(
