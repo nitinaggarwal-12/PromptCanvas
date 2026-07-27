@@ -130,6 +130,7 @@ export interface DiagramVersion {
   ai_reasoning?: string | null;
   business_usecase?: string | null;
   technical_usecase?: string | null;
+  architecture_type?: string | null;
 }
 
 export interface AuditReport {
@@ -383,6 +384,9 @@ export async function ensureTablesExist(): Promise<void> {
     await pool.query(`
       ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS technical_usecase TEXT;
     `);
+    await pool.query(`
+      ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS architecture_type TEXT DEFAULT 'conceptual_diagram';
+    `);
   } else {
     const db = getSqliteDb();
     db.exec(`
@@ -608,6 +612,11 @@ export async function ensureTablesExist(): Promise<void> {
     }
     try {
       db.exec('ALTER TABLE diagram_versions ADD COLUMN technical_usecase TEXT;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE diagram_versions ADD COLUMN architecture_type TEXT DEFAULT "conceptual_diagram";');
     } catch {
       // Ignored if column already exists
     }
@@ -844,8 +853,8 @@ export async function createDiagram(
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
         await client.query(`
-          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         `, [
           versionId,
           diagramId,
@@ -856,7 +865,8 @@ export async function createDiagram(
           prompt || null,
           aiReasoning || null,
           businessUsecase || null,
-          technicalUsecase || null
+          technicalUsecase || null,
+          architectureType || 'conceptual_diagram'
         ]);
         const getVer = await client.query('SELECT * FROM diagram_versions WHERE id = $1', [versionId]);
         version = getVer.rows[0] as DiagramVersion;
@@ -883,8 +893,8 @@ export async function createDiagram(
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
         const insertVersion = db.prepare(`
-          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
         insertVersion.run(
           versionId,
@@ -896,7 +906,8 @@ export async function createDiagram(
           prompt || null,
           aiReasoning || null,
           businessUsecase || null,
-          technicalUsecase || null
+          technicalUsecase || null,
+          architectureType || 'conceptual_diagram'
         );
         const getVersion = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
         version = getVersion.get(versionId) as unknown as DiagramVersion;
@@ -923,7 +934,8 @@ export async function saveDiagramVersion(
   prompt?: string | null,
   aiReasoning?: string | null,
   businessUsecase?: string | null,
-  technicalUsecase?: string | null
+  technicalUsecase?: string | null,
+  architectureType: string = 'conceptual_diagram'
 ): Promise<DiagramVersion> {
   await ensureTablesExist();
   const versionId = uuidv4();
@@ -934,12 +946,12 @@ export async function saveDiagramVersion(
     try {
       await client.query('BEGIN');
       
-      const maxVer = await client.query('SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = $1', [diagramId]);
+      const maxVer = await client.query("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = $1 AND COALESCE(architecture_type, 'conceptual_diagram') = $2", [diagramId, architectureType || 'conceptual_diagram']);
       const nextVersionNumber = (maxVer.rows[0].max_version || 0) + 1;
 
       await client.query(`
-        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       `, [
         versionId,
         diagramId,
@@ -950,7 +962,8 @@ export async function saveDiagramVersion(
         prompt || null,
         aiReasoning || null,
         businessUsecase || null,
-        technicalUsecase || null
+        technicalUsecase || null,
+        architectureType || 'conceptual_diagram'
       ]);
 
       await client.query('UPDATE diagrams SET updated_at = CURRENT_TIMESTAMP WHERE id = $1', [diagramId]);
@@ -969,13 +982,13 @@ export async function saveDiagramVersion(
     const db = getSqliteDb();
     db.exec('BEGIN TRANSACTION;');
     try {
-      const maxVersionStmt = db.prepare('SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ?');
-      const versionResult = maxVersionStmt.get(diagramId) as { max_version: number };
+      const maxVersionStmt = db.prepare("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ? AND COALESCE(architecture_type, 'conceptual_diagram') = ?");
+      const versionResult = maxVersionStmt.get(diagramId, architectureType || 'conceptual_diagram') as { max_version: number };
       const nextVersionNumber = versionResult.max_version + 1;
 
       const insertVersion = db.prepare(`
-        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       insertVersion.run(
         versionId,
@@ -987,7 +1000,8 @@ export async function saveDiagramVersion(
         prompt || null,
         aiReasoning || null,
         businessUsecase || null,
-        technicalUsecase || null
+        technicalUsecase || null,
+        architectureType || 'conceptual_diagram'
       );
 
       const updateDiagram = db.prepare("UPDATE diagrams SET updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");
@@ -1005,16 +1019,22 @@ export async function saveDiagramVersion(
 }
 
 // Helper: Get all versions of a diagram (sorted by version_number desc)
-export async function getDiagramVersions(diagramId: string): Promise<DiagramVersion[]> {
+export async function getDiagramVersions(diagramId: string, architectureType?: string | null): Promise<DiagramVersion[]> {
   await ensureTablesExist();
   if (isPostgres()) {
     const pool = getPgPool();
-    const res = await pool.query('SELECT * FROM diagram_versions WHERE diagram_id = $1 ORDER BY version_number DESC', [diagramId]);
+    const query = architectureType
+      ? "SELECT * FROM diagram_versions WHERE diagram_id = $1 AND COALESCE(architecture_type, 'conceptual_diagram') = $2 ORDER BY version_number DESC"
+      : 'SELECT * FROM diagram_versions WHERE diagram_id = $1 ORDER BY version_number DESC';
+    const res = await pool.query(query, architectureType ? [diagramId, architectureType] : [diagramId]);
     return res.rows as DiagramVersion[];
   } else {
     const db = getSqliteDb();
-    const stmt = db.prepare('SELECT * FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC');
-    return stmt.all(diagramId) as unknown as DiagramVersion[];
+    const query = architectureType
+      ? "SELECT * FROM diagram_versions WHERE diagram_id = ? AND COALESCE(architecture_type, 'conceptual_diagram') = ? ORDER BY version_number DESC"
+      : 'SELECT * FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC';
+    const stmt = db.prepare(query);
+    return (architectureType ? stmt.all(diagramId, architectureType) : stmt.all(diagramId)) as unknown as DiagramVersion[];
   }
 }
 
@@ -1034,16 +1054,22 @@ export async function getDiagramVersion(versionId: string): Promise<DiagramVersi
 }
 
 // Helper: Get the latest version of a diagram
-export async function getLatestDiagramVersion(diagramId: string): Promise<DiagramVersion | null> {
+export async function getLatestDiagramVersion(diagramId: string, architectureType?: string | null): Promise<DiagramVersion | null> {
   await ensureTablesExist();
   if (isPostgres()) {
     const pool = getPgPool();
-    const res = await pool.query('SELECT * FROM diagram_versions WHERE diagram_id = $1 ORDER BY version_number DESC LIMIT 1', [diagramId]);
+    const query = architectureType
+      ? "SELECT * FROM diagram_versions WHERE diagram_id = $1 AND COALESCE(architecture_type, 'conceptual_diagram') = $2 ORDER BY version_number DESC LIMIT 1"
+      : 'SELECT * FROM diagram_versions WHERE diagram_id = $1 ORDER BY version_number DESC LIMIT 1';
+    const res = await pool.query(query, architectureType ? [diagramId, architectureType] : [diagramId]);
     return (res.rows[0] as DiagramVersion) || null;
   } else {
     const db = getSqliteDb();
-    const stmt = db.prepare('SELECT * FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC LIMIT 1');
-    const result = stmt.get(diagramId);
+    const query = architectureType
+      ? "SELECT * FROM diagram_versions WHERE diagram_id = ? AND COALESCE(architecture_type, 'conceptual_diagram') = ? ORDER BY version_number DESC LIMIT 1"
+      : 'SELECT * FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC LIMIT 1';
+    const stmt = db.prepare(query);
+    const result = architectureType ? stmt.get(diagramId, architectureType) : stmt.get(diagramId);
     return (result as unknown as DiagramVersion) || null;
   }
 }

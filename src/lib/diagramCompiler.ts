@@ -523,6 +523,229 @@ export function getExactErdReferenceXml(): string {
   `.trim();
 }
 
+export function getExactAgenticRagReferenceXml(): string {
+  return `
+<mxfile host="embed.diagrams.net">
+  <diagram id="agentic_rag_compiled" name="Cognitive Architecture (Agentic RAG)">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1650" pageHeight="980" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 3 VERTICAL ZONES (SWIMLANES) -->
+        <mxCell id="zone_1" value="&lt;b style=&quot;font-size:16px;color:#0F172A;&quot;&gt;Zone 1: The Interface&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;color:#475569;&quot;&gt;(User Interaction)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="300" height="720" as="geometry" />
+        </mxCell>
+
+        <mxCell id="zone_2" value="&lt;b style=&quot;font-size:16px;color:#0F172A;&quot;&gt;Zone 2: The Agentic Core&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;color:#475569;&quot;&gt;(Orchestration &amp;amp; Reasoning)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="380" y="40" width="600" height="720" as="geometry" />
+        </mxCell>
+
+        <mxCell id="zone_3" value="&lt;b style=&quot;font-size:16px;color:#0F172A;&quot;&gt;Zone 3: The Tool Ecosystem&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;color:#475569;&quot;&gt;(Secured Environment)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="40" width="580" height="720" as="geometry" />
+        </mxCell>
+
+        <!-- SECURE ENTERPRISE BOUNDARY (DASHED CONTAINER SPANNING ZONE 2 AND ZONE 3) -->
+        <mxCell id="sec_bound" value="Secure Managed Gemini Enterprise Ecosystem Boundary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#64748B;strokeWidth=2;strokeDashArray=6 6;verticalAlign=top;align=left;spacingLeft=18;spacingTop=12;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="400" y="110" width="1180" height="630" as="geometry" />
+        </mxCell>
+
+        <!-- ZONE 1 NODE: USER INTERFACE / CHAT APP -->
+        <mxCell id="user_chat" value="&lt;img src='https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/google-messages.png' width='44' height='44'&gt;&lt;br&gt;&lt;br&gt;&lt;b style='font-size:16px;color:#1E293B;'&gt;User Interface /&lt;br&gt;Chat App&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=2;align=center;verticalAlign=middle;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="320" width="220" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- ZONE 2 CONTAINERS AND NODES -->
+        <mxCell id="orchestrator_box" value="&lt;img src='https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/google-cloud.png' width='24' height='24' style='vertical-align:middle;'&gt;&amp;nbsp;&amp;nbsp;Agent Orchestrator (Vertex AI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=18;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#1D4ED8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="150" width="520" height="560" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sys_prompt" value="&lt;b style='font-size:15px;color:#1E293B;'&gt;System Prompt /&lt;br&gt;Persona&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;color:#475569;'&gt;Guardrails and identity&lt;br&gt;(e.g., &amp;quot;Financial Analyst&amp;quot;)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;align=center;verticalAlign=middle;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="210" width="210" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="conv_mem" value="&lt;b style='font-size:15px;color:#1E293B;'&gt;Conversation&lt;br&gt;Memory&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;color:#475569;'&gt;Persistent short-term&lt;br&gt;context&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=2;align=center;verticalAlign=middle;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="710" y="210" width="210" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- THE REASONER: GEMINI 1.5 PRO AND REACT LOOP -->
+        <mxCell id="reasoner_box" value="The Reasoner: Gemini 1.5 Pro (LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="360" width="460" height="320" as="geometry" />
+        </mxCell>
+
+        <mxCell id="react_center" value="&lt;b style='font-size:16px;color:#1E293B;'&gt;ReAct&lt;br&gt;Loop&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="640" y="490" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="react_thought" value="Thought" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=13;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="640" y="420" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="react_action" value="Action" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=13;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="770" y="505" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="react_obs" value="Observation" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=13;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="640" y="590" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="react_syn" value="Synthesis" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=13;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="530" y="505" width="80" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- REACT LOOP ARROWS (CURVED / ORTHOGONAL) -->
+        <mxCell id="e_r1" value="" style="edgeStyle=curved=1;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="react_thought" target="react_action">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_r2" value="" style="edgeStyle=curved=1;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="react_action" target="react_obs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_r3" value="" style="edgeStyle=curved=1;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="react_obs" target="react_syn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_r4" value="" style="edgeStyle=curved=1;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="react_syn" target="react_thought">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ZONE 3: TOOL ECOSYSTEM CONTAINERS AND NODES -->
+        <mxCell id="tool_eco_box" value="Tool Ecosystem&lt;br&gt;&lt;span style='font-size:13px;font-weight:normal;color:#475569;'&gt;(Private Enterprise Environment)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#1D4ED8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="150" width="500" height="560" as="geometry" />
+        </mxCell>
+
+        <!-- TOOL 1: ENTERPRISE KNOWLEDGE -->
+        <mxCell id="tool_1_box" value="Tool 1: Enterprise Knowledge&lt;br&gt;&lt;span style='font-size:13px;font-weight:normal;color:#92400E;'&gt;(Managed RAG)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;verticalAlign=top;align=center;spacingTop=12;fontFamily=Helvetica;fontSize=15;fontStyle=1;fontColor=#B45309;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="220" width="440" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="tool_1_icon" value="&lt;img src='https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/google-cloud.png' width='24' height='24'&gt;&lt;br&gt;&lt;br&gt;Vertex AI Search&lt;br&gt;and Conversation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#1E293B;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="275" width="160" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="tool_1_list" value="&lt;ul style='margin:0;padding-left:18px;line-height:1.7;'&gt;&lt;li&gt;Queries secured GCS Data Corpus&lt;/li&gt;&lt;li&gt;Automatic Embedding &amp;amp; Retrieval&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=13;fontColor=#1E293B;" vertex="1" parent="1">
+          <mxGeometry x="1275" y="280" width="230" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- MIDDLE ITALIC QUOTE -->
+        <mxCell id="tool_quote" value="&amp;apos;No custom RAG infrastructure.&amp;apos;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=13;fontStyle=2;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="405" width="440" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- TOOL 2: BUSINESS ANALYTICS -->
+        <mxCell id="tool_2_box" value="Tool 2: Business Analytics&lt;br&gt;&lt;span style='font-size:13px;font-weight:normal;color:#92400E;'&gt;(Analytics)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;verticalAlign=top;align=center;spacingTop=12;fontFamily=Helvetica;fontSize=15;fontStyle=1;fontColor=#B45309;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="450" width="440" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="tool_2_icon" value="&lt;img src='https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/google-cloud.png' width='26' height='26'&gt;&lt;br&gt;&lt;br&gt;BigQuery" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#1E293B;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="505" width="160" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="tool_2_list" value="&lt;ul style='margin:0;padding-left:18px;line-height:1.7;'&gt;&lt;li&gt;Execute SQL Queries&lt;/li&gt;&lt;li&gt;Structured Data Access&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=13;fontColor=#1E293B;" vertex="1" parent="1">
+          <mxGeometry x="1275" y="510" width="230" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- CONNECTIONS & ARROWS -->
+        <!-- 1. User Prompt (Chat -> Orchestrator) -->
+        <mxCell id="e_user_1" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;1. User Prompt&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#475569;'&gt;(e.g., &amp;quot;Compare market trends&lt;br&gt;across functional silos&amp;quot;)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="user_chat" target="orchestrator_box">
+          <mxGeometry x="0.1" y="-20" relative="1" as="geometry">
+            <mxPoint x="300" y="370" as="sourcePoint" />
+            <mxPoint x="430" y="370" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="365" y="370" />
+              <mxPoint x="365" y="370" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Synthesized Response (Orchestrator -> Chat) -->
+        <mxCell id="e_user_2" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;SYNTHESIZED&lt;br&gt;RESPONSE&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="orchestrator_box" target="user_chat">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="430" y="450" as="sourcePoint" />
+            <mxPoint x="300" y="450" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="365" y="450" />
+              <mxPoint x="365" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. System Prompt -> Memory -->
+        <mxCell id="e_internal_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="sys_prompt" target="conv_mem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. System Prompt -> Reasoner -->
+        <mxCell id="e_internal_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="sys_prompt" target="reasoner_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="565" y="340" />
+              <mxPoint x="565" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Memory -> Reasoner -->
+        <mxCell id="e_internal_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="conv_mem" target="reasoner_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="815" y="340" />
+              <mxPoint x="815" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. ACTION: RAG Query (Reasoner -> Tool 1) -->
+        <mxCell id="e_tool_1a" value="&lt;b style='font-size:13px;color:#1D4ED8;'&gt;ACTION: RAG Query&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#475569;'&gt;(e.g., &amp;quot;Oncology Trends&amp;quot;)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="reasoner_box" target="tool_1_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985" y="440" />
+              <mxPoint x="985" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. OBSERVATION: RAG Results (Tool 1 -> Reasoner) -->
+        <mxCell id="e_tool_1b" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;OBSERVATION:&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#475569;'&gt;Retrieved Context Chunks&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="tool_1_box" target="reasoner_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="330" />
+              <mxPoint x="960" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. ACTION: SQL Query (Reasoner -> Tool 2) -->
+        <mxCell id="e_tool_2a" value="&lt;b style='font-size:13px;color:#1D4ED8;'&gt;ACTION: SQL Query&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#475569;'&gt;(e.g., &amp;quot;Total Sales in Q1&amp;quot;)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="reasoner_box" target="tool_2_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985" y="560" />
+              <mxPoint x="985" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. OBSERVATION: SQL Results (Tool 2 -> Reasoner) -->
+        <mxCell id="e_tool_2b" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;OBSERVATION:&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#475569;'&gt;Query Results (JSON/Table)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="tool_2_box" target="reasoner_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="580" />
+              <mxPoint x="960" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM LEGEND & SECURITY ANNOTATIONS -->
+        <mxCell id="legend_footer" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Legend &amp;amp; Security Annotations&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=15;spacingTop=8;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="790" width="1560" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_left" value="&lt;div style='line-height:1.8;font-size:12px;color:#334155;'&gt;&lt;b&gt;Legend:&lt;/b&gt;&lt;br&gt;&lt;span style='color:#3B82F6;'&gt;●&lt;/span&gt;&amp;nbsp;Google Cloud Managed Service&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style='color:#10B981;'&gt;●&lt;/span&gt;&amp;nbsp;User / Session Data&lt;br&gt;&lt;span style='color:#F59E0B;'&gt;●&lt;/span&gt;&amp;nbsp;Secure Tool Boundary&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style='color:#64748B;'&gt;-----&lt;/span&gt;&amp;nbsp;Secure Enterprise Boundary&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="825" width="420" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_mid" value="&lt;div style='line-height:1.8;font-size:12px;color:#334155;'&gt;&lt;b style='color:#1D4ED8;'&gt;➔ ACTION:&lt;/b&gt; RAG Query / SQL Query (Automatic embedding &amp;amp; retrieved context chunks)&lt;br&gt;&lt;b style='color:#0F172A;'&gt;➔ OBSERVATION:&lt;/b&gt; Query Results (JSON/Table data flow-consequent control data)&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="510" y="825" width="550" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_right" value="&lt;div style='line-height:1.6;font-size:12px;color:#1E293B;'&gt;&lt;b&gt;Security annotations:&lt;/b&gt;&lt;ul style='margin:4px 0 0 0;padding-left:16px;'&gt;&lt;li&gt;Data masking: security access masking&lt;/li&gt;&lt;li&gt;IAM integration with security response networks&lt;/li&gt;&lt;li&gt;Private access paths to Gemini boundary&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="825" width="480" height="85" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+
 /**
  * Compiles a structured diagram specification into pixel-perfect Draw.io XML
  */
@@ -532,6 +755,9 @@ export function compileSpecToDrawioXml(spec: CompiledDiagramSpec): string {
   }
   if (spec.diagramId === "erd_compiled") {
     return getExactErdReferenceXml();
+  }
+  if (spec.diagramId === "agentic_rag_compiled") {
+    return getExactAgenticRagReferenceXml();
   }
 
   const colWidth = 360;
@@ -735,6 +961,18 @@ export function getBenchmarkErdSpec(): CompiledDiagramSpec {
   return {
     diagramId: "erd_compiled",
     title: "Unified Database Schema & ERD Semantic Layer",
+    columns: [],
+    connections: []
+  };
+}
+
+/**
+ * Returns the benchmark Cognitive Architecture (Agentic RAG) specification for instant compilation
+ */
+export function getBenchmarkAgenticRagSpec(): CompiledDiagramSpec {
+  return {
+    diagramId: "agentic_rag_compiled",
+    title: "Cognitive Architecture (Agentic RAG)",
     columns: [],
     connections: []
   };

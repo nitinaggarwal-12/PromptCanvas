@@ -124,7 +124,7 @@ export default function DiagramFeedbackWidget({
       {/* Main Feedback Buttons Trigger */}
       <div className="flex items-center gap-1 bg-[#0d1322]/90 border border-panel-border/60 p-1 rounded-lg shadow-sm backdrop-blur-sm">
         <span className="text-[10px] font-bold text-slate-400 px-2 uppercase tracking-wider hidden sm:inline">
-          Rate AI Architecture
+          Feedback
         </span>
         <button
           type="button"

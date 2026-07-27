@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -98,6 +98,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   }
   if (archId === 'erd') {
     return compileSpecToDrawioXml(getBenchmarkErdSpec());
+  }
+  if (archId === 'agentic_rag' || archId === 'technical_diagram') {
+    return compileSpecToDrawioXml(getBenchmarkAgenticRagSpec());
   }
 
   return `

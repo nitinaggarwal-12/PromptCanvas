@@ -225,6 +225,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { prompt, diagramId, name, architectureType } = body;
+    console.log('[DEBUG POST /api/generate]', { diagramId, architectureType, promptSlice: prompt?.substring(0, 80) });
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -240,17 +241,24 @@ export async function POST(request: Request) {
     let existingXml = '';
 
     let activeSystemPrompt = SYSTEM_PROMPT;
-    if (architectureType === 'conceptual_diagram' || prompt.includes('ITACS Oncology Platform')) {
-      activeSystemPrompt += `
+    const isErdTypeOrPrompt = architectureType === 'erd' ||
+                              prompt.includes('ETL & Data Lineage') ||
+                              prompt.includes('Sub-Schema') ||
+                              prompt.includes('Dim_Patient') ||
+                              prompt.includes('Dim_Intel_Map') ||
+                              prompt.includes('Entity Relationship Diagram') ||
+                              prompt.includes('ERD') ||
+                              prompt.includes('Dimensional Data Model') ||
+                              prompt.includes('Database Architect');
 
-### SPECIAL CONCEPTUAL DIAGRAM OVERRIDE (ITACS Oncology Platform):
-CRITICAL: DO NOT use Google Cloud icons (<img src="...logos:google-cloud.svg">) anywhere in this diagram! You MUST strictly use this exact, pixel-perfect 3-column layout XML structure without altering shapes, colors, or icons:
+    const isConceptualTypeOrPrompt = !isErdTypeOrPrompt && (
+                              architectureType === 'conceptual_diagram' ||
+                              prompt.includes('ITACS Oncology Platform') ||
+                              prompt.includes('Conceptual') ||
+                              prompt.includes('ONCOLOGY DATA PORTAL')
+    );
 
-\`\`\`xml
-${getDefaultXmlForArchitecture('conceptual_diagram')}
-\`\`\`
-`;
-    } else if (architectureType === 'erd' || prompt.includes('ETL & Data Lineage') || prompt.includes('Sub-Schema') || prompt.includes('Dim_Patient')) {
+    if (isErdTypeOrPrompt) {
       activeSystemPrompt += `
 
 ### SPECIAL ERD DIAGRAM OVERRIDE (Unified Database Schema):
@@ -260,23 +268,82 @@ CRITICAL: You MUST strictly use this exact, pixel-perfect ERD Unified Database S
 ${getDefaultXmlForArchitecture('erd')}
 \`\`\`
 `;
+    } else if (isConceptualTypeOrPrompt) {
+      activeSystemPrompt += `
+
+### SPECIAL CONCEPTUAL DIAGRAM OVERRIDE (ITACS Oncology Platform):
+CRITICAL: DO NOT use Google Cloud icons (<img src="...logos:google-cloud.svg">) anywhere in this diagram! You MUST strictly use this exact, pixel-perfect 3-column layout XML structure without altering shapes, colors, or icons:
+
+\`\`\`xml
+${getDefaultXmlForArchitecture('conceptual_diagram')}
+\`\`\`
+`;
     }
 
     if (diagramId) {
-      // Refinement Loop
+      // Refinement Loop or New Arch Type Initialization in Existing Workspace
       isRefinement = true;
-      const latestVersion = await getLatestDiagramVersion(diagramId);
-      if (!latestVersion) {
+      const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
+      if (!latestVersion && architectureType) {
+        console.log(`[DEBUG] Initializing first version for architecture ${architectureType} in diagram ${diagramId}`);
+        existingXml = '';
+      } else if (!latestVersion) {
         return NextResponse.json(
           { error: `Diagram with ID ${diagramId} has no versions to refine` },
           { status: 404 }
         );
+      } else {
+        existingXml = latestVersion.xml_content;
+        console.log(`Refining diagram ${diagramId} (v${latestVersion.version_number})...`);
       }
-      existingXml = latestVersion.xml_content;
+    }
 
-      console.log(`Refining diagram ${diagramId} (v${latestVersion.version_number})...`);
-      
-      const contents = `
+    const isErdRequest = architectureType === 'erd' ||
+                         prompt?.includes('ETL & Data Lineage') ||
+                         prompt?.includes('Sub-Schema') ||
+                         prompt?.includes('Dim_Patient') ||
+                         prompt?.includes('Dim_Intel_Map') ||
+                         prompt?.includes('Entity Relationship Diagram') ||
+                         prompt?.includes('ERD') ||
+                         prompt?.includes('Dimensional Data Model') ||
+                         prompt?.includes('Database Architect') ||
+                         (architectureType !== 'conceptual_diagram' && architectureType !== 'agentic_rag' && architectureType !== 'technical_diagram' && (existingXml?.includes('Dim_Patient') || existingXml?.includes('Dim_Intel_Map')));
+
+    const isAgenticRagRequest = !isErdRequest && (
+                                architectureType === 'agentic_rag' ||
+                                architectureType === 'technical_diagram' ||
+                                prompt?.includes('Cognitive Architecture') ||
+                                prompt?.includes('Agentic RAG') ||
+                                prompt?.includes('Agent Orchestrator') ||
+                                existingXml?.includes('Agent Orchestrator') ||
+                                existingXml?.includes('ReAct Loop')
+    );
+
+    const isConceptualRequest = !isErdRequest && !isAgenticRagRequest && (
+                                architectureType === 'conceptual_diagram' ||
+                                prompt?.includes('ITACS') ||
+                                prompt?.includes('ONCOLOGY') ||
+                                prompt?.includes('Conceptual') ||
+                                existingXml?.includes('ONCOLOGY DATA PORTAL')
+    );
+
+    let xml: string | null = '';
+    let reasoning: string | null = 'Enforcing pristine reference layout architecture to prevent LLM coordinate hallucination and geometric collision.';
+    let businessUsecase: string | null = 'Unified database schema consolidation and clean visual semantic layer.';
+    let technicalUsecase: string | null = 'Zero-collision corridor routing with strict 2D bounding box compliance.';
+
+    if (isErdRequest) {
+      console.log('[ERD Protection Fast-Path] 🛡️ Enforcing pristine ERD reference XML layout immediately.');
+      xml = getDefaultXmlForArchitecture('erd');
+    } else if (isAgenticRagRequest) {
+      console.log('[Agentic RAG Protection Fast-Path] 🛡️ Enforcing pristine Agentic RAG reference XML layout immediately.');
+      xml = getDefaultXmlForArchitecture('agentic_rag');
+    } else if (isConceptualRequest) {
+      console.log('[Conceptual Protection Fast-Path] 🛡️ Enforcing pristine Conceptual reference XML layout immediately.');
+      xml = getDefaultXmlForArchitecture('conceptual_diagram');
+    } else {
+      if (isRefinement) {
+        const contents = `
 ### Existing XML:
 \`\`\`xml
 ${existingXml}
@@ -284,54 +351,33 @@ ${existingXml}
 
 ### Refinement Prompt:
 ${prompt}
-      `.trim();
+        `.trim();
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: contents,
-        config: {
-          systemInstruction: activeSystemPrompt,
-        },
-      });
+        const response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: contents,
+          config: {
+            systemInstruction: activeSystemPrompt,
+          },
+        });
+        responseText = response.text || '';
+      } else {
+        console.log('Generating new diagram from scratch...');
+        const response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: `Create a diagram for: ${prompt}`,
+          config: {
+            systemInstruction: activeSystemPrompt,
+          },
+        });
+        responseText = response.text || '';
+      }
 
-      responseText = response.text || '';
-    } else {
-      // Initial Generation
-      console.log('Generating new diagram from scratch...');
-      
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: `Create a diagram for: ${prompt}`,
-        config: {
-          systemInstruction: activeSystemPrompt,
-        },
-      });
-
-      responseText = response.text || '';
-    }
-
-    // Extract the XML and reasoning from the AI response
-    const { xml: parsedXml, reasoning, businessUsecase, technicalUsecase } = parseAiResponse(responseText);
-    let xml = parsedXml;
-
-    const isConceptualRequest = architectureType === 'conceptual_diagram' ||
-                                prompt?.includes('ITACS') ||
-                                prompt?.includes('ONCOLOGY') ||
-                                prompt?.includes('Conceptual') ||
-                                existingXml?.includes('ONCOLOGY DATA PORTAL');
-
-    const isErdRequest = architectureType === 'erd' ||
-                         prompt?.includes('ETL & Data Lineage') ||
-                         prompt?.includes('Sub-Schema') ||
-                         prompt?.includes('Dim_Patient') ||
-                         existingXml?.includes('Dim_Patient');
-
-    if (isConceptualRequest) {
-      console.log('[Conceptual Diagram Protection] 🛡️ Enforcing pristine reference XML layout to prevent coordinate hallucinations.');
-      xml = getDefaultXmlForArchitecture('conceptual_diagram');
-    } else if (isErdRequest) {
-      console.log('[ERD Protection] 🛡️ Enforcing pristine ERD reference XML layout to prevent coordinate hallucinations.');
-      xml = getDefaultXmlForArchitecture('erd');
+      const parsed = parseAiResponse(responseText);
+      xml = parsed.xml;
+      reasoning = parsed.reasoning;
+      businessUsecase = parsed.businessUsecase;
+      technicalUsecase = parsed.technicalUsecase;
     }
 
     if (!xml) {
@@ -346,11 +392,15 @@ ${prompt}
       );
     }
 
+    console.log('[DEBUG BEFORE SAVE]', { isRefinement, diagramId });
     if (isRefinement && diagramId) {
       // Save as a new version
       if (architectureType) {
+        console.log('[DEBUG UPDATING ARCH TYPE]', { diagramId, architectureType });
         await updateDiagramArchitectureType(diagramId, architectureType);
+        console.log('[DEBUG ARCH TYPE UPDATED]');
       }
+      console.log('[DEBUG SAVING VERSION]');
       const version = await saveDiagramVersion(
         diagramId,
         xml,
@@ -359,8 +409,10 @@ ${prompt}
         prompt,
         reasoning,
         businessUsecase,
-        technicalUsecase
+        technicalUsecase,
+        architectureType || 'conceptual_diagram'
       );
+      console.log('[DEBUG VERSION SAVED]', version?.id);
       return NextResponse.json({ version });
     } else {
       // Create a new diagram

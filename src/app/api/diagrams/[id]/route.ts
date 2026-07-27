@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDiagram, deleteDiagram, getDiagramVersions } from '@/lib/db';
+import { getDiagram, deleteDiagram, getDiagramVersions, updateDiagramArchitectureType } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 
 interface RouteParams {
@@ -30,6 +30,25 @@ export async function GET(request: Request, { params }: RouteParams) {
     });
   } catch (error) {
     console.error('Failed to retrieve diagram:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error', details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH /api/diagrams/[id] - Update diagram metadata (e.g. architecture_type)
+export async function PATCH(request: Request, { params }: RouteParams) {
+  try {
+    const user = await getAuthenticatedUser();
+    const { id } = await params;
+    const body = await request.json();
+    if (body.architecture_type) {
+      await updateDiagramArchitectureType(id, body.architecture_type);
+    }
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Failed to update diagram:', error);
     return NextResponse.json(
       { error: 'Internal Server Error', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }

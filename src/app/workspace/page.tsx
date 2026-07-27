@@ -85,6 +85,7 @@ interface DiagramVersion {
   ai_reasoning?: string | null;
   business_usecase?: string | null;
   technical_usecase?: string | null;
+  architecture_type?: string | null;
 }
 
 interface ChatMessage {
@@ -690,7 +691,9 @@ function WorkspaceContent() {
       
       // Set the latest version as active
       if (data.versions && data.versions.length > 0) {
-        const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
+        const targetArch = data.architecture_type || 'conceptual_diagram';
+        const archVersions = data.versions.filter(v => (v.architecture_type || 'conceptual_diagram') === targetArch);
+        const sortedVersions = (archVersions.length > 0 ? archVersions : data.versions).sort((a, b) => b.version_number - a.version_number);
         setActiveVersion(sortedVersions[0]);
         
         // Restore previewVersion if specified in URL query
@@ -712,7 +715,8 @@ function WorkspaceContent() {
         
         // Reconstruct complete chat history from all version prompts and comments
         const messages: ChatMessage[] = [];
-        data.versions
+        const archVersionsForChat = data.versions.filter(v => (v.architecture_type || 'conceptual_diagram') === targetArch);
+        (archVersionsForChat.length > 0 ? archVersionsForChat : data.versions)
           .sort((a, b) => a.version_number - b.version_number)
           .forEach((v) => {
             if (v.prompt) {
@@ -2637,7 +2641,9 @@ function WorkspaceContent() {
 
   const renderVersionDropdown = (customId?: string) => {
     const versionsDesc = activeDiagram?.versions
-      ? [...activeDiagram.versions].sort((a, b) => b.version_number - a.version_number)
+      ? activeDiagram.versions
+          .filter(v => (v.architecture_type || 'conceptual_diagram') === selectedArchType)
+          .sort((a, b) => b.version_number - a.version_number)
       : [];
 
     if (versionsDesc.length === 0) return null;
@@ -3016,14 +3022,140 @@ function WorkspaceContent() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             )}
-            <div className="flex items-center gap-3 shrink-0 max-w-[420px]">
-              <h2 className="font-bold text-base text-white whitespace-nowrap truncate max-w-[220px]" title={activeDiagram ? activeDiagram.name : ''}>
+            <div className="flex items-center gap-3 shrink-0 flex-wrap">
+              <h2 className="font-bold text-base text-white whitespace-nowrap truncate max-w-[180px]" title={activeDiagram ? activeDiagram.name : ''}>
                 {activeDiagram ? activeDiagram.name : 'Select or Create a Diagram'}
               </h2>
-              {activeDiagram && activeVersion && (
-                <div className="flex items-center gap-2 shrink-0">
-                  {renderVersionDropdown("top-header-version-dropdown")}
-                </div>
+              {activeDiagram && (
+                <>
+                  {/* 1. Architecture Type (Diagram Type) Dropdown */}
+                  <div className="relative inline-flex items-center shrink-0">
+                    <select
+                      id="workspace-header-architecture-select"
+                      value={selectedArchType}
+                      disabled={isAnyAIBusy}
+                      onChange={(e) => {
+                        const newArchId = e.target.value;
+                        if (newArchId !== selectedArchType && !newArchId.startsWith('slot_')) {
+                          const existingVersionsForArch = activeDiagram?.versions?.filter(
+                            v => (v.architecture_type || 'conceptual_diagram') === newArchId
+                          ) || [];
+
+                          if (existingVersionsForArch.length > 0) {
+                            setSelectedArchType(newArchId);
+                            if (activeDiagram?.id) {
+                              fetch(`/api/diagrams/${activeDiagram.id}`, {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ architecture_type: newArchId }),
+                              }).catch(console.error);
+                            }
+                            const sorted = [...existingVersionsForArch].sort((a, b) => b.version_number - a.version_number);
+                            setActiveVersion(sorted[0]);
+                            setPreviewVersion(null);
+                            if (newArchId === 'technical_diagram' || newArchId === 'conceptual_diagram' || newArchId === 'erd') {
+                              setViewMode('canvas');
+                              setLayoutPreset('detailed');
+                            }
+                            const messages: ChatMessage[] = [];
+                            [...existingVersionsForArch]
+                              .sort((a, b) => a.version_number - b.version_number)
+                              .forEach((v) => {
+                                if (v.prompt) {
+                                  messages.push({
+                                    id: `${v.id}_user_prompt`,
+                                    sender: 'user',
+                                    text: v.prompt,
+                                    timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                                    versionNumber: v.version_number
+                                  });
+                                }
+                                messages.push({
+                                  id: v.id,
+                                  sender: v.created_by.toLowerCase() === 'ai' ? 'ai' : 'user',
+                                  text: v.created_by.toLowerCase() === 'ai' 
+                                    ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Refined Architecture'}"`
+                                    : `Manually saved version v${v.version_number}: "${v.comment || 'Saved changes'}"`,
+                                  timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                                  versionNumber: v.version_number
+                                });
+                              });
+                            setChatMessages(messages);
+                          } else {
+                            setPendingArchType(newArchId);
+                            setIsArchConsentModalOpen(true);
+                          }
+                        }
+                      }}
+                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[220px] truncate"
+                      title="Switch Architecture Type"
+                    >
+                      {ARCHITECTURE_TYPES.map((t) => (
+                        <option key={t.id} value={t.id} className={t.id.startsWith('slot_') ? 'text-slate-500 font-normal bg-[#0b101d]' : 'text-slate-100 font-bold bg-[#0b101d]'}>
+                          {t.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                  </div>
+
+                  {/* 2. Version Dropdown */}
+                  {activeVersion && (
+                    <div className="flex items-center gap-2 shrink-0">
+                      {renderVersionDropdown("top-header-version-dropdown")}
+                    </div>
+                  )}
+
+                  {/* 3. Edit Options Dropdown */}
+                  <div className="relative inline-flex items-center shrink-0 w-[135px]">
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === 'inline') {
+                          setIsInlineEditorOpen(true);
+                        } else if (val === 'newtab') {
+                          openInNewTab();
+                        }
+                      }}
+                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[135px] truncate"
+                    >
+                      <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
+                        ✏️ Edit Options ▾
+                      </option>
+                      <option value="inline" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                        ✏️ Edit Diagram Inline
+                      </option>
+                      <option value="newtab" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                        ↗️ Open Editor in New Tab
+                      </option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                  </div>
+
+                  {/* 4. Theme Toggle */}
+                  <button
+                    id="canvas-theme-toggle"
+                    onClick={() => setCanvasTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+                    title={`Switch to ${canvasTheme === 'dark' ? 'Light' : 'Dark'} Canvas Theme`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
+                  >
+                    {canvasTheme === 'dark' ? (
+                      <>
+                        <Sun className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Light Theme</span>
+                      </>
+                    ) : (
+                      <>
+                        <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>Dark Theme</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* 5. Feedback Widget */}
+                  <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
+                </>
               )}
             </div>
           </div>
@@ -3040,118 +3172,7 @@ function WorkspaceContent() {
             <AccessRequestsInbox user={currentUser} />
             {activeDiagram && (
               <>
-                <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
-                
-                {/* ☀️/🌙 Dark vs Light Canvas Theme Toggle */}
-                <button
-                  id="canvas-theme-toggle"
-                  onClick={() => setCanvasTheme(prev => prev === 'dark' ? 'light' : 'dark')}
-                  title={`Switch to ${canvasTheme === 'dark' ? 'Light' : 'Dark'} Canvas Theme`}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
-                >
-                  {canvasTheme === 'dark' ? (
-                    <>
-                      <Sun className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Light Theme</span>
-                    </>
-                  ) : (
-                    <>
-                      <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                      <span>Dark Theme</span>
-                    </>
-                  )}
-                </button>
-
-                {/* 1. View & Perspective Dropdown */}
-                <div className="relative inline-flex items-center shrink-0 w-[185px]">
-                  <select
-                    id="view-mode-selector"
-                    value={`${viewMode}:${layoutPreset}`}
-                    onChange={(e) => {
-                      const [vMode, lPreset] = e.target.value.split(':');
-                      if (vMode && lPreset) {
-                        setViewMode(vMode as 'canvas' | 'outline' | 'business' | 'technical');
-                        setLayoutPreset(lPreset as 'detailed' | 'clean' | 'vendor');
-                        if (isInlineEditorOpen) setIsInlineEditorOpen(false);
-                      }
-                    }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[185px] truncate"
-                  >
-                    <option value="canvas:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                      📐 2D Canvas — Detailed View
-                    </option>
-                    <option value="canvas:clean" className="bg-[#0b101d] text-teal-300 py-1 font-bold">
-                      ✨ 2D Canvas — Option 2: Clean View
-                    </option>
-                    <option value="canvas:vendor" className="bg-[#0b101d] text-cyan-300 py-1 font-bold">
-                      🏷️ 2D Canvas — Option 3: Vendor Icons
-                    </option>
-                    <option value="outline:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                      🌳 Structural Tree & Node Outline
-                    </option>
-                    <option value="business:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                      💼 Business Use Case Brief
-                    </option>
-                    <option value="technical:detailed" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                      ⚙️ Technical Integration Walkthrough
-                    </option>
-                  </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
-                </div>
-
-                {/* 2. Edit Options Dropdown */}
-                <div className="relative inline-flex items-center shrink-0 w-[135px]">
-                  <select
-                    value=""
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === 'inline') {
-                        setIsInlineEditorOpen(true);
-                      } else if (val === 'newtab') {
-                        openInNewTab();
-                      }
-                    }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[135px] truncate"
-                  >
-                    <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
-                      ✏️ Edit Options ▾
-                    </option>
-                    <option value="inline" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                      ✏️ Edit Diagram Inline
-                    </option>
-                    <option value="newtab" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                      ↗️ Open Editor in New Tab
-                    </option>
-                  </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
-                </div>
-
-                {/* 2b. Architecture Type Dropdown */}
-                <div className="relative inline-flex items-center shrink-0">
-                  <select
-                    id="workspace-header-architecture-select"
-                    value={selectedArchType}
-                    disabled={isAnyAIBusy}
-                    onChange={(e) => {
-                      const newArchId = e.target.value;
-                      if (newArchId !== selectedArchType && !newArchId.startsWith('slot_')) {
-                        setPendingArchType(newArchId);
-                        setIsArchConsentModalOpen(true);
-                      }
-                    }}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[240px] truncate"
-                    title="Switch Architecture Type"
-                  >
-                    {ARCHITECTURE_TYPES.map((t) => (
-                      <option key={t.id} value={t.id} className={t.id.startsWith('slot_') ? 'text-slate-500 font-normal bg-[#0b101d]' : 'text-slate-100 font-bold bg-[#0b101d]'}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
-                </div>
-
-                {/* 3. Exporters Dropdown */}
+                {/* Exporters Dropdown */}
                 <div className="relative inline-flex items-center shrink-0 w-[130px]">
                   <select
                     value=""
@@ -3179,7 +3200,7 @@ function WorkspaceContent() {
                   <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                 </div>
 
-                {/* 4. Audit Security Primary CTA */}
+                {/* Audit Security Primary CTA */}
                 <button
                   id="audit-diagram-btn"
                   onClick={() => handleAuditDiagram()}
@@ -3253,7 +3274,8 @@ function WorkspaceContent() {
                   {/* Audit Trail of Changes */}
                   {(() => {
                     const sorted = activeDiagram?.versions
-                      ?.slice()
+                      ?.filter(v => (v.architecture_type || 'conceptual_diagram') === selectedArchType)
+                      .slice()
                       .sort((a, b) => a.version_number - b.version_number) || [];
                     const curIdx = sorted.findIndex(v => v.id === displayedVersion.id);
                     const parent = curIdx > 0 ? sorted[curIdx - 1] : null;
@@ -4651,7 +4673,7 @@ function WorkspaceContent() {
                       if (!res.ok) throw new Error('Failed to generate new architecture version');
                       await fetchDiagrams();
                       await loadDiagramDetails(activeDiagram.id);
-                      if (archToGen === 'technical_diagram' || archToGen === 'conceptual_diagram') {
+                      if (archToGen === 'technical_diagram' || archToGen === 'conceptual_diagram' || archToGen === 'erd') {
                         setViewMode('canvas');
                         setLayoutPreset('detailed');
                       }
