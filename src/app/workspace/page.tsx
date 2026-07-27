@@ -60,6 +60,7 @@ import { PasswordSetupModal } from '@/components/PasswordSetupModal';
 import { AspectRatioSelector } from '@/components/AspectRatioSelector';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -574,12 +575,23 @@ function WorkspaceContent() {
       const sourceWindow = isFromIframe ? iframe.contentWindow : childWindow;
       
       if (msg.event === 'init') {
-        console.log('[Draw.io Embed] ✉️ Received: init. Sending: load...');
+        console.log('[Draw.io Embed] ✉️ Received: init. Sending: load and custom enterprise stencils...');
         sourceWindow?.postMessage(JSON.stringify({
           action: 'load',
           xml: activeXmlRef.current,
           fit: false
         }), '*');
+
+        // Inject PromptCanvas Enterprise Stencils into left sidebar palette!
+        setTimeout(() => {
+          sourceWindow?.postMessage(JSON.stringify({
+            action: 'library',
+            error: 'ignore',
+            show: true,
+            title: 'PromptCanvas Enterprise Stencils',
+            xml: getPromptCanvasEnterpriseStencilsXml()
+          }), '*');
+        }, 500);
       }
       
       if (msg.event === 'save') {
