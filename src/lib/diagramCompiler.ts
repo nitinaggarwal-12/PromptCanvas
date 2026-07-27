@@ -545,9 +545,9 @@ export function getExactAgenticRagReferenceXml(): string {
           <mxGeometry x="1020" y="40" width="580" height="720" as="geometry" />
         </mxCell>
 
-        <!-- SECURE ENTERPRISE BOUNDARY (DASHED CONTAINER SPANNING ZONE 2 AND ZONE 3) -->
-        <mxCell id="sec_bound" value="Secure Managed Gemini Enterprise Ecosystem Boundary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#64748B;strokeWidth=2;strokeDashArray=6 6;verticalAlign=top;align=left;spacingLeft=18;spacingTop=12;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#334155;" vertex="1" parent="1">
-          <mxGeometry x="400" y="110" width="1180" height="630" as="geometry" />
+        <!-- SECURE ENTERPRISE BOUNDARY (DASHED CONTAINER INSIDE ZONE 2) -->
+        <mxCell id="sec_bound" value="Secure Managed Gemini Enterprise Ecosystem Boundary" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#64748B;strokeWidth=2;strokeDashArray=6 6;verticalAlign=top;align=left;spacingLeft=18;spacingTop=12;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="400" y="110" width="560" height="630" as="geometry" />
         </mxCell>
 
         <!-- ZONE 1 NODE: USER INTERFACE / CHAT APP -->

@@ -146,6 +146,7 @@ export interface AuditReport {
 // Database Connection Drivers
 let pgPoolInstance: Pool | null = null;
 let sqliteDbInstance: DatabaseSync | null = null;
+const globalForDb = globalThis as unknown as { _tablesInitialized?: boolean };
 let tablesInitialized = false;
 
 export function isPostgres(): boolean {
@@ -184,7 +185,7 @@ function getSqliteDb(): DatabaseSync {
 
 // Ensure database tables exist for active driver
 export async function ensureTablesExist(): Promise<void> {
-  if (tablesInitialized) return;
+  if (tablesInitialized || globalForDb._tablesInitialized) return;
 
   if (isPostgres()) {
     const pool = getPgPool();
@@ -689,6 +690,7 @@ export async function ensureTablesExist(): Promise<void> {
   }
 
   tablesInitialized = true;
+  globalForDb._tablesInitialized = true;
 }
 
 // Helper: Get diagram access level for a user ('Owner' | 'Editor' | 'Viewer' | null)
