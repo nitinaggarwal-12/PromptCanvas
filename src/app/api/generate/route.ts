@@ -4,6 +4,8 @@ import { createDiagram, saveDiagramVersion, getLatestDiagramVersion, updateDiagr
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
+import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { tryCompileJsonOrFallback, compileSpecToDrawioXml, getBenchmarkItacsSpec } from '@/lib/diagramCompiler';
 
 const ai = new GoogleGenAI({});
 
@@ -157,6 +159,19 @@ function parseAiResponse(text: string): {
     xml = text.substring(start, end).trim();
   }
 
+  if (xml) {
+    xml = tryCompileJsonOrFallback(xml, xml);
+  } else {
+    const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
+    if (jsonMatch && jsonMatch[1]) {
+      const compiled = tryCompileJsonOrFallback(jsonMatch[1], '');
+      if (compiled) xml = compiled;
+    } else if (text.includes('"columns"') && text.includes('{')) {
+      const compiled = tryCompileJsonOrFallback(text, '');
+      if (compiled) xml = compiled;
+    }
+  }
+
   // Section Headers
   const reasoningHeader = "### AI Architectural Plan & Reasoning";
   const businessHeader = "### Business Use Case";
@@ -224,6 +239,19 @@ export async function POST(request: Request) {
     let isRefinement = false;
     let existingXml = '';
 
+    let activeSystemPrompt = SYSTEM_PROMPT;
+    if (architectureType === 'conceptual_diagram' || prompt.includes('ITACS Oncology Platform')) {
+      activeSystemPrompt += `
+
+### SPECIAL CONCEPTUAL DIAGRAM OVERRIDE (ITACS Oncology Platform):
+CRITICAL: DO NOT use Google Cloud icons (<img src="...logos:google-cloud.svg">) anywhere in this diagram! You MUST strictly use this exact, pixel-perfect 3-column layout XML structure without altering shapes, colors, or icons:
+
+\`\`\`xml
+${getDefaultXmlForArchitecture('conceptual_diagram')}
+\`\`\`
+`;
+    }
+
     if (diagramId) {
       // Refinement Loop
       isRefinement = true;
@@ -252,7 +280,7 @@ ${prompt}
         model: 'gemini-2.5-flash',
         contents: contents,
         config: {
-          systemInstruction: SYSTEM_PROMPT,
+          systemInstruction: activeSystemPrompt,
         },
       });
 
@@ -265,7 +293,7 @@ ${prompt}
         model: 'gemini-2.5-flash',
         contents: `Create a diagram for: ${prompt}`,
         config: {
-          systemInstruction: SYSTEM_PROMPT,
+          systemInstruction: activeSystemPrompt,
         },
       });
 
@@ -317,7 +345,7 @@ ${prompt}
         businessUsecase,
         technicalUsecase,
         user?.id || null,
-        architectureType || 'erd'
+        architectureType || 'conceptual_diagram'
       );
       return NextResponse.json({ diagram, version }, { status: 201 });
     }

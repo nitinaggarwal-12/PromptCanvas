@@ -90,7 +90,7 @@ const TEMPLATE_PROMPTS = [
 
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
-import { ARCHITECTURE_TYPES, getArchitectureTypeById } from '@/lib/architectureTypes';
+import { ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -108,7 +108,7 @@ export default function Dashboard() {
   const [newDiagramName, setNewDiagramName] = useState('');
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('0');
-  const [selectedArchType, setSelectedArchType] = useState('erd');
+  const [selectedArchType, setSelectedArchType] = useState('conceptual_diagram');
   const [isCreating, setIsCreating] = useState(false);
 
   const checkAuth = async () => {
@@ -178,21 +178,7 @@ export default function Dashboard() {
     setIsCreating(true);
 
     try {
-      const defaultXml = `
-        <mxfile host="embed.diagrams.net">
-          <diagram id="clean_workspace" name="Clean Architecture Workspace">
-            <mxGraphModel dx="1193" dy="853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="950" math="0" shadow="0">
-              <root>
-                <mxCell id="0" />
-                <mxCell id="1" parent="0" />
-                <mxCell id="welcome_node" value="&lt;b&gt;[1] New Architecture Workspace&lt;/b&gt;&lt;br&gt;&lt;i&gt;Type a prompt in the AI box below to design your system with Gemini!&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontFamily=Helvetica;fontSize=14;" vertex="1" parent="1">
-                  <mxGeometry x="350" y="250" width="300" height="80" as="geometry" />
-                </mxCell>
-              </root>
-            </mxGraphModel>
-          </diagram>
-        </mxfile>
-      `.trim();
+      const defaultXml = getDefaultXmlForArchitecture(selectedArchType);
 
       const promptToGenerate = newDiagramPrompt.trim();
 
@@ -789,6 +775,7 @@ export default function Dashboard() {
               <div className="space-y-2.5">
                 <label className="block text-base font-bold text-slate-200">Choose a Template Prompt</label>
                 <select
+                  id="modal-template-select"
                   value={selectedTemplate}
                   onChange={(e) => {
                     const val = e.target.value;
@@ -796,6 +783,8 @@ export default function Dashboard() {
                     if (val !== 'custom') {
                       const idx = parseInt(val, 10);
                       setNewDiagramPrompt(TEMPLATE_PROMPTS[idx].prompt);
+                    } else {
+                      setNewDiagramPrompt('');
                     }
                   }}
                   className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all cursor-pointer"

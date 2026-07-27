@@ -367,9 +367,17 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
 /**
  * 🧹 Transforms a dense Draw.io XML diagram into Option 2: Minimalist Clean Variant
  */
+function isPreservedCustomLayout(xml: string): boolean {
+  if (!xml || typeof xml !== 'string') return false;
+  return xml.includes('ONCOLOGY DATA PORTAL') || xml.includes('itacs_conceptual') || xml.includes('INTEGRATED INSIGHTS HUB');
+}
+
 export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResult {
   if (!xmlInput || typeof xmlInput !== 'string') {
     return { success: false, cleanedXml: xmlInput, modifiedNodesCount: 0 };
+  }
+  if (isPreservedCustomLayout(xmlInput)) {
+    return { success: true, cleanedXml: xmlInput, modifiedNodesCount: 0 };
   }
 
   const parser = new XMLParser({
@@ -525,6 +533,7 @@ export function resolveVendorIconUrl(text: string): string {
 
 export function restoreDetailedView(xmlInput: string, skipLayout: boolean = false): string {
   if (!xmlInput) return xmlInput;
+  if (isPreservedCustomLayout(xmlInput)) return xmlInput;
 
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -617,6 +626,7 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
  */
 export function createVendorIconsVariant(xmlInput: string): string {
   if (!xmlInput) return xmlInput;
+  if (isPreservedCustomLayout(xmlInput)) return xmlInput;
 
   const parser = new XMLParser({
     ignoreAttributes: false,

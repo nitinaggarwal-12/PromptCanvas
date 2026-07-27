@@ -1,3 +1,5 @@
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec } from './diagramCompiler';
+
 export interface ArchitectureTypeOption {
   id: string;
   name: string;
@@ -6,6 +8,19 @@ export interface ArchitectureTypeOption {
 }
 
 export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
+  // Phase 0: Conceptual & Standard Architecture
+  {
+    id: "conceptual_diagram",
+    name: "Conceptual Diagram",
+    category: "Phase 0: Conceptual & Standard Architecture",
+    prompt: "ITACS Oncology Platform:\n- Ingestion: Unstructured PDFs and PPTs across 5 silos (Market Research, Medical Affairs, Market Access, Outcomes Research, Competitive Intelligence).\n- Processing Engine: Core ITACS Platform (Powered by Gemini Enterprise) doing data synthesis, document analysis, strategic QA chatbot, and competitive launch simulation.\n- Strategic Outcomes: Outmaneuver Competition, Reach Patients Faster, Strategic Planning & Analysis.\n- Priority Alert: Review Drug Launch Strategy."
+  },
+  {
+    id: "technical_diagram",
+    name: "0. Technical Diagram",
+    category: "Phase 0: Conceptual & Standard Architecture",
+    prompt: "Act as an Elite Solutions Architect and Cloud Systems Engineer. Design a comprehensive, multi-tier cloud technical architecture diagram in Draw.io 2D canvas format. It should include: ingress routing, load balancing, compute services, relational/NoSQL databases, caching layers, message queues/event buses, security boundaries (VPC/IAM), and observability monitoring."
+  },
   // Phase 1: Foundation & Core Logic
   {
     id: "erd",
@@ -76,3 +91,26 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
 export function getArchitectureTypeById(id: string): ArchitectureTypeOption {
   return ARCHITECTURE_TYPES.find(t => t.id === id) || ARCHITECTURE_TYPES[0];
 }
+
+export function getDefaultXmlForArchitecture(archId?: string | null): string {
+  if (archId === 'conceptual_diagram') {
+    return compileSpecToDrawioXml(getBenchmarkItacsSpec());
+  }
+
+  return `
+<mxfile host="embed.diagrams.net">
+  <diagram id="clean_workspace" name="Clean Architecture Workspace">
+    <mxGraphModel dx="1193" dy="853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="welcome_node" value="&lt;b&gt;[1] New Architecture Workspace&lt;/b&gt;&lt;br&gt;&lt;i&gt;Type a prompt in the AI box below to design your system with Gemini!&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontFamily=Helvetica;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="350" y="250" width="300" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+

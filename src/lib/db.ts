@@ -363,7 +363,7 @@ export async function ensureTablesExist(): Promise<void> {
       ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS workspace_id TEXT;
     `);
     await pool.query(`
-      ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS architecture_type TEXT DEFAULT 'erd';
+      ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS architecture_type TEXT DEFAULT 'conceptual_diagram';
     `);
     await pool.query(`
       ALTER TABLE users ADD COLUMN IF NOT EXISTS global_role TEXT DEFAULT 'Author';
@@ -577,7 +577,7 @@ export async function ensureTablesExist(): Promise<void> {
       // Ignored if column already exists
     }
     try {
-      db.exec('ALTER TABLE diagrams ADD COLUMN architecture_type TEXT DEFAULT "erd";');
+      db.exec('ALTER TABLE diagrams ADD COLUMN architecture_type TEXT DEFAULT "conceptual_diagram";');
     } catch {
       // Ignored if column already exists
     }
@@ -839,7 +839,7 @@ export async function createDiagram(
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES ($1, $2, $3, $4)', [diagramId, name, userId || null, architectureType || 'erd']);
+      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES ($1, $2, $3, $4)', [diagramId, name, userId || null, architectureType || 'conceptual_diagram']);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -878,7 +878,7 @@ export async function createDiagram(
     db.exec('BEGIN TRANSACTION;');
     try {
       const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES (?, ?, ?, ?)');
-      insertDiagram.run(diagramId, name, userId || null, architectureType || 'erd');
+      insertDiagram.run(diagramId, name, userId || null, architectureType || 'conceptual_diagram');
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {

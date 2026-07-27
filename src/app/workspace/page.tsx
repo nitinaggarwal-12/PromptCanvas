@@ -59,7 +59,7 @@ import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModa
 import { PasswordSetupModal } from '@/components/PasswordSetupModal';
 import { AspectRatioSelector } from '@/components/AspectRatioSelector';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
-import { ARCHITECTURE_TYPES, getArchitectureTypeById } from '@/lib/architectureTypes';
+import { ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -467,7 +467,7 @@ function WorkspaceContent() {
   const [newDiagramName, setNewDiagramName] = useState('');
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('0');
-  const [selectedArchType, setSelectedArchType] = useState('erd');
+  const [selectedArchType, setSelectedArchType] = useState('conceptual_diagram');
   const [pendingArchType, setPendingArchType] = useState<string | null>(null);
   const [isArchConsentModalOpen, setIsArchConsentModalOpen] = useState(false);
   const [promptInput, setPromptInput] = useState('');
@@ -663,8 +663,14 @@ function WorkspaceContent() {
       setActiveDiagram(data);
       if (data.architecture_type) {
         setSelectedArchType(data.architecture_type);
+        if (data.architecture_type === 'technical_diagram' || data.architecture_type === 'conceptual_diagram') {
+          setViewMode('canvas');
+          setLayoutPreset('detailed');
+        }
       } else {
-        setSelectedArchType('erd');
+        setSelectedArchType('conceptual_diagram');
+        setViewMode('canvas');
+        setLayoutPreset('detailed');
       }
       setZoom(0.7);
       setPan({ x: 0, y: 0 });
@@ -949,22 +955,7 @@ function WorkspaceContent() {
     if (!newDiagramName.trim()) return;
     
     try {
-      // Phase 7: Clean Minimal Starter Slate for Version v1 (No 15-node RAG/ERP clutter!)
-      const defaultXml = `
-        <mxfile host="embed.diagrams.net">
-          <diagram id="clean_workspace" name="Clean Architecture Workspace">
-            <mxGraphModel dx="1193" dy="853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="950" math="0" shadow="0">
-              <root>
-                <mxCell id="0" />
-                <mxCell id="1" parent="0" />
-                <mxCell id="welcome_node" value="&lt;b&gt;[1] New Architecture Workspace&lt;/b&gt;&lt;br&gt;&lt;i&gt;Type a prompt in the AI box below to design your system with Gemini!&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontFamily=Helvetica;fontSize=14;" vertex="1" parent="1">
-                  <mxGeometry x="350" y="250" width="300" height="80" as="geometry" />
-                </mxCell>
-              </root>
-            </mxGraphModel>
-          </diagram>
-        </mxfile>
-      `.trim();
+      const defaultXml = getDefaultXmlForArchitecture(selectedArchType);
 
       const promptToGenerate = newDiagramPrompt.trim();
 
@@ -2595,6 +2586,10 @@ function WorkspaceContent() {
   const currentXmlToRender = React.useMemo(() => {
     const baseXml = displayedVersion?.xml_content || '';
     if (!baseXml) return '';
+
+    if (baseXml.includes('ONCOLOGY DATA PORTAL') || baseXml.includes('itacs_conceptual') || baseXml.includes('INTEGRATED INSIGHTS HUB')) {
+      return baseXml;
+    }
 
     let formattedXml = baseXml;
     const hasAspectRatio = Boolean(selectedAspectRatio);
@@ -4644,6 +4639,10 @@ function WorkspaceContent() {
                       if (!res.ok) throw new Error('Failed to generate new architecture version');
                       await fetchDiagrams();
                       await loadDiagramDetails(activeDiagram.id);
+                      if (archToGen === 'technical_diagram' || archToGen === 'conceptual_diagram') {
+                        setViewMode('canvas');
+                        setLayoutPreset('detailed');
+                      }
                     } catch (err) {
                       console.error(err);
                       alert('Error generating architecture diagram version');

@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       businessUsecase,
       technicalUsecase,
       user?.id || null,
-      architectureType || 'erd'
+      architectureType || 'conceptual_diagram'
     );
 
     return NextResponse.json({ diagram, version }, { status: 201 });
