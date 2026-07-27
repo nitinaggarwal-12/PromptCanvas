@@ -2599,7 +2599,7 @@ function WorkspaceContent() {
     const baseXml = displayedVersion?.xml_content || '';
     if (!baseXml) return '';
 
-    if (baseXml.includes('ONCOLOGY DATA PORTAL') || baseXml.includes('itacs_conceptual') || baseXml.includes('INTEGRATED INSIGHTS HUB')) {
+    if (baseXml.includes('ONCOLOGY DATA PORTAL') || baseXml.includes('itacs_conceptual') || baseXml.includes('INTEGRATED INSIGHTS HUB') || baseXml.includes('Dim_Patient') || baseXml.includes('Sub-Schema') || baseXml.includes('ETL_System_Data_Sources')) {
       return baseXml;
     }
 

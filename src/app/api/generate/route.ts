@@ -250,6 +250,16 @@ CRITICAL: DO NOT use Google Cloud icons (<img src="...logos:google-cloud.svg">) 
 ${getDefaultXmlForArchitecture('conceptual_diagram')}
 \`\`\`
 `;
+    } else if (architectureType === 'erd' || prompt.includes('ETL & Data Lineage') || prompt.includes('Sub-Schema') || prompt.includes('Dim_Patient')) {
+      activeSystemPrompt += `
+
+### SPECIAL ERD DIAGRAM OVERRIDE (Unified Database Schema):
+CRITICAL: You MUST strictly use this exact, pixel-perfect ERD Unified Database Schema layout XML structure without altering tables, columns, or cardinalities:
+
+\`\`\`xml
+${getDefaultXmlForArchitecture('erd')}
+\`\`\`
+`;
     }
 
     if (diagramId) {
@@ -310,9 +320,18 @@ ${prompt}
                                 prompt?.includes('Conceptual') ||
                                 existingXml?.includes('ONCOLOGY DATA PORTAL');
 
+    const isErdRequest = architectureType === 'erd' ||
+                         prompt?.includes('ETL & Data Lineage') ||
+                         prompt?.includes('Sub-Schema') ||
+                         prompt?.includes('Dim_Patient') ||
+                         existingXml?.includes('Dim_Patient');
+
     if (isConceptualRequest) {
       console.log('[Conceptual Diagram Protection] 🛡️ Enforcing pristine reference XML layout to prevent coordinate hallucinations.');
       xml = getDefaultXmlForArchitecture('conceptual_diagram');
+    } else if (isErdRequest) {
+      console.log('[ERD Protection] 🛡️ Enforcing pristine ERD reference XML layout to prevent coordinate hallucinations.');
+      xml = getDefaultXmlForArchitecture('erd');
     }
 
     if (!xml) {

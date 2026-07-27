@@ -119,4 +119,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 * **Always Push Commits**: Whenever code changes are staged and committed (`git commit`), you MUST immediately execute `git push` (or `git push origin main`) without exception. Never leave commits solely on the local machine so that live CI/CD deployments (e.g. Railway, Vercel) remain synchronized with the repository.
 
+---
+
+# 🤖 Autonomous Visual & 2D Geometric Collision Audit Protocol (Mandatory Before Validation)
+
+* **No Blind Validation (Text != Visual)**: Never present a visual artifact (UI layout, Draw.io diagram, canvas, or component) to the user for validation based purely on DOM text string assertions or CLI green exit codes. Text presence does not verify geometric alignment, line routing, or visual clarity.
+* **Mandatory 2D Bounding Box & Collision Harness**: Before presenting ANY visual task as complete across ANY project, you must build and execute an automated 2D geometric and visual audit script (via Puppeteer E2E or Node canvas) that programmatically verifies:
+  1. **Line-to-Box Collision**: Connecting lines, arrows, and SVG paths must NEVER slice horizontally, vertically, or diagonally across intermediate table boxes, cards, or UI components.
+  2. **Border Overlap & Margin Safety**: Floating badges, callouts, and child elements must maintain at least a 30px–60px safety margin from container borders. Never allow callout boxes or text labels to sit on top of container borders or outer frames.
+  3. **Corridor & Channel Pitch**: Maintain wide-open routing channels (minimum 130px–140px column pitch and 80px row pitch) so connecting lines have dedicated, collision-free routing tracks.
+  4. **Text Contrast & Background Pills**: All floating edge labels or badges crossing lines or borders must enforce solid white (`#FFFFFF`) or high-contrast background pills to guarantee 100% legibility.
+* **Closed-Loop Autonomous Self-Correction**: If the programmatic collision harness or visual evaluation detects any line overlap, border slicing, or visual clutter, you must autonomously calculate corrected coordinates, update the codebase, re-run the test harness, and repeat the loop until the geometric collision score is **strictly zero** before asking the user for review.
+
 

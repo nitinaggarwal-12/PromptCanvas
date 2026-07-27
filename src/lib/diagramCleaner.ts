@@ -369,7 +369,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
  */
 function isPreservedCustomLayout(xml: string): boolean {
   if (!xml || typeof xml !== 'string') return false;
-  return xml.includes('ONCOLOGY DATA PORTAL') || xml.includes('itacs_conceptual') || xml.includes('INTEGRATED INSIGHTS HUB');
+  return xml.includes('ONCOLOGY DATA PORTAL') || xml.includes('itacs_conceptual') || xml.includes('INTEGRATED INSIGHTS HUB') || xml.includes('Dim_Patient') || xml.includes('Sub-Schema') || xml.includes('ETL_System_Data_Sources');
 }
 
 export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResult {

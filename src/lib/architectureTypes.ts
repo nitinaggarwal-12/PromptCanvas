@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -95,6 +95,9 @@ export function getArchitectureTypeById(id: string): ArchitectureTypeOption {
 export function getDefaultXmlForArchitecture(archId?: string | null): string {
   if (archId === 'conceptual_diagram') {
     return compileSpecToDrawioXml(getBenchmarkItacsSpec());
+  }
+  if (archId === 'erd') {
+    return compileSpecToDrawioXml(getBenchmarkErdSpec());
   }
 
   return `

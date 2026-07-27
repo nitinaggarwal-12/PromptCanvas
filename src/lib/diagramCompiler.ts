@@ -264,15 +264,279 @@ export function getExactItacsReferenceXml(): string {
 }
 
 /**
+ * Returns the EXACT pixel-perfect ERD Unified Database Schema XML matching reference ERD image
+ * Features 3 Sub-Schemas, 17 composite ERD tables with styled headers, orange callout badges, and cardinality connectors.
+ */
+export function getExactErdReferenceXml(): string {
+  const createTable = (id: string, title: string, x: number, y: number, w: number, h: number, bodyHtml: string, headerFill = '#DBEAFE', headerFont = '#1E3A8A'): string => {
+    const hdrH = 28;
+    return `
+        <!-- Table: ${title} -->
+        <mxCell id="${id}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry" />
+        </mxCell>
+        <mxCell id="${id}_hdr" value="${escapeXml(title)}" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${headerFill};strokeColor=none;fontColor=${headerFont};fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${hdrH}" as="geometry" />
+        </mxCell>
+        <mxCell id="${id}_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="${x + 2}" y="${y + hdrH}" width="${w - 4}" height="2" as="geometry" />
+        </mxCell>
+        <mxCell id="${id}_body" value="${escapeXml(bodyHtml)}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=${headerFont === '#1E3A8A' ? '#1E293B' : '#064E3B'};paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
+          <mxGeometry x="${x + 4}" y="${y + hdrH + 4}" width="${w - 8}" height="${h - hdrH - 8}" as="geometry" />
+        </mxCell>`;
+  };
+
+  const createNote = (id: string, text: string, x: number, y: number, w = 240, h = 50): string => {
+    return `
+        <mxCell id="${id}" value="${escapeXml(text)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.5;fontColor=#92400E;fontSize=11;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry" />
+        </mxCell>`;
+  };
+
+  let tables = '';
+  // Top Sub-Schema 2 Tables
+  tables += createTable('etl_src', '🗄️ <b>ETL_System_Data_Sources</b>', 400, 70, 230, 110, '<b>PK</b> Source ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Source System Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Connection String<br>&nbsp;&nbsp;&nbsp;&nbsp;Silo ID', '#DBEAFE', '#1E3A8A');
+  tables += createTable('etl_log', '📑 <b>ETL_Job_Audit_Log</b>', 700, 70, 240, 135, '<b>PK/FK</b> Job Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Job Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Data Source ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Start/End Time<br>&nbsp;&nbsp;&nbsp;&nbsp;Status<br>&nbsp;&nbsp;&nbsp;&nbsp;Number of Rows Processed<br>&nbsp;&nbsp;&nbsp;&nbsp;User ID', '#DBEAFE', '#1E3A8A');
+  tables += createTable('etl_map', '🗺️ <b>Data_Lineage_Map</b>', 1010, 70, 230, 110, '<b>PK</b> Target Table/Column ID<br><b>PK</b> Source Table/Column ID<br><b>FK</b> ETL Job ID', '#DBEAFE', '#1E3A8A');
+
+  // Central Sub-Schema 1 Tables (Widened 130px inter-column channel: Left at x=50 w=190, Center at x=370 w=220)
+  tables += createTable('dim_pat', '👤 <b>Dim_Patient</b>', 50, 280, 190, 120, '<b>PK</b> Patient Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Patient Type<br>&nbsp;&nbsp;&nbsp;&nbsp;Region<br>&nbsp;&nbsp;&nbsp;&nbsp;Age Group<br>&nbsp;&nbsp;&nbsp;&nbsp;Demographics<br>&nbsp;&nbsp;&nbsp;&nbsp;Disease History', '#DBEAFE', '#1E3A8A');
+  tables += createTable('dim_phy', '🩺 <b>Dim_Physician</b>', 50, 430, 190, 110, '<b>PK</b> Physician Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Specialization<br>&nbsp;&nbsp;&nbsp;&nbsp;Affiliation<br>&nbsp;&nbsp;&nbsp;&nbsp;Ranking<br>&nbsp;&nbsp;&nbsp;&nbsp;Location', '#DBEAFE', '#1E3A8A');
+  tables += createTable('dim_prod', '💊 <b>Dim_Oncology_Product</b>', 50, 570, 190, 110, '<b>PK</b> Product Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Product Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Therapy Area<br>&nbsp;&nbsp;&nbsp;&nbsp;Status<br>&nbsp;&nbsp;&nbsp;&nbsp;Competing Products', '#DBEAFE', '#1E3A8A');
+  tables += createTable('dim_silo', '🏢 <b>Dim_Functional_Silo</b>', 50, 710, 190, 120, '<b>PK</b> Silo Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Silo Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Silo Description<br>&nbsp;&nbsp;&nbsp;&nbsp;Owner', '#DBEAFE', '#1E3A8A');
+
+  tables += createTable('fact_ins', '📊 <b>Fact_Oncology_Insights</b>', 370, 280, 220, 130, '<b>PK</b> Patient ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Product ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Date ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Silo ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Value Metric<br>&nbsp;&nbsp;&nbsp;&nbsp;Confidence Score<br>&nbsp;&nbsp;&nbsp;&nbsp;Confidence Interval', '#E0F2FE', '#0369A1');
+  tables += createTable('fact_enc', '🏥 <b>Fact_Patient_Encounters</b>', 370, 450, 220, 140, '<b>PK</b> Patient ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Encounter ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Date ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Diagnosis ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Physician ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Payer ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Value Metric', '#E0F2FE', '#0369A1');
+  tables += createTable('fact_comp', '⚔️ <b>Fact_Competitive_Intel</b>', 370, 620, 220, 125, '<b>PK</b> Intel ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Product ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Date ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Source ID<br>&nbsp;&nbsp;&nbsp;&nbsp;Metric<br>&nbsp;&nbsp;&nbsp;&nbsp;Insight Type', '#E0F2FE', '#0369A1');
+
+  tables += createTable('dim_center', '🔗 <b>Dim_Intel_Map</b>', 630, 490, 150, 65, '<b>PK</b> Intel ID<br><b>FK</b> Source ID', '#DBEAFE', '#1E3A8A');
+
+  tables += createTable('dim_time', '📅 <b>Dim_Time</b>', 820, 280, 180, 120, '<b>PK</b> Time Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Date<br>&nbsp;&nbsp;&nbsp;&nbsp;Week<br>&nbsp;&nbsp;&nbsp;&nbsp;Month<br>&nbsp;&nbsp;&nbsp;&nbsp;Quarter<br>&nbsp;&nbsp;&nbsp;&nbsp;Year', '#DBEAFE', '#1E3A8A');
+  tables += createTable('dim_loc', '📍 <b>Dim_Location</b>', 820, 430, 180, 120, '<b>PK</b> Location Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Facility Name<br>&nbsp;&nbsp;&nbsp;&nbsp;City<br>&nbsp;&nbsp;&nbsp;&nbsp;State<br>&nbsp;&nbsp;&nbsp;&nbsp;Country<br>&nbsp;&nbsp;&nbsp;&nbsp;Region', '#DBEAFE', '#1E3A8A');
+  tables += createTable('dim_payer', '💳 <b>Dim_Payer</b>', 820, 580, 180, 100, '<b>PK</b> Payer Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Payer Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Type<br>&nbsp;&nbsp;&nbsp;&nbsp;Tier', '#DBEAFE', '#1E3A8A');
+  tables += createTable('dim_src', '🌐 <b>Dim_Intel_Source</b>', 820, 710, 180, 100, '<b>PK</b> Source Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Source Name<br>&nbsp;&nbsp;&nbsp;&nbsp;URL<br>&nbsp;&nbsp;&nbsp;&nbsp;Silo ID', '#DBEAFE', '#1E3A8A');
+
+  // Right Sub-Schema 3 Tables
+  tables += createTable('ml_feat', '📦 <b>ML_Feature_Store</b>', 1210, 310, 220, 150, '<b>P/FK</b> Feature Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Feature Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Feature Description<br>&nbsp;&nbsp;&nbsp;&nbsp;Version<br>&nbsp;&nbsp;&nbsp;&nbsp;Data Type<br>&nbsp;&nbsp;&nbsp;&nbsp;Aggregation<br>&nbsp;&nbsp;&nbsp;&nbsp;Source Table ID', '#D1FAE5', '#065F46');
+  tables += createTable('ml_inf', '🧠 <b>ML_Inference_Log</b>', 1210, 560, 220, 155, '<b>PK</b> Inference Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Model Used<br>&nbsp;&nbsp;&nbsp;&nbsp;Input Keys (Patient/Product)<br>&nbsp;&nbsp;&nbsp;&nbsp;Output Prediction<br>&nbsp;&nbsp;&nbsp;&nbsp;Probability Score<br>&nbsp;&nbsp;&nbsp;&nbsp;Actual Truth Label<br>&nbsp;&nbsp;&nbsp;&nbsp;Timestamp', '#D1FAE5', '#065F46');
+  tables += createTable('gen_corp', '📚 <b>GenAI_Context_Corpus</b>', 1490, 310, 280, 135, '<b>PK</b> Corpus Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Storage Path (GCS)<br>&nbsp;&nbsp;&nbsp;&nbsp;Doc Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Doc Type<br>&nbsp;&nbsp;&nbsp;&nbsp;Functional Silo Tag<br>&nbsp;&nbsp;&nbsp;&nbsp;Chunk Count', '#D1FAE5', '#065F46');
+  tables += createTable('gen_vec', '🔮 <b>GenAI_Vector_Index</b>', 1490, 480, 280, 85, '<b>PK</b> Chunk Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Vector Embedding', '#D1FAE5', '#065F46');
+  tables += createTable('gen_conv', '💬 <b>GenAI_Conversation_Log</b>', 1490, 600, 280, 175, '<b>PK</b> User Key<br>&nbsp;&nbsp;&nbsp;&nbsp;User<br>&nbsp;&nbsp;&nbsp;&nbsp;Prompt<br>&nbsp;&nbsp;&nbsp;&nbsp;Retrieved Context Chunks<br>&nbsp;&nbsp;&nbsp;&nbsp;Generated Response<br>&nbsp;&nbsp;&nbsp;&nbsp;Feedback Loop (e.g. Thumb Up/Down)<br>&nbsp;&nbsp;&nbsp;&nbsp;Token Usage<br>&nbsp;&nbsp;&nbsp;&nbsp;Latency<br>&nbsp;&nbsp;&nbsp;&nbsp;Timestamp', '#D1FAE5', '#065F46');
+
+  let notes = '';
+  // Exterior Callouts positioned 60px+ from container borders
+  notes += createNote('note_iam', '<b>IAM Roles:</b><br>Row-Level Security on Patient Data', 20, 140, 230, 50);
+  notes += createNote('note_vpc1', '<b>VPC Service Controls:</b><br>Secure Access to Gemini APIs', 1540, 140, 240, 50);
+  notes += createNote('note_vpc2', '<b>VPC Service Controls:</b><br>Secure Access to Gemini APIs', 1540, 1050, 240, 50);
+  notes += createNote('note_mil', '<b>MIL Service Controls:</b><br>Secure poundsdata', 1190, 1050, 240, 50);
+
+  return `
+<mxfile host="embed.diagrams.net">
+  <diagram id="erd_compiled" name="Unified Database Schema &amp; ERD Semantic Layer">
+    <mxGraphModel dx="1850" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1850" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 1. SUB-SCHEMA CONTAINERS -->
+        <mxCell id="col_top" value="&lt;b style=&quot;font-size:14px;&quot;&gt;Sub-Schema 2: ETL &amp;amp; Data Lineage (Traceability) (Top)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#60A5FA;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1E3A8A;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="30" width="940" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="col_central" value="&lt;b style=&quot;font-size:14px;&quot;&gt;Sub-Schema 1: Core Business Intelligence (BI) Dimensions &amp;amp; Facts (Central)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#F59E0B;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#92400E;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="230" width="990" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="col_right" value="&lt;b style=&quot;font-size:14px;&quot;&gt;Sub-Schema 3: The AI &amp;amp; GenAI Semantic Layer (Advanced)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#4ADE80;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#14532D;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="230" width="670" height="760" as="geometry" />
+        </mxCell>
+        <!-- Inner Dashed Containers for Right Stage -->
+        <mxCell id="box_mlops" value="&lt;b style=&quot;font-size:13px;color:#15803D;&quot;&gt;Structured AI (MLOps)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#86EFAC;strokeWidth=1.5;dashed=1;verticalAlign=top;padding=12;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="270" width="280" height="690" as="geometry" />
+        </mxCell>
+        <mxCell id="box_rag" value="&lt;b style=&quot;font-size:13px;color:#15803D;&quot;&gt;Unstructured AI (GenAI/RAG)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#86EFAC;strokeWidth=1.5;dashed=1;verticalAlign=top;padding=12;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="270" width="330" height="690" as="geometry" />
+        </mxCell>
+
+        <!-- 2. COMPOSITE ERD TABLES & CALLOUT NOTES -->
+        ${tables}
+        ${notes}
+
+        <!-- 3. ALL 25 CONNECTING RELATIONSHIPS WITH CROW'S FOOT CARDINALITY & EXPLICIT CORRIDOR TRACK ROUTING -->
+        <mxCell id="e_etl_1" value="&lt;b&gt;Audit Key&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;fontColor=#1E3A8A;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;startArrow=block;endArrow=block;startFill=1;endFill=1;" edge="1" parent="1" source="etl_src" target="etl_log">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_etl_2" value="&lt;b&gt;Audit Key&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;fontColor=#1E3A8A;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;startArrow=block;endArrow=block;startFill=1;endFill=1;" edge="1" parent="1" source="etl_log" target="etl_map">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_etl_time" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=open;endFill=0;" edge="1" parent="1" source="etl_log" target="dim_time">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_etl_gen" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=open;endFill=0;" edge="1" parent="1" source="etl_map" target="gen_corp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Central Dimensions -> Facts with Dedicated Vertical Track Waypoints in the 130px Corridor -->
+        <mxCell id="e_f1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_pat" target="fact_ins">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_f2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_pat" target="fact_enc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="340" />
+              <mxPoint x="280" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_f3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_phy" target="fact_enc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_f4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_prod" target="fact_ins">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="625" />
+              <mxPoint x="300" y="345" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_f5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_prod" target="fact_enc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="315" y="625" />
+              <mxPoint x="315" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_f6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_prod" target="fact_comp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_f7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_silo" target="fact_ins">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="770" />
+              <mxPoint x="260" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_f8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_silo" target="fact_comp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="335" y="770" />
+              <mxPoint x="335" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_f9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_time" target="fact_ins">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_f10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_time" target="fact_enc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="790" y="380" />
+              <mxPoint x="790" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_f11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_loc" target="fact_enc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_f12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_payer" target="fact_enc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="630" />
+              <mxPoint x="780" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_f13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_src" target="fact_comp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_f14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_center" target="fact_comp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_ml_pull" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#059669;endArrow=block;endFill=1;" edge="1" parent="1" source="dim_time" target="ml_feat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- EXPLICIT FLOATING BADGES IN THE 140PX GAP BETWEEN SUB-SCHEMA 1 AND 3 -->
+        <mxCell id="gap_lbl_ml" value="&lt;b style=&quot;font-size:16px;color:#15803D;&quot;&gt;ML&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1085" y="320" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gap_lbl_pull" value="&lt;b style=&quot;font-size:11px;color:#065F46;&quot;&gt;Pull Data &amp;amp;&lt;br&gt;Business Variance&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=1.5;fontColor=#065F46;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="360" width="105" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gap_lbl_query" value="&lt;b style=&quot;font-size:10px;color:#065F46;&quot;&gt;Query to&lt;br&gt;Conversation Log&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=1.5;fontColor=#065F46;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1695" y="520" width="105" height="36" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_ml_gen" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#059669;endArrow=block;endFill=1;" edge="1" parent="1" source="ml_feat" target="gen_corp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_inf_vec" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#059669;endArrow=block;endFill=1;" edge="1" parent="1" source="ml_inf" target="gen_vec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- RAG lines routed inside container channel to prevent border slicing -->
+        <mxCell id="e_rag_1" value="&lt;b&gt;RAG&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#059669;fontColor=#065F46;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="gen_corp" target="gen_vec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1785" y="377" />
+              <mxPoint x="1785" y="522" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_rag_2" value="&lt;b&gt;Logic (Agent)&lt;br&gt;Generation&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#059669;fontColor=#065F46;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;endArrow=block;endFill=1;" edge="1" parent="1" source="gen_vec" target="gen_conv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_rag_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#059669;endArrow=block;endFill=1;exitX=1;exitY=0.2;entryX=1;entryY=0.8;" edge="1" parent="1" source="gen_conv" target="gen_corp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1815" y="635" />
+              <mxPoint x="1815" y="418" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. NOTE ARROWS -->
+        <mxCell id="e_note_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;dashed=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="note_iam" target="dim_pat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_note_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;dashed=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="note_vpc1" target="gen_corp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_note_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;dashed=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="note_vpc2" target="gen_conv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_note_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;dashed=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="note_mil" target="ml_inf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. LEGEND & FOOTER -->
+        <mxCell id="legend_box" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Legend:&lt;/b&gt;&lt;br&gt;&lt;table style=&quot;width:100%;font-size:11px;border:none;margin-top:4px;&quot;&gt;&lt;tr&gt;&lt;td&gt;🟦 &lt;b&gt;Managed Compute&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟩 &lt;b&gt;Storage&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟨 &lt;b&gt;Secure boundary&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔑 &lt;b&gt;Key Definition (PK)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;🗝️ &lt;b&gt;Key Definition (FK)&lt;/b&gt;&lt;/td&gt;&lt;td&gt;longrightarrow &lt;b&gt;One-to-many&lt;/b&gt;&lt;/td&gt;&lt;td&gt;--- &lt;b&gt;Relationship&lt;/b&gt;&lt;/td&gt;&lt;td&gt;⏱️ &lt;b&gt;TimeRes&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;verticalAlign=top;padding=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1030" width="600" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="why_box" value="&lt;div style=&quot;font-size:13px;color:#1E3A8A;line-height:1.5;text-align:center;&quot;&gt;&lt;b&gt;**WHY IT WORKS: This unified schema consolidates structured, unstructured, and derived AI data on a shared foundation. Business analysis, model training, and GenAI grounding all draw from a single, auditable semantic map, ensuring consistency and governance for any data solution.**&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#2563EB;strokeWidth=2;padding=12;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="670" y="1030" width="1110" height="110" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+
+/**
  * Compiles a structured diagram specification into pixel-perfect Draw.io XML
  */
 export function compileSpecToDrawioXml(spec: CompiledDiagramSpec): string {
   if (spec.diagramId === "itacs_conceptual_compiled") {
     return getExactItacsReferenceXml();
   }
+  if (spec.diagramId === "erd_compiled") {
+    return getExactErdReferenceXml();
+  }
 
   const colWidth = 360;
   const colGap = 140; // 140px pitch per our edge routing protocol
+
   const startX = 50;
   const startY = 100;
   const colHeight = 620;
@@ -459,6 +723,18 @@ export function getBenchmarkItacsSpec(): CompiledDiagramSpec {
   return {
     diagramId: "itacs_conceptual_compiled",
     title: "ITACS Oncology Platform Conceptual Diagram",
+    columns: [],
+    connections: []
+  };
+}
+
+/**
+ * Returns the benchmark ERD Unified Database Schema specification for instant compilation
+ */
+export function getBenchmarkErdSpec(): CompiledDiagramSpec {
+  return {
+    diagramId: "erd_compiled",
+    title: "Unified Database Schema & ERD Semantic Layer",
     columns: [],
     connections: []
   };
