@@ -369,7 +369,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
  */
 function isPreservedCustomLayout(xml: string): boolean {
   if (!xml || typeof xml !== 'string') return false;
-  return xml.includes('ONCOLOGY DATA PORTAL') || xml.includes('itacs_conceptual') || xml.includes('INTEGRATED INSIGHTS HUB') || xml.includes('Dim_Patient') || xml.includes('Sub-Schema') || xml.includes('ETL_System_Data_Sources');
+  return xml.includes('ONCOLOGY DATA PORTAL') || xml.includes('itacs_conceptual') || xml.includes('INTEGRATED INSIGHTS HUB') || xml.includes('Dim_Patient') || xml.includes('Sub-Schema') || xml.includes('ETL_System_Data_Sources') || xml.includes('agentic_rag') || xml.includes('Cognitive Architecture') || xml.includes('ReAct Loop') || xml.includes('Secure Managed Gemini Enterprise');
 }
 
 export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResult {
@@ -476,7 +476,7 @@ export function resolveVendorIconUrl(text: string): string {
   const lower = text.toLowerCase();
 
   // SAP & ERP Systems
-  if (lower.includes('sap') || lower.includes('s/4hana') || lower.includes('erp')) return 'https://api.iconify.design/logos:sap.svg';
+  if (lower.includes('sap ') || lower.includes(' s/4hana') || /\berp\b/.test(lower)) return 'https://api.iconify.design/logos:sap.svg';
 
   // Pharma & Clinical Systems (Veeva, Salesforce)
   if (lower.includes('veeva') || lower.includes('salesforce') || lower.includes('etmf')) return 'https://api.iconify.design/logos:salesforce.svg';
