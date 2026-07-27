@@ -19,12 +19,12 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { diagramId, selectedGaps } = await request.json();
+    const { diagramId, selectedGaps, architectureType } = await request.json();
     if (!diagramId || !Array.isArray(selectedGaps) || selectedGaps.length === 0) {
       return NextResponse.json({ error: 'diagramId and selectedGaps array are required' }, { status: 400 });
     }
 
-    const latestVersion = await getLatestDiagramVersion(diagramId);
+    const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
     if (!latestVersion) {
       return NextResponse.json({ error: 'Diagram has no versions to remediate' }, { status: 404 });
     }
@@ -77,7 +77,12 @@ ${remediationInstructions}
       diagramId,
       rawXml,
       comment,
-      'Gemini Audit Remediation'
+      'Gemini Audit Remediation',
+      null,
+      null,
+      null,
+      null,
+      architectureType || 'conceptual_diagram'
     );
 
     return NextResponse.json({

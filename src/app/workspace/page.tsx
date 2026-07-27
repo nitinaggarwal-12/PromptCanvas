@@ -1082,7 +1082,8 @@ function WorkspaceContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: userPrompt,
-          diagramId: activeDiagram.id
+          diagramId: activeDiagram.id,
+          architectureType: selectedArchType
         })
       });
 
@@ -1438,7 +1439,8 @@ function WorkspaceContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           diagramId: activeDiagram.id,
-          selectedGaps
+          selectedGaps,
+          architectureType: selectedArchType
         })
       });
 
