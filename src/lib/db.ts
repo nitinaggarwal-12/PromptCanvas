@@ -616,7 +616,7 @@ export async function ensureTablesExist(): Promise<void> {
       // Ignored if column already exists
     }
     try {
-      db.exec('ALTER TABLE diagram_versions ADD COLUMN architecture_type TEXT DEFAULT "conceptual_diagram";');
+      db.exec("ALTER TABLE diagram_versions ADD COLUMN architecture_type TEXT DEFAULT 'conceptual_diagram';");
     } catch {
       // Ignored if column already exists
     }
