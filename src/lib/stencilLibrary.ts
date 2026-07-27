@@ -79,7 +79,7 @@ export const THEME_PALETTES: Record<ColumnTheme, ThemeColors> = {
  */
 export function getColumnContainerStyle(theme: ColumnTheme): string {
   const colors = THEME_PALETTES[theme] || THEME_PALETTES.slate;
-  return `rounded=1;whiteSpace=wrap;html=1;fillColor=${colors.fill};strokeColor=${colors.stroke};strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=${colors.font};`;
+  return `rounded=1;whiteSpace=wrap;html=1;fillColor=${colors.fill};gradientColor=#FFFFFF;gradientDirection=north;strokeColor=${colors.stroke};strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=${colors.font};shadow=1;`;
 }
 
 /**
@@ -90,22 +90,22 @@ export function getNodeStencilStyle(stencil: StencilType, theme: ColumnTheme, cu
 
   switch (stencil) {
     case 'cube_platform':
-      return `shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=3;size=20;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1E3A8A;`;
+      return `shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;fillColor=#DBEAFE;gradientColor=#EFF6FF;gradientDirection=south;strokeColor=#2563EB;strokeWidth=3;size=20;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1E3A8A;shadow=1;`;
     
     case 'imac_monitor':
-      return `shape=mxgraph.mockup.containers.monitor;whiteSpace=wrap;html=1;fillColor=${colors.cardFill};strokeColor=${customStroke || colors.cardStroke};strokeWidth=2;fontColor=${colors.cardFont};verticalAlign=top;padding=12;`;
+      return `shape=mxgraph.mockup.containers.monitor;whiteSpace=wrap;html=1;fillColor=${colors.cardFill};strokeColor=${customStroke || colors.cardStroke};strokeWidth=2;fontColor=${colors.cardFont};verticalAlign=top;padding=12;shadow=1;`;
     
     case 'ipad_tablet':
-      return `shape=mxgraph.mockup.containers.tablet;whiteSpace=wrap;html=1;fillColor=${colors.cardFill};strokeColor=${customStroke || colors.cardStroke};strokeWidth=2;fontColor=${colors.cardFont};padding=12;`;
+      return `shape=mxgraph.mockup.containers.tablet;whiteSpace=wrap;html=1;fillColor=${colors.cardFill};strokeColor=${customStroke || colors.cardStroke};strokeWidth=2;fontColor=${colors.cardFont};padding=12;shadow=1;`;
     
     case 'standard_card':
-      return `rounded=1;whiteSpace=wrap;html=1;fillColor=${colors.cardFill};strokeColor=${customStroke || colors.cardStroke};strokeWidth=1.5;fontColor=${colors.cardFont};`;
+      return `rounded=1;whiteSpace=wrap;html=1;fillColor=${colors.cardFill};strokeColor=${customStroke || colors.cardStroke};strokeWidth=1.5;fontColor=${colors.cardFont};shadow=1;`;
     
     case 'iphone_alert':
-      return `shape=mxgraph.ios7.misc.iphone;whiteSpace=wrap;html=1;fillColor=#FEFCF7;strokeColor=#DC2231;strokeWidth=3;fontColor=#1E293B;padding=15;`;
+      return `shape=mxgraph.ios7.misc.iphone;whiteSpace=wrap;html=1;fillColor=#FEFCF7;strokeColor=#DC2231;strokeWidth=3;fontColor=#1E293B;padding=15;shadow=1;`;
     
     case 'pill_badge':
-      return `rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#15803D;fontStyle=1;`;
+      return `rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#15803D;fontStyle=1;shadow=1;`;
     
     case 'icon_grid':
       return `rounded=1;whiteSpace=wrap;html=1;fillColor=${colors.cardFill};strokeColor=${colors.cardStroke};strokeWidth=1.5;fontColor=${colors.cardFont};`;
