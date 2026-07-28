@@ -756,7 +756,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         <mxCell id="1" parent="0" />
 
         <!-- GOVERNED NETWORK CONTAINER (CREAM BACKGROUND THEME WITH BLUE BORDER EXACTLY MATCHING IMAGE 1) -->
-        <mxCell id="gov_network" value="ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM (Governed Network)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#0284C7;strokeWidth=2.5;verticalAlign=top;align=center;spacingTop=12;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
+        <mxCell id="gov_network" value="ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM (Governed Network)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#0284C7;strokeWidth=2.5;verticalAlign=top;align=center;spacingTop=12;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="210" y="25" width="1490" height="1180" as="geometry" />
         </mxCell>
 
@@ -772,25 +772,25 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- 7 COLUMN HEADERS (WITH EXACT ICONS & STYLING MATCHING IMAGE 1) -->
-        <mxCell id="user_col" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;👤 External Actor:&lt;br&gt;User / Chat Interface&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#475569;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+        <mxCell id="user_col" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;👤 External Actor:&lt;br&gt;User / Chat Interface&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#475569;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="50" y="70" width="145" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="orch_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;⚙️ Orchestrator:&lt;br&gt;Agent Orchestrator (GKE Pod)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+        <mxCell id="orch_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;⚙️ Orchestrator:&lt;br&gt;Agent Orchestrator (GKE Pod)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="240" y="70" width="200" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="llm_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;🧠 Reasoner:&lt;br&gt;Gemini 1.5 Pro (LLM)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+        <mxCell id="llm_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;🧠 Reasoner:&lt;br&gt;Gemini 1.5 Pro (LLM)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="470" y="70" width="180" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="mem_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;💬 Memory:&lt;br&gt;Conversation Memory&lt;br&gt;(Short-term context)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+        <mxCell id="mem_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;💬 Memory:&lt;br&gt;Conversation Memory&lt;br&gt;(Short-term context)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="680" y="70" width="200" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="rag_col" value="&lt;b style='font-size:12px;color:#134E4A;'&gt;🔍 Tool 1: Managed RAG&lt;br&gt;(Vertex AI Search &amp;amp; Conv)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CCFBF1;strokeColor=#0D9488;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+        <mxCell id="rag_col" value="&lt;b style='font-size:12px;color:#134E4A;'&gt;🔍 Tool 1: Managed RAG&lt;br&gt;(Vertex AI Search &amp;amp; Conv)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#CCFBF1;strokeColor=#0D9488;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="910" y="70" width="220" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="gcs_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;🛢️ Data Lake:&lt;br&gt;GCS Secure Bucket&lt;br&gt;(Secure Data Corpus)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+        <mxCell id="gcs_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;🛢️ Data Lake:&lt;br&gt;GCS Secure Bucket&lt;br&gt;(Secure Data Corpus)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1160" y="70" width="220" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="bq_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;📊 Tool 2:&lt;br&gt;BigQuery Analytics (SQL)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+        <mxCell id="bq_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;📊 Tool 2:&lt;br&gt;BigQuery Analytics (SQL)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1410" y="70" width="210" height="65" as="geometry" />
         </mxCell>
 

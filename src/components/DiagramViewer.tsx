@@ -24,7 +24,7 @@ export default function DiagramViewer({
   aspectRatioId = '16:9',
   customW = 16,
   customH = 10,
-  bgTheme = 'dark',
+  bgTheme = 'light',
 }: DiagramViewerProps) {
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
