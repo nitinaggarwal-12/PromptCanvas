@@ -3144,13 +3144,13 @@ function WorkspaceContent() {
                   >
                     {canvasTheme === 'dark' ? (
                       <>
-                        <Sun className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Light Theme</span>
+                        <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>Dark Theme</span>
                       </>
                     ) : (
                       <>
-                        <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                        <span>Dark Theme</span>
+                        <Sun className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Light Theme</span>
                       </>
                     )}
                   </button>
@@ -3443,7 +3443,7 @@ function WorkspaceContent() {
           </section>
 
           {/* B. CENTER PANE: Diagram Viewport & In-Place Editor */}
-          <section className="flex-1 flex flex-col bg-bg-dark h-full relative overflow-hidden min-w-0">
+          <section className={`flex-1 flex flex-col h-full relative overflow-hidden min-w-0 transition-colors duration-300 ${canvasTheme === 'light' && viewMode === 'canvas' ? 'bg-[#F1F5F9]' : 'bg-bg-dark'}`}>
             
             {/* Center Pane Top Control Bar (Clean Status & Zoom Controls) */}
             {activeDiagram && (
@@ -3934,7 +3934,7 @@ function WorkspaceContent() {
                       backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
                       backgroundSize: `${20 * zoom}px ${20 * zoom}px`,
                       backgroundPosition: `${pan.x}px ${pan.y}px`,
-                      color: 'rgba(20, 184, 166, 0.22)',
+                      color: canvasTheme === 'light' ? 'rgba(100, 116, 139, 0.25)' : 'rgba(20, 184, 166, 0.22)',
                     }}
                   />
 
