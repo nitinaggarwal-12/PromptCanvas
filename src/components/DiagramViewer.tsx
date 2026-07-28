@@ -30,18 +30,18 @@ export default function DiagramViewer({
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
   // Dynamically size container frame based on aspect ratio
-  let containerDimensions = 'w-full max-w-[1850px] xl:max-w-[98%] h-[1250px] xl:h-[1450px]';
+  let containerDimensions = 'w-full max-w-[1750px] xl:max-w-[96%] h-[800px] xl:h-[920px]';
 
   if (aspectRatioId === '1:1') {
-    containerDimensions = 'w-full max-w-[1250px] h-[1250px]';
+    containerDimensions = 'w-full max-w-[950px] h-[950px]';
   } else if (aspectRatioId === '9:16') {
-    containerDimensions = 'w-full max-w-[850px] h-[1450px]';
+    containerDimensions = 'w-full max-w-[650px] h-[1150px]';
   } else if (aspectRatioId === '4:3') {
-    containerDimensions = 'w-full max-w-[1650px] h-[1250px]';
+    containerDimensions = 'w-full max-w-[1350px] h-[1000px]';
   } else if (aspectRatioId === '21:9') {
-    containerDimensions = 'w-full max-w-[1950px] xl:max-w-[98%] h-[950px] xl:h-[1100px]';
+    containerDimensions = 'w-full max-w-[1950px] xl:max-w-[98%] h-[750px] xl:h-[850px]';
   } else if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
-    const calcH = Math.min(1500, Math.max(700, Math.round(1200 * (customH / customW))));
+    const calcH = Math.min(1300, Math.max(600, Math.round(1000 * (customH / customW))));
     containerDimensions = `w-full max-w-[1100px] h-[${calcH}px]`;
   }
 
@@ -66,7 +66,14 @@ export default function DiagramViewer({
         .mxgraph {
           width: 100%;
           height: 100%;
-          display: block;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .mxgraph > svg, .mxgraph > div {
+          max-width: 100%;
+          max-height: 100%;
+          margin: auto !important;
         }
         .geEditor {
           background-color: transparent !important;
@@ -92,12 +99,12 @@ export default function DiagramViewer({
         class="mxgraph" 
         data-mxgraph="${htmlEscape(JSON.stringify({
           xml: xml,
-          lightbox: false,
+          lightbox: true,
           nav: true,
           resize: true,
           toolbar: 'zoom layers tags',
           edit: '_blank',
-          border: 36,
+          border: 40,
           transparent: true,
           fit: true,
           'max-scale': 1.35
