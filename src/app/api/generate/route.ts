@@ -307,9 +307,18 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
                          prompt?.includes('ERD') ||
                          prompt?.includes('Dimensional Data Model') ||
                          prompt?.includes('Database Architect') ||
-                         (architectureType !== 'conceptual_diagram' && architectureType !== 'agentic_rag' && architectureType !== 'technical_diagram' && (existingXml?.includes('Dim_Patient') || existingXml?.includes('Dim_Intel_Map')));
+                         (architectureType !== 'conceptual_diagram' && architectureType !== 'agentic_rag' && architectureType !== 'sequence_diagram' && architectureType !== 'technical_diagram' && (existingXml?.includes('Dim_Patient') || existingXml?.includes('Dim_Intel_Map')));
 
-    const isAgenticRagRequest = !isErdRequest && (
+    const isSequenceRequest = !isErdRequest && (
+                                architectureType === 'sequence_diagram' ||
+                                prompt?.includes('Micro Dynamic Sequence') ||
+                                prompt?.includes('Sequence Diagram') ||
+                                prompt?.includes('Execution Loop') ||
+                                existingXml?.includes('Micro Dynamic Sequence') ||
+                                existingXml?.includes('ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM')
+    );
+
+    const isAgenticRagRequest = !isErdRequest && !isSequenceRequest && (
                                 architectureType === 'agentic_rag' ||
                                 architectureType === 'technical_diagram' ||
                                 prompt?.includes('Cognitive Architecture') ||
@@ -319,7 +328,7 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
                                 existingXml?.includes('ReAct Loop')
     );
 
-    const isConceptualRequest = !isErdRequest && !isAgenticRagRequest && (
+    const isConceptualRequest = !isErdRequest && !isSequenceRequest && !isAgenticRagRequest && (
                                 architectureType === 'conceptual_diagram' ||
                                 prompt?.includes('ITACS') ||
                                 prompt?.includes('ONCOLOGY') ||
@@ -335,6 +344,9 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
     if (isErdRequest) {
       console.log('[ERD Protection Fast-Path] 🛡️ Enforcing pristine ERD reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('erd');
+    } else if (isSequenceRequest) {
+      console.log('[Sequence Diagram Protection Fast-Path] 🛡️ Enforcing pristine Sequence Diagram reference XML layout immediately.');
+      xml = getDefaultXmlForArchitecture('sequence_diagram');
     } else if (isAgenticRagRequest) {
       console.log('[Agentic RAG Protection Fast-Path] 🛡️ Enforcing pristine Agentic RAG reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('agentic_rag');

@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -34,55 +34,61 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Phase 1: Foundation & Core Logic",
     prompt: "Act as an AI Chief Architect and Cognitive Systems Engineer. Design an advanced Cognitive Architecture featuring Agentic Retrieval-Augmented Generation (RAG). It should include: multi-agent orchestration loops, dynamic tool execution, vector embedding database (pgvector/Pinecone), document chunking & ingestion pipelines, semantic search retrieval, LLM reasoning engine (Gemini 2.5 Pro/Flash), and fallback validation guardrails."
   },
+  {
+    id: "sequence_diagram",
+    name: "3. Micro Dynamic Sequence Diagram",
+    category: "Phase 1: Foundation & Core Logic",
+    prompt: "Act as an API Chief Architect and Backend Systems Engineer. Design a chronologically exact, step-by-step Micro Dynamic Sequence Diagram (Execution Loop) for an Agentic RAG ecosystem. It should include: standard UML Sequence lifelines (rectangles on dashed lines), light cream background theme, synchronous solid arrows for API calls, dashed return arrows for context observations, and callout badges for PII/Ethical sourcing checks, ReAct Thought/Action loops, and IAM private access VPC-SC enforcement."
+  },
   // Phase 2: Cloud & Microservices
   {
     id: "serverless_gcp",
-    name: "3. Serverless Web Application (GCP)",
+    name: "4. Serverless Web Application (GCP)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture. It should include: a Global HTTPS Load Balancer, Cloud CDN, Cloud Run for frontend and backend services, Cloud SQL (PostgreSQL) for relational data, and Cloud Storage for static assets."
   },
   {
     id: "event_driven_aws",
-    name: "4. Event-Driven Microservices (AWS)",
+    name: "5. Event-Driven Microservices (AWS)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store."
   },
   {
     id: "k8s_mesh",
-    name: "5. Kubernetes Service Mesh (EKS/GKE)",
+    name: "6. Kubernetes Service Mesh (EKS/GKE)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a Cloud Native Architect. Design a multi-cluster Kubernetes Service Mesh architecture using EKS or GKE with Istio/Anthos, ingress controllers, mutual TLS (mTLS), distributed tracing, and Prometheus monitoring."
   },
   // Phase 3: Data & Analytics
   {
     id: "streaming_pipeline",
-    name: "6. Real-time Streaming Pipeline (GCP)",
+    name: "7. Real-time Streaming Pipeline (GCP)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store structured results in BigQuery, and visualize via Looker."
   },
   {
     id: "data_lakehouse",
-    name: "7. Modern Data Lakehouse (AWS)",
+    name: "8. Modern Data Lakehouse (AWS)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for querying, and Amazon Redshift for data warehousing."
   },
   // Phase 4: Resiliency & Security
   {
     id: "multi_region_dr",
-    name: "8. Multi-Region Disaster Recovery (GCP)",
+    name: "9. Multi-Region Disaster Recovery (GCP)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as a GCP Architect. Design a highly available, multi-region disaster recovery architecture. It should include: Cloud DNS routing, HTTPS Load Balancing across two regions, active-passive Cloud Spanner database sync, and dual-region GCS backups."
   },
   {
     id: "zero_trust",
-    name: "9. Zero-Trust Security Perimeter (GCP/AWS)",
+    name: "10. Zero-Trust Security Perimeter (GCP/AWS)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as an Enterprise Security Architect. Design a Zero-Trust Security Perimeter architecture featuring VPC Service Controls, Identity-Aware Proxy (IAP), centralized Cloud IAM policies, KMS encryption at rest and in transit, and continuous SIEM monitoring."
   },
   // Phase 5: Enterprise Integration
   {
     id: "hybrid_interconnect",
-    name: "10. Hybrid Cloud Interconnect (Enterprise)",
+    name: "11. Hybrid Cloud Interconnect (Enterprise)",
     category: "Phase 5: Enterprise Integration",
     prompt: "Act as an Enterprise Cloud Architect. Design an integrated Hybrid Cloud Interconnect architecture linking on-premises corporate data centers with public clouds (GCP/AWS) via dedicated Cloud Interconnect / Direct Connect, redundant IPsec VPN gateways, and hybrid identity federation."
   }
@@ -101,6 +107,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   }
   if (archId === 'agentic_rag' || archId === 'technical_diagram') {
     return compileSpecToDrawioXml(getBenchmarkAgenticRagSpec());
+  }
+  if (archId === 'sequence_diagram') {
+    return compileSpecToDrawioXml(getBenchmarkSequenceDiagramSpec());
   }
 
   return `

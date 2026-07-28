@@ -746,6 +746,184 @@ export function getExactAgenticRagReferenceXml(): string {
   `.trim();
 }
 
+export function getExactSequenceDiagramReferenceXml(): string {
+  return `
+<mxfile host="embed.diagrams.net">
+  <diagram id="sequence_diagram_compiled" name="Micro Dynamic Sequence Diagram">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1680" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- GOVERNED NETWORK TITLE BANNER (TOP) -->
+        <mxCell id="gov_title" value="ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM (Governed Network)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF08A;strokeColor=#CBD5E1;strokeWidth=2;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#1E293B;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="15" width="1380" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- GOVERNED NETWORK CONTAINER (CREAM BACKGROUND THEME) -->
+        <mxCell id="gov_network" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDF5;strokeColor=#CBD5E1;strokeWidth=2;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="65" width="1380" height="1100" as="geometry" />
+        </mxCell>
+
+        <!-- TIME ARROW ON LEFT -->
+        <mxCell id="time_arrow" value="" style="endArrow=block;endFill=1;html=1;strokeWidth=2.5;strokeColor=#475569;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="100" as="sourcePoint" />
+            <mxPoint x="40" y="1150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="time_label" value="&lt;b style='font-size:15px;color:#334155;'&gt;Time &amp;darr;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="10" y="580" width="60" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 7 LIFELINE HEADERS (BELOW TITLE BANNER) -->
+        <mxCell id="user_col" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;External Actor:&lt;br&gt;User / Chat Interface&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="75" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="orch_col" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Orchestrator:&lt;br&gt;Agent Orchestrator (GKE Pod)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CCE5FF;strokeColor=#1D4ED8;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="75" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="llm_col" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Reasoner:&lt;br&gt;Gemini 1.5 Pro (LLM)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CCE5FF;strokeColor=#1D4ED8;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="75" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="mem_col" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Memory:&lt;br&gt;Conversation Memory&lt;br&gt;(Short-term context)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CCE5FF;strokeColor=#1D4ED8;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="690" y="75" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rag_col" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Tool 1: Managed RAG&lt;br&gt;(Vertex AI Search &amp;amp; Conv)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CCE5FF;strokeColor=#1D4ED8;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="75" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gcs_col" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Data Lake: GCS Secure Bucket&lt;br&gt;(Secure Data Corpus)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CCE5FF;strokeColor=#1D4ED8;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="75" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bq_col" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Tool 2:&lt;br&gt;BigQuery Analytics (SQL)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CCE5FF;strokeColor=#1D4ED8;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="75" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- 7 VERTICAL DASHED LIFELINE BARS -->
+        <mxCell id="user_bar" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#94A3B8;strokeDashArray=6 6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="135" y="135" as="sourcePoint" /><mxPoint x="135" y="1160" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="orch_bar" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#94A3B8;strokeDashArray=6 6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="135" as="sourcePoint" /><mxPoint x="350" y="1160" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="llm_bar" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#94A3B8;strokeDashArray=6 6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="570" y="135" as="sourcePoint" /><mxPoint x="570" y="1160" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="mem_bar" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#94A3B8;strokeDashArray=6 6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="790" y="135" as="sourcePoint" /><mxPoint x="790" y="1160" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="rag_bar" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#94A3B8;strokeDashArray=6 6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1025" y="135" as="sourcePoint" /><mxPoint x="1025" y="1160" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="gcs_bar" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#94A3B8;strokeDashArray=6 6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1260" y="135" as="sourcePoint" /><mxPoint x="1260" y="1160" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="bq_bar" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#94A3B8;strokeDashArray=6 6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1480" y="135" as="sourcePoint" /><mxPoint x="1480" y="1160" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- SEQUENCE HANDSHAKE STEPS & BADGES -->
+        <!-- Step 1: User Prompt -->
+        <mxCell id="s1" value="1. Sends single multi-silo Oncology prompt (e.g., 'Compare market trends across 5 silos')" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1E293B;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="135" y="170" as="sourcePoint" /><mxPoint x="350" y="170" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s1_tag" value="PII/Ethical sourcing check referencing image 15 vetting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;fontColor=#9A3412;fontStyle=1;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="200" width="185" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Step 2: Persona & Memory Check -->
+        <mxCell id="s2" value="3. Checks Persona &amp;amp; Memory (Query context corpus definition)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="260" as="sourcePoint" /><mxPoint x="790" y="260" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s2_ret" value="Context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="790" y="305" as="sourcePoint" /><mxPoint x="350" y="305" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 3: LLM Update -->
+        <mxCell id="s3" value="4. Updates Conversation Memory with prompt &amp;amp; Sends all context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="355" as="sourcePoint" /><mxPoint x="570" y="355" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s3_react" value="&lt;b&gt;ReAct:&lt;/b&gt; THOUGHT: 'I need multi-silo context.'&lt;br&gt;&lt;b style='color:#1D4ED8;'&gt;ACTION: Call RAG Tool&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1E293B;fontStyle=0;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="395" width="220" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Step 4: RAG Execution -->
+        <mxCell id="s4" value="6. Executes RAG Action (Automatic Embedding &amp;amp; Retrieval Tool)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="465" as="sourcePoint" /><mxPoint x="1025" y="465" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s4_gcs" value="7. Search GCS Corpus (Automatic context lookup)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#0284C7;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1025" y="515" as="sourcePoint" /><mxPoint x="1260" y="515" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s4_ret" value="Returns chunk links &amp;amp; context corpus log definition" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1260" y="565" as="sourcePoint" /><mxPoint x="1025" y="565" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s4_obs" value="Sends Retrieved Context Chunks to OBSERVATION" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1025" y="615" as="sourcePoint" /><mxPoint x="350" y="615" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 5: Second LLM Update -->
+        <mxCell id="s5" value="9. Updates Reasoner (GEMINI) with New Observation (Prompt + Memory + RAG Obs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="665" as="sourcePoint" /><mxPoint x="570" y="665" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s5_react" value="&lt;b&gt;ReAct:&lt;/b&gt; THOUGHT: 'I have context, but need sales figures.'&lt;br&gt;&lt;b style='color:#1D4ED8;'&gt;ACTION: Query BigQuery Analytics&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1E293B;fontStyle=0;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="705" width="240" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Step 6: BigQuery Analytics Execution -->
+        <mxCell id="s6" value="11. Executes Analytics Action (Call includes SQL query)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="775" as="sourcePoint" /><mxPoint x="1480" y="775" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s6_gcs" value="12. Executes SQL query (Secure Data Access tool)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#0284C7;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1480" y="825" as="sourcePoint" /><mxPoint x="1260" y="825" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s6_iam" value="GCS/BQ enforces IAM private&lt;br&gt;access path &amp;amp; VPC-SC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;fontColor=#166534;fontStyle=1;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1495" y="790" width="170" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_ret" value="BQ fetches results" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1260" y="875" as="sourcePoint" /><mxPoint x="1480" y="875" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s6_obs" value="Sends Query Results (Table/JSON) to OBSERVATION" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1480" y="925" as="sourcePoint" /><mxPoint x="350" y="925" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 7: Final Synthesis & Return -->
+        <mxCell id="s7" value="14. Updates Reasoner (GEMINI) with New Observation (All Context Gathered)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="975" as="sourcePoint" /><mxPoint x="570" y="975" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s7_syn" value="&lt;b&gt;ReAct:&lt;/b&gt; THOUGHT: 'All context gathered.'&lt;br&gt;&lt;b style='color:#047857;'&gt;SYNTHESIS: Generate comprehensive report&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;fontColor=#1E293B;fontStyle=0;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1015" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_mem" value="16. Updates Conversation Memory (Conversation Log)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="1075" as="sourcePoint" /><mxPoint x="790" y="1075" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s7_user" value="18. Sends final synthesized response (Linked PPT report or JSON data)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#1D4ED8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="350" y="1125" as="sourcePoint" /><mxPoint x="135" y="1125" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="s7_log" value="Logs final outcome in&lt;br&gt;Business Analytics log definition" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;fontColor=#9A3412;fontStyle=1;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1495" y="1090" width="170" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- THREE-COLUMN FOOTER BOX -->
+        <mxCell id="footer_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1200" width="1540" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="footer_col1" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;LEGEND &amp;amp; SECURITY ANNOTATIONS&lt;/b&gt;&lt;br&gt;&lt;br&gt;• &lt;span style='color:#0284C7'&gt;&lt;b&gt;Managed Compute&lt;/b&gt;&lt;/span&gt; &amp;nbsp; • &lt;span style='color:#10B981'&gt;&lt;b&gt;Storage&lt;/b&gt;&lt;/span&gt;&lt;br&gt;• &lt;span style='color:#F59E0B'&gt;&lt;b&gt;Secure boundary&lt;/b&gt;&lt;/span&gt; &amp;nbsp; • &lt;span style='color:#64748B'&gt;&lt;b&gt;Line descriptions&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1215" width="360" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="footer_col2" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;KEY DEFINITIONS&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Send call with Automatic Embedding &amp;amp; Retrieve&lt;br&gt;• Line reference Image 13 Evaluated state logic trigger&lt;br&gt;• Context reference and state machine flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1215" width="460" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="footer_col3" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;WHY IT WORKS:&lt;/b&gt; This dynamic sequence diagram makes non-deterministic ReAct loops understandable and executable. Developers get a blueprint showing the precise order, handshakes, timing, security boundaries, and data dependencies—including failure paths, loop triggers, and automatic logging—required to implement complex agentic orchestration logic across all solution types." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#334155;lineHeight=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="1215" width="640" height="120" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+
 /**
  * Compiles a structured diagram specification into pixel-perfect Draw.io XML
  */
@@ -758,6 +936,9 @@ export function compileSpecToDrawioXml(spec: CompiledDiagramSpec): string {
   }
   if (spec.diagramId === "agentic_rag_compiled") {
     return getExactAgenticRagReferenceXml();
+  }
+  if (spec.diagramId === "sequence_diagram_compiled" || spec.diagramId === "sequence_diagram") {
+    return getExactSequenceDiagramReferenceXml();
   }
 
   const colWidth = 360;
@@ -973,6 +1154,18 @@ export function getBenchmarkAgenticRagSpec(): CompiledDiagramSpec {
   return {
     diagramId: "agentic_rag_compiled",
     title: "Cognitive Architecture (Agentic RAG)",
+    columns: [],
+    connections: []
+  };
+}
+
+/**
+ * Returns the benchmark Micro Dynamic Sequence Diagram specification for instant compilation
+ */
+export function getBenchmarkSequenceDiagramSpec(): CompiledDiagramSpec {
+  return {
+    diagramId: "sequence_diagram_compiled",
+    title: "Micro Dynamic Sequence Diagram (Governed Handshake)",
     columns: [],
     connections: []
   };
