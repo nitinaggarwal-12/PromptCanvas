@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -48,27 +48,33 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture. It should include: a Global HTTPS Load Balancer, Cloud CDN, Cloud Run for frontend and backend services, Cloud SQL (PostgreSQL) for relational data, and Cloud Storage for static assets."
   },
   {
+    id: "data_ai_pipeline",
+    name: "5. Data & AI Pipeline",
+    category: "Phase 3: Data & Analytics",
+    prompt: "Act as an Enterprise AI and Data Systems Architect. Design an end-to-end Data & AI Pipeline combining Data Flow Diagram (DFD), MLOps Lifecycle, and Feature Engineering within an ITACS Secure Governed Cloud Tenant. It should include: raw data sources (Postgres, Salesforce, PDF/PPT unstructured files), a GCS Secure Bucket raw data lake, functional research processing (Funcriogy), Feature Engineering Transformation (dbt/SQL DAGs), a Managed Feature Store with model-ready features, MLOps Model Training loop, a locked Model Registry, Model Inference API Endpoint deployment, downstream consumer targets (Web App/Dashboard, Mobile App, Automated Report Generator), and an automated Monitoring & Alerting feedback loop."
+  },
+  {
     id: "event_driven_aws",
-    name: "5. Event-Driven Microservices (AWS)",
+    name: "6. Event-Driven Microservices (AWS)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store."
   },
   {
     id: "k8s_mesh",
-    name: "6. Kubernetes Service Mesh (EKS/GKE)",
+    name: "7. Kubernetes Service Mesh (EKS/GKE)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a Cloud Native Architect. Design a multi-cluster Kubernetes Service Mesh architecture using EKS or GKE with Istio/Anthos, ingress controllers, mutual TLS (mTLS), distributed tracing, and Prometheus monitoring."
   },
   // Phase 3: Data & Analytics
   {
     id: "streaming_pipeline",
-    name: "7. Real-time Streaming Pipeline (GCP)",
+    name: "8. Real-time Streaming Pipeline (GCP)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store structured results in BigQuery, and visualize via Looker."
   },
   {
     id: "data_lakehouse",
-    name: "8. Modern Data Lakehouse (AWS)",
+    name: "9. Modern Data Lakehouse (AWS)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for querying, and Amazon Redshift for data warehousing."
   },
@@ -110,6 +116,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   }
   if (archId === 'sequence_diagram') {
     return compileSpecToDrawioXml(getBenchmarkSequenceDiagramSpec());
+  }
+  if (archId === 'data_ai_pipeline') {
+    return compileSpecToDrawioXml(getBenchmarkDataAiPipelineSpec());
   }
 
   return `
