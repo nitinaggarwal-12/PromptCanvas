@@ -30,19 +30,19 @@ export default function DiagramViewer({
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
   // Dynamically size container frame based on aspect ratio
-  let containerDimensions = 'w-full max-w-[1400px] h-[800px]';
+  let containerDimensions = 'w-full max-w-[1850px] xl:max-w-[97%] h-[1100px] xl:h-[1250px]';
 
   if (aspectRatioId === '1:1') {
-    containerDimensions = 'w-full max-w-[900px] h-[900px]';
+    containerDimensions = 'w-full max-w-[1150px] h-[1150px]';
   } else if (aspectRatioId === '9:16') {
-    containerDimensions = 'w-full max-w-[650px] h-[1050px]';
+    containerDimensions = 'w-full max-w-[750px] h-[1250px]';
   } else if (aspectRatioId === '4:3') {
-    containerDimensions = 'w-full max-w-[1200px] h-[900px]';
+    containerDimensions = 'w-full max-w-[1550px] h-[1150px]';
   } else if (aspectRatioId === '21:9') {
-    containerDimensions = 'w-full max-w-[1600px] h-[700px]';
+    containerDimensions = 'w-full max-w-[1950px] xl:max-w-[98%] h-[850px] xl:h-[950px]';
   } else if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
-    const calcH = Math.min(1200, Math.max(500, Math.round(900 * (customH / customW))));
-    containerDimensions = `w-full max-w-[900px] h-[${calcH}px]`;
+    const calcH = Math.min(1300, Math.max(600, Math.round(1100 * (customH / customW))));
+    containerDimensions = `w-full max-w-[1100px] h-[${calcH}px]`;
   }
 
   const bgColor = bgTheme === 'light' ? '#FFFFFF' : '#0F172A';
@@ -86,10 +86,10 @@ export default function DiagramViewer({
           resize: true,
           toolbar: 'zoom layers tags',
           edit: '_blank',
-          border: 8,
+          border: 14,
           transparent: true,
           fit: true,
-          'max-scale': 1.0
+          'max-scale': 1.05
         }))}"
       ></div>
       

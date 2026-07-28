@@ -3906,7 +3906,7 @@ function WorkspaceContent() {
               ) : (
                 /* Phase 1: 2D Interactive Canvas with AI Studio Radial Grid */
                 <div 
-                  className="w-full h-full flex items-center justify-center p-8 relative overflow-auto select-none cursor-grab active:cursor-grabbing"
+                  className="w-full h-full flex items-center justify-center p-2 md:p-4 relative overflow-auto select-none cursor-grab active:cursor-grabbing"
                   onMouseDown={(e) => {
                     if (e.target === e.currentTarget || (e.target as HTMLElement).id === 'radial-grid-background') {
                       const startX = e.clientX - pan.x;

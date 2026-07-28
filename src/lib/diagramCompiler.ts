@@ -750,7 +750,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
   return `
 <mxfile host="embed.diagrams.net">
   <diagram id="sequence_diagram_compiled" name="Micro Dynamic Sequence Diagram">
-    <mxGraphModel dx="1750" dy="1450" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1450" math="0" shadow="0">
+    <mxGraphModel dx="1750" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1500" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1019,16 +1019,16 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
         <!-- 3-COLUMN ARCHITECTURE FOOTER MATCHING IMAGE 1 -->
         <mxCell id="footer_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
-          <mxGeometry x="40" y="1260" width="1660" height="150" as="geometry" />
+          <mxGeometry x="40" y="1260" width="1660" height="180" as="geometry" />
         </mxCell>
         <mxCell id="footer_col1" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;LEGEND &amp;amp; SECURITY ANNOTATIONS&lt;/b&gt;&lt;br&gt;&lt;br&gt;• &lt;span style='color:#0284C7'&gt;&lt;b&gt;Managed Compute&lt;/b&gt;&lt;/span&gt; &amp;nbsp; • &lt;span style='color:#10B981'&gt;&lt;b&gt;Storage&lt;/b&gt;&lt;/span&gt;&lt;br&gt;• &lt;span style='color:#F59E0B'&gt;&lt;b&gt;Secure boundary&lt;/b&gt;&lt;/span&gt; &amp;nbsp; • &lt;span style='color:#64748B'&gt;&lt;b&gt;Line descriptions&lt;/b&gt;&lt;/span&gt;&lt;br&gt;• &lt;span style='color:#2563EB'&gt;&lt;b&gt;&amp;rarr; Managed Type&lt;/b&gt;&lt;/span&gt; &amp;nbsp; • &lt;span style='color:#64748B'&gt;&lt;b&gt;--- Connection boundary&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#334155;" vertex="1" parent="1">
-          <mxGeometry x="60" y="1275" width="400" height="120" as="geometry" />
+          <mxGeometry x="60" y="1275" width="400" height="150" as="geometry" />
         </mxCell>
         <mxCell id="footer_col2" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;KEY DEFINITION&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Send call with 'Automatic Embedding &amp;amp; Retrieve image'&lt;br&gt;• Line reference Image 13 'Evaluated' state logic trigger&lt;br&gt;• Context reference references image 1 'context corpus definition'&lt;br&gt;• Line descriptions, reference Image 12, state machine flow&lt;br&gt;• PII Check referencing check / PII Check vetting / PII Business analytics log definition" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#334155;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="490" y="1275" width="480" height="120" as="geometry" />
+          <mxGeometry x="490" y="1275" width="480" height="150" as="geometry" />
         </mxCell>
         <mxCell id="footer_col3" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;WHY IT WORKS:&lt;/b&gt; This dynamic sequence diagram makes non-deterministic ReAct loops understandable and executable. Developers get a blueprint showing the precise order, handshakes, timing, security boundaries, and data dependencies—including failure paths, loop triggers, and automatic logging—required to implement complex agentic orchestration logic across all solution types." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#334155;lineHeight=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="1275" width="670" height="120" as="geometry" />
+          <mxGeometry x="1000" y="1275" width="670" height="150" as="geometry" />
         </mxCell>
 
       </root>
