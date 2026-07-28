@@ -2112,6 +2112,431 @@ export function getExactDevopsCicdPipelineReferenceXml(): string {
   `.trim();
 }
 
+export function getExactGovernanceStateMachineReferenceXml(): string {
+  return `
+<mxfile host="embed.diagrams.net">
+  <diagram id="governance_state_machine_compiled" name="UNIFIED GOVERNANCE &amp; STATE-MACHINE LIFECYCLE">
+    <mxGraphModel dx="1850" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1850" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 1. Header Region -->
+        <mxCell id="main_title_bar" value="&lt;div style='text-align:left;padding-left:20px;font-size:16px;color:#FFFFFF;'&gt;&lt;b&gt;UNIFIED GOVERNANCE &amp;amp; STATE-MACHINE LIFECYCLE:&lt;/b&gt; &lt;span style='color:#D37324;font-weight:bold;'&gt;THE &amp;quot;WHAT STATUS&amp;quot; TOTAL SYSTEM VIEW.&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#12385B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1810" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle_banner" value="&lt;font style='font-size:13px;color:#374151;'&gt;Total end-to-end flow from Vetting to Continuous Societal &amp;amp; Regulatory Monitoring.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#E5E7EB;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="20" y="65" width="1810" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 2. Column 1: Initial Vetting & Modeling -->
+        <mxCell id="data_vetting" value="&lt;span style='font-size:28px;'&gt;🔍&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:12px;color:#FFFFFF;'&gt;DATA VETTING&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#E5E7EB;'&gt;(Ethical Sourcing&lt;br&gt;&amp;amp; PII Check)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="approval_badge" value="&lt;span style='font-size:20px;'&gt;🟢&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#15803D;font-weight:bold;'&gt;Data Governance&lt;br&gt;Approval&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="230" width="100" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="dim_data_model" value="&lt;span style='font-size:28px;'&gt;🗂️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;DIMENSIONAL&lt;br&gt;DATA MODEL&lt;br&gt;(ERD) REFERENCE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="model_created" value="&lt;span style='font-size:28px;'&gt;📐&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;MODEL CREATED&lt;br&gt;(or PROMPT DESIGNED)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#E5E7EB;'&gt;Now versioning labels&lt;br&gt;(e.g., Prompt labels,&lt;br&gt;e.g., v1.0)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="240" y="210" width="170" height="120" as="geometry" />
+        </mxCell>
+        <!-- Connectors Column 1 -->
+        <mxCell id="arr_vet_model" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="data_vetting" target="model_created">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="175" />
+              <mxPoint x="220" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_dim_model" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="dim_data_model" target="model_created">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="365" />
+              <mxPoint x="220" y="290" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Column 2: Training, Evaluation & Audits -->
+        <mxCell id="in_training" value="&lt;span style='font-size:26px;'&gt;🧠&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:12px;color:#FFFFFF;'&gt;IN TRAINING&lt;br&gt;(or DEVELOPMENT)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="470" y="120" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="evaluated" value="&lt;span style='font-size:28px;'&gt;🖥️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;EVALUATED&lt;br&gt;(OFFLINE METRICS)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#E5E7EB;'&gt;Pre-deployment validation&lt;br&gt;(e.g., accuracy, bias,&lt;br&gt;hallucination scores)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="470" y="260" width="170" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="bias_audit" value="&lt;span style='font-size:28px;'&gt;⚖️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:12px;color:#FFFFFF;'&gt;Bias &amp;amp;&lt;br&gt;Fairness Audit&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D37324;strokeColor=#9C531A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="470" y="440" width="170" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="explain_badge" value="&lt;span style='font-size:18px;'&gt;🟢✔&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#15803D;font-weight:bold;'&gt;Explainability&lt;br&gt;Report (XAI)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="490" y="535" width="130" height="40" as="geometry" />
+        </mxCell>
+        <!-- Connectors Column 2 -->
+        <mxCell id="arr_mod_train" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="model_created" target="in_training">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="250" />
+              <mxPoint x="440" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_mod_eval" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="model_created" target="evaluated">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_mod_eval" value="&lt;font style='font-size:10px;color:#333;'&gt;Evaluation&lt;br&gt;Accuracy/F1&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="410" y="255" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_train_eval" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="in_training" target="evaluated">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_retrain" value="&lt;b style='font-size:10px;color:#202124;'&gt;RETRAINING/REFINEMENT&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="215" width="140" height="25" as="geometry" />
+        </mxCell>
+        <!-- Loop between EVALUATED and Bias Audit -->
+        <mxCell id="arr_eval_bias" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="evaluated" target="bias_audit">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="405" />
+              <mxPoint x="500" y="405" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_hew" value="&lt;font style='font-size:10px;color:#333;'&gt;Hew&lt;br&gt;Robust&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="455" y="390" width="45" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_bias_eval" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="bias_audit" target="evaluated">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="405" />
+              <mxPoint x="610" y="405" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_req" value="&lt;font style='font-size:10px;color:#333;'&gt;Required&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="610" y="395" width="55" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 4. Center Section: GOVERNANCE BOUNDARY -->
+        <mxCell id="gov_boundary" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F9FAFB;strokeColor=#64748B;strokeWidth=1.5;strokeDashArray=6 6;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="700" y="110" width="440" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="gov_title" value="&lt;b style='font-size:14px;color:#1E293B;'&gt;GOVERNANCE BOUNDARY&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="720" y="125" width="400" height="25" as="geometry" />
+        </mxCell>
+        <!-- Internal Stack (4 components) -->
+        <mxCell id="node_a" value="&lt;b style='font-size:13px;color:#FFFFFF;'&gt;a) Compliance Audit&lt;/b&gt; &lt;font style='font-size:12px;color:#FFF;'&gt;(Regulatory)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D37324;strokeColor=#9C531A;strokeWidth=1.5;arcSize=50;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="165" width="380" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="node_b" value="&lt;div style='display:flex;align-items:center;padding:8px;'&gt;&lt;span style='font-size:36px;margin-right:15px;'&gt;🛡️👤&lt;/span&gt;&lt;div style='text-align:left;color:#FFF;'&gt;b) &lt;b style='font-size:12px;'&gt;NEW: Adversarial Red Teaming &amp;amp; Security Verification&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;'&gt;(Checks, model inversion, prompt injection, and hallucination safety)&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1.5;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="225" width="380" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="node_c" value="&lt;div style='display:flex;align-items:center;padding:8px;'&gt;&lt;span style='font-size:32px;margin-right:15px;'&gt;👥&lt;/span&gt;&lt;div style='text-align:left;color:#FFF;'&gt;c) &lt;b style='font-size:12px;'&gt;NEW: Societal Bias &amp;amp; Ethics Audit&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;'&gt;(Formal verification of fairness)&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1.5;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="350" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="node_d" value="&lt;b style='font-size:13px;color:#FFFFFF;'&gt;d) SRE Approval&lt;/b&gt; &lt;font style='font-size:12px;color:#FFF;'&gt;(Operational readiness)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D37324;strokeColor=#9C531A;strokeWidth=1.5;arcSize=50;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="445" width="380" height="45" as="geometry" />
+        </mxCell>
+        <!-- Footer Badges -->
+        <mxCell id="badge_ethics" value="&lt;b style='font-size:12px;color:#0369A1;'&gt;AI Ethics Board&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.2;arcSize=50;" vertex="1" parent="1">
+          <mxGeometry x="760" y="520" width="150" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_sec" value="&lt;b style='font-size:12px;color:#FFFFFF;'&gt;AI Security Lead&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#475569;strokeColor=#1E293B;strokeWidth=1.2;arcSize=50;" vertex="1" parent="1">
+          <mxGeometry x="930" y="520" width="150" height="35" as="geometry" />
+        </mxCell>
+        <!-- Human-in-the-Loop Node straddling boundary right edge -->
+        <mxCell id="human_loop" value="&lt;span style='font-size:28px;'&gt;🛡️✔&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;Human-in-the-&lt;br&gt;(Unified&lt;br&gt;Governance&lt;br&gt;Board)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="280" width="130" height="100" as="geometry" />
+        </mxCell>
+        <!-- Input Connector splitting into 4 -->
+        <mxCell id="arr_eval_split" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="evaluated" target="node_a">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="315" />
+              <mxPoint x="670" y="187" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_eval_split_b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="evaluated" target="node_b">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="315" />
+              <mxPoint x="670" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_eval_split_c" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="evaluated" target="node_c">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="315" />
+              <mxPoint x="670" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_eval_split_d" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="evaluated" target="node_d">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="315" />
+              <mxPoint x="670" y="467" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <!-- Output Connectors merging into Human-in-the-Loop -->
+        <mxCell id="arr_merge_a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="node_a" target="human_loop">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="187" />
+              <mxPoint x="1100" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_merge_b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="node_b" target="human_loop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_merge_c" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="node_c" target="human_loop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_merge_d" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="node_d" target="human_loop">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="467" />
+              <mxPoint x="1100" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Column 4: Deployment & Operations -->
+        <mxCell id="canary_deploy" value="&lt;span style='font-size:24px;color:#FFFFFF;&gt;%&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;CANARY&lt;br&gt;DEPLOYMENT&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#E5E7EB;'&gt;Canary Failure&lt;br&gt;Rollback&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="160" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="promoted_prod" value="&lt;span style='font-size:28px;'&gt;🚀🏢&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;PROMOTED TO&lt;br&gt;PRODUCTION&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#E5E7EB;'&gt;Fully deployed state&lt;br&gt;serving live traffic&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="300" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="multi_silo" value="&lt;span style='font-size:28px;'&gt;🗄️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;Multi-Silo Agentic&lt;br&gt;Workflow Tooling&lt;br&gt;Vetting&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="450" width="160" height="80" as="geometry" />
+        </mxCell>
+        <!-- Connectors Column 4 -->
+        <mxCell id="arr_hil_canary" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="human_loop" target="canary_deploy">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1255" y="330" />
+              <mxPoint x="1255" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_hil_prod" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="human_loop" target="promoted_prod">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1255" y="330" />
+              <mxPoint x="1255" y="345" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_canary_prod" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="canary_deploy" target="promoted_prod">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_promo_path" value="&lt;font style='font-size:10px;color:#333;'&gt;Promotion&lt;br&gt;Path&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="260" width="55" height="30" as="geometry" />
+        </mxCell>
+        <!-- Rollback Loop -->
+        <mxCell id="arr_rollback" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D37324;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="canary_deploy" target="human_loop">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1360" y="110" />
+              <mxPoint x="1165" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pill_rollback" value="&lt;b style='font-size:10px;color:#FFFFFF;'&gt;Canary Failure&lt;br&gt;Rollback&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=4;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1215" y="95" width="95" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 6. Column 5: Continuous Monitoring & Archival -->
+        <mxCell id="cont_perf_lbl" value="&lt;b style='font-size:11px;color:#202124;'&gt;1) Continuous Online Performance &amp;amp; Bias Monitoring&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="235" width="220" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="drift_detect" value="&lt;div style='text-align:left;font-size:10px;color:#E5E7EB;padding-left:5px;'&gt;2)&lt;/div&gt;&lt;span style='font-size:24px;'&gt;📈&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;Drift Detection&lt;br&gt;Monitoring&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="270" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="soc_reg_mon" value="&lt;div style='text-align:left;font-size:10px;color:#E5E7EB;padding-left:5px;'&gt;3)&lt;/div&gt;&lt;span style='font-size:26px;'&gt;⚖️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;Societal &amp;amp; Regulatory&lt;br&gt;Monitoring&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#E5E7EB;'&gt;Constantly checks against&lt;br&gt;external changes (... new&lt;br&gt;law, changing norms)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="380" width="170" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_prod_drift" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="promoted_prod" target="drift_detect">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1485" y="345" />
+              <mxPoint x="1485" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_prod_soc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="promoted_prod" target="soc_reg_mon">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1485" y="345" />
+              <mxPoint x="1485" y="435" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Archival Nodes (Far Right Stack) -->
+        <mxCell id="archival_top" value="&lt;span style='font-size:24px;'&gt;📦&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;color:#FFFFFF;'&gt;ARCHIVAL (RETIRED)&lt;br&gt;(Safety Incident)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="270" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="archival_bot" value="&lt;span style='font-size:24px;'&gt;📦&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;color:#FFFFFF;'&gt;ARCHIVAL (RETIRED)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1.5;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="520" width="120" height="80" as="geometry" />
+        </mxCell>
+        <!-- Trigger Connectors (4 arrows with orange pills) -->
+        <mxCell id="arr_trig1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="soc_reg_mon" target="archival_bot">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1700" y="415" />
+              <mxPoint x="1700" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pill_trig1" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;Model Obsolescence&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1695" y="490" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_trig2" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;Regulatory Change&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1695" y="515" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_trig3" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;Societal Drift (Harm Detected)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1695" y="540" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_trig4" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;Safety Incident (Recall triggered)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1695" y="565" width="150" height="20" as="geometry" />
+        </mxCell>
+        <!-- Incident Loop Connector -->
+        <mxCell id="arr_inc_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D37324;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="archival_bot" target="archival_top">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1770" y="450" />
+              <mxPoint x="1770" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_trig_checks" value="&lt;font style='font-size:10px;color:#202124;'&gt;3) Trigger Checks&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="420" width="95" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_architv" value="&lt;font style='font-size:10px;color:#202124;'&gt;4) Architv&lt;br&gt;(Safety Incident)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1780" y="420" width="85" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 7. Footer Region -->
+        <!-- Legend Box -->
+        <mxCell id="legend_box_statemachine" value="&lt;b style='font-size:14px;color:#202124;'&gt;Legend:&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=8;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="20" y="660" width="1810" height="130" as="geometry" />
+        </mxCell>
+        <!-- Column 1 -->
+        <mxCell id="leg_sm_c1_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Managed Compute&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="100" y="28" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c1_1_box" value="" style="rounded=0;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="75" y="29" width="18" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_sm_c1_2" value="&lt;font style='font-size:11px;color:#202124;'&gt;Storage&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="100" y="58" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c1_2_box" value="" style="rounded=0;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="75" y="59" width="18" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_sm_c1_3" value="&lt;font style='font-size:11px;color:#202124;'&gt;Secure boundary&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="100" y="88" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c1_3_box" value="" style="rounded=0;fillColor=#D37324;strokeColor=#9C531A;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="75" y="89" width="18" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Column 2 -->
+        <mxCell id="leg_sm_c2_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Data Type&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="350" y="28" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c2_1_box" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="325" y="29" width="18" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_sm_c2_2" value="&lt;font style='font-size:11px;color:#202124;'&gt;Data Description&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="350" y="58" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c2_2_box" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="325" y="59" width="18" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_sm_c2_3" value="&lt;font style='font-size:11px;color:#202124;'&gt;TimeRes&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="350" y="88" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c2_3_box" value="" style="rounded=0;fillColor=none;strokeColor=#64748B;strokeWidth=1;strokeDashArray=3 3;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="325" y="89" width="18" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Column 3 (Crucial: Replicate exact typos Demmondiate Demendiate Relationsins!) -->
+        <mxCell id="leg_sm_c3_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Key Definition&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="600" y="28" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c3_1_icon" value="&lt;span style='font-size:16px;'&gt;🔑&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="575" y="27" width="20" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_sm_c3_2" value="&lt;font style='font-size:11px;color:#202124;'&gt;Key Definition (FK)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="600" y="58" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c3_2_icon" value="&lt;span style='font-size:16px;'&gt;🔐&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="575" y="57" width="20" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_sm_c3_3" value="&lt;font style='font-size:11px;color:#202124;'&gt;Key Demmondiate&lt;br&gt;Demendiate Relationsins&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="600" y="88" width="180" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c3_3_icon" value="&lt;span style='font-size:16px;'&gt;🗝️&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="575" y="92" width="20" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Column 4 (Crucial: Replicate typo One-to-mankey!) -->
+        <mxCell id="leg_sm_c4_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;One-to-mankey&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="900" y="28" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c4_1_arr" value="" style="endArrow=block;endFill=1;strokeColor=#202124;strokeWidth=1.5;html=1;" edge="1" parent="legend_box_statemachine">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="860" y="38" as="sourcePoint" />
+            <mxPoint x="890" y="38" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="leg_sm_c4_2" value="&lt;font style='font-size:11px;color:#202124;'&gt;One-to-many Relationship&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="900" y="58" width="180" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c4_2_arr" value="" style="endArrow=open;endFill=0;strokeColor=#202124;strokeWidth=1.5;html=1;" edge="1" parent="legend_box_statemachine">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="860" y="68" as="sourcePoint" />
+            <mxPoint x="890" y="68" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="leg_sm_c4_3" value="&lt;font style='font-size:11px;color:#202124;'&gt;Line Type: Relationship&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
+          <mxGeometry x="900" y="88" width="180" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sm_c4_3_arr" value="" style="endArrow=none;strokeColor=#64748B;strokeWidth=1.5;strokeDashArray=3 3;html=1;" edge="1" parent="legend_box_statemachine">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="860" y="98" as="sourcePoint" />
+            <mxPoint x="890" y="98" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Why It Works Box (Bottom Right / Full Width below Legend) -->
+        <mxCell id="why_works_statemachine" value="&lt;font style='font-size:13px;color:#0F172A;line-height:1.4;'&gt;&lt;b&gt;WHY IT WORKS:&lt;/b&gt; This total system view ensures uncompcompromised end-to-end design, integrating ethical data sourcing, adversarial security verification, proactive societal audits, and robust post-production drift monitoring for truly complete governance and safety.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;display=flex;align=center;verticalAlign=middle;padding=15;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="20" y="805" width="1810" height="75" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+
 /**
  * Compiles a structured diagram specification into pixel-perfect Draw.io XML
  */
@@ -2136,6 +2561,9 @@ export function compileSpecToDrawioXml(spec: CompiledDiagramSpec): string {
   }
   if (spec.diagramId === "devops_cicd_pipeline_compiled" || spec.diagramId === "devops_cicd_pipeline") {
     return getExactDevopsCicdPipelineReferenceXml();
+  }
+  if (spec.diagramId === "governance_state_machine_compiled" || spec.diagramId === "governance_state_machine") {
+    return getExactGovernanceStateMachineReferenceXml();
   }
 
   const colWidth = 360;
@@ -2399,6 +2827,18 @@ export function getBenchmarkDevopsCicdPipelineSpec(): CompiledDiagramSpec {
   return {
     diagramId: "devops_cicd_pipeline_compiled",
     title: "Diagram: The Operational Flow",
+    columns: [],
+    connections: []
+  };
+}
+
+/**
+ * Returns the benchmark Governance & State Machine specification for instant compilation
+ */
+export function getBenchmarkGovernanceStateMachineSpec(): CompiledDiagramSpec {
+  return {
+    diagramId: "governance_state_machine_compiled",
+    title: 'UNIFIED GOVERNANCE & STATE-MACHINE LIFECYCLE: THE "WHAT STATUS" TOTAL SYSTEM VIEW.',
     columns: [],
     connections: []
   };

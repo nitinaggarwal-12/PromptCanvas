@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -156,47 +156,108 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
 - Bottom Banner: *WHY IT WORKS: This unified diagram allows security, SREs, and architects to immediately understand the entire operational lifecycle, dependencies, security boundaries, and human governance across all four diagram types (Data Flow, Cognitive Architecture, Topology, MLOps) ensuring total, uncompromised end-to-end design.`
   },
   {
+    id: "governance_state_machine",
+    name: "8. Governance & State Machine",
+    category: "Phase 4: Resiliency & Security",
+    prompt: `Act as a Principal DevSecOps Architect and Master Diagram Illustrator. Generate a 16:9 high-resolution, uncompressed vector-style technical architecture diagram.
+
+* Canvas & Background: Pure white (#FFFFFF) canvas.
+* Typography: Google Sans or similar modern, clean sans-serif. Follow strict hierarchical sizing. CRITICAL: You must explicitly replicate all spelling, punctuation, and grammatical anomalies exactly as written in this prompt (e.g., "One-to-mankey", "uncompcompromised", "Architv").
+* Line Styles: Solid 1px gray/black lines with triangular arrowheads for all connectors, unless specified otherwise.
+* Color Palette Definitions:
+* Dark Blue (Nodes/Headers): #12385B
+* Teal (Nodes): #2A7B9B
+* Orange (Nodes/Pills): #D37324
+* Light Gray (Containers): #F3F4F6
+
+1. Header Region
+* Main Title Bar: A full-width Dark Blue rectangle spanning the very top. Text (Left-aligned, bold, white, all caps): UNIFIED GOVERNANCE & STATE-MACHINE LIFECYCLE: THE "WHAT STATUS" TOTAL SYSTEM VIEW.
+* Subtitle Banner: A light gray full-width rectangle directly beneath the title bar. Text (Centered, regular weight, dark gray): Total end-to-end flow from Vetting to Continuous Societal & Regulatory Monitoring.
+
+2. Column 1: Initial Vetting & Modeling
+* DATA VETTING Node (Top Left): Shape: Dark Blue rectangle, rounded corners. Icon (Top Center): Magnifying glass over a line chart. Text: DATA VETTING (line 1, bold), (Ethical Sourcing (line 2), & PII Check) (line 3).
+* Approval Badge (Below Data Vetting): Icon: Green circle with a white checkmark. Text below: Data (line 1), Governance (line 2), Approval (line 3).
+* DIMENSIONAL DATA MODEL Node (Bottom Left): Shape: Dark Blue rectangle, rounded corners. Icon: Hierarchical ERD box structure. Text: DIMENSIONAL (line 1, bold), DATA MODEL (line 2, bold), (ERD) REFERENCE (line 3, bold).
+* MODEL CREATED Node (Center Left): Shape: Dark Blue rectangle, rounded corners (slightly wider). Icon: Blueprint/Drafting paper. Text: MODEL CREATED (line 1, bold), (or PROMPT (line 2, bold), DESIGNED) (line 3, bold), Now versioning labels (line 4), (e.g., Prompt labels, (line 5), e.g., v1.0) (line 6).
+* Connectors: Arrows from DATA VETTING (down-right) and DIMENSIONAL DATA MODEL (up-right) converge into the left side of MODEL CREATED.
+
+3. Column 2: Training, Evaluation & Audits
+* IN TRAINING Node (Top): Shape: Teal rectangle, rounded corners. Icon: Brain with gear/nodes. Text: IN TRAINING (line 1, bold), (or DEVELOPMENT) (line 2). Connector: Arrow flows up and right from MODEL CREATED into this node.
+* EVALUATED Node (Center): Shape: Dark Blue rectangle, rounded corners. Icon: Computer monitor with a line chart. Text: EVALUATED (line 1, bold), (OFFLINE METRICS) (line 2, bold), Pre-deployment validation (line 3), (e.g., accuracy, bias, (line 4), hallucination scores) (line 5). Connectors: Arrow from MODEL CREATED pointing right into EVALUATED. Label above arrow: Evaluation. Label below arrow: Accuracy/F1. Arrow pointing down from IN TRAINING into EVALUATED. Label next to arrow: RETRAINING/REFINEMENT (bold).
+* Bias & Fairness Audit (Bottom): Shape: Orange rectangle, rounded corners. Icon: Scales of Justice. Text: Bias & (line 1, bold), Fairness Audit (line 2, bold). Connectors: Loop between EVALUATED and this node. Left arrow points down labeled Hew (top) / Robust (bottom). Right arrow points up labeled Required. Badge Below: Green checkmark icon with text Explainability (line 1), Report (XAI) (line 2).
+
+4. Center Section: GOVERNANCE BOUNDARY
+* Boundary Container: A large Light Gray box with a dashed border, located centrally. Title (Top Center, inside box): GOVERNANCE BOUNDARY (Bold, dark gray).
+* Internal Stack (4 components, top to bottom):
+* Node a: Orange pill shape. Text: a) Compliance Audit (bold), (Regulatory).
+* Node b: Teal rectangle. Icon: Shield with person inside. Text: b) (line 1), NEW: Adversarial (line 2, bold), Red Teaming & (line 3, bold), Security Verification (line 4, bold), (Checks, model inversion, (line 5), prompt injection, and (line 6), hallucination safety) (line 7).
+* Node c: Teal rectangle. Icon: Three people silhouettes. Text: c) (line 1), NEW: Societal Bias (line 2, bold), & Ethics Audit (line 3, bold), (Formal verification of (line 4), fairness) (line 5).
+* Node d: Orange pill shape. Text: d) SRE Approval (bold), (Operational readiness).
+* Connectors (Input): A single arrow exits the right side of EVALUATED, enters the left side of the Governance Boundary, and splits into four separate lines leading into nodes a, b, c, and d.
+* Footer Badges (Below Boundary): Light Blue pill: AI Ethics Board. Dark Gray pill: AI Security Lead.
+* Human-in-the-Loop Node (Exiting Boundary): Shape: Dark Blue rectangle, straddling the right-side dashed line of the boundary. Icon: Shield with checkmark. Text: Human-in-the- (line 1), (Unified (line 2), Governance (line 3), Board) (line 4). All text centered. Connectors (Output): Lines exit nodes a, b, c, d, merge into one, and enter the left side of this node.
+
+5. Column 4: Deployment & Operations
+* CANARY DEPLOYMENT Node (Top): Shape: Teal rectangle. Icon: % symbol. Text: CANARY (line 1, bold), DEPLOYMENT (line 2, bold), Canary Failure (line 3), Rollback (line 4).
+* PROMOTED TO PRODUCTION Node (Center): Shape: Dark Blue rectangle. Icon: Rocket ship and city buildings. Text: PROMOTED TO (line 1, bold), PRODUCTION (line 2, bold), Fully deployed state (line 3), serving live traffic (line 4).
+* Multi-Silo Agentic Node (Bottom): Shape: Teal rectangle. Icon: Server rack/Database. Text: Multi-Silo Agentic (line 1), Workflow Tooling (line 2), Vetting (line 3).
+* Connectors: Arrow from Human-in-the-Loop splits: goes up to CANARY DEPLOYMENT and straight to PROMOTED TO PRODUCTION. Arrow from CANARY DEPLOYMENT points down to PROMOTED TO PRODUCTION. Label next to it: Promotion (line 1) Path (line 2). Rollback Loop: Arrow loops from left of CANARY DEPLOYMENT back to Human-in-the-Loop. There is an orange pill overlay on this line reading: Canary Failure (line 1), Rollback (line 2).
+
+6. Column 5: Continuous Monitoring & Archival
+* Continuous Performance Arrow (Top): A long arrow routes from above PROMOTED TO PRODUCTION towards the right. Label above arrow: 1) Continuous (line 1), Online Performance (line 2), & Bias Monitoring (line 3).
+* Drift Detection Node: Shape: Teal rectangle. Icon: Line graph with dotted trend. Text: 2) (top left corner), Drift (line 1), Detection (line 2), Monitoring (line 3).
+* Societal & Regulatory Monitoring Node: Shape: Teal rectangle. Icon: Judge's gavel. Text: 3) (top left corner), Societal & (line 1, bold), Regulatory (line 2, bold), Monitoring (line 3, bold), Constantly checks against (line 4), external changes (... new (line 5), law, changing norms) (line 6).
+* Connectors from Production: Arrows point from PROMOTED TO PRODUCTION into nodes 2 and 3.
+* Archival Nodes (Far Right Stack): Top Archival Node: Dark Blue rectangle. Icon: Isometric open box. Text: ARCHIVAL (line 1, bold), (RETIRED) (line 2, bold), (Safety Incident) (line 3). Bottom Archival Node: Dark Blue rectangle. Icon: Isometric open box. Text: ARCHIVAL (line 1, bold), (RETIRED) (line 2, bold).
+* Trigger Connectors (From Node 3 to Bottom Archival): Four separate arrows flow from the right side of Node 3 to the left side of Bottom Archival. Each has an orange pill label: Pill 1: Model Obsolescence, Pill 2: Regulatory Change, Pill 3: Societal Drift (Harm Detected), Pill 4: Safety Incident (Recall triggered).
+* Incident Loop Connector: Arrow points up from Bottom Archival to Top Archival. Label left of line: 3) Trigger (line 1), Checks (line 2). Label right of line: 4) Architv (line 1, replicate exact typo), (Safety (line 2), Incident) (line 3).
+
+7. Footer Region (Critical: Replicate all typos verbatim)
+* Legend Box (Bottom Left): White box, gray border. Top left text: Legend:. Column 1: Blue square Managed Compute, Green square Storage, Yellow square Secure boundary. Column 2: White square Data Type, White square Data Description, Dashed square TimeRes. Column 3: Key icon Key Definition, Key with lock icon Key Definition (FK), Linked keys icon Key Demmondiate (line 1) Demendiate Relationsins (line 2). (REPLICATE TYPOS). Column 4: Solid arrow One-to-mankey. Hollow arrow One-to-many Relationship. Dashed line Line Type: Relationship. (REPLICATE TYPO).
+* Why It Works Box (Bottom Right): Light Blue/Gray fill, gray border, rounded corners. Text: **WHY IT WORKS: This total system view ensures uncompcompromised end-to-end design, integrating ethical data sourcing, adversarial security verification, proactive societal audits, and robust post-production drift monitoring for truly complete governance and safety. (REPLICATE TYPO "uncompcompromised")`
+  },
+  {
     id: "event_driven_aws",
-    name: "8. Event-Driven Microservices (AWS)",
+    name: "9. Event-Driven Microservices (AWS)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store."
   },
   {
     id: "k8s_mesh",
-    name: "9. Kubernetes Service Mesh (EKS/GKE)",
+    name: "10. Kubernetes Service Mesh (EKS/GKE)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a Cloud Native Architect. Design a multi-cluster Kubernetes Service Mesh architecture using EKS or GKE with Istio/Anthos, ingress controllers, mutual TLS (mTLS), distributed tracing, and Prometheus monitoring."
   },
   // Phase 3: Data & Analytics
   {
     id: "streaming_pipeline",
-    name: "10. Real-time Streaming Pipeline (GCP)",
+    name: "11. Real-time Streaming Pipeline (GCP)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store structured results in BigQuery, and visualize via Looker."
   },
   {
     id: "data_lakehouse",
-    name: "11. Modern Data Lakehouse (AWS)",
+    name: "12. Modern Data Lakehouse (AWS)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for querying, and Amazon Redshift for data warehousing."
   },
   // Phase 4: Resiliency & Security
   {
     id: "multi_region_dr",
-    name: "12. Multi-Region Disaster Recovery (GCP)",
+    name: "13. Multi-Region Disaster Recovery (GCP)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as a GCP Architect. Design a highly available, multi-region disaster recovery architecture. It should include: Cloud DNS routing, HTTPS Load Balancing across two regions, active-passive Cloud Spanner database sync, and dual-region GCS backups."
   },
   {
     id: "zero_trust",
-    name: "13. Zero-Trust Security Perimeter (GCP/AWS)",
+    name: "14. Zero-Trust Security Perimeter (GCP/AWS)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as an Enterprise Security Architect. Design a Zero-Trust Security Perimeter architecture featuring VPC Service Controls, Identity-Aware Proxy (IAP), centralized Cloud IAM policies, KMS encryption at rest and in transit, and continuous SIEM monitoring."
   },
   // Phase 5: Enterprise Integration
   {
     id: "hybrid_interconnect",
-    name: "14. Hybrid Cloud Interconnect (Enterprise)",
+    name: "15. Hybrid Cloud Interconnect (Enterprise)",
     category: "Phase 5: Enterprise Integration",
     prompt: "Act as an Enterprise Cloud Architect. Design an integrated Hybrid Cloud Interconnect architecture linking on-premises corporate data centers with public clouds (GCP/AWS) via dedicated Cloud Interconnect / Direct Connect, redundant IPsec VPN gateways, and hybrid identity federation."
   }
@@ -227,6 +288,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   }
   if (archId === 'devops_cicd_pipeline') {
     return compileSpecToDrawioXml(getBenchmarkDevopsCicdPipelineSpec());
+  }
+  if (archId === 'governance_state_machine') {
+    return compileSpecToDrawioXml(getBenchmarkGovernanceStateMachineSpec());
   }
 
   return `
