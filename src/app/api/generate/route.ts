@@ -309,7 +309,15 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
                          prompt?.includes('Database Architect') ||
                          (architectureType !== 'conceptual_diagram' && architectureType !== 'agentic_rag' && architectureType !== 'sequence_diagram' && architectureType !== 'technical_diagram' && (existingXml?.includes('Dim_Patient') || existingXml?.includes('Dim_Intel_Map')));
 
-    const isSequenceRequest = !isErdRequest && (
+    const isMacroSequenceRequest = !isErdRequest && (
+                                     architectureType === 'macro_sequence_diagram' ||
+                                     prompt?.includes('Macro Dynamic Sequence') ||
+                                     prompt?.includes('COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM') ||
+                                     prompt?.includes('TOTAL UNIFIED SEQUENCE DIAGRAM') ||
+                                     existingXml?.includes('COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM')
+    );
+
+    const isSequenceRequest = !isErdRequest && !isMacroSequenceRequest && (
                                 architectureType === 'sequence_diagram' ||
                                 prompt?.includes('Micro Dynamic Sequence') ||
                                 prompt?.includes('Sequence Diagram') ||
@@ -344,6 +352,9 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
     if (isErdRequest) {
       console.log('[ERD Protection Fast-Path] 🛡️ Enforcing pristine ERD reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('erd');
+    } else if (isMacroSequenceRequest) {
+      console.log('[Macro Sequence Diagram Protection Fast-Path] 🛡️ Enforcing pristine Macro Sequence Diagram reference XML layout immediately.');
+      xml = getDefaultXmlForArchitecture('macro_sequence_diagram');
     } else if (isSequenceRequest) {
       console.log('[Sequence Diagram Protection Fast-Path] 🛡️ Enforcing pristine Sequence Diagram reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('sequence_diagram');

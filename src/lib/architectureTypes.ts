@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkMacroSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -40,16 +40,22 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Phase 1: Foundation & Core Logic",
     prompt: "Act as an API Chief Architect and Backend Systems Engineer. Design a chronologically exact, step-by-step Micro Dynamic Sequence Diagram (Execution Loop) for an Agentic RAG ecosystem. It should include: standard UML Sequence lifelines (rectangles on dashed lines), light cream background theme, synchronous solid arrows for API calls, dashed return arrows for context observations, and callout badges for PII/Ethical sourcing checks, ReAct Thought/Action loops, and IAM private access VPC-SC enforcement."
   },
+  {
+    id: "macro_sequence_diagram",
+    name: "4. Macro Dynamic Sequence Diagram",
+    category: "Phase 1: Foundation & Core Logic",
+    prompt: "Act as a Principal Enterprise Systems Architect and Master Diagram Illustrator. Generate a highly complex 16:9 high-resolution, uncompressed vector-style technical sequence diagram.\n\n* Canvas & Background: Pure white (#FFFFFF) canvas.\n* Typography: Google Sans or similar clean sans-serif. Follow strict hierarchical sizing. CRITICAL MANDATE: Replicate all spelling errors, casing anomalies, and gibberish text VERBATIM.\n* Color Palette: Use distinct pastel background fills for horizontal swimlanes (Light Blue, Light Green, Light Yellow). Nodes should be Light Blue (Compute/Processing), Green (Monitoring), Orange (Governance/Security), and Gray (Users/UI).\n* Structure: The diagram is a hybrid sequence/architecture diagram divided into a Global Header, four horizontal Swimlanes (Phases 1-4) with vertical dashed lifelines dropping from top component headers, and a bottom Footer Legend.\n\n1. Global Header Bar: ITACS Integrated Insights Platform - COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM. Mapping Data Flow, Orchestration, Time, and Governance across Data/AI Solutions.\n\n2. Swimlane 1: PHASE 1: DATA INGESTION, FEATURE ENGINEERING & LINEAGE LOGGING. Silo Analysts -> Google Workspace Connectors -> GCS Secure Bucket (VPC-SC Enforcement) -> Airflow Scheduler -> dbt Transformation -> BigQuery Feature Store -> IAM Integration & Data Masking -> ETL Audit Log.\n\n3. Swimlane 2: PHASE 2: MLOps LIFECYCLE: MODEL TRAINING, EVALUATION, APPROVAL, DEPLOYMENT & MONITORING. ML Engineer -> Airflow Scheduler -> Model Training (Vertex AI) -> Model Registry -> Governance Board (Human-in-the-Loop) -> GKE Inference Endpoint -> Monitoring -> ML Inference Log.\n\n4. Swimlane 3: PHASE 3: GENAI / AGENTIC BAG ORCHESTRATION & ANALYTICS TOOLING (Replicate typo BAG). Oncology Analyst (User) -> User Interface -> Agent Orchestrator (Vertex AI) with Conversation Memory -> Gemini LLM (Reasoner) executing ReAct Loop (Gemi Reasoner, Sothesit, Snythesize report typos) -> RAG Tool -> BigQuery (Analytics) -> VPC Service Controls Enforcement.\n\n5. Swimlane 4: PHASE 4: PROTOTYPE DELIVERY & LOGGING. Oncology Analyst -> User Interface -> Agent Orchestrator -> Deck Studio API -> Global Market Radar API -> Delivery image 3) (Replicate duplicate requests and exact text).\n\n6. Bottom Footer Region: Legend, Key (Definiens, Actioun, Cetears, Key osse: Betcher sesolu, Deriquery typos), Line (Bequest, Reguectaquest PPT necaes, tnocust APL, visualisaiton, interlace typos), Value Proposition Box (WHY IT WORKS)."
+  },
   // Phase 2: Cloud & Microservices
   {
     id: "serverless_gcp",
-    name: "4. Serverless Web Application (GCP)",
+    name: "5. Serverless Web Application (GCP)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture. It should include: a Global HTTPS Load Balancer, Cloud CDN, Cloud Run for frontend and backend services, Cloud SQL (PostgreSQL) for relational data, and Cloud Storage for static assets."
   },
   {
     id: "data_ai_pipeline",
-    name: "5. Data & AI Pipeline",
+    name: "6. Data & AI Pipeline",
     category: "Phase 3: Data & Analytics",
     prompt: `Act as an Enterprise Solutions Architect and Diagram Design Expert. Generate a high-resolution, pixel-perfect technical architecture diagram titled "ITACS SECURE GOVERNED CLOUD TENANT (Managed Services)". The style is a clean, professional cloud architecture blueprint on a white background with modern sans-serif typography, crisp vector icons, color-coded functional containers, and orthogonal data flow arrows.
 
@@ -82,7 +88,7 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "secure_deployment_map",
-    name: "6. Secure Deployment Map",
+    name: "7. Secure Deployment Map",
     category: "Phase 4: Resiliency & Security",
     prompt: `Act as a Principal Cloud Architect and Master Diagram Illustrator. Generate a 16:9 high-resolution, uncompressed vector-style technical architecture diagram titled "Google Cloud Project (ITACS Platform Production)".
 
@@ -112,7 +118,7 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "devops_cicd_pipeline",
-    name: "7. DevOps & CI/CD Pipeline",
+    name: "8. DevOps & CI/CD Pipeline",
     category: "Phase 4: Resiliency & Security",
     prompt: `Act as a Principal DevSecOps Architect and Master Diagram Illustrator. Generate a 16:9 high-resolution, uncompressed vector-style technical architecture diagram titled "Diagram: The Operational Flow".
 
@@ -157,7 +163,7 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "governance_state_machine",
-    name: "8. Governance & State Machine",
+    name: "9. Governance & State Machine",
     category: "Phase 4: Resiliency & Security",
     prompt: `Act as a Principal DevSecOps Architect and Master Diagram Illustrator. Generate a 16:9 high-resolution, uncompressed vector-style technical architecture diagram.
 
@@ -218,58 +224,58 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "unified_system_view",
-    name: "9. Unified System View",
+    name: "10. Unified System View",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as a Principal Enterprise Systems Architect and Master Diagram Illustrator. Generate a highly complex 16:9 high-resolution, uncompressed vector-style technical architecture diagram.\n\n* Canvas & Background: Pure white (#FFFFFF) canvas.\n* Typography: Google Sans or similar clean sans-serif. Follow strict hierarchical sizing. CRITICAL MANDATE: Replicate all spelling errors, casing anomalies, and gibberish text VERBATIM.\n* Color Palette (GCP Standard): Dark Blues (Headers/Primary Nodes), Light Blues (Containers/Compute), Teals (Deployments/Actions), Greens (Storage/Data), Light Orange/Beige (Subnet boundaries), Gray (Backgrounds/Borders).\n* Structure: The diagram is divided into a top Header, three main horizontal Swimlanes, and a bottom Footer Legend.\n\n1. Global Header Bar\n* Main Title Bar: Full-width Dark Blue rectangle spanning the top.\n* Left Icon: Google Cloud (GCP) multi-color logo.\n* Title Text (White, bold): ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, & Governance (End-to-End without Compromise).\n* Subtitle (White, regular, centered below title): Unified Logical Flow, Technology Stack, Security Boundaries, and Operational Lifecycles\n\n2. Swimlane 1: PLAN & DATA FOUNDATION\n* Left Vertical Tab (Rotated 90 degrees CCW): Gray fill, text: Poots & Planninc Phases (Replicate typos).\n* Top Main Label: Centered text spanning the top of the lane: Entire ultra-diate in organizing across major phases (Replicate typos).\n* Lane Header (Top Left): PLAN & DATA FOUNDATION (Vetting & ERD Integration) (Bold).\n* Icons (Left to Right): Clipboard icon -> Project Planning, Database w/ check icon -> Data Vetting, Leaf/Hands icon -> Ethical Sourcing.\n* ERD Section: Text Block: Dimensional Data Model (ERD) (Bold), (Schema for all structured, unstructured, and and derived AI context (Image 7 definitions)) (replicate \"and and\"). Visual: To the right of the text, a miniature unreadable ERD diagram.\n* VPC Boundary Anchor (Far Right): A large dashed gray boundary box begins here and drops down into Swimlane 2. Top-right label: VPC Service Controls Perimeter (Secure Managed Environment).\n\n3. Swimlane 2: DEVELOPMENT & AI LIFECYCLE\n* Left Vertical Tab (Rotated 90 degrees CCW): Gray fill. Text: DEVELOPMENT & AI LIFECYCLE (insograto4 MLOps(L)MLOps State Machine & Pipalinos) (Replicate all typos).\n* Track 2a: DATA ENGINEERING & DFD: Silo Stack (5 stacked dark teal pills): Market Research, Access, Outcomes, Medical, Competitive Intel. Raw Data Block: Salesforce, Postgres, Unstructured Files. Connector flows right with orange VPC-SC pill. Data Lake: GCS Secure Bucket (Raw Data Lake).\n* Track 2b: FEATURE ENGINEERING FLOW: Transformation Box: Circular Transformation with 4 overlapping circles Clean, Normalize, Aggregate, Encode and dbt models. Connector: dbt/SQL arrow to Managed Feature Store.\n* Track 2c: AI MODEL & PROMPT DEVELOPMENT LIFECYCLE: Governance Boundary Box incorporating the full unified audits from image 15 (Replicate typo incogporating). Internal Flow: GCS/BigQuery/Model Registry -> DATA VETTING -> CREATED (Model/Prompt) -> TRAINING Retraining/Refinement Loop -> EVALUATED (with Bias & Fairness Audit and Metripls metica gibberish) -> Accuracy/F1 arrow -> Human-in-the-Loop (Unified Governance Board) -> APPROVED (with Compliance, Adversarial, Bias badges and GKE inference compute). Deployment exiting boundary: Canary -> Promote with Rollback Promotion and Explicit rollback loops.\n\n4. Swimlane 3: GOVERNANCE, FEEDBACK & RETIREMENT LIFECYCLE\n* Left Vertical Tab (Rotated 90 degrees CCW): Gray fill. Text: GOVERNANCE, FEEDBACK & RETIREMENT LIFECYCLE (References Image 15).\n* Lane Header: COGNITIVE ARCHITECTURE & SECURE DEPLOYMENT (Topology Integration) (Yavates inside logical software inside secure cloud network bound. (References image 5 logical layout within VPC)) (Replicate typo Yavates).\n* The Edge (Left side outside VPC): Public Internet Traffic -> External Load Balancer (WAF) -> Google API Gateway with Cloud Armor WAF Rules (Edge protection) top/bottom callouts.\n* ITACS Primary VPC Network Container: Private Application Subnet (Isolated) housing ITACS Agent Orchestrator (GKE Pod) with ReAct Loop and Integrated System Prompt, Conversation Memory, Gemini LLM (Reasoner). Private Data/AI Subnet (Isolated) housing Tool 1: Enterprise Knowledge (Managed RAG), Tool 2: Business Analytics (Analytics), Tool 3: Agentic API Tools. Cross-Subnet Connectors: ACTION gRPC/HTTP, ACTIONS, OBSERVATION.\n* Deployment & Observability: Canary deployment on GKE, Continuous Observation & Alerting monitoring (Inference drift, Prompt ironction typo, Societal Changes).\n* ARCHIVAL (Far Right outside VPC): ARCHIVAL (Retired Model/Prompt) with duplicated Incoming triggers and gibberish fiennon nao integration. Inbound arrows from Monitoring, Drift Detection, and Continuous Observation (Regeslation typo, Regulatory Change, Societal Drift, Safety Incident).\n\n5. Bottom Footer Region: Dense Legend (CRITICAL: Retain all gibberish & typos)\n* Legend Bounding Box: Column 1 Managed Compute, Storage, Secure boundary, Control Flow, Key: Data, Managed, User Data, IAM, VPC-SC, Newscomptoie typo, VOC-S typo, Relationship, Reldonnics typo, Key/Default. Column 2 & 3 Key Definitions (Data Boundan typo, Bermanon Internal Nine and Data gibberish, Control Flow xumonent Boundan gibberish). Column 4 Line Descriptions (intewwships typo, Interaned Srandan typo, Data manieing typo, IPc edge talie typo, Line asnntription provboed oriens gibberish)."
   },
   {
     id: "dark_mode_unified_system_view",
-    name: "10. Architecture",
+    name: "11. Architecture",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as a Principal Enterprise Systems Architect and Master Diagram Illustrator. Generate a highly complex 16:9 high-resolution, uncompressed vector-style technical architecture diagram.\n\n* Canvas & Background: Dark mode theme. The canvas background must be extremely dark navy/black (#0B111A or similar). All primary text must be white or light gray.\n* Typography: Modern clean sans-serif. Follow strict hierarchical sizing. CRITICAL MANDATE: Replicate all spelling errors, casing anomalies, and gibberish text VERBATIM.\n* Color Palette (Dark Theme):\n* Text: White (#FFFFFF) or Light Gray (#A0AAB5).\n* Borders: Solid or dashed lines in bright cyan/blue, orange, yellow, and green.\n* Fills: Most boxes have a dark transparent fill or dark gray fill, relying on colored borders to define them.\n\n* Structure: The diagram is divided into a Global Header, four horizontal Swimlanes (L1-L4) with rotated left-side vertical tabs, a Footer containing legends, and a bottom edge footer text.\n\n1. Global Header Bar\n* Title Text (Center, Top, White, bold, large): ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, & Governance (End-to-End without Compromise)\n* Subtitle (Center, below title, light gray, regular): Mapping Data Flow, Orchestration, Time, and Governance across Data/AI Solutions\n\n2. Swimlane 1: L1 (Top)\n* Left Vertical Tab (Rotated -90 degrees): Gray fill, black text: L1: Poots & Plonning Phases (Replicate typos).\n* Box 1 (White border): Title ITACS Governing Cloud Tenant (Mensged Services) (References image 15). Inside: Stick figure icon labeled Silo Analysts. Next to it, Google Cloud logo labeled Google Workspace Connectors.\n* Connector: Arrow pointing right. Label above line: Analysts upload raw dacs (POFS, PPTs). Label below line: Stream data.\n* Box 2 (White border): Title Plan & Data Foundation (Vetting & ERD Integration). Inside: Blue cylinder icon labeled GCS Secure Bucket (Raw Data Lake).\n* Connector: Arrow pointing right to Box 3.\n* Box 3 (White border): Title Entire ultre-diate in organizing across major phases. Inside: A tiny diagram of blank boxes connected by lines (representing an ERD). Top right corner of this box has a small illegible blue circle badge.\n\n3. Swimlane 2: L2\n* Left Vertical Tab (Rotated -90 degrees): Gray fill, black text: L2. DEVELOPMENT & AI LIFECYCLE (iosograto4 MLOps... (ocograto4 MLOps(L)MLOpa, Stalo Machine & Pipolinos).\n* Track 2a Container (White border): Title DEVELOPMENT & AI LIFECYCLE (iosograto4 MLOps... (References image 15 & 5). Left Stack: 5 teal pill-shaped nodes stacked vertically: Market Research, Access, Outcomes, Medical, Competitive Intel. Raw Data Block: A white bracket points from the stack to the text Raw Data. Next to it, 3 icons: Salesforce cloud logo (Salesforce), Database elephant logo (Postgres), Document icons (Unstructured Files).\n* Connector: Arrow points right. An orange pill badge overlaps the line reading VPC-SC.\n* Track 2b Container (Dashed white border): Title Zones 2 & 5 from image 5. Transform Box: Large light blue rounded box titled Transform. Inside are 4 light blue circles: Clean, Normalize, Aggregate, Encode. Connectors/Nodes: Arrow points right to an orange \"X\" icon labeled dbt models. Arrow points right to a gray square labeled SQL dbt/SQL. Arrow points right to a blue cylinder labeled Managed Feature Store.\n* Track 2c Container (Dashed blue border): Title Governance Boundary incogporating the full unified audits from Image 15. Internal Node Flow (Left to Right): Blue circle with graph icon labeled DATA VETTING. Arrow to blue rectangle CREATED (Modsl/Prompt). Arrow to blue rectangle TRAINING Retraining/ Refinement Loop. Arrow to blue rectangle EVALUATED offhoe Metrics Bias & Pairoess Audit Metripls metics. Arrow (labeled Accursay/P1 above line) to blue rectangle Noman-in-the-Loop (dhified Soromance Beant). Overlapping top-right of the Noman node: Green pill APPROVED with text below it GKE inference compute. Arrow to dark blue pill Canary. Arrow to dark blue pill Promote. Return Arrows: Loop from Promote back to Canary labeled Explicit rollback. Loop from Canary back to Noman-in-the-loop labeled Rollback Promotion.\n\n4. Swimlane 3: L3\n* Left Vertical Tab (Rotated -90 degrees): Gray fill, black text: L3. GOVERNANCE, FEEDBACK & RETIREMENT LIFECYCLE (Refeerence irnago 15).\n* Box 1 (White border): Title GOVERNANCE, FEEDBACK & DEYIRBMENT LIFECYCLE (References Image 15). Inside: A blue box Plan & Govern containing a stick figure actor and Google logo GCP Workapace Connectors.\n* Box 2 (White border): Title MLOps Lifecycle: model, training, eval, approval, deployment & monitoring (References image 13). Flow: Stick figure ML Enginaer -> Airflow Scheduler -> Model Traioing (Vertex AI) -> Model Registry -> Governance Board (Human-in-the-Loop) -> Deployment Pipeline. Labels: First arrow analists aplioad rao osss. Second arrow initiates training, pulls features, executes training. Between Vertex and Registry Status: EVALUATED. Under Governance Board provides Human in-the-Loop approval.\n* Box 3 (White border): Title GenAI / Agenlic BAG Orchestratien 5 Analytics Tooling (References image 15). Flow: GKE inference Endpoint -> Monitoring -> Green cylinder ML Inference Log. Labels: First arrow pulls model, logs inference and dirft with text Status: APPROVED in green. Second arrow pushes lags to & dliift.\n* Box 4 - Main VPC (Dashed yellow border): Title Zonss 2 & 5 from image 5. Inner Box (Solid blue border): ITACS Primary VPC Network (Secure Managed Environment). Left Subnet (Solid orange border): Private Application Subnet (Isolated). Title inside: ITACS Agent Orchestrator (GKE Pod). Contains a circular ReAct Loop (Thought, Action, Observation). To the right of the loop, stacked boxes: Integrated System Prompf, Canversation Memory, Gemini LLM (Reasoner). Bottom text block: • Betlict Theoghd loop, • Actien deoision Tbnoglt, • Actien deesion Memery. Right Subnet (Solid orange border): Private Dete/AI Subwet (Isolated). Title inside: Containers/Endpoints (via PSC). Three stacked tool boxes: Tool 1: Eaterprise Nnowledge (Danaged RiAG) GCS?Vertes A? Search, Tool 2: Boslouss Avalytics (Auakehce) BigQuery SQL, Tool 3: Agentic API Tools Deck Studio API. Connectors: Arrow from Orchestrator to Tools labeled ACTION gRP/HTTP. Arrow back labeled Priocla call.\n* Box 5 - The Edge (Dashed white border, right edge): Title Zones 2 & 5 from image 5. Stacked nodes: Cloud Armor WAF Rules, Public Internet Traffic (person icon), Loed Balencer (WAF), Google API Gateway, Cloud Armor WAF Rules (Edge protection).\n\n5. Swimlane 4: L4\n* Left Vertical Tab (Rotated -90 degrees): Gray fill, black text: L4. PLAN & DATA FOUNDATION (Vetting & EBG Inliogallao).\n* Title Text: PHASE 5: SECURED DEPLOYMENT & OBSERVATION FLOW (Topology Flow). Small blue pill overlapping line: VPC-SC Enforcement.\n* Topology Box (Dashed blue border): Title Deployment topology. Left side: Blue box GKE Pods. Right side: Dashed box GKE Centainers containing 3 hexagons GkE Pods, API Goleway, WkF. Bottom label: Canary deployment on GRE.\n* Action Flow (Bottom center): Stick figure Oncolngy Analyst requeslareaquakts PPT deck -> box UI -> box Agent Orchestrator -> box Deck Studio API -> box Global Market Radar API -> dark box Archival -> box Delivery (ourvey). Labels above arrows: Requests request, requeslzed request, Requests PPT dock, aynlhesized request and request flow, Generatee PPT deck, inlteractive visualizabcn, pushes to interface. Below arrows: pushes to interface, Logs actions.\n* Observation Box (Green border): Continuous Observelion & Alerting menlioning (Datadog/Seonyr/DCP C'laud Logging). Bullets: - Inference drift, - Prompt irenction, - Socislal Changes.\n* Archival Box (Gray border): ARCHIVAL (Retired Medel/Prompt). Bullets: - Imcaming triggers, - Incomimg triggers, - fienooe nae intagration, - Detailed role integration.\n* Connectors to Archival: Arrows from Observelion Box and Global Market Radar pointing into Archival Box, labeled drift detection, regaclation, regulatory changes.\n* Far Right Text: Large text References image 15.\n\n6. Footer Region\n* Legend (Bottom Left): Grid of icons with text: Blue box Managed Compute, Green box Storage, Yellow box Secure boundary, Arrow Control Flow, Dashed arrow Key: Data, Empty box Newscomptoie, Line VGC S, Dashed line Relationship, Blue arrow Managed, Red line Relationship, Blue hexagon Reldennics, Lock Key/Sefault, Google logo GCP Workagace, Person actor, Robot Gendhi, Cube GkE pod, Cloud private VPC, Cloud shield cloud annor, Infinity Humps de-tile Loop.\n* Key Refinitions Box: Header Key Refinitions:. Bullet • Eey 1 Aatemad unit tests.... Bullet • CO: GCS, config config....\n* Line Descriptions Box: Header Line Descriptions. Bullets Linn devoiopveenta/, Bete maineirg..., Pneate Application Container....\n* Value Proposition Boxes (Right): Top text: TECHNICAL ADVANTAGE: Unified architecture enables seamless data engineering, MLOps, and agentic RAG integration with end-to-end security and auditable governance. Middle text: WHY IT WORKS: This unified diagram consolidation enables all data engineering, ML engineering, GenAI engineering, SRE, and security teams to instantly understand the entire operational lifecycle, dependencies, security boundaries, and robust operational lifecycles without missing any critical details. Bottom text: PLATFORM VALUE: Unifying Data, MLOps, and GenAI to deliver faster, safer, and more accurate insights. Bottom Right Corner Box (Dark gray fill): #Prggresslon Ratiooale: We visuulize the sequential process fow while misgrating technical components, data Rows, and secority lozers into a single, umfied arctinectoral ayitilecis.\n* Absolute Bottom Edge Text (Centered): ITACS Integrated Insights Platform... end-to-end without compromise... unified diagram allowed security, SREs, and architects, adncutred loeos... end-to-end design"
   },
   {
     id: "event_driven_aws",
-    name: "11. Event-Driven Microservices (AWS)",
+    name: "12. Event-Driven Microservices (AWS)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store."
   },
   {
     id: "k8s_mesh",
-    name: "12. Kubernetes Service Mesh (EKS/GKE)",
+    name: "13. Kubernetes Service Mesh (EKS/GKE)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a Cloud Native Architect. Design a multi-cluster Kubernetes Service Mesh architecture using EKS or GKE with Istio/Anthos, ingress controllers, mutual TLS (mTLS), distributed tracing, and Prometheus monitoring."
   },
   // Phase 3: Data & Analytics
   {
     id: "streaming_pipeline",
-    name: "13. Real-time Streaming Pipeline (GCP)",
+    name: "14. Real-time Streaming Pipeline (GCP)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store structured results in BigQuery, and visualize via Looker."
   },
   {
     id: "data_lakehouse",
-    name: "14. Modern Data Lakehouse (AWS)",
+    name: "15. Modern Data Lakehouse (AWS)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for querying, and Amazon Redshift for data warehousing."
   },
   // Phase 4: Resiliency & Security
   {
     id: "multi_region_dr",
-    name: "15. Multi-Region Disaster Recovery (GCP)",
+    name: "16. Multi-Region Disaster Recovery (GCP)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as a GCP Architect. Design a highly available, multi-region disaster recovery architecture. It should include: Cloud DNS routing, HTTPS Load Balancing across two regions, active-passive Cloud Spanner database sync, and dual-region GCS backups."
   },
   {
     id: "zero_trust",
-    name: "16. Zero-Trust Security Perimeter (GCP/AWS)",
+    name: "17. Zero-Trust Security Perimeter (GCP/AWS)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as an Enterprise Security Architect. Design a Zero-Trust Security Perimeter architecture featuring VPC Service Controls, Identity-Aware Proxy (IAP), centralized Cloud IAM policies, KMS encryption at rest and in transit, and continuous SIEM monitoring."
   },
   // Phase 5: Enterprise Integration
   {
     id: "hybrid_interconnect",
-    name: "17. Hybrid Cloud Interconnect (Enterprise)",
+    name: "18. Hybrid Cloud Interconnect (Enterprise)",
     category: "Phase 5: Enterprise Integration",
     prompt: "Act as an Enterprise Cloud Architect. Design an integrated Hybrid Cloud Interconnect architecture linking on-premises corporate data centers with public clouds (GCP/AWS) via dedicated Cloud Interconnect / Direct Connect, redundant IPsec VPN gateways, and hybrid identity federation."
   }
@@ -291,6 +297,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   }
   if (archId === 'sequence_diagram') {
     return compileSpecToDrawioXml(getBenchmarkSequenceDiagramSpec());
+  }
+  if (archId === 'macro_sequence_diagram') {
+    return compileSpecToDrawioXml(getBenchmarkMacroSequenceDiagramSpec());
   }
   if (archId === 'data_ai_pipeline') {
     return compileSpecToDrawioXml(getBenchmarkDataAiPipelineSpec());
