@@ -30,18 +30,18 @@ export default function DiagramViewer({
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
   // Dynamically size container frame based on aspect ratio
-  let containerDimensions = 'w-full max-w-[1850px] xl:max-w-[97%] h-[1100px] xl:h-[1250px]';
+  let containerDimensions = 'w-full max-w-[1850px] xl:max-w-[98%] h-[1250px] xl:h-[1450px]';
 
   if (aspectRatioId === '1:1') {
-    containerDimensions = 'w-full max-w-[1150px] h-[1150px]';
+    containerDimensions = 'w-full max-w-[1250px] h-[1250px]';
   } else if (aspectRatioId === '9:16') {
-    containerDimensions = 'w-full max-w-[750px] h-[1250px]';
+    containerDimensions = 'w-full max-w-[850px] h-[1450px]';
   } else if (aspectRatioId === '4:3') {
-    containerDimensions = 'w-full max-w-[1550px] h-[1150px]';
+    containerDimensions = 'w-full max-w-[1650px] h-[1250px]';
   } else if (aspectRatioId === '21:9') {
-    containerDimensions = 'w-full max-w-[1950px] xl:max-w-[98%] h-[850px] xl:h-[950px]';
+    containerDimensions = 'w-full max-w-[1950px] xl:max-w-[98%] h-[950px] xl:h-[1100px]';
   } else if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
-    const calcH = Math.min(1300, Math.max(600, Math.round(1100 * (customH / customW))));
+    const calcH = Math.min(1500, Math.max(700, Math.round(1200 * (customH / customW))));
     containerDimensions = `w-full max-w-[1100px] h-[${calcH}px]`;
   }
 
@@ -56,7 +56,8 @@ export default function DiagramViewer({
       <style>
         html, body {
           margin: 0;
-          padding: 0;
+          padding: 16px;
+          box-sizing: border-box;
           width: 100%;
           height: 100%;
           overflow: auto;
@@ -96,7 +97,7 @@ export default function DiagramViewer({
           resize: true,
           toolbar: 'zoom layers tags',
           edit: '_blank',
-          border: 4,
+          border: 36,
           transparent: true,
           fit: true,
           'max-scale': 1.35
