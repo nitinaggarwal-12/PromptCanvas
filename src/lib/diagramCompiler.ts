@@ -856,7 +856,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 1: USER PROMPT -->
-        <mxCell id="s1" value="Sends single multi-silo Oncology prompt&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;e.g., 'Compare market trends across 5 silos, include sales figures'&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1E293B;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+        <mxCell id="s1" value="Sends single Oncology prompt:&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;'Compare market trends across 5 silos,&lt;br&gt;include recent sales figures'&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1E293B;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="122" y="160" as="sourcePoint" /><mxPoint x="340" y="160" as="targetPoint" /></mxGeometry>
         </mxCell>
 
@@ -880,7 +880,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 4: MEMORY TO REASONER -->
-        <mxCell id="s4" value="Updates Conversation Memory with prompt&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;Sends all context (Prompt + Memory)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+        <mxCell id="s4" value="Updates Conversation Memory&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;with new prompt&lt;br&gt;(Sends: Prompt + Memory)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="375" as="sourcePoint" /><mxPoint x="560" y="375" as="targetPoint" /></mxGeometry>
         </mxCell>
 
@@ -916,7 +916,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 10: UPDATES REASONER 1 -->
-        <mxCell id="s10" value="Updates Reasoner (GEMINI) with New Observation&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;(Send all content: Prompt + Memory + RAG Obs)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+        <mxCell id="s10" value="Updates Reasoner (GEMINI)&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;with New Observation&lt;br&gt;(Prompt + Memory + RAG Obs)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="695" as="sourcePoint" /><mxPoint x="560" y="695" as="targetPoint" /></mxGeometry>
         </mxCell>
 
@@ -926,7 +926,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 12: EXECUTES ANALYTICS ACTION -->
-        <mxCell id="s12" value="Executes Analytics Action&lt;br&gt;&lt;span style='font-size:10px;color:#475569;font-weight:normal;'&gt;(Send call logs: actional, ML Inference log definition)&lt;br&gt;Call includes SQL query (call includes RAG query)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+        <mxCell id="s12" value="Executes Analytics Action&lt;br&gt;&lt;span style='font-size:10px;color:#475569;font-weight:normal;'&gt;(Send call logs: ML Inference log def)&lt;br&gt;Call includes SQL query + RAG query&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="810" as="sourcePoint" /><mxPoint x="1515" y="810" as="targetPoint" /></mxGeometry>
         </mxCell>
 
@@ -949,7 +949,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 16: UPDATES REASONER 2 -->
-        <mxCell id="s16" value="Updates Reasoner (GEMINI) with New Observation&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;(Send all content: Prompt + Memory + RAG Obs)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+        <mxCell id="s16" value="Updates Reasoner (GEMINI)&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;with New Observation&lt;br&gt;(Prompt + Memory + RAG Obs)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1015" as="sourcePoint" /><mxPoint x="560" y="1015" as="targetPoint" /></mxGeometry>
         </mxCell>
 
@@ -960,17 +960,17 @@ export function getExactSequenceDiagramReferenceXml(): string {
 
         <!-- STEP 18: SYNTHESIZES FINAL RESPONSE TEST -->
         <mxCell id="s18" value="Synthesizes final response test&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;(Action ref Image 15 data inventory)&lt;br&gt;Updates Conversation Memory&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1125" as="sourcePoint" /><mxPoint x="780" y="1125" as="targetPoint" /></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1150" as="sourcePoint" /><mxPoint x="780" y="1150" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 19: SYNTHESIZE REPORTING ARTIFACT & FINAL RESPONSE -->
         <mxCell id="s19_user" value="Sends final synthesized response&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;(linked PPT report / JSON data)&lt;br&gt;Displays response to USER&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#1D4ED8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1175" as="sourcePoint" /><mxPoint x="122" y="1175" as="targetPoint" /></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1205" as="sourcePoint" /><mxPoint x="122" y="1205" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 20: LOGS FINAL OUTCOME -->
         <mxCell id="s20_log" value="Logs final outcome" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#9A3412;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#9A3412;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1225" as="sourcePoint" /><mxPoint x="1515" y="1225" as="targetPoint" /></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1255" as="sourcePoint" /><mxPoint x="1515" y="1255" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- TOPOLOGY NOTES & LOGGING BOXES MATCHING IMAGE 1 -->
