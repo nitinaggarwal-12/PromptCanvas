@@ -96,10 +96,10 @@ export default function DiagramViewer({
           resize: true,
           toolbar: 'zoom layers tags',
           edit: '_blank',
-          border: 12,
+          border: 4,
           transparent: true,
           fit: true,
-          'max-scale': 1.0
+          'max-scale': 1.35
         }))}"
       ></div>
       
