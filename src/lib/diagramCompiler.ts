@@ -1088,7 +1088,7 @@ export function getExactDataAiPipelineReferenceXml(): string {
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- Top Header & Cloud Tenant Container -->
+        <!-- Top Header & Cloud Tenant Container (Sharp rounded=0) -->
         <mxCell id="gcp_tenant" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=2;strokeDashArray=6 6;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="20" y="40" width="1810" height="880" as="geometry" />
         </mxCell>
@@ -1128,7 +1128,7 @@ export function getExactDataAiPipelineReferenceXml(): string {
 
         <!-- 10 Verbatim Phase Labels -->
         <mxCell id="ph_1" value="&lt;font style='font-size:12px;color:#334155;'&gt;Standard&lt;br&gt;Operations&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="50" y="85" width="110" height="50" as="geometry" />
+          <mxGeometry x="40" y="85" width="110" height="50" as="geometry" />
         </mxCell>
         <mxCell id="ph_2" value="&lt;font style='font-size:11px;color:#334155;'&gt;Data Ingestion&lt;br&gt;(via Google Workspace /&lt;br&gt;Enterprise Connectors)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="170" y="85" width="160" height="50" as="geometry" />
@@ -1158,47 +1158,56 @@ export function getExactDataAiPipelineReferenceXml(): string {
           <mxGeometry x="1380" y="85" width="130" height="50" as="geometry" />
         </mxCell>
 
-        <!-- Section 1: DATA INGESTION (DFD) Container -->
-        <mxCell id="sec_dfd" value="&lt;font color='#C2410C' style='font-size: 18px;'&gt;&lt;b&gt;DATA INGESTION (DFD)&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;strokeWidth=2;strokeDashArray=6 6;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
-          <mxGeometry x="45" y="170" width="560" height="600" as="geometry" />
+        <!-- Section 1 Header & Light Orange Dashed Container (Starts AFTER Raw Data Sources!) -->
+        <mxCell id="sec_dfd_header" value="&lt;font color='#0F172A' style='font-size: 18px;'&gt;&lt;b&gt;DATA INGESTION (DFD)&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="195" y="170" width="410" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_dfd" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;strokeWidth=2;strokeDashArray=6 6;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="185" y="210" width="430" height="520" as="geometry" />
         </mxCell>
         <mxCell id="dfd_lbl_bot" value="&lt;font color='#9A3412' style='font-size: 14px;'&gt;&lt;b&gt;GCS (Secure Managed Environment)&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="60" y="735" width="530" height="25" as="geometry" />
+          <mxGeometry x="195" y="705" width="410" height="25" as="geometry" />
         </mxCell>
 
-        <!-- Section 2: FEATURE ENGINEERING FLOW Container -->
-        <mxCell id="sec_fe" value="&lt;font color='#C2410C' style='font-size: 18px;'&gt;&lt;b&gt;FEATURE ENGINEERING FLOW&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;strokeWidth=2;strokeDashArray=6 6;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
-          <mxGeometry x="630" y="170" width="575" height="600" as="geometry" />
+        <!-- Section 2 Header & Container -->
+        <mxCell id="sec_fe_header" value="&lt;font color='#0F172A' style='font-size: 18px;'&gt;&lt;b&gt;FEATURE ENGINEERING FLOW&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="635" y="170" width="570" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_fe" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;strokeWidth=2;strokeDashArray=6 6;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="635" y="210" width="570" height="520" as="geometry" />
         </mxCell>
         <mxCell id="fe_lbl_bot" value="&lt;font color='#9A3412' style='font-size: 14px;'&gt;&lt;b&gt;Security Boundary&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="650" y="735" width="535" height="25" as="geometry" />
+          <mxGeometry x="650" y="705" width="540" height="25" as="geometry" />
         </mxCell>
 
-        <!-- Section 3: MLOPS LIFECYCLE (Training & Serving) Container -->
-        <mxCell id="sec_mlops" value="&lt;font color='#C2410C' style='font-size: 18px;'&gt;&lt;b&gt;MLOPS LIFECYCLE (Training &amp;amp; Serving)&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;strokeWidth=2;strokeDashArray=6 6;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
-          <mxGeometry x="1230" y="170" width="575" height="600" as="geometry" />
+        <!-- Section 3 Header & Container -->
+        <mxCell id="sec_mlops_header" value="&lt;font color='#0F172A' style='font-size: 18px;'&gt;&lt;b&gt;MLOPS LIFECYCLE (Training &amp;amp; Serving)&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="170" width="585" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_mlops" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;strokeWidth=2;strokeDashArray=6 6;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="210" width="585" height="520" as="geometry" />
         </mxCell>
         <mxCell id="mlops_lbl_bot" value="&lt;font color='#9A3412' style='font-size: 14px;'&gt;&lt;b&gt;Security Boundary&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="1250" y="735" width="535" height="25" as="geometry" />
+          <mxGeometry x="1245" y="705" width="545" height="25" as="geometry" />
         </mxCell>
 
-        <!-- SECTION 1 NODES -->
+        <!-- SECTION 1 NODES: Raw Sources OUTSIDE orange box on far left! -->
         <mxCell id="raw_sources_box" value="&lt;b style='font-size:15px;color:#0F172A;'&gt;Raw Data&lt;br&gt;Sources&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=2;strokeDashArray=4 4;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
-          <mxGeometry x="75" y="235" width="145" height="480" as="geometry" />
+          <mxGeometry x="35" y="225" width="135" height="480" as="geometry" />
         </mxCell>
         <mxCell id="raw_postgres" value="&lt;span style='font-size:32px;'&gt;🐘&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#0F172A;'&gt;Postgres&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="raw_sources_box">
-          <mxGeometry x="12" y="70" width="120" height="80" as="geometry" />
+          <mxGeometry x="7" y="65" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="raw_salesforce" value="&lt;span style='font-size:32px;'&gt;☁️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#0F172A;'&gt;Salesforce&lt;br&gt;cloud App&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="raw_sources_box">
-          <mxGeometry x="12" y="180" width="120" height="90" as="geometry" />
+          <mxGeometry x="7" y="180" width="120" height="90" as="geometry" />
         </mxCell>
         <mxCell id="raw_unstruct" value="&lt;span style='font-size:26px;'&gt;📄 📑&lt;/span&gt;&lt;br&gt;&lt;font color='#DC2626' style='font-size:14px;'&gt;&lt;b&gt;PDF&lt;/b&gt;&lt;/font&gt; &amp;amp; &lt;font color='#D97706' style='font-size:14px;'&gt;&lt;b&gt;PPT&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#0F172A;'&gt;Unstructured&lt;br&gt;Files&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="raw_sources_box">
-          <mxGeometry x="12" y="305" width="120" height="110" as="geometry" />
+          <mxGeometry x="7" y="305" width="120" height="110" as="geometry" />
         </mxCell>
 
-        <!-- GCS Secure Bucket Cylinder -->
+        <!-- GCS Secure Bucket Cylinder INSIDE orange box -->
         <mxCell id="gcp_bucket" value="&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;span style='font-size: 38px;'&gt;🔷&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='font-size:15px;color:#047857;'&gt;Google Cloud&lt;br&gt;Storage (GCS)&lt;br&gt;Secure Bucket&lt;br&gt;(Raw Data Lake)&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="295" y="315" width="145" height="320" as="geometry" />
+          <mxGeometry x="240" y="305" width="145" height="320" as="geometry" />
         </mxCell>
 
         <!-- Arrow 1: Raw Sources -> GCS -->
@@ -1206,24 +1215,24 @@ export function getExactDataAiPipelineReferenceXml(): string {
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- Funcriogy Box -->
+        <!-- Funcriogy Box with Exact Architectural Icons -->
         <mxCell id="funcriogy_box" value="&lt;b style='font-size:15px;color:#92400E;'&gt;Funcriogy&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
-          <mxGeometry x="475" y="235" width="115" height="480" as="geometry" />
+          <mxGeometry x="465" y="225" width="125" height="480" as="geometry" />
         </mxCell>
         <mxCell id="f_1" value="&lt;span style='font-size:22px;'&gt;🔍&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#78350F;'&gt;&lt;b&gt;Market Research&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="funcriogy_box">
-          <mxGeometry x="7" y="55" width="100" height="60" as="geometry" />
+          <mxGeometry x="12" y="55" width="100" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="f_2" value="&lt;span style='font-size:22px;'&gt;🛡️&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#78350F;'&gt;&lt;b&gt;Access&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="funcriogy_box">
-          <mxGeometry x="7" y="135" width="100" height="60" as="geometry" />
+        <mxCell id="f_2" value="&lt;span style='font-size:22px;'&gt;🔀&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#78350F;'&gt;&lt;b&gt;Access&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="funcriogy_box">
+          <mxGeometry x="12" y="135" width="100" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="f_3" value="&lt;span style='font-size:22px;'&gt;🎯&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#78350F;'&gt;&lt;b&gt;Outcomes&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="funcriogy_box">
-          <mxGeometry x="7" y="215" width="100" height="60" as="geometry" />
+        <mxCell id="f_3" value="&lt;span style='font-size:22px;'&gt;💰&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#78350F;'&gt;&lt;b&gt;Outcomes&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="funcriogy_box">
+          <mxGeometry x="12" y="215" width="100" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="f_4" value="&lt;span style='font-size:22px;'&gt;🩺&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#78350F;'&gt;&lt;b&gt;Medical Affairs&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="funcriogy_box">
-          <mxGeometry x="7" y="295" width="100" height="60" as="geometry" />
+        <mxCell id="f_4" value="&lt;span style='font-size:22px;'&gt;🧠&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#78350F;'&gt;&lt;b&gt;Medical Affairs&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="funcriogy_box">
+          <mxGeometry x="12" y="295" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="f_5" value="&lt;span style='font-size:22px;'&gt;🏛️&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#78350F;'&gt;&lt;b&gt;Competitive Intel&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="funcriogy_box">
-          <mxGeometry x="7" y="375" width="100" height="60" as="geometry" />
+          <mxGeometry x="12" y="375" width="100" height="60" as="geometry" />
         </mxCell>
 
         <!-- Arrow 2: GCS -> Funcriogy -->
@@ -1234,59 +1243,76 @@ export function getExactDataAiPipelineReferenceXml(): string {
         <!-- SECTION 2 NODES -->
         <!-- Feature Engineering Transformation Box -->
         <mxCell id="fe_trans_box" value="&lt;font color='#1D4ED8' style='font-size: 16px;'&gt;&lt;b&gt;Feature Engineering&lt;br&gt;Transformation (dbt/SQL)&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;fontFamily=Helvetica;verticalAlign=top;paddingTop=18;" vertex="1" parent="1">
-          <mxGeometry x="660" y="245" width="340" height="460" as="geometry" />
+          <mxGeometry x="655" y="235" width="355" height="460" as="geometry" />
         </mxCell>
         <!-- Arrow 3: Funcriogy -> Feature Engineering Transformation -->
         <mxCell id="arr_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="funcriogy_box" target="fe_trans_box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="fe_dag_list" value="&lt;font style='font-size:13px;color:#2563EB;'&gt;&lt;b&gt;🔢 DAG&lt;br&gt;&lt;br&gt;&lt;br&gt;🔢 DAG&lt;br&gt;&lt;br&gt;&lt;br&gt;🔢 DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="15" y="140" width="65" height="180" as="geometry" />
+        <!-- 2 Bulleted DAG Lists feeding into Clean/Normalize & dbt -->
+        <mxCell id="fe_dag_top" value="&lt;font style='font-size:12px;color:#0284C7;font-family:monospace;'&gt;&lt;b&gt;├── DAG&lt;br&gt;├── DAG&lt;br&gt;└── DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
+          <mxGeometry x="15" y="100" width="75" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="fe_steps" value="&lt;span style='font-size:36px;'&gt;📑 ⚙️&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#1E40AF;'&gt;Clean&lt;br&gt;&lt;br&gt;Normalize&lt;br&gt;&lt;br&gt;Aggregate&lt;br&gt;&lt;br&gt;Encode&lt;br&gt;&lt;br&gt;Derived&lt;br&gt;Fields&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="90" y="80" width="130" height="320" as="geometry" />
-        </mxCell>
-        <mxCell id="fe_dbt" value="&lt;span style='font-size:32px;'&gt;🛠️&lt;/span&gt; &lt;font color='#F97316' style='font-size:22px;'&gt;&lt;b&gt;dbt&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;span style='font-size:36px;'&gt;🔄&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:12px;color:#1E40AF;'&gt;&lt;b&gt;DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="230" y="150" width="95" height="160" as="geometry" />
+        <mxCell id="fe_dag_bot" value="&lt;font style='font-size:12px;color:#0284C7;font-family:monospace;'&gt;&lt;b&gt;├── DAG&lt;br&gt;└── DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
+          <mxGeometry x="15" y="270" width="75" height="80" as="geometry" />
         </mxCell>
 
-        <!-- Managed Feature Store Box -->
-        <mxCell id="feat_store_box" value="&lt;font color='#047857' style='font-size: 16px;'&gt;&lt;b&gt;Managed&lt;br&gt;Feature Store&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;font color='#047857' style='font-size: 15px;'&gt;&lt;b&gt;Managed&lt;br&gt;Feature Store&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontFamily=Helvetica;verticalAlign=top;paddingTop=18;" vertex="1" parent="1">
-          <mxGeometry x="1035" y="245" width="150" height="460" as="geometry" />
+        <mxCell id="fe_doc_icon" value="&lt;span style='font-size:32px;'&gt;📄&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
+          <mxGeometry x="90" y="125" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe_steps" value="&lt;b style='font-size:14px;color:#1E40AF;'&gt;Clean&lt;br&gt;&lt;br&gt;Normalize&lt;br&gt;&lt;br&gt;Aggregate&lt;br&gt;&lt;br&gt;Encode&lt;br&gt;&lt;br&gt;Derived&lt;br&gt;Fields&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="fe_trans_box">
+          <mxGeometry x="140" y="90" width="90" height="280" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe_dbt_workflow" value="&lt;span style='font-size:32px;'&gt;🔀&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#0284C7;'&gt;&lt;b&gt;DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
+          <mxGeometry x="235" y="180" width="50" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe_dbt_logo" value="&lt;span style='font-size:28px;'&gt;🔸&lt;/span&gt;&lt;font color='#F97316' style='font-size:24px;font-weight:bold;'&gt;dbt&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
+          <mxGeometry x="250" y="130" width="90" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Managed Feature Store Box (ZERO OVERLAP: Top Title Only, Bottom Title Separate!) -->
+        <mxCell id="feat_store_box" value="&lt;font color='#047857' style='font-size: 16px;'&gt;&lt;b&gt;Managed&lt;br&gt;Feature Store&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontFamily=Helvetica;verticalAlign=top;paddingTop=18;" vertex="1" parent="1">
+          <mxGeometry x="1035" y="235" width="155" height="460" as="geometry" />
         </mxCell>
         <!-- Arrow 4: Feature Engineering Transformation -> Managed Feature Store -->
         <mxCell id="arr_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="fe_trans_box" target="feat_store_box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="fs_cylinder" value="&lt;b style='font-size:13px;color:#065F46;'&gt;Model-Ready&lt;br&gt;Features&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#D1FAE5;strokeColor=#059669;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="feat_store_box">
-          <mxGeometry x="15" y="80" width="120" height="140" as="geometry" />
+        <mxCell id="fs_cylinder" value="&lt;b style='font-size:13px;color:#065F46;'&gt;Model-Ready&lt;br&gt;Features&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#D1FAE5;strokeColor=#059669;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="305" width="125" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="fs_churn" value="&lt;span style='font-size:24px;'&gt;👥&lt;/span&gt; &lt;font style='font-size:12px;color:#065F46;'&gt;&lt;b&gt;Customer&lt;br&gt;Churn Features&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="feat_store_box">
-          <mxGeometry x="10" y="240" width="130" height="60" as="geometry" />
+        <mxCell id="fs_churn" value="&lt;span style='font-size:24px;'&gt;👥&lt;/span&gt; &lt;font style='font-size:12px;color:#065F46;'&gt;&lt;b&gt;Customer&lt;br&gt;Churn Features&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="475" width="135" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="fs_sales" value="&lt;span style='font-size:24px;'&gt;📈&lt;/span&gt; &lt;font style='font-size:12px;color:#065F46;'&gt;&lt;b&gt;Sales Prediction&lt;br&gt;Features&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="feat_store_box">
-          <mxGeometry x="10" y="315" width="130" height="60" as="geometry" />
+        <mxCell id="fs_sales" value="&lt;span style='font-size:24px;'&gt;📈&lt;/span&gt; &lt;font style='font-size:12px;color:#065F46;'&gt;&lt;b&gt;Sales Prediction&lt;br&gt;Features&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="545" width="135" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_title_bot" value="&lt;font color='#047857' style='font-size: 15px;'&gt;&lt;b&gt;Managed&lt;br&gt;Feature Store&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="635" width="145" height="40" as="geometry" />
         </mxCell>
 
         <!-- SECTION 3 NODES -->
-        <!-- ML Model Training Box -->
+        <!-- ML Model Training Box with Circular Loop Graphic -->
         <mxCell id="ml_train_box" value="&lt;font color='#1E40AF' style='font-size: 16px;'&gt;&lt;b&gt;ML Model&lt;br&gt;Training&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
-          <mxGeometry x="1270" y="255" width="180" height="190" as="geometry" />
+          <mxGeometry x="1265" y="245" width="190" height="190" as="geometry" />
         </mxCell>
-        <!-- Arrow 5: Managed Feature Store -> ML Model Training -->
-        <mxCell id="arr_5" value="&lt;font style='font-size: 12px; font-weight: bold; color: #334155;'&gt;Pull&lt;br&gt;Features&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;" edge="1" parent="1" source="feat_store_box" target="ml_train_box">
+        <!-- Arrow 5: Managed Feature Store -> ML Model Training (Pull Features above arrow!) -->
+        <mxCell id="arr_5" value="&lt;font style='font-size: 12px; font-weight: bold; color: #334155;'&gt;Pull&lt;br&gt;Features&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="feat_store_box" target="ml_train_box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="ml_train_loop" value="&lt;span style='font-size:36px;'&gt;🔄&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:13px;color:#1E40AF;'&gt;&lt;b&gt;Training Loop&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="ml_train_box">
-          <mxGeometry x="25" y="65" width="130" height="95" as="geometry" />
+        <mxCell id="ml_train_loop" value="&lt;font style='font-size:13px;color:#1E40AF;'&gt;&lt;b&gt;Training Loop&lt;/b&gt;&lt;/font&gt;" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;display=flex;align=center;verticalAlign=middle;" vertex="1" parent="ml_train_box">
+          <mxGeometry x="35" y="70" width="120" height="85" as="geometry" />
         </mxCell>
 
-        <!-- Model Registry Box -->
-        <mxCell id="model_reg_box" value="&lt;span style='font-size:42px;'&gt;🔐&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#334155;'&gt;Model&lt;br&gt;Registry&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=2;fontFamily=Helvetica;verticalAlign=bottom;paddingBottom=15;" vertex="1" parent="1">
-          <mxGeometry x="1280" y="555" width="160" height="150" as="geometry" />
+        <!-- Model Registry Box (Physical Safe / Vault Box Icon [o]) -->
+        <mxCell id="model_reg_box" value="&lt;span style='font-size:38px;'&gt;🗄️&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#334155;'&gt;Model&lt;br&gt;Registry&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=2;fontFamily=Helvetica;verticalAlign=bottom;paddingBottom=15;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="545" width="160" height="150" as="geometry" />
         </mxCell>
         <!-- Arrow 6: ML Model Training -> Model Registry -->
         <mxCell id="arr_6" value="&lt;font style='font-size: 12px; font-weight: bold; color: #334155;'&gt;Stores&lt;br&gt;trained&lt;br&gt;models&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Helvetica;" edge="1" parent="1" source="ml_train_box" target="model_reg_box">
@@ -1295,7 +1321,7 @@ export function getExactDataAiPipelineReferenceXml(): string {
 
         <!-- Model Inference API Endpoint Box -->
         <mxCell id="inference_box" value="&lt;font color='#1D4ED8' style='font-size: 15px;'&gt;&lt;b&gt;Model&lt;br&gt;Inference&lt;br&gt;API&lt;br&gt;Endpoint&lt;br&gt;(Deployment)&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;fontFamily=Helvetica;display=flex;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1490" y="540" width="145" height="180" as="geometry" />
+          <mxGeometry x="1485" y="530" width="150" height="180" as="geometry" />
         </mxCell>
         <!-- Arrow 7: Model Registry -> Model Inference API Endpoint -->
         <mxCell id="arr_7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="model_reg_box" target="inference_box">
@@ -1324,22 +1350,23 @@ export function getExactDataAiPipelineReferenceXml(): string {
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- Large Curved Monitoring & Alerting Feedback Loop -->
-        <mxCell id="arr_curved_feedback" value="&lt;font style='font-size: 14px; font-weight: bold; color: #1E40AF;'&gt;Monitoring&lt;br&gt;&amp;amp; Alerting&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=4;endArrow=block;endFill=1;fontFamily=Helvetica;" edge="1" parent="1" source="inference_box" target="ml_train_box">
+        <!-- Large Curved Monitoring & Alerting Feedback Loop STRICTLY INSIDE Section 3 (NEVER touching Web App!) -->
+        <mxCell id="arr_curved_feedback" value="&lt;font style='font-size: 14px; font-weight: bold; color: #1E40AF;'&gt;Monitoring&lt;br&gt;&amp;amp; Alerting&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=4;endArrow=block;endFill=1;fontFamily=Helvetica;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="inference_box" target="ml_train_box">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1635" y="550" as="sourcePoint" />
-            <mxPoint x="1450" y="350" as="targetPoint" />
+            <mxPoint x="1560" y="530" as="sourcePoint" />
+            <mxPoint x="1455" y="340" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="1660" y="560" />
-              <mxPoint x="1660" y="355" />
+              <mxPoint x="1560" y="490" />
+              <mxPoint x="1600" y="490" />
+              <mxPoint x="1600" y="340" />
             </Array>
           </mxGeometry>
         </mxCell>
 
         <!-- Footer & Legend -->
-        <!-- Legend Box (Sharp rounded=0) -->
+        <!-- Legend Box (Sharp rounded=0) INSIDE DASHED BORDER -->
         <mxCell id="legend_box_pipeline" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Legend&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=8;" vertex="1" parent="1">
-          <mxGeometry x="45" y="805" width="370" height="95" as="geometry" />
+          <mxGeometry x="35" y="805" width="400" height="95" as="geometry" />
         </mxCell>
         <mxCell id="leg_1" value="&lt;font style='font-size:11px;color:#334155;'&gt;= Managed compute&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_pipeline">
           <mxGeometry x="35" y="30" width="130" height="25" as="geometry" />
@@ -1371,12 +1398,12 @@ export function getExactDataAiPipelineReferenceXml(): string {
 
         <!-- WHY IT WORKS Callout Banner (Sharp rounded=0) -->
         <mxCell id="why_works_pipeline" value="&lt;font color='#0F172A' style='font-size: 16px;'&gt;&lt;b&gt;WHY IT WORKS:&lt;/b&gt; Data engineers and ML engineers need to see how upstream data changes impact downstream model performance. This gives them a shared map.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=2;fontFamily=Helvetica;display=flex;align=center;verticalAlign=middle;padding=15;" vertex="1" parent="1">
-          <mxGeometry x="450" y="810" width="1355" height="85" as="geometry" />
+          <mxGeometry x="460" y="810" width="1350" height="85" as="geometry" />
         </mxCell>
 
-        <!-- Brace pointing to WHY IT WORKS -->
+        <!-- Wide Horizontal Brace Spanning Across All 3 Sections -->
         <mxCell id="brace_line" value="&lt;span style='font-size: 42px; color: #64748B;'&gt;︸&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="450" y="770" width="1355" height="40" as="geometry" />
+          <mxGeometry x="185" y="770" width="1625" height="40" as="geometry" />
         </mxCell>
 
       </root>
