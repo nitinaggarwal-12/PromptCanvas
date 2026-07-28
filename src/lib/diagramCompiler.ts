@@ -3282,6 +3282,9 @@ export function compileSpecToDrawioXml(spec: CompiledDiagramSpec): string {
   if (spec.diagramId === "sequence_diagram_compiled" || spec.diagramId === "sequence_diagram") {
     return getExactSequenceDiagramReferenceXml();
   }
+  if (spec.diagramId === "macro_sequence_diagram_compiled" || spec.diagramId === "macro_sequence_diagram") {
+    return getExactMacroSequenceDiagramReferenceXml();
+  }
   if (spec.diagramId === "data_ai_pipeline_compiled" || spec.diagramId === "data_ai_pipeline") {
     return getExactDataAiPipelineReferenceXml();
   }
@@ -3950,4 +3953,391 @@ function escapeXml(str: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+
+/**
+ * Returns a tailored high-craft technical architecture specification for Technical Architecture types
+ */
+/**
+ * Returns a tailored high-craft technical architecture specification for Technical Architecture types
+ */
+export function getBenchmarkTechnicalArchitectureSpec(archId: string): CompiledDiagramSpec {
+  if (archId === 'tech_serverless_gcp' || archId === 'serverless_gcp') {
+    return {
+      diagramId: archId,
+      title: "GCP Serverless Web Application Architecture",
+      columns: [
+        {
+          id: "c1", title: "Ingress & Edge Security", theme: "blue",
+          nodes: [
+            { id: "n1", stencil: "standard_card", title: "Global HTTPS Load Balancer", subtitle: "Anycast IP & SSL Termination" },
+            { id: "n2", stencil: "standard_card", title: "Cloud Armor WAF Rules", subtitle: "OWASP Top 10 & DDoS Defense" },
+            { id: "n3", stencil: "standard_card", title: "Cloud CDN", subtitle: "Edge Static Asset Caching" }
+          ]
+        },
+        {
+          id: "c2", title: "Serverless Microservices", theme: "green",
+          nodes: [
+            { id: "n4", stencil: "cube_platform", title: "Cloud Run Frontend Service", subtitle: "Next.js SSR Auto-scaling Containers" },
+            { id: "n5", stencil: "cube_platform", title: "Cloud Run Backend API", subtitle: "Node.js / Go REST & gRPC APIs" },
+            { id: "n6", stencil: "standard_card", title: "Serverless VPC Access", subtitle: "Private Egress Connector" }
+          ]
+        },
+        {
+          id: "c3", title: "Managed Data & Storage", theme: "amber",
+          nodes: [
+            { id: "n7", stencil: "standard_card", title: "Cloud SQL for PostgreSQL", subtitle: "Multi-AZ Private IP Relational DB" },
+            { id: "n8", stencil: "standard_card", title: "Cloud Storage Bucket", subtitle: "Static Media & Export Archives" },
+            { id: "n9", stencil: "standard_card", title: "Secret Manager & KMS", subtitle: "Envelope Encryption at Rest" }
+          ]
+        }
+      ],
+      connections: [
+        { fromNodeId: "n1", toNodeId: "n2", label: "Inspect Ingress", style: "direct" },
+        { fromNodeId: "n2", toNodeId: "n4", label: "Route Traffic", style: "orthogonal" },
+        { fromNodeId: "n4", toNodeId: "n5", label: "API Calls (gRPC)", style: "direct" },
+        { fromNodeId: "n5", toNodeId: "n6", label: "Private Egress", style: "direct" },
+        { fromNodeId: "n6", toNodeId: "n7", label: "Private SQL Query", style: "orthogonal" },
+        { fromNodeId: "n5", toNodeId: "n8", label: "Put/Get Assets", style: "orthogonal" }
+      ]
+    };
+  }
+
+  if (archId === 'tech_streaming_analytics' || archId === 'streaming_pipeline') {
+    return {
+      diagramId: archId,
+      title: "GCP Real-Time Streaming Analytics Pipeline",
+      columns: [
+        {
+          id: "c1", title: "Streaming Ingestion", theme: "blue",
+          nodes: [
+            { id: "n1", stencil: "standard_card", title: "Pub/Sub Telemetry Topic", subtitle: "100k+ Events/sec Ingress" },
+            { id: "n2", stencil: "standard_card", title: "IoT Core / MQTT Gateway", subtitle: "Edge Device Field Stream" },
+            { id: "n3", stencil: "standard_card", title: "Pub/Sub Subscriptions", subtitle: "Push & Pull Event Fan-out" }
+          ]
+        },
+        {
+          id: "c2", title: "Stream ETL & Feature Engine", theme: "green",
+          nodes: [
+            { id: "n4", stencil: "cube_platform", title: "Cloud Dataflow (Beam)", subtitle: "Streaming Window ETL & Aggregations" },
+            { id: "n5", stencil: "cube_platform", title: "Real-Time Anomaly Detector", subtitle: "Streaming Z-Score & Fraud Scoring" },
+            { id: "n6", stencil: "standard_card", title: "Vertex AI Feature Store", subtitle: "Low-Latency Online Feature Serving" }
+          ]
+        },
+        {
+          id: "c3", title: "Analytical Data Warehouse", theme: "amber",
+          nodes: [
+            { id: "n7", stencil: "standard_card", title: "BigQuery Streaming Buffer", subtitle: "Real-Time Table Ingestion" },
+            { id: "n8", stencil: "standard_card", title: "BigQuery Enterprise EDW", subtitle: "Partitioned & Clustered Tables" },
+            { id: "n9", stencil: "cube_platform", title: "Looker Studio & BI Dashboards", subtitle: "Executive Operational Reporting" }
+          ]
+        }
+      ],
+      connections: [
+        { fromNodeId: "n2", toNodeId: "n1", label: "Publish Telemetry", style: "direct" },
+        { fromNodeId: "n1", toNodeId: "n3", label: "Fan-out", style: "direct" },
+        { fromNodeId: "n3", toNodeId: "n4", label: "Stream Consume", style: "orthogonal" },
+        { fromNodeId: "n4", toNodeId: "n5", label: "Windows", style: "direct" },
+        { fromNodeId: "n4", toNodeId: "n6", label: "Sync Features", style: "orthogonal" },
+        { fromNodeId: "n4", toNodeId: "n7", label: "Streaming Insert", style: "orthogonal" },
+        { fromNodeId: "n7", toNodeId: "n8", label: "Table Commit", style: "direct" },
+        { fromNodeId: "n8", toNodeId: "n9", label: "SQL Query", style: "orthogonal" }
+      ]
+    };
+  }
+
+  if (archId === 'tech_microservices_aws' || archId === 'k8s_mesh') {
+    return {
+      diagramId: archId,
+      title: "AWS EKS Microservices Service Mesh Architecture",
+      columns: [
+        {
+          id: "c1", title: "AWS Edge & Ingress", theme: "blue",
+          nodes: [
+            { id: "n1", stencil: "standard_card", title: "Amazon Route 53", subtitle: "DNS & Latency-Based Routing" },
+            { id: "n2", stencil: "standard_card", title: "AWS Shield & WAF", subtitle: "L3/L4 DDoS & L7 WAF Shield" },
+            { id: "n3", stencil: "standard_card", title: "ALB Ingress Controller", subtitle: "Application Load Balancer Ingress" }
+          ]
+        },
+        {
+          id: "c2", title: "EKS Kubernetes Service Mesh", theme: "green",
+          nodes: [
+            { id: "n4", stencil: "cube_platform", title: "Istio / AWS App Mesh", subtitle: "Zero-Trust mTLS & Traffic Splitting" },
+            { id: "n5", stencil: "cube_platform", title: "EKS Microservices Pods", subtitle: "Multi-AZ Auto-Scaling ReplicaSets" },
+            { id: "n6", stencil: "standard_card", title: "Amazon ECR Registry", subtitle: "Vulnerability Scanned Images" }
+          ]
+        },
+        {
+          id: "c3", title: "Persistence & Observability", theme: "amber",
+          nodes: [
+            { id: "n7", stencil: "standard_card", title: "Amazon Aurora PostgreSQL", subtitle: "Multi-AZ Highly Available Relational DB" },
+            { id: "n8", stencil: "standard_card", title: "ElastiCache for Redis", subtitle: "Sub-millisecond Session Caching" },
+            { id: "n9", stencil: "standard_card", title: "Prometheus & CloudWatch", subtitle: "Distributed Tracing & Metrics" }
+          ]
+        }
+      ],
+      connections: [
+        { fromNodeId: "n1", toNodeId: "n2", label: "DNS Resolve", style: "direct" },
+        { fromNodeId: "n2", toNodeId: "n3", label: "Inspect Ingress", style: "direct" },
+        { fromNodeId: "n3", toNodeId: "n4", label: "Route Ingress", style: "orthogonal" },
+        { fromNodeId: "n4", toNodeId: "n5", label: "mTLS Call", style: "direct" },
+        { fromNodeId: "n6", toNodeId: "n5", label: "Pull Image", style: "dashed" },
+        { fromNodeId: "n5", toNodeId: "n8", label: "Cache Read/Write", style: "direct" },
+        { fromNodeId: "n5", toNodeId: "n7", label: "SQL Transaction", style: "orthogonal" },
+        { fromNodeId: "n5", toNodeId: "n9", label: "Scrape Metrics", style: "dashed" }
+      ]
+    };
+  }
+
+  if (archId === 'tech_data_lakehouse' || archId === 'data_lakehouse') {
+    return {
+      diagramId: archId,
+      title: "AWS Modern Data Lakehouse Architecture",
+      columns: [
+        {
+          id: "c1", title: "Ingestion & Landing Zone", theme: "blue",
+          nodes: [
+            { id: "n1", stencil: "standard_card", title: "AWS Lake Formation", subtitle: "Centralized Governance & Permissions" },
+            { id: "n2", stencil: "standard_card", title: "Amazon Kinesis Data Streams", subtitle: "High-Throughput Real-Time Streams" },
+            { id: "n3", stencil: "standard_card", title: "Amazon S3 Raw Landing", subtitle: "Immutable Raw JSON/CSV Storage" }
+          ]
+        },
+        {
+          id: "c2", title: "Catalog & Transformation", theme: "green",
+          nodes: [
+            { id: "n4", stencil: "cube_platform", title: "AWS Glue Crawlers", subtitle: "Automated Schema Discovery" },
+            { id: "n5", stencil: "standard_card", title: "AWS Glue Data Catalog", subtitle: "Enterprise Hive/Iceberg Metadata" },
+            { id: "n6", stencil: "cube_platform", title: "AWS Glue ETL Jobs", subtitle: "Spark Transformation to Parquet" }
+          ]
+        },
+        {
+          id: "c3", title: "Query & Data Warehousing", theme: "amber",
+          nodes: [
+            { id: "n7", stencil: "standard_card", title: "Amazon S3 Curated Zone", subtitle: "Optimized Apache Iceberg / Parquet" },
+            { id: "n8", stencil: "cube_platform", title: "Amazon Athena Serverless", subtitle: "Interactive Ad-Hoc SQL Queries" },
+            { id: "n9", stencil: "standard_card", title: "Amazon Redshift Spectrum", subtitle: "Enterprise Data Warehousing" }
+          ]
+        }
+      ],
+      connections: [
+        { fromNodeId: "n1", toNodeId: "n3", label: "Govern Access", style: "dashed" },
+        { fromNodeId: "n2", toNodeId: "n3", label: "Stream Landing", style: "direct" },
+        { fromNodeId: "n3", toNodeId: "n4", label: "Scan Raw", style: "direct" },
+        { fromNodeId: "n4", toNodeId: "n5", label: "Update Catalog", style: "direct" },
+        { fromNodeId: "n3", toNodeId: "n6", label: "Extract Raw", style: "orthogonal" },
+        { fromNodeId: "n6", toNodeId: "n7", label: "Write Parquet", style: "direct" },
+        { fromNodeId: "n5", toNodeId: "n8", label: "Schema Registry", style: "dashed" },
+        { fromNodeId: "n7", toNodeId: "n8", label: "Serverless SQL", style: "orthogonal" },
+        { fromNodeId: "n7", toNodeId: "n9", label: "Spectrum Query", style: "orthogonal" }
+      ]
+    };
+  }
+
+  if (archId === 'tech_event_driven_aws' || archId === 'event_driven_aws') {
+    return {
+      diagramId: archId,
+      title: "AWS Serverless Event-Driven Microservices",
+      columns: [
+        {
+          id: "c1", title: "Ingress & Event Bus", theme: "blue",
+          nodes: [
+            { id: "n1", stencil: "standard_card", title: "Amazon API Gateway", subtitle: "REST & WebSocket API Ingress" },
+            { id: "n2", stencil: "standard_card", title: "Amazon EventBridge", subtitle: "Central Event Bus & Schema Registry" },
+            { id: "n3", stencil: "standard_card", title: "Amazon SQS & SNS", subtitle: "Decoupled Queue & Topic Fan-out" }
+          ]
+        },
+        {
+          id: "c2", title: "Asynchronous Compute", theme: "green",
+          nodes: [
+            { id: "n4", stencil: "cube_platform", title: "AWS Lambda Event Handlers", subtitle: "Serverless Event-Driven Workers" },
+            { id: "n5", stencil: "cube_platform", title: "AWS Step Functions", subtitle: "Serverless Saga State Machine" },
+            { id: "n6", stencil: "standard_card", title: "AWS X-Ray Distributed Trace", subtitle: "End-to-End Latency & Tracing" }
+          ]
+        },
+        {
+          id: "c3", title: "NoSQL State & Archival", theme: "amber",
+          nodes: [
+            { id: "n7", stencil: "standard_card", title: "Amazon DynamoDB Store", subtitle: "Single-Table Fast Key-Value NoSQL" },
+            { id: "n8", stencil: "standard_card", title: "DynamoDB Streams", subtitle: "Change Data Capture (CDC) Event Trigger" },
+            { id: "n9", stencil: "standard_card", title: "Amazon S3 Cold Archive", subtitle: "Long-Term Event Audit Log" }
+          ]
+        }
+      ],
+      connections: [
+        { fromNodeId: "n1", toNodeId: "n2", label: "Emit Event", style: "direct" },
+        { fromNodeId: "n2", toNodeId: "n3", label: "Rule Filter", style: "direct" },
+        { fromNodeId: "n3", toNodeId: "n4", label: "Trigger Worker", style: "orthogonal" },
+        { fromNodeId: "n2", toNodeId: "n5", label: "Trigger Saga", style: "orthogonal" },
+        { fromNodeId: "n4", toNodeId: "n7", label: "PutItem / UpdateItem", style: "direct" },
+        { fromNodeId: "n5", toNodeId: "n7", label: "State Mutate", style: "orthogonal" },
+        { fromNodeId: "n7", toNodeId: "n8", label: "Emit CDC", style: "direct" },
+        { fromNodeId: "n8", toNodeId: "n9", label: "Archive CDC", style: "orthogonal" },
+        { fromNodeId: "n4", toNodeId: "n6", label: "Trace Span", style: "dashed" }
+      ]
+    };
+  }
+
+  if (archId === 'tech_multi_region_dr' || archId === 'multi_region_dr') {
+    return {
+      diagramId: archId,
+      title: "GCP Multi-Region Active-Passive Disaster Recovery",
+      columns: [
+        {
+          id: "c1", title: "Global DNS & Failover", theme: "blue",
+          nodes: [
+            { id: "n1", stencil: "standard_card", title: "Cloud DNS Routing Policy", subtitle: "Geolocation & Failover Routing" },
+            { id: "n2", stencil: "standard_card", title: "Global HTTPS Load Balancer", subtitle: "Cross-Region Health Checking" },
+            { id: "n3", stencil: "standard_card", title: "Cloud Monitoring Alert Engine", subtitle: "Automated Failover Trigger" }
+          ]
+        },
+        {
+          id: "c2", title: "Primary Region (us-central1)", theme: "green",
+          nodes: [
+            { id: "n4", stencil: "cube_platform", title: "Primary GKE Production Cluster", subtitle: "Active Live Serving Workloads" },
+            { id: "n5", stencil: "standard_card", title: "Cloud Spanner Active Leader", subtitle: "Global Synchronous Replication" },
+            { id: "n6", stencil: "standard_card", title: "Primary GCS Regional Bucket", subtitle: "Live Application Asset Storage" }
+          ]
+        },
+        {
+          id: "c3", title: "Secondary Region (us-east4)", theme: "amber",
+          nodes: [
+            { id: "n7", stencil: "cube_platform", title: "Standby GKE Warm Cluster", subtitle: "Auto-Scaled Standby ReplicaSets" },
+            { id: "n8", stencil: "standard_card", title: "Cloud Spanner Read Replica", subtitle: "Zero RPO Synchronous Mirror" },
+            { id: "n9", stencil: "standard_card", title: "Secondary GCS Dual-Region", subtitle: "Automated Cross-Region Backup" }
+          ]
+        }
+      ],
+      connections: [
+        { fromNodeId: "n1", toNodeId: "n2", label: "Resolve Anycast", style: "direct" },
+        { fromNodeId: "n2", toNodeId: "n4", label: "Route Active Traffic", style: "orthogonal" },
+        { fromNodeId: "n2", toNodeId: "n7", label: "Failover Route (Standby)", style: "dashed" },
+        { fromNodeId: "n4", toNodeId: "n5", label: "Read/Write SQL", style: "direct" },
+        { fromNodeId: "n5", toNodeId: "n8", label: "Sync Mirror (Zero RPO)", style: "orthogonal" },
+        { fromNodeId: "n6", toNodeId: "n9", label: "Bucket Replication", style: "orthogonal" },
+        { fromNodeId: "n3", toNodeId: "n1", label: "Mutate DNS Rule", style: "dashed" }
+      ]
+    };
+  }
+
+  if (archId === 'tech_vpc_infra' || archId === 'zero_trust') {
+    return {
+      diagramId: archId,
+      title: "AWS Zero-Trust Secure VPC Network Infrastructure",
+      columns: [
+        {
+          id: "c1", title: "Perimeter & Transit Hub", theme: "blue",
+          nodes: [
+            { id: "n1", stencil: "standard_card", title: "AWS Transit Gateway", subtitle: "Centralized VPC Interconnect Hub" },
+            { id: "n2", stencil: "standard_card", title: "AWS Network Firewall", subtitle: "Surveillance & Inspection Subnet" },
+            { id: "n3", stencil: "standard_card", title: "AWS GuardDuty & Shield", subtitle: "Continuous Threat Detection" }
+          ]
+        },
+        {
+          id: "c2", title: "Isolated Private VPC Tiers", theme: "green",
+          nodes: [
+            { id: "n4", stencil: "cube_platform", title: "Private Application Subnets", subtitle: "No Inbound Public Internet Access" },
+            { id: "n5", stencil: "standard_card", title: "Private Database Subnets", subtitle: "Isolated Aurora & ElastiCache Tiers" },
+            { id: "n6", stencil: "standard_card", title: "VPC Endpoints (PrivateLink)", subtitle: "Private AWS API Traffic Routing" }
+          ]
+        },
+        {
+          id: "c3", title: "Central Governance & KMS", theme: "amber",
+          nodes: [
+            { id: "n7", stencil: "standard_card", title: "AWS KMS KMS Encryption", subtitle: "Hardware Security Module (HSM) Keys" },
+            { id: "n8", stencil: "standard_card", title: "AWS Organizations SCPs", subtitle: "Service Control Policy Enforcement" },
+            { id: "n9", stencil: "standard_card", title: "VPC Flow Logs in S3", subtitle: "Immutable Network Traffic Audit Log" }
+          ]
+        }
+      ],
+      connections: [
+        { fromNodeId: "n1", toNodeId: "n2", label: "Inspect Traffic", style: "direct" },
+        { fromNodeId: "n2", toNodeId: "n4", label: "Clean Ingress", style: "orthogonal" },
+        { fromNodeId: "n4", toNodeId: "n5", label: "Private DB Access", style: "direct" },
+        { fromNodeId: "n4", toNodeId: "n6", label: "Route AWS APIs", style: "direct" },
+        { fromNodeId: "n6", toNodeId: "n7", label: "Envelope Encrypt", style: "orthogonal" },
+        { fromNodeId: "n8", toNodeId: "n4", label: "Enforce SCP", style: "dashed" },
+        { fromNodeId: "n4", toNodeId: "n9", label: "Emit Flow Logs", style: "dashed" }
+      ]
+    };
+  }
+
+  if (archId === 'tech_iot_telemetry' || archId === 'hybrid_interconnect') {
+    return {
+      diagramId: archId,
+      title: "GCP Industrial IoT Telemetry Ingestion Platform",
+      columns: [
+        {
+          id: "c1", title: "Edge Gateways & Ingress", theme: "blue",
+          nodes: [
+            { id: "n1", stencil: "standard_card", title: "Industrial MQTT Gateways", subtitle: "Field Sensor & PLC Factory Edge" },
+            { id: "n2", stencil: "standard_card", title: "Cloud Pub/Sub Telemetry Topic", subtitle: "Sub-millisecond Ingress Buffer" },
+            { id: "n3", stencil: "standard_card", title: "Edge Device Identity Registry", subtitle: "X.509 Certificate Authentication" }
+          ]
+        },
+        {
+          id: "c2", title: "Real-Time Streaming Engine", theme: "green",
+          nodes: [
+            { id: "n4", stencil: "cube_platform", title: "Cloud Dataflow Streaming Engine", subtitle: "Time-Series Windowing & Cleanse" },
+            { id: "n5", stencil: "cube_platform", title: "Vertex AI Anomaly Detection", subtitle: "Real-Time Equipment Failure ML" },
+            { id: "n6", stencil: "standard_card", title: "Cloud Bigtable Time-Series Store", subtitle: "Low-Latency High-Write NoSQL" }
+          ]
+        },
+        {
+          id: "c3", title: "Analytics & Maintenance", theme: "amber",
+          nodes: [
+            { id: "n7", stencil: "standard_card", title: "BigQuery IoT Data Warehouse", subtitle: "Long-Term Historical Analytics" },
+            { id: "n8", stencil: "cube_platform", title: "Predictive Maintenance Alerting", subtitle: "Automated Work Order Triggers" },
+            { id: "n9", stencil: "cube_platform", title: "Looker Operational Command Center", subtitle: "Factory Floor Live Visualization" }
+          ]
+        }
+      ],
+      connections: [
+        { fromNodeId: "n3", toNodeId: "n1", label: "Auth Certificate", style: "dashed" },
+        { fromNodeId: "n1", toNodeId: "n2", label: "Publish Stream", style: "direct" },
+        { fromNodeId: "n2", toNodeId: "n4", label: "Stream Consume", style: "orthogonal" },
+        { fromNodeId: "n4", toNodeId: "n5", label: "Score Telemetry", style: "direct" },
+        { fromNodeId: "n4", toNodeId: "n6", label: "Write Time-Series", style: "orthogonal" },
+        { fromNodeId: "n6", toNodeId: "n7", label: "Batch Sync", style: "orthogonal" },
+        { fromNodeId: "n5", toNodeId: "n8", label: "Trigger Alert", style: "orthogonal" },
+        { fromNodeId: "n7", toNodeId: "n9", label: "SQL Analytical Query", style: "direct" }
+      ]
+    };
+  }
+
+  // Default fallback technical architecture
+  return {
+    diagramId: archId,
+    title: "Enterprise Cloud Technical Architecture Blueprint",
+    columns: [
+      {
+        id: "c1", title: "Ingress & Edge Security", theme: "blue",
+        nodes: [
+          { id: "n1", stencil: "standard_card", title: "Enterprise API Gateway", subtitle: "Rate Limiting & Authentication" },
+          { id: "n2", stencil: "standard_card", title: "Web Application Firewall", subtitle: "DDoS Protection & Traffic Scrubbing" }
+        ]
+      },
+      {
+        id: "c2", title: "Microservices Compute Mesh", theme: "green",
+        nodes: [
+          { id: "n3", stencil: "cube_platform", title: "Kubernetes Cluster Pods", subtitle: "Auto-Scaling Stateless Services" },
+          { id: "n4", stencil: "cube_platform", title: "Asynchronous Event Bus", subtitle: "Decoupled Event Routing" }
+        ]
+      },
+      {
+        id: "c3", title: "Persistence & Observability", theme: "amber",
+        nodes: [
+          { id: "n5", stencil: "standard_card", title: "Relational Database Cluster", subtitle: "Multi-AZ High Availability" },
+          { id: "n6", stencil: "standard_card", title: "Observability & Telemetry", subtitle: "Distributed Tracing & Logs" }
+        ]
+      }
+    ],
+    connections: [
+      { fromNodeId: "n1", toNodeId: "n2", label: "Inspect", style: "direct" },
+      { fromNodeId: "n2", toNodeId: "n3", label: "Route", style: "orthogonal" },
+      { fromNodeId: "n3", toNodeId: "n4", label: "Publish", style: "direct" },
+      { fromNodeId: "n3", toNodeId: "n5", label: "SQL Read/Write", style: "orthogonal" },
+      { fromNodeId: "n3", toNodeId: "n6", label: "Telemetry", style: "dashed" }
+    ]
+  };
 }

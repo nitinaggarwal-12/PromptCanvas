@@ -90,7 +90,7 @@ const TEMPLATE_PROMPTS = [
 
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
-import { ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -754,28 +754,60 @@ export default function Dashboard() {
                 />
               </div>
 
-              <div className="space-y-2.5">
-                <label className="block text-base font-bold text-slate-200">Architecture Type</label>
-                <select
-                  id="modal-architecture-select"
-                  value={selectedArchType}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSelectedArchType(val);
-                    const arch = getArchitectureTypeById(val);
-                    if (arch && !val.startsWith('slot_')) {
-                      setNewDiagramPrompt(arch.prompt);
-                      setSelectedTemplate('custom');
-                    }
-                  }}
-                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all cursor-pointer font-semibold"
-                >
-                  {ARCHITECTURE_TYPES.map((t) => (
-                    <option key={t.id} value={t.id} className={t.id.startsWith('slot_') ? 'text-slate-500 font-normal bg-[#0b101d]' : 'text-slate-200 font-bold bg-[#0b101d]'}>
-                      {t.name}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2.5">
+                  <label className="block text-sm font-bold text-teal-300">🏢 Business Architecture</label>
+                  <select
+                    id="modal-architecture-select"
+                    value={BUSINESS_ARCHITECTURE_TYPES.some(t => t.id === selectedArchType) ? selectedArchType : ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val) {
+                        setSelectedArchType(val);
+                        const arch = getArchitectureTypeById(val);
+                        if (arch && !val.startsWith('slot_')) {
+                          setNewDiagramPrompt(arch.prompt);
+                          setSelectedTemplate('custom');
+                        }
+                      }
+                    }}
+                    className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none transition-all cursor-pointer font-semibold"
+                  >
+                    <option value="" disabled className="text-slate-500 bg-[#0b101d]">-- Business Use-Case --</option>
+                    {BUSINESS_ARCHITECTURE_TYPES.map((t) => (
+                      <option key={t.id} value={t.id} className="text-slate-200 font-bold bg-[#0b101d]">
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2.5">
+                  <label className="block text-sm font-bold text-indigo-300">⚙️ Technical Architecture</label>
+                  <select
+                    id="modal-tech-architecture-select"
+                    value={TECHNICAL_ARCHITECTURE_TYPES.some(t => t.id === selectedArchType) ? selectedArchType : ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val) {
+                        setSelectedArchType(val);
+                        const arch = getArchitectureTypeById(val);
+                        if (arch && !val.startsWith('slot_')) {
+                          setNewDiagramPrompt(arch.prompt);
+                          setSelectedTemplate('custom');
+                        }
+                      }
+                    }}
+                    className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-indigo-500/50 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none transition-all cursor-pointer font-semibold"
+                  >
+                    <option value="" disabled className="text-slate-500 bg-[#0b101d]">-- Technical / Cloud --</option>
+                    {TECHNICAL_ARCHITECTURE_TYPES.map((t) => (
+                      <option key={t.id} value={t.id} className="text-slate-200 font-bold bg-[#0b101d]">
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div className="space-y-2.5">

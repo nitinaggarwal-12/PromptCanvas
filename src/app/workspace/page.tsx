@@ -59,7 +59,7 @@ import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModa
 import { PasswordSetupModal } from '@/components/PasswordSetupModal';
 import { AspectRatioSelector } from '@/components/AspectRatioSelector';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
-import { ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 
 
@@ -2715,6 +2715,58 @@ function WorkspaceContent() {
     );
   }
 
+  const handleArchitectureSwitch = (newArchId: string) => {
+    if (!newArchId || newArchId === selectedArchType || newArchId.startsWith('slot_')) return;
+    const existingVersionsForArch = activeDiagram?.versions?.filter(
+      v => (v.architecture_type || 'conceptual_diagram') === newArchId
+    ) || [];
+
+    if (existingVersionsForArch.length > 0) {
+      setSelectedArchType(newArchId);
+      if (activeDiagram?.id) {
+        fetch(`/api/diagrams/${activeDiagram.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ architecture_type: newArchId }),
+        }).catch(console.error);
+      }
+      const sorted = [...existingVersionsForArch].sort((a, b) => b.version_number - a.version_number);
+      setActiveVersion(sorted[0]);
+      setPreviewVersion(null);
+      if (newArchId === 'technical_diagram' || newArchId === 'conceptual_diagram' || newArchId === 'erd') {
+        setViewMode('canvas');
+        setLayoutPreset('detailed');
+      }
+      const messages: ChatMessage[] = [];
+      [...existingVersionsForArch]
+        .sort((a, b) => a.version_number - b.version_number)
+        .forEach((v) => {
+          if (v.prompt) {
+            messages.push({
+              id: `${v.id}_user_prompt`,
+              sender: 'user',
+              text: v.prompt,
+              timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              versionNumber: v.version_number
+            });
+          }
+          messages.push({
+            id: v.id,
+            sender: v.created_by.toLowerCase() === 'ai' ? 'ai' : 'user',
+            text: v.created_by.toLowerCase() === 'ai' 
+              ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Refined Architecture'}"`
+              : `Manually saved version v${v.version_number}: "${v.comment || 'Saved changes'}"`,
+            timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            versionNumber: v.version_number
+          });
+        });
+      setChatMessages(messages);
+    } else {
+      setPendingArchType(newArchId);
+      setIsArchConsentModalOpen(true);
+    }
+  };
+
   return (
     <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
       
@@ -3036,75 +3088,48 @@ function WorkspaceContent() {
               </h2>
               {activeDiagram && (
                 <>
-                  {/* 1. Architecture Type (Diagram Type) Dropdown */}
+                  {/* 1a. Business Architecture Dropdown */}
                   <div className="relative inline-flex items-center shrink-0">
                     <select
                       id="workspace-header-architecture-select"
-                      value={selectedArchType}
+                      value={BUSINESS_ARCHITECTURE_TYPES.some(t => t.id === selectedArchType) ? selectedArchType : ""}
                       disabled={isAnyAIBusy}
-                      onChange={(e) => {
-                        const newArchId = e.target.value;
-                        if (newArchId !== selectedArchType && !newArchId.startsWith('slot_')) {
-                          const existingVersionsForArch = activeDiagram?.versions?.filter(
-                            v => (v.architecture_type || 'conceptual_diagram') === newArchId
-                          ) || [];
-
-                          if (existingVersionsForArch.length > 0) {
-                            setSelectedArchType(newArchId);
-                            if (activeDiagram?.id) {
-                              fetch(`/api/diagrams/${activeDiagram.id}`, {
-                                method: 'PATCH',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ architecture_type: newArchId }),
-                              }).catch(console.error);
-                            }
-                            const sorted = [...existingVersionsForArch].sort((a, b) => b.version_number - a.version_number);
-                            setActiveVersion(sorted[0]);
-                            setPreviewVersion(null);
-                            if (newArchId === 'technical_diagram' || newArchId === 'conceptual_diagram' || newArchId === 'erd') {
-                              setViewMode('canvas');
-                              setLayoutPreset('detailed');
-                            }
-                            const messages: ChatMessage[] = [];
-                            [...existingVersionsForArch]
-                              .sort((a, b) => a.version_number - b.version_number)
-                              .forEach((v) => {
-                                if (v.prompt) {
-                                  messages.push({
-                                    id: `${v.id}_user_prompt`,
-                                    sender: 'user',
-                                    text: v.prompt,
-                                    timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                                    versionNumber: v.version_number
-                                  });
-                                }
-                                messages.push({
-                                  id: v.id,
-                                  sender: v.created_by.toLowerCase() === 'ai' ? 'ai' : 'user',
-                                  text: v.created_by.toLowerCase() === 'ai' 
-                                    ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Refined Architecture'}"`
-                                    : `Manually saved version v${v.version_number}: "${v.comment || 'Saved changes'}"`,
-                                  timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                                  versionNumber: v.version_number
-                                });
-                              });
-                            setChatMessages(messages);
-                          } else {
-                            setPendingArchType(newArchId);
-                            setIsArchConsentModalOpen(true);
-                          }
-                        }
-                      }}
-                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[220px] truncate"
-                      title="Switch Architecture Type"
+                      onChange={(e) => handleArchitectureSwitch(e.target.value)}
+                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] truncate"
+                      title="Business Architecture (Use-Case Focused)"
                     >
-                      {ARCHITECTURE_TYPES.map((t) => (
-                        <option key={t.id} value={t.id} className={t.id.startsWith('slot_') ? 'text-slate-500 font-normal bg-[#0b101d]' : 'text-slate-100 font-bold bg-[#0b101d]'}>
+                      <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
+                        🏢 Business Architecture ▾
+                      </option>
+                      {BUSINESS_ARCHITECTURE_TYPES.map((t) => (
+                        <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
                           {t.name}
                         </option>
                       ))}
                     </select>
                     <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                  </div>
+
+                  {/* 1b. Technical Architecture Dropdown */}
+                  <div className="relative inline-flex items-center shrink-0">
+                    <select
+                      id="workspace-header-tech-architecture-select"
+                      value={TECHNICAL_ARCHITECTURE_TYPES.some(t => t.id === selectedArchType) ? selectedArchType : ""}
+                      disabled={isAnyAIBusy}
+                      onChange={(e) => handleArchitectureSwitch(e.target.value)}
+                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-indigo-500/40 text-indigo-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-indigo-400/30 max-w-[210px] truncate"
+                      title="Technical Architecture (System/Cloud Focused)"
+                    >
+                      <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
+                        ⚙️ Technical Architecture ▾
+                      </option>
+                      {TECHNICAL_ARCHITECTURE_TYPES.map((t) => (
+                        <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
+                          {t.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-indigo-400 absolute right-2 pointer-events-none" />
                   </div>
 
                   {/* 2. Version Dropdown */}
