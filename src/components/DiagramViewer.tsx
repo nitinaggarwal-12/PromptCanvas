@@ -59,30 +59,20 @@ export default function DiagramViewer({
           padding: 0;
           width: 100%;
           height: 100%;
-          overflow: auto;
+          overflow: hidden !important;
           background-color: ${bgColor};
         }
         .mxgraph {
           width: 100%;
           height: 100%;
-          display: block;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden !important;
         }
         .geEditor {
           background-color: transparent !important;
-        }
-        ::-webkit-scrollbar {
-          width: 6px;
-          height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-          background: #334155;
-          border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-          background: #475569;
+          overflow: hidden !important;
         }
       </style>
     </head>
@@ -96,10 +86,10 @@ export default function DiagramViewer({
           resize: true,
           toolbar: 'zoom layers tags',
           edit: '_blank',
-          border: 20,
+          border: 8,
           transparent: true,
           fit: true,
-          'max-scale': 1.15
+          'max-scale': 1.0
         }))}"
       ></div>
       
