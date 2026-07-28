@@ -1250,50 +1250,108 @@ export function getExactDataAiPipelineReferenceXml(): string {
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 2 Bulleted DAG Lists feeding into Clean/Normalize & dbt -->
-        <mxCell id="fe_dag_top" value="&lt;font style='font-size:12px;color:#0284C7;font-family:monospace;'&gt;&lt;b&gt;├── DAG&lt;br&gt;├── DAG&lt;br&gt;└── DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="15" y="100" width="75" height="100" as="geometry" />
+        <!-- Top DAG Bullet & Document Workflow -->
+        <mxCell id="fe_dag_top" value="&lt;font style='font-size:16px;color:#3B82F6;'&gt;&lt;b&gt;&amp;bull;&amp;bull;&amp;bull;&amp;bull;&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#1E40AF;'&gt;&lt;b&gt;DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="670" y="315" width="50" height="45" as="geometry" />
         </mxCell>
-        <mxCell id="fe_dag_bot" value="&lt;font style='font-size:12px;color:#0284C7;font-family:monospace;'&gt;&lt;b&gt;├── DAG&lt;br&gt;└── DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="15" y="270" width="75" height="80" as="geometry" />
+        <mxCell id="fe_doc_1" value="&lt;font style='font-size:11px;color:#1E40AF;'&gt;&lt;b&gt;&amp;check;&amp;nbsp;---&lt;br&gt;&amp;check;&amp;nbsp;---&lt;br&gt;&amp;check;&amp;nbsp;---&lt;/b&gt;&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;size=14;align=left;paddingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="750" y="300" width="55" height="60" as="geometry" />
         </mxCell>
-
-        <mxCell id="fe_doc_icon" value="&lt;span style='font-size:32px;'&gt;📄&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="90" y="125" width="50" height="50" as="geometry" />
+        <mxCell id="arr_dag_doc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="fe_dag_top" target="fe_doc_1">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="fe_steps" value="&lt;b style='font-size:14px;color:#1E40AF;'&gt;Clean&lt;br&gt;&lt;br&gt;Normalize&lt;br&gt;&lt;br&gt;Aggregate&lt;br&gt;&lt;br&gt;Encode&lt;br&gt;&lt;br&gt;Derived&lt;br&gt;Fields&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="140" y="90" width="90" height="280" as="geometry" />
+        <mxCell id="fe_doc_list" value="&lt;b style='font-size:13px;color:#1E40AF;'&gt;Clean&lt;br&gt;&lt;br&gt;Normalize&lt;br&gt;&lt;br&gt;Aggregate&lt;br&gt;&lt;br&gt;Encode&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="740" y="365" width="75" height="130" as="geometry" />
         </mxCell>
 
-        <mxCell id="fe_dbt_workflow" value="&lt;span style='font-size:32px;'&gt;🔀&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#0284C7;'&gt;&lt;b&gt;DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="235" y="180" width="50" height="60" as="geometry" />
+        <!-- Bottom DAG Bullet & Derived Fields Pill -->
+        <mxCell id="fe_dag_bot" value="&lt;font style='font-size:16px;color:#3B82F6;'&gt;&lt;b&gt;&amp;bull;&amp;bull;&amp;bull;&amp;bull;&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#1E40AF;'&gt;&lt;b&gt;DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="670" y="525" width="50" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_pill" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CBD5E1;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="750" y="535" width="55" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_dag_pill" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="fe_dag_bot" target="fe_pill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_pill_lbl" value="&lt;b style='font-size:13px;color:#1E40AF;'&gt;Derived&lt;br&gt;Fields&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="740" y="555" width="75" height="40" as="geometry" />
         </mxCell>
 
-        <mxCell id="fe_dbt_logo" value="&lt;span style='font-size:28px;'&gt;🔸&lt;/span&gt;&lt;font color='#F97316' style='font-size:24px;font-weight:bold;'&gt;dbt&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="fe_trans_box">
-          <mxGeometry x="250" y="130" width="90" height="40" as="geometry" />
+        <!-- Fork / Converging Arrows into dbt -->
+        <mxCell id="arr_fork_top" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=none;endFill=0;" edge="1" parent="1" source="fe_doc_1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="835" y="330" as="sourcePoint" />
+            <mxPoint x="835" y="450" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="835" y="330" />
+              <mxPoint x="835" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_fork_bot" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=none;endFill=0;" edge="1" parent="1" source="fe_pill">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="835" y="542" as="sourcePoint" />
+            <mxPoint x="835" y="450" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="835" y="542" />
+              <mxPoint x="835" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_fork_mid" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="835" y="450" as="sourcePoint" />
+            <mxPoint x="865" y="450" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
 
-        <!-- Managed Feature Store Box (ZERO OVERLAP: Top Title Only, Bottom Title Separate!) -->
+        <!-- dbt Section (Official Orange Propeller Logo + DAG Workflow Nodes) -->
+        <mxCell id="fe_dbt_logo" value="&lt;span style='font-size:28px;'&gt;🔸&lt;/span&gt;&lt;font color='#F97316' style='font-size:26px;font-weight:bold;'&gt;dbt&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="860" y="390" width="105" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_dbt_node_a" value="" style="rounded=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="870" y="440" width="22" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_dbt_node_b" value="" style="rounded=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="905" y="455" width="22" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_dbt_node_c" value="" style="rounded=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="935" y="475" width="22" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_dbt_ab" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3B82F6;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="fe_dbt_node_a" target="fe_dbt_node_b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_dbt_bc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3B82F6;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="fe_dbt_node_b" target="fe_dbt_node_c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_dbt_dag_lbl" value="&lt;font style='font-size:12px;color:#1E40AF;'&gt;&lt;b&gt;DAG&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="885" y="500" width="50" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Managed Feature Store Box (Exact Cylinder Replica with ZERO Overlap) -->
         <mxCell id="feat_store_box" value="&lt;font color='#047857' style='font-size: 16px;'&gt;&lt;b&gt;Managed&lt;br&gt;Feature Store&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontFamily=Helvetica;verticalAlign=top;paddingTop=18;" vertex="1" parent="1">
-          <mxGeometry x="1035" y="235" width="155" height="460" as="geometry" />
+          <mxGeometry x="1035" y="235" width="165" height="460" as="geometry" />
         </mxCell>
         <!-- Arrow 4: Feature Engineering Transformation -> Managed Feature Store -->
         <mxCell id="arr_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="fe_trans_box" target="feat_store_box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="fs_cylinder" value="&lt;b style='font-size:13px;color:#065F46;'&gt;Model-Ready&lt;br&gt;Features&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#D1FAE5;strokeColor=#059669;strokeWidth=2;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="1050" y="305" width="125" height="150" as="geometry" />
+        <mxCell id="fs_cylinder" value="&lt;b style='font-size:14px;color:#065F46;'&gt;Model-Ready&lt;br&gt;Features&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#D1FAE5;strokeColor=#059669;strokeWidth=2;fontFamily=Helvetica;verticalAlign=top;paddingTop=25;" vertex="1" parent="1">
+          <mxGeometry x="1048" y="295" width="140" height="340" as="geometry" />
         </mxCell>
-        <mxCell id="fs_churn" value="&lt;span style='font-size:24px;'&gt;👥&lt;/span&gt; &lt;font style='font-size:12px;color:#065F46;'&gt;&lt;b&gt;Customer&lt;br&gt;Churn Features&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="1045" y="475" width="135" height="50" as="geometry" />
+        <mxCell id="fs_inner_dash" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#059669;strokeWidth=1.5;strokeDashArray=4 4;" vertex="1" parent="1">
+          <mxGeometry x="1058" y="375" width="120" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="fs_sales" value="&lt;span style='font-size:24px;'&gt;📈&lt;/span&gt; &lt;font style='font-size:12px;color:#065F46;'&gt;&lt;b&gt;Sales Prediction&lt;br&gt;Features&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="1045" y="545" width="135" height="50" as="geometry" />
+        <mxCell id="fs_churn" value="&lt;span style='font-size:26px;'&gt;👥&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:12px;color:#065F46;'&gt;&lt;b&gt;Customer&lt;br&gt;Churn Features&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1062" y="390" width="112" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_sales" value="&lt;span style='font-size:26px;'&gt;📈&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:12px;color:#065F46;'&gt;&lt;b&gt;Sales Prediction&lt;br&gt;Features&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1062" y="485" width="112" height="65" as="geometry" />
         </mxCell>
         <mxCell id="fs_title_bot" value="&lt;font color='#047857' style='font-size: 15px;'&gt;&lt;b&gt;Managed&lt;br&gt;Feature Store&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="635" width="145" height="40" as="geometry" />
+          <mxGeometry x="1045" y="640" width="145" height="45" as="geometry" />
         </mxCell>
 
         <!-- SECTION 3 NODES -->
