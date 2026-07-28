@@ -402,7 +402,13 @@ function WorkspaceContent() {
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
 
   const filteredSidebarDiagrams = React.useMemo(() => {
-    return diagrams.filter(d => d.name.toLowerCase().includes(sidebarSearch.toLowerCase()));
+    const seen = new Set<string>();
+    return diagrams.filter(d => {
+      if (!d.name.toLowerCase().includes(sidebarSearch.toLowerCase())) return false;
+      if (seen.has(d.id)) return false;
+      seen.add(d.id);
+      return true;
+    });
   }, [diagrams, sidebarSearch]);
 
   const recentDiagrams = React.useMemo(() => {

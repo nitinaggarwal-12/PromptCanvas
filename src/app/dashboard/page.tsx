@@ -227,10 +227,16 @@ export default function Dashboard() {
     }
   };
 
-  // Filter diagrams based on search
-  const filteredDiagrams = diagrams.filter(d => 
-    d.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter and deduplicate diagrams based on search and unique IDs
+  const filteredDiagrams = React.useMemo(() => {
+    const seen = new Set<string>();
+    return diagrams.filter(d => {
+      if (!d.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      if (seen.has(d.id)) return false;
+      seen.add(d.id);
+      return true;
+    });
+  }, [diagrams, searchQuery]);
 
   return (
     <div className="flex h-screen w-screen bg-[#070a13] text-slate-100 overflow-hidden font-sans relative selection:bg-teal-500/30 selection:text-teal-200">

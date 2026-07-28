@@ -764,11 +764,12 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         END as access_level
       FROM diagrams d
       LEFT JOIN diagram_collaborators c ON c.diagram_id = d.id AND c.user_id = $1
-      LEFT JOIN diagram_versions v ON v.diagram_id = d.id 
-      AND v.version_number = (
-        SELECT MAX(version_number) 
+      LEFT JOIN diagram_versions v ON v.id = (
+        SELECT id 
         FROM diagram_versions 
         WHERE diagram_id = d.id
+        ORDER BY created_at DESC, version_number DESC
+        LIMIT 1
       )
       WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1
       ORDER BY d.updated_at DESC
@@ -787,11 +788,12 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
     const query = `
       SELECT d.*, v.xml_content, v.prompt, 'Viewer' as access_level
       FROM diagrams d
-      LEFT JOIN diagram_versions v ON v.diagram_id = d.id 
-      AND v.version_number = (
-        SELECT MAX(version_number) 
+      LEFT JOIN diagram_versions v ON v.id = (
+        SELECT id 
         FROM diagram_versions 
         WHERE diagram_id = d.id
+        ORDER BY created_at DESC, version_number DESC
+        LIMIT 1
       )
       WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%'
       ORDER BY d.updated_at DESC
