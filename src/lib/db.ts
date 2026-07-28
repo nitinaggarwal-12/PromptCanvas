@@ -1,3 +1,7 @@
+import { createRequire } from 'module';
+if (typeof globalThis.require === 'undefined') {
+  globalThis.require = createRequire(import.meta.url);
+}
 import { DatabaseSync } from 'node:sqlite';
 import { join, dirname } from 'path';
 import { v4 as uuidv4 } from 'uuid';

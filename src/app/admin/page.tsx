@@ -14,7 +14,7 @@ import {
   Building2,
   Lock
 } from 'lucide-react';
-import { User } from '@/lib/db';
+import type { User } from '@/lib/db';
 
 export default function SuperAdminDashboard() {
   const [users, setUsers] = useState<User[]>([]);

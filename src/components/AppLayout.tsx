@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sidebar } from '@/components/Sidebar';
-import { Workspace } from '@/lib/db';
+import type { Workspace } from '@/lib/db';
 import { Plus, X, Building2, Loader2 } from 'lucide-react';
 
 interface AppLayoutProps {

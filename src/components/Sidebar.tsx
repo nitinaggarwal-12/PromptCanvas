@@ -18,7 +18,7 @@ import {
   Settings,
   FolderGit2
 } from 'lucide-react';
-import { Workspace } from '@/lib/db';
+import type { Workspace } from '@/lib/db';
 
 interface SidebarProps {
   currentUser: { id: string; email: string; name?: string | null; global_role?: string; is_super_admin?: boolean } | null;
