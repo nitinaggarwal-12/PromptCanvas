@@ -1133,10 +1133,10 @@ export function getExactDataAiPipelineReferenceXml(): string {
         <mxCell id="ph_2" value="&lt;font style='font-size:11px;color:#334155;'&gt;Data Ingestion&lt;br&gt;(via Google Workspace /&lt;br&gt;Enterprise Connectors)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="170" y="85" width="160" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="ph_3" value="&lt;font style='font-size:12px;color:#334155;'&gt;Comibinize&lt;br&gt;Feature Engineering&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="ph_3" value="&lt;font style='font-size:12px;color:#334155;'&gt;Combinize&lt;br&gt;Feature Engineering&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="345" y="85" width="145" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="ph_4" value="&lt;font style='font-size:12px;color:#334155;'&gt;Normalize&lt;br&gt;Transformsitation&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="ph_4" value="&lt;font style='font-size:12px;color:#334155;'&gt;Normalize&lt;br&gt;Transformtsaiton&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="505" y="85" width="145" height="50" as="geometry" />
         </mxCell>
         <mxCell id="ph_5" value="&lt;font style='font-size:12px;color:#334155;'&gt;Encode&lt;br&gt;Processing&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">

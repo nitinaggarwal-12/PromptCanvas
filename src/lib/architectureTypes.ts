@@ -51,7 +51,34 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     id: "data_ai_pipeline",
     name: "5. Data & AI Pipeline",
     category: "Phase 3: Data & Analytics",
-    prompt: "Act as an Enterprise AI and Data Systems Architect. Design an end-to-end Data & AI Pipeline combining Data Flow Diagram (DFD), MLOps Lifecycle, and Feature Engineering within an ITACS Secure Governed Cloud Tenant. It should include: raw data sources (Postgres, Salesforce, PDF/PPT unstructured files), a GCS Secure Bucket raw data lake, functional research processing (Funcriogy), Feature Engineering Transformation (dbt/SQL DAGs), a Managed Feature Store with model-ready features, MLOps Model Training loop, a locked Model Registry, Model Inference API Endpoint deployment, downstream consumer targets (Web App/Dashboard, Mobile App, Automated Report Generator), and an automated Monitoring & Alerting feedback loop."
+    prompt: `Act as an Enterprise Solutions Architect and Diagram Design Expert. Generate a high-resolution, pixel-perfect technical architecture diagram titled "ITACS SECURE GOVERNED CLOUD TENANT (Managed Services)". The style is a clean, professional cloud architecture blueprint on a white background with modern sans-serif typography, crisp vector icons, color-coded functional containers, and orthogonal data flow arrows.
+
+1. Canvas Header & Operational Process Timeline:
+- Top Header Left: Google Cloud (GCP) multi-color logo followed by bold dark header text: ITACS SECURE GOVERNED CLOUD TENANT (Managed Services).
+- Top Horizontal Process Arrow: A light gray process timeline arrow running horizontally across the top from left to right, containing 10 exact stage markers: Standard Operations, Data Ingestion (via Google Workspace / Enterprise Connectors), Combinize Feature Engineering, Normalize Transformtsaiton, Encode Processing, Derived Formas, Transformation Transformation, ML Model Transformation, Specific Operations, Monitoring & Alerting.
+
+2. Column Stage 1: DATA INGESTION (DFD):
+- Header & Security Container: Light yellow/beige shaded box with a dashed border labeled GCS (Secure Managed Environment) at the bottom-left. Stage Title: DATA INGESTION (DFD).
+- Raw Data Sources Block (Far Left): Stack of three white cards wrapped in a dashed gray box titled Raw Data Sources: Postgres (blue elephant), Salesforce cloud App (blue cloud), Unstructured Files (red PDF and orange PPT).
+- Central Storage Bucket Node: Google Cloud Storage (GCS) Secure Bucket (Raw Data Lake) (green cylinder).
+- Funcriogy Panel: Light orange vertical panel titled Funcriogy containing 5 functional icons: Market Research, Access, Outcomes, Medical Affairs, Competitive Intel.
+
+3. Column Stage 2: FEATURE ENGINEERING FLOW:
+- Header & Security Container: Soft orange/light beige box labeled Security Boundary. Stage Title: FEATURE ENGINEERING FLOW.
+- Feature Engineering Transformation Card (Left Blue Box): Checklist flow with DAG icons next to Clean, Normalize, Aggregate, Encode. Red/orange dbt logo connected via flow arrow. Derived Fields pill badge with DAG icon.
+- Managed Feature Store Card (Right Green Cylinder Container): Titled Model-Ready Features containing Customer Churn Features and Sales Prediction Features.
+
+4. Column Stage 3: MLOPS LIFECYCLE (Training & Serving):
+- Header & Security Container: Soft peach/orange box labeled Security Boundary. Stage Title: MLOPS LIFECYCLE (Training & Serving).
+- ML Model Training Box: Circular blue looping arrows labeled Training Loop, receiving Pull Features arrow from Feature Store.
+- Model Registry: White card with vault/safe icon labeled Model Registry, receiving Stores trained models arrow from Training Loop.
+- Model Inference API Endpoint: Blue card receiving arrow from Model Registry.
+- Monitoring Loop: Large curved blue arrow looping from Model Inference Endpoint back up to ML Model Training, labeled Monitoring & Alerting.
+- Output Delivery Destinations: Three white stacked cards receiving arrows from Inference Endpoint: Web App / Dashboard, Mobile App, Automated Report Generator.
+
+5. Bottom Footer Region:
+- Legend Container: Two-column item list (Managed compute, Storage, Secure boundary, Secure boundaries).
+- Summary Callout Banner: Grouping bracket spanning Feature Engineering and MLOps sections. Text: WHY IT WORKS: Data engineers and ML engineers need to see how upstream data changes impact downstream model performance. This gives them a shared map.`
   },
   {
     id: "event_driven_aws",
