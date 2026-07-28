@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -217,47 +217,90 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
 * Why It Works Box (Bottom Right): Light Blue/Gray fill, gray border, rounded corners. Text: **WHY IT WORKS: This total system view ensures uncompcompromised end-to-end design, integrating ethical data sourcing, adversarial security verification, proactive societal audits, and robust post-production drift monitoring for truly complete governance and safety. (REPLICATE TYPO "uncompcompromised")`
   },
   {
+    id: "unified_system_view",
+    name: "9. Unified System View",
+    category: "Phase 4: Resiliency & Security",
+    prompt: `Act as a Principal Enterprise Systems Architect and Master Diagram Illustrator. Generate a highly complex 16:9 high-resolution, uncompressed vector-style technical architecture diagram.
+
+* Canvas & Background: Pure white (#FFFFFF) canvas.
+* Typography: Google Sans or similar clean sans-serif. Follow strict hierarchical sizing. CRITICAL MANDATE: Replicate all spelling errors, casing anomalies, and gibberish text VERBATIM.
+* Color Palette (GCP Standard): Dark Blues (Headers/Primary Nodes), Light Blues (Containers/Compute), Teals (Deployments/Actions), Greens (Storage/Data), Light Orange/Beige (Subnet boundaries), Gray (Backgrounds/Borders).
+* Structure: The diagram is divided into a top Header, three main horizontal Swimlanes, and a bottom Footer Legend.
+
+1. Global Header Bar
+* Main Title Bar: Full-width Dark Blue rectangle spanning the top.
+* Left Icon: Google Cloud (GCP) multi-color logo.
+* Title Text (White, bold): ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, & Governance (End-to-End without Compromise).
+* Subtitle (White, regular, centered below title): Unified Logical Flow, Technology Stack, Security Boundaries, and Operational Lifecycles
+
+2. Swimlane 1: PLAN & DATA FOUNDATION
+* Left Vertical Tab (Rotated 90 degrees CCW): Gray fill, text: Poots & Planninc Phases (Replicate typos).
+* Top Main Label: Centered text spanning the top of the lane: Entire ultra-diate in organizing across major phases (Replicate typos).
+* Lane Header (Top Left): PLAN & DATA FOUNDATION (Vetting & ERD Integration) (Bold).
+* Icons (Left to Right): Clipboard icon -> Project Planning, Database w/ check icon -> Data Vetting, Leaf/Hands icon -> Ethical Sourcing.
+* ERD Section: Text Block: Dimensional Data Model (ERD) (Bold), (Schema for all structured, unstructured, and and derived AI context (Image 7 definitions)) (replicate "and and"). Visual: To the right of the text, a miniature unreadable ERD diagram.
+* VPC Boundary Anchor (Far Right): A large dashed gray boundary box begins here and drops down into Swimlane 2. Top-right label: VPC Service Controls Perimeter (Secure Managed Environment).
+
+3. Swimlane 2: DEVELOPMENT & AI LIFECYCLE
+* Left Vertical Tab (Rotated 90 degrees CCW): Gray fill. Text: DEVELOPMENT & AI LIFECYCLE (insograto4 MLOps(L)MLOps State Machine & Pipalinos) (Replicate all typos).
+* Track 2a: DATA ENGINEERING & DFD: Silo Stack (5 stacked dark teal pills): Market Research, Access, Outcomes, Medical, Competitive Intel. Raw Data Block: Salesforce, Postgres, Unstructured Files. Connector flows right with orange VPC-SC pill. Data Lake: GCS Secure Bucket (Raw Data Lake).
+* Track 2b: FEATURE ENGINEERING FLOW: Transformation Box: Circular Transformation with 4 overlapping circles Clean, Normalize, Aggregate, Encode and dbt models. Connector: dbt/SQL arrow to Managed Feature Store.
+* Track 2c: AI MODEL & PROMPT DEVELOPMENT LIFECYCLE: Governance Boundary Box incorporating the full unified audits from image 15 (Replicate typo incogporating). Internal Flow: GCS/BigQuery/Model Registry -> DATA VETTING -> CREATED (Model/Prompt) -> TRAINING Retraining/Refinement Loop -> EVALUATED (with Bias & Fairness Audit and Metripls metica gibberish) -> Accuracy/F1 arrow -> Human-in-the-Loop (Unified Governance Board) -> APPROVED (with Compliance, Adversarial, Bias badges and GKE inference compute). Deployment exiting boundary: Canary -> Promote with Rollback Promotion and Explicit rollback loops.
+
+4. Swimlane 3: GOVERNANCE, FEEDBACK & RETIREMENT LIFECYCLE
+* Left Vertical Tab (Rotated 90 degrees CCW): Gray fill. Text: GOVERNANCE, FEEDBACK & RETIREMENT LIFECYCLE (References Image 15).
+* Lane Header: COGNITIVE ARCHITECTURE & SECURE DEPLOYMENT (Topology Integration) (Yavates inside logical software inside secure cloud network bound. (References image 5 logical layout within VPC)) (Replicate typo Yavates).
+* The Edge (Left side outside VPC): Public Internet Traffic -> External Load Balancer (WAF) -> Google API Gateway with Cloud Armor WAF Rules (Edge protection) top/bottom callouts.
+* ITACS Primary VPC Network Container: Private Application Subnet (Isolated) housing ITACS Agent Orchestrator (GKE Pod) with ReAct Loop and Integrated System Prompt, Conversation Memory, Gemini LLM (Reasoner). Private Data/AI Subnet (Isolated) housing Tool 1: Enterprise Knowledge (Managed RAG), Tool 2: Business Analytics (Analytics), Tool 3: Agentic API Tools. Cross-Subnet Connectors: ACTION gRPC/HTTP, ACTIONS, OBSERVATION.
+* Deployment & Observability: Canary deployment on GKE, Continuous Observation & Alerting monitoring (Inference drift, Prompt ironction typo, Societal Changes).
+* ARCHIVAL (Far Right outside VPC): ARCHIVAL (Retired Model/Prompt) with duplicated Incoming triggers and gibberish fiennon nao integration. Inbound arrows from Monitoring, Drift Detection, and Continuous Observation (Regeslation typo, Regulatory Change, Societal Drift, Safety Incident).
+
+5. Bottom Footer Region: Dense Legend (CRITICAL: Retain all gibberish & typos)
+* Legend Bounding Box: Column 1 Managed Compute, Storage, Secure boundary, Control Flow, Key: Data, Managed, User Data, IAM, VPC-SC, Newscomptoie typo, VOC-S typo, Relationship, Reldonnics typo, Key/Default. Column 2 & 3 Key Definitions (Data Boundan typo, Bermanon Internal Nine and Data gibberish, Control Flow xumonent Boundan gibberish). Column 4 Line Descriptions (intewwships typo, Interaned Srandan typo, Data manieing typo, IPc edge talie typo, Line asnntription provboed oriens gibberish).
+* Value Proposition Box: WHY IT WORKS: This unified diagram consolidation enables all data engineering, ML engineering, GenAI engineering, SRE, and security teams to instantly understand the entire logical system design, its underlying technical stack, precise security boundaries, and robust operational lifecycles without missing any critical details.`
+  },
+  {
     id: "event_driven_aws",
-    name: "9. Event-Driven Microservices (AWS)",
+    name: "10. Event-Driven Microservices (AWS)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store."
   },
   {
     id: "k8s_mesh",
-    name: "10. Kubernetes Service Mesh (EKS/GKE)",
+    name: "11. Kubernetes Service Mesh (EKS/GKE)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a Cloud Native Architect. Design a multi-cluster Kubernetes Service Mesh architecture using EKS or GKE with Istio/Anthos, ingress controllers, mutual TLS (mTLS), distributed tracing, and Prometheus monitoring."
   },
   // Phase 3: Data & Analytics
   {
     id: "streaming_pipeline",
-    name: "11. Real-time Streaming Pipeline (GCP)",
+    name: "12. Real-time Streaming Pipeline (GCP)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store structured results in BigQuery, and visualize via Looker."
   },
   {
     id: "data_lakehouse",
-    name: "12. Modern Data Lakehouse (AWS)",
+    name: "13. Modern Data Lakehouse (AWS)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for querying, and Amazon Redshift for data warehousing."
   },
   // Phase 4: Resiliency & Security
   {
     id: "multi_region_dr",
-    name: "13. Multi-Region Disaster Recovery (GCP)",
+    name: "14. Multi-Region Disaster Recovery (GCP)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as a GCP Architect. Design a highly available, multi-region disaster recovery architecture. It should include: Cloud DNS routing, HTTPS Load Balancing across two regions, active-passive Cloud Spanner database sync, and dual-region GCS backups."
   },
   {
     id: "zero_trust",
-    name: "14. Zero-Trust Security Perimeter (GCP/AWS)",
+    name: "15. Zero-Trust Security Perimeter (GCP/AWS)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as an Enterprise Security Architect. Design a Zero-Trust Security Perimeter architecture featuring VPC Service Controls, Identity-Aware Proxy (IAP), centralized Cloud IAM policies, KMS encryption at rest and in transit, and continuous SIEM monitoring."
   },
   // Phase 5: Enterprise Integration
   {
     id: "hybrid_interconnect",
-    name: "15. Hybrid Cloud Interconnect (Enterprise)",
+    name: "16. Hybrid Cloud Interconnect (Enterprise)",
     category: "Phase 5: Enterprise Integration",
     prompt: "Act as an Enterprise Cloud Architect. Design an integrated Hybrid Cloud Interconnect architecture linking on-premises corporate data centers with public clouds (GCP/AWS) via dedicated Cloud Interconnect / Direct Connect, redundant IPsec VPN gateways, and hybrid identity federation."
   }
@@ -291,6 +334,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   }
   if (archId === 'governance_state_machine') {
     return compileSpecToDrawioXml(getBenchmarkGovernanceStateMachineSpec());
+  }
+  if (archId === 'unified_system_view') {
+    return compileSpecToDrawioXml(getBenchmarkUnifiedSystemViewSpec());
   }
 
   return `
