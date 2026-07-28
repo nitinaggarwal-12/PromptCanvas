@@ -818,17 +818,11 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 1: USER PROMPT -->
-        <mxCell id="c1" value="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="125" y="150" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s1" value="Sends single multi-silo Oncology prompt e.g., 'Compare market trends across 5 silos, include recent sales figures'" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1E293B;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="122" y="160" as="sourcePoint" /><mxPoint x="340" y="160" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 2: INTERFACE & PII BOXES -->
-        <mxCell id="c2" value="2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="125" y="195" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s2_lbl" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;INTERFACE&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="150" y="195" width="80" height="22" as="geometry" />
         </mxCell>
@@ -840,9 +834,6 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 3: PERSONA & MEMORY CHECK -->
-        <mxCell id="c3" value="3" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="270" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s3" value="Checks Persona &amp;amp; Memory (Query, Context reference image 7, context corpus definition)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="280" as="sourcePoint" /><mxPoint x="780" y="280" as="targetPoint" /></mxGeometry>
         </mxCell>
@@ -851,33 +842,21 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 4: MEMORY TO REASONER -->
-        <mxCell id="c4" value="4" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="365" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s4" value="Updates Conversation Memory with prompt / Sends all context (Prompt + Memory)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="375" as="sourcePoint" /><mxPoint x="560" y="375" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 5: REACT 1 -->
-        <mxCell id="c5" value="5" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="570" y="415" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s5_react" value="&lt;b&gt;ReAct&lt;/b&gt;&lt;br&gt;THOUGHT: 'I need multi-silo context.'&lt;br&gt;&lt;b style='color:#1D4ED8;'&gt;ACTION: Call RAG Tool&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1E293B;fontStyle=0;fontSize=11;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="450" y="415" width="220" height="48" as="geometry" />
         </mxCell>
 
         <!-- STEP 6: RAG ACTION WITH EXACT SUB-LABEL -->
-        <mxCell id="c6" value="6" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="480" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s6" value="Executes RAG Action: (Send call with 'Automatic Embedding &amp;amp; Ret Tool', reference image 1 (tool 1))&lt;br&gt;&lt;span style='font-size:10px;color:#475569;font-weight:normal;'&gt;Call includes prompt (est., Compare compani sale, centientext) (Axion reference image 15, Evaluated, data logic image1)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="490" as="sourcePoint" /><mxPoint x="1020" y="490" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 7: SEARCH GCS CORPUS -->
-        <mxCell id="c7" value="7" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="1030" y="540" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s7" value="Search GCS Corpus (Automatic context lookup)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#0284C7;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="1020" y="550" as="sourcePoint" /><mxPoint x="1270" y="550" as="targetPoint" /></mxGeometry>
         </mxCell>
@@ -899,33 +878,21 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 10: UPDATES REASONER 1 -->
-        <mxCell id="c9" value="9" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="685" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s10" value="Updates Reasoner (GEMINI) with New Observation (Send all content: Prompt + Memory + RAG Obs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="695" as="sourcePoint" /><mxPoint x="560" y="695" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 11: REACT 2 -->
-        <mxCell id="c10" value="10" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="570" y="735" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s11_react" value="&lt;b&gt;ReAct&lt;/b&gt;&lt;br&gt;THOUGHT: 'I have context, but need recent sales figures.'&lt;br&gt;&lt;b style='color:#1D4ED8;'&gt;ACTION: Query BigQuery Analytics&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1E293B;fontStyle=0;fontSize=11;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="440" y="735" width="240" height="48" as="geometry" />
         </mxCell>
 
         <!-- STEP 12: EXECUTES ANALYTICS ACTION -->
-        <mxCell id="c11" value="11" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="800" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s12" value="Executes Analytics Action (Send call logs: actional, ML Inference log definition)&lt;br&gt;&lt;span style='font-size:10px;color:#475569;font-weight:normal;'&gt;Call includes SQL query (call includes RAG query)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="810" as="sourcePoint" /><mxPoint x="1515" y="810" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 13: EXECUTES SQL QUERY -->
-        <mxCell id="c13" value="13" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="1490" y="860" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s13" value="Executes SQL query (Secure Data Access tool 2)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#0284C7;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="1515" y="870" as="sourcePoint" /><mxPoint x="1270" y="870" as="targetPoint" /></mxGeometry>
         </mxCell>
@@ -944,44 +911,26 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 16: UPDATES REASONER 2 -->
-        <mxCell id="c14" value="14" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="1005" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s16" value="Updates Reasoner (GEMINI) with New Observation (Send all content: Prompt + Memory + RAG Obs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1015" as="sourcePoint" /><mxPoint x="560" y="1015" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 17: REACT 3 -->
-        <mxCell id="c15" value="15" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="570" y="1055" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s17_react" value="&lt;b&gt;ReAct&lt;/b&gt;&lt;br&gt;THOUGHT: 'All context gathered.'&lt;br&gt;&lt;b style='color:#047857;'&gt;SYNTHESIS: Generate comprehensive report&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;fontColor=#1E293B;fontStyle=0;fontSize=11;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="450" y="1055" width="220" height="48" as="geometry" />
         </mxCell>
 
         <!-- STEP 18: SYNTHESIZES FINAL RESPONSE TEST -->
-        <mxCell id="c16" value="16" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="1115" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s18" value="Synthesizes final response test (Action reference Image 15 reference data inonitary) / Updates Conversation Memory" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1125" as="sourcePoint" /><mxPoint x="780" y="1125" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 19: SYNTHESIZE REPORTING ARTIFACT & FINAL RESPONSE -->
-        <mxCell id="c17" value="17" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="1165" width="22" height="22" as="geometry" />
-        </mxCell>
-        <mxCell id="c18" value="18" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="130" y="1165" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s19_user" value="Sends final synthesized response (e.g., linked PPT report or JSON data) / Displays response to USER" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#1D4ED8;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1175" as="sourcePoint" /><mxPoint x="122" y="1175" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <!-- STEP 20: LOGS FINAL OUTCOME -->
-        <mxCell id="c19" value="19" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="1215" width="22" height="22" as="geometry" />
-        </mxCell>
         <mxCell id="s20_log" value="Logs final outcome" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#9A3412;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#9A3412;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1225" as="sourcePoint" /><mxPoint x="1515" y="1225" as="targetPoint" /></mxGeometry>
         </mxCell>
@@ -1009,6 +958,65 @@ export function getExactSequenceDiagramReferenceXml(): string {
           <mxGeometry x="800" y="1145" width="160" height="30" as="geometry" />
         </mxCell>
 
+        
+        <!-- ALL 19 NUMBERED STEP CIRCLE BADGES (HIGHEST Z-ORDER AT END OF GRAPH) -->
+        <mxCell id="c1" value="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="125" y="150" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="125" y="195" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="3" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="270" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="4" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="365" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" value="5" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="570" y="415" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" value="6" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="480" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" value="7" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="540" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" value="8" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="600" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" value="9" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="685" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" value="10" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="570" y="735" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" value="11" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="800" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" value="12" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1490" y="820" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" value="13" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1490" y="860" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" value="14" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1005" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" value="15" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="570" y="1055" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" value="16" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1115" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" value="17" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1165" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" value="18" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="1165" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" value="19" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1215" width="22" height="22" as="geometry" />
+        </mxCell>
         <!-- 3-COLUMN ARCHITECTURE FOOTER MATCHING IMAGE 1 -->
         <mxCell id="footer_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
           <mxGeometry x="40" y="1260" width="1660" height="150" as="geometry" />
