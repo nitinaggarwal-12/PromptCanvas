@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -111,47 +111,92 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
 - Value Proposition Callout: WHY IT WORKS: Security teams and DevOps teams can immediately see both what the software is and how it is protected from the public internet.`
   },
   {
+    id: "devops_cicd_pipeline",
+    name: "7. DevOps & CI/CD Pipeline",
+    category: "Phase 4: Resiliency & Security",
+    prompt: `Act as a Principal DevSecOps Architect and Master Diagram Illustrator. Generate a 16:9 high-resolution, uncompressed vector-style technical architecture diagram titled "Diagram: The Operational Flow".
+
+1. Global Canvas & Master Title:
+- Top Canvas Title: Centered above the entire diagram, large text: Diagram: The Operational Flow.
+- Master Container: A large light-gray (#F8FAFC) box with rounded corners and a dark gray 1px solid border.
+- Top-Left Header: Official multi-colored Google Cloud (GCP) logo + bold text: ITACS Governing Cloud Tenant (Managed Services).
+
+2. Column 1: PLAN & GOVERN:
+- White vertically oriented rectangle on far left. Title: PLAN & GOVERN.
+- Project Planning: Document checklist icon + text Project Planning.
+- Dimensional Data Modeling (ERD): Hierarchical flowchart icon + text Dimensional Data Modeling (ERD).
+- Connectors merge into a single horizontal line pointing right toward Column 2.
+
+3. Column 2: GIT SOURCE & IaC DEFINE:
+- Very light gray box. Title: GIT SOURCE & IaC DEFINE (Governance/Compliance) (Polyrepo setup with explicit PR/Branch Protection Rules).
+- Top Icon: Black GitHub logo.
+- 3 stacked cards: Data Engineering (blue fill, {...} icon), Application Development (green fill, </> icon), MLOps (blue fill, brain icon).
+- Text Element: PR/Branch Protection Rules between middle and bottom cards with arrows pointing to App Dev and MLOps cards.
+
+4. Central Ecosystem Boundary & The 3 Tracks:
+- Massive beige/light-orange (#FFF3E0) container with orange border. Title: SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM BOUNDARY (VPC Service Controls).
+- Ingress Connectors: 3 arrows with red diamond badges containing Git symbol labeled Git commit (Data Eng), Git commit (App Dev), and ML Eng Git commit.
+- Cross-Track Connector: Arrow dropping vertically from Track 1 CI to Track 2 CI labeled Data availability.
+- Track 1: DATA ENGINEERING & DIMENSIONAL MODELING FLOW (DFD/ERD Lifecycle). CI card (Automated unit tests on dbt models, data quality tests on private VPC-SC BigQuery and GCS structures, security config scan). CD card (Terraform/ArgoCD applies updates to BigQuery datasets, GCS buckets, dbt scheduler config; private VPC label; magnifying glass & database icons). Arrow labeled CI Passed / Triggers. Footer note: *References image 3 (Data Pipeline) and 7 (ERD) operations here.
+- Track 2: APPLICATION DEVELOPMENT & COGNITIVE ARCHITECTURE FLOW (App Code Flow). CI card (Building Docker images, app unit tests, security vulnerability dependency scan). CD card (Terraform applies updates to API Gateway config, GKE manifest, deployment config within; private VPC label; API icon). Arrow labeled CI Passed / Triggers. Footer note: *References image 5 (Cognitive Architecture) and 1 (Agent ReAct loop) operations here.
+- Track 3: MLOps LIFECYCLE (ML/AI TRAINING FLOW). CI card (Model training script test, validation of hyperparameter configs). Training Loop card (Pushes ML training job to private Vertex AI Training executing on GPU clusters; private VPC label). Arrow labeled CI Passed / Triggers. Footer note: *References image 3 (Training loop) operations here.
+
+5. Column 4: PHASE 4: EVALUATION, GOVERNANCE & PROMOTION FLOW:
+- Human-in-the-Loop Governance Box: 3 arrows converge here. Internal flow of Evaluated -> Approved in two rows with central Registry/Conversation Log label. Output node: Conversation Log config. Offline evaluation bullets (F1 scores, bias tests, hallucination metrics for LLM prompts).
+- Promotion Box: Model pushed to production Model Registry and/or Conversation Log config updated.
+
+6. Column 5: PHASE 5: SECURED DEPLOYMENT & OBSERVATION FLOW (Topology Flow):
+- Top Left Badge: VPC-SC Enforcement.
+- Continuous Deployment Actor: Orange robot icon labeled Continuous Deployment (ArgoCD/GitOps).
+- Deployment Topology Box: Title Deployment topology. Inner blue box GKE Pods with dashed box GKE Containers containing GKE Pods, API Gateway, WAF icons. Bottom label Canary deployment on GKE.
+- Observation Box: Continuous Observation & Alerting (Datadog/Sentry/GCP Cloud Logging) with bullets for inference drift, prompt injection attacks, application health.
+
+7. Footer Region:
+- Legend Box: Managed Compute, Storage, Secure boundary, Key block (verbatim with typos: config config, updates updates and dbt sumuronts), VPC-SC Enforcement, Securitive boundary type (with typo), IAM Roles (Role-Based Access Control) (Model Registry and/or Conversation Log config updated).
+- Bottom Banner: *WHY IT WORKS: This unified diagram allows security, SREs, and architects to immediately understand the entire operational lifecycle, dependencies, security boundaries, and human governance across all four diagram types (Data Flow, Cognitive Architecture, Topology, MLOps) ensuring total, uncompromised end-to-end design.`
+  },
+  {
     id: "event_driven_aws",
-    name: "7. Event-Driven Microservices (AWS)",
+    name: "8. Event-Driven Microservices (AWS)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store."
   },
   {
     id: "k8s_mesh",
-    name: "8. Kubernetes Service Mesh (EKS/GKE)",
+    name: "9. Kubernetes Service Mesh (EKS/GKE)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a Cloud Native Architect. Design a multi-cluster Kubernetes Service Mesh architecture using EKS or GKE with Istio/Anthos, ingress controllers, mutual TLS (mTLS), distributed tracing, and Prometheus monitoring."
   },
   // Phase 3: Data & Analytics
   {
     id: "streaming_pipeline",
-    name: "9. Real-time Streaming Pipeline (GCP)",
+    name: "10. Real-time Streaming Pipeline (GCP)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store structured results in BigQuery, and visualize via Looker."
   },
   {
     id: "data_lakehouse",
-    name: "10. Modern Data Lakehouse (AWS)",
+    name: "11. Modern Data Lakehouse (AWS)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for querying, and Amazon Redshift for data warehousing."
   },
   // Phase 4: Resiliency & Security
   {
     id: "multi_region_dr",
-    name: "11. Multi-Region Disaster Recovery (GCP)",
+    name: "12. Multi-Region Disaster Recovery (GCP)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as a GCP Architect. Design a highly available, multi-region disaster recovery architecture. It should include: Cloud DNS routing, HTTPS Load Balancing across two regions, active-passive Cloud Spanner database sync, and dual-region GCS backups."
   },
   {
     id: "zero_trust",
-    name: "12. Zero-Trust Security Perimeter (GCP/AWS)",
+    name: "13. Zero-Trust Security Perimeter (GCP/AWS)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as an Enterprise Security Architect. Design a Zero-Trust Security Perimeter architecture featuring VPC Service Controls, Identity-Aware Proxy (IAP), centralized Cloud IAM policies, KMS encryption at rest and in transit, and continuous SIEM monitoring."
   },
   // Phase 5: Enterprise Integration
   {
     id: "hybrid_interconnect",
-    name: "13. Hybrid Cloud Interconnect (Enterprise)",
+    name: "14. Hybrid Cloud Interconnect (Enterprise)",
     category: "Phase 5: Enterprise Integration",
     prompt: "Act as an Enterprise Cloud Architect. Design an integrated Hybrid Cloud Interconnect architecture linking on-premises corporate data centers with public clouds (GCP/AWS) via dedicated Cloud Interconnect / Direct Connect, redundant IPsec VPN gateways, and hybrid identity federation."
   }
@@ -179,6 +224,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   }
   if (archId === 'secure_deployment_map') {
     return compileSpecToDrawioXml(getBenchmarkSecureDeploymentMapSpec());
+  }
+  if (archId === 'devops_cicd_pipeline') {
+    return compileSpecToDrawioXml(getBenchmarkDevopsCicdPipelineSpec());
   }
 
   return `
