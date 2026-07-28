@@ -1471,6 +1471,268 @@ export function getExactDataAiPipelineReferenceXml(): string {
   `.trim();
 }
 
+export function getExactSecureDeploymentMapReferenceXml(): string {
+  return `
+<mxfile host="embed.diagrams.net">
+  <diagram id="secure_deployment_map_compiled" name="Google Cloud Project (ITACS Platform Production)">
+    <mxGraphModel dx="1800" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 1. Master Container (#F1F3F4 light gray, rounded corners approx 8px) -->
+        <mxCell id="master_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=2;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="150" y="30" width="1380" height="740" as="geometry" />
+        </mxCell>
+
+        <!-- Top Header Left inside Master Container -->
+        <mxCell id="top_header" value="&lt;span style='font-size:22px;'&gt;🔷&lt;/span&gt; &lt;font style='font-size:18px;font-weight:bold;color:#202124;'&gt;Google Cloud Project (ITACS Platform Production)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="175" y="45" width="500" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 2. Far Left (Outside Master Container): Public Internet Traffic -->
+        <mxCell id="public_internet" value="&lt;span style='font-size:38px;'&gt;👤&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#202124;'&gt;Public Internet&lt;br&gt;Traffic&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;arcSize=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="325" width="110" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Zone 1: The Edge (External Traffic) -->
+        <mxCell id="zone_1" value="&lt;font style='font-size:15px;color:#202124;'&gt;&lt;b&gt;Zone 1: The Edge (External Traffic)&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
+          <mxGeometry x="175" y="90" width="380" height="660" as="geometry" />
+        </mxCell>
+
+        <!-- External HTTP(S) Load Balancer (L7) Card -->
+        <mxCell id="lb_card" value="&lt;span style='font-size:32px;'&gt;🖧 🛡️&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#202124;'&gt;External HTTP(S)&lt;br&gt;Load Balancer (L7)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#5F6368;'&gt;Cloud Armor WAF Rules&lt;br&gt;(Ingress filtering)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=8;shadow=1;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
+          <mxGeometry x="195" y="295" width="160" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Google API Gateway Card -->
+        <mxCell id="api_gateway" value="&lt;span style='font-size:36px;'&gt;🔀&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#202124;'&gt;Google API&lt;br&gt;Gateway&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#5F6368;'&gt;Access key validation&lt;br&gt;and API rate limiting&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=8;shadow=1;fontFamily=Helvetica;verticalAlign=top;paddingTop=15;" vertex="1" parent="1">
+          <mxGeometry x="380" y="295" width="155" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Ingestion Arrows -->
+        <mxCell id="arr_pub_lb" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="public_internet" target="lb_card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_lb_api" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="lb_card" target="api_gateway">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Zone 2: VPC Service Controls Perimeter (The Outer Security Shell) -->
+        <mxCell id="perimeter_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8F0;strokeColor=#F6AD55;strokeWidth=1.5;arcSize=3;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="580" y="90" width="930" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="perim_header" value="&lt;span style='font-size:20px;'&gt;🛡️&lt;/span&gt; &lt;b style='font-size:15px;color:#202124;'&gt;VPC Service Controls Perimeter (Secure Managed Environment)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="595" y="100" width="550" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="perim_sub" value="&lt;font style='font-size:15px;color:#202124;'&gt;Zone 2: The Private Network (VPC Inside)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="780" y="135" width="400" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Ingress Connector (Zone 1 to Zone 2) -->
+        <mxCell id="arr_ingress" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="api_gateway" target="agent_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ingress_lbl" value="&lt;font style='font-size:11px;color:#5F6368;line-height:1.2;'&gt;Secure&lt;br&gt;Private Call&lt;br&gt;via PSC&lt;br&gt;Endpoint&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="555" y="335" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ITACS Primary VPC Network -->
+        <mxCell id="vpc_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4285F4;strokeWidth=2;arcSize=3;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="615" y="170" width="875" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="vpc_header" value="&lt;b style='font-size:16px;color:#202124;'&gt;ITACS Primary VPC Network&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="635" y="185" width="300" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Subnet 1: Private Application Subnet -->
+        <mxCell id="app_subnet" value="&lt;font style='font-size:14px;color:#202124;'&gt;Private Application Subnet (Isolated)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#4285F4;strokeWidth=1.5;arcSize=3;fontFamily=Helvetica;verticalAlign=top;paddingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="640" y="225" width="320" height="480" as="geometry" />
+        </mxCell>
+        <!-- Central Card: ITACS Agent Orchestrator -->
+        <mxCell id="agent_orchestrator" value="&lt;b style='font-size:15px;color:#202124;'&gt;ITACS Agent&lt;br&gt;Orchestrator&lt;br&gt;(GKE Pod)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style='font-size:32px;'&gt;🔷 🖧&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:12px;color:#5F6368;'&gt;&lt;b&gt;Logic&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4285F4;strokeWidth=1.5;arcSize=8;shadow=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="690" y="325" width="220" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Subnet 2: Private Data/AI Subnet -->
+        <mxCell id="data_subnet" value="&lt;font style='font-size:14px;color:#202124;'&gt;Private Data/AI Subnet (Isolated)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#34A853;strokeWidth=1.5;arcSize=3;fontFamily=Helvetica;verticalAlign=top;paddingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="225" width="470" height="480" as="geometry" />
+        </mxCell>
+        <!-- Stacked Cards inside Data/AI Subnet -->
+        <mxCell id="vector_search" value="&lt;div style='display:flex;align-items:center;padding:10px;'&gt;&lt;span style='font-size:38px;margin-right:15px;'&gt;🔣&lt;/span&gt;&lt;div&gt;&lt;b style='font-size:15px;color:#202124;'&gt;Vertex AI Vector&lt;br&gt;Search Index&lt;br&gt;(via PSC Endpoint)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#5F6368;'&gt;(Logical container/data part)&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#34A853;strokeWidth=1.5;arcSize=8;shadow=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="265" width="410" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="training_cluster" value="&lt;div style='display:flex;align-items:center;padding:10px;'&gt;&lt;span style='font-size:38px;margin-right:15px;'&gt;🧠&lt;/span&gt;&lt;div&gt;&lt;b style='font-size:15px;color:#202124;'&gt;Vertex AI&lt;br&gt;Training Cluster&lt;br&gt;(via PSC Endpoint)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#5F6368;'&gt;(Logical container/ML)&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#34A853;strokeWidth=1.5;arcSize=8;shadow=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="405" width="410" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="gemini_api" value="&lt;div style='display:flex;align-items:center;padding:10px;'&gt;&lt;span style='font-size:38px;margin-right:15px;'&gt;✨&lt;/span&gt;&lt;div&gt;&lt;b style='font-size:15px;color:#202124;'&gt;Vertex AI&lt;br&gt;Gemini API&lt;br&gt;(via PSC Endpoint)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#5F6368;'&gt;(Logical container/AI)&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#34A853;strokeWidth=1.5;arcSize=8;shadow=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="555" width="410" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Bidirectional Internal VPC Connectors -->
+        <mxCell id="arr_orch_vec" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;startArrow=block;endFill=1;startFill=1;" edge="1" parent="1" source="agent_orchestrator" target="vector_search">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="365" as="sourcePoint" />
+            <mxPoint x="1030" y="325" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_orch_vec" value="&lt;font style='font-size:11px;color:#5F6368;'&gt;Private gRPC/&lt;br&gt;HTTP Endpoint&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="915" y="305" width="110" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr_orch_train" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;startArrow=block;endFill=1;startFill=1;" edge="1" parent="1" source="agent_orchestrator" target="training_cluster">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="445" as="sourcePoint" />
+            <mxPoint x="1030" y="465" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_orch_train" value="&lt;font style='font-size:11px;color:#5F6368;'&gt;Private gRPC/&lt;br&gt;HTTP Endpoint&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="915" y="445" width="110" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr_orch_gemini" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;startArrow=block;endFill=1;startFill=1;" edge="1" parent="1" source="agent_orchestrator" target="gemini_api">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="485" as="sourcePoint" />
+            <mxPoint x="1030" y="615" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="800" y="615" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_orch_gemini" value="&lt;font style='font-size:11px;color:#5F6368;'&gt;Private Private Call&lt;br&gt;via PSC Endpoint&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="820" y="575" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Right-Margin Pointer Annotations (External Callouts outside Master Container on far right) -->
+        <mxCell id="callout_1" value="&lt;font style='font-size:12px;color:#202124;'&gt;&lt;b&gt;Private Service&lt;br&gt;Connect Endpoints&lt;/b&gt;&lt;br&gt;&lt;font color='#5F6368'&gt;(Logical integration in VPC)&lt;/font&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="260" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_c1" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="callout_1" target="vector_search">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="callout_2" value="&lt;font style='font-size:12px;color:#202124;'&gt;&lt;b&gt;Private Service&lt;br&gt;Connect Endpoints&lt;/b&gt;&lt;br&gt;&lt;font color='#5F6368'&gt;(Logical integration in VPC)&lt;/font&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="390" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_c2" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="callout_2" target="training_cluster">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="callout_3" value="&lt;font style='font-size:12px;color:#202124;'&gt;&lt;b&gt;VPC Service Controls&lt;br&gt;Perimeter&lt;/b&gt; &lt;font color='#5F6368'&gt;(Secures&lt;br&gt;managed services)&lt;/font&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="500" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_c3" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="callout_3" target="perimeter_box">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1510" y="530" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="callout_4" value="&lt;font style='font-size:12px;color:#202124;'&gt;&lt;b&gt;Cloud Armor WAF Rules&lt;/b&gt;&lt;br&gt;&lt;font color='#5F6368'&gt;(Edge protection)&lt;/font&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="595" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_c4" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="callout_4" target="master_container">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1530" y="617" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="callout_5" value="&lt;font style='font-size:12px;color:#202124;'&gt;&lt;b&gt;Google Cloud IAM&lt;/b&gt;&lt;br&gt;&lt;font color='#5F6368'&gt;(Role-Based Access&lt;br&gt;Control) points to all&lt;br&gt;components&lt;/font&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="660" width="180" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_c5" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="callout_5" target="gemini_api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Bottom Footer Region -->
+        <!-- Legend Box (Bottom Left) -->
+        <mxCell id="legend_box_deploy" value="&lt;b style='font-size:14px;color:#202124;'&gt;Legend&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=8;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="20" y="795" width="510" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_d1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Logical container&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="35" y="32" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_d1_icon" value="" style="shape=cube;size=10;fillColor=#4285F4;strokeColor=#1A73E8;strokeWidth=1.2;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="12" y="32" width="18" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_d2" value="&lt;font style='font-size:11px;color:#202124;'&gt;Software types&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="35" y="58" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_d2_icon" value="&lt;span style='font-size:16px;'&gt;👤&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="10" y="57" width="22" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_d3" value="&lt;font style='font-size:11px;color:#202124;'&gt;Line colors&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="35" y="84" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_d3_icon" value="" style="endArrow=none;strokeColor=#202124;strokeWidth=1.5;html=1;" edge="1" parent="legend_box_deploy">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="12" y="94" as="sourcePoint" />
+            <mxPoint x="30" y="94" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="leg_d4" value="&lt;font style='font-size:11px;color:#202124;'&gt;Security Boundaries&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="35" y="110" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_d4_icon" value="" style="endArrow=none;strokeColor=#34A853;strokeWidth=1.5;html=1;" edge="1" parent="legend_box_deploy">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="12" y="120" as="sourcePoint" />
+            <mxPoint x="30" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="leg_d5" value="&lt;font style='font-size:11px;color:#202124;'&gt;Security Controls&lt;br&gt;Boundaries&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="35" y="136" width="130" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_d5_icon" value="" style="endArrow=none;strokeColor=#4285F4;strokeWidth=1.5;html=1;" edge="1" parent="legend_box_deploy">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="12" y="150" as="sourcePoint" />
+            <mxPoint x="30" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Right Column of Legend Box -->
+        <mxCell id="leg_r1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Google Cloud Armor&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="245" y="32" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_r1_icon" value="&lt;span style='font-size:18px;'&gt;🛡️&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="220" y="31" width="20" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_r2" value="&lt;font style='font-size:11px;color:#202124;'&gt;Google Cloud IAM&lt;br&gt;(Role-Based Access Control)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="245" y="58" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_r2_icon" value="&lt;span style='font-size:18px;'&gt;👥&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="220" y="62" width="20" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_r3" value="&lt;font style='font-size:11px;color:#202124;'&gt;Google Cloud IAM&lt;br&gt;(Role-Based Access Control)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="245" y="96" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_r3_icon" value="&lt;span style='font-size:18px;'&gt;🔐&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="220" y="100" width="20" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_r4" value="&lt;font style='font-size:11px;color:#202124;'&gt;VPC Service Controls Perimeter&lt;br&gt;(Secure Managed Environment)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="245" y="134" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_r4_icon" value="" style="rounded=1;fillColor=#FFF8F0;strokeColor=#F6AD55;strokeWidth=1.5;" vertex="1" parent="legend_box_deploy">
+          <mxGeometry x="220" y="138" width="20" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Value Proposition Callout (Bottom Right) -->
+        <mxCell id="why_works_deploy" value="&lt;b style='font-size:15px;color:#202124;'&gt;WHY IT WORKS:&lt;/b&gt; &lt;font style='font-size:15px;color:#202124;'&gt;Security teams and DevOps teams can immediately see both what the software is and how it is protected from the public internet.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;display=flex;align=center;verticalAlign=middle;padding=15;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="550" y="830" width="980" height="105" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+
 /**
  * Compiles a structured diagram specification into pixel-perfect Draw.io XML
  */
@@ -1489,6 +1751,9 @@ export function compileSpecToDrawioXml(spec: CompiledDiagramSpec): string {
   }
   if (spec.diagramId === "data_ai_pipeline_compiled" || spec.diagramId === "data_ai_pipeline") {
     return getExactDataAiPipelineReferenceXml();
+  }
+  if (spec.diagramId === "secure_deployment_map_compiled" || spec.diagramId === "secure_deployment_map") {
+    return getExactSecureDeploymentMapReferenceXml();
   }
 
   const colWidth = 360;
@@ -1728,6 +1993,18 @@ export function getBenchmarkDataAiPipelineSpec(): CompiledDiagramSpec {
   return {
     diagramId: "data_ai_pipeline_compiled",
     title: "Combining Data Flow (DFD), MLOps Lifecycle, and Feature Engineering",
+    columns: [],
+    connections: []
+  };
+}
+
+/**
+ * Returns the benchmark Secure Deployment Map specification for instant compilation
+ */
+export function getBenchmarkSecureDeploymentMapSpec(): CompiledDiagramSpec {
+  return {
+    diagramId: "secure_deployment_map_compiled",
+    title: "Google Cloud Project (ITACS Platform Production)",
     columns: [],
     connections: []
   };

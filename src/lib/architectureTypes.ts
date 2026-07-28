@@ -1,4 +1,4 @@
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -81,47 +81,77 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
 - Summary Callout Banner: Grouping bracket spanning Feature Engineering and MLOps sections. Text: WHY IT WORKS: Data engineers and ML engineers need to see how upstream data changes impact downstream model performance. This gives them a shared map.`
   },
   {
+    id: "secure_deployment_map",
+    name: "6. Secure Deployment Map",
+    category: "Phase 4: Resiliency & Security",
+    prompt: `Act as a Principal Cloud Architect and Master Diagram Illustrator. Generate a 16:9 high-resolution, uncompressed vector-style technical architecture diagram titled "Google Cloud Project (ITACS Platform Production)".
+
+1. Global Bounding Container & Top Anchor Header:
+- Master Container: Light-gray (#F1F3F4) box with rounded corners and 1px dark gray border.
+- Top-Left Header: Official multi-colored Google Cloud (GCP) hexagon logo + bold text: Google Cloud Project (ITACS Platform Production).
+
+2. Zone 1: The Edge (External Traffic):
+- Medium-gray (#E8EAED) rectangle on left side. Title: Zone 1: The Edge (External Traffic).
+- Public Internet Node (Outside Zone 1, Far Left): White card with silhouette person icon labeled Public Internet Traffic. Straight black arrow into Load Balancer.
+- External HTTP(S) Load Balancer (L7) Card: Blue network icon + Cloud Armor shield. Subtitle: Cloud Armor WAF Rules (Ingress filtering). Arrow pointing to API Gateway.
+- Google API Gateway Card: Blue diverging arrows icon. Subtitle: Access key validation and API rate limiting. Arrow pointing via PSC to Agent Orchestrator.
+
+3. Zone 2: The Private Network & Nested Security Perimeters:
+- VPC Service Controls Perimeter: Large beige/light-orange box (#FCE8D5) with orange border. Header: VPC Service Controls Perimeter (Secure Managed Environment). Sub-header: Zone 2: The Private Network (VPC Inside).
+- ITACS Primary VPC Network: White box with solid blue border. Header: ITACS Primary VPC Network.
+- Subnet 1: Private Application Subnet (Isolated): Light blue box. Central Card: ITACS Agent Orchestrator (GKE Pod) with isometric cube and GKE cluster node icon labeled Logic.
+- Subnet 2: Private Data/AI Subnet (Isolated): Light green box. Stacked cards: Vertex AI Vector Search Index, Vertex AI Training Cluster, Vertex AI Gemini API (all via PSC Endpoint).
+- Internal Connectors: Bidirectional arrows from Orchestrator to Vector Search and Training Cluster (Private gRPC/HTTP Endpoint). Orthogonal arrow down and right to Gemini API labeled "Private Private Call via PSC Endpoint".
+
+4. Right-Margin Pointer Annotations:
+- Curved arrows from external text blocks pointing to: Vector Search card, Training Cluster card, Beige Perimeter box, Master Container, and Gemini API card.
+
+5. Bottom Footer Region:
+- Legend Box: Logical container (cube), Software types (silhouette), Line colors, Security Boundaries (green line), Security Controls Boundaries (blue line), Google Cloud Armor, Google Cloud IAM (Role-Based Access Control) (repeated twice as anomaly), VPC Service Controls Perimeter (orange fill).
+- Value Proposition Callout: WHY IT WORKS: Security teams and DevOps teams can immediately see both what the software is and how it is protected from the public internet.`
+  },
+  {
     id: "event_driven_aws",
-    name: "6. Event-Driven Microservices (AWS)",
+    name: "7. Event-Driven Microservices (AWS)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store."
   },
   {
     id: "k8s_mesh",
-    name: "7. Kubernetes Service Mesh (EKS/GKE)",
+    name: "8. Kubernetes Service Mesh (EKS/GKE)",
     category: "Phase 2: Cloud & Microservices",
     prompt: "Act as a Cloud Native Architect. Design a multi-cluster Kubernetes Service Mesh architecture using EKS or GKE with Istio/Anthos, ingress controllers, mutual TLS (mTLS), distributed tracing, and Prometheus monitoring."
   },
   // Phase 3: Data & Analytics
   {
     id: "streaming_pipeline",
-    name: "8. Real-time Streaming Pipeline (GCP)",
+    name: "9. Real-time Streaming Pipeline (GCP)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as a GCP Data Architect. Design a real-time streaming data analytics pipeline. It should ingest streaming data via Pub/Sub, process it with Cloud Dataflow, store structured results in BigQuery, and visualize via Looker."
   },
   {
     id: "data_lakehouse",
-    name: "9. Modern Data Lakehouse (AWS)",
+    name: "10. Modern Data Lakehouse (AWS)",
     category: "Phase 3: Data & Analytics",
     prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for querying, and Amazon Redshift for data warehousing."
   },
   // Phase 4: Resiliency & Security
   {
     id: "multi_region_dr",
-    name: "9. Multi-Region Disaster Recovery (GCP)",
+    name: "11. Multi-Region Disaster Recovery (GCP)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as a GCP Architect. Design a highly available, multi-region disaster recovery architecture. It should include: Cloud DNS routing, HTTPS Load Balancing across two regions, active-passive Cloud Spanner database sync, and dual-region GCS backups."
   },
   {
     id: "zero_trust",
-    name: "10. Zero-Trust Security Perimeter (GCP/AWS)",
+    name: "12. Zero-Trust Security Perimeter (GCP/AWS)",
     category: "Phase 4: Resiliency & Security",
     prompt: "Act as an Enterprise Security Architect. Design a Zero-Trust Security Perimeter architecture featuring VPC Service Controls, Identity-Aware Proxy (IAP), centralized Cloud IAM policies, KMS encryption at rest and in transit, and continuous SIEM monitoring."
   },
   // Phase 5: Enterprise Integration
   {
     id: "hybrid_interconnect",
-    name: "11. Hybrid Cloud Interconnect (Enterprise)",
+    name: "13. Hybrid Cloud Interconnect (Enterprise)",
     category: "Phase 5: Enterprise Integration",
     prompt: "Act as an Enterprise Cloud Architect. Design an integrated Hybrid Cloud Interconnect architecture linking on-premises corporate data centers with public clouds (GCP/AWS) via dedicated Cloud Interconnect / Direct Connect, redundant IPsec VPN gateways, and hybrid identity federation."
   }
@@ -146,6 +176,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   }
   if (archId === 'data_ai_pipeline') {
     return compileSpecToDrawioXml(getBenchmarkDataAiPipelineSpec());
+  }
+  if (archId === 'secure_deployment_map') {
+    return compileSpecToDrawioXml(getBenchmarkSecureDeploymentMapSpec());
   }
 
   return `

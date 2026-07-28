@@ -2605,7 +2605,7 @@ function WorkspaceContent() {
     const baseXml = displayedVersion?.xml_content || '';
     if (!baseXml) return '';
 
-    if (baseXml.includes('ONCOLOGY DATA PORTAL') || baseXml.includes('itacs_conceptual') || baseXml.includes('INTEGRATED INSIGHTS HUB') || baseXml.includes('Dim_Patient') || baseXml.includes('Sub-Schema') || baseXml.includes('ETL_System_Data_Sources') || baseXml.includes('sequence_diagram') || baseXml.includes('Micro Dynamic Sequence') || baseXml.includes('ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM') || baseXml.includes('agentic_rag') || baseXml.includes('data_ai_pipeline') || baseXml.includes('Combining Data Flow (DFD)')) {
+    if (baseXml.includes('ONCOLOGY DATA PORTAL') || baseXml.includes('itacs_conceptual') || baseXml.includes('INTEGRATED INSIGHTS HUB') || baseXml.includes('Dim_Patient') || baseXml.includes('Sub-Schema') || baseXml.includes('ETL_System_Data_Sources') || baseXml.includes('sequence_diagram') || baseXml.includes('Micro Dynamic Sequence') || baseXml.includes('ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM') || baseXml.includes('agentic_rag') || baseXml.includes('data_ai_pipeline') || baseXml.includes('Combining Data Flow (DFD)') || baseXml.includes('secure_deployment_map') || baseXml.includes('Google Cloud Project (ITACS Platform Production)')) {
       return baseXml;
     }
 
