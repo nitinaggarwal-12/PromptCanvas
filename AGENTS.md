@@ -131,4 +131,24 @@ This version has breaking changes — APIs, conventions, and file structure may 
   4. **Text Contrast & Background Pills**: All floating edge labels or badges crossing lines or borders must enforce solid white (`#FFFFFF`) or high-contrast background pills to guarantee 100% legibility.
 * **Closed-Loop Autonomous Self-Correction**: If the programmatic collision harness or visual evaluation detects any line overlap, border slicing, or visual clutter, you must autonomously calculate corrected coordinates, update the codebase, re-run the test harness, and repeat the loop until the geometric collision score is **strictly zero** before asking the user for review.
 
+---
+
+# 📐 Universal 2D Sequence Diagram & Zero-Occlusion Guardrails (Mandatory)
+
+* **Maximum 140px Label Width Rule (Mandatory Line Splitting)**:
+  - For ANY horizontal edge or line in a Sequence Diagram, Flowchart, or Architecture layout, an edge label MUST NEVER be written as a long single line of text.
+  - **The 140px Formula**: Every text string on a horizontal arrow MUST be split across 2 to 3 compact lines using `<br>` so that no single line exceeds ~25 characters (~135px–140px wide).
+  - **Why**: Since Draw.io automatically centers edge text at the exact midpoint between `sourcePoint` and `targetPoint`, enforcing a max width of 140px guarantees a **50px–70px safety buffer** on both sides, ensuring labels never horizontally collide with numbered circle badges (e.g., `c1`, `c9`, `c14`) or vertical lifeline columns.
+* **30px Minimum Vertical Clear-Zone Rule (Zero Text Occlusion)**:
+  - When placing floating note boxes, callout cards, or ReAct boxes above or below horizontal arrow lines, there must be a **minimum 30px vertical separation** (`gapY >= 30px`) between the outer bounding box of the shape and the centerline of the arrow.
+  - **Why**: Since a 2-line or 3-line centered text label extends 16px–24px above and below an arrow line, any gap `<30px` (such as an 11px gap) will cause the box to physically sit on top of and occlude the text label. Enforcing `gapY >= 30px` ensures complete vertical isolation and 100% text legibility.
+* **Active Channel Exclusion (No Note Boxes in Flight Paths)**:
+  - Static explanatory notes or callout boxes MUST NEVER be placed directly inside an active horizontal routing channel between two communicating lifelines.
+  - **Why**: Placing note boxes inside active communication channels creates unavoidable collision traps for arrow lines and centered labels. All note boxes must be placed in dedicated external margin columns (e.g., to the far right of the rightmost lifeline `x >= 1530`) or in dedicated, non-routing vertical tiers.
+* **Proportional Container & Lifeline Scaling**:
+  - Whenever steps are inserted or vertical spacing is expanded to eliminate overlaps, all outer container frames (`gov_network`), vertical dashed lifelines, and execution activation bars must be proportionally extended in height and width so that child elements never spill over or collide with bottom borders.
+* **Universal Theme Synchronization & Active-State UX Clarity**:
+  - All outer viewport wrappers, radial dot grids, and canvas backgrounds must dynamically synchronize with the active diagram theme (`#FFFFFF` / `#F1F5F9` for Light Theme, `#0F172A` for Dark Theme) to eliminate jarring background contrasts.
+  - UI theme toggle buttons must clearly display the **currently active theme** with an explicit label (e.g., `☀️ Light Theme`), rather than ambiguous target-switch wording, so users and visual test suites can instantly verify the running state.
+
 
