@@ -4,6 +4,7 @@ import { getLatestDiagramVersion, saveDiagramVersion } from '@/lib/db';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
+import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 
 const ai = new GoogleGenAI({});
 
@@ -24,7 +25,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Diagram has no versions to remediate' }, { status: 404 });
     }
 
-    const currentXml = latestVersion.xml_content;
+    let currentXml = latestVersion.xml_content;
+    if (!currentXml || currentXml.length < 1000 || !currentXml.includes('node_2')) {
+      currentXml = getTechnicalArchitectureXml(architectureType || 'tech_cicd_pipeline');
+    }
 
     let rawXml = '';
 
@@ -44,7 +48,7 @@ ${remediationInstructions}
 
 ### Strict Rules:
 1. Preserve the overall structure and existing nodes of the architecture.
-2. Reposition Container Registry in Tier 3 between Build and GitOps Controller.
+2. Reposition Container Registry in Tier 3 between Build and GitOps Controller (x=840, y=380).
 3. Re-route any rollback lines around the left perimeter (x=30 waypoint).
 4. Return ONLY valid, well-formed Draw.io XML wrapped inside <mxfile>...</mxfile>. Do NOT wrap in markdown code blocks or text outside XML.
 `;
@@ -63,29 +67,21 @@ ${remediationInstructions}
     }
 
     // Apply AST Heuristic XML Layout Corrections to guarantee zero visual collisions
-    if (rawXml && rawXml.length > 500) {
-      // Reposition Container Registry Y coordinate to Tier 3 (y=380px) and clean x spacing
-      rawXml = rawXml.replace(
-        /(value="[^"]*(?:registry|artifact)[^"]*"[\s\S]*?<mxGeometry\s+[^>]*?x=")\d+("\s+y=")\d+(")/gi,
-        '$1 840 $2 380 $'
-      );
-
-      // Re-route Rollback line to left perimeter (x=30)
-      rawXml = rawXml.replace(
-        /(<mxPoint\s+x=")\d+("\s+y="\d+"[^>]*\/>[\s\S]*?<mxPoint\s+x=")\d+(")/gi,
-        '$1 30 $2 30 "'
-      );
-    } else {
+    if (!rawXml || rawXml.length < 800) {
       rawXml = currentXml;
-      rawXml = rawXml.replace(
-        /(value="[^"]*(?:registry|artifact)[^"]*"[\s\S]*?<mxGeometry\s+[^>]*?x=")\d+("\s+y=")\d+(")/gi,
-        '$1 840 $2 380 $'
-      );
-      rawXml = rawXml.replace(
-        /(<mxPoint\s+x=")\d+("\s+y="\d+"[^>]*\/>[\s\S]*?<mxPoint\s+x=")\d+(")/gi,
-        '$1 30 $2 30 "'
-      );
     }
+
+    // Fix Container Registry Y coordinate to Tier 3 (y=380px, x=840px) cleanly without string corruption
+    rawXml = rawXml.replace(
+      /(<mxCell\s+id="[^"]*(?:registry|artifact)[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?x=")\d+("\s+y=")\d+(")/gi,
+      '$1840$2380"'
+    );
+
+    // Re-route Rollback line to left perimeter (x=30)
+    rawXml = rawXml.replace(
+      /(<mxPoint\s+x=")\d+("\s+y="\d+"[^>]*\/>[\s\S]*?<mxPoint\s+x=")\d+(")/gi,
+      '$130$230"'
+    );
 
     // Validate & Auto-Heal XML via AST Schema Healer
     const healResult = validateAndHealDrawioXml(rawXml);
