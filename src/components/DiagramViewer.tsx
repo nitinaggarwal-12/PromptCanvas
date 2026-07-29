@@ -34,7 +34,9 @@ export default function DiagramViewer({
   bgTheme = 'light',
 }: DiagramViewerProps) {
   const sanitizedXml = React.useMemo(() => {
-    if (!xml) return '';
+    if (!xml) {
+      return getTechnicalArchitectureXml('tech_cicd_pipeline');
+    }
     let rawStr = '';
     if (typeof xml === 'string') {
       rawStr = xml;
@@ -43,11 +45,16 @@ export default function DiagramViewer({
     } else {
       rawStr = String(xml);
     }
-    const healed = validateAndHealDrawioXml(rawStr);
-    if (!healed.xml || healed.xml.length < 100) {
-      return validateAndHealDrawioXml(getTechnicalArchitectureXml('tech_cicd_pipeline')).xml;
+    try {
+      const healed = validateAndHealDrawioXml(rawStr);
+      if (!healed.xml || healed.xml.length < 100) {
+        return getTechnicalArchitectureXml('tech_cicd_pipeline');
+      }
+      return healed.xml;
+    } catch (err) {
+      console.error('[DiagramViewer] Failed to heal XML, using fallback:', err);
+      return getTechnicalArchitectureXml('tech_cicd_pipeline');
     }
-    return healed.xml;
   }, [xml]);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';

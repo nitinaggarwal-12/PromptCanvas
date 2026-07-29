@@ -24,11 +24,6 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     '$1840$2380"'
   );
 
-  // Re-route Rollback line to left perimeter (x=30)
-  xml = xml.replace(
-    /(<mxPoint\s+x=")\d+("\s+y="\d+"[^>]*\/>[\s\S]*?<mxPoint\s+x=")\d+(")/gi,
-    '$130$230"'
-  );
 
   // Fix broken icon URLs
   xml = xml.replace(/argo-icon\.svg/gi, 'logos:argo.svg');
