@@ -152,8 +152,13 @@ export function getArchitectureTypeById(id: string): ArchitectureTypeOption {
 
 export function getDefaultXmlForArchitecture(archId?: string | null, useCaseContext?: string, userPrompt?: string): string {
   let xml = '';
-  if (archId === 'conceptual_diagram') {
+  const promptLower = (userPrompt || useCaseContext || '').toLowerCase();
+  const isCustomDomainPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('bwa') || promptLower.includes('pipeline') || promptLower.includes('ci/cd');
+
+  if (archId === 'conceptual_diagram' && !isCustomDomainPrompt && (!userPrompt || userPrompt.includes('ITACS Oncology'))) {
     xml = compileSpecToDrawioXml(getBenchmarkItacsSpec());
+  } else if (isCustomDomainPrompt || archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') {
+    xml = getTechnicalArchitectureXml('tech_cicd_pipeline');
   } else if (archId === 'erd') {
     xml = compileSpecToDrawioXml(getBenchmarkErdSpec());
   } else if (archId === 'agentic_rag') {
