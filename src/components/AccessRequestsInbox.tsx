@@ -39,8 +39,9 @@ export function AccessRequestsInbox({ user }: AccessRequestsInboxProps) {
     try {
       const res = await fetch('/api/access-requests');
       const data = await res.json();
-      if (res.ok && data.pendingForOwner) {
-        setRequests(data.pendingForOwner);
+      if (res.ok) {
+        const list = Array.isArray(data) ? data : (data.pendingForOwner || data.requests || []);
+        setRequests(list);
       }
     } catch (err) {
       console.error('Failed to fetch access requests:', err);

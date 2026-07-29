@@ -32,7 +32,8 @@ export default function SuperAdminDashboard() {
       if (!res.ok) {
         throw new Error(data.error || 'Access denied.');
       }
-      setUsers(data.users || []);
+      const userList = Array.isArray(data) ? data : (data.users || []);
+      setUsers(userList);
     } catch (err: unknown) {
       console.error(err);
       setError(err instanceof Error ? err.message : 'Forbidden. Super-Admin access required.');

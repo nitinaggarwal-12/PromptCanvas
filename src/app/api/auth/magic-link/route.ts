@@ -11,7 +11,8 @@ export async function POST(request: Request) {
     }
 
     const token = await createMagicLinkToken(email);
-    const magicLinkUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/magic-link/verify?token=${token}`;
+    const reqOrigin = request.headers.get('origin') || (request.headers.get('host') ? `https://${request.headers.get('host')}` : null) || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const magicLinkUrl = `${reqOrigin}/api/auth/magic-link/verify?token=${token}`;
 
     const isDev = process.env.NODE_ENV !== 'production' || process.env.ENABLE_DEV_MAGIC_LINK === 'true';
 

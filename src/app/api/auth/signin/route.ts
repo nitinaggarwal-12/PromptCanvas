@@ -34,7 +34,8 @@ export async function POST(request: Request) {
       await migrateGuestContent(oldUser.id, user.id);
     }
 
-    const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip');
+    const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+    const ipAddress = rawIp.split(',')[0]?.trim() || '127.0.0.1';
     const userAgent = request.headers.get('user-agent');
     await logUserEvent(user.id, 'LOGIN', ipAddress, userAgent);
 

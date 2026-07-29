@@ -65,7 +65,8 @@ export default function DiagramFeedbackWidget({
   ) => {
     setIsSubmitting(true);
     try {
-      const res = await fetch(`/api/diagrams/${diagramId}/feedback`, {
+      const targetDiagramId = diagramId || 'global_workspace';
+      const res = await fetch(`/api/diagrams/${targetDiagramId}/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
