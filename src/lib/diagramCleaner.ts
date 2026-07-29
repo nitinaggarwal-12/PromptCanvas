@@ -387,7 +387,25 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
  */
 function isPreservedCustomLayout(xml: string): boolean {
   if (!xml || typeof xml !== 'string') return false;
-  return xml.includes('ONCOLOGY DATA PORTAL') || xml.includes('itacs_conceptual') || xml.includes('INTEGRATED INSIGHTS HUB') || xml.includes('Dim_Patient') || xml.includes('Sub-Schema') || xml.includes('ETL_System_Data_Sources') || xml.includes('agentic_rag') || xml.includes('Cognitive Architecture') || xml.includes('ReAct Loop') || xml.includes('Secure Managed Gemini Enterprise') || xml.includes('sequence_diagram') || xml.includes('Micro Dynamic Sequence') || xml.includes('ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM');
+  const lower = xml.toLowerCase();
+  return (
+    lower.includes('conceptual_diagram') ||
+    lower.includes('oncology data portal') ||
+    lower.includes('itacs_conceptual') ||
+    lower.includes('integrated insights hub') ||
+    lower.includes('merck') ||
+    lower.includes('keytruda') ||
+    lower.includes('demand forecasting') ||
+    lower.includes('dim_patient') ||
+    lower.includes('sub-schema') ||
+    lower.includes('etl_system_data_sources') ||
+    lower.includes('agentic_rag') ||
+    lower.includes('cognitive architecture') ||
+    lower.includes('react loop') ||
+    lower.includes('sequence_diagram') ||
+    lower.includes('macro sequence') ||
+    xml.includes('itacs_conceptual_compiled')
+  );
 }
 
 export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResult {

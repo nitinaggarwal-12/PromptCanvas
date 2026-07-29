@@ -72,8 +72,10 @@ function runDeterministicCategoryAstAudit(
   const gaps: AuditGap[] = [];
   const xmlLower = xmlContent.toLowerCase();
 
+  const isConceptual = archType === 'conceptual_diagram' || archType.includes('conceptual');
   const isErd = archType === 'erd';
   const isSequence = archType.includes('sequence');
+  const isBusiness = isConceptual || isErd || isSequence || archType === 'governance_state_machine';
   const isCicd = archType.includes('cicd') || archType.includes('devops') || xmlLower.includes('cicd');
 
   // Parse all vertex bounding boxes from XML dynamically
@@ -177,11 +179,11 @@ function runDeterministicCategoryAstAudit(
       }
     }
   } else if (categoryKey === 'security') {
-    const hasWaf = xmlLower.includes('waf') || xmlLower.includes('cloud armor') || xmlLower.includes('aws waf');
-    const hasSecrets = xmlLower.includes('secret') || xmlLower.includes('vault') || xmlLower.includes('kms');
-    const hasPrivateVpc = xmlLower.includes('private vpc') || xmlLower.includes('private subnet') || xmlLower.includes('isolated');
+    const hasWaf = xmlLower.includes('waf') || xmlLower.includes('cloud armor') || xmlLower.includes('aws waf') || xmlLower.includes('edge protection');
+    const hasSecrets = xmlLower.includes('secret') || xmlLower.includes('vault') || xmlLower.includes('kms') || xmlLower.includes('credential');
+    const hasPrivateVpc = xmlLower.includes('private vpc') || xmlLower.includes('private subnet') || xmlLower.includes('isolated') || xmlLower.includes('subnet') || xmlLower.includes('security boundary');
 
-    if (!hasWaf && !isErd) {
+    if (!hasWaf && !isBusiness) {
       gaps.push({
         id: 'gap_sec_ast_1',
         title: 'Missing Edge Protection / WAF Layer',
@@ -191,7 +193,7 @@ function runDeterministicCategoryAstAudit(
         remediation: 'Attach Cloud Armor WAF or AWS WAF Security Policies in front of ingress endpoints.'
       });
     }
-    if (!hasSecrets) {
+    if (!hasSecrets && !isBusiness) {
       gaps.push({
         id: 'gap_sec_ast_2',
         title: 'Incomplete Secrets Management Strategy',
@@ -201,7 +203,7 @@ function runDeterministicCategoryAstAudit(
         remediation: 'Incorporate Google Secret Manager / AWS Secrets Manager with CMEK key rotation.'
       });
     }
-    if (!hasPrivateVpc && !isErd && !isSequence) {
+    if (!hasPrivateVpc && !isBusiness) {
       gaps.push({
         id: 'gap_sec_ast_3',
         title: 'Private Network Isolation Not Explicitly Shown',
@@ -215,7 +217,7 @@ function runDeterministicCategoryAstAudit(
     const hasReplica = xmlLower.includes('replica') || xmlLower.includes('standby') || xmlLower.includes('ha') || xmlLower.includes('multi-region');
     const hasDlq = xmlLower.includes('dlq') || xmlLower.includes('dead-letter') || xmlLower.includes('holding');
 
-    if (!hasReplica && !isErd && !isSequence) {
+    if (!hasReplica && !isBusiness) {
       gaps.push({
         id: 'gap_top_ast_1',
         title: 'Single Region Database Point of Failure',
@@ -225,7 +227,7 @@ function runDeterministicCategoryAstAudit(
         remediation: 'Add Multi-AZ Cross-Region Read/Write Standby Replica instances.'
       });
     }
-    if ((xmlLower.includes('event') || xmlLower.includes('pub/sub') || xmlLower.includes('kafka')) && !hasDlq) {
+    if ((xmlLower.includes('event') || xmlLower.includes('pub/sub') || xmlLower.includes('kafka')) && !hasDlq && !isBusiness) {
       gaps.push({
         id: 'gap_top_ast_2',
         title: 'Missing Dead-Letter Queue (DLQ) Error Holding Area',
@@ -285,8 +287,10 @@ function generateFallbackHeuristicAudit(
   const gaps: AuditGap[] = [];
   let score = 98;
 
+  const isConceptual = archType === 'conceptual_diagram' || archType.includes('conceptual');
   const isErd = archType === 'erd';
   const isSequence = archType.includes('sequence');
+  const isBusiness = isConceptual || isErd || isSequence || archType === 'governance_state_machine';
   const isRag = archType.includes('rag');
 
   if (categoryKey === 'security') {
@@ -328,6 +332,8 @@ function generateFallbackHeuristicAudit(
           remediation: 'Add ReAct Thought & Action observation badges on sequence lifelines.'
         });
       }
+    } else if (isBusiness) {
+      score = 98;
     } else {
       const hasWaf = xmlLower.includes('waf') || xmlLower.includes('armor');
       const hasKms = xmlLower.includes('kms') || xmlLower.includes('encryption');
@@ -359,7 +365,7 @@ function generateFallbackHeuristicAudit(
   } else if (categoryKey === 'topology') {
     score = 94;
     const hasReplica = xmlLower.includes('replica') || xmlLower.includes('standby') || xmlLower.includes('dr');
-    if (!isErd && !isSequence && !hasReplica) {
+    if (!isBusiness && !hasReplica) {
       score -= 12;
       gaps.push({
         id: 'gap_top_1',

@@ -1,6 +1,6 @@
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 export { getTechnicalArchitectureXml };
-import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkMacroSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec, getBenchmarkTechnicalArchitectureSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getExactItacsReferenceXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkMacroSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec, getBenchmarkTechnicalArchitectureSpec } from './diagramCompiler';
 import { injectUseCaseFlavor } from './diagramCleaner';
 
 export interface ArchitectureTypeOption {
@@ -155,7 +155,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   let xml = '';
 
   if (archId === 'conceptual_diagram') {
-    xml = compileSpecToDrawioXml(getBenchmarkItacsSpec());
+    xml = getExactItacsReferenceXml();
   } else if (archId === 'erd') {
     xml = compileSpecToDrawioXml(getBenchmarkErdSpec());
   } else if (archId === 'agentic_rag') {
