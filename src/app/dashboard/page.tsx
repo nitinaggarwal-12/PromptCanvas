@@ -178,7 +178,7 @@ export default function Dashboard() {
     setIsCreating(true);
 
     try {
-      const defaultXml = getDefaultXmlForArchitecture(selectedArchType);
+      const defaultXml = getDefaultXmlForArchitecture(selectedArchType, newDiagramName.trim(), newDiagramName.trim());
 
       const promptToGenerate = newDiagramPrompt.trim();
 

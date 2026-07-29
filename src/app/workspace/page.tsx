@@ -980,9 +980,8 @@ function WorkspaceContent() {
     if (!newDiagramName.trim()) return;
     
     try {
-      const defaultXml = getDefaultXmlForArchitecture(selectedArchType);
-
       const promptToGenerate = newDiagramPrompt.trim();
+      const defaultXml = getDefaultXmlForArchitecture(selectedArchType, promptToGenerate || newDiagramName.trim(), promptToGenerate || newDiagramName.trim());
 
       if (promptToGenerate) {
         setIsGenerating(true);
@@ -1092,7 +1091,7 @@ function WorkspaceContent() {
         body: JSON.stringify({
           prompt: userPrompt,
           diagramId: activeDiagram.id,
-          architectureType: selectedArchType
+          architectureType: activeDiagram.architecture_type || selectedArchType
         })
       });
 
@@ -1439,7 +1438,7 @@ function WorkspaceContent() {
         body: JSON.stringify({ 
           diagramId: activeDiagram.id, 
           versionId: displayedVersion?.id,
-          architectureType: selectedArchType,
+          architectureType: activeDiagram.architecture_type || selectedArchType,
           auditCategory: catToUse,
           imageBase64
         })
@@ -1490,10 +1489,9 @@ function WorkspaceContent() {
         body: JSON.stringify({
           diagramId: activeDiagram.id,
           selectedGaps,
-          architectureType: selectedArchType
+          architectureType: activeDiagram.architecture_type || selectedArchType
         })
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || errorData.details || 'Failed to remediate security gaps');
@@ -1506,7 +1504,7 @@ function WorkspaceContent() {
         body: JSON.stringify({ 
           diagramId: activeDiagram.id,
           auditCategory: selectedAuditCategory,
-          architectureType: selectedArchType
+          architectureType: activeDiagram.architecture_type || selectedArchType
         })
       });
       if (auditRes.ok) {
