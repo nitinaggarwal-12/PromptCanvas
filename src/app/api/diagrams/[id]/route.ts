@@ -22,7 +22,20 @@ export async function GET(request: Request, { params }: RouteParams) {
       );
     }
 
-    const versions = await getDiagramVersions(id);
+    const rawVersions = await getDiagramVersions(id);
+    const versions = rawVersions.map((v: any) => {
+      let xmlStr = v.xml_content;
+      if (typeof xmlStr !== 'string' && xmlStr !== null && xmlStr !== undefined) {
+        if (Buffer.isBuffer(xmlStr)) {
+          xmlStr = xmlStr.toString('utf-8');
+        } else if (typeof xmlStr === 'object') {
+          xmlStr = Buffer.from(Object.values(xmlStr) as any).toString('utf-8');
+        } else {
+          xmlStr = String(xmlStr);
+        }
+      }
+      return { ...v, xml_content: xmlStr };
+    });
 
     return NextResponse.json({
       ...diagram,

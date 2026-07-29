@@ -28,10 +28,16 @@ export default function DiagramViewer({
   customH = 10,
   bgTheme = 'light',
 }: DiagramViewerProps) {
-  // Strip markdown fences if present without mutating geometry coordinates
   const sanitizedXml = React.useMemo(() => {
-    if (!xml || typeof xml !== 'string') return '';
-    let cleaned = xml.trim();
+    if (!xml) return '';
+    let cleaned = '';
+    if (typeof xml === 'string') {
+      cleaned = xml.trim();
+    } else if (typeof xml === 'object' && xml !== null) {
+      cleaned = Buffer.from(Object.values(xml) as any).toString('utf-8').trim();
+    } else {
+      cleaned = String(xml).trim();
+    }
     if (cleaned.includes('```')) {
       cleaned = cleaned.replace(/^```[a-z]*\n?/gi, '').replace(/\n?```$/g, '').trim();
     }
