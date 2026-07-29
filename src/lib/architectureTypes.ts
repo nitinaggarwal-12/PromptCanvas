@@ -1,3 +1,4 @@
+import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkMacroSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec, getBenchmarkTechnicalArchitectureSpec } from './diagramCompiler';
 
 export interface ArchitectureTypeOption {
@@ -161,7 +162,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   if (archId === 'erd') {
     return compileSpecToDrawioXml(getBenchmarkErdSpec());
   }
-  if (archId === 'agentic_rag' || archId === 'tech_rag_gcp') {
+  if (archId === 'agentic_rag') {
     return compileSpecToDrawioXml(getBenchmarkAgenticRagSpec());
   }
   if (archId === 'sequence_diagram') {
@@ -176,7 +177,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
   if (archId === 'secure_deployment_map') {
     return compileSpecToDrawioXml(getBenchmarkSecureDeploymentMapSpec());
   }
-  if (archId === 'devops_cicd_pipeline' || archId === 'tech_cicd_pipeline') {
+  if (archId === 'devops_cicd_pipeline') {
     return compileSpecToDrawioXml(getBenchmarkDevopsCicdPipelineSpec());
   }
   if (archId === 'governance_state_machine') {
@@ -189,8 +190,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null): string {
     return compileSpecToDrawioXml(getBenchmarkDarkModeUnifiedSystemViewSpec());
   }
   
-  if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect')) {
-    return compileSpecToDrawioXml(getBenchmarkTechnicalArchitectureSpec(archId));
+  if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline')) {
+    return getTechnicalArchitectureXml(archId);
   }
 
   return `
