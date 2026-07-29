@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI, Type } from '@google/genai';
-import { getLatestDiagramVersion, saveAuditReport, getAuditReportsForDiagram } from '@/lib/db';
+import { getLatestDiagramVersion, getDiagramVersion, saveAuditReport, getAuditReportsForDiagram } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 
@@ -21,7 +21,8 @@ const PROMPTS: Record<AuditCategory, string> = {
   security: `
 You are "Maestro-Audit", an elite enterprise solutions architect and cybersecurity auditor.
 Analyze the provided Draw.io (mxGraph) XML diagram for SECURITY & COMPLIANCE (HIPAA, GxP, SOC 2, PCI-DSS).
-Identify missing security controls (e.g. WAF, KMS Encryption, Private Subnets, API Gateways, DR Standby Replicas).
+Consider the specific diagram model and architecture type provided.
+Identify missing security controls appropriate for this architecture type (e.g., WAF, KMS Encryption, Private Subnets, API Gateways, DR Standby Replicas, Role-based Access Control).
 If secure, return high score (90-100) and empty gaps array.
 `,
 
@@ -33,8 +34,9 @@ If nodes and connector labels are spaced cleanly with zero overlaps, return high
 
   topology: `
 You are "Maestro-Topology", a chief cloud enterprise architecture reviewer.
-Analyze the provided Draw.io (mxGraph) XML diagram for CLOUD ARCHITECTURE TOPOLOGY & DATA FLOW ACCURACY (Well-Architected Framework, ingress ordering, load balancing, direct database exposure, missing gateways).
-If topology follows cloud best practices, return high score (90-100) and empty gaps array.
+Analyze the provided Draw.io (mxGraph) XML diagram for CLOUD ARCHITECTURE TOPOLOGY & DATA FLOW ACCURACY (Well-Architected Framework, ingress ordering, load balancing, direct database exposure, missing gateways, entity relationships, sequence execution loops).
+Evaluate topology against standard design patterns for this specific architecture type.
+If topology follows best practices, return high score (90-100) and empty gaps array.
 `,
 
   responsive: `
@@ -55,37 +57,83 @@ Score the percentage of nodes using official vendor logos.
 `
 };
 
-function generateFallbackHeuristicAudit(xmlContent: string, categoryKey: AuditCategory): { score: number; report: string; gaps: AuditGap[] } {
-  const hasWaf = xmlContent.toLowerCase().includes('waf') || xmlContent.toLowerCase().includes('armor');
-  const hasKms = xmlContent.toLowerCase().includes('kms') || xmlContent.toLowerCase().includes('encryption');
-  const hasReplica = xmlContent.toLowerCase().includes('replica') || xmlContent.toLowerCase().includes('standby') || xmlContent.toLowerCase().includes('dr');
-  const hasApiGateway = xmlContent.toLowerCase().includes('gateway') || xmlContent.toLowerCase().includes('apigee');
-
+function generateFallbackHeuristicAudit(
+  xmlContent: string, 
+  categoryKey: AuditCategory,
+  archType: string = 'conceptual_diagram'
+): { score: number; report: string; gaps: AuditGap[] } {
+  const xmlLower = xmlContent.toLowerCase();
   const gaps: AuditGap[] = [];
   let score = 98;
 
+  const isErd = archType === 'erd';
+  const isSequence = archType.includes('sequence');
+  const isRag = archType.includes('rag');
+
   if (categoryKey === 'security') {
-    if (!hasWaf) {
-      score -= 10;
-      gaps.push({
-        id: 'gap_sec_1',
-        title: 'Missing Edge Web Application Firewall (WAF)',
-        severity: 'HIGH',
-        component: 'Ingress Entry Point',
-        description: 'Public traffic enters the load balancer without DDoS & Layer 7 scrubbing.',
-        remediation: 'Attach Cloud Armor WAF / AWS WAF Security Policy to the Edge Load Balancer.'
-      });
-    }
-    if (!hasKms) {
-      score -= 8;
-      gaps.push({
-        id: 'gap_sec_2',
-        title: 'Missing Customer-Managed Encryption Keys (CMEK)',
-        severity: 'MEDIUM',
-        component: 'Database & Storage',
-        description: 'Persistent data stores are using default provider-managed encryption keys.',
-        remediation: 'Attach Cloud KMS / AWS KMS envelope encryption key vaults to databases.'
-      });
+    if (isErd) {
+      const hasPk = xmlLower.includes('pk') || xmlLower.includes('primary');
+      const hasFk = xmlLower.includes('fk') || xmlLower.includes('foreign');
+      if (!hasPk) {
+        score -= 10;
+        gaps.push({
+          id: 'gap_sec_erd_1',
+          title: 'Missing Primary Key Identifiers (PK)',
+          severity: 'HIGH',
+          component: 'Entity Relationship Schema',
+          description: 'Database entities lack explicit Primary Key constraints.',
+          remediation: 'Annotate primary key fields with PK markers across all dimension and fact tables.'
+        });
+      }
+      if (!hasFk) {
+        score -= 8;
+        gaps.push({
+          id: 'gap_sec_erd_2',
+          title: 'Missing Foreign Key Relational Constraints (FK)',
+          severity: 'MEDIUM',
+          component: 'Relational References',
+          description: 'Foreign key relationships between Fact and Dimension tables are unconstrained.',
+          remediation: 'Define explicit foreign key references (FK) on relational connector lines.'
+        });
+      }
+    } else if (isSequence) {
+      const hasReact = xmlLower.includes('react') || xmlLower.includes('thought') || xmlLower.includes('action');
+      if (!hasReact) {
+        score -= 10;
+        gaps.push({
+          id: 'gap_sec_seq_1',
+          title: 'Missing ReAct Agent Reasoning & Action Loop',
+          severity: 'HIGH',
+          component: 'Sequence Execution Loop',
+          description: 'Sequence diagram lacks explicit ReAct Thought/Action badges.',
+          remediation: 'Add ReAct Thought & Action observation badges on sequence lifelines.'
+        });
+      }
+    } else {
+      const hasWaf = xmlLower.includes('waf') || xmlLower.includes('armor');
+      const hasKms = xmlLower.includes('kms') || xmlLower.includes('encryption');
+      if (!hasWaf) {
+        score -= 10;
+        gaps.push({
+          id: 'gap_sec_1',
+          title: 'Missing Edge Web Application Firewall (WAF)',
+          severity: 'HIGH',
+          component: 'Ingress Entry Point',
+          description: 'Public traffic enters the load balancer without Layer 7 DDoS scrubbing.',
+          remediation: 'Attach Cloud Armor WAF / AWS WAF Security Policy to the Edge Load Balancer.'
+        });
+      }
+      if (!hasKms) {
+        score -= 8;
+        gaps.push({
+          id: 'gap_sec_2',
+          title: 'Missing Customer-Managed Encryption Keys (CMEK)',
+          severity: 'MEDIUM',
+          component: 'Database & Storage',
+          description: 'Persistent data stores are using default provider-managed encryption keys.',
+          remediation: 'Attach Cloud KMS / AWS KMS envelope encryption key vaults to databases.'
+        });
+      }
     }
   } else if (categoryKey === 'visual') {
     score = 96;
@@ -99,7 +147,8 @@ function generateFallbackHeuristicAudit(xmlContent: string, categoryKey: AuditCa
     });
   } else if (categoryKey === 'topology') {
     score = 94;
-    if (!hasReplica) {
+    const hasReplica = xmlLower.includes('replica') || xmlLower.includes('standby') || xmlLower.includes('dr');
+    if (!isErd && !isSequence && !hasReplica) {
       score -= 12;
       gaps.push({
         id: 'gap_top_1',
@@ -118,11 +167,12 @@ function generateFallbackHeuristicAudit(xmlContent: string, categoryKey: AuditCa
 ### 🛡️ Heuristic Architecture Audit Report (${categoryKey.toUpperCase()})
 
 - **Audit Category**: \`${categoryKey.toUpperCase()}\`
+- **Architecture Type**: \`${archType}\`
 - **Posture Score**: **${score}%** (Grade: ${score >= 90 ? 'EXCELLENT' : 'NEEDS IMPROVEMENT'})
 - **Audited Gaps**: Found ${gaps.length} actionable gap(s).
 
 #### Findings Summary:
-The architecture has been analyzed against industry best practices and cloud standards. 
+The architecture (${archType}) has been analyzed against domain-specific best practices and standards. 
 ${gaps.length === 0 ? 'All architectural controls are properly configured.' : 'Remediate the listed gaps to achieve 100% compliance.'}
 `;
 
@@ -158,17 +208,25 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { diagramId, auditCategory = 'security' } = await request.json();
+    const { diagramId, versionId, auditCategory = 'security', architectureType } = await request.json();
     if (!diagramId) {
       return NextResponse.json({ error: 'diagramId is required' }, { status: 400 });
     }
 
-    const latestVersion = await getLatestDiagramVersion(diagramId);
-    if (!latestVersion) {
+    let targetVersion = null;
+    if (versionId) {
+      targetVersion = await getDiagramVersion(versionId);
+    }
+    if (!targetVersion) {
+      targetVersion = await getLatestDiagramVersion(diagramId, architectureType);
+    }
+
+    if (!targetVersion) {
       return NextResponse.json({ error: 'Diagram has no versions to audit' }, { status: 404 });
     }
 
-    const xmlContent = latestVersion.xml_content;
+    const xmlContent = targetVersion.xml_content;
+    const effectiveArchType = architectureType || targetVersion.architecture_type || 'conceptual_diagram';
     const categoryKey = (PROMPTS[auditCategory as AuditCategory] ? auditCategory : 'security') as AuditCategory;
     const selectedPrompt = PROMPTS[categoryKey];
 
@@ -179,6 +237,9 @@ export async function POST(request: Request) {
     try {
       const systemInstruction = `
 ${selectedPrompt}
+
+### Architecture Model Context:
+- Architecture Model Type: "${effectiveArchType}"
 
 Respond strictly in JSON matching the schema provided:
 - score: number (0-100)
@@ -195,7 +256,7 @@ Respond strictly in JSON matching the schema provided:
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: [
-          { text: `Here is the Draw.io XML of the architecture:\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },
+          { text: `Here is the Draw.io XML of the architecture (${effectiveArchType}):\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },
         ],
         config: {
           systemInstruction,
@@ -233,7 +294,7 @@ Respond strictly in JSON matching the schema provided:
       gaps = parsedData.gaps || [];
     } catch (llmError) {
       console.warn('Gemini LLM API call failed during audit, falling back to AST Heuristic Rule Engine:', llmError);
-      const fallback = generateFallbackHeuristicAudit(xmlContent, categoryKey);
+      const fallback = generateFallbackHeuristicAudit(xmlContent, categoryKey, effectiveArchType);
       score = fallback.score;
       report = fallback.report;
       gaps = fallback.gaps;
@@ -245,7 +306,7 @@ Respond strictly in JSON matching the schema provided:
     try {
       savedReport = await saveAuditReport({
         diagramId,
-        versionNumber: latestVersion.version_number,
+        versionNumber: targetVersion.version_number,
         auditCategory: categoryKey,
         score,
         report,
@@ -258,6 +319,7 @@ Respond strictly in JSON matching the schema provided:
 
     return NextResponse.json({
       auditCategory: categoryKey,
+      architectureType: effectiveArchType,
       score,
       report,
       gaps,

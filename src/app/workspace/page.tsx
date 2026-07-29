@@ -1400,7 +1400,12 @@ function WorkspaceContent() {
       const res = await fetch('/api/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ diagramId: activeDiagram.id, auditCategory: catToUse })
+        body: JSON.stringify({ 
+          diagramId: activeDiagram.id, 
+          versionId: displayedVersion?.id,
+          architectureType: selectedArchType,
+          auditCategory: catToUse 
+        })
       });
       if (!res.ok) {
         const errorData = await res.json();
