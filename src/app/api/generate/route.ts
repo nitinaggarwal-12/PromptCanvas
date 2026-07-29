@@ -489,7 +489,7 @@ ${prompt}`,
         businessUsecase,
         technicalUsecase,
         user?.id || null,
-        architectureType || 'conceptual_diagram'
+        architectureType || 'tech_cicd_pipeline'
       );
       return NextResponse.json({ diagram, version }, { status: 201 });
     }

@@ -717,8 +717,8 @@ export async function getUserDiagramAccess(
 
   if (!diagram) return null;
 
-  // Unowned public seed templates default to Viewer
-  if (!diagram.user_id) return 'Viewer';
+  // Unowned public seed templates default to Editor so users can create versions
+  if (!diagram.user_id) return 'Editor';
 
   // Guest created diagrams are public and editable by all
   if (diagram.user_id.startsWith('guest-')) return 'Editor';
@@ -954,7 +954,7 @@ export async function saveDiagramVersion(
     try {
       await client.query('BEGIN');
       
-      const maxVer = await client.query("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = $1 AND COALESCE(architecture_type, 'conceptual_diagram') = $2", [diagramId, architectureType || 'conceptual_diagram']);
+      const maxVer = await client.query("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = $1 AND (architecture_type = $2 OR architecture_type IS NULL)", [diagramId, architectureType || 'tech_cicd_pipeline']);
       const nextVersionNumber = (maxVer.rows[0].max_version || 0) + 1;
 
       await client.query(`
@@ -971,7 +971,7 @@ export async function saveDiagramVersion(
         aiReasoning || null,
         businessUsecase || null,
         technicalUsecase || null,
-        architectureType || 'conceptual_diagram'
+        architectureType || 'tech_cicd_pipeline'
       ]);
 
       await client.query('UPDATE diagrams SET updated_at = CURRENT_TIMESTAMP WHERE id = $1', [diagramId]);
@@ -990,8 +990,8 @@ export async function saveDiagramVersion(
     const db = getSqliteDb();
     db.exec('BEGIN TRANSACTION;');
     try {
-      const maxVersionStmt = db.prepare("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ? AND COALESCE(architecture_type, 'conceptual_diagram') = ?");
-      const versionResult = maxVersionStmt.get(diagramId, architectureType || 'conceptual_diagram') as { max_version: number };
+      const maxVersionStmt = db.prepare("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ? AND (architecture_type = ? OR architecture_type IS NULL)");
+      const versionResult = maxVersionStmt.get(diagramId, architectureType || 'tech_cicd_pipeline') as { max_version: number };
       const nextVersionNumber = versionResult.max_version + 1;
 
       const insertVersion = db.prepare(`
@@ -1009,7 +1009,7 @@ export async function saveDiagramVersion(
         aiReasoning || null,
         businessUsecase || null,
         technicalUsecase || null,
-        architectureType || 'conceptual_diagram'
+        architectureType || 'tech_cicd_pipeline'
       );
 
       const updateDiagram = db.prepare("UPDATE diagrams SET updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");
@@ -1032,14 +1032,14 @@ export async function getDiagramVersions(diagramId: string, architectureType?: s
   if (isPostgres()) {
     const pool = getPgPool();
     const query = architectureType
-      ? "SELECT * FROM diagram_versions WHERE diagram_id = $1 AND COALESCE(architecture_type, 'conceptual_diagram') = $2 ORDER BY version_number DESC"
+      ? "SELECT * FROM diagram_versions WHERE diagram_id = $1 AND (architecture_type = $2 OR architecture_type IS NULL) ORDER BY version_number DESC"
       : 'SELECT * FROM diagram_versions WHERE diagram_id = $1 ORDER BY version_number DESC';
     const res = await pool.query(query, architectureType ? [diagramId, architectureType] : [diagramId]);
     return res.rows as DiagramVersion[];
   } else {
     const db = getSqliteDb();
     const query = architectureType
-      ? "SELECT * FROM diagram_versions WHERE diagram_id = ? AND COALESCE(architecture_type, 'conceptual_diagram') = ? ORDER BY version_number DESC"
+      ? "SELECT * FROM diagram_versions WHERE diagram_id = ? AND (architecture_type = ? OR architecture_type IS NULL) ORDER BY version_number DESC"
       : 'SELECT * FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC';
     const stmt = db.prepare(query);
     return (architectureType ? stmt.all(diagramId, architectureType) : stmt.all(diagramId)) as unknown as DiagramVersion[];

@@ -40,7 +40,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       null,
       null,
       null,
-      architectureType || undefined
+      architectureType || diagram.architecture_type || 'tech_cicd_pipeline'
     );
 
     return NextResponse.json(newVersion, { status: 201 });
