@@ -206,9 +206,9 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
     }
   }
 
-  // 6b. 📐 Visual Collision & Bounding Box Overlap Auto-Healer
+  // 6b. 📐 Visual Collision & Bounding Box Overlap Auto-Healer (Top-level siblings only)
   const vertexNodes = cells.filter(
-    (c: any) => (c['@_vertex'] === '1' || c['@_vertex'] === true) && c.mxGeometry
+    (c: any) => (c['@_vertex'] === '1' || c['@_vertex'] === true) && c.mxGeometry && (String(c['@_parent']) === '1' || String(c['@_parent']) === '0') && !String(c['@_style'] || '').includes('swimlane')
   );
 
   for (let i = 0; i < vertexNodes.length; i++) {

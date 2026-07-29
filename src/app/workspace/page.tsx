@@ -327,8 +327,8 @@ function WorkspaceContent() {
   const suggestions = React.useMemo(() => {
     if (!activeDiagram) return [];
     
-    const name = (activeDiagram.name || '').toLowerCase();
-    const xml = (activeVersion?.xml_content || '').toLowerCase();
+    const name = String(activeDiagram?.name || '').toLowerCase();
+    const xml = String(activeVersion?.xml_content || '').toLowerCase();
 
     // 1. AWS/Kubernetes
     if (name.includes('aws') || name.includes('eks') || name.includes('kubernetes') || xml.includes('eks') || xml.includes('aws.svg') || xml.includes('logos:aws')) {
@@ -404,7 +404,7 @@ function WorkspaceContent() {
   const filteredSidebarDiagrams = React.useMemo(() => {
     const seen = new Set<string>();
     return diagrams.filter(d => {
-      if (!d.name.toLowerCase().includes(sidebarSearch.toLowerCase())) return false;
+      if (!String(d.name || '').toLowerCase().includes((sidebarSearch || '').toLowerCase())) return false;
       if (seen.has(d.id)) return false;
       seen.add(d.id);
       return true;
@@ -736,8 +736,8 @@ function WorkspaceContent() {
             }
             messages.push({
               id: v.id,
-              sender: v.created_by.toLowerCase() === 'ai' ? 'ai' : 'user',
-              text: v.created_by.toLowerCase() === 'ai' 
+              sender: (v.created_by || '').toString().toLowerCase() === 'ai' ? 'ai' : 'user',
+              text: (v.created_by || '').toString().toLowerCase() === 'ai' 
                 ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Refined Architecture'}"`
                 : `Manually saved version v${v.version_number}: "${v.comment || 'Saved changes'}"`,
               timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -2608,10 +2608,10 @@ function WorkspaceContent() {
   const displayedVersion = previewVersion || activeVersion;
 
   const currentXmlToRender = React.useMemo(() => {
-    const baseXml = displayedVersion?.xml_content || '';
+    const baseXml = typeof displayedVersion?.xml_content === 'string' ? displayedVersion.xml_content : String(displayedVersion?.xml_content || '');
     if (!baseXml) return '';
 
-    if (baseXml.includes('ONCOLOGY DATA PORTAL') || baseXml.includes('itacs_conceptual') || baseXml.includes('INTEGRATED INSIGHTS HUB') || baseXml.includes('Dim_Patient') || baseXml.includes('Sub-Schema') || baseXml.includes('ETL_System_Data_Sources') || baseXml.includes('sequence_diagram') || baseXml.includes('macro_sequence_diagram') || baseXml.includes('COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM') || baseXml.includes('TOTAL UNIFIED SEQUENCE DIAGRAM') || baseXml.includes('Micro Dynamic Sequence') || baseXml.includes('ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM') || baseXml.includes('agentic_rag') || baseXml.includes('data_ai_pipeline') || baseXml.includes('Combining Data Flow (DFD)') || baseXml.includes('secure_deployment_map') || baseXml.includes('Google Cloud Project (ITACS Platform Production)') || baseXml.includes('devops_cicd_pipeline') || baseXml.includes('Diagram: The Operational Flow') || baseXml.includes('governance_state_machine') || baseXml.includes('UNIFIED GOVERNANCE') || baseXml.includes('unified_system_view') || baseXml.includes('TOTAL UNIFIED SYSTEM VIEW') || baseXml.includes('dark_mode_unified_system_view')) {
+    if (displayedVersion?.architecture_type || baseXml.includes('<mxfile') || baseXml.includes('<mxGraphModel') || baseXml.includes('ONCOLOGY DATA PORTAL') || baseXml.includes('itacs_conceptual') || baseXml.includes('INTEGRATED INSIGHTS HUB') || baseXml.includes('Dim_Patient') || baseXml.includes('Sub-Schema') || baseXml.includes('ETL_System_Data_Sources') || baseXml.includes('sequence_diagram') || baseXml.includes('macro_sequence_diagram') || baseXml.includes('COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM') || baseXml.includes('TOTAL UNIFIED SEQUENCE DIAGRAM') || baseXml.includes('Micro Dynamic Sequence') || baseXml.includes('ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM') || baseXml.includes('agentic_rag') || baseXml.includes('data_ai_pipeline') || baseXml.includes('Combining Data Flow (DFD)') || baseXml.includes('secure_deployment_map') || baseXml.includes('Google Cloud Project (ITACS Platform Production)') || baseXml.includes('devops_cicd_pipeline') || baseXml.includes('Diagram: The Operational Flow') || baseXml.includes('governance_state_machine') || baseXml.includes('UNIFIED GOVERNANCE') || baseXml.includes('unified_system_view') || baseXml.includes('TOTAL UNIFIED SYSTEM VIEW') || baseXml.includes('dark_mode_unified_system_view')) {
       return baseXml;
     }
 
@@ -2752,8 +2752,8 @@ function WorkspaceContent() {
           }
           messages.push({
             id: v.id,
-            sender: v.created_by.toLowerCase() === 'ai' ? 'ai' : 'user',
-            text: v.created_by.toLowerCase() === 'ai' 
+            sender: (v.created_by || '').toString().toLowerCase() === 'ai' ? 'ai' : 'user',
+            text: (v.created_by || '').toString().toLowerCase() === 'ai' 
               ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Refined Architecture'}"`
               : `Manually saved version v${v.version_number}: "${v.comment || 'Saved changes'}"`,
             timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -2946,9 +2946,9 @@ function WorkspaceContent() {
                         <FileText className={`w-3.5 h-3.5 shrink-0 ${
                           activeDiagram?.id === d.id 
                             ? 'text-teal-accent' 
-                            : d.name.toLowerCase().includes('aws')
+                            : String(d.name || '').toLowerCase().includes('aws')
                               ? 'text-amber-400'
-                              : d.name.toLowerCase().includes('gcp')
+                              : String(d.name || '').toLowerCase().includes('gcp')
                                 ? 'text-teal-400'
                                 : 'text-slate-400'
                         }`} />
@@ -3001,9 +3001,9 @@ function WorkspaceContent() {
                               <FileText className={`w-3.5 h-3.5 shrink-0 ${
                                 activeDiagram?.id === d.id 
                                   ? 'text-teal-accent' 
-                                  : d.name.toLowerCase().includes('aws')
+                                  : String(d.name || '').toLowerCase().includes('aws')
                                     ? 'text-amber-400'
-                                    : d.name.toLowerCase().includes('gcp')
+                                    : String(d.name || '').toLowerCase().includes('gcp')
                                       ? 'text-teal-400'
                                       : 'text-slate-400'
                               }`} />

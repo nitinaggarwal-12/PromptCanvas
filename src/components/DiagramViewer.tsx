@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+
 interface DiagramViewerProps {
   xml: string;
   aspectRatioId?: string;
@@ -26,6 +28,16 @@ export default function DiagramViewer({
   customH = 10,
   bgTheme = 'light',
 }: DiagramViewerProps) {
+  // Strip markdown fences if present without mutating geometry coordinates
+  const sanitizedXml = React.useMemo(() => {
+    if (!xml || typeof xml !== 'string') return '';
+    let cleaned = xml.trim();
+    if (cleaned.includes('```')) {
+      cleaned = cleaned.replace(/^```[a-z]*\n?/gi, '').replace(/\n?```$/g, '').trim();
+    }
+    return cleaned;
+  }, [xml]);
+
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
@@ -98,7 +110,7 @@ export default function DiagramViewer({
       <div 
         class="mxgraph" 
         data-mxgraph="${htmlEscape(JSON.stringify({
-          xml: xml,
+          xml: sanitizedXml,
           lightbox: true,
           nav: true,
           resize: true,
