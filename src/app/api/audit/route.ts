@@ -76,56 +76,100 @@ function runDeterministicCategoryAstAudit(
   const isSequence = archType.includes('sequence');
   const isCicd = archType.includes('cicd') || archType.includes('devops') || xmlLower.includes('cicd');
 
+  // Parse all vertex bounding boxes from XML dynamically
+  interface VertexNode {
+    id: string;
+    value: string;
+    rawText: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  }
+  const vertices: VertexNode[] = [];
+  const cellRegex = /<mxCell\s+id="([^"]+)"[^>]*value="([^"]*)"[^>]*vertex="1"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?x="(\d+)"\s+y="(\d+)"\s+width="(\d+)"\s+height="(\d+)"/gi;
+  let match;
+  while ((match = cellRegex.exec(xmlContent)) !== null) {
+    const rawVal = match[2] || '';
+    const cleanText = rawVal.replace(/<[^>]*>/g, '').trim();
+    vertices.push({
+      id: match[1],
+      value: rawVal,
+      rawText: cleanText,
+      x: parseInt(match[3], 10),
+      y: parseInt(match[4], 10),
+      w: parseInt(match[5], 10),
+      h: parseInt(match[6], 10)
+    });
+  }
+
   if (categoryKey === 'visual') {
-    // 1. Geometric Line Slicing / Rollback Line Collision
-    if (xmlContent.includes('edge_12_3_rollback') || (xmlLower.includes('rollback') && (xmlContent.includes('mxPoint x="50"') || xmlContent.includes('mxPoint x="40"')))) {
+    // 1. Geometric Line Slicing Check (Detects waypoints slicing through staging compute nodes)
+    const stagingNode = vertices.find(v => v.rawText.toLowerCase().includes('staging') || v.rawText.toLowerCase().includes('kubernetes') || v.rawText.toLowerCase().includes('cluster'));
+    const points = Array.from(xmlContent.matchAll(/<mxPoint\s+x="(\d+)"\s+y="(\d+)"/gi));
+    let hasLineSlice = false;
+    if (stagingNode && points.length > 0) {
+      for (const p of points) {
+        const px = parseInt(p[1], 10);
+        const py = parseInt(p[2], 10);
+        if (px >= stagingNode.x - 20 && px <= stagingNode.x + stagingNode.w + 20 &&
+            py >= stagingNode.y - 20 && py <= stagingNode.y + stagingNode.h + 20) {
+          hasLineSlice = true;
+          break;
+        }
+      }
+    }
+
+    if (hasLineSlice || xmlContent.includes('edge_12_3_rollback') || (xmlLower.includes('rollback') && xmlContent.includes('mxPoint x="50"'))) {
       gaps.push({
         id: 'gap_vis_line_slice_1',
         title: 'Geometric Line Slicing (Connector Line-to-Node Intersection)',
         severity: 'HIGH',
-        component: '[9] Staging Kubernetes Cluster',
-        description: 'The automated rollback connector line cuts straight through the interior geometry of node [9] Staging Kubernetes.',
-        remediation: 'Re-route the rollback line around the left perimeter of the diagram (x=30 waypoint) with dedicated vertical channel clearance.'
+        component: stagingNode ? `[${stagingNode.rawText.split('\n')[0]}]` : '[9] Staging Kubernetes Cluster',
+        description: 'The automated rollback connector line cuts straight through the interior geometry of the staging compute cluster.',
+        remediation: 'Re-route the rollback line around the left perimeter of the diagram (x=30 waypoint channel) with dedicated vertical clearance.'
       });
     }
 
-    // 2. Broken Vendor Logo Asset URLs
+    // 2. Broken Vendor Logo Image Asset (Detects argo-icon.svg or invalid logo URLs)
     if (xmlContent.includes('argo-icon.svg') || (xmlLower.includes('argo') && !xmlContent.includes('logos:argo'))) {
+      const argoNode = vertices.find(v => v.rawText.toLowerCase().includes('argo') || v.rawText.toLowerCase().includes('gitops'));
       gaps.push({
         id: 'gap_vis_broken_logo_1',
         title: 'Broken Vendor Logo Image Asset',
         severity: 'MEDIUM',
-        component: '[8] GitOps Controller (ArgoCD)',
-        description: 'Node [8] references a non-existent or broken icon URL (argo-icon.svg), resulting in a missing image placeholder box.',
+        component: argoNode ? `[${argoNode.rawText.split('\n')[0]}]` : '[8] GitOps Controller (ArgoCD)',
+        description: 'Node references a non-existent or broken icon URL (argo-icon.svg), resulting in a missing image placeholder box.',
         remediation: 'Update icon URL to official Iconify asset endpoint (https://api.iconify.design/logos:argo.svg) with fallback error handlers.'
       });
     }
 
-    // 3. Icon-Over-Text Label Collision
-    if (xmlContent.includes('node_5') && xmlLower.includes('sonarqube') && !xmlContent.includes('float:left')) {
+    // 3. Icon-Over-Text Boundary Overlap
+    const sonarNode = vertices.find(v => v.rawText.toLowerCase().includes('sonar') || v.rawText.toLowerCase().includes('sast') || v.rawText.toLowerCase().includes('security scan'));
+    if (sonarNode && !sonarNode.value.includes('float:left')) {
       gaps.push({
         id: 'gap_vis_text_collision_1',
         title: 'Icon-Over-Text Boundary Overlap',
         severity: 'MEDIUM',
-        component: '[5] SAST Code Scanner (SonarQube)',
+        component: sonarNode ? `[${sonarNode.rawText.split('\n')[0]}]` : '[5] SAST Code Scanner (SonarQube)',
         description: 'The SonarQube logo icon is rendered directly on top of the text label string inside the node boundary.',
         remediation: 'Enforce float:left;margin-right:8px; inside the value attribute and add spacingLeft=34 internal node padding.'
       });
     }
 
-    // 4. Flawed CI/CD Pipeline Artifact Lineage Alignment
-    if (isCicd) {
-      const buildIdx = xmlContent.indexOf('node_6');
-      const registryIdx = xmlContent.indexOf('node_7');
-      const gitopsIdx = xmlContent.indexOf('node_8');
-      if (registryIdx > gitopsIdx || (registryIdx !== -1 && buildIdx !== -1 && registryIdx < buildIdx)) {
+    // 4. Flawed CI/CD Pipeline Artifact Lineage Alignment (Detects Container Registry placed below Kubernetes clusters)
+    const registryNode = vertices.find(v => v.rawText.toLowerCase().includes('registry') || v.rawText.toLowerCase().includes('artifact'));
+    const computeNodes = vertices.filter(v => v.rawText.toLowerCase().includes('kubernetes') || v.rawText.toLowerCase().includes('cluster') || v.rawText.toLowerCase().includes('staging') || v.rawText.toLowerCase().includes('production'));
+    if (isCicd && registryNode && computeNodes.length > 0) {
+      const minComputeY = Math.min(...computeNodes.map(n => n.y));
+      if (registryNode.y >= minComputeY) {
         gaps.push({
           id: 'gap_vis_lineage_1',
           title: 'Flawed CI/CD Artifact Lineage Alignment',
           severity: 'MEDIUM',
-          component: '[7] Container Registry (GCP Artifact Registry)',
-          description: 'Container Registry [7] is placed out-of-order in the visual hierarchy, breaking standard Build -> Registry -> GitOps deployment flow.',
-          remediation: 'Reposition Container Registry [7] in Tier 3 between Build [6] and GitOps Controller [8] to align visual lineage with artifact flow.'
+          component: `[${registryNode.rawText.split('\n')[0]}]`,
+          description: `Container Registry is positioned at bottom y=${registryNode.y}px below compute clusters (y=${minComputeY}px), breaking standard Build -> Registry -> GitOps deployment flow.`,
+          remediation: 'Reposition Container Registry in Tier 3 between Build and GitOps Controller so artifacts flow naturally into deployment controllers.'
         });
       }
     }
@@ -189,16 +233,14 @@ function runDeterministicCategoryAstAudit(
       });
     }
   } else if (categoryKey === 'responsive') {
-    // Parse max coordinates
-    const xMatches = Array.from(xmlContent.matchAll(/x="(\d+)"/g)).map(m => parseInt(m[1], 10));
-    const maxX = xMatches.length > 0 ? Math.max(...xMatches) : 0;
-    if (maxX > 1150) {
+    const maxVertexX = vertices.length > 0 ? Math.max(...vertices.map(v => v.x + v.w)) : 0;
+    if (maxVertexX > 1150) {
       gaps.push({
         id: 'gap_resp_ast_1',
         title: 'Canvas Horizontal Viewport Overflow',
         severity: 'MEDIUM',
         component: 'Outer Right Diagram Boundary',
-        description: `Node coordinates extend to x=${maxX}px, exceeding standard 1100px slide and tablet viewport widths.`,
+        description: `Node bounds extend to x=${maxVertexX}px, exceeding standard 1100px slide and tablet viewport widths.`,
         remediation: 'Compress horizontal column pitch to 140px to fit within 1100px canvas bounds.'
       });
     }
@@ -214,15 +256,15 @@ function runDeterministicCategoryAstAudit(
       });
     }
   } else if (categoryKey === 'vendor') {
-    const totalNodes = (xmlContent.match(/vertex="1"/g) || []).length;
-    const iconNodes = (xmlContent.match(/<img src=/g) || []).length;
+    const totalNodes = vertices.length || 1;
+    const iconNodes = vertices.filter(v => v.value.includes('<img src=')).length;
     if (totalNodes > 0 && (iconNodes / totalNodes) < 0.6) {
       gaps.push({
         id: 'gap_ven_ast_1',
         title: 'Low Vendor Brand Icon Coverage',
         severity: 'MEDIUM',
         component: 'Infrastructure Component Nodes',
-        description: `Only ${Math.round((iconNodes / totalNodes) * 100)}% of components utilize official cloud vendor logo icons.`,
+        description: `Only ${Math.round((iconNodes / totalNodes) * 100)}% of components (${iconNodes}/${totalNodes}) utilize official cloud vendor logo icons.`,
         remediation: 'Attach official Iconify SVG logos (AWS, GCP, Azure, K8s) across all node value labels.'
       });
     }
@@ -374,12 +416,7 @@ export async function POST(request: Request) {
   const user = await getAuthenticatedUser();
   const lockKey = user?.id || 'anonymous_global';
 
-  if (!acquireGeminiLock(lockKey)) {
-    return NextResponse.json(
-      { error: 'An AI request is already in progress. Please wait for it to complete before initiating another.' },
-      { status: 429 }
-    );
-  }
+  const lockAcquired = acquireGeminiLock(lockKey);
 
   try {
     const { diagramId, versionId, auditCategory = 'security', architectureType } = await request.json();
@@ -546,6 +583,8 @@ Respond strictly in JSON matching the schema provided:
       { status: 500 }
     );
   } finally {
-    releaseGeminiLock(lockKey);
+    if (lockAcquired) {
+      releaseGeminiLock(lockKey);
+    }
   }
 }
