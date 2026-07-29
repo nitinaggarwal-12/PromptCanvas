@@ -3071,19 +3071,19 @@ function WorkspaceContent() {
         ) : (
           <>
             {/* Top Navbar */}
-            <header className="h-16 border-b border-panel-border flex items-center justify-between px-6 bg-panel-dark/50 backdrop-blur">
-          <div className="flex items-center gap-4">
+            <header className="h-16 border-b border-panel-border flex items-center justify-between px-3 md:px-6 bg-panel-dark/50 backdrop-blur overflow-x-auto no-scrollbar gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             {/* Sidebar toggle if collapsed */}
             {!isSidebarOpen && (
               <button 
                 onClick={() => setIsSidebarOpen(true)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400"
+                className="p-1 rounded hover:bg-slate-hover text-slate-400 shrink-0"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
             )}
-            <div className="flex items-center gap-3 shrink-0 flex-wrap">
-              <h2 className="font-bold text-base text-white whitespace-nowrap truncate max-w-[180px]" title={activeDiagram ? activeDiagram.name : ''}>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <h2 className="font-bold text-sm md:text-base text-white whitespace-nowrap truncate max-w-[130px] md:max-w-[170px]" title={activeDiagram ? activeDiagram.name : ''}>
                 {activeDiagram ? activeDiagram.name : 'Select or Create a Diagram'}
               </h2>
               {activeDiagram && (
@@ -3095,7 +3095,7 @@ function WorkspaceContent() {
                       value={BUSINESS_ARCHITECTURE_TYPES.some(t => t.id === selectedArchType) ? selectedArchType : ""}
                       disabled={isAnyAIBusy}
                       onChange={(e) => handleArchitectureSwitch(e.target.value)}
-                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] truncate"
+                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[160px] md:max-w-[200px] truncate"
                       title="Business Architecture (Use-Case Focused)"
                     >
                       <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
@@ -3117,7 +3117,7 @@ function WorkspaceContent() {
                       value={TECHNICAL_ARCHITECTURE_TYPES.some(t => t.id === selectedArchType) ? selectedArchType : ""}
                       disabled={isAnyAIBusy}
                       onChange={(e) => handleArchitectureSwitch(e.target.value)}
-                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-indigo-500/40 text-indigo-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-indigo-400/30 max-w-[210px] truncate"
+                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-indigo-500/40 text-indigo-300 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-indigo-400/30 max-w-[160px] md:max-w-[200px] truncate"
                       title="Technical Architecture (System/Cloud Focused)"
                     >
                       <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
