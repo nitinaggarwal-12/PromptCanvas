@@ -238,7 +238,7 @@ export async function POST(request: Request) {
     const ucContext = (targetVersion as any).use_case_context || 'Prior Authorization Platform';
     const userPrompt = targetVersion.prompt || undefined;
 
-    if (architectureType || !xmlContent || xmlContent.length < 500) {
+    if (!xmlContent || xmlContent.length < 500) {
       xmlContent = getDefaultXmlForArchitecture(effectiveArchType, ucContext, userPrompt);
     } else {
       xmlContent = injectUseCaseFlavor(xmlContent, ucContext, userPrompt);
