@@ -419,7 +419,7 @@ export async function POST(request: Request) {
   const lockAcquired = acquireGeminiLock(lockKey);
 
   try {
-    const { diagramId, versionId, auditCategory = 'security', architectureType } = await request.json();
+    const { diagramId, versionId, auditCategory = 'security', architectureType, imageBase64 } = await request.json();
     if (!diagramId) {
       return NextResponse.json({ error: 'diagramId is required' }, { status: 400 });
     }
@@ -479,45 +479,64 @@ Respond strictly in JSON matching the schema provided:
   - remediation: concrete instruction on how to fix it
 `;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: [
-          { text: `Here is the Draw.io XML of the architecture (${effectiveArchType}):\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },
-        ],
-        config: {
-          systemInstruction,
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              score: { type: Type.NUMBER },
-              report: { type: Type.STRING },
-              gaps: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    id: { type: Type.STRING },
-                    title: { type: Type.STRING },
-                    severity: { type: Type.STRING, enum: ['HIGH', 'MEDIUM', 'LOW'] },
-                    component: { type: Type.STRING },
-                    description: { type: Type.STRING },
-                    remediation: { type: Type.STRING },
-                  },
-                  required: ['id', 'title', 'severity', 'component', 'description', 'remediation'],
-                },
-              },
-            },
-            required: ['score', 'report', 'gaps'],
-          },
-        },
+      const multimodalContents: any[] = [];
+      if (imageBase64 && typeof imageBase64 === 'string') {
+        const cleanBase64 = imageBase64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
+        multimodalContents.push({
+          inlineData: {
+            mimeType: 'image/png',
+            data: cleanBase64
+          }
+        });
+      }
+      multimodalContents.push({
+        text: `Here is the Draw.io XML of the architecture (${effectiveArchType}):\n\n\`\`\`xml\n${xmlContent}\n\`\`\``
       });
 
-      const textOutput = response.text || '{}';
-      const parsedData = JSON.parse(textOutput);
-      score = typeof parsedData.score === 'number' ? parsedData.score : 95;
-      report = parsedData.report || 'No detailed audit report generated.';
-      gaps = parsedData.gaps || [];
+      if (lockAcquired) {
+        const response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: multimodalContents,
+          config: {
+            systemInstruction,
+            responseMimeType: 'application/json',
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: {
+                score: { type: Type.NUMBER },
+                report: { type: Type.STRING },
+                gaps: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      id: { type: Type.STRING },
+                      title: { type: Type.STRING },
+                      severity: { type: Type.STRING, enum: ['HIGH', 'MEDIUM', 'LOW'] },
+                      component: { type: Type.STRING },
+                      description: { type: Type.STRING },
+                      remediation: { type: Type.STRING },
+                    },
+                    required: ['id', 'title', 'severity', 'component', 'description', 'remediation'],
+                  },
+                },
+              },
+              required: ['score', 'report', 'gaps'],
+            },
+          },
+        });
+
+        const textOutput = response.text || '{}';
+        const parsedData = JSON.parse(textOutput);
+        score = typeof parsedData.score === 'number' ? parsedData.score : 95;
+        report = parsedData.report || 'No detailed audit report generated.';
+        gaps = parsedData.gaps || [];
+      } else {
+        const fallback = generateFallbackHeuristicAudit(xmlContent, categoryKey, effectiveArchType);
+        score = fallback.score;
+        report = fallback.report;
+        gaps = fallback.gaps;
+      }
 
       // 🎯 MANDATORY DETERMINISTIC AST AUDIT PASS ACROSS ALL AUDIT CATEGORIES:
       const deterministicGaps = runDeterministicCategoryAstAudit(xmlContent, categoryKey, effectiveArchType);

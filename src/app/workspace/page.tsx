@@ -1390,13 +1390,46 @@ function WorkspaceContent() {
     }
   };
 
-  // Audit the active diagram
+  // Audit the active diagram with Multimodal Vision PNG capture
   const handleAuditDiagram = async (category?: string) => {
     if (!activeDiagram) return;
     const catToUse = category || selectedAuditCategory;
     setCurrentTab('audit');
     setIsAuditing(true);
     try {
+      let imageBase64: string | undefined = undefined;
+      try {
+        const svgEl = document.querySelector('.geDiagramContainer svg, svg.geDiagram') || document.querySelector('svg');
+        if (svgEl) {
+          const svgString = new XMLSerializer().serializeToString(svgEl);
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const img = new Image();
+          const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          imageBase64 = await new Promise<string | undefined>((resolve) => {
+            img.onload = () => {
+              canvas.width = img.width || 1200;
+              canvas.height = img.height || 900;
+              if (ctx) {
+                ctx.fillStyle = '#0F172A';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+              }
+              URL.revokeObjectURL(url);
+              resolve(canvas.toDataURL('image/png'));
+            };
+            img.onerror = () => {
+              URL.revokeObjectURL(url);
+              resolve(undefined);
+            };
+            img.src = url;
+          });
+        }
+      } catch (capErr) {
+        console.warn('Canvas vision screenshot capture skipped:', capErr);
+      }
+
       const res = await fetch('/api/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1404,7 +1437,8 @@ function WorkspaceContent() {
           diagramId: activeDiagram.id, 
           versionId: displayedVersion?.id,
           architectureType: selectedArchType,
-          auditCategory: catToUse 
+          auditCategory: catToUse,
+          imageBase64
         })
       });
       if (!res.ok) {
