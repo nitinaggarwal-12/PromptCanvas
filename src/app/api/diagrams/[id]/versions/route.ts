@@ -22,7 +22,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     }
 
     const body = await request.json();
-    const { xmlContent, comment, createdBy } = body;
+    const { xmlContent, comment, createdBy, architectureType } = body;
 
     if (xmlContent === undefined || typeof xmlContent !== 'string') {
       return NextResponse.json(
@@ -35,7 +35,12 @@ export async function POST(request: Request, { params }: RouteParams) {
       diagramId,
       xmlContent,
       comment,
-      createdBy || 'User'
+      createdBy || 'User',
+      null,
+      null,
+      null,
+      null,
+      architectureType || undefined
     );
 
     return NextResponse.json(newVersion, { status: 201 });

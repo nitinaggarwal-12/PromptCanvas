@@ -439,11 +439,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Diagram has no versions to audit' }, { status: 404 });
     }
 
-    const effectiveArchType = architectureType || targetVersion.architecture_type || 'conceptual_diagram';
-    let xmlContent = targetVersion.xml_content;
-
     const ucContext = (targetVersion as any).use_case_context || 'Prior Authorization Platform';
     const userPrompt = targetVersion.prompt || undefined;
+
+    const combinedText = `${ucContext} ${userPrompt || ''}`.toLowerCase();
+    const isPipelineOrGenomicPrompt = combinedText.includes('genomic') || combinedText.includes('fastq') || combinedText.includes('variant') || combinedText.includes('gatk') || combinedText.includes('pipeline') || combinedText.includes('ci/cd') || combinedText.includes('bwa');
+
+    const effectiveArchType = isPipelineOrGenomicPrompt 
+      ? 'tech_cicd_pipeline' 
+      : (architectureType || targetVersion.architecture_type || 'conceptual_diagram');
+
+    let xmlContent = targetVersion.xml_content;
 
     if (!xmlContent || xmlContent.length < 500) {
       xmlContent = getDefaultXmlForArchitecture(effectiveArchType, ucContext, userPrompt);

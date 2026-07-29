@@ -5,12 +5,12 @@ import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 
 export async function POST(request: Request) {
   try {
-    const { diagramId } = await request.json();
+    const { diagramId, architectureType } = await request.json();
     if (!diagramId) {
       return NextResponse.json({ error: 'diagramId is required' }, { status: 400 });
     }
 
-    const latestVersion = await getLatestDiagramVersion(diagramId);
+    const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
     if (!latestVersion) {
       return NextResponse.json({ error: 'Diagram has no versions to clean' }, { status: 404 });
     }
@@ -29,7 +29,12 @@ export async function POST(request: Request) {
       diagramId,
       healResult.xml,
       comment,
-      'Option 2 Generator'
+      'Option 2 Generator',
+      null,
+      null,
+      null,
+      null,
+      architectureType || latestVersion.architecture_type || undefined
     );
 
     return NextResponse.json({
