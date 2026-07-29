@@ -13,6 +13,9 @@ export async function POST() {
     const session = await createSession(user.id, expiresAt);
     await setSessionCookie(session.id);
 
+    const { logUserEvent } = await import('@/lib/db');
+    await logUserEvent(user.id, 'GUEST_SESSION_STARTED', '127.0.0.1', 'Guest Explorer Session');
+
     return NextResponse.json({
       success: true,
       authenticated: true,

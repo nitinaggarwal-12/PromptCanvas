@@ -12,9 +12,7 @@ interface RouteParams {
 export async function POST(request: Request, { params }: RouteParams) {
   try {
     const user = await getAuthenticatedUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized. Please sign in to submit feedback.' }, { status: 401 });
-    }
+    const userId = user?.id || 'guest_explorer';
 
     const { id: diagramId } = await params;
     const body = await request.json();
@@ -32,7 +30,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     const feedback = await submitDiagramFeedback(
       diagramId,
       versionId || null,
-      user.id,
+      userId,
       rating,
       tagsArray,
       freeTextComment

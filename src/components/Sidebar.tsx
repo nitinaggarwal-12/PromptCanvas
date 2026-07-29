@@ -90,27 +90,30 @@ export function Sidebar({
             <User className="w-3 h-3 text-slate-600" />
           </div>
 
-          {personalWorkspace && (
-            <button
-              type="button"
-              onClick={() => onSelectWorkspace(personalWorkspace.id)}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all text-left cursor-pointer border ${
-                activeWorkspaceId === personalWorkspace.id
-                  ? 'bg-teal-500/10 border-teal-500/50 text-teal-300 shadow-md shadow-teal-500/5 border-l-4 border-l-teal-400'
-                  : 'bg-slate-900/40 border-panel-border/30 text-slate-300 hover:bg-slate-800/60 hover:text-white'
-              }`}
-            >
-              <div className="flex items-center gap-2.5 truncate">
-                <div className="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-400 font-black text-[10px] flex items-center justify-center shrink-0">
-                  P
+          {(() => {
+            const displayWs = personalWorkspace || { id: 'personal_default', name: 'Personal Workspace' };
+            return (
+              <button
+                type="button"
+                onClick={() => onSelectWorkspace(displayWs.id)}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all text-left cursor-pointer border ${
+                  activeWorkspaceId === displayWs.id || !activeWorkspaceId
+                    ? 'bg-teal-500/10 border-teal-500/50 text-teal-300 shadow-md shadow-teal-500/5 border-l-4 border-l-teal-400'
+                    : 'bg-slate-900/40 border-panel-border/30 text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-2.5 truncate">
+                  <div className="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-400 font-black text-[10px] flex items-center justify-center shrink-0">
+                    P
+                  </div>
+                  <span className="truncate">{displayWs.name}</span>
                 </div>
-                <span className="truncate">{personalWorkspace.name}</span>
-              </div>
-              {activeWorkspaceId === personalWorkspace.id && (
-                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse shrink-0" />
-              )}
-            </button>
-          )}
+                {(activeWorkspaceId === displayWs.id || !activeWorkspaceId) && (
+                  <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse shrink-0" />
+                )}
+              </button>
+            );
+          })()}
         </div>
 
         {/* SECTION 2: Shared Teams (Collapsible) */}
