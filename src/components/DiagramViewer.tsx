@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getTechnicalArchitectureXml } from '@/lib/architectureTypes';
+import { getArchitectureMeta } from '@/lib/architectureMetadata';
 
 interface DiagramViewerProps {
   xml: string;
@@ -13,15 +13,9 @@ interface DiagramViewerProps {
   customW?: number;
   customH?: number;
   bgTheme?: 'dark' | 'light';
-}
-
-function htmlEscape(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  useCaseName?: string;
+  diagramType?: string;
+  description?: string;
 }
 
 export default function DiagramViewer({
@@ -32,6 +26,9 @@ export default function DiagramViewer({
   customW = 16,
   customH = 10,
   bgTheme = 'light',
+  useCaseName,
+  diagramType,
+  description,
 }: DiagramViewerProps) {
   const sanitizedXml = React.useMemo(() => {
     if (!xml) {
@@ -57,6 +54,17 @@ export default function DiagramViewer({
     }
   }, [xml]);
 
+  // Derive architecture metadata
+  const meta = React.useMemo(() => {
+    const defaultMeta = getArchitectureMeta(diagramId);
+    return {
+      useCase: useCaseName || defaultMeta.useCase,
+      title: diagramType || defaultMeta.title,
+      category: defaultMeta.category,
+      desc: description || defaultMeta.desc,
+    };
+  }, [diagramId, useCaseName, diagramType, description]);
+
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
@@ -77,8 +85,10 @@ export default function DiagramViewer({
   }
 
   const bgColor = bgTheme === 'light' ? '#FFFFFF' : '#0F172A';
+  const cardBg = bgTheme === 'light' ? '#F8FAFC' : '#1E293B';
+  const textColor = bgTheme === 'light' ? '#0F172A' : '#F8FAFC';
 
-  // Construct the isolated HTML document for the iframe
+  // Construct the isolated HTML document for the iframe with embedded header banner
   const iframeHtml = `
     <!DOCTYPE html>
     <html>
@@ -87,12 +97,79 @@ export default function DiagramViewer({
       <style>
         html, body {
           margin: 0;
-          padding: 16px;
-          box-sizing: border-box;
+          padding: 0;
           width: 100%;
           height: 100%;
-          overflow: auto;
           background-color: ${bgColor};
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          overflow: hidden;
+        }
+        .header-banner {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 68px;
+          background-color: ${cardBg};
+          border-bottom: 1px solid ${bgTheme === 'light' ? 'rgba(226, 232, 240, 0.8)' : 'rgba(51, 65, 85, 0.6)'};
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 24px;
+          z-index: 100;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .header-left {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .header-top-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .usecase-tag {
+          background-color: rgba(14, 165, 233, 0.15);
+          color: #0EA5E9;
+          font-size: 10px;
+          font-weight: 800;
+          padding: 2px 8px;
+          border-radius: 4px;
+          letter-spacing: 0.5px;
+          border: 1px solid rgba(14, 165, 233, 0.3);
+          text-transform: uppercase;
+        }
+        .diagram-title {
+          color: ${textColor};
+          font-size: 15px;
+          font-weight: 800;
+          letter-spacing: -0.2px;
+        }
+        .diagram-desc {
+          color: #64748B;
+          font-size: 11px;
+          font-weight: 500;
+          margin-top: 1px;
+        }
+        .category-badge {
+          background-color: ${bgTheme === 'dark' ? '#334155' : '#E2E8F0'};
+          color: ${bgTheme === 'dark' ? '#94A3B8' : '#475569'};
+          font-size: 11px;
+          font-weight: 700;
+          padding: 4px 12px;
+          border-radius: 9999px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .canvas-container {
+          position: absolute;
+          top: 68px;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 16px;
+          box-sizing: border-box;
         }
         .mxgraph {
           width: 100%;
@@ -102,8 +179,8 @@ export default function DiagramViewer({
           justify-content: center;
         }
         .mxgraph > svg, .mxgraph > div {
-          max-width: 100%;
-          max-height: 100%;
+          max-width: 100% !important;
+          max-height: 100% !important;
           margin: auto !important;
         }
         .geEditor {
@@ -120,15 +197,34 @@ export default function DiagramViewer({
           background: rgba(100, 116, 139, 0.4);
           border-radius: 9999px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-          background: rgba(100, 116, 139, 0.7);
-        }
       </style>
     </head>
     <body>
-      <div 
-        class="mxgraph" 
-        data-mxgraph="${htmlEscape(JSON.stringify({
+      <div class="header-banner">
+        <div class="header-left">
+          <div class="header-top-row">
+            <span class="usecase-tag">USE CASE: ${meta.useCase}</span>
+            <span style="color: #94A3B8; font-size: 12px;">•</span>
+            <span class="diagram-title">${meta.title}</span>
+          </div>
+          <div class="diagram-desc">${meta.desc}</div>
+        </div>
+        <div>
+          <span class="category-badge">${meta.category}</span>
+        </div>
+      </div>
+      <div class="canvas-container">
+        <div class="mxgraph" id="diagram-container"></div>
+      </div>
+      
+      <script type="text/javascript">
+        console.log('[Iframe Diagnostic] 🚀 Iframe document parsed.');
+        window.onerror = function(message, source, lineno, colno, error) {
+          console.error('[Iframe JS Error] ❌', message, 'at', source, ':', lineno);
+          return false;
+        };
+
+        const configObj = ${JSON.stringify({
           xml: sanitizedXml,
           lightbox: true,
           nav: true,
@@ -139,19 +235,14 @@ export default function DiagramViewer({
           transparent: true,
           fit: true,
           'max-scale': 1.35
-        }))}"
-      ></div>
-      
-      <script type="text/javascript">
-        console.log('[Iframe Diagnostic] 🚀 Iframe document parsed.');
-        window.onerror = function(message, source, lineno, colno, error) {
-          console.error('[Iframe JS Error] ❌', message, 'at', source, ':', lineno);
-          return false;
-        };
+        })};
+
+        const container = document.getElementById('diagram-container');
+        if (container) {
+          container.setAttribute('data-mxgraph', JSON.stringify(configObj));
+        }
 
         window.addEventListener('load', function() {
-          const container = document.querySelector('.mxgraph');
-          
           function loadViewerScript() {
             const script = document.createElement('script');
             script.type = 'text/javascript';
