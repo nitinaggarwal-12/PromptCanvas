@@ -158,4 +158,18 @@ This version has breaking changes — APIs, conventions, and file structure may 
   - All outer viewport wrappers, radial dot grids, and canvas backgrounds must dynamically synchronize with the active diagram theme (`#FFFFFF` / `#F1F5F9` for Light Theme, `#0F172A` for Dark Theme) to eliminate jarring background contrasts.
   - UI theme toggle buttons must clearly display the **currently active theme** with an explicit label (e.g., `☀️ Light Theme`), rather than ambiguous target-switch wording, so users and visual test suites can instantly verify the running state.
 
+---
+
+# 🛑 STRICT SINGLE-ITEM VISUAL ITERATION MANDATE (GENERATE → INSPECT → FIX → VERIFY → ADVANCE)
+
+* **Zero Batch-Blind Validation**: Never process multiple visual diagrams, pages, or components in a batch loop without physically opening and visually inspecting each item immediately after it is rendered.
+* **Strict Iterative Lifecycle (Item-by-Item)**:
+  1. **Generate**: Create or update the code/XML for ONE specific item (diagram, page, component).
+  2. **Inspect**: Open and visually evaluate the rendered screenshot or page (`view_file`).
+  3. **Fix**: If any overlap, improper template fallback, text collision, or defect exists, fix it immediately in code.
+  4. **Verify**: Re-render and visually inspect the image again to confirm 100% resolution.
+  5. **Advance**: ONLY AFTER the item passes 100% visual verification may you proceed to the next item.
+* **CLI Exit Codes != Visual Truth**: CLI success outputs (e.g., `Exit 0`, `Saved: 01.png`) do NOT prove visual correctness or absence of silent fallbacks. Visual image inspection is mandatory.
+
+
 
