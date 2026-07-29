@@ -54,13 +54,16 @@ export default function DiagramViewer({
     }
   }, [xml]);
 
-  // Derive architecture metadata
+  // Derive comprehensive architecture metadata
   const meta = React.useMemo(() => {
     const defaultMeta = getArchitectureMeta(diagramId);
     return {
       useCase: useCaseName || defaultMeta.useCase,
       title: diagramType || defaultMeta.title,
       category: defaultMeta.category,
+      businessUseCase: defaultMeta.businessUseCase,
+      primaryActors: defaultMeta.primaryActors,
+      targetOutcomes: defaultMeta.targetOutcomes,
       desc: description || defaultMeta.desc,
     };
   }, [diagramId, useCaseName, diagramType, description]);
@@ -69,16 +72,16 @@ export default function DiagramViewer({
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
   // Dynamically size container frame based on aspect ratio
-  let containerDimensions = 'w-full max-w-[1750px] xl:max-w-[96%] h-[800px] xl:h-[920px]';
+  let containerDimensions = 'w-full max-w-[1750px] xl:max-w-[96%] h-[840px] xl:h-[960px]';
 
   if (aspectRatioId === '1:1') {
-    containerDimensions = 'w-full max-w-[950px] h-[950px]';
+    containerDimensions = 'w-full max-w-[950px] h-[980px]';
   } else if (aspectRatioId === '9:16') {
-    containerDimensions = 'w-full max-w-[650px] h-[1150px]';
+    containerDimensions = 'w-full max-w-[650px] h-[1180px]';
   } else if (aspectRatioId === '4:3') {
-    containerDimensions = 'w-full max-w-[1350px] h-[1000px]';
+    containerDimensions = 'w-full max-w-[1350px] h-[1040px]';
   } else if (aspectRatioId === '21:9') {
-    containerDimensions = 'w-full max-w-[1950px] xl:max-w-[98%] h-[750px] xl:h-[850px]';
+    containerDimensions = 'w-full max-w-[1950px] xl:max-w-[98%] h-[780px] xl:h-[890px]';
   } else if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
     const calcH = Math.min(1300, Math.max(600, Math.round(1000 * (customH / customW))));
     containerDimensions = `w-full max-w-[1100px] h-[${calcH}px]`;
@@ -87,8 +90,9 @@ export default function DiagramViewer({
   const bgColor = bgTheme === 'light' ? '#FFFFFF' : '#0F172A';
   const cardBg = bgTheme === 'light' ? '#F8FAFC' : '#1E293B';
   const textColor = bgTheme === 'light' ? '#0F172A' : '#F8FAFC';
+  const borderColor = bgTheme === 'light' ? 'rgba(226, 232, 240, 0.9)' : 'rgba(51, 65, 85, 0.6)';
 
-  // Construct the isolated HTML document for the iframe with embedded header banner
+  // Construct isolated HTML document for iframe with full Business Use Case Panel & Training Summary
   const iframeHtml = `
     <!DOCTYPE html>
     <html>
@@ -109,22 +113,21 @@ export default function DiagramViewer({
           top: 0;
           left: 0;
           right: 0;
-          height: 68px;
           background-color: ${cardBg};
-          border-bottom: 1px solid ${bgTheme === 'light' ? 'rgba(226, 232, 240, 0.8)' : 'rgba(51, 65, 85, 0.6)'};
+          border-bottom: 1px solid ${borderColor};
+          padding: 12px 24px;
+          z-index: 100;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .header-top-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 24px;
-          z-index: 100;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
-        .header-left {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-        .header-top-row {
+        .header-left-title {
           display: flex;
           align-items: center;
           gap: 10px;
@@ -134,7 +137,7 @@ export default function DiagramViewer({
           color: #0EA5E9;
           font-size: 10px;
           font-weight: 800;
-          padding: 2px 8px;
+          padding: 3px 8px;
           border-radius: 4px;
           letter-spacing: 0.5px;
           border: 1px solid rgba(14, 165, 233, 0.3);
@@ -146,25 +149,57 @@ export default function DiagramViewer({
           font-weight: 800;
           letter-spacing: -0.2px;
         }
-        .diagram-desc {
-          color: #64748B;
-          font-size: 11px;
-          font-weight: 500;
-          margin-top: 1px;
-        }
         .category-badge {
           background-color: ${bgTheme === 'dark' ? '#334155' : '#E2E8F0'};
           color: ${bgTheme === 'dark' ? '#94A3B8' : '#475569'};
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 700;
-          padding: 4px 12px;
+          padding: 3px 10px;
           border-radius: 9999px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
+        .business-usecase-box {
+          background-color: ${bgTheme === 'light' ? '#FFFFFF' : '#0F172A'};
+          border: 1px solid ${bgTheme === 'light' ? '#CBD5E1' : '#334155'};
+          border-radius: 6px;
+          padding: 8px 12px;
+          font-size: 11px;
+          line-height: 1.4;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .usecase-title-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-weight: 700;
+          color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'};
+        }
+        .usecase-text {
+          color: ${bgTheme === 'light' ? '#334155' : '#CBD5E1'};
+          font-weight: 400;
+        }
+        .meta-tags-row {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-top: 2px;
+          font-size: 10.5px;
+        }
+        .meta-pill {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: #64748B;
+        }
+        .meta-pill strong {
+          color: ${bgTheme === 'light' ? '#1E293B' : '#E2E8F0'};
+        }
         .canvas-container {
           position: absolute;
-          top: 68px;
+          top: 108px;
           bottom: 0;
           left: 0;
           right: 0;
@@ -201,16 +236,25 @@ export default function DiagramViewer({
     </head>
     <body>
       <div class="header-banner">
-        <div class="header-left">
-          <div class="header-top-row">
-            <span class="usecase-tag">USE CASE: ${meta.useCase}</span>
+        <div class="header-top-row">
+          <div class="header-left-title">
+            <span class="usecase-tag">BUSINESS USE CASE</span>
             <span style="color: #94A3B8; font-size: 12px;">•</span>
             <span class="diagram-title">${meta.title}</span>
           </div>
-          <div class="diagram-desc">${meta.desc}</div>
+          <div>
+            <span class="category-badge">${meta.category}</span>
+          </div>
         </div>
-        <div>
-          <span class="category-badge">${meta.category}</span>
+        <div class="business-usecase-box">
+          <div class="usecase-title-row">
+            <span style="color: #0EA5E9;">🎯 Purpose &amp; Problem Statement:</span>
+            <span class="usecase-text">${meta.businessUseCase}</span>
+          </div>
+          <div class="meta-tags-row">
+            <div class="meta-pill">👥 <strong>Primary Actors:</strong> ${meta.primaryActors}</div>
+            <div class="meta-pill">🚀 <strong>Key Outcomes:</strong> ${meta.targetOutcomes}</div>
+          </div>
         </div>
       </div>
       <div class="canvas-container">
@@ -218,7 +262,7 @@ export default function DiagramViewer({
       </div>
       
       <script type="text/javascript">
-        console.log('[Iframe Diagnostic] 🚀 Iframe document parsed.');
+        console.log('[Iframe Diagnostic] 🚀 Iframe document parsed with Business Use Case context.');
         window.onerror = function(message, source, lineno, colno, error) {
           console.error('[Iframe JS Error] ❌', message, 'at', source, ':', lineno);
           return false;
@@ -276,7 +320,7 @@ export default function DiagramViewer({
         key={`${diagramId || ''}_${versionId || ''}_${xml}_${aspectRatioId}_${bgTheme}`}
         srcDoc={iframeHtml}
         className="w-full h-full border-0 bg-transparent"
-        title="Draw.io Diagram Viewer"
+        title="Draw.io Diagram Viewer with Business Use Case Panel"
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
       />
     </div>

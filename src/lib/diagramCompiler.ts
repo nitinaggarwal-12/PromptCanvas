@@ -191,7 +191,7 @@ export function getExactItacsReferenceXml(): string {
 
         <!-- 5. BRANCHING CONNECTORS (Exact routing from cards to cube, and branching from cube to outputs) -->
         <!-- Arrow 1: Manual Data Sources -> Cube -->
-        <mxCell id="e_in_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;" edge="1" parent="1" source="src_card" target="core_platform">
+        <mxCell id="e_in_1" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;1. Raw Literature PDF Stream&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="src_card" target="core_platform">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="390" y="195" />
@@ -200,7 +200,7 @@ export function getExactItacsReferenceXml(): string {
           </mxGeometry>
         </mxCell>
         <!-- Arrow 2: 5 Functional Areas -> Cube (with DATA INGESTION label) -->
-        <mxCell id="e_in_2" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;DATA INGESTION&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=11;" edge="1" parent="1" source="func_areas" target="core_platform">
+        <mxCell id="e_in_2" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;2. DATA INGESTION &amp; EXTRACTION&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="func_areas" target="core_platform">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="400" y="403" />
@@ -209,7 +209,7 @@ export function getExactItacsReferenceXml(): string {
           </mxGeometry>
         </mxCell>
         <!-- Arrow 3: User Node -> Cube -->
-        <mxCell id="e_in_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;" edge="1" parent="1" source="user_node" target="core_platform">
+        <mxCell id="e_in_3" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;3. Researcher Query Request&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="user_node" target="core_platform">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="390" y="575" />
@@ -219,14 +219,14 @@ export function getExactItacsReferenceXml(): string {
         </mxCell>
 
         <!-- Main Exit Arrow: Cube -> Branch Point (with INSIGHTS FEED label) -->
-        <mxCell id="e_out_main" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;INSIGHTS FEED&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#10B981;endArrow=none;endFill=0;labelBackgroundColor=none;fontStyle=1;fontSize=11;" edge="1" parent="1" source="core_platform">
+        <mxCell id="e_out_main" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;TARGET INSIGHTS FEED&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#10B981;endArrow=none;endFill=0;labelBackgroundColor=none;fontStyle=1;fontSize=11;" edge="1" parent="1" source="core_platform">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="835" y="385" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
         <!-- Branch 1: Branch Point -> Executive Strategy Dashboard -->
-        <mxCell id="e_out_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;" edge="1" parent="1">
+        <mxCell id="e_out_1" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;4. Synthesize Dashboard KPIs&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="835" y="385" as="sourcePoint" />
             <mxPoint x="900" y="337" as="targetPoint" />
@@ -236,7 +236,7 @@ export function getExactItacsReferenceXml(): string {
           </mxGeometry>
         </mxCell>
         <!-- Branch 2: Branch Point -> Competitor Comparison View -->
-        <mxCell id="e_out_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;" edge="1" parent="1">
+        <mxCell id="e_out_2" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;5. Rank Target Discovery Timelines&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="835" y="385" as="sourcePoint" />
             <mxPoint x="900" y="495" as="targetPoint" />
@@ -246,7 +246,7 @@ export function getExactItacsReferenceXml(): string {
           </mxGeometry>
         </mxCell>
         <!-- Branch 3: Branch Point -> Strategic Priority Advisory -->
-        <mxCell id="e_out_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;" edge="1" parent="1">
+        <mxCell id="e_out_3" value="&lt;b style=&quot;color:#991B1B;background:#FEF2F2;padding:2px 6px;border-radius:4px;border:1px solid #FCA5A5;&quot;&gt;6. Strategic Advisory Priority Alert&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EF4444;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="835" y="385" as="sourcePoint" />
             <mxPoint x="900" y="632" as="targetPoint" />
