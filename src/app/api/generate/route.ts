@@ -255,9 +255,7 @@ export async function POST(request: Request) {
                               prompt.includes('Dimensional Data Model') ||
                               prompt.includes('Database Architect');
 
-    const effectiveArchType = isPipelineOrGenomicPrompt 
-      ? 'tech_cicd_pipeline' 
-      : (architectureType || 'conceptual_diagram');
+    const effectiveArchType = architectureType || (isPipelineOrGenomicPrompt ? 'tech_cicd_pipeline' : 'tech_cicd_pipeline');
 
     const isConceptualTypeOrPrompt = architectureType === 'conceptual_diagram' || (!isErdTypeOrPrompt && !isPipelineOrGenomicPrompt && (
                               prompt.includes('ITACS Oncology Platform') ||

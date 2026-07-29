@@ -153,13 +153,9 @@ export function getArchitectureTypeById(id: string): ArchitectureTypeOption {
 
 export function getDefaultXmlForArchitecture(archId?: string | null, useCaseContext?: string, userPrompt?: string): string {
   let xml = '';
-  const promptLower = (userPrompt || useCaseContext || '').toLowerCase();
-  const isCustomDomainPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('bwa') || promptLower.includes('pipeline') || promptLower.includes('ci/cd');
 
   if (archId === 'conceptual_diagram') {
     xml = compileSpecToDrawioXml(getBenchmarkItacsSpec());
-  } else if (isCustomDomainPrompt || archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') {
-    xml = getTechnicalArchitectureXml('tech_cicd_pipeline');
   } else if (archId === 'erd') {
     xml = compileSpecToDrawioXml(getBenchmarkErdSpec());
   } else if (archId === 'agentic_rag') {
@@ -172,7 +168,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = compileSpecToDrawioXml(getBenchmarkDataAiPipelineSpec());
   } else if (archId === 'secure_deployment_map') {
     xml = compileSpecToDrawioXml(getBenchmarkSecureDeploymentMapSpec());
-  } else if (archId === 'devops_cicd_pipeline') {
+  } else if (archId === 'devops_cicd_pipeline' || archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') {
     xml = compileSpecToDrawioXml(getBenchmarkDevopsCicdPipelineSpec());
   } else if (archId === 'governance_state_machine') {
     xml = compileSpecToDrawioXml(getBenchmarkGovernanceStateMachineSpec());
@@ -180,24 +176,10 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = compileSpecToDrawioXml(getBenchmarkUnifiedSystemViewSpec());
   } else if (archId === 'dark_mode_unified_system_view') {
     xml = compileSpecToDrawioXml(getBenchmarkDarkModeUnifiedSystemViewSpec());
-  } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline')) {
+  } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect')) {
     xml = getTechnicalArchitectureXml(archId);
   } else {
-    xml = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="clean_workspace" name="Clean Architecture Workspace">
-    <mxGraphModel dx="1193" dy="853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="950" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="welcome_node" value="&lt;b&gt;[1] New Architecture Workspace&lt;/b&gt;&lt;br&gt;&lt;i&gt;Type a prompt in the AI box below to design your system with Gemini!&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;fontFamily=Helvetica;fontSize=14;" vertex="1" parent="1">
-          <mxGeometry x="350" y="250" width="300" height="80" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-    `.trim();
+    xml = getTechnicalArchitectureXml('tech_cicd_pipeline');
   }
 
   if (useCaseContext || userPrompt) {
