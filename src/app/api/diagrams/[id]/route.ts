@@ -58,8 +58,9 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     const user = await getAuthenticatedUser();
     const { id } = await params;
     const body = await request.json();
-    if (body.architecture_type) {
-      await updateDiagramArchitectureType(id, body.architecture_type);
+    const archType = body.architecture_type || body.architectureType;
+    if (archType) {
+      await updateDiagramArchitectureType(id, archType);
     }
     return NextResponse.json({ success: true });
   } catch (error) {

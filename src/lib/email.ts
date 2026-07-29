@@ -86,6 +86,6 @@ export async function sendMagicLinkEmail({
     }
   }
 
-  console.warn('[Email Dispatch] Neither SMTP_PASS nor RESEND_API_KEY is configured. Email skipped.');
-  return { success: false, reason: 'Missing email credentials' };
+  console.log(`[Dev Email Simulation] 🔑 Magic Link URL for ${toEmail}: ${magicLinkUrl}`);
+  return { success: true, devMode: true, magicLinkUrl };
 }

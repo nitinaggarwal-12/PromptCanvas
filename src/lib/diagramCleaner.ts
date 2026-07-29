@@ -106,6 +106,12 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
       else if (lower.includes('composer') || lower.includes('orchestrat') || lower.includes('iam')) tierIdx = 5;
       else if (lower.includes('monitoring') || lower.includes('logging') || lower.includes('audit')) tierIdx = 6;
       else if (lower.includes('dlq') || lower.includes('dead letter') || lower.includes('failover') || lower.includes('interlock') || lower.includes('compliance')) tierIdx = 7;
+      else {
+        // Evenly distribute custom enterprise nodes across Tiers 1-6 using string hash
+        let hash = 0;
+        for (let i = 0; i < plainText.length; i++) hash = (hash << 5) - hash + plainText.charCodeAt(i);
+        tierIdx = 1 + (Math.abs(hash) % 6);
+      }
     }
 
     tiers[tierIdx] = tiers[tierIdx] || [];

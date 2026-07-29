@@ -4313,7 +4313,7 @@ export function getBenchmarkTechnicalArchitectureSpec(archId: string): CompiledD
   // Default fallback technical architecture
   return {
     diagramId: archId,
-    title: "Enterprise Cloud Technical Architecture Blueprint",
+    title: `${archId.replace(/^tech_|^business_/, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} Architecture Blueprint`,
     columns: [
       {
         id: "c1", title: "Ingress & Edge Security", theme: "blue",

@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const combinedText = `${name} ${prompt || ''}`.toLowerCase();
     const isPipelineOrGenomic = combinedText.includes('genomic') || combinedText.includes('fastq') || combinedText.includes('variant') || combinedText.includes('gatk') || combinedText.includes('pipeline') || combinedText.includes('ci/cd') || combinedText.includes('bwa');
 
-    const effectiveArchType = isPipelineOrGenomic ? 'tech_cicd_pipeline' : (architectureType || 'conceptual_diagram');
+    const effectiveArchType = isPipelineOrGenomic ? 'tech_cicd_pipeline' : (architectureType || 'tech_cicd_pipeline');
 
     const { diagram, version } = await createDiagram(
       name,
