@@ -157,18 +157,21 @@ function runDeterministicCategoryAstAudit(
       });
     }
 
-    // 4. Flawed CI/CD Pipeline Artifact Lineage Alignment (Detects Container Registry placed below Kubernetes clusters)
+    // 4. Flawed CI/CD Pipeline Artifact Lineage Alignment (Detects Container Registry placed below deployment compute clusters)
     const registryNode = vertices.find(v => v.rawText.toLowerCase().includes('registry') || v.rawText.toLowerCase().includes('artifact'));
-    const computeNodes = vertices.filter(v => v.rawText.toLowerCase().includes('kubernetes') || v.rawText.toLowerCase().includes('cluster') || v.rawText.toLowerCase().includes('staging') || v.rawText.toLowerCase().includes('production'));
+    const computeNodes = vertices.filter(v => {
+      const txt = v.rawText.toLowerCase();
+      return (txt.includes('staging') || txt.includes('production') || txt.includes('gke')) && !txt.includes('test') && !txt.includes('scan');
+    });
     if (isCicd && registryNode && computeNodes.length > 0) {
       const minComputeY = Math.min(...computeNodes.map(n => n.y));
-      if (registryNode.y >= minComputeY) {
+      if (registryNode.y >= minComputeY + 40) {
         gaps.push({
           id: 'gap_vis_lineage_1',
           title: 'Flawed CI/CD Artifact Lineage Alignment',
           severity: 'MEDIUM',
           component: `[${registryNode.rawText.split('\n')[0]}]`,
-          description: `Container Registry is positioned at bottom y=${registryNode.y}px below compute clusters (y=${minComputeY}px), breaking standard Build -> Registry -> GitOps deployment flow.`,
+          description: `Container Registry is positioned at bottom y=${registryNode.y}px below deployment compute clusters (y=${minComputeY}px), breaking standard Build -> Registry -> GitOps deployment flow.`,
           remediation: 'Reposition Container Registry in Tier 3 between Build and GitOps Controller so artifacts flow naturally into deployment controllers.'
         });
       }

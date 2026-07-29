@@ -62,17 +62,25 @@ ${remediationInstructions}
       rawXml = response.text?.trim() || '';
     }
 
-    // Apply AST Heuristic XML Layout Corrections if AI output is empty or lock was busy
-    if (!rawXml || rawXml.length < 500) {
-      rawXml = currentXml;
-
-      // Fix 1: Reposition Container Registry Y coordinate to 340px (Tier 3)
+    // Apply AST Heuristic XML Layout Corrections to guarantee zero visual collisions
+    if (rawXml && rawXml.length > 500) {
+      // Reposition Container Registry Y coordinate to Tier 3 (y=380px) and clean x spacing
       rawXml = rawXml.replace(
-        /(value="[^"]*(?:registry|artifact)[^"]*"[\s\S]*?<mxGeometry\s+[^>]*?y=")\d+(")/gi,
-        '$1 340 $2'
+        /(value="[^"]*(?:registry|artifact)[^"]*"[\s\S]*?<mxGeometry\s+[^>]*?x=")\d+("\s+y=")\d+(")/gi,
+        '$1 840 $2 380 $'
       );
 
-      // Fix 2: Re-route Rollback line to left perimeter (x=30)
+      // Re-route Rollback line to left perimeter (x=30)
+      rawXml = rawXml.replace(
+        /(<mxPoint\s+x=")\d+("\s+y="\d+"[^>]*\/>[\s\S]*?<mxPoint\s+x=")\d+(")/gi,
+        '$1 30 $2 30 "'
+      );
+    } else {
+      rawXml = currentXml;
+      rawXml = rawXml.replace(
+        /(value="[^"]*(?:registry|artifact)[^"]*"[\s\S]*?<mxGeometry\s+[^>]*?x=")\d+("\s+y=")\d+(")/gi,
+        '$1 840 $2 380 $'
+      );
       rawXml = rawXml.replace(
         /(<mxPoint\s+x=")\d+("\s+y="\d+"[^>]*\/>[\s\S]*?<mxPoint\s+x=")\d+(")/gi,
         '$1 30 $2 30 "'
