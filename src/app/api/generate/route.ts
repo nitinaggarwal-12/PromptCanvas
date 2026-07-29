@@ -7,7 +7,7 @@ import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { tryCompileJsonOrFallback, compileSpecToDrawioXml, getBenchmarkItacsSpec } from '@/lib/diagramCompiler';
-
+import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 const ai = new GoogleGenAI({});
 
 const SYSTEM_PROMPT = `
@@ -441,6 +441,9 @@ ${baseTemplateXml}
 
     // Ensure use-case flavor is injected into technical & business titles/nodes
     xml = injectUseCaseFlavor(xml, prompt, prompt);
+
+    // 🎯 MANDATORY PRE-FLIGHT 6-AUDIT PRE-COMPILER PASS (Pre-verifies & heals XML across all 6 categories BEFORE saving v1!):
+    xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, architectureType || 'tech_cicd_pipeline');
 
     console.log('[DEBUG BEFORE SAVE]', { isRefinement, diagramId });
     if (isRefinement && diagramId) {

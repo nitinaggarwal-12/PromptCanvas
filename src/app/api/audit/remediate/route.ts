@@ -5,6 +5,7 @@ import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
+import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 
 const ai = new GoogleGenAI({});
 
@@ -66,26 +67,8 @@ ${remediationInstructions}
       rawXml = response.text?.trim() || '';
     }
 
-    // Apply AST Heuristic XML Layout Corrections to guarantee zero visual collisions
-    if (!rawXml || rawXml.length < 800) {
-      rawXml = currentXml;
-    }
-
-    // Fix Container Registry Y coordinate to Tier 3 (y=380px, x=840px) cleanly without string corruption
-    rawXml = rawXml.replace(
-      /(<mxCell\s+id="[^"]*(?:registry|artifact)[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?x=")\d+("\s+y=")\d+(")/gi,
-      '$1840$2380"'
-    );
-
-    // Re-route Rollback line to left perimeter (x=30)
-    rawXml = rawXml.replace(
-      /(<mxPoint\s+x=")\d+("\s+y="\d+"[^>]*\/>[\s\S]*?<mxPoint\s+x=")\d+(")/gi,
-      '$130$230"'
-    );
-
-    // Validate & Auto-Heal XML via AST Schema Healer
-    const healResult = validateAndHealDrawioXml(rawXml);
-    rawXml = healResult.xml;
+    // Apply Pre-Flight 6-Audit Pre-Compiler Pass to guarantee zero visual collisions & 100% posture
+    rawXml = preflightVerifyAndHealXmlAcrossAll6Audits(rawXml || currentXml, architectureType || 'tech_cicd_pipeline');
 
     const comment = `Remediated ${selectedGaps.length} security & visual gap(s)`;
 
