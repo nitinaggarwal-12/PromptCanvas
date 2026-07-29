@@ -2165,13 +2165,15 @@ function WorkspaceContent() {
                     ) : (
                       <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-bold flex items-center gap-3">
                         <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
-                        <span>All security & reliability gaps have been remediated! Architecture score is 100%.</span>
+                        <span>All {selectedAuditCategory || 'architecture'} gaps have been remediated! Architecture score is 100%.</span>
                       </div>
                     )}
                     
                     {/* Full Audit Report Narrative */}
                     <div className="text-sm text-slate-300 space-y-3 border-t border-panel-border/30 pt-6 max-h-[450px] overflow-y-auto pr-3 leading-relaxed">
-                      <h3 className="text-sm font-black text-white uppercase tracking-wider mb-2">Detailed Security Findings</h3>
+                      <h3 className="text-sm font-black text-white uppercase tracking-wider mb-2">
+                        Detailed {selectedAuditCategory ? selectedAuditCategory.charAt(0).toUpperCase() + selectedAuditCategory.slice(1) : 'Audit'} Findings
+                      </h3>
                       {renderAuditMarkdown(auditReport)}
                     </div>
                   </div>
@@ -2186,10 +2188,10 @@ function WorkspaceContent() {
                             <span>Pre-Audit Architecture Scan Ready</span>
                           </div>
                           <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
-                            Security Inspection: {activeDiagram.name}
+                            {selectedAuditCategory ? selectedAuditCategory.charAt(0).toUpperCase() + selectedAuditCategory.slice(1) : 'Architecture'} Inspection: {activeDiagram.name}
                           </h3>
                           <p className="text-sm text-slate-300 leading-relaxed">
-                            Run deep AI security audit on <strong className="text-white">{activeDiagram.name}</strong> to evaluate node topology, public ingress points, encryption protocols, and CIS / NIST policy compliance.
+                            Run deep AI {selectedAuditCategory || 'architecture'} audit on <strong className="text-white">{activeDiagram.name}</strong> to evaluate node topology, layout precision, security controls, and enterprise compliance.
                           </p>
                         </div>
 
