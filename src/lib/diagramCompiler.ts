@@ -3476,11 +3476,16 @@ export function tryCompileJsonOrFallback(aiResponseText: string, fallbackXml: st
     }
   }
 
-  // If it's already an XML string, return it
+  // If it's already an XML string with mxfile wrapper, return it
   if (cleanedText.includes('<mxfile') && cleanedText.includes('</mxfile>')) {
     const start = cleanedText.indexOf('<mxfile');
     const end = cleanedText.lastIndexOf('</mxfile>') + 9;
     return cleanedText.substring(start, end);
+  }
+
+  // If it's partial XML containing mxCell nodes, wrap into valid mxfile document
+  if (cleanedText.includes('<mxCell') || cleanedText.includes('vertex="1"')) {
+    return `<mxfile host="PromptCanvas"><diagram id="healed" name="Architecture"><mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827"><root><mxCell id="0"/><mxCell id="1" parent="0"/>${cleanedText}</root></mxGraphModel></diagram></mxfile>`;
   }
 
   return fallbackXml;

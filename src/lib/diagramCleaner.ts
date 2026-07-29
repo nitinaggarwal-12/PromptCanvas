@@ -528,6 +528,13 @@ export function resolveVendorIconUrl(text: string): string {
   if (lower.includes('python')) return 'https://api.iconify.design/logos:python.svg';
   if (lower.includes('docker')) return 'https://api.iconify.design/logos:docker.svg';
 
+  // Genomic & Bioinformatics Systems
+  if (lower.includes('illumina') || lower.includes('fastq') || lower.includes('gatk') || lower.includes('bwa') || lower.includes('genomic') || lower.includes('dna') || lower.includes('rna') || lower.includes('bioinformatics')) return 'https://api.iconify.design/logos:google-cloud.svg';
+
+  // CI/CD & DevOps Tools
+  if (lower.includes('argo')) return 'https://api.iconify.design/logos:argo.svg';
+  if (lower.includes('trivy') || lower.includes('sonar') || lower.includes('snyk')) return 'https://api.iconify.design/logos:sonarqube.svg';
+
   return 'https://api.iconify.design/logos:google-cloud.svg'; // Fallback
 }
 
