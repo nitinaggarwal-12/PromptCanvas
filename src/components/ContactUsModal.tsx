@@ -27,9 +27,9 @@ export function ContactUsModal({ isOpen, onClose, currentUser }: ContactUsModalP
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (currentUser) {
-      if (currentUser.name) setName(currentUser.name);
-      if (currentUser.email) setEmail(currentUser.email);
+    if (isOpen && currentUser) {
+      setName(currentUser.name || currentUser.email?.split('@')[0] || '');
+      setEmail(currentUser.email || '');
     }
   }, [currentUser, isOpen]);
 

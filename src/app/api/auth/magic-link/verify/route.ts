@@ -51,7 +51,11 @@ export async function GET(request: Request) {
 
     await logUserEvent(user.id, 'MAGIC_LINK_LOGIN', null, 'Passwordless Session Verified');
 
-    return NextResponse.redirect(new URL('/workspace?setupPassword=true', request.url));
+    const reqHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000';
+    const reqProto = request.headers.get('x-forwarded-proto') || 'https';
+    const redirectUrl = `${reqProto}://${reqHost}/workspace?setupPassword=true`;
+
+    return NextResponse.redirect(redirectUrl);
   } catch (error: unknown) {
     console.error('Magic link verification error:', error);
     const msg = error instanceof Error ? error.message : 'Invalid link';

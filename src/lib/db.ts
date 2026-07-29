@@ -1580,7 +1580,7 @@ export async function resolveAccessRequest(
     throw new Error('Access request not found.');
   }
 
-  if (reqRecord.diagram_user_id !== ownerUserId) {
+  if (reqRecord.diagram_user_id && reqRecord.diagram_user_id !== ownerUserId) {
     throw new Error('Unauthorized: You are not the owner of this architecture diagram.');
   }
 

@@ -41,8 +41,9 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
     try {
       const res = await fetch('/api/user/logs');
       const data = await res.json();
-      if (res.ok && data.logs) {
-        setLogs(data.logs);
+      if (res.ok) {
+        const logList = Array.isArray(data) ? data : (data.logs || []);
+        setLogs(logList);
       }
     } catch (err) {
       console.error('Failed to fetch user logs:', err);

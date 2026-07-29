@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Diagram ID is required.' }, { status: 400 });
     }
 
-    const role = requestedRole === 'Editor' ? 'Editor' : 'Viewer';
+    const role = (requestedRole as 'Editor' | 'Viewer') || 'Viewer';
 
     const accessRequest = await createAccessRequest(diagramId, user.id, role, message);
 
