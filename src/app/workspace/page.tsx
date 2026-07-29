@@ -2027,32 +2027,32 @@ function WorkspaceContent() {
                 )}
 
                 {isAuditing ? (
-                  <div className="glass-panel border-teal-500/30 rounded-3xl p-12 text-center space-y-6 shadow-2xl animate-pulse bg-slate-900/80">
-                    <div className="w-16 h-16 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center mx-auto">
-                      <Loader2 className="w-8 h-8 text-teal-400 animate-spin" />
+                  <div className="glass-panel border-teal-500/40 rounded-3xl p-16 md:p-24 text-center space-y-10 shadow-2xl animate-pulse bg-slate-900/90 min-h-[500px] flex flex-col justify-center items-center">
+                    <div className="w-24 h-24 rounded-3xl bg-teal-500/10 border-2 border-teal-500/40 flex items-center justify-center mx-auto shadow-2xl shadow-teal-500/20">
+                      <Loader2 className="w-12 h-12 text-teal-400 animate-spin" />
                     </div>
-                    <div className="space-y-2 max-w-md mx-auto">
+                    <div className="space-y-4 max-w-3xl mx-auto">
                       <div className="flex items-center justify-center gap-2">
-                        <span className="px-3 py-1 rounded-full text-xs font-black bg-teal-500/20 text-teal-300 border border-teal-500/40 uppercase tracking-widest animate-pulse">
+                        <span className="px-5 py-2 rounded-full text-xs md:text-sm font-black bg-teal-500/20 text-teal-300 border border-teal-500/40 uppercase tracking-widest animate-pulse shadow-md">
                           Live Inspection in Progress
                         </span>
                       </div>
-                      <h3 className="text-2xl font-black text-white capitalize">
+                      <h3 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight capitalize">
                         Auditing {selectedAuditCategory === 'visual' ? 'Visual Collision & Geometry' : selectedAuditCategory === 'topology' ? 'Cloud Architecture Topology' : selectedAuditCategory === 'responsive' ? 'Responsive & Aspect Ratio' : selectedAuditCategory === 'accessibility' ? 'WCAG Accessibility' : selectedAuditCategory === 'vendor' ? 'Vendor Icon Coverage' : 'Security & Compliance'}...
                       </h3>
-                      <p className="text-xs text-slate-300">
+                      <p className="text-base md:text-lg font-medium text-slate-300 leading-relaxed max-w-2xl mx-auto">
                         Gemini 2.5 is parsing 2D bounding boxes, checking topology rules, and evaluating {selectedAuditCategory} posture against domain benchmarks...
                       </p>
                     </div>
                     
-                    <div className="max-w-md mx-auto space-y-3 pt-2">
-                      <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
-                        <div className="bg-gradient-to-r from-teal-500 to-cyan-400 h-full w-2/3 animate-pulse"></div>
+                    <div className="w-full max-w-2xl mx-auto space-y-4 pt-4">
+                      <div className="w-full bg-slate-800 rounded-full h-4 overflow-hidden border border-slate-700 shadow-inner">
+                        <div className="bg-gradient-to-r from-teal-500 via-cyan-400 to-emerald-400 h-full w-3/4 animate-pulse rounded-full shadow-lg shadow-teal-500/50"></div>
                       </div>
-                      <div className="flex justify-between text-[11px] font-bold text-slate-400 px-1">
-                        <span>Parsing XML Layout</span>
-                        <span>Evaluating Category Rules</span>
-                        <span>Generating Report</span>
+                      <div className="flex justify-between text-xs md:text-sm font-black text-slate-400 uppercase tracking-wider px-2">
+                        <span className="text-teal-400">Parsing XML Layout</span>
+                        <span className="text-cyan-300">Evaluating Category Rules</span>
+                        <span className="text-slate-500">Generating Report</span>
                       </div>
                     </div>
                   </div>
