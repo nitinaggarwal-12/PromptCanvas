@@ -33,11 +33,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { diagramId, xmlContent: customXml } = await request.json();
+    const { diagramId, xmlContent: customXml, architectureType } = await request.json();
 
     let xmlContent = customXml;
     if (!xmlContent && diagramId) {
-      const latestVersion = await getLatestDiagramVersion(diagramId);
+      const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
       if (latestVersion) {
         xmlContent = latestVersion.xml_content;
       }

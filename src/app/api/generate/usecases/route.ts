@@ -30,13 +30,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Diagram version not found' }, { status: 404 });
     }
 
+    const domainContext = version.prompt || (version as any).use_case_context || '';
     const contents = `
+Target Domain & Prompt: "${domainContext}"
+
 Analyze this system architecture Draw.io XML and generate two distinct sections in Markdown:
 
 ### Business Use Case
 Generate a restructured, executive-style brief using this exact format, headings, and layout:
 
-Product: [Resolve name of product/system based on XML diagram title/nodes]
+Product: [Resolve name of product/system based on target domain and XML diagram title/nodes]
 Scope: Strategic goals, target stakeholders, value propositions, and success KPIs
 
 [Write a concise 2-sentence introductory paragraph explaining the main business challenge and how this workspace architecture addresses it.]
