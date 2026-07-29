@@ -168,7 +168,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = compileSpecToDrawioXml(getBenchmarkDataAiPipelineSpec());
   } else if (archId === 'secure_deployment_map') {
     xml = compileSpecToDrawioXml(getBenchmarkSecureDeploymentMapSpec());
-  } else if (archId === 'devops_cicd_pipeline' || archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') {
+  } else if (archId === 'devops_cicd_pipeline') {
     xml = compileSpecToDrawioXml(getBenchmarkDevopsCicdPipelineSpec());
   } else if (archId === 'governance_state_machine') {
     xml = compileSpecToDrawioXml(getBenchmarkGovernanceStateMachineSpec());
@@ -176,10 +176,10 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = compileSpecToDrawioXml(getBenchmarkUnifiedSystemViewSpec());
   } else if (archId === 'dark_mode_unified_system_view') {
     xml = compileSpecToDrawioXml(getBenchmarkDarkModeUnifiedSystemViewSpec());
-  } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect')) {
+  } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline')) {
     xml = getTechnicalArchitectureXml(archId);
   } else {
-    xml = getTechnicalArchitectureXml('tech_cicd_pipeline');
+    xml = getTechnicalArchitectureXml('tech_serverless_gcp');
   }
 
   if (useCaseContext || userPrompt) {

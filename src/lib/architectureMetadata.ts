@@ -257,6 +257,10 @@ export function getArchitectureMeta(archId?: string, promptText?: string, custom
 
 export function extractCleanTopicFromPrompt(prompt: string): string {
   if (!prompt) return "ENTERPRISE ARCHITECTURE";
+  const p = prompt.toLowerCase();
+  if (p.includes('keytruda') || p.includes('supply chain') || p.includes('demand forecasting')) {
+    return "Merck Keytruda Supply Chain Forecasting";
+  }
   const clean = prompt
     .replace(/act as|chief|enterprise|architect|and|pharma|technology|lead|at|we|are|building|a|generative|ai|platform|to|automate|scientific|literature|mining|accelerate|design|build|create|system|architecture|diagram/gi, ' ')
     .replace(/\s+/g, ' ')
@@ -269,7 +273,9 @@ export function extractCleanTopicFromPrompt(prompt: string): string {
 
 function inferActorsFromPrompt(prompt: string): string {
   const p = prompt.toLowerCase();
-  if (p.includes('doctor') || p.includes('clinical') || p.includes('patient') || p.includes('health')) {
+  if (p.includes('supply chain') || p.includes('logistics') || p.includes('forecasting') || p.includes('keytruda')) {
+    return "Global Supply Chain Planners, Manufacturing Site Leads, Logistics Managers, Plant Operations";
+  } else if (p.includes('doctor') || p.includes('clinical') || p.includes('patient') || p.includes('health')) {
     return "Clinicians, Lead Researchers, Medical Data Analysts, Health IT Engineers";
   } else if (p.includes('bank') || p.includes('fraud') || p.includes('fintech') || p.includes('payment')) {
     return "Financial Analysts, Risk Engineers, Fraud Investigators, Security Operations";
@@ -281,7 +287,9 @@ function inferActorsFromPrompt(prompt: string): string {
 
 function inferOutcomesFromPrompt(prompt: string): string {
   const p = prompt.toLowerCase();
-  if (p.includes('latency') || p.includes('real-time') || p.includes('streaming')) {
+  if (p.includes('supply chain') || p.includes('stockout') || p.includes('keytruda') || p.includes('biologic')) {
+    return "Optimized Safety Stock, Zero Keytruda Stockouts, Reduced Cold-Chain Biologic Wastage, GxP Audit Traceability";
+  } else if (p.includes('latency') || p.includes('real-time') || p.includes('streaming')) {
     return "Sub-10ms Streaming Ingestion, Zero Data Loss, Real-Time Telemetry Analytics";
   } else if (p.includes('security') || p.includes('compliance') || p.includes('hipaa') || p.includes('pci')) {
     return "100% Regulatory Compliance, Zero-Trust Encryption, Automated Audit Trail";

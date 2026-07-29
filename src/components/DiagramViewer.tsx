@@ -239,8 +239,7 @@ export default function DiagramViewer({
         <div class="header-top-row">
           <div class="header-left-title">
             <span class="usecase-tag">BUSINESS USE CASE</span>
-            <span style="color: #94A3B8; font-size: 12px;">•</span>
-            <span class="diagram-title">${meta.title}</span>
+            <span class="diagram-title">${meta.title ? meta.title.replace(/^(\d+\.\s*)+/, (match) => { const nums = match.match(/\d+/g); return nums ? `${nums[nums.length - 1]}. ` : match; }) : ''}</span>
           </div>
           <div>
             <span class="category-badge">${meta.category}</span>

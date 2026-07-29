@@ -106,10 +106,14 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
   }
 
   // 4. Validate AST Hierarchy: mxfile -> diagram -> mxGraphModel -> root
-  if (!ast.mxfile) {
-    ast = { mxfile: { diagram: { mxGraphModel: { root: { mxCell: [{ '@_id': '0' }, { '@_id': '1', '@_parent': '0' }] } } } } };
-    isHealed = true;
-    healingLog.push('Restructured invalid root AST.');
+  if (!ast || typeof ast !== 'object') {
+    ast = { mxfile: {} };
+  }
+  if (!ast.mxfile || typeof ast.mxfile !== 'object') {
+    ast.mxfile = {};
+  }
+  if (!ast.mxfile.diagram) {
+    ast.mxfile.diagram = { mxGraphModel: { root: { mxCell: [{ '@_id': '0' }, { '@_id': '1', '@_parent': '0' }] } } };
   }
 
   let diagram = ast.mxfile.diagram;
@@ -118,7 +122,6 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
     ast.mxfile.diagram = diagram;
   }
   if (typeof diagram === 'string') {
-    // Handling unescaped inner string if present
     try {
       diagram = parser.parse(diagram);
       ast.mxfile.diagram = diagram;
@@ -126,6 +129,11 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
       diagram = {};
       ast.mxfile.diagram = diagram;
     }
+  }
+
+  if (!diagram || typeof diagram !== 'object') {
+    diagram = {};
+    ast.mxfile.diagram = diagram;
   }
 
   if (!diagram.mxGraphModel) {
@@ -218,15 +226,20 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
   root.mxCell = cells;
 
   // 7. Re-serialize healed AST back to XML string
-  const builder = new XMLBuilder({
-    ignoreAttributes: false,
-    attributeNamePrefix: '@_',
-    format: true,
-    indentBy: '  ',
-    suppressEmptyNode: true,
-  });
-
-  const finalXml = builder.build(ast);
+  let finalXml = cleaned;
+  try {
+    const builder = new XMLBuilder({
+      ignoreAttributes: false,
+      attributeNamePrefix: '@_',
+      format: true,
+      indentBy: '  ',
+      suppressEmptyNode: true,
+    });
+    finalXml = builder.build(ast);
+  } catch (e) {
+    healingLog.push('AST serialization skipped, returning sanitized string XML.');
+    finalXml = cleaned;
+  }
 
   return {
     isValid: true,
