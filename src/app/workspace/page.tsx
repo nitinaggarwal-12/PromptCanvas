@@ -758,12 +758,15 @@ function WorkspaceContent() {
           const auditData = await auditRes.json();
           if (auditData.reports && auditData.reports.length > 0) {
             setAuditHistory(auditData.reports);
-            const latest = auditData.reports[0];
-            setSelectedAuditReportId(latest.id);
-            setAuditReport(latest.report);
-            setAuditScore(latest.score);
+            const categoryMatch = auditData.reports.find((r: any) => r.audit_category === selectedAuditCategory) || auditData.reports[0];
+            setSelectedAuditReportId(categoryMatch.id);
+            if (categoryMatch.audit_category) {
+              setSelectedAuditCategory(categoryMatch.audit_category as any);
+            }
+            setAuditReport(categoryMatch.report);
+            setAuditScore(categoryMatch.score);
             try {
-              const parsedGaps = JSON.parse(latest.gaps);
+              const parsedGaps = JSON.parse(categoryMatch.gaps);
               setAuditGaps(parsedGaps);
               setSelectedGapIds(parsedGaps.map((g: { id: string }) => g.id));
             } catch {
@@ -1496,11 +1499,15 @@ function WorkspaceContent() {
         throw new Error(errorData.error || errorData.details || 'Failed to remediate security gaps');
       }
 
-      // Re-run fresh audit after remediation!
+      // Re-run fresh audit after remediation matching active category!
       const auditRes = await fetch('/api/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ diagramId: activeDiagram.id })
+        body: JSON.stringify({ 
+          diagramId: activeDiagram.id,
+          auditCategory: selectedAuditCategory,
+          architectureType: selectedArchType
+        })
       });
       if (auditRes.ok) {
         const auditData = await auditRes.json();
@@ -1508,6 +1515,14 @@ function WorkspaceContent() {
         setAuditScore(auditData.score);
         setAuditGaps(auditData.gaps || []);
         setSelectedGapIds((auditData.gaps || []).map((g: { id: string }) => g.id));
+        setCategoryAuditCache((prev) => ({
+          ...prev,
+          [selectedAuditCategory]: {
+            score: auditData.score,
+            report: auditData.report,
+            gaps: auditData.gaps || []
+          }
+        }));
         if (auditData.reportsHistory) {
           setAuditHistory(auditData.reportsHistory);
           if (auditData.reportsHistory.length > 0) {
