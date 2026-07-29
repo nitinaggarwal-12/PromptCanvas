@@ -35,8 +35,8 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (archId === 'tech_event_driven_aws' || archId === 'event_driven_aws') return TECH_XML_EVENT_DRIVEN_AWS;
   if (archId === 'tech_multi_region_dr' || archId === 'multi_region_dr') return TECH_XML_MULTI_REGION_DR;
   if (archId === 'tech_vpc_infra' || archId === 'zero_trust') return TECH_XML_VPC_INFRA;
-  if (archId === 'tech_iot_telemetry' || archId === 'hybrid_interconnect') return TECH_XML_IOT_TELEMETRY;
-  if (archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') return TECH_XML_CICD_PIPELINE;
+  if (archId === 'tech_iot_telemetry' || archId === 'hybrid_interconnect') return TECH_XML_SERVERLESS_GCP;
+  if (archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') return TECH_XML_SERVERLESS_GCP;
   
   return TECH_XML_SERVERLESS_GCP;
 }
