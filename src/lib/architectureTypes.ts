@@ -120,6 +120,24 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "7. Multi-Region Disaster Recovery (GCP)",
     category: "Technical Architecture",
     prompt: "Act as a GCP Reliability Engineer. Design a multi-region active-passive Disaster Recovery (DR) technical architecture on Google Cloud. Include: Global Cloud DNS with failover routing policies, External Global Load Balancers across Primary (us-central1) and Secondary (us-east4) regions, multi-region GKE / Cloud Run compute clusters, synchronous replication, and automated failover monitoring."
+  },
+  {
+    id: "tech_vpc_infra",
+    name: "8. Secure VPC Network Infrastructure (AWS)",
+    category: "Technical Architecture",
+    prompt: "Act as an AWS Network & Security Architect. Design a Zero-Trust Secure VPC Network Infrastructure on AWS. Include: AWS Transit Gateway connecting Shared Services, Production, and Development VPCs, dual-stack IPv4/IPv6 routing, AWS Network Firewall and GuardDuty inspection subnets, NAT Gateways in Public subnets, isolated Private Application and Database subnets, VPC Endpoints (PrivateLink) for S3 and DynamoDB, and AWS KMS encryption with centralized IAM SCPs."
+  },
+  {
+    id: "tech_iot_telemetry",
+    name: "9. IoT Telemetry Ingestion (GCP)",
+    category: "Technical Architecture",
+    prompt: "Act as a GCP IoT & Edge Computing Architect. Design an industrial IoT Telemetry Ingestion technical architecture on Google Cloud. Include: Edge device field gateways using MQTT/HTTPS protocols, Cloud Pub/Sub high-throughput telemetry stream ingress, stream processing and anomaly detection using Cloud Dataflow, time-series data storage in Bigtable and BigQuery, device metadata in Cloud SQL, and real-time operational alerting via Vertex AI Model Monitoring and Cloud Functions."
+  },
+  {
+    id: "tech_cicd_pipeline",
+    name: "10. CI/CD Pipeline Architecture",
+    category: "Technical Architecture",
+    prompt: "Act as a Principal DevSecOps Architect. Design an enterprise technical CI/CD Pipeline architecture. Include: Git polyrepo source control (GitHub/GitLab) with branch protection rules, CI pipeline triggering automated unit tests, SAST code scanning (SonarQube/Snyk), and Docker container build in Cloud Build / GitHub Actions, artifact vulnerability scanning in Artifact Registry / ECR, GitOps deployment orchestration via ArgoCD / Flux to staging and production Kubernetes clusters (GKE/EKS), and automated rollback on Canary monitoring failure."
   }
 ];
 
