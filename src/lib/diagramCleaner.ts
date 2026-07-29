@@ -655,25 +655,17 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
 
   let topic = useCaseTitle ? useCaseTitle.trim() : '';
 
-  // Extract a clean 2-4 word use-case topic if topic is long or contains prompt instructions
-  if (!topic || topic === 'Architecture' || topic === 'Clean Architecture Workspace' || topic.length > 40 || topic.toLowerCase().includes('act as')) {
+  // Dynamically extract clean 2-4 word topic string from userPrompt or useCaseTitle
+  if (!topic || topic === 'Architecture' || topic === 'Clean Architecture Workspace' || topic.length > 35 || topic.toLowerCase().includes('act as')) {
     const rawText = userPrompt || topic;
-    const lowerText = rawText.toLowerCase();
-
-    if (lowerText.includes('merck') || lowerText.includes('nsclc') || lowerText.includes('target discovery') || lowerText.includes('therapeutic')) {
-      topic = 'Merck NSCLC Target Discovery';
-    } else if (lowerText.includes('prior auth')) {
-      topic = 'Prior Authorization Platform';
-    } else {
-      const cleanPrompt = rawText
-        .replace(/act as|chief|enterprise|architect|and|pharma|technology|lead|at|we|are|building|a|generative|ai|platform|to|automate|scientific|literature|mining|accelerate|therapeutic|target|discovery|for|non-small|cell|lung|cancer|design|build|create|system|architecture|diagram/gi, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      const words = cleanPrompt.split(' ').filter(w => w.length > 2).slice(0, 4);
-      topic = words.length > 0 
-        ? words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
-        : 'Enterprise Platform';
-    }
+    const cleanPrompt = rawText
+      .replace(/act as|chief|enterprise|architect|and|pharma|technology|lead|at|we|are|building|a|generative|ai|platform|to|automate|scientific|literature|mining|accelerate|therapeutic|target|discovery|for|non-small|cell|lung|cancer|design|build|create|system|architecture|diagram/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const words = cleanPrompt.split(' ').filter(w => w.length > 2).slice(0, 4);
+    topic = words.length > 0 
+      ? words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+      : 'Enterprise Platform';
   }
 
   const topicUpper = topic.toUpperCase();

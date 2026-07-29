@@ -222,19 +222,94 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   }
 };
 
-export function getArchitectureMeta(archId?: string, promptText?: string): ArchitectureMeta {
-  if (archId && ARCHITECTURE_METADATA_MAP[archId]) {
-    return ARCHITECTURE_METADATA_MAP[archId];
+export function getArchitectureMeta(archId?: string, promptText?: string, customUseCaseName?: string): ArchitectureMeta {
+  const baseMeta: ArchitectureMeta = (archId && ARCHITECTURE_METADATA_MAP[archId])
+    ? { ...ARCHITECTURE_METADATA_MAP[archId] }
+    : {
+        id: archId || "custom",
+        title: archId ? archId.replace(/_/g, ' ').toUpperCase() : "CUSTOM ARCHITECTURE",
+        category: archId?.startsWith('tech_') ? "Technical Architecture" : "Business Architecture",
+        useCase: "ENTERPRISE SOLUTION ARCHITECTURE",
+        businessUseCase: "End-to-end cloud and data platform workflow supporting mission-critical enterprise operations.",
+        primaryActors: "Domain Specialists, System Engineers, Business Analysts, SREs",
+        targetOutcomes: "Sub-Second Latency, High Availability, End-to-End Security Compliance",
+        desc: "Enterprise architecture diagram generated for cloud, data, and AI operations."
+      };
+
+  if (customUseCaseName && customUseCaseName.trim().length > 0) {
+    baseMeta.useCase = customUseCaseName.toUpperCase();
+  } else if (promptText && promptText.trim().length > 3) {
+    const topic = extractCleanTopicFromPrompt(promptText);
+    baseMeta.useCase = topic.toUpperCase();
+    baseMeta.businessUseCase = `Enterprise solution architecture supporting ${topic} workflows, high-throughput data processing, and automated governance.`;
+    baseMeta.primaryActors = inferActorsFromPrompt(promptText);
+    baseMeta.targetOutcomes = inferOutcomesFromPrompt(promptText);
+  } else {
+    // Provide clean domain-neutral metadata defaults instead of hardcoded Merck NSCLC
+    baseMeta.useCase = getDomainNeutralUseCaseTitle(archId);
+    baseMeta.businessUseCase = getDomainNeutralProblemStatement(archId);
+    baseMeta.primaryActors = getDomainNeutralPrimaryActors(archId);
+    baseMeta.targetOutcomes = getDomainNeutralTargetOutcomes(archId);
   }
 
-  return {
-    id: archId || "custom",
-    title: archId ? archId.replace(/_/g, ' ').toUpperCase() : "CUSTOM ARCHITECTURE",
-    category: archId?.startsWith('tech_') ? "Technical Architecture" : "Business Architecture",
-    useCase: "MERCK NSCLC TARGET DISCOVERY",
-    businessUseCase: promptText || "Automate scientific literature mining across 5 internal silos to accelerate therapeutic target discovery for Non-Small Cell Lung Cancer (NSCLC).",
-    primaryActors: "Oncology Researchers, Bioinformaticians, Enterprise Architects, DevSecOps SREs",
-    targetOutcomes: "Accelerated Target Identification, Reduced Research Hours, 100% Audit Compliance",
-    desc: "Enterprise architecture diagram generated for scientific literature mining and target discovery."
-  };
+  return baseMeta;
+}
+
+export function extractCleanTopicFromPrompt(prompt: string): string {
+  if (!prompt) return "ENTERPRISE ARCHITECTURE";
+  const clean = prompt
+    .replace(/act as|chief|enterprise|architect|and|pharma|technology|lead|at|we|are|building|a|generative|ai|platform|to|automate|scientific|literature|mining|accelerate|design|build|create|system|architecture|diagram/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const words = clean.split(' ').filter(w => w.length > 2).slice(0, 4);
+  return words.length > 0
+    ? words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+    : "ENTERPRISE PLATFORM";
+}
+
+function inferActorsFromPrompt(prompt: string): string {
+  const p = prompt.toLowerCase();
+  if (p.includes('doctor') || p.includes('clinical') || p.includes('patient') || p.includes('health')) {
+    return "Clinicians, Lead Researchers, Medical Data Analysts, Health IT Engineers";
+  } else if (p.includes('bank') || p.includes('fraud') || p.includes('fintech') || p.includes('payment')) {
+    return "Financial Analysts, Risk Engineers, Fraud Investigators, Security Operations";
+  } else if (p.includes('iot') || p.includes('device') || p.includes('sensor') || p.includes('factory')) {
+    return "IoT Platform Architects, Field Operations, Data Engineers, SREs";
+  }
+  return "Domain Specialists, System Engineers, Data Architects, Business Analysts";
+}
+
+function inferOutcomesFromPrompt(prompt: string): string {
+  const p = prompt.toLowerCase();
+  if (p.includes('latency') || p.includes('real-time') || p.includes('streaming')) {
+    return "Sub-10ms Streaming Ingestion, Zero Data Loss, Real-Time Telemetry Analytics";
+  } else if (p.includes('security') || p.includes('compliance') || p.includes('hipaa') || p.includes('pci')) {
+    return "100% Regulatory Compliance, Zero-Trust Encryption, Automated Audit Trail";
+  }
+  return "Accelerated Operational Efficiency, 99.99% Availability, Automated Lifecycle Governance";
+}
+
+function getDomainNeutralUseCaseTitle(archId?: string): string {
+  if (!archId) return "ENTERPRISE SOLUTION ARCHITECTURE";
+  if (archId.includes('rag')) return "COGNITIVE AGENTIC RAG SYSTEM";
+  if (archId.includes('pipeline')) return "END-TO-END DATA & AI PIPELINE";
+  if (archId.includes('erd')) return "DIMENSIONAL DATA MODEL (ERD)";
+  if (archId.includes('sequence')) return "SYSTEM EXECUTION SEQUENCE FLOW";
+  if (archId.includes('cicd')) return "DEVSECOPS CI/CD WORKFLOW";
+  if (archId.includes('iot')) return "INDUSTRIAL IOT TELEMETRY PIPELINE";
+  if (archId.includes('dr')) return "MULTI-REGION DISASTER RECOVERY";
+  if (archId.includes('vpc')) return "ZERO-TRUST VPC INFRASTRUCTURE";
+  return "ENTERPRISE CLOUD ARCHITECTURE";
+}
+
+function getDomainNeutralProblemStatement(archId?: string): string {
+  return "Automate enterprise data workflows, secure ingestion channels, and intelligent analytics processing to accelerate operational decision-making.";
+}
+
+function getDomainNeutralPrimaryActors(archId?: string): string {
+  return "Enterprise Architects, Data Engineers, Systems Analysts, Security Operations";
+}
+
+function getDomainNeutralTargetOutcomes(archId?: string): string {
+  return "Accelerated Processing Timelines, High Availability, End-to-End Governance";
 }
