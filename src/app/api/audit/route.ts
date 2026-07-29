@@ -431,7 +431,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Diagram has no versions to audit' }, { status: 404 });
     }
 
-    const ucContext = (targetVersion as any).use_case_context || 'Prior Authorization Platform';
+    const ucContext = (targetVersion as any).use_case_context || targetVersion.prompt || 'Architecture System';
     const userPrompt = targetVersion.prompt || undefined;
 
     const combinedText = `${ucContext} ${userPrompt || ''}`.toLowerCase();

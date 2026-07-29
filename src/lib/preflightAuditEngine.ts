@@ -12,8 +12,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 ): string {
   let xml = xmlInput || '';
 
-  // 1. Recover full multi-node architecture if XML is truncated or single-node placeholder
-  if (!xml || xml.length < 800 || xml.includes('value="Cloud Architecture"') || !xml.includes('node_2')) {
+  // 1. Recover full multi-node architecture if XML is truncated or missing mxCell nodes
+  if (!xml || xml.length < 300 || xml.includes('value="Cloud Architecture"') || !xml.includes('<mxCell')) {
     xml = getTechnicalArchitectureXml(archType || 'tech_cicd_pipeline');
   }
 

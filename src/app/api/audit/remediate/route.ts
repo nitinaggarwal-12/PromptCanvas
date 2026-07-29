@@ -27,8 +27,8 @@ export async function POST(request: Request) {
     }
 
     let currentXml = latestVersion.xml_content;
-    if (!currentXml || currentXml.length < 1000 || !currentXml.includes('node_2')) {
-      currentXml = getTechnicalArchitectureXml(architectureType || 'tech_cicd_pipeline');
+    if (!currentXml || currentXml.length < 300 || !currentXml.includes('<mxCell')) {
+      currentXml = getTechnicalArchitectureXml(architectureType || latestVersion.architecture_type || 'tech_cicd_pipeline');
     }
 
     let rawXml = '';
@@ -81,7 +81,7 @@ ${remediationInstructions}
       null,
       null,
       null,
-      architectureType || 'conceptual_diagram'
+      architectureType || latestVersion.architecture_type || 'tech_cicd_pipeline'
     );
 
     return NextResponse.json({

@@ -55,6 +55,7 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     4: [], // Storage & Database Tier
     5: [], // Serverless Functions & Event Queues
     6: [], // Observability & IAM Management
+    7: [], // Extended Integration / Governance Tier
   };
 
   const vertexPosMap: { [id: string]: { x: number; y: number; tier: number } } = {};
