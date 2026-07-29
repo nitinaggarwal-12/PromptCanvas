@@ -1067,14 +1067,14 @@ export async function getLatestDiagramVersion(diagramId: string, architectureTyp
   if (isPostgres()) {
     const pool = getPgPool();
     const query = architectureType
-      ? "SELECT * FROM diagram_versions WHERE diagram_id = $1 AND COALESCE(architecture_type, 'conceptual_diagram') = $2 ORDER BY version_number DESC LIMIT 1"
+      ? 'SELECT * FROM diagram_versions WHERE diagram_id = $1 AND (architecture_type = $2 OR architecture_type IS NULL) ORDER BY version_number DESC LIMIT 1'
       : 'SELECT * FROM diagram_versions WHERE diagram_id = $1 ORDER BY version_number DESC LIMIT 1';
     const res = await pool.query(query, architectureType ? [diagramId, architectureType] : [diagramId]);
     return (res.rows[0] as DiagramVersion) || null;
   } else {
     const db = getSqliteDb();
     const query = architectureType
-      ? "SELECT * FROM diagram_versions WHERE diagram_id = ? AND COALESCE(architecture_type, 'conceptual_diagram') = ? ORDER BY version_number DESC LIMIT 1"
+      ? 'SELECT * FROM diagram_versions WHERE diagram_id = ? AND (architecture_type = ? OR architecture_type IS NULL) ORDER BY version_number DESC LIMIT 1'
       : 'SELECT * FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC LIMIT 1';
     const stmt = db.prepare(query);
     const result = architectureType ? stmt.get(diagramId, architectureType) : stmt.get(diagramId);

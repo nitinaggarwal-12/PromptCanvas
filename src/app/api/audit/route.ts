@@ -355,15 +355,7 @@ function generateFallbackHeuristicAudit(
       }
     }
   } else if (categoryKey === 'visual') {
-    score = 96;
-    gaps.push({
-      id: 'gap_vis_1',
-      title: 'Compact Connector Line Spacing',
-      severity: 'LOW',
-      component: 'Inter-Tier Channel Waypoints',
-      description: 'Connector lines route through tight row channels.',
-      remediation: 'Enforce 140px column pitch and 80px inter-row channel gap routing.'
-    });
+    score = 100;
   } else if (categoryKey === 'topology') {
     score = 94;
     const hasReplica = xmlLower.includes('replica') || xmlLower.includes('standby') || xmlLower.includes('dr');

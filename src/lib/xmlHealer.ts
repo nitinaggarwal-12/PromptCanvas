@@ -1,4 +1,5 @@
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
+import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 
 export interface XmlHealerResult {
   isValid: boolean;
@@ -263,17 +264,5 @@ function autoRepairXmlSyntax(xml: string): string {
  * Creates a valid, error-free fallback Draw.io XML structure
  */
 function createFallbackDrawioXml(): string {
-  return `<mxfile host="PromptCanvas" modified="${new Date().toISOString()}" agent="PromptCanvas-AutoHealer">
-  <diagram id="fallback-diagram" name="Architecture">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="fallback_node" value="Cloud Architecture" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;fontColor=#ffffff;strokeColor=#059669;fontStyle=1;">
-          <mxGeometry x="350" y="200" width="160" height="70" as="geometry"/>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+  return getTechnicalArchitectureXml('tech_cicd_pipeline');
 }
