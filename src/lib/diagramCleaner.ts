@@ -717,8 +717,60 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   // 2. Adapt technical nodes if generic
   const promptLower = (userPrompt || topic || '').toLowerCase();
   const isGenomicPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('dna') || promptLower.includes('bwa');
+  const isLiteratureMiningPrompt = promptLower.includes('literature') || promptLower.includes('patent') || promptLower.includes('clinical trial') || promptLower.includes('nsclc') || promptLower.includes('target discovery') || promptLower.includes('langchain') || promptLower.includes('bioinformatician');
 
-  if (isGenomicPrompt) {
+  // Conceptual Diagram Specific Replacements
+  updatedXml = updatedXml
+    .replace(/\[1\]\s*Legacy SAP S\/4HANA[^"&<]*/gi, '[1] PubMed REST API &amp; USPTO Patent Ingest')
+    .replace(/\[2\]\s*Veeva Vault Clinical[^"&<]*/gi, '[2] Internal GxP Clinical Trial Repository')
+    .replace(/\[3\]\s*Azure API Management[^"&<]*/gi, '[3] LangChain Agentic API Gateway (GxP Compliance)')
+    .replace(/\[4\]\s*Ping Identity OAuth 2\.0[^"&<]*/gi, '[4] IP Protection &amp; Privacy Encryption Vault')
+    .replace(/\[5\]\s*Drug Discovery Cluster[^"&<]*/gi, '[5] Vertex AI Vector Search (pgvector Embeddings)')
+    .replace(/\[6\]\s*Clinical Trial &amp; Regulatory Cluster[^"&<]*/gi, '[6] Literature Mining &amp; Document Summarization Engine')
+    .replace(/\[7\]\s*Commercial &amp; Supply Chain Cluster[^"&<]*/gi, '[7] Target &amp; Pathway Consensus Identification Service')
+    .replace(/\[8\]\s*Google BigQuery[^"&<]*/gi, '[8] NSCLC Genomic &amp; Literature Data Lake')
+    .replace(/\[9\]\s*AWS HealthLake &amp; Redshift[^"&<]*/gi, '[9] Clinical Trial &amp; Patent Data Warehouse')
+    .replace(/\[10\]\s*GxP Audit Trail Ledger[^"&<]*/gi, '[10] GxP Audit Trail Ledger (21 CFR Part 11 Compliance)')
+    .replace(/\[11\]\s*Live FDA ESG Portal[^"&<]*/gi, '[11] FDA Regulatory &amp; Patent Submission Portal')
+    .replace(/On-Prem GxP ERP/g, 'Scientific Literature &amp; Patent Ingest')
+    .replace(/eTMF &amp; Submissions Gateway/g, 'GxP Trial Protocol Gateway')
+    .replace(/GxP Part 11 Compliance Enforcement/g, 'LangChain Agentic API Router')
+    .replace(/HIPAA\/PKCE Anonymization/g, 'IP Protection &amp; Data Anonymization')
+    .replace(/Vertex AI, SAS 9\.4 Analytics/g, 'Vertex AI Vector Search &amp; Cosine Index')
+    .replace(/HealthLake, Veeva Connect/g, 'LLM Literature Summarization Engine')
+    .replace(/SAP Batch Reconciler/g, 'Pathway Consensus Identification')
+    .replace(/Genomic Data Lake/g, 'PubMed &amp; Patent Data Lake')
+    .replace(/Clinical Data Warehouse/g, 'NSCLC Clinical Target Repository');
+
+  if (isLiteratureMiningPrompt) {
+    updatedXml = updatedXml
+      .replace(/\[1\]\s*User Client[^<]*/gi, '[1] Researcher Dashboard &amp; Query Portal (Bioinformatician UI)')
+      .replace(/\[1\]\s*External API Clients[^<]*/gi, '[1] PubMed REST API &amp; USPTO Patent Gateway')
+      .replace(/\[1\]\s*External Data Sources[^<]*/gi, '[1] PubMed, Patents &amp; Internal Clinical Trial Feeds')
+      .replace(/\[1\]\s*Developer Workstation[^<]*/gi, '[1] Lead Bioinformatician Workstation')
+      .replace(/\[2\]\s*Cloud Armor[^<]*/gi, '[2] Cloud Armor WAF (IP Protection &amp; Ingress Firewall)')
+      .replace(/\[2\]\s*Kinesis Data Streams[^<]*/gi, '[2] Literature &amp; Patent Ingestion Stream (Kinesis)')
+      .replace(/\[3\]\s*Global HTTPS Load Balancer[^<]*/gi, '[3] Global HTTPS Load Balancer (API Ingress Gateway)')
+      .replace(/\[3\]\s*AWS Lake Formation[^<]*/gi, '[3] GxP Data Lakehouse Governance (AWS Lake Formation)')
+      .replace(/\[4\]\s*Cloud CDN[^<]*/gi, '[4] Cloud CDN (Cached Literature Summaries)')
+      .replace(/\[4\]\s*S3 Landing Zone[^<]*/gi, '[4] S3 Raw Literature &amp; Patent Landing Zone')
+      .replace(/\[5\]\s*Cloud Run Frontend[^<]*/gi, '[5] Unstructured PDF &amp; Patent Document Chunking Engine')
+      .replace(/\[5\]\s*AWS Glue ETL Processing[^<]*/gi, '[5] Unstructured Text Summarization Engine (AWS Glue)')
+      .replace(/\[6\]\s*Cloud Run Backend API[^<]*/gi, '[6] LangChain Agentic Prompt Orchestrator &amp; ReAct Reasoner')
+      .replace(/\[6\]\s*S3 Processed Zone[^<]*/gi, '[6] S3 Processed Embeddings &amp; Vector Zone')
+      .replace(/\[7\]\s*Cloud SQL[^<]*/gi, '[7] Vertex AI Vector Search Index (pgvector / Cosine Embeddings)')
+      .replace(/\[7\]\s*S3 Curated Zone[^<]*/gi, '[7] S3 Curated Target &amp; Pathway Data Marts')
+      .replace(/\[8\]\s*Cloud Storage[^<]*/gi, '[8] Fine-Tuned Medical LLM (Gemini 2.5 Pro / Flash)')
+      .replace(/\[8\]\s*Glue Data Catalog[^<]*/gi, '[8] NSCLC Target Catalog (AWS Glue)')
+      .replace(/\[9\]\s*Secret Manager[^<]*/gi, '[9] Target &amp; Pathway Consensus Evaluation Engine')
+      .replace(/\[9\]\s*Amazon Athena[^<]*/gi, '[9] Amazon Athena (In-Silico Target Query Engine)')
+      .replace(/\[10\]\s*Cloud Pub\/Sub[^<]*/gi, '[10] Patent &amp; Literature Discrepancy Analysis Service')
+      .replace(/\[10\]\s*Redshift Spectrum[^<]*/gi, '[10] Redshift Data Warehouse (NSCLC Target Analytics)')
+      .replace(/\[11\]\s*Cloud Logging[^<]*/gi, '[11] Automated GxP Audit Trail Ledger (21 CFR Part 11 Compliance)')
+      .replace(/\[11\]\s*AWS IAM &amp; Policies[^<]*/gi, '[11] IP Protection &amp; IAM Access Control Policies')
+      .replace(/\[12\]\s*Cloud Trace[^<]*/gi, '[12] In-Silico Target Screening Strategy Evaluator')
+      .replace(/\[13\]\s*Cloud Security Command Center[^<]*/gi, '[13] Intellectual Property Protection &amp; Privacy Vault');
+  } else if (isGenomicPrompt) {
     updatedXml = updatedXml
       .replace(/\[1\]\s*User Client[^<]*/gi, '[1] Illumina NovaSeq Sequencing (RAW FASTQ Ingestion)')
       .replace(/\[1\]\s*External API Clients[^<]*/gi, '[1] Illumina NovaSeq Sequencing (RAW FASTQ Ingestion)')
