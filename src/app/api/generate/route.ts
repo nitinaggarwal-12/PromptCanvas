@@ -242,6 +242,9 @@ export async function POST(request: Request) {
     let existingXml = '';
 
     let activeSystemPrompt = SYSTEM_PROMPT;
+    const promptLower = (prompt || '').toLowerCase();
+    const isPipelineOrGenomicPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('pipeline') || promptLower.includes('ci/cd') || promptLower.includes('bwa');
+
     const isErdTypeOrPrompt = architectureType === 'erd' ||
                               prompt.includes('ETL & Data Lineage') ||
                               prompt.includes('Sub-Schema') ||
@@ -252,10 +255,13 @@ export async function POST(request: Request) {
                               prompt.includes('Dimensional Data Model') ||
                               prompt.includes('Database Architect');
 
-    const isConceptualTypeOrPrompt = !isErdTypeOrPrompt && (
+    const effectiveArchType = isPipelineOrGenomicPrompt 
+      ? 'tech_cicd_pipeline' 
+      : (architectureType || 'conceptual_diagram');
+
+    const isConceptualTypeOrPrompt = !isErdTypeOrPrompt && !isPipelineOrGenomicPrompt && (
                               architectureType === 'conceptual_diagram' ||
                               prompt.includes('ITACS Oncology Platform') ||
-                              prompt.includes('Conceptual') ||
                               prompt.includes('ONCOLOGY DATA PORTAL')
     );
 

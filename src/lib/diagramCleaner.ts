@@ -670,30 +670,61 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/ITACS Oncology Platform/g, `${topic} Platform`);
 
   // 2. Adapt technical nodes if generic
-  updatedXml = updatedXml
-    .replace(/\[1\] External Data Sources/g, `[1] ${topic} Data Feeds`)
-    .replace(/\[2\] Kinesis Data Streams/g, `[2] ${topic} Kinesis Real-Time Stream`)
-    .replace(/\[3\] AWS Lake Formation/g, `[3] ${topic} Lakehouse Governance`)
-    .replace(/\[4\] S3 Landing Zone/g, `[4] ${topic} Raw S3 Landing`)
-    .replace(/\[5\] AWS Glue ETL Processing/g, `[5] ${topic} Glue ETL Engine`)
-    .replace(/\[6\] S3 Processed Zone/g, `[6] ${topic} Staged Processed Data`)
-    .replace(/\[7\] S3 Curated Zone/g, `[7] ${topic} Curated Data Marts`)
-    .replace(/\[8\] Glue Data Catalog/g, `[8] ${topic} Glue Data Catalog`)
-    .replace(/\[9\] Amazon Athena/g, `[9] ${topic} Athena Query Engine`)
-    .replace(/\[10\] Redshift Spectrum/g, `[10] ${topic} Redshift Data Warehouse`)
-    .replace(/\[11\] AWS IAM &amp; Policies/g, `[11] ${topic} IAM Access Control`)
-    .replace(/\[11\] AWS IAM & Policies/g, `[11] ${topic} IAM Access Control`)
-    .replace(/\[1\] Ingress \/ Client Portal/g, `[1] ${topic} Web &amp; Mobile Ingress`)
-    .replace(/\[1\] Client App \/ Web Portal/g, `[1] ${topic} Client Portal`)
-    .replace(/\[1\] Field IoT Gateway Devices/g, `[1] ${topic} Field IoT Devices`)
-    .replace(/\[1\] Public Internet Traffic/g, `[1] ${topic} Internet Ingress`)
-    .replace(/\[1\] Developer Push \/ PR Event/g, `[1] ${topic} Dev PR Event`)
-    .replace(/\[1\] User Client/g, `[1] ${topic} User Client`)
-    .replace(/\[1\] Customer Mobile App/g, `[1] ${topic} App Portal`)
-    .replace(/\[1\] AWS WAF &amp; Shield/g, `[1] ${topic} AWS WAF &amp; Shield`)
-    .replace(/\[1\] External API Clients/g, `[1] ${topic} External API Clients`)
-    .replace(/\[1\] Enterprise Data Repositories/g, `[1] ${topic} Data Repositories`)
-    .replace(/\[1\] Polyrepo Source Control/g, `[1] ${topic} Polyrepo Source Repos`);
+  const promptLower = (userPrompt || topic || '').toLowerCase();
+  const isGenomicPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('dna') || promptLower.includes('bwa');
+
+  if (isGenomicPrompt) {
+    updatedXml = updatedXml
+      .replace(/\[1\]\s*User Client[^<]*/gi, '[1] Illumina NovaSeq Sequencing (RAW FASTQ Ingestion)')
+      .replace(/\[1\]\s*External API Clients[^<]*/gi, '[1] Illumina NovaSeq Sequencing (RAW FASTQ Ingestion)')
+      .replace(/\[1\]\s*Developer Workstation[^<]*/gi, '[1] Illumina NovaSeq Sequencing (RAW FASTQ Ingestion)')
+      .replace(/\[2\]\s*Cloud Armor[^<]*/gi, '[2] Cloud Armor WAF (Layer 7 DDoS Protection)')
+      .replace(/\[2\]\s*Source Code Repository[^<]*/gi, '[2] GCP Artifact Registry (FASTQ Raw Storage)')
+      .replace(/\[3\]\s*Global HTTPS Load Balancer[^<]*/gi, '[3] Global Load Balancer &amp; Ingress Gateway')
+      .replace(/\[3\]\s*CI\/CD Workflow Engine[^<]*/gi, '[3] Cloud Pub/Sub Event Orchestrator (FASTQ Triggers)')
+      .replace(/\[4\]\s*Cloud CDN[^<]*/gi, '[4] Cloud Pub/Sub Event Orchestrator (FASTQ Triggers)')
+      .replace(/\[4\]\s*Test &amp; Quality Cluster[^<]*/gi, '[4] GKE Quality Gate (FASTQ Validation &amp; QC)')
+      .replace(/\[5\]\s*Cloud Run Frontend[^<]*/gi, '[5] Cloud Storage RAW FASTQ Data Bucket (KMS Encrypted)')
+      .replace(/\[5\]\s*Security Scan Suite[^<]*/gi, '[5] SAST &amp; Trivy Scanner (Container &amp; Pipeline Guard)')
+      .replace(/\[6\]\s*Cloud Run Backend API[^<]*/gi, '[6] GKE Secondary Analysis Compute (BWA-MEM &amp; GATK)')
+      .replace(/\[6\]\s*Container Build &amp; Scan[^<]*/gi, '[6] GKE Secondary Analysis Compute (BWA-MEM &amp; GATK)')
+      .replace(/\[7\]\s*Cloud SQL[^<]*/gi, '[7] BigQuery Genomics Data Lakehouse (VCF &amp; Variant Store)')
+      .replace(/\[7\]\s*Container Registry[^<]*/gi, '[7] BigQuery Genomics Data Lakehouse (VCF &amp; Variant Store)')
+      .replace(/\[8\]\s*Cloud Storage[^<]*/gi, '[8] Cloud KMS (Customer-Managed Encryption Keys)')
+      .replace(/\[8\]\s*GitOps Deployment Sync[^<]*/gi, '[8] GitOps Controller (ArgoCD Pipeline Deployment)')
+      .replace(/\[9\]\s*Secret Manager[^<]*/gi, '[9] Google Secret Manager (API Credentials)')
+      .replace(/\[9\]\s*Staging Kubernetes Cluster[^<]*/gi, '[9] GKE Staging Sequencing Cluster')
+      .replace(/\[10\]\s*Cloud Pub\/Sub[^<]*/gi, '[10] Cloud Pub/Sub Secondary Event Queue')
+      .replace(/\[10\]\s*Production Kubernetes Cluster[^<]*/gi, '[10] GKE Production Variant Calling Cluster')
+      .replace(/\[11\]\s*Cloud Logging[^<]*/gi, '[11] Cloud Monitoring &amp; Automated Rollback Alert')
+      .replace(/\[11\]\s*Performance &amp; Canary Monitoring[^<]*/gi, '[11] Cloud Monitoring &amp; Automated Rollback Alert')
+      .replace(/\[12\]\s*Automated Rollback Trigger[^<]*/gi, '[12] Automated Rollback Trigger (Canary Health Workflow)');
+  } else {
+    updatedXml = updatedXml
+      .replace(/\[1\] External Data Sources/g, `[1] ${topic} Data Feeds`)
+      .replace(/\[2\] Kinesis Data Streams/g, `[2] ${topic} Kinesis Real-Time Stream`)
+      .replace(/\[3\] AWS Lake Formation/g, `[3] ${topic} Lakehouse Governance`)
+      .replace(/\[4\] S3 Landing Zone/g, `[4] ${topic} Raw S3 Landing`)
+      .replace(/\[5\] AWS Glue ETL Processing/g, `[5] ${topic} Glue ETL Engine`)
+      .replace(/\[6\] S3 Processed Zone/g, `[6] ${topic} Staged Processed Data`)
+      .replace(/\[7\] S3 Curated Zone/g, `[7] ${topic} Curated Data Marts`)
+      .replace(/\[8\] Glue Data Catalog/g, `[8] ${topic} Glue Data Catalog`)
+      .replace(/\[9\] Amazon Athena/g, `[9] ${topic} Athena Query Engine`)
+      .replace(/\[10\] Redshift Spectrum/g, `[10] ${topic} Redshift Data Warehouse`)
+      .replace(/\[11\] AWS IAM &amp; Policies/g, `[11] ${topic} IAM Access Control`)
+      .replace(/\[11\] AWS IAM & Policies/g, `[11] ${topic} IAM Access Control`)
+      .replace(/\[1\] Ingress \/ Client Portal/g, `[1] ${topic} Web &amp; Mobile Ingress`)
+      .replace(/\[1\] Client App \/ Web Portal/g, `[1] ${topic} Client Portal`)
+      .replace(/\[1\] Field IoT Gateway Devices/g, `[1] ${topic} Field IoT Devices`)
+      .replace(/\[1\] Public Internet Traffic/g, `[1] ${topic} Internet Ingress`)
+      .replace(/\[1\] Developer Push \/ PR Event/g, `[1] ${topic} Dev PR Event`)
+      .replace(/\[1\] User Client/g, `[1] ${topic} User Client`)
+      .replace(/\[1\] Customer Mobile App/g, `[1] ${topic} App Portal`)
+      .replace(/\[1\] AWS WAF &amp; Shield/g, `[1] ${topic} AWS WAF &amp; Shield`)
+      .replace(/\[1\] External API Clients/g, `[1] ${topic} External API Clients`)
+      .replace(/\[1\] Enterprise Data Repositories/g, `[1] ${topic} Data Repositories`)
+      .replace(/\[1\] Polyrepo Source Control/g, `[1] ${topic} Polyrepo Source Repos`);
+  }
 
   return updatedXml;
 }
