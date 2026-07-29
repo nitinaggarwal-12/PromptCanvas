@@ -152,7 +152,7 @@ export function generateStencilHtmlLabel(
     }
 
     case 'iphone_alert':
-      return `<div style="color:#DC2231;font-size:13px;line-height:1.4;"><b style="font-size:14px;">${safeTitle}</b><br><br><b style="font-size:13px;">CRITICAL ADVISORY:</b><br>${subtitle || contentHtml || 'Review Strategic Plan'}</div>`;
+      return `<div style="color:#DC2231;font-size:13px;line-height:1.4;"><b style="font-size:14px;">${safeTitle}</b><br><br><b style="font-size:13px;">CRITICAL ADVISORY:</b><br>${subtitle || contentHtml || safeTitle || 'Critical Advisory Alert'}</div>`;
 
     case 'pill_badge':
       return `<b style="font-size:11px;">${safeTitle}</b>`;

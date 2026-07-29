@@ -56,7 +56,7 @@ interface DiagramVersion {
 const TEMPLATE_PROMPTS = [
   {
     name: "Clean Slate (Empty Workspace)",
-    prompt: ""
+    prompt: "Act as an Enterprise Cloud Architect. Design a multi-tier cloud system architecture."
   },
   {
     name: "Serverless Web Application (GCP)",
@@ -131,7 +131,8 @@ export default function Dashboard() {
       const res = await fetch('/api/diagrams');
       if (!res.ok) throw new Error('Failed to fetch diagrams');
       const data = await res.json();
-      setDiagrams(data);
+      const list = Array.isArray(data) ? data : (data.diagrams || []);
+      setDiagrams(list);
     } catch (err) {
       console.error(err);
     } finally {

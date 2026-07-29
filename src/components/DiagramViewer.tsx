@@ -7,6 +7,8 @@ import { getTechnicalArchitectureXml } from '@/lib/architectureTypes';
 
 interface DiagramViewerProps {
   xml: string;
+  diagramId?: string;
+  versionId?: string;
   aspectRatioId?: string;
   customW?: number;
   customH?: number;
@@ -24,6 +26,8 @@ function htmlEscape(str: string): string {
 
 export default function DiagramViewer({
   xml,
+  diagramId,
+  versionId,
   aspectRatioId = '16:9',
   customW = 16,
   customH = 10,
@@ -171,7 +175,7 @@ export default function DiagramViewer({
   return (
     <div className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}>
       <iframe
-        key={`${xml}_${aspectRatioId}_${bgTheme}`}
+        key={`${diagramId || ''}_${versionId || ''}_${xml}_${aspectRatioId}_${bgTheme}`}
         srcDoc={iframeHtml}
         className="w-full h-full border-0 bg-transparent"
         title="Draw.io Diagram Viewer"

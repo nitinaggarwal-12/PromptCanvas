@@ -269,6 +269,7 @@ function autoRepairXmlSyntax(xml: string): string {
 /**
  * Creates a valid, error-free fallback Draw.io XML structure
  */
-function createFallbackDrawioXml(): string {
-  return getTechnicalArchitectureXml('tech_cicd_pipeline');
+function createFallbackDrawioXml(archType?: string): string {
+  const { getDefaultXmlForArchitecture } = require('./technicalArchitectureXmls');
+  return getDefaultXmlForArchitecture(archType || 'tech_cicd_pipeline');
 }
