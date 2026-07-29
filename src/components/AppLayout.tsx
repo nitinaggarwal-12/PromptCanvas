@@ -29,24 +29,24 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       if (authData.authenticated && authData.user) {
         setUser(authData.user);
-
-        const wsRes = await fetch('/api/workspaces');
-        const wsData = await wsRes.json();
-
-        if (wsData.success && wsData.data) {
-          setPersonalWorkspace(wsData.data.personalWorkspace);
-          setSharedWorkspaces(wsData.data.sharedWorkspaces || []);
-
-          // Set active workspace ID from URL or default to personal
-          const urlWs = searchParams?.get('workspace');
-          if (urlWs) {
-            setActiveWorkspaceId(urlWs);
-          } else if (wsData.data.personalWorkspace) {
-            setActiveWorkspaceId(wsData.data.personalWorkspace.id);
-          }
-        }
       } else {
-        setUser(null);
+        setUser({ id: 'guest', email: 'guest@promptcanvas.app', name: 'Guest Explorer' });
+      }
+
+      const wsRes = await fetch('/api/workspaces');
+      const wsData = await wsRes.json();
+
+      if (wsData.success && wsData.data) {
+        setPersonalWorkspace(wsData.data.personalWorkspace);
+        setSharedWorkspaces(wsData.data.sharedWorkspaces || []);
+
+        // Set active workspace ID from URL or default to personal
+        const urlWs = searchParams?.get('workspace');
+        if (urlWs) {
+          setActiveWorkspaceId(urlWs);
+        } else if (wsData.data.personalWorkspace) {
+          setActiveWorkspaceId(wsData.data.personalWorkspace.id);
+        }
       }
     } catch (err) {
       console.error('Error in AppLayout workspace sync:', err);

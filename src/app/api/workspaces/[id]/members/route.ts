@@ -24,8 +24,8 @@ export async function POST(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: 'Valid email address is required.' }, { status: 400 });
     }
 
-    if (!role || !['Editor', 'Viewer'].includes(role)) {
-      return NextResponse.json({ error: 'Role must be Editor or Viewer.' }, { status: 400 });
+    if (!role || !['Owner', 'Admin', 'Editor', 'Viewer'].includes(role)) {
+      return NextResponse.json({ error: 'Role must be Owner, Admin, Editor, or Viewer.' }, { status: 400 });
     }
 
     const member = await inviteWorkspaceMember(

@@ -22,7 +22,10 @@ export async function POST(request: Request) {
     const { hash, salt } = hashPassword(password);
     await updateUserPassword(user.id, hash, salt);
 
-    await logUserEvent(user.id, 'PASSWORD_SETUP_COMPLETED', null, 'User configured password after magic link authentication.');
+    const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+    const ipAddress = rawIp.split(',')[0]?.trim() || '127.0.0.1';
+    const userAgent = request.headers.get('user-agent');
+    await logUserEvent(user.id, 'PASSWORD_SETUP_COMPLETED', ipAddress, userAgent);
 
     return NextResponse.json({
       success: true,
