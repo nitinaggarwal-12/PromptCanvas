@@ -43,6 +43,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ---
 
+# ☁️ Cloudtop & Installed Browser Mandate for Testing
+
+* **Cloudtop & Installed Chrome Paths for Testing**: Always use Cloudtop (`rw nitinagga.c.googlers.com`) or explicitly set `executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'` in Puppeteer launch configs.
+* **Bypass Unverified Binary Blockers**: Never rely on default unverified `Google Chrome for Testing` downloads, which get blocked by workstation Santa security policies.
+
+---
+
 # 🧪 E2E Settling Delays & Animation Synchronization
 
 * **Mandatory 800ms Settling Delays**: Always inject a minimum **800ms synchronization delay** (`await sleep(800)`) immediately after clicking tab switches, drawers, or modal controllers to allow React state updates and CSS transitions to settle before screenshot capture.
