@@ -385,20 +385,26 @@ ${prompt}
         });
         responseText = response.text || '';
       } else {
-        console.log(`[Template Adaptation] Adapting pristine template for architecture "${architectureType || 'conceptual_diagram'}" with prompt...`);
-        const baseTemplateXml = getDefaultXmlForArchitecture(architectureType || 'conceptual_diagram');
+        console.log(`[Dynamic Domain Generation] Generating dynamic 2D architecture for prompt: "${prompt.slice(0, 60)}"...`);
         
-        const adaptSystemPrompt = `You are a Precision Architecture Template Adapter.
-You are given a pixel-perfect Draw.io XML template for an architecture diagram (${architectureType || 'conceptual_diagram'}) and a user's target system description.
+        const dynamicGenerationPrompt = `You are a Principal Cloud Architect and Enterprise Draw.io Diagram Engineer.
 
 YOUR TASK:
-Adapt the text labels inside the value="..." attributes of the XML template to fully represent the user's prompt, while preserving the exact layout, geometry coordinates (<mxGeometry x="..." y="..." width="..." height="...">), shape IDs (id="..."), colors, and routing edges.
+Generate a pristine, production-grade Draw.io XML architecture diagram representing the user's prompt:
+"${prompt}"
 
-CRITICAL CONSTRAINTS:
-1. Do NOT change any <mxGeometry> coordinates (x, y, width, height) or edge source/target IDs.
-2. Do NOT add nodes at huge x coordinates (x > 1400) or stretch the canvas horizontally.
-3. Replace all component titles, subtitles, badge text, and descriptions with terms relevant to the user's domain (e.g. EHR, FHIR, RAG, pathology PDFs, insurance policies, provider workflows).
-4. Return exactly four markdown sections:
+STRICT LAYOUT & GEOMETRY RULES:
+1. Arrange all components into a clean 5-Tier vertical hierarchy:
+   - Tier 1 (Ingestion / Ingress): y = 80px (User Clients, WAF, Edge LB, External Feeds)
+   - Tier 2 (Orchestration & Gateways): y = 220px (API Gateways, Auth, Event Brokers, Pub/Sub)
+   - Tier 3 (Processing & Microservices): y = 380px (Compute Clusters, GKE, Cloud Run, Batch Engines, Build Pipelines)
+   - Tier 4 (Data & Persistence): y = 560px (Databases, Cloud Storage, BigQuery, Data Lakes, Repositories)
+   - Tier 5 (Governance & Operations): y = 740px (Secret Manager, KMS, Monitoring, Rollback Triggers)
+2. Use horizontal column pitch of at least 220px (x = 180, 400, 620, 840, 1060) to prevent node overlaps.
+3. Every node MUST have an official Iconify brand SVG logo in its value attribute:
+   Example: <img src="https://api.iconify.design/logos:google-cloud.svg" width="24" height="24" style="float:left;margin-right:8px;vertical-align:middle;">
+4. Route edge connectors with orthogonalEdgeStyle and ensure perimeter rollback arrows use x=30 waypoints.
+5. Return exactly four markdown sections:
    - ### AI Architectural Plan & Reasoning
    - ### Business Use Case
    - ### Technical Use Case
@@ -406,15 +412,10 @@ CRITICAL CONSTRAINTS:
 
         const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash',
-          contents: `### User Target System Description / Prompt:
-${prompt}
-
-### Base Reference XML Template to Adapt:
-\`\`\`xml
-${baseTemplateXml}
-\`\`\``,
+          contents: `### User Target System Prompt:
+${prompt}`,
           config: {
-            systemInstruction: adaptSystemPrompt,
+            systemInstruction: dynamicGenerationPrompt,
           },
         });
         responseText = response.text || '';
@@ -426,10 +427,10 @@ ${baseTemplateXml}
       businessUsecase = parsed.businessUsecase;
       technicalUsecase = parsed.technicalUsecase;
 
-      // Fallback to base template if XML is null or failed parsing
+      // Fallback to base template ONLY if LLM returns null or malformed XML
       if (!xml && !isRefinement) {
         console.log('[Template Fallback] LLM returned empty XML, falling back to base template XML.');
-        xml = getDefaultXmlForArchitecture(architectureType || 'conceptual_diagram', prompt, prompt);
+        xml = getDefaultXmlForArchitecture(effectiveArchType, prompt, prompt);
       }
     }
 
