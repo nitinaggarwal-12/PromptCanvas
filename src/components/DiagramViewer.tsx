@@ -30,18 +30,16 @@ export default function DiagramViewer({
 }: DiagramViewerProps) {
   const sanitizedXml = React.useMemo(() => {
     if (!xml) return '';
-    let cleaned = '';
+    let rawStr = '';
     if (typeof xml === 'string') {
-      cleaned = xml.trim();
+      rawStr = xml;
     } else if (typeof xml === 'object' && xml !== null) {
-      cleaned = Buffer.from(Object.values(xml) as any).toString('utf-8').trim();
+      rawStr = Buffer.from(Object.values(xml) as any).toString('utf-8');
     } else {
-      cleaned = String(xml).trim();
+      rawStr = String(xml);
     }
-    if (cleaned.includes('```')) {
-      cleaned = cleaned.replace(/^```[a-z]*\n?/gi, '').replace(/\n?```$/g, '').trim();
-    }
-    return cleaned;
+    const healed = validateAndHealDrawioXml(rawStr);
+    return healed.xml;
   }, [xml]);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
