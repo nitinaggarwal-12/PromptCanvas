@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       null,
       null,
       null,
-      architectureType || latestVersion.architecture_type || undefined
+      architectureType || latestVersion.architecture_type || 'tech_cicd_pipeline'
     );
 
     return NextResponse.json({

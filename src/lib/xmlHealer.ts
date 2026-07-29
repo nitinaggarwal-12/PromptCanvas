@@ -252,9 +252,15 @@ function autoRepairXmlSyntax(xml: string): string {
     return match;
   });
 
-  // Ensure mxfile wrapper
+  // Ensure complete mxfile, diagram, mxGraphModel, and root wrapper hierarchy
   if (!repaired.includes('<mxfile')) {
-    repaired = `<mxfile host="PromptCanvas"><diagram id="healed">${repaired}</diagram></mxfile>`;
+    if (!repaired.includes('<root>')) {
+      repaired = `<root><mxCell id="0"/><mxCell id="1" parent="0"/>${repaired}</root>`;
+    }
+    if (!repaired.includes('<mxGraphModel')) {
+      repaired = `<mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827">${repaired}</mxGraphModel>`;
+    }
+    repaired = `<mxfile host="PromptCanvas"><diagram id="healed" name="Architecture">${repaired}</diagram></mxfile>`;
   }
 
   return repaired;

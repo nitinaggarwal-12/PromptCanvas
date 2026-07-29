@@ -53,9 +53,9 @@ export function ImportDiagramModal({ isOpen, onClose, onImportSuccess }: ImportD
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: diagramName || file.name.replace(/\.[^/.]+$/, ''),
-          description: `Imported from ${file.name}`,
-          xml_content: xmlContent,
+          xml: xmlContent,
           comment: `Imported file: ${file.name}`,
+          architectureType: 'tech_cicd_pipeline'
         }),
       });
 

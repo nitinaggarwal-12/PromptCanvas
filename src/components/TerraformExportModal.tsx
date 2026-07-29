@@ -9,6 +9,7 @@ interface TerraformExportModalProps {
   diagramName?: string;
   diagramId?: string;
   xmlContent?: string;
+  architectureType?: string;
 }
 
 interface TerraformFiles {
@@ -25,6 +26,7 @@ export function TerraformExportModal({
   diagramName,
   diagramId,
   xmlContent,
+  architectureType,
 }: TerraformExportModalProps) {
   const [activeTab, setActiveTab] = useState<'main' | 'variables' | 'outputs' | 'provider' | 'readme'>('main');
   const [loading, setLoading] = useState(false);
@@ -37,7 +39,7 @@ export function TerraformExportModal({
       const res = await fetch('/api/export/terraform', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ diagramId, xmlContent }),
+        body: JSON.stringify({ diagramId, xmlContent, architectureType }),
       });
       if (!res.ok) throw new Error('Failed to generate Terraform code');
       const data = await res.json();
