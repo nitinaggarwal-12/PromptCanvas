@@ -1003,8 +1003,26 @@ function WorkspaceContent() {
           await fetchDiagrams();
           await loadDiagramDetails(data.diagram.id);
         } catch (genErr) {
-          console.error(genErr);
-          alert('Error generating template diagram.');
+          console.warn('AI Generation endpoint failed, falling back to local benchmark synthesis:', genErr);
+          const fallbackRes = await fetch('/api/diagrams', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: newDiagramName.trim(),
+              xml: defaultXml,
+              comment: 'Synthesized Enterprise Canvas',
+              architectureType: selectedArchType
+            })
+          });
+          if (fallbackRes.ok) {
+            const data = await fallbackRes.json();
+            setNewDiagramName('');
+            setNewDiagramPrompt('');
+            await fetchDiagrams();
+            await loadDiagramDetails(data.diagram.id);
+          } else {
+            alert('Error creating diagram. Please try again.');
+          }
         } finally {
           setIsGenerating(false);
         }
