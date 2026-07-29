@@ -259,11 +259,10 @@ export async function POST(request: Request) {
       ? 'tech_cicd_pipeline' 
       : (architectureType || 'conceptual_diagram');
 
-    const isConceptualTypeOrPrompt = !isErdTypeOrPrompt && !isPipelineOrGenomicPrompt && (
-                              architectureType === 'conceptual_diagram' ||
+    const isConceptualTypeOrPrompt = architectureType === 'conceptual_diagram' || (!isErdTypeOrPrompt && !isPipelineOrGenomicPrompt && (
                               prompt.includes('ITACS Oncology Platform') ||
                               prompt.includes('ONCOLOGY DATA PORTAL')
-    );
+    ));
 
     if (isErdTypeOrPrompt) {
       activeSystemPrompt += `

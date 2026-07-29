@@ -156,7 +156,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   const promptLower = (userPrompt || useCaseContext || '').toLowerCase();
   const isCustomDomainPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('bwa') || promptLower.includes('pipeline') || promptLower.includes('ci/cd');
 
-  if (archId === 'conceptual_diagram' && !isCustomDomainPrompt && (!userPrompt || userPrompt.includes('ITACS Oncology'))) {
+  if (archId === 'conceptual_diagram') {
     xml = compileSpecToDrawioXml(getBenchmarkItacsSpec());
   } else if (isCustomDomainPrompt || archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') {
     xml = getTechnicalArchitectureXml('tech_cicd_pipeline');
