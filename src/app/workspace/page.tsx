@@ -1424,7 +1424,9 @@ function WorkspaceContent() {
 
       if (data.reportsHistory) {
         setAuditHistory(data.reportsHistory);
-        if (data.reportsHistory.length > 0) {
+        if (data.savedReport?.id) {
+          setSelectedAuditReportId(data.savedReport.id);
+        } else if (data.reportsHistory.length > 0) {
           setSelectedAuditReportId(data.reportsHistory[0].id);
         }
       }
@@ -1915,6 +1917,9 @@ function WorkspaceContent() {
                             const found = auditHistory.find(r => r.id === e.target.value);
                             if (found) {
                               setSelectedAuditReportId(found.id);
+                              if (found.audit_category) {
+                                setSelectedAuditCategory(found.audit_category as any);
+                              }
                               setAuditReport(found.report);
                               setAuditScore(found.score);
                               try {
@@ -2021,7 +2026,37 @@ function WorkspaceContent() {
                   </div>
                 )}
 
-                {auditReport ? (
+                {isAuditing ? (
+                  <div className="glass-panel border-teal-500/30 rounded-3xl p-12 text-center space-y-6 shadow-2xl animate-pulse bg-slate-900/80">
+                    <div className="w-16 h-16 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center mx-auto">
+                      <Loader2 className="w-8 h-8 text-teal-400 animate-spin" />
+                    </div>
+                    <div className="space-y-2 max-w-md mx-auto">
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="px-3 py-1 rounded-full text-xs font-black bg-teal-500/20 text-teal-300 border border-teal-500/40 uppercase tracking-widest animate-pulse">
+                          Live Inspection in Progress
+                        </span>
+                      </div>
+                      <h3 className="text-2xl font-black text-white capitalize">
+                        Auditing {selectedAuditCategory === 'visual' ? 'Visual Collision & Geometry' : selectedAuditCategory === 'topology' ? 'Cloud Architecture Topology' : selectedAuditCategory === 'responsive' ? 'Responsive & Aspect Ratio' : selectedAuditCategory === 'accessibility' ? 'WCAG Accessibility' : selectedAuditCategory === 'vendor' ? 'Vendor Icon Coverage' : 'Security & Compliance'}...
+                      </h3>
+                      <p className="text-xs text-slate-300">
+                        Gemini 2.5 is parsing 2D bounding boxes, checking topology rules, and evaluating {selectedAuditCategory} posture against domain benchmarks...
+                      </p>
+                    </div>
+                    
+                    <div className="max-w-md mx-auto space-y-3 pt-2">
+                      <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                        <div className="bg-gradient-to-r from-teal-500 to-cyan-400 h-full w-2/3 animate-pulse"></div>
+                      </div>
+                      <div className="flex justify-between text-[11px] font-bold text-slate-400 px-1">
+                        <span>Parsing XML Layout</span>
+                        <span>Evaluating Category Rules</span>
+                        <span>Generating Report</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : auditReport ? (
                   <div className="glass-panel border-panel-border/40 rounded-3xl p-8 space-y-8 shadow-2xl">
                     
                     {/* Compliance Score Header */}
