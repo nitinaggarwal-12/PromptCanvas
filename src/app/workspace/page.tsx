@@ -128,10 +128,10 @@ function cleanHtmlLabel(label: string): string {
 }
 
 function formatRelativeTime(dateStr: string): string {
-  if (!dateStr) return '';
+  if (!dateStr) return 'Just now';
   const normalized = dateStr.replace(' ', 'T');
   const date = new Date(normalized);
-  if (isNaN(date.getTime())) return '';
+  if (isNaN(date.getTime())) return 'Just now';
 
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -245,7 +245,7 @@ function htmlEscape(str: string): string {
 const TEMPLATE_PROMPTS = [
   {
     name: "Clean Slate (Empty Workspace)",
-    prompt: ""
+    prompt: "Act as an Enterprise Cloud Architect. Design a multi-tier cloud system architecture."
   },
   {
     name: "Serverless Web Application (GCP)",

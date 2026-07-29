@@ -83,13 +83,9 @@ export default function LandingPage() {
     e.preventDefault();
     try {
       const res = await fetch('/api/auth/guest', { method: 'POST' });
-      if (res.ok) {
-        router.push('/dashboard');
-      } else {
-        setIsAuthOpen(true);
-      }
+      router.push('/dashboard');
     } catch {
-      setIsAuthOpen(true);
+      router.push('/dashboard');
     }
   };
 

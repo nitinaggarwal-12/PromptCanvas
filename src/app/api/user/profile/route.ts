@@ -17,7 +17,8 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'User not found.' }, { status: 404 });
     }
 
-    const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip');
+    const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+    const ipAddress = rawIp.split(',')[0]?.trim() || '127.0.0.1';
     const userAgent = request.headers.get('user-agent');
 
     // 1. Handle profile name update

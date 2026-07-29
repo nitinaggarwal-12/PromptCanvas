@@ -29,7 +29,7 @@ export function AccessRequestModal({ isOpen, onClose, diagramId, diagramName, on
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          diagramId,
+          diagramId: diagramId || 'global_workspace',
           requestedRole,
           message,
         }),
