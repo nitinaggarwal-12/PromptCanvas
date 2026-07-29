@@ -5,6 +5,7 @@ import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { tryCompileJsonOrFallback, compileSpecToDrawioXml, getBenchmarkItacsSpec } from '@/lib/diagramCompiler';
 
 const ai = new GoogleGenAI({});
@@ -422,7 +423,7 @@ ${baseTemplateXml}
       // Fallback to base template if XML is null or failed parsing
       if (!xml && !isRefinement) {
         console.log('[Template Fallback] LLM returned empty XML, falling back to base template XML.');
-        xml = getDefaultXmlForArchitecture(architectureType || 'conceptual_diagram');
+        xml = getDefaultXmlForArchitecture(architectureType || 'conceptual_diagram', prompt, prompt);
       }
     }
 
@@ -437,6 +438,9 @@ ${baseTemplateXml}
         { status: 502 }
       );
     }
+
+    // Ensure use-case flavor is injected into technical & business titles/nodes
+    xml = injectUseCaseFlavor(xml, prompt, prompt);
 
     console.log('[DEBUG BEFORE SAVE]', { isRefinement, diagramId });
     if (isRefinement && diagramId) {

@@ -4712,7 +4712,7 @@ function WorkspaceContent() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                           diagramId: activeDiagram.id,
-                          prompt: archObj.prompt,
+                          prompt: `Use Case Topic: "${activeDiagram.name}". ${archObj.prompt}`,
                           architectureType: archToGen
                         })
                       });

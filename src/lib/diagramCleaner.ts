@@ -575,7 +575,7 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
         .replace(/;?labelBorderColor=[^;]*/g, '')
         .replace(/;?fontSize=[^;]*/g, '')
         .replace(/;?fontStyle=[^;]*/g, '');
-      style += ';labelBackgroundColor=none;fontColor=#38BDF8;fontStyle=1;fontSize=11;';
+      style += ';labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;';
       cell['@_style'] = style;
     } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
       let rawValue = String(cell['@_value'] || '');
@@ -618,6 +618,84 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
   });
 
   return builder.build(ast);
+}
+
+/**
+ * 🏷️ Injects active Use-Case domain flavor (e.g. Prior Authorization, ITACS Oncology, Claims Engine)
+ * into all titles, subtitles, headers, and component nodes across Technical & Business diagrams.
+ * Prevents generic boilerplate titles in technical design documents.
+ */
+export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPrompt?: string): string {
+  if (!xml || typeof xml !== 'string') return xml;
+
+  let topic = useCaseTitle ? useCaseTitle.trim() : '';
+
+  // Extract a clean 2-4 word use-case topic from prompt if generic
+  if ((!topic || topic === 'Architecture' || topic === 'Clean Architecture Workspace') && userPrompt) {
+    const cleanPrompt = userPrompt.replace(/act as|design a|build a|create a|system|architecture|diagram|for|a|an|the/gi, ' ').replace(/\s+/g, ' ').trim();
+    const words = cleanPrompt.split(' ').slice(0, 3);
+    topic = words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+  }
+
+  if (!topic || topic === 'Architecture') {
+    topic = 'Prior Authorization Platform'; // Default enterprise use-case context
+  }
+
+  const topicUpper = topic.toUpperCase();
+
+  let updatedXml = xml;
+
+  // 1. Replace generic titles and headers
+  updatedXml = updatedXml
+    .replace(/ITACS SECURE GOVERNED CLOUD TENANT/g, `${topicUpper} SECURE GOVERNED CLOUD TENANT`)
+    .replace(/ITACS Integrated Insights Platform/g, `${topic} Platform`)
+    .replace(/AWS Modern Data Lakehouse Architecture/g, `${topic} - AWS Data Lakehouse Architecture`)
+    .replace(/GCP Serverless Web Application Architecture/g, `${topic} - GCP Serverless Architecture`)
+    .replace(/AWS EKS Microservices Service Mesh Architecture/g, `${topic} - EKS Microservices Mesh`)
+    .replace(/GCP Real-Time Streaming Analytics Pipeline/g, `${topic} - Streaming Analytics Pipeline`)
+    .replace(/Combining Data Flow \(DFD\), MLOps Lifecycle, and Feature Engineering/g, `${topic} - Data &amp; AI Pipeline`)
+    .replace(/Google Cloud Project \(ITACS Platform Production\)/g, `${topic} Production Cloud Architecture`)
+    .replace(/AWS Serverless Event-Driven Microservices/g, `${topic} - Event-Driven Microservices`)
+    .replace(/GCP Multi-Region Active-Passive Disaster Recovery/g, `${topic} - Multi-Region DR Topology`)
+    .replace(/GCP AI Cognitive Architecture \(Retrieval-Augmented Generation \/ RAG\)/g, `${topic} - AI Agentic RAG Architecture`)
+    .replace(/AWS Zero-Trust Secure VPC Network Infrastructure/g, `${topic} - Zero-Trust Secure VPC Network`)
+    .replace(/GCP Industrial IoT Telemetry Ingestion &amp; Analytics/g, `${topic} - Industrial IoT Ingestion &amp; Analytics`)
+    .replace(/Enterprise DevSecOps Polyrepo CI\/CD Pipeline Architecture/g, `${topic} - DevSecOps Polyrepo CI/CD Pipeline`)
+    .replace(/UNIFIED GOVERNANCE &amp; STATE-MACHINE LIFECYCLE/g, `${topicUpper} UNIFIED GOVERNANCE &amp; STATE-MACHINE LIFECYCLE`)
+    .replace(/TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, &amp; Governance/g, `${topicUpper} TOTAL UNIFIED SYSTEM VIEW`)
+    .replace(/COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM/g, `${topicUpper} COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM`)
+    .replace(/ITACS Governing Cloud Tenant/g, `${topicUpper} Governing Cloud Tenant`)
+    .replace(/ITACS Primary VPC Network/g, `${topicUpper} Primary VPC Network`)
+    .replace(/ITACS Agent Orchestrator/g, `${topic} Agent Orchestrator`)
+    .replace(/ITACS Oncology Platform/g, `${topic} Platform`);
+
+  // 2. Adapt technical nodes if generic
+  updatedXml = updatedXml
+    .replace(/\[1\] External Data Sources/g, `[1] ${topic} Data Feeds`)
+    .replace(/\[2\] Kinesis Data Streams/g, `[2] ${topic} Kinesis Real-Time Stream`)
+    .replace(/\[3\] AWS Lake Formation/g, `[3] ${topic} Lakehouse Governance`)
+    .replace(/\[4\] S3 Landing Zone/g, `[4] ${topic} Raw S3 Landing`)
+    .replace(/\[5\] AWS Glue ETL Processing/g, `[5] ${topic} Glue ETL Engine`)
+    .replace(/\[6\] S3 Processed Zone/g, `[6] ${topic} Staged Processed Data`)
+    .replace(/\[7\] S3 Curated Zone/g, `[7] ${topic} Curated Data Marts`)
+    .replace(/\[8\] Glue Data Catalog/g, `[8] ${topic} Glue Data Catalog`)
+    .replace(/\[9\] Amazon Athena/g, `[9] ${topic} Athena Query Engine`)
+    .replace(/\[10\] Redshift Spectrum/g, `[10] ${topic} Redshift Data Warehouse`)
+    .replace(/\[11\] AWS IAM &amp; Policies/g, `[11] ${topic} IAM Access Control`)
+    .replace(/\[11\] AWS IAM & Policies/g, `[11] ${topic} IAM Access Control`)
+    .replace(/\[1\] Ingress \/ Client Portal/g, `[1] ${topic} Web &amp; Mobile Ingress`)
+    .replace(/\[1\] Client App \/ Web Portal/g, `[1] ${topic} Client Portal`)
+    .replace(/\[1\] Field IoT Gateway Devices/g, `[1] ${topic} Field IoT Devices`)
+    .replace(/\[1\] Public Internet Traffic/g, `[1] ${topic} Internet Ingress`)
+    .replace(/\[1\] Developer Push \/ PR Event/g, `[1] ${topic} Dev PR Event`)
+    .replace(/\[1\] User Client/g, `[1] ${topic} User Client`)
+    .replace(/\[1\] Customer Mobile App/g, `[1] ${topic} App Portal`)
+    .replace(/\[1\] AWS WAF &amp; Shield/g, `[1] ${topic} AWS WAF &amp; Shield`)
+    .replace(/\[1\] External API Clients/g, `[1] ${topic} External API Clients`)
+    .replace(/\[1\] Enterprise Data Repositories/g, `[1] ${topic} Data Repositories`)
+    .replace(/\[1\] Polyrepo Source Control/g, `[1] ${topic} Polyrepo Source Repos`);
+
+  return updatedXml;
 }
 
 /**

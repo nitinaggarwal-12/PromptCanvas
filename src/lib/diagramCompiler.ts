@@ -3425,8 +3425,8 @@ export function compileSpecToDrawioXml(spec: CompiledDiagramSpec): string {
     const fontColor = conn.fontColor || (idx === 0 ? '#1E40AF' : '#065F46');
     const strokeColor = idx === 0 ? '#3B82F6' : '#10B981';
     
-    // Enforce Draw.io routing protocol: plain text labels, no html background wrapper
-    const edgeStyle = `edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=${strokeColor};fontColor=${fontColor};labelBackgroundColor=none;fontStyle=1;fontSize=12;`;
+    // Enforce Draw.io routing protocol: solid background pill so arrows never slice through label text
+    const edgeStyle = `edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=${strokeColor};fontColor=#0F172A;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;padding=4;`;
     const edgeLabel = conn.label ? `<b>${conn.label}</b>` : '';
 
     xmlCells += `
