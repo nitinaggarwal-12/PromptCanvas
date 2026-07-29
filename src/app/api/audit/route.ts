@@ -64,59 +64,166 @@ Score the percentage of nodes using official vendor logos.
 `
 };
 
-function runDeterministicVisualAstAudit(xmlContent: string, archType: string): AuditGap[] {
+function runDeterministicCategoryAstAudit(
+  xmlContent: string, 
+  categoryKey: AuditCategory,
+  archType: string
+): AuditGap[] {
   const gaps: AuditGap[] = [];
   const xmlLower = xmlContent.toLowerCase();
 
-  // Check 1: Geometric Line Slicing / Rollback Line Collision
-  if (xmlContent.includes('edge_12_3_rollback') || (xmlLower.includes('rollback') && (xmlContent.includes('mxPoint x="50"') || xmlContent.includes('mxPoint x="40"')))) {
-    gaps.push({
-      id: 'gap_vis_line_slice_1',
-      title: 'Geometric Line Slicing (Connector Line-to-Node Intersection)',
-      severity: 'HIGH',
-      component: '[9] Staging Kubernetes Cluster',
-      description: 'The automated rollback connector line cuts straight through the interior geometry of node [9] Staging Kubernetes.',
-      remediation: 'Re-route the rollback line around the left perimeter of the diagram (x=30 waypoint) with dedicated vertical channel clearance.'
-    });
-  }
+  const isErd = archType === 'erd';
+  const isSequence = archType.includes('sequence');
+  const isCicd = archType.includes('cicd') || archType.includes('devops') || xmlLower.includes('cicd');
 
-  // Check 2: Broken Vendor Logo Asset URLs
-  if (xmlContent.includes('argo-icon.svg') || (xmlLower.includes('argo') && !xmlContent.includes('logos:argo'))) {
-    gaps.push({
-      id: 'gap_vis_broken_logo_1',
-      title: 'Broken Vendor Logo Image Asset',
-      severity: 'MEDIUM',
-      component: '[8] GitOps Controller (ArgoCD)',
-      description: 'Node [8] references a non-existent or broken icon URL (argo-icon.svg), resulting in a missing image placeholder box.',
-      remediation: 'Update icon URL to official Iconify asset endpoint (https://api.iconify.design/logos:argo.svg) with fallback error handlers.'
-    });
-  }
-
-  // Check 3: Icon-Over-Text Label Collision
-  if (xmlContent.includes('node_5') && xmlLower.includes('sonarqube') && !xmlContent.includes('float:left')) {
-    gaps.push({
-      id: 'gap_vis_text_collision_1',
-      title: 'Icon-Over-Text Boundary Overlap',
-      severity: 'MEDIUM',
-      component: '[5] SAST Code Scanner (SonarQube)',
-      description: 'The SonarQube logo icon is rendered directly on top of the text label string inside the node boundary.',
-      remediation: 'Enforce float:left;margin-right:8px; inside the value attribute and add spacingLeft=34 internal node padding.'
-    });
-  }
-
-  // Check 4: Flawed CI/CD Pipeline Artifact Lineage Alignment
-  if (archType.includes('cicd') || archType.includes('devops') || xmlLower.includes('cicd')) {
-    const buildIdx = xmlContent.indexOf('node_6');
-    const registryIdx = xmlContent.indexOf('node_7');
-    const gitopsIdx = xmlContent.indexOf('node_8');
-    if (registryIdx > gitopsIdx || (registryIdx !== -1 && buildIdx !== -1 && registryIdx < buildIdx)) {
+  if (categoryKey === 'visual') {
+    // 1. Geometric Line Slicing / Rollback Line Collision
+    if (xmlContent.includes('edge_12_3_rollback') || (xmlLower.includes('rollback') && (xmlContent.includes('mxPoint x="50"') || xmlContent.includes('mxPoint x="40"')))) {
       gaps.push({
-        id: 'gap_vis_lineage_1',
-        title: 'Flawed CI/CD Artifact Lineage Alignment',
+        id: 'gap_vis_line_slice_1',
+        title: 'Geometric Line Slicing (Connector Line-to-Node Intersection)',
+        severity: 'HIGH',
+        component: '[9] Staging Kubernetes Cluster',
+        description: 'The automated rollback connector line cuts straight through the interior geometry of node [9] Staging Kubernetes.',
+        remediation: 'Re-route the rollback line around the left perimeter of the diagram (x=30 waypoint) with dedicated vertical channel clearance.'
+      });
+    }
+
+    // 2. Broken Vendor Logo Asset URLs
+    if (xmlContent.includes('argo-icon.svg') || (xmlLower.includes('argo') && !xmlContent.includes('logos:argo'))) {
+      gaps.push({
+        id: 'gap_vis_broken_logo_1',
+        title: 'Broken Vendor Logo Image Asset',
         severity: 'MEDIUM',
-        component: '[7] Container Registry (GCP Artifact Registry)',
-        description: 'Container Registry [7] is placed out-of-order in the visual hierarchy, breaking standard Build -> Registry -> GitOps deployment flow.',
-        remediation: 'Reposition Container Registry [7] in Tier 3 between Build [6] and GitOps Controller [8] to align visual lineage with artifact flow.'
+        component: '[8] GitOps Controller (ArgoCD)',
+        description: 'Node [8] references a non-existent or broken icon URL (argo-icon.svg), resulting in a missing image placeholder box.',
+        remediation: 'Update icon URL to official Iconify asset endpoint (https://api.iconify.design/logos:argo.svg) with fallback error handlers.'
+      });
+    }
+
+    // 3. Icon-Over-Text Label Collision
+    if (xmlContent.includes('node_5') && xmlLower.includes('sonarqube') && !xmlContent.includes('float:left')) {
+      gaps.push({
+        id: 'gap_vis_text_collision_1',
+        title: 'Icon-Over-Text Boundary Overlap',
+        severity: 'MEDIUM',
+        component: '[5] SAST Code Scanner (SonarQube)',
+        description: 'The SonarQube logo icon is rendered directly on top of the text label string inside the node boundary.',
+        remediation: 'Enforce float:left;margin-right:8px; inside the value attribute and add spacingLeft=34 internal node padding.'
+      });
+    }
+
+    // 4. Flawed CI/CD Pipeline Artifact Lineage Alignment
+    if (isCicd) {
+      const buildIdx = xmlContent.indexOf('node_6');
+      const registryIdx = xmlContent.indexOf('node_7');
+      const gitopsIdx = xmlContent.indexOf('node_8');
+      if (registryIdx > gitopsIdx || (registryIdx !== -1 && buildIdx !== -1 && registryIdx < buildIdx)) {
+        gaps.push({
+          id: 'gap_vis_lineage_1',
+          title: 'Flawed CI/CD Artifact Lineage Alignment',
+          severity: 'MEDIUM',
+          component: '[7] Container Registry (GCP Artifact Registry)',
+          description: 'Container Registry [7] is placed out-of-order in the visual hierarchy, breaking standard Build -> Registry -> GitOps deployment flow.',
+          remediation: 'Reposition Container Registry [7] in Tier 3 between Build [6] and GitOps Controller [8] to align visual lineage with artifact flow.'
+        });
+      }
+    }
+  } else if (categoryKey === 'security') {
+    const hasWaf = xmlLower.includes('waf') || xmlLower.includes('cloud armor') || xmlLower.includes('aws waf');
+    const hasSecrets = xmlLower.includes('secret') || xmlLower.includes('vault') || xmlLower.includes('kms');
+    const hasPrivateVpc = xmlLower.includes('private vpc') || xmlLower.includes('private subnet') || xmlLower.includes('isolated');
+
+    if (!hasWaf && !isErd) {
+      gaps.push({
+        id: 'gap_sec_ast_1',
+        title: 'Missing Edge Protection / WAF Layer',
+        severity: 'HIGH',
+        component: 'Ingress Traffic Entry Point',
+        description: 'External traffic reaches load balancers or application clusters without Layer 7 DDoS scrubbing or WAF protection.',
+        remediation: 'Attach Cloud Armor WAF or AWS WAF Security Policies in front of ingress endpoints.'
+      });
+    }
+    if (!hasSecrets) {
+      gaps.push({
+        id: 'gap_sec_ast_2',
+        title: 'Incomplete Secrets Management Strategy',
+        severity: 'HIGH',
+        component: 'Runtime API Credentials & Storage',
+        description: 'Diagram lacks an explicit Secrets Manager / HashiCorp Vault key vault component for injecting API keys and database credentials.',
+        remediation: 'Incorporate Google Secret Manager / AWS Secrets Manager with CMEK key rotation.'
+      });
+    }
+    if (!hasPrivateVpc && !isErd && !isSequence) {
+      gaps.push({
+        id: 'gap_sec_ast_3',
+        title: 'Private Network Isolation Not Explicitly Shown',
+        severity: 'MEDIUM',
+        component: 'Application Compute Clusters',
+        description: 'Compute nodes and GKE/EC2 clusters are not explicitly enclosed inside private, non-routable subnets.',
+        remediation: 'Enclose GKE clusters and databases inside private VPC subnet container frames.'
+      });
+    }
+  } else if (categoryKey === 'topology') {
+    const hasReplica = xmlLower.includes('replica') || xmlLower.includes('standby') || xmlLower.includes('ha') || xmlLower.includes('multi-region');
+    const hasDlq = xmlLower.includes('dlq') || xmlLower.includes('dead-letter') || xmlLower.includes('holding');
+
+    if (!hasReplica && !isErd && !isSequence) {
+      gaps.push({
+        id: 'gap_top_ast_1',
+        title: 'Single Region Database Point of Failure',
+        severity: 'HIGH',
+        component: 'Primary Relational Database Store',
+        description: 'Data layer operates as a single point of failure without automated failover or cross-region standby replicas.',
+        remediation: 'Add Multi-AZ Cross-Region Read/Write Standby Replica instances.'
+      });
+    }
+    if ((xmlLower.includes('event') || xmlLower.includes('pub/sub') || xmlLower.includes('kafka')) && !hasDlq) {
+      gaps.push({
+        id: 'gap_top_ast_2',
+        title: 'Missing Dead-Letter Queue (DLQ) Error Holding Area',
+        severity: 'MEDIUM',
+        component: 'Asynchronous Event Broker',
+        description: 'Event-driven streaming brokers lack a Dead-Letter Queue (DLQ) to hold poison-pill messages and prevent pipeline stalls.',
+        remediation: 'Attach a DLQ storage topic connected to the primary event streaming broker.'
+      });
+    }
+  } else if (categoryKey === 'responsive') {
+    // Parse max coordinates
+    const xMatches = Array.from(xmlContent.matchAll(/x="(\d+)"/g)).map(m => parseInt(m[1], 10));
+    const maxX = xMatches.length > 0 ? Math.max(...xMatches) : 0;
+    if (maxX > 1150) {
+      gaps.push({
+        id: 'gap_resp_ast_1',
+        title: 'Canvas Horizontal Viewport Overflow',
+        severity: 'MEDIUM',
+        component: 'Outer Right Diagram Boundary',
+        description: `Node coordinates extend to x=${maxX}px, exceeding standard 1100px slide and tablet viewport widths.`,
+        remediation: 'Compress horizontal column pitch to 140px to fit within 1100px canvas bounds.'
+      });
+    }
+  } else if (categoryKey === 'accessibility') {
+    if (xmlContent.includes('fontColor=#000000') && (xmlContent.includes('fillColor=#0F172A') || xmlContent.includes('fillColor=#1E293B'))) {
+      gaps.push({
+        id: 'gap_acc_ast_1',
+        title: 'Low Contrast Text Color on Dark Mode Fills',
+        severity: 'HIGH',
+        component: 'Dark Glassmorphic Container Labels',
+        description: 'Black font colors (fontColor=#000000) are rendered on dark background shapes, failing WCAG 2.1 AA 4.5:1 contrast standards.',
+        remediation: 'Update fontColor attribute to high-contrast white (#FFFFFF) or neon cyan (#38BDF8).'
+      });
+    }
+  } else if (categoryKey === 'vendor') {
+    const totalNodes = (xmlContent.match(/vertex="1"/g) || []).length;
+    const iconNodes = (xmlContent.match(/<img src=/g) || []).length;
+    if (totalNodes > 0 && (iconNodes / totalNodes) < 0.6) {
+      gaps.push({
+        id: 'gap_ven_ast_1',
+        title: 'Low Vendor Brand Icon Coverage',
+        severity: 'MEDIUM',
+        component: 'Infrastructure Component Nodes',
+        description: `Only ${Math.round((iconNodes / totalNodes) * 100)}% of components utilize official cloud vendor logo icons.`,
+        remediation: 'Attach official Iconify SVG logos (AWS, GCP, Azure, K8s) across all node value labels.'
       });
     }
   }
@@ -375,19 +482,16 @@ Respond strictly in JSON matching the schema provided:
       report = parsedData.report || 'No detailed audit report generated.';
       gaps = parsedData.gaps || [];
 
-      // 🎯 MANDATORY 2D GEOMETRIC AST AUDIT PASS FOR VISUAL CATEGORY:
-      if (categoryKey === 'visual') {
-        const deterministicVisualGaps = runDeterministicVisualAstAudit(xmlContent, effectiveArchType);
-        if (deterministicVisualGaps.length > 0) {
-          // Merge deterministic 2D geometric gaps, eliminating duplicates
-          const existingIds = new Set(gaps.map(g => g.id));
-          for (const gap of deterministicVisualGaps) {
-            if (!existingIds.has(gap.id)) {
-              gaps.unshift(gap);
-            }
+      // 🎯 MANDATORY DETERMINISTIC AST AUDIT PASS ACROSS ALL AUDIT CATEGORIES:
+      const deterministicGaps = runDeterministicCategoryAstAudit(xmlContent, categoryKey, effectiveArchType);
+      if (deterministicGaps.length > 0) {
+        const existingIds = new Set(gaps.map(g => g.id));
+        for (const gap of deterministicGaps) {
+          if (!existingIds.has(gap.id)) {
+            gaps.unshift(gap);
           }
-          score = Math.max(50, 100 - (gaps.length * 12));
         }
+        score = Math.max(50, 100 - (gaps.length * 10));
       }
     } catch (llmError) {
       console.warn('Gemini LLM API call failed during audit, falling back to AST Heuristic Rule Engine:', llmError);
@@ -396,17 +500,15 @@ Respond strictly in JSON matching the schema provided:
       report = fallback.report;
       gaps = fallback.gaps;
 
-      if (categoryKey === 'visual') {
-        const deterministicVisualGaps = runDeterministicVisualAstAudit(xmlContent, effectiveArchType);
-        if (deterministicVisualGaps.length > 0) {
-          const existingIds = new Set(gaps.map(g => g.id));
-          for (const gap of deterministicVisualGaps) {
-            if (!existingIds.has(gap.id)) {
-              gaps.unshift(gap);
-            }
+      const deterministicGaps = runDeterministicCategoryAstAudit(xmlContent, categoryKey, effectiveArchType);
+      if (deterministicGaps.length > 0) {
+        const existingIds = new Set(gaps.map(g => g.id));
+        for (const gap of deterministicGaps) {
+          if (!existingIds.has(gap.id)) {
+            gaps.unshift(gap);
           }
-          score = Math.max(50, 100 - (gaps.length * 12));
         }
+        score = Math.max(50, 100 - (gaps.length * 10));
       }
     }
 
