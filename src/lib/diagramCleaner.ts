@@ -15,16 +15,21 @@ function formatEdgeLabelToMax2Lines(text: string): string {
   const clean = text.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
   if (!clean) return '';
 
-  let formatted = clean;
-  if (clean.length > 18) {
-    const words = clean.split(' ');
-    if (words.length > 2) {
-      const mid = Math.ceil(words.length / 2);
-      formatted = `${words.slice(0, mid).join(' ')}<br/>${words.slice(mid).join(' ')}`;
-    }
+  if (clean.length <= 18) return clean;
+
+  const words = clean.split(' ');
+  if (words.length <= 2) return clean;
+
+  if (words.length >= 6) {
+    const third = Math.ceil(words.length / 3);
+    const line1 = words.slice(0, third).join(' ');
+    const line2 = words.slice(third, third * 2).join(' ');
+    const line3 = words.slice(third * 2).join(' ');
+    return `${line1}<br/>${line2}<br/>${line3}`;
   }
 
-  return formatted;
+  const mid = Math.ceil(words.length / 2);
+  return `${words.slice(0, mid).join(' ')}<br/>${words.slice(mid).join(' ')}`;
 }
 
 /**
@@ -253,7 +258,13 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
     if (!style.includes('orthogonalEdgeStyle')) {
       style = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${style}`;
     }
-    style += `;fontColor=#38BDF8;fontStyle=1;labelBackgroundColor=none;fontSize=11;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
+    style += `;fontColor=#0284C7;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#0EA5E9;fontSize=10;whiteSpace=wrap;align=center;verticalAlign=middle;html=1;`;
+
+    // Format edge label to max 2 lines with max 140px width rule
+    const rawVal = String(edge['@_value'] || '');
+    if (rawVal) {
+      edge['@_value'] = formatEdgeLabelToMax2Lines(rawVal);
+    }
 
     const srcId = String(edge['@_source'] || '');
     const tgtId = String(edge['@_target'] || '');
@@ -305,10 +316,10 @@ function applyGenerousNodeLayout(cells: any[], isDetailedView: boolean) {
           { '@_x': String(Math.round(gutterX)), '@_y': String(Math.round(tgtPos.y + nodeHeight / 2)) }
         ];
       } else {
-        // Route through Open Inter-Row Channel Gap (exit bottom into open row gap, travel horizontally, enter top of target)
+        // Route through Open Inter-Row Channel Gap
         let gapY = Math.round(srcPos.y + nodeHeight + (tgtPos.y - (srcPos.y + nodeHeight)) / 2);
-        if (isSameTier || Math.abs(srcPos.y - tgtPos.y) < 20) {
-          gapY = srcPos.y + nodeHeight + 35; // Place in open channel below row if in same tier
+        if (isSameTier || tgtPos.y <= srcPos.y + nodeHeight) {
+          gapY = srcPos.y + nodeHeight + 40; // Safely place in channel gap BELOW source tier for backward/upward links
         }
 
         const sX = Math.round(srcPos.x + exitPort * nodeWidth);
