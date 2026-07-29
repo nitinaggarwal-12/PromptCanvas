@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+import { getTechnicalArchitectureXml } from '@/lib/architectureTypes';
 
 interface DiagramViewerProps {
   xml: string;
@@ -39,6 +40,9 @@ export default function DiagramViewer({
       rawStr = String(xml);
     }
     const healed = validateAndHealDrawioXml(rawStr);
+    if (!healed.xml || healed.xml.length < 100) {
+      return validateAndHealDrawioXml(getTechnicalArchitectureXml('tech_cicd_pipeline')).xml;
+    }
     return healed.xml;
   }, [xml]);
 

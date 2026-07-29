@@ -1,4 +1,5 @@
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
+export { getTechnicalArchitectureXml };
 import { compileSpecToDrawioXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkMacroSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec, getBenchmarkTechnicalArchitectureSpec } from './diagramCompiler';
 import { injectUseCaseFlavor } from './diagramCleaner';
 

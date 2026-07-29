@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDiagram, deleteDiagram, getDiagramVersions, updateDiagramArchitectureType } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
+import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 
 interface RouteParams {
   params: Promise<{
@@ -34,7 +35,8 @@ export async function GET(request: Request, { params }: RouteParams) {
           xmlStr = String(xmlStr);
         }
       }
-      return { ...v, xml_content: xmlStr };
+      const healed = validateAndHealDrawioXml(xmlStr || '');
+      return { ...v, xml_content: healed.xml };
     });
 
     return NextResponse.json({

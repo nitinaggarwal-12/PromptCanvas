@@ -1185,7 +1185,8 @@ function WorkspaceContent() {
         body: JSON.stringify({
           xmlContent: updatedXml,
           comment: `Updated ${editedIds.length} node label(s) via Outline Editor`,
-          createdBy: 'User'
+          createdBy: 'User',
+          architectureType: activeDiagram.architecture_type || selectedArchType
         })
       });
       
@@ -1363,7 +1364,8 @@ function WorkspaceContent() {
         body: JSON.stringify({
           xmlContent: version.xml_content,
           comment: `Restored version v${version.version_number}`,
-          createdBy: 'User'
+          createdBy: 'User',
+          architectureType: version.architecture_type || activeDiagram.architecture_type || selectedArchType
         })
       });
       
