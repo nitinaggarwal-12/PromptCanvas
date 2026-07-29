@@ -285,27 +285,25 @@ export default function DiagramViewer({
           container.setAttribute('data-mxgraph', JSON.stringify(configObj));
         }
 
-        window.addEventListener('load', function() {
-          function loadViewerScript() {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = '${scriptUrl}';
-            
-            script.onload = function() {
-              console.log('[Iframe Diagnostic] ✅ Draw.io viewer script loaded successfully.');
-            };
-            
-            document.body.appendChild(script);
-          }
+        function loadViewerScript() {
+          if (document.getElementById('mxgraph-script-element')) return;
+          const script = document.createElement('script');
+          script.id = 'mxgraph-script-element';
+          script.type = 'text/javascript';
+          script.src = '${scriptUrl}';
+          
+          script.onload = function() {
+            console.log('[Iframe Diagnostic] ✅ Draw.io viewer script loaded successfully.');
+          };
+          
+          document.body.appendChild(script);
+        }
 
-          if (container && container.offsetWidth > 0 && container.offsetHeight > 0) {
-            loadViewerScript();
-          } else {
-            setTimeout(function() {
-              loadViewerScript();
-            }, 150);
-          }
-        });
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          setTimeout(loadViewerScript, 50);
+        } else {
+          window.addEventListener('load', loadViewerScript);
+        }
       </script>
     </body>
     </html>
@@ -316,7 +314,7 @@ export default function DiagramViewer({
   return (
     <div className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}>
       <iframe
-        key={`${diagramId || ''}_${versionId || ''}_${xml}_${aspectRatioId}_${bgTheme}`}
+        key={`${diagramId || ''}_${versionId || ''}_${xml ? xml.length : 0}_${aspectRatioId}_${bgTheme}`}
         srcDoc={iframeHtml}
         className="w-full h-full border-0 bg-transparent"
         title="Draw.io Diagram Viewer with Business Use Case Panel"
