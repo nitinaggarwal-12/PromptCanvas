@@ -78,7 +78,14 @@ export const THEME_PALETTES: Record<ColumnTheme, ThemeColors> = {
  * Returns Draw.io style string for outer column containers
  */
 export function getColumnContainerStyle(theme: ColumnTheme): string {
-  const colors = THEME_PALETTES[theme] || THEME_PALETTES.slate;
+  const colors = THEME_PALETTES[theme] || {
+    fill: '#F1F5F9',
+    stroke: '#64748B',
+    font: '#0F172A',
+    cardFill: '#FFFFFF',
+    cardStroke: '#94A3B8',
+    cardFont: '#1E293B'
+  };
   return `rounded=1;whiteSpace=wrap;html=1;fillColor=${colors.fill};gradientColor=#FFFFFF;gradientDirection=north;strokeColor=${colors.stroke};strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=${colors.font};shadow=1;`;
 }
 
@@ -134,21 +141,19 @@ export function generateStencilHtmlLabel(
       return `<b style="font-size:14px;">${safeTitle}</b>${safeSubtitle}${safeContent}`;
 
     case 'imac_monitor': {
-      const monitorIcons = icons && icons.length > 0 ? icons : [
-        'https://api.iconify.design/flat-color-icons:sales-performance.svg',
-        'https://api.iconify.design/flat-color-icons:combo-chart.svg'
-      ];
-      const iconTags = monitorIcons.map(url => `<img src="${url}" width="44" height="34" style="vertical-align:middle;margin:0 4px;">`).join('');
-      return `<b style="font-size:12px;">${safeTitle}</b>${safeSubtitle}<br><br><div style="text-align:center;">${iconTags}</div>${safeContent}`;
+      const iconTags = icons && icons.length > 0
+        ? icons.map(url => `<img src="${url}" width="44" height="34" style="vertical-align:middle;margin:0 4px;">`).join('')
+        : '';
+      const iconContainer = iconTags ? `<br><br><div style="text-align:center;">${iconTags}</div>` : '';
+      return `<b style="font-size:12px;">${safeTitle}</b>${safeSubtitle}${iconContainer}${safeContent}`;
     }
 
     case 'ipad_tablet': {
-      const tabletIcons = icons && icons.length > 0 ? icons : [
-        'https://api.iconify.design/flat-color-icons:doughnut-chart.svg',
-        'https://api.iconify.design/flat-color-icons:bar-chart.svg'
-      ];
-      const iconTags = tabletIcons.map(url => `<img src="${url}" width="32" height="32" style="vertical-align:middle;margin:0 4px;">`).join('');
-      return `<b style="font-size:12px;">${safeTitle}</b>${safeSubtitle}<br><br><div style="text-align:center;">${iconTags}</div>${safeContent}`;
+      const iconTags = icons && icons.length > 0
+        ? icons.map(url => `<img src="${url}" width="32" height="32" style="vertical-align:middle;margin:0 4px;">`).join('')
+        : '';
+      const iconContainer = iconTags ? `<br><br><div style="text-align:center;">${iconTags}</div>` : '';
+      return `<b style="font-size:12px;">${safeTitle}</b>${safeSubtitle}${iconContainer}${safeContent}`;
     }
 
     case 'iphone_alert':
@@ -160,9 +165,8 @@ export function generateStencilHtmlLabel(
     case 'icon_grid':
       return `<b style="font-size:12px;">${safeTitle}</b>${safeSubtitle}${safeContent || `
         <table style="width:100%;text-align:center;font-size:11px;border:none;margin-top:6px;">
-          <tr><td>🔍<br><b>Market Research</b></td><td>🩺<br><b>Medical Affairs</b></td></tr>
-          <tr><td style="padding-top:10px;">💰<br><b>Market Access</b></td><td style="padding-top:10px;">⚖️<br><b>Outcomes Research</b></td></tr>
-          <tr><td colspan="2" style="padding-top:10px;">🧠<br><b>Competitive Intelligence</b></td></tr>
+          <tr><td>⚡<br><b>Component Tier A</b></td><td>🛡️<br><b>Security Mesh</b></td></tr>
+          <tr><td style="padding-top:10px;">📊<br><b>Telemetry Hub</b></td><td style="padding-top:10px;">💾<br><b>Data Storage</b></td></tr>
         </table>
       `}`;
 

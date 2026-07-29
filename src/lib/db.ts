@@ -856,7 +856,7 @@ export async function createDiagram(
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES ($1, $2, $3, $4)', [diagramId, name, userId || null, architectureType || 'conceptual_diagram']);
+      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES ($1, $2, $3, $4)', [diagramId, name, userId || null, architectureType || 'tech_cicd_pipeline']);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -896,7 +896,7 @@ export async function createDiagram(
     db.exec('BEGIN TRANSACTION;');
     try {
       const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES (?, ?, ?, ?)');
-      insertDiagram.run(diagramId, name, userId || null, architectureType || 'conceptual_diagram');
+      insertDiagram.run(diagramId, name, userId || null, architectureType || 'tech_cicd_pipeline');
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
