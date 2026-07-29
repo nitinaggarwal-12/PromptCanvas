@@ -55,7 +55,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 
   // 4. TEXT OVERLAP & SUBTITLE DEDUPLICATION HEALER:
   // Clean up duplicate overlapping strings inside node values
-  xml = xml.replace(/(&lt;br&gt;|\n)+/gi, '<br>');
+  xml = xml.replace(/(&lt;br&gt;\s*|&lt;br\/&gt;\s*)+/gi, '&lt;br&gt;');
   xml = xml.replace(/(Batch Reconciliation\s*)+/gi, 'Batch Reconciliation ');
 
   // 5. ACCESSIBILITY & EDGE LABEL CONTRAST HEALING:
