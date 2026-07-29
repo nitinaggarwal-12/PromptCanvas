@@ -378,12 +378,36 @@ ${prompt}
         });
         responseText = response.text || '';
       } else {
-        console.log('Generating new diagram from scratch...');
+        console.log(`[Template Adaptation] Adapting pristine template for architecture "${architectureType || 'conceptual_diagram'}" with prompt...`);
+        const baseTemplateXml = getDefaultXmlForArchitecture(architectureType || 'conceptual_diagram');
+        
+        const adaptSystemPrompt = `You are a Precision Architecture Template Adapter.
+You are given a pixel-perfect Draw.io XML template for an architecture diagram (${architectureType || 'conceptual_diagram'}) and a user's target system description.
+
+YOUR TASK:
+Adapt the text labels inside the value="..." attributes of the XML template to fully represent the user's prompt, while preserving the exact layout, geometry coordinates (<mxGeometry x="..." y="..." width="..." height="...">), shape IDs (id="..."), colors, and routing edges.
+
+CRITICAL CONSTRAINTS:
+1. Do NOT change any <mxGeometry> coordinates (x, y, width, height) or edge source/target IDs.
+2. Do NOT add nodes at huge x coordinates (x > 1400) or stretch the canvas horizontally.
+3. Replace all component titles, subtitles, badge text, and descriptions with terms relevant to the user's domain (e.g. EHR, FHIR, RAG, pathology PDFs, insurance policies, provider workflows).
+4. Return exactly four markdown sections:
+   - ### AI Architectural Plan & Reasoning
+   - ### Business Use Case
+   - ### Technical Use Case
+   - ### Draw.io XML (wrapped in \`\`\`xml ... \`\`\`)`;
+
         const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash',
-          contents: `Create a diagram for: ${prompt}`,
+          contents: `### User Target System Description / Prompt:
+${prompt}
+
+### Base Reference XML Template to Adapt:
+\`\`\`xml
+${baseTemplateXml}
+\`\`\``,
           config: {
-            systemInstruction: activeSystemPrompt,
+            systemInstruction: adaptSystemPrompt,
           },
         });
         responseText = response.text || '';
@@ -394,6 +418,12 @@ ${prompt}
       reasoning = parsed.reasoning;
       businessUsecase = parsed.businessUsecase;
       technicalUsecase = parsed.technicalUsecase;
+
+      // Fallback to base template if XML is null or failed parsing
+      if (!xml && !isRefinement) {
+        console.log('[Template Fallback] LLM returned empty XML, falling back to base template XML.');
+        xml = getDefaultXmlForArchitecture(architectureType || 'conceptual_diagram');
+      }
     }
 
     if (!xml) {
