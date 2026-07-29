@@ -35,3 +35,10 @@ className="shrink-0 text-[10px] font-extrabold text-teal-300 bg-teal-500/20 px-2
 1. Before declaring any UI component complete, launch Puppeteer in background mode.
 2. Capture a high-resolution 1600x950 screenshot saved to `scratch/screenshots_<task_id>/`.
 3. Visually inspect screenshot for contrast, padding balance, icon alignment, and responsive grid balance.
+
+## 4. Strict Single-Item Visual Iteration Mandate
+
+- **No CLI Exit Code Assumptions**: Never assume a visual task, diagram, or page is complete based purely on green terminal output (e.g. `Exit 0`, `Saved: 01.png`).
+- **Mandatory `view_file` Inspection**: Every single generated diagram screenshot or visual artifact must be physically opened and visually evaluated via `view_file` before taking another step.
+- **Item-by-Item Discipline**: If item #1 has a defect (text collision, incorrect fallback template, routing line error), work immediately halts to fix and re-inspect item #1. Item #2 will never be started until item #1 passes 100% visual validation.
+
