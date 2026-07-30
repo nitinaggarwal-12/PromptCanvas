@@ -314,32 +314,36 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
       prompt?.includes('Dim_Intel_Map')
     );
 
-    const isErdRequest = isExplicitBenchmarkPrompt && (
+    const isErdRequest = architectureType === 'erd' || (isExplicitBenchmarkPrompt && (
       prompt?.includes('ETL & Data Lineage') ||
       prompt?.includes('Dim_Patient') ||
       prompt?.includes('Dim_Intel_Map')
-    );
+    ));
 
-    const isMacroSequenceRequest = !isErdRequest && isExplicitBenchmarkPrompt && (
+    const isMacroSequenceRequest = architectureType === 'macro_sequence_diagram' || (!isErdRequest && (
       prompt?.includes('Macro Dynamic Sequence') ||
-      prompt?.includes('COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM') ||
-      prompt?.includes('TOTAL UNIFIED SEQUENCE DIAGRAM')
-    );
+      (isExplicitBenchmarkPrompt && (
+        prompt?.includes('COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM') ||
+        prompt?.includes('TOTAL UNIFIED SEQUENCE DIAGRAM')
+      ))
+    ));
 
-    const isSequenceRequest = !isErdRequest && !isMacroSequenceRequest && isExplicitBenchmarkPrompt && (
+    const isSequenceRequest = architectureType === 'sequence_diagram' || (!isErdRequest && !isMacroSequenceRequest && (
       prompt?.includes('Micro Dynamic Sequence') ||
-      prompt?.includes('Execution Loop')
-    );
+      (isExplicitBenchmarkPrompt && prompt?.includes('Execution Loop'))
+    ));
 
-    const isAgenticRagRequest = !isErdRequest && !isSequenceRequest && isExplicitBenchmarkPrompt && (
+    const isAgenticRagRequest = architectureType === 'agentic_rag' || (!isErdRequest && !isSequenceRequest && (
       prompt?.includes('Cognitive Architecture') ||
-      prompt?.includes('Agent Orchestrator')
-    );
+      (isExplicitBenchmarkPrompt && prompt?.includes('Agent Orchestrator'))
+    ));
 
-    const isConceptualRequest = !isErdRequest && !isSequenceRequest && !isAgenticRagRequest && isExplicitBenchmarkPrompt && (
+    const isPipelineRequest = architectureType === 'data_ai_pipeline' || prompt?.includes('Data & AI Pipeline');
+
+    const isConceptualRequest = architectureType === 'conceptual_diagram' || (!isErdRequest && !isSequenceRequest && !isAgenticRagRequest && !isPipelineRequest && (
       prompt?.includes('ITACS Oncology Platform') ||
       prompt?.includes('ONCOLOGY DATA PORTAL')
-    );
+    ));
 
     let xml: string | null = '';
     let reasoning: string | null = 'Enforcing pristine reference layout architecture to prevent LLM coordinate hallucination and geometric collision.';
@@ -358,6 +362,9 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
     } else if (isAgenticRagRequest) {
       console.log('[Agentic RAG Protection Fast-Path] 🛡️ Enforcing pristine Agentic RAG reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('agentic_rag');
+    } else if (isPipelineRequest) {
+      console.log('[Data & AI Pipeline Protection Fast-Path] 🛡️ Enforcing pristine Data & AI Pipeline reference XML layout immediately.');
+      xml = getDefaultXmlForArchitecture('data_ai_pipeline');
     } else if (isConceptualRequest) {
       console.log('[Conceptual Protection Fast-Path] 🛡️ Enforcing pristine Conceptual reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('conceptual_diagram');
