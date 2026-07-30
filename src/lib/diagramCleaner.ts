@@ -835,7 +835,16 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/ITACS Agent Orchestrator \(GKE Pod\)/g, 'Scientific Discovery Orchestrator (GKE Cluster)')
       .replace(/Vertex AI Vector Search Index/g, 'Vertex AI Vector Search (pgvector Target Embeddings)')
       .replace(/Vertex AI Training Cluster/g, 'AIDDISON Virtual Screening Engine (Vertex AI)')
-      .replace(/Vertex AI Gemini API/g, 'Gemini 2.5 Pro LLM &amp; Notebook Enterprise');
+      .replace(/Vertex AI Gemini API/g, 'Gemini 2.5 Pro LLM &amp; Notebook Enterprise')
+      // DevOps & CI/CD Pipeline Replacements for Early Discovery
+      .replace(/ITACS Governing Cloud Tenant \(Managed Services\)/g, 'Early Discovery &amp; Target Identification Cloud Tenant')
+      .replace(/Rly Identific Ion Person Governing Cloud Tenant/gi, 'Early Discovery &amp; Target Identification Cloud Tenant')
+      .replace(/ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM BOUNDARY/g, 'EARLY DISCOVERY SECURE MANAGED GEMINI ECOSYSTEM BOUNDARY')
+      .replace(/Project\s*<br\s*\/?>\s*Planning/gi, 'Hypothesis Framing &amp;<br>Target Goal Setting')
+      .replace(/Dimensional\s*<br\s*\/?>\s*Data Modeling\s*<br\s*\/?>\s*\(ERD\)/gi, 'Assay Data Model &amp;<br>Target Schema (ERD)')
+      .replace(/Data Engineering/g, 'Assay Data Ingestion Engine')
+      .replace(/Application\s*(?:<br\s*\/?>)?\s*Development/gi, 'AIDDISON Screening &amp;&lt;br&gt;Agent Designer')
+      .replace(/MLOps/g, 'MLOps Target &amp; Binding Affinity');
   }
 
   // Conceptual Diagram Specific Replacements
