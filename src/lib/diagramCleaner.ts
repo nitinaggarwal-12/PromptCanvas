@@ -781,7 +781,28 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Execute SQL Queries/gi, 'Virtual Chemical Screening')
       .replace(/Structured Data Access/gi, 'Predict Synthesis Routes &amp; Costs')
       .replace(/Queries secured GCS Data Corpus/gi, 'Deep Research: Papers, Patents &amp; Abstracts')
-      .replace(/Automatic Embedding &amp; Retrieval/gi, 'Gemini Notebook Enterprise Dossier Synthesis');
+      .replace(/Automatic Embedding &amp; Retrieval/gi, 'Gemini Notebook Enterprise Dossier Synthesis')
+      // Sequence Diagram Specific Replacements for Early Discovery
+      .replace(/RLY IDENTIFIC ION PERSON SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM/g, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION SECURE MANAGED ECOSYSTEM')
+      .replace(/Sends single Oncology prompt:[\s\S]*?recent sales figures'/gi, "Sends biological target prompt:<br><span style='font-size:10px;font-weight:normal;'>'Define NSCLC hypothesis &amp; explore target dossiers'</span>")
+      .replace(/THOUGHT: 'I need multi-silo context.'/gi, "THOUGHT: 'Need PubMed, patents &amp; assay notes.'")
+      .replace(/ACTION: Call RAG Tool/gi, 'ACTION: Call Deep Research &amp; Notebook Enterprise')
+      .replace(/Send call with 'Automatic Embedding &amp; Ret Tool'[\s\S]*?centientext\)\)/gi, 'Executes Landscape Search &amp; Ingest (Scan millions of papers/patents &amp; synthesize assay notes)')
+      .replace(/THOUGHT: 'I have context, but need recent sales figures.'/gi, "THOUGHT: 'Have target dossier. Need AIDDISON screening.'")
+      .replace(/ACTION: Query BigQuery Analytics/gi, 'ACTION: Call AIDDISON Virtual Screening')
+      .replace(/Send call logs; ML Inference log def[\s\S]*?RAG query/gi, 'Executes AIDDISON Chemical Screening (Screen chemical possibilities &amp; predict synthesis routes)')
+      .replace(/Tool 1: Managed RAG[\s\S]*?Conv\)/gi, 'Tool 1: Deep Research &amp; Gemini Notebook')
+      .replace(/Tool 2: BigQuery Analytics[\s\S]*?\)/gi, 'Tool 2: AIDDISON &amp; Agent Designer')
+      .replace(/BigQuery Analytics \(SQL\)/gi, 'AIDDISON &amp; Agent Designer')
+      .replace(/GCS Secure Bucket[\s\S]*?Corpus\)/gi, 'GCS Lab Assay PDFs &amp; Target Corpus')
+      .replace(/Oncology Analyst/g, 'Research Scientist &amp; Bioinformatician')
+      .replace(/Deck Studio API/g, 'AIDDISON Virtual Screening API')
+      .replace(/Global Market Radar API/g, 'Deep Research Landscape API')
+      .replace(/Requests PPT deck/g, 'Frame biological research hypothesis &amp; target exploration')
+      .replace(/synthesized request and request flow/g, 'Deploy Deep Research agent across millions of papers &amp; patents')
+      .replace(/Generate PPT deck/g, 'Synthesize assay notes &amp; lab PDFs in Gemini Notebook Enterprise')
+      .replace(/interactive visualizabcn/g, 'Screen billions of chemicals &amp; predict synthesis routes in AIDDISON')
+      .replace(/pushes to interface/g, 'Deploy reusable Agent Designer literature monitoring agent');
   }
 
   // Conceptual Diagram Specific Replacements
