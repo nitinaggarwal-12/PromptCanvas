@@ -844,7 +844,15 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Dimensional\s*<br\s*\/?>\s*Data Modeling\s*<br\s*\/?>\s*\(ERD\)/gi, 'Assay Data Model &amp;<br>Target Schema (ERD)')
       .replace(/Data Engineering/g, 'Assay Data Ingestion Engine')
       .replace(/Application\s*(?:<br\s*\/?>)?\s*Development/gi, 'AIDDISON Screening &amp;&lt;br&gt;Agent Designer')
-      .replace(/MLOps/g, 'MLOps Target &amp; Binding Affinity');
+      .replace(/MLOps/g, 'MLOps Target &amp; Binding Affinity')
+      // Governance & State Machine Replacements for Early Discovery
+      .replace(/DATA VETTING/gi, 'ASSAY DATA VETTING')
+      .replace(/Ethical Sourcing/gi, 'GxP &amp; IP Sourcing')
+      .replace(/MODEL CREATED/gi, 'TARGET HYPOTHESIS CREATED')
+      .replace(/PROMPT DESIGNED/gi, 'TARGET DOSSIER DEFINED')
+      .replace(/MODEL REGISTRY/gi, 'TARGET &amp; COMPOUND REGISTRY')
+      .replace(/Bias &amp;amp;&lt;br&gt;Fairness Audit/g, 'AIDDISON Binding Affinity &amp;amp;&lt;br&gt;Safety Audit')
+      .replace(/Bias &amp;amp; Fair/g, 'AIDDISON Safety');
   }
 
   // Conceptual Diagram Specific Replacements
