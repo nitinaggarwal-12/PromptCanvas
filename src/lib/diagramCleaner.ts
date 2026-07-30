@@ -812,7 +812,17 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Customer\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Churn\s*Features/gi, 'Target Dossier &amp;<br>Binding Affinity Features')
       .replace(/Sales\s*Prediction\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Features/gi, 'AIDDISON Chemical<br>Screening Features')
       .replace(/Funcriogy/g, 'Functional Research Areas')
-      .replace(/Salesforce\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*cloud\s*App/gi, 'PubMed REST API &amp;<br>Patent Ingest');
+      .replace(/Salesforce\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*cloud\s*App/gi, 'PubMed REST API &amp;<br>Patent Ingest')
+      // Catch-all Generic Sales / Lead Scoring DFD Replacements for Early Discovery
+      .replace(/Lead Scoring &amp; Prioritization/gi, 'Target Prioritization &amp; Binding Affinity Engine')
+      .replace(/Business Rules Engine, Financial Impact Rating/gi, 'AIDDISON Virtual Screening &amp; Target Validation')
+      .replace(/AI\/ML Profiling Engine/gi, 'Literature &amp; Assay Target Extraction Engine')
+      .replace(/Predictive Scoring, Sentiment Analysis/gi, 'Gemini Notebook Enterprise Target Synthesis')
+      .replace(/Market Segmentation &amp; Analytics/gi, 'Target Landscape &amp; Deep Research Analytics')
+      .replace(/Cluster Analysis, Trend Scoring/gi, 'Patent &amp; Paper Signal Clustering')
+      .replace(/Manual Input &amp; CRM Feeds/gi, 'Lab Assay Notes &amp; Assay PDF Feeds')
+      .replace(/Salesforce &amp; User-Provided Data/gi, 'Internal GxP Assay Documents &amp; Lab Notes')
+      .replace(/Market Research, News, Social/gi, 'PubMed API, USPTO Patents &amp; Congress Abstracts');
   }
 
   // Conceptual Diagram Specific Replacements
