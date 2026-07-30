@@ -340,7 +340,9 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
 
     const isPipelineRequest = architectureType === 'data_ai_pipeline' || prompt?.includes('Data & AI Pipeline');
 
-    const isConceptualRequest = architectureType === 'conceptual_diagram' || (!isErdRequest && !isSequenceRequest && !isAgenticRagRequest && !isPipelineRequest && (
+    const isSecureDeploymentMapRequest = architectureType === 'secure_deployment_map' || prompt?.includes('Secure Deployment Map') || prompt?.includes('Google Cloud Project (ITACS Platform Production)');
+
+    const isConceptualRequest = architectureType === 'conceptual_diagram' || (!isErdRequest && !isSequenceRequest && !isAgenticRagRequest && !isPipelineRequest && !isSecureDeploymentMapRequest && (
       prompt?.includes('ITACS Oncology Platform') ||
       prompt?.includes('ONCOLOGY DATA PORTAL')
     ));
@@ -365,6 +367,9 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
     } else if (isPipelineRequest) {
       console.log('[Data & AI Pipeline Protection Fast-Path] 🛡️ Enforcing pristine Data & AI Pipeline reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('data_ai_pipeline');
+    } else if (isSecureDeploymentMapRequest) {
+      console.log('[Secure Deployment Map Protection Fast-Path] 🛡️ Enforcing pristine Secure Deployment Map reference XML layout immediately.');
+      xml = getDefaultXmlForArchitecture('secure_deployment_map');
     } else if (isConceptualRequest) {
       console.log('[Conceptual Protection Fast-Path] 🛡️ Enforcing pristine Conceptual reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('conceptual_diagram');

@@ -822,7 +822,20 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Cluster Analysis, Trend Scoring/gi, 'Patent &amp; Paper Signal Clustering')
       .replace(/Manual Input &amp; CRM Feeds/gi, 'Lab Assay Notes &amp; Assay PDF Feeds')
       .replace(/Salesforce &amp; User-Provided Data/gi, 'Internal GxP Assay Documents &amp; Lab Notes')
-      .replace(/Market Research, News, Social/gi, 'PubMed API, USPTO Patents &amp; Congress Abstracts');
+      .replace(/Market Research, News, Social/gi, 'PubMed API, USPTO Patents &amp; Congress Abstracts')
+      // Secure Deployment Map Replacements for Early Discovery
+      .replace(/Google Cloud Project \(ITACS Platform Production\)/g, 'Google Cloud Project (Early Discovery &amp; Target Identification)')
+      .replace(/Rly Identific Ion Person Production Cloud Architecture/g, 'Google Cloud Project (Early Discovery &amp; Target Identification)')
+      .replace(/Rly Identific Ion Person Primary/gi, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION Primary')
+      .replace(/Rly Identific Ion Person Agent\s*<br\s*\/?>\s*Orchestrator\s*<br\s*\/?>\s*\(GKE Pod\)/gi, 'Scientific Discovery Orchestrator &amp;<br>Agent Designer<br>(GKE Cluster)')
+      .replace(/Rly Identific Ion Person/g, 'Early Discovery &amp; Target Identification')
+      .replace(/Zone 1: The Edge \(External Traffic\)/g, 'Zone 1: Scientific Web Edge &amp; Ingress (External)')
+      .replace(/Public Internet\s*<br\s*\/?>\s*Traffic/gi, 'Research Scientist &amp;<br>Bioinformatician Traffic')
+      .replace(/ITACS Primary VPC Network/g, 'Early Discovery Primary VPC Network')
+      .replace(/ITACS Agent Orchestrator \(GKE Pod\)/g, 'Scientific Discovery Orchestrator (GKE Cluster)')
+      .replace(/Vertex AI Vector Search Index/g, 'Vertex AI Vector Search (pgvector Target Embeddings)')
+      .replace(/Vertex AI Training Cluster/g, 'AIDDISON Virtual Screening Engine (Vertex AI)')
+      .replace(/Vertex AI Gemini API/g, 'Gemini 2.5 Pro LLM &amp; Notebook Enterprise');
   }
 
   // Conceptual Diagram Specific Replacements
