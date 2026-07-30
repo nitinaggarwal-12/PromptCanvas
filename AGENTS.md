@@ -182,5 +182,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
   2. `injectUseCaseFlavor()` to dynamically replace generic infrastructure/domain nodes with the user's specific prompt entities.
   3. Visual Screenshot Inspection (`view_file`) under the Single-Item Visual Iteration Mandate to verify zero line collisions and 100% entity relevance.
 
+---
+
+# 🔄 MANDATORY TANGENTIAL CIRCULAR LOOP GEOMETRY PROTOCOL
+
+* **Zero Straight Diamond Loops Rule**: Whenever rendering a ReAct loop, execution feedback loop, or multi-stage cyclical workflow (e.g. `Thought` -> `Action` -> `Observation` -> `Synthesis` -> `Thought`), NEVER use linear straight diamond arrows (`edgeStyle=none` or straight lines).
+* **100% Smooth Tangential Ring Arcs**: ALWAYS enforce curved circular arc geometry (`curved=1;`) with explicit 90° tangential exit/entry ports:
+  - Top -> Right: `exitX=1;exitY=0.5;entryX=0.5;entryY=0;` + Waypoint `(x + R, y)`
+  - Right -> Bottom: `exitX=0.5;exitY=1;entryX=1;entryY=0.5;` + Waypoint `(x + R, y + R)`
+  - Bottom -> Left: `exitX=0;exitY=0.5;entryX=0.5;entryY=1;` + Waypoint `(x - R, y + R)`
+  - Left -> Top: `exitX=0.5;exitY=0;entryX=0;entryY=0.5;` + Waypoint `(x - R, y)`
+* **Visual Audit Verification**: Every circular loop must be visually verified under `view_file` to confirm a 100% seamless, uniform circular ring with zero line kinks or overlaps.
+
 
 
