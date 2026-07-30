@@ -790,7 +790,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         ORDER BY created_at DESC, version_number DESC
         LIMIT 1
       )
-      WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1 OR d.is_private IS NULL OR d.is_private = FALSE OR d.is_private = 0
+      WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1 OR d.is_private IS NULL OR d.is_private = FALSE
       ORDER BY d.updated_at DESC
     `;
     if (isPostgres()) {
@@ -801,7 +801,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
       const db = getSqliteDb();
       const sqliteQuery = query.replaceAll('$1', '?');
       const stmt = db.prepare(sqliteQuery);
-      return stmt.all(userId, userId, userId) as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
+      return stmt.all(userId, userId, userId, userId) as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
     }
   } else {
     const query = `
@@ -814,7 +814,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         ORDER BY created_at DESC, version_number DESC
         LIMIT 1
       )
-      WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NULL OR d.is_private = FALSE OR d.is_private = 0
+      WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NULL OR d.is_private = FALSE
       ORDER BY d.updated_at DESC
     `;
     if (isPostgres()) {
