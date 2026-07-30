@@ -171,5 +171,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
   5. **Advance**: ONLY AFTER the item passes 100% visual verification may you proceed to the next item.
 * **CLI Exit Codes != Visual Truth**: CLI success outputs (e.g., `Exit 0`, `Saved: 01.png`) do NOT prove visual correctness or absence of silent fallbacks. Visual image inspection is mandatory.
 
+---
+
+# 🔬 MANDATORY DOMAIN & ENTITY RELEVANCE AUDIT PROTOCOL
+
+* **1-to-1 Prompt Requirement Mapping**: Before declaring any diagram (Conceptual, ERD, Sequence, Architecture, Data Pipeline) complete, perform an explicit 1-to-1 audit mapping every single node, table, and edge back to the user's prompt text.
+* **Zero Generic Placeholder Rule**: Absolutely NO generic placeholder entities (e.g. `Dim_Physician`, `Dim_Payer`, `Patient Encounters`, legacy brand names like `ITACS`) may remain in the final rendered diagram unless explicitly requested in the prompt.
+* **Automated Audit Pipeline Integration**: Every diagram generated must pass through:
+  1. `preflightVerifyAndHealXmlAcrossAll6Audits()` to catch XML AST invalidations and dark mode contrast issues.
+  2. `injectUseCaseFlavor()` to dynamically replace generic infrastructure/domain nodes with the user's specific prompt entities.
+  3. Visual Screenshot Inspection (`view_file`) under the Single-Item Visual Iteration Mandate to verify zero line collisions and 100% entity relevance.
+
 
 
