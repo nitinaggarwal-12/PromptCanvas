@@ -719,6 +719,22 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   const isGenomicPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('dna') || promptLower.includes('bwa');
   const isLiteratureMiningPrompt = promptLower.includes('literature') || promptLower.includes('patent') || promptLower.includes('clinical trial') || promptLower.includes('nsclc') || promptLower.includes('target discovery') || promptLower.includes('langchain') || promptLower.includes('bioinformatician');
 
+  const isEarlyDiscoveryPrompt = promptLower.includes('discovery') || promptLower.includes('aiddison') || promptLower.includes('notebook') || promptLower.includes('biologist') || promptLower.includes('hypothesis');
+
+  if (isEarlyDiscoveryPrompt) {
+    updatedXml = updatedXml
+      .replace(/Manual Data Sources Card/g, 'Internal Assay Notes, PDFs &amp; Lab Summaries')
+      .replace(/Raw Scientific Literature &amp; PPT Decks/g, 'Gemini Notebook Enterprise Ingestion')
+      .replace(/Analyst Workspace Portal/g, 'Scientist &amp; Computational Biologist Portal')
+      .replace(/Asset Analysis &amp; Query Interface/g, 'Biological Hypothesis &amp; Target Exploration')
+      .replace(/Multi-Functional Data Synthesis/g, 'Gemini Notebook Enterprise Synthesis')
+      .replace(/Genomic &amp; Clinical Correlation Engine/g, 'Scattered Findings &amp; Unified Target Dossier')
+      .replace(/Unstructured Content Analysis/g, 'AIDDISON on Vertex AI (Virtual Screening)')
+      .replace(/PubMed PDF &amp; PPT Chunking Engine/g, 'Chemical Screening &amp; Synthesis Routes')
+      .replace(/Strategic Chatbot Reasoning/g, 'Reusable Agent Designer Monitoring')
+      .replace(/ReAct Natural Language Agent Interface/g, 'Continuous Signal Alerts &amp; Literature Monitor');
+  }
+
   // Conceptual Diagram Specific Replacements
   updatedXml = updatedXml
     .replace(/Legacy SAP S\/4HANA/gi, 'PubMed REST API &amp; USPTO Patent Ingest')
