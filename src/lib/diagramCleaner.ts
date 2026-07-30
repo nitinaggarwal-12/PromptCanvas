@@ -768,18 +768,20 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Fact_Competitive_Intel/g, 'Fact_Monitoring_Alerts (Step 5)')
       .replace(/Insight Type/g, 'Agent Designer Signal Confidence')
       .replace(/Row-Level Security on Patient Data/g, 'IP &amp; Target Molecule Protection')
-      // Cognitive Architecture / Agentic RAG Replacements
-      .replace(/RAG Knowledge Ingestion Pipeline/g, 'Deep Research Papers &amp; Patent Ingestion Pipeline')
-      .replace(/Document Ingestion &amp; Chunking Engine/g, 'Gemini Notebook Enterprise Assay Note Chunking')
-      .replace(/Agentic RAG Orchestrator/g, 'Scientist Agentic Prompt Orchestrator')
-      .replace(/Vector Database Store/g, 'Vertex AI Vector Search &amp; AIDDISON Model Store')
-      .replace(/RAG Reasoning &amp; Synthesis Service/g, 'AIDDISON Virtual Screening &amp; Target Dossier Synthesis')
-      .replace(/Real-Time Alert Dispatcher/g, 'Agent Designer Continuous Signal Alert Dispatcher')
-      .replace(/Financial Analyst/g, 'Research Scientist &amp; Computational Biologist')
-      .replace(/Compare market trends across functional silos/g, 'Explore biological targets &amp; AIDDISON virtual synthesis')
-      .replace(/Total Sales in Q1/g, 'Virtual Chemical Screening &amp; Binding Affinity')
-      .replace(/Tool 1: Enterprise Knowledge/g, 'Tool 1: Deep Research &amp; Gemini Notebook')
-      .replace(/Tool 2: Business Analytics/g, 'Tool 2: AIDDISON &amp; Agent Designer');
+      // Product Vendor Model & Vendor Service Updates (Latest GCP & Enterprise LLM updates)
+      .replace(/Gemini 1\.5 Pro/g, 'Gemini 2.5 Pro')
+      .replace(/Vertex AI Search and Conversation/g, 'Vertex AI Agent Builder &amp; Search')
+      // Prompt & Callout Cleanliness (Flexible regex matching HTML entities and newlines)
+      .replace(/Compare market trends[\s\S]*?across functional silos/gi, 'Explore biological targets &amp; AIDDISON virtual synthesis')
+      .replace(/Oncology Trends/gi, 'Target Hypothesis &amp; Literature')
+      .replace(/Total Sales in Q1/gi, 'Virtual Chemical Screening &amp; Binding Affinity')
+      .replace(/Financial Analyst/gi, 'Research Scientist &amp; Computational Biologist')
+      .replace(/Tool 1: Enterprise Knowledge/gi, 'Tool 1: Deep Research &amp; Gemini Notebook')
+      .replace(/Tool 2: Business Analytics/gi, 'Tool 2: AIDDISON &amp; Agent Designer Engine')
+      .replace(/Execute SQL Queries/gi, 'Virtual Chemical Screening')
+      .replace(/Structured Data Access/gi, 'Predict Synthesis Routes &amp; Costs')
+      .replace(/Queries secured GCS Data Corpus/gi, 'Deep Research: Papers, Patents &amp; Abstracts')
+      .replace(/Automatic Embedding &amp; Retrieval/gi, 'Gemini Notebook Enterprise Dossier Synthesis');
   }
 
   // Conceptual Diagram Specific Replacements
