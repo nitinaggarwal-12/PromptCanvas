@@ -589,18 +589,34 @@ export function getExactAgenticRagReferenceXml(): string {
           <mxGeometry x="530" y="505" width="80" height="30" as="geometry" />
         </mxCell>
 
-        <!-- REACT LOOP ARROWS (CURVED / ORTHOGONAL) -->
-        <mxCell id="e_r1" value="" style="edgeStyle=curved=1;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="react_thought" target="react_action">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- REACT LOOP ARROWS (CURVED CIRCULAR ARCS) -->
+        <mxCell id="e_r1" value="" style="curved=1;html=1;strokeWidth=2;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1" source="react_thought" target="react_action">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="445" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e_r2" value="" style="edgeStyle=curved=1;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="react_action" target="react_obs">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e_r2" value="" style="curved=1;html=1;strokeWidth=2;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1" source="react_action" target="react_obs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="595" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e_r3" value="" style="edgeStyle=curved=1;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="react_obs" target="react_syn">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e_r3" value="" style="curved=1;html=1;strokeWidth=2;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1" source="react_obs" target="react_syn">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="595" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e_r4" value="" style="edgeStyle=curved=1;rounded=1;html=1;strokeWidth=1.5;strokeColor=#64748B;endArrow=block;endFill=1;" edge="1" parent="1" source="react_syn" target="react_thought">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e_r4" value="" style="curved=1;html=1;strokeWidth=2;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1" source="react_syn" target="react_thought">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="445" />
+            </Array>
+          </mxGeometry>
         </mxCell>
 
         <!-- ZONE 3: TOOL ECOSYSTEM CONTAINERS AND NODES -->
