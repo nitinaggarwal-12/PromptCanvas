@@ -484,6 +484,7 @@ ${prompt}`,
         ? `${prompt.slice(0, 40)}...` 
         : prompt);
         
+      const { isPrivate, is_private } = body;
       const { diagram, version } = await createDiagram(
         diagramName,
         xml,
@@ -493,7 +494,8 @@ ${prompt}`,
         businessUsecase,
         technicalUsecase,
         user?.id || null,
-        architectureType || 'tech_cicd_pipeline'
+        architectureType || 'tech_cicd_pipeline',
+        Boolean(isPrivate ?? is_private)
       );
       return NextResponse.json({ diagram, version }, { status: 201 });
     }

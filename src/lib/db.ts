@@ -120,6 +120,7 @@ export interface Diagram {
   updated_at: string | Date;
   access_level?: 'Viewer' | 'Editor' | 'Owner' | null;
   architecture_type?: string | null;
+  is_private?: boolean | number | null;
 }
 
 export interface DiagramVersion {
@@ -372,6 +373,9 @@ export async function ensureTablesExist(): Promise<void> {
       ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS architecture_type TEXT DEFAULT 'conceptual_diagram';
     `);
     await pool.query(`
+      ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS is_private BOOLEAN DEFAULT FALSE;
+    `);
+    await pool.query(`
       ALTER TABLE users ADD COLUMN IF NOT EXISTS global_role TEXT DEFAULT 'Author';
     `);
     await pool.query(`
@@ -591,6 +595,11 @@ export async function ensureTablesExist(): Promise<void> {
       // Ignored if column already exists
     }
     try {
+      db.exec('ALTER TABLE diagrams ADD COLUMN is_private INTEGER DEFAULT 0;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
       db.exec('ALTER TABLE users ADD COLUMN global_role TEXT DEFAULT "Author";');
     } catch {
       // Ignored if column already exists
@@ -723,6 +732,12 @@ export async function getUserDiagramAccess(
   // Guest created diagrams are public and editable by all
   if (diagram.user_id.startsWith('guest-')) return 'Editor';
 
+  // Public diagrams (is_private is FALSE, 0, or null) default to Editor/Viewer so all users can access without regenerating
+  if (!diagram.is_private) {
+    if (!userId) return 'Viewer';
+    return diagram.user_id === userId ? 'Owner' : 'Editor';
+  }
+
   if (!userId) return null;
 
   // Check if owner
@@ -764,7 +779,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
           WHEN c.access_level IS NOT NULL THEN c.access_level
           WHEN d.user_id IS NULL THEN 'Viewer'
           WHEN d.user_id LIKE 'guest-%' THEN 'Editor'
-          ELSE NULL
+          ELSE 'Viewer'
         END as access_level
       FROM diagrams d
       LEFT JOIN diagram_collaborators c ON c.diagram_id = d.id AND c.user_id = $1
@@ -775,7 +790,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         ORDER BY created_at DESC, version_number DESC
         LIMIT 1
       )
-      WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1
+      WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1 OR d.is_private IS NULL OR d.is_private = FALSE OR d.is_private = 0
       ORDER BY d.updated_at DESC
     `;
     if (isPostgres()) {
@@ -799,7 +814,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         ORDER BY created_at DESC, version_number DESC
         LIMIT 1
       )
-      WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%'
+      WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NULL OR d.is_private = FALSE OR d.is_private = 0
       ORDER BY d.updated_at DESC
     `;
     if (isPostgres()) {
@@ -835,6 +850,19 @@ export async function getDiagram(id: string, userId?: string): Promise<(Diagram 
   }
 }
 
+// Helper: Update diagram privacy (is_private)
+export async function updateDiagramPrivacy(diagramId: string, isPrivate: boolean): Promise<void> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query('UPDATE diagrams SET is_private = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $1', [diagramId, isPrivate]);
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare("UPDATE diagrams SET is_private = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");
+    stmt.run(isPrivate ? 1 : 0, diagramId);
+  }
+}
+
 // Helper: Create a new diagram with an optional initial XML and userId
 export async function createDiagram(
   name: string,
@@ -845,18 +873,21 @@ export async function createDiagram(
   businessUsecase?: string | null,
   technicalUsecase?: string | null,
   userId?: string | null,
-  architectureType?: string | null
+  architectureType?: string | null,
+  isPrivate?: boolean
 ): Promise<{ diagram: Diagram; version: DiagramVersion | null }> {
   await ensureTablesExist();
   const diagramId = uuidv4();
   const versionId = uuidv4();
+  const privateValPg = isPrivate ? true : false;
+  const privateValSqlite = isPrivate ? 1 : 0;
 
   if (isPostgres()) {
     const pool = getPgPool();
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES ($1, $2, $3, $4)', [diagramId, name, userId || null, architectureType || 'tech_cicd_pipeline']);
+      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private) VALUES ($1, $2, $3, $4, $5)', [diagramId, name, userId || null, architectureType || 'tech_cicd_pipeline', privateValPg]);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -895,8 +926,8 @@ export async function createDiagram(
     const db = getSqliteDb();
     db.exec('BEGIN TRANSACTION;');
     try {
-      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type) VALUES (?, ?, ?, ?)');
-      insertDiagram.run(diagramId, name, userId || null, architectureType || 'tech_cicd_pipeline');
+      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private) VALUES (?, ?, ?, ?, ?)');
+      insertDiagram.run(diagramId, name, userId || null, architectureType || 'tech_cicd_pipeline', privateValSqlite);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {

@@ -43,7 +43,9 @@ import {
   Upload,
   Download,
   Sun,
-  Moon
+  Moon,
+  Lock,
+  Globe
 } from 'lucide-react';
 import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant } from '@/lib/diagramCleaner';
 import DiagramViewer from '@/components/DiagramViewer';
@@ -71,6 +73,7 @@ interface Diagram {
   updated_at: string;
   versions?: DiagramVersion[];
   architecture_type?: string | null;
+  is_private?: boolean | number | null;
 }
 
 interface DiagramVersion {
@@ -478,6 +481,24 @@ function WorkspaceContent() {
   const [selectedArchType, setSelectedArchType] = useState('conceptual_diagram');
   const [pendingArchType, setPendingArchType] = useState<string | null>(null);
   const [isArchConsentModalOpen, setIsArchConsentModalOpen] = useState(false);
+  const [isPrivate, setIsPrivate] = useState<boolean>(false);
+  const [newDiagramIsPrivate, setNewDiagramIsPrivate] = useState<boolean>(false);
+
+  const toggleDiagramPrivacy = async (newPrivate: boolean) => {
+    if (!activeDiagram) return;
+    setIsPrivate(newPrivate);
+    setActiveDiagram(prev => prev ? { ...prev, is_private: newPrivate } : null);
+    try {
+      await fetch(`/api/diagrams/${activeDiagram.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_private: newPrivate }),
+      });
+      setDiagrams(prev => prev.map(d => d.id === activeDiagram.id ? { ...d, is_private: newPrivate } : d));
+    } catch (err) {
+      console.error('Failed to update diagram privacy:', err);
+    }
+  };
   const [promptInput, setPromptInput] = useState('');
   const [saveComment, setSaveComment] = useState('');
   const [activeSteps, setActiveSteps] = useState<{ [key: number]: 'create' | 'modify' | 'business' | 'technical' }>({
@@ -680,6 +701,7 @@ function WorkspaceContent() {
       
       setRestrictedState(null);
       setActiveDiagram(data);
+      setIsPrivate(Boolean(data.is_private));
       if (data.architecture_type) {
         setSelectedArchType(data.architecture_type);
         if (data.architecture_type === 'technical_diagram' || data.architecture_type === 'conceptual_diagram') {
@@ -993,7 +1015,8 @@ function WorkspaceContent() {
             body: JSON.stringify({
               name: newDiagramName.trim(),
               prompt: promptToGenerate,
-              architectureType: selectedArchType
+              architectureType: selectedArchType,
+              isPrivate: newDiagramIsPrivate
             })
           });
           if (!res.ok) throw new Error('Failed to generate diagram');
@@ -1011,7 +1034,8 @@ function WorkspaceContent() {
               name: newDiagramName.trim(),
               xml: defaultXml,
               comment: 'Synthesized Enterprise Canvas',
-              architectureType: selectedArchType
+              architectureType: selectedArchType,
+              isPrivate: newDiagramIsPrivate
             })
           });
           if (fallbackRes.ok) {
@@ -1036,7 +1060,8 @@ function WorkspaceContent() {
           name: newDiagramName,
           xml: defaultXml,
           comment: 'Initial canvas created',
-          architectureType: selectedArchType
+          architectureType: selectedArchType,
+          isPrivate: newDiagramIsPrivate
         })
       });
       
@@ -3303,7 +3328,32 @@ function WorkspaceContent() {
                     )}
                   </button>
 
-                  {/* 5. Feedback Widget */}
+                  {/* 5. Visibility Checkbox & Public/Private Toggle */}
+                  <label
+                    id="diagram-visibility-toggle"
+                    title={isPrivate ? "Private: Visible only to you" : "Public: Shared & accessible across sessions so users don't need to regenerate"}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 select-none"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isPrivate}
+                      onChange={(e) => toggleDiagramPrivacy(e.target.checked)}
+                      className="w-3.5 h-3.5 rounded border-slate-700 bg-slate-900 text-teal-400 focus:ring-teal-400 focus:ring-offset-slate-900 cursor-pointer"
+                    />
+                    {isPrivate ? (
+                      <span className="flex items-center gap-1 text-amber-300">
+                        <Lock className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Private</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-teal-300">
+                        <Globe className="w-3.5 h-3.5 text-teal-400" />
+                        <span>Public</span>
+                      </span>
+                    )}
+                  </label>
+
+                  {/* 6. Feedback Widget */}
                   <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
                 </>
               )}
@@ -4249,6 +4299,27 @@ function WorkspaceContent() {
                   className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg p-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
                 />
                 <p className="text-xs text-slate-400 mt-1.5">Leave empty to start with a clean minimal slate.</p>
+              </div>
+              <div className="pt-1">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={newDiagramIsPrivate}
+                    onChange={(e) => setNewDiagramIsPrivate(e.target.checked)}
+                    className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-teal-400 focus:ring-teal-400 focus:ring-offset-slate-900 cursor-pointer"
+                  />
+                  {newDiagramIsPrivate ? (
+                    <span className="flex items-center gap-1 text-amber-300">
+                      <Lock className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Private Diagram (Only visible to me)</span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 text-teal-300">
+                      <Globe className="w-3.5 h-3.5 text-teal-400" />
+                      <span>Public Diagram (Shared & reusable across sessions)</span>
+                    </span>
+                  )}
+                </label>
               </div>
               <button
                 type="submit"

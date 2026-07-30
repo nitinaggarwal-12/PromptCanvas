@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDiagram, deleteDiagram, getDiagramVersions, updateDiagramArchitectureType } from '@/lib/db';
+import { getDiagram, deleteDiagram, getDiagramVersions, updateDiagramArchitectureType, updateDiagramPrivacy } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 
@@ -52,7 +52,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   }
 }
 
-// PATCH /api/diagrams/[id] - Update diagram metadata (e.g. architecture_type)
+// PATCH /api/diagrams/[id] - Update diagram metadata (e.g. architecture_type, is_private)
 export async function PATCH(request: Request, { params }: RouteParams) {
   try {
     const user = await getAuthenticatedUser();
@@ -61,6 +61,10 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     const archType = body.architecture_type || body.architectureType;
     if (archType) {
       await updateDiagramArchitectureType(id, archType);
+    }
+    if (body.is_private !== undefined || body.isPrivate !== undefined) {
+      const isPriv = Boolean(body.is_private ?? body.isPrivate);
+      await updateDiagramPrivacy(id, isPriv);
     }
     return NextResponse.json({ success: true });
   } catch (error) {

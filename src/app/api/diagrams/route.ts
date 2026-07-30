@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   try {
     const user = await getAuthenticatedUser();
     const body = await request.json();
-    const { name, xml, comment, prompt, aiReasoning, businessUsecase, technicalUsecase, architectureType } = body;
+    const { name, xml, comment, prompt, aiReasoning, businessUsecase, technicalUsecase, architectureType, isPrivate, is_private } = body;
 
     if (!name || typeof name !== 'string') {
       return NextResponse.json(
@@ -45,7 +45,8 @@ export async function POST(request: Request) {
       businessUsecase,
       technicalUsecase,
       user?.id || null,
-      effectiveArchType
+      effectiveArchType,
+      Boolean(isPrivate ?? is_private)
     );
 
     return NextResponse.json({ diagram, version }, { status: 201 });
