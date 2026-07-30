@@ -852,7 +852,12 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/PROMPT DESIGNED/gi, 'TARGET DOSSIER DEFINED')
       .replace(/MODEL REGISTRY/gi, 'TARGET &amp; COMPOUND REGISTRY')
       .replace(/Bias &amp;amp;&lt;br&gt;Fairness Audit/g, 'AIDDISON Binding Affinity &amp;amp;&lt;br&gt;Safety Audit')
-      .replace(/Bias &amp;amp; Fair/g, 'AIDDISON Safety');
+      .replace(/Bias &amp;amp; Fair/g, 'AIDDISON Safety')
+      // Unified System View Replacements for Early Discovery
+      .replace(/ITACS Integrated Insights Platform/gi, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION PLATFORM')
+      .replace(/Rly Identific Ion Person Integrated Insights Platform/gi, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION PLATFORM')
+      .replace(/Dim_Patient/gi, 'Dim_Target')
+      .replace(/Fact_Clinical/gi, 'Fact_Assay_Binding');
   }
 
   // Conceptual Diagram Specific Replacements

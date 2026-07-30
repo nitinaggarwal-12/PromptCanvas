@@ -346,7 +346,9 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
 
     const isGovernanceStateMachineRequest = architectureType === 'governance_state_machine' || prompt?.includes('Governance & State Machine') || prompt?.includes('UNIFIED GOVERNANCE & STATE-MACHINE LIFECYCLE');
 
-    const isConceptualRequest = architectureType === 'conceptual_diagram' || (!isErdRequest && !isSequenceRequest && !isAgenticRagRequest && !isPipelineRequest && !isSecureDeploymentMapRequest && !isDevopsCicdPipelineRequest && !isGovernanceStateMachineRequest && (
+    const isUnifiedSystemViewRequest = architectureType === 'unified_system_view' || prompt?.includes('Unified System View') || prompt?.includes('TOTAL UNIFIED SYSTEM VIEW');
+
+    const isConceptualRequest = architectureType === 'conceptual_diagram' || (!isErdRequest && !isSequenceRequest && !isAgenticRagRequest && !isPipelineRequest && !isSecureDeploymentMapRequest && !isDevopsCicdPipelineRequest && !isGovernanceStateMachineRequest && !isUnifiedSystemViewRequest && (
       prompt?.includes('ITACS Oncology Platform') ||
       prompt?.includes('ONCOLOGY DATA PORTAL')
     ));
@@ -380,6 +382,9 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
     } else if (isGovernanceStateMachineRequest) {
       console.log('[Governance & State Machine Protection Fast-Path] 🛡️ Enforcing pristine Governance & State Machine reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('governance_state_machine');
+    } else if (isUnifiedSystemViewRequest) {
+      console.log('[Unified System View Protection Fast-Path] 🛡️ Enforcing pristine Unified System View reference XML layout immediately.');
+      xml = getDefaultXmlForArchitecture('unified_system_view');
     } else if (isConceptualRequest) {
       console.log('[Conceptual Protection Fast-Path] 🛡️ Enforcing pristine Conceptual reference XML layout immediately.');
       xml = getDefaultXmlForArchitecture('conceptual_diagram');
