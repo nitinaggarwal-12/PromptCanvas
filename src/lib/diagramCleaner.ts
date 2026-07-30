@@ -805,7 +805,14 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/synthesized request and request flow/g, 'Deploy Deep Research agent across millions of papers &amp; patents')
       .replace(/Generate PPT deck/g, 'Synthesize assay notes &amp; lab PDFs in Gemini Notebook Enterprise')
       .replace(/interactive visualizabcn/g, 'Screen billions of chemicals &amp; predict synthesis routes in AIDDISON')
-      .replace(/pushes to interface/g, 'Deploy reusable Agent Designer literature monitoring agent');
+      .replace(/pushes to interface/g, 'Deploy reusable Agent Designer literature monitoring agent')
+      // Data & AI Pipeline Specific Replacements for Early Discovery
+      .replace(/Rly Identific Ion Person - Data &amp; AI Pipeline/g, 'Early Discovery &amp; Target Identification — Data &amp; AI Pipeline')
+      .replace(/RLY IDENTIFIC ION PERSON SECURE GOVERNED CLOUD TENANT/g, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION SECURE GOVERNED CLOUD TENANT')
+      .replace(/Customer\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Churn\s*Features/gi, 'Target Dossier &amp;<br>Binding Affinity Features')
+      .replace(/Sales\s*Prediction\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Features/gi, 'AIDDISON Chemical<br>Screening Features')
+      .replace(/Funcriogy/g, 'Functional Research Areas')
+      .replace(/Salesforce\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*cloud\s*App/gi, 'PubMed REST API &amp;<br>Patent Ingest');
   }
 
   // Conceptual Diagram Specific Replacements
