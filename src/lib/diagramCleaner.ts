@@ -784,6 +784,9 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Automatic Embedding &amp; Retrieval/gi, 'Gemini Notebook Enterprise Dossier Synthesis')
       // Sequence Diagram Specific Replacements for Early Discovery
       .replace(/RLY IDENTIFIC ION PERSON SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM/g, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION SECURE MANAGED ECOSYSTEM')
+      .replace(/Rly Identific Ion Person Platform - RLY IDENTIFIC ION PERSON RLY IDENTIFIC ION PERSON COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
+      .replace(/ITACS Integrated Insights Platform - COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
+      .replace(/Early Discovery &amp; Target Identification Platform - Early Discovery &amp; Target Identification Early Discovery &amp; Target Identification COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
       .replace(/Sends single Oncology prompt:[\s\S]*?recent sales figures'/gi, "Sends biological target prompt:<br><span style='font-size:10px;font-weight:normal;'>'Define NSCLC hypothesis &amp; explore target dossiers'</span>")
       .replace(/THOUGHT: 'I need multi-silo context.'/gi, "THOUGHT: 'Need PubMed, patents &amp; assay notes.'")
       .replace(/ACTION: Call RAG Tool/gi, 'ACTION: Call Deep Research &amp; Notebook Enterprise')
