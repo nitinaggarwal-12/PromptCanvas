@@ -712,7 +712,12 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/ITACS Governing Cloud Tenant/g, `${topicUpper} Governing Cloud Tenant`)
     .replace(/ITACS Primary VPC Network/g, `${topicUpper} Primary VPC Network`)
     .replace(/ITACS Agent Orchestrator/g, `${topic} Agent Orchestrator`)
-    .replace(/ITACS Oncology Platform/g, `${topic} Platform`);
+    .replace(/ITACS Oncology Platform/g, `${topic} Platform`)
+    .replace(/Core ITACS Synthesis Engine/g, `Core AI Synthesis Engine`)
+    .replace(/ITACS Integrated Insights Platform/g, `${topic} Integrated Insights Platform`)
+    .replace(/ITACS SECURE MANAGED/g, `${topicUpper} SECURE MANAGED`)
+    .replace(/ITACS Target/g, `${topic} Target`)
+    .replace(/\bITACS\b/g, topic || 'GenAI');
 
   // 2. Adapt technical nodes if generic
   const promptLower = (userPrompt || topic || '').toLowerCase();
