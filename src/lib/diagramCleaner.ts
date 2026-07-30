@@ -737,7 +737,19 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Unstructured Content Analysis/g, 'AIDDISON on Vertex AI (Virtual Screening)')
       .replace(/PubMed PDF &amp; PPT Chunking Engine/g, 'Chemical Screening &amp; Synthesis Routes')
       .replace(/Strategic Chatbot Reasoning/g, 'Reusable Agent Designer Monitoring')
-      .replace(/ReAct Natural Language Agent Interface/g, 'Continuous Signal Alerts &amp; Literature Monitor');
+      .replace(/ReAct Natural Language Agent Interface/g, 'Continuous Signal Alerts &amp; Literature Monitor')
+      // ERD Specific Replacements
+      .replace(/Dim_Patient/g, 'Dim_Biological_Target')
+      .replace(/Patient Key/g, 'Target ID (PK)')
+      .replace(/Patient Type/g, 'Gene Symbol &amp; Name')
+      .replace(/Demographics/g, 'Disease Association')
+      .replace(/Disease History/g, 'AIDDISON Screening Status')
+      .replace(/Dim_Oncology_Product/g, 'Dim_Chemical_Compound')
+      .replace(/Product Key/g, 'Compound SMILES ID (PK)')
+      .replace(/Therapy Area/g, 'AIDDISON Affinity Score')
+      .replace(/Fact_Oncology_Insights/g, 'Fact_AIDDISON_Screening')
+      .replace(/Fact_Competitive_Intel/g, 'Fact_Literature_Monitoring')
+      .replace(/Insight Type/g, 'Deep Research Agent Score');
   }
 
   // Conceptual Diagram Specific Replacements
