@@ -767,7 +767,19 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Patient ID/g, 'Target ID')
       .replace(/Fact_Competitive_Intel/g, 'Fact_Monitoring_Alerts (Step 5)')
       .replace(/Insight Type/g, 'Agent Designer Signal Confidence')
-      .replace(/Row-Level Security on Patient Data/g, 'IP &amp; Target Molecule Protection');
+      .replace(/Row-Level Security on Patient Data/g, 'IP &amp; Target Molecule Protection')
+      // Cognitive Architecture / Agentic RAG Replacements
+      .replace(/RAG Knowledge Ingestion Pipeline/g, 'Deep Research Papers &amp; Patent Ingestion Pipeline')
+      .replace(/Document Ingestion &amp; Chunking Engine/g, 'Gemini Notebook Enterprise Assay Note Chunking')
+      .replace(/Agentic RAG Orchestrator/g, 'Scientist Agentic Prompt Orchestrator')
+      .replace(/Vector Database Store/g, 'Vertex AI Vector Search &amp; AIDDISON Model Store')
+      .replace(/RAG Reasoning &amp; Synthesis Service/g, 'AIDDISON Virtual Screening &amp; Target Dossier Synthesis')
+      .replace(/Real-Time Alert Dispatcher/g, 'Agent Designer Continuous Signal Alert Dispatcher')
+      .replace(/Financial Analyst/g, 'Research Scientist &amp; Computational Biologist')
+      .replace(/Compare market trends across functional silos/g, 'Explore biological targets &amp; AIDDISON virtual synthesis')
+      .replace(/Total Sales in Q1/g, 'Virtual Chemical Screening &amp; Binding Affinity')
+      .replace(/Tool 1: Enterprise Knowledge/g, 'Tool 1: Deep Research &amp; Gemini Notebook')
+      .replace(/Tool 2: Business Analytics/g, 'Tool 2: AIDDISON &amp; Agent Designer');
   }
 
   // Conceptual Diagram Specific Replacements
