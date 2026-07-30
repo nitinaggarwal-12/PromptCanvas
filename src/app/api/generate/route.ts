@@ -358,37 +358,7 @@ ${getDefaultXmlForArchitecture('conceptual_diagram')}
     let businessUsecase: string | null = 'Unified database schema consolidation and clean visual semantic layer.';
     let technicalUsecase: string | null = 'Zero-collision corridor routing with strict 2D bounding box compliance.';
 
-    if (isErdRequest) {
-      console.log('[ERD Protection Fast-Path] 🛡️ Enforcing pristine ERD reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('erd');
-    } else if (isMacroSequenceRequest) {
-      console.log('[Macro Sequence Diagram Protection Fast-Path] 🛡️ Enforcing pristine Macro Sequence Diagram reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('macro_sequence_diagram');
-    } else if (isSequenceRequest) {
-      console.log('[Sequence Diagram Protection Fast-Path] 🛡️ Enforcing pristine Sequence Diagram reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('sequence_diagram');
-    } else if (isAgenticRagRequest) {
-      console.log('[Agentic RAG Protection Fast-Path] 🛡️ Enforcing pristine Agentic RAG reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('agentic_rag');
-    } else if (isPipelineRequest) {
-      console.log('[Data & AI Pipeline Protection Fast-Path] 🛡️ Enforcing pristine Data & AI Pipeline reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('data_ai_pipeline');
-    } else if (isSecureDeploymentMapRequest) {
-      console.log('[Secure Deployment Map Protection Fast-Path] 🛡️ Enforcing pristine Secure Deployment Map reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('secure_deployment_map');
-    } else if (isDevopsCicdPipelineRequest) {
-      console.log('[DevOps CI/CD Pipeline Protection Fast-Path] 🛡️ Enforcing pristine DevOps CI/CD Pipeline reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('devops_cicd_pipeline');
-    } else if (isGovernanceStateMachineRequest) {
-      console.log('[Governance & State Machine Protection Fast-Path] 🛡️ Enforcing pristine Governance & State Machine reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('governance_state_machine');
-    } else if (isUnifiedSystemViewRequest) {
-      console.log('[Unified System View Protection Fast-Path] 🛡️ Enforcing pristine Unified System View reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('unified_system_view');
-    } else if (isConceptualRequest) {
-      console.log('[Conceptual Protection Fast-Path] 🛡️ Enforcing pristine Conceptual reference XML layout immediately.');
-      xml = getDefaultXmlForArchitecture('conceptual_diagram');
-    } else {
+    // Fast-path bypass removed: Always execute live Gemini 2.5 LLM generation
       if (isRefinement) {
         const contents = `
 ### Existing XML:
@@ -456,7 +426,6 @@ ${prompt}`,
         console.log('[Template Fallback] LLM returned empty XML, falling back to base template XML.');
         xml = getDefaultXmlForArchitecture(effectiveArchType, prompt, prompt);
       }
-    }
 
     if (!xml) {
       console.error('Gemini response did not contain a valid XML block:', responseText);
