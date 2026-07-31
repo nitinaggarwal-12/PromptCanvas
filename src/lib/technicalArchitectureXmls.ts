@@ -290,84 +290,89 @@ const TECH_XML_VPC_INFRA = `<mxfile host="embed.diagrams.net">
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- Master VPC Boundary Container -->
+        <!-- Master VPC Boundary Container (Y=110, H=860) -->
         <mxCell id="aws_vpc_container" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;[2] AWS Virtual Private Cloud (VPC)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:11px;color:#475569;'&gt;Highly Secure Zero-Trust Network Boundary&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;strokeWidth=2;fillColor=#F8FAFC;strokeColor=#0284C7;dashed=1;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=16;spacingTop=12;" vertex="1" parent="1">
-          <mxGeometry x="50" y="140" width="1300" height="820" as="geometry" />
+          <mxGeometry x="40" y="110" width="1320" height="860" as="geometry" />
         </mxCell>
 
-        <!-- Tier 1: Ingestion & External Connectivity (Y=40) -->
+        <!-- Tier 1: Ingestion & External Connectivity (Y=30) -->
         <mxCell id="external_user" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;👤&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[1] External User / On-Premise&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Secure Connectivity via VPN / Direct Connect&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFE6CC;strokeColor=#D79B00;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="460" y="40" width="280" height="75" as="geometry" />
+          <mxGeometry x="480" y="30" width="280" height="65" as="geometry" />
         </mxCell>
 
         <!-- Public Subnet Containers & Gateways (Y=200) -->
         <mxCell id="public_subnet_az1" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;[2b] Public Subnet (AZ1)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Egress for NAT GW &amp;amp; IGW Ingress&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;dashed=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="80" y="200" width="500" height="150" as="geometry" />
+          <mxGeometry x="60" y="200" width="560" height="150" as="geometry" />
         </mxCell>
         <mxCell id="internet_gateway" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🌐&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[2a] Internet Gateway (IGW)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;VPC Ingress / Egress&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="100" y="230" width="220" height="90" as="geometry" />
+          <mxGeometry x="80" y="235" width="240" height="85" as="geometry" />
         </mxCell>
         <mxCell id="nat_gateway_az1" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;⚡&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[3] NAT Gateway (AZ1)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Private Subnet Egress&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="340" y="235" width="220" height="80" as="geometry" />
+          <mxGeometry x="360" y="235" width="240" height="80" as="geometry" />
         </mxCell>
 
         <mxCell id="public_subnet_az2" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;[2c] Public Subnet (AZ2)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;HA Ingress &amp;amp; Bastion Host&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;dashed=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="610" y="200" width="300" height="150" as="geometry" />
+          <mxGeometry x="660" y="200" width="300" height="150" as="geometry" />
         </mxCell>
         <mxCell id="bastion_host_az1" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;💻&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[4] Bastion Host (EC2)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Secure Jump Server&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="630" y="235" width="260" height="80" as="geometry" />
+          <mxGeometry x="680" y="235" width="260" height="80" as="geometry" />
         </mxCell>
 
         <!-- Private Application Tier (Y=390) -->
         <mxCell id="internal_alb" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;⚖️&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[7] Internal ALB&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Internal App Balancing&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="80" y="425" width="220" height="80" as="geometry" />
+          <mxGeometry x="60" y="425" width="210" height="80" as="geometry" />
         </mxCell>
         <mxCell id="private_app_subnet_az1" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;[5] Private App Subnet (AZ1)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Isolated App Tier&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;dashed=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="340" y="390" width="260" height="150" as="geometry" />
+          <mxGeometry x="360" y="390" width="260" height="150" as="geometry" />
         </mxCell>
         <mxCell id="ec2_app_az1" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🐳&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[8] EC2 Auto Scaling (AZ1)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Containerized Microservices&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="350" y="425" width="240" height="80" as="geometry" />
+          <mxGeometry x="370" y="425" width="240" height="80" as="geometry" />
         </mxCell>
 
         <mxCell id="private_app_subnet_az2" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;[6] Private App Subnet (AZ2)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Isolated App Tier (HA Region)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;dashed=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="630" y="390" width="260" height="150" as="geometry" />
+          <mxGeometry x="660" y="390" width="260" height="150" as="geometry" />
         </mxCell>
         <mxCell id="ec2_app_az2" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🐳&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[9] EC2 Auto Scaling (AZ2)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Containerized Microservices&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="640" y="425" width="240" height="80" as="geometry" />
+          <mxGeometry x="670" y="425" width="240" height="80" as="geometry" />
         </mxCell>
 
         <!-- Isolated Database Tier (Y=580) -->
         <mxCell id="isolated_db_subnet_az1" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;[10] Isolated DB Subnet (AZ1)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Restricted Database Tier&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;dashed=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="340" y="580" width="260" height="150" as="geometry" />
+          <mxGeometry x="360" y="580" width="260" height="150" as="geometry" />
         </mxCell>
         <mxCell id="rds_aurora" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🛢️&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[12] Amazon RDS / Aurora&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Managed PostgreSQL DB&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#000000;padding=8;" vertex="1" parent="1">
-          <mxGeometry x="350" y="605" width="240" height="95" as="geometry" />
+          <mxGeometry x="370" y="615" width="240" height="95" as="geometry" />
         </mxCell>
 
         <mxCell id="isolated_db_subnet_az2" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;[11] Isolated DB Subnet (AZ2)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Restricted Database Tier (HA)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;dashed=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="630" y="580" width="260" height="150" as="geometry" />
+          <mxGeometry x="660" y="580" width="260" height="150" as="geometry" />
         </mxCell>
 
-        <!-- Right Side Security & Observability Services (X=960) -->
+        <!-- Right Side Security & Observability Services (X=1000) -->
         <mxCell id="aws_iam" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🔑&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[17] AWS IAM&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Role-Based Access Control&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="960" y="200" width="260" height="75" as="geometry" />
+          <mxGeometry x="1000" y="200" width="260" height="75" as="geometry" />
         </mxCell>
         <mxCell id="kms_encryption" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🔐&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[13] AWS KMS&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;KMS Data Key Management&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="960" y="320" width="260" height="75" as="geometry" />
+          <mxGeometry x="1000" y="320" width="260" height="75" as="geometry" />
         </mxCell>
         <mxCell id="vpc_flow_logs_cloudwatch" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;📊&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[14] VPC Flow Logs &amp;amp; CloudWatch&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Traffic Monitoring &amp;amp; Audit&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="960" y="440" width="260" height="75" as="geometry" />
+          <mxGeometry x="1000" y="440" width="260" height="75" as="geometry" />
         </mxCell>
         <mxCell id="aws_guardduty" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🛡️&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[15] AWS GuardDuty&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Intelligent Threat Detection&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="960" y="560" width="260" height="75" as="geometry" />
+          <mxGeometry x="1000" y="560" width="260" height="75" as="geometry" />
         </mxCell>
         <mxCell id="vpc_endpoints" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🔌&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[16] VPC Endpoints&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Private AWS Service Access&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="960" y="680" width="260" height="75" as="geometry" />
+          <mxGeometry x="1000" y="680" width="260" height="75" as="geometry" />
         </mxCell>
 
         <!-- Connectors with Zero-Collision Waypoints -->
-        <mxCell id="edge_1_2a" value="HTTPS/VPN Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;startArrow=classic;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="external_user" target="internet_gateway">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_1_2a" value="HTTPS/VPN Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;startArrow=classic;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;entryX=0.25;entryY=0.25;" edge="1" parent="1" source="external_user" target="internet_gateway">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="160" />
+              <mxPoint x="140" y="160" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="edge_2a_3" value="Outbound Internet Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="internet_gateway" target="nat_gateway_az1">
           <mxGeometry relative="1" as="geometry" />
@@ -375,76 +380,78 @@ const TECH_XML_VPC_INFRA = `<mxfile host="embed.diagrams.net">
         <mxCell id="edge_2a_4" value="Admin SSH Ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="internet_gateway" target="bastion_host_az1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="210" y="175" />
-              <mxPoint x="760" y="175" />
+              <mxPoint x="200" y="160" />
+              <mxPoint x="810" y="160" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="edge_3_7" value="Application Outbound" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="nat_gateway_az1" target="internal_alb">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="450" y="370" />
-              <mxPoint x="190" y="370" />
+              <mxPoint x="480" y="370" />
+              <mxPoint x="165" y="370" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="edge_4_8_9" value="SSH Admin Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="bastion_host_az1" target="ec2_app_az2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_7_8_9" value="HTTPS App Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;startArrow=classic;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="internal_alb" target="ec2_app_az1">
+        <mxCell id="edge_7_8_9" value="HTTPS App&lt;br&gt;Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;startArrow=classic;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="internal_alb" target="ec2_app_az1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="edge_7_8_9_az2" value="HA App Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;startArrow=classic;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="internal_alb" target="ec2_app_az2">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="190" y="550" />
-              <mxPoint x="760" y="550" />
+              <mxPoint x="165" y="550" />
+              <mxPoint x="790" y="550" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_8_12" value="Secure DB Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="ec2_app_az1" target="rds_aurora">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_8_12" value="Secure DB Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;exitX=0.2;exitY=1;entryX=0.2;entryY=0;" edge="1" parent="1" source="ec2_app_az1" target="rds_aurora">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-65" y="0" as="offset" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="edge_9_12" value="HA DB Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="ec2_app_az2" target="rds_aurora">
+        <mxCell id="edge_9_12" value="HA DB Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;exitX=0.2;exitY=1;entryX=0.8;entryY=0;" edge="1" parent="1" source="ec2_app_az2" target="rds_aurora">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="760" y="550" />
-              <mxPoint x="470" y="550" />
+              <mxPoint x="718" y="550" />
+              <mxPoint x="562" y="550" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_12_13" value="Key Management" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="rds_aurora" target="kms_encryption">
+        <mxCell id="edge_12_13" value="Key Management" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;exitX=0.85;exitY=0.9;entryX=0;entryY=0.5;" edge="1" parent="1" source="rds_aurora" target="kms_encryption">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="470" y="780" />
-              <mxPoint x="1090" y="780" />
-              <mxPoint x="1090" y="357" />
+              <mxPoint x="574" y="780" />
+              <mxPoint x="1130" y="780" />
+              <mxPoint x="1130" y="357" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_12_14" value="DB Activity Logs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="rds_aurora" target="vpc_flow_logs_cloudwatch">
+        <mxCell id="edge_12_14" value="DB Activity Logs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;exitX=0.85;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="1" source="rds_aurora" target="vpc_flow_logs_cloudwatch">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="470" y="760" />
-              <mxPoint x="930" y="760" />
-              <mxPoint x="930" y="477" />
+              <mxPoint x="574" y="760" />
+              <mxPoint x="970" y="760" />
+              <mxPoint x="970" y="477" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="edge_ec2_vpc_endpoints" value="Private S3/ECR Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="ec2_app_az1" target="vpc_endpoints">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="470" y="760" />
-              <mxPoint x="1090" y="760" />
-              <mxPoint x="1090" y="717" />
+              <mxPoint x="490" y="760" />
+              <mxPoint x="1130" y="760" />
+              <mxPoint x="1130" y="717" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="edge_threat_remediation" value="Threat Alerts &amp;amp; Remediation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#EF4444;dashed=1;dashPattern=8 8;startArrow=classic;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#B91C1C;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="aws_guardduty" target="internal_alb">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="960" y="597" />
-              <mxPoint x="190" y="597" />
+              <mxPoint x="1000" y="540" />
+              <mxPoint x="165" y="540" />
             </Array>
           </mxGeometry>
         </mxCell>
