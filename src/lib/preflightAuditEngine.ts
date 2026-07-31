@@ -70,6 +70,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xml = xml.replace(/(<mxCell[^>]*style="[^"]*shape=cylinder3[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?height=")\d+(")/gi, '$195"');
   // Auto-expand standard 60px high vertex cards to 75px height for text buffer margin
   xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr").)*?<mxGeometry\s+(?:[^>]*?\s+)?height=")60(")/gi, '$175"');
+  // Auto-expand narrow 200px or 220px vertex cards to 260px width so text titles never clip
+  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr"|rhombus).)*?<mxGeometry\s+(?:[^>]*?\s+)?width=")(?:200|220)(")/gi, '$1260$2');
 
   // 6. RHOMBUS SHAPE DIMENSION & TEXT OVERFLOW HEALER (Fixes Rhombus Edge Overflow):
   // Auto-expand all rhombus/diamond shapes to width=280 and height=90 so text never spills over sloped edges
