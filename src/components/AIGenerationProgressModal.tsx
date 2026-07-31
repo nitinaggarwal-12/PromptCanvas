@@ -14,10 +14,10 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const steps = [
-    'Parsing system prompt & compliance requirements...',
-    'Synthesizing multi-tier cloud infrastructure via Gemini 2.5 Flash...',
-    'Validating node positions & compiling Draw.io XML schema...',
-    'Finalizing canvas architecture & rendering workspace...'
+    'Parsing domain prompt, actors & compliance guidelines...',
+    'Calculating 2D zero-collision spatial layout & routing channels...',
+    'Executing pre-flight AST line validation & node contrast check...',
+    'Finalizing canvas architecture & rendering high-craft workspace...'
   ];
 
   useEffect(() => {

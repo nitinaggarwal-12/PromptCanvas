@@ -272,6 +272,31 @@ export default function DiagramViewer({
           return false;
         };
 
+        const storageKey = 'pc_canvas_scroll_' + '${diagramId || 'default'}';
+        const canvasContainer = document.querySelector('.canvas-container');
+
+        if (canvasContainer) {
+          // Restore saved scroll position
+          try {
+            const savedPos = sessionStorage.getItem(storageKey);
+            if (savedPos) {
+              const { left, top } = JSON.parse(savedPos);
+              canvasContainer.scrollLeft = left || 0;
+              canvasContainer.scrollTop = top || 0;
+            }
+          } catch(e) {}
+
+          // Save scroll position on scroll
+          canvasContainer.addEventListener('scroll', function() {
+            try {
+              sessionStorage.setItem(storageKey, JSON.stringify({
+                left: canvasContainer.scrollLeft,
+                top: canvasContainer.scrollTop
+              }));
+            } catch(e) {}
+          });
+        }
+
         const configObj = ${JSON.stringify({
           xml: sanitizedXml,
           lightbox: true,
@@ -299,6 +324,16 @@ export default function DiagramViewer({
           
           script.onload = function() {
             console.log('[Iframe Diagnostic] ✅ Draw.io viewer script loaded successfully.');
+            if (canvasContainer) {
+              try {
+                const savedPos = sessionStorage.getItem(storageKey);
+                if (savedPos) {
+                  const { left, top } = JSON.parse(savedPos);
+                  canvasContainer.scrollLeft = left || 0;
+                  canvasContainer.scrollTop = top || 0;
+                }
+              } catch(e) {}
+            }
           };
           
           document.body.appendChild(script);
