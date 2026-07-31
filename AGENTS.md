@@ -194,5 +194,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
   - Left -> Top: `exitX=0.5;exitY=0;entryX=0;entryY=0.5;` + Waypoint `(x - R, y)`
 * **Visual Audit Verification**: Every circular loop must be visually verified under `view_file` to confirm a 100% seamless, uniform circular ring with zero line kinks or overlaps.
 
+---
+
+# 📐 Universal Reference Template & Dynamic Use-Case Customization Mandate (Mandatory)
+
+* **Zero Generic Domain Labels Rule**: Never render a reference template with hardcoded/legacy generic labels (e.g. `ITACS`, `Oncology Analyst`, `PDFs/PPTs`, `Silo Analysts`) when the user specifies a custom prompt (e.g. `E-Commerce`, `FinTech`, `Genomics`).
+* **Template Backbone + Domain Flavoring Pattern**:
+  1. **Layout Integrity**: Always load the pre-engineered, collision-free reference layout structure for the target diagram type via `getDefaultXmlForArchitecture(archId)`.
+  2. **Domain Flavoring (`injectUseCaseFlavor`)**: Pass the user's prompt text to `injectUseCaseFlavor(xml, prompt)` to dynamically replace all node titles, lifelines, step arrows, and audit log headers with the user's specific domain entities while preserving pristine 2D spatial coordinates.
+  3. **Validation & Healing**: Execute `preflightVerifyAndHealXmlAcrossAll6Audits()` and `validateAndHealDrawioXml()` to ensure 100% XML AST validity and ampersand entity escaping (`&amp;`).
+
+
 
 

@@ -1123,49 +1123,49 @@ export function getExactMacroSequenceDiagramReferenceXml(): string {
         <!-- 2. Swimlane 1: PHASE 1 -->
         <!-- ========================================== -->
         <mxCell id="p1_lane" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="75" y="80" width="1830" height="250" as="geometry" />
+          <mxGeometry x="185" y="80" width="1720" height="250" as="geometry" />
         </mxCell>
-        <mxCell id="p1_tab" value="&lt;b style='font-size:9px;color:#0F172A;'&gt;PHASE 1:&lt;br&gt;DATA INGESTION,&lt;br&gt;FEATURE&lt;br&gt;ENGINEERING &amp;amp;&lt;br&gt;LINEAGE LOGGING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="15" y="80" width="55" height="250" as="geometry" />
+        <mxCell id="p1_tab" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;PHASE 1:&lt;br&gt;DATA INGESTION,&lt;br&gt;FEATURE ENGINEERING &amp;amp;&lt;br&gt;LINEAGE LOGGING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="15" y="80" width="160" height="250" as="geometry" />
         </mxCell>
 
         <!-- Phase 1 Headers -->
         <mxCell id="p1_h1" value="&lt;span style='font-size:16px;'&gt;👤&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Silo Analysts&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#475569;'&gt;Functional Silos&lt;br&gt;e.g., Medical Affairs,&lt;br&gt;Competitive Intel&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
-          <mxGeometry x="100" y="95" width="120" height="50" as="geometry" />
+          <mxGeometry x="210" y="95" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="p1_h2" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Google Workspace&lt;br&gt;Connectors&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;align=center;" vertex="1" parent="1">
-          <mxGeometry x="300" y="95" width="140" height="50" as="geometry" />
+          <mxGeometry x="400" y="95" width="140" height="50" as="geometry" />
         </mxCell>
         <mxCell id="p1_h3" value="&lt;span style='font-size:16px;'&gt;🛢️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0369A1;'&gt;GCS Secure Bucket&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="520" y="95" width="160" height="50" as="geometry" />
+          <mxGeometry x="610" y="95" width="160" height="50" as="geometry" />
         </mxCell>
         <mxCell id="p1_h4" value="&lt;span style='font-size:16px;'&gt;🎈&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0369A1;'&gt;Airflow&lt;br&gt;Scheduler&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="760" y="95" width="160" height="50" as="geometry" />
+          <mxGeometry x="830" y="95" width="160" height="50" as="geometry" />
         </mxCell>
         <mxCell id="p1_h5" value="&lt;span style='font-size:16px;'&gt;⚡&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0369A1;'&gt;dbt Transformation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="95" width="180" height="50" as="geometry" />
+          <mxGeometry x="1050" y="95" width="180" height="50" as="geometry" />
         </mxCell>
         <mxCell id="p1_h6" value="&lt;span style='font-size:16px;'&gt;📊&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0369A1;'&gt;BigQuery Feature Store&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1260" y="95" width="180" height="50" as="geometry" />
+          <mxGeometry x="1290" y="95" width="180" height="50" as="geometry" />
         </mxCell>
 
         <!-- Phase 1 Lifelines -->
-        <mxCell id="p1_l1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="160" y="145" as="sourcePoint" /><mxPoint x="160" y="330" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p1_l2" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="370" y="145" as="sourcePoint" /><mxPoint x="370" y="330" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p1_l3" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="600" y="145" as="sourcePoint" /><mxPoint x="600" y="330" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p1_l4" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="840" y="145" as="sourcePoint" /><mxPoint x="840" y="330" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p1_l5" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1090" y="145" as="sourcePoint" /><mxPoint x="1090" y="330" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p1_l6" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1350" y="145" as="sourcePoint" /><mxPoint x="1350" y="330" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_l1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="270" y="145" as="sourcePoint" /><mxPoint x="270" y="330" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_l2" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="470" y="145" as="sourcePoint" /><mxPoint x="470" y="330" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_l3" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="145" as="sourcePoint" /><mxPoint x="690" y="330" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_l4" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="910" y="145" as="sourcePoint" /><mxPoint x="910" y="330" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_l5" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1140" y="145" as="sourcePoint" /><mxPoint x="1140" y="330" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_l6" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1380" y="145" as="sourcePoint" /><mxPoint x="1380" y="330" as="targetPoint" /></mxGeometry></mxCell>
 
         <!-- Phase 1 Arrows & Nodes -->
-        <mxCell id="p1_arr1" value="Analysts upload raw docs (PDFs, PPTs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="160" y="180" as="sourcePoint" /><mxPoint x="370" y="180" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p1_arr2" value="Stream data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="370" y="210" as="sourcePoint" /><mxPoint x="600" y="210" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_arr1" value="Analysts upload raw docs (PDFs, PPTs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="270" y="180" as="sourcePoint" /><mxPoint x="470" y="180" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_arr2" value="Stream data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="470" y="210" as="sourcePoint" /><mxPoint x="690" y="210" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="p1_vpc_enf" value="&lt;span style='font-size:14px;'&gt;🛢️&lt;/span&gt; &lt;b style='font-size:10px;color:#15803D;'&gt;VPC-SC Enforcement&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;align=center;" vertex="1" parent="1">
-          <mxGeometry x="535" y="230" width="130" height="30" as="geometry" />
+          <mxGeometry x="625" y="230" width="130" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="p1_arr3" value="Scheduler trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="840" y="250" as="sourcePoint" /><mxPoint x="1090" y="250" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p1_arr4" value="Executes logic&lt;br&gt;(Clean, Normalize, Aggregate, Encode)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1090" y="280" as="sourcePoint" /><mxPoint x="1350" y="280" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p1_arr5" value="Stores model-ready features" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1350" y="310" as="sourcePoint" /><mxPoint x="1710" y="310" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_arr3" value="Scheduler trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="910" y="250" as="sourcePoint" /><mxPoint x="1140" y="250" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_arr4" value="Executes logic&lt;br&gt;(Clean, Normalize, Aggregate, Encode)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1140" y="280" as="sourcePoint" /><mxPoint x="1380" y="280" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p1_arr5" value="Stores model-ready features" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1380" y="310" as="sourcePoint" /><mxPoint x="1710" y="310" as="targetPoint" /></mxGeometry></mxCell>
 
         <!-- Phase 1 Far Right -->
         <mxCell id="p1_iam" value="&lt;b style='font-size:10px;color:#9A3412;'&gt;IAM Integration &amp;amp; Data Masking&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#F97316;align=center;shadow=1;" vertex="1" parent="1">
@@ -1181,51 +1181,51 @@ export function getExactMacroSequenceDiagramReferenceXml(): string {
         <!-- 3. Swimlane 2: PHASE 2 -->
         <!-- ========================================== -->
         <mxCell id="p2_lane" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="75" y="340" width="1830" height="250" as="geometry" />
+          <mxGeometry x="185" y="340" width="1720" height="250" as="geometry" />
         </mxCell>
-        <mxCell id="p2_tab" value="&lt;b style='font-size:9px;color:#0F172A;'&gt;PHASE 2:&lt;br&gt;MLOps LIFECYCLE:&lt;br&gt;MODEL TRAINING,&lt;br&gt;EVALUATION,&lt;br&gt;APPROVAL,&lt;br&gt;DEPLOYMENT &amp;amp;&lt;br&gt;MONITORING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="15" y="340" width="55" height="250" as="geometry" />
+        <mxCell id="p2_tab" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;PHASE 2:&lt;br&gt;MLOps LIFECYCLE:&lt;br&gt;MODEL TRAINING,&lt;br&gt;EVALUATION, APPROVAL,&lt;br&gt;DEPLOYMENT &amp;amp; MONITORING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="15" y="340" width="160" height="250" as="geometry" />
         </mxCell>
 
         <!-- Phase 2 Headers -->
         <mxCell id="p2_h1" value="&lt;span style='font-size:14px;'&gt;👤&lt;/span&gt; &lt;b style='font-size:11px;color:#0F172A;'&gt;ML Engineer&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
-          <mxGeometry x="100" y="355" width="120" height="45" as="geometry" />
+          <mxGeometry x="210" y="355" width="120" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p2_h2" value="&lt;span style='font-size:14px;'&gt;🎈&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;Airflow Scheduler&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="300" y="355" width="140" height="45" as="geometry" />
+          <mxGeometry x="400" y="355" width="140" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p2_h3" value="&lt;span style='font-size:14px;'&gt;🧠&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;Model Training (Vertex AI)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="520" y="355" width="160" height="45" as="geometry" />
+          <mxGeometry x="610" y="355" width="160" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p2_h4" value="&lt;span style='font-size:14px;'&gt;📦&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;Model Registry&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="760" y="355" width="160" height="45" as="geometry" />
+          <mxGeometry x="830" y="355" width="160" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p2_h5" value="&lt;span style='font-size:14px;'&gt;⚖️&lt;/span&gt; &lt;b style='font-size:10px;color:#9A3412;'&gt;Governance Board&lt;br&gt;(Human-in-the-Loop)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#F97316;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="355" width="180" height="45" as="geometry" />
+          <mxGeometry x="1050" y="355" width="180" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p2_h6" value="&lt;span style='font-size:14px;'&gt;☸️&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;GKE Inference Endpoint&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1260" y="355" width="180" height="45" as="geometry" />
+          <mxGeometry x="1290" y="355" width="180" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p2_h7" value="&lt;span style='font-size:14px;'&gt;📈&lt;/span&gt; &lt;b style='font-size:11px;color:#15803D;'&gt;Monitoring&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;align=center;" vertex="1" parent="1">
           <mxGeometry x="1510" y="355" width="160" height="45" as="geometry" />
         </mxCell>
 
         <!-- Phase 2 Lifelines -->
-        <mxCell id="p2_l1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="160" y="400" as="sourcePoint" /><mxPoint x="160" y="590" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_l2" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="370" y="400" as="sourcePoint" /><mxPoint x="370" y="590" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_l3" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="600" y="400" as="sourcePoint" /><mxPoint x="600" y="590" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_l4" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="840" y="400" as="sourcePoint" /><mxPoint x="840" y="590" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_l5" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1090" y="400" as="sourcePoint" /><mxPoint x="1090" y="590" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_l6" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1350" y="400" as="sourcePoint" /><mxPoint x="1350" y="590" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_l1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="270" y="400" as="sourcePoint" /><mxPoint x="270" y="590" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_l2" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="470" y="400" as="sourcePoint" /><mxPoint x="470" y="590" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_l3" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="400" as="sourcePoint" /><mxPoint x="690" y="590" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_l4" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="910" y="400" as="sourcePoint" /><mxPoint x="910" y="590" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_l5" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1140" y="400" as="sourcePoint" /><mxPoint x="1140" y="590" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_l6" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1380" y="400" as="sourcePoint" /><mxPoint x="1380" y="590" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="p2_l7" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1590" y="400" as="sourcePoint" /><mxPoint x="1590" y="590" as="targetPoint" /></mxGeometry></mxCell>
 
         <!-- Phase 2 Arrows -->
-        <mxCell id="p2_arr1" value="Initiates training" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="160" y="420" as="sourcePoint" /><mxPoint x="370" y="420" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_arr2" value="Pulls features from BigQuery" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="370" y="450" as="sourcePoint" /><mxPoint x="600" y="450" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_arr3" value="Executes training, generates Metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="600" y="480" as="sourcePoint" /><mxPoint x="840" y="480" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_arr4" value="(Status: 'EVALUATED')&lt;br&gt;Provides Human-in-the-Loop Approval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="840" y="515" as="sourcePoint" /><mxPoint x="1090" y="515" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_arr5" value="Deployment Pipeline pulls model&lt;br&gt;(Status: 'APPROVED')" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1090" y="550" as="sourcePoint" /><mxPoint x="1350" y="550" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p2_arr6" value="Logs inference and drift" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1350" y="575" as="sourcePoint" /><mxPoint x="1590" y="575" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_arr1" value="Initiates training" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="270" y="420" as="sourcePoint" /><mxPoint x="470" y="420" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_arr2" value="Pulls features from BigQuery" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="470" y="450" as="sourcePoint" /><mxPoint x="690" y="450" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_arr3" value="Executes training, generates Metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="480" as="sourcePoint" /><mxPoint x="910" y="480" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_arr4" value="(Status: 'EVALUATED')&lt;br&gt;Provides Human-in-the-Loop Approval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="910" y="515" as="sourcePoint" /><mxPoint x="1140" y="515" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_arr5" value="Deployment Pipeline pulls model&lt;br&gt;(Status: 'APPROVED')" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1140" y="550" as="sourcePoint" /><mxPoint x="1380" y="550" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p2_arr6" value="Logs inference and drift" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1380" y="575" as="sourcePoint" /><mxPoint x="1590" y="575" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="p2_arr7" value="Pushes logs to" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1590" y="575" as="sourcePoint" /><mxPoint x="1750" y="575" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="p2_inf_log" value="&lt;span style='font-size:16px;'&gt;🛢️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;color:#15803D;'&gt;ML Inference Log&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;align=center;" vertex="1" parent="1">
           <mxGeometry x="1755" y="555" width="130" height="40" as="geometry" />
@@ -1235,72 +1235,72 @@ export function getExactMacroSequenceDiagramReferenceXml(): string {
         <!-- 4. Swimlane 3: PHASE 3 -->
         <!-- ========================================== -->
         <mxCell id="p3_lane" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="75" y="600" width="1830" height="320" as="geometry" />
+          <mxGeometry x="185" y="600" width="1720" height="320" as="geometry" />
         </mxCell>
-        <mxCell id="p3_tab" value="&lt;b style='font-size:9px;color:#0F172A;'&gt;PHASE 3:&lt;br&gt;GENAI / AGENTIC&lt;br&gt;BAG ORCHESTRATION&lt;br&gt;&amp;amp; ANALYTICS&lt;br&gt;TOOLING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="15" y="600" width="55" height="320" as="geometry" />
+        <mxCell id="p3_tab" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;PHASE 3:&lt;br&gt;GENAI / AGENTIC&lt;br&gt;RAG ORCHESTRATION &amp;amp;&lt;br&gt;ANALYTICS TOOLING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="15" y="600" width="160" height="320" as="geometry" />
         </mxCell>
 
         <!-- Phase 3 Headers -->
         <mxCell id="p3_h1" value="&lt;span style='font-size:14px;'&gt;👤&lt;/span&gt; &lt;b style='font-size:10px;color:#0F172A;'&gt;Oncology Analyst (User)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
-          <mxGeometry x="100" y="615" width="120" height="45" as="geometry" />
+          <mxGeometry x="210" y="615" width="120" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p3_h2" value="&lt;span style='font-size:14px;'&gt;🖥️&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;User Interface&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="300" y="615" width="140" height="45" as="geometry" />
+          <mxGeometry x="400" y="615" width="140" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p3_h3" value="&lt;span style='font-size:14px;'&gt;⚙️&lt;/span&gt; &lt;b style='font-size:10px;color:#0369A1;'&gt;Agent Orchestrator (Vertex AI)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="520" y="615" width="160" height="45" as="geometry" />
+          <mxGeometry x="610" y="615" width="160" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p3_mem_h" value="&lt;span style='font-size:14px;'&gt;📁&lt;/span&gt; &lt;b style='font-size:9px;color:#0F172A;'&gt;Conversation Memory&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
-          <mxGeometry x="700" y="620" width="120" height="35" as="geometry" />
+          <mxGeometry x="800" y="620" width="120" height="35" as="geometry" />
         </mxCell>
         <mxCell id="p3_h5" value="&lt;span style='font-size:14px;'&gt;🧠&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;Gemini LLM (Reasoner)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="615" width="180" height="45" as="geometry" />
+          <mxGeometry x="1050" y="615" width="180" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p3_h6" value="&lt;span style='font-size:14px;'&gt;🔍&lt;/span&gt; &lt;b style='font-size:10px;color:#0369A1;'&gt;RAG Tool (Vertex AI Search &amp;amp; Conversation)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1260" y="615" width="180" height="45" as="geometry" />
+          <mxGeometry x="1290" y="615" width="180" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p3_h7" value="&lt;span style='font-size:14px;'&gt;📊&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;BigQuery (Analytics)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
           <mxGeometry x="1510" y="615" width="160" height="45" as="geometry" />
         </mxCell>
 
         <!-- Phase 3 Lifelines -->
-        <mxCell id="p3_l1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="160" y="660" as="sourcePoint" /><mxPoint x="160" y="920" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_l2" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="370" y="660" as="sourcePoint" /><mxPoint x="370" y="920" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_l3" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="600" y="660" as="sourcePoint" /><mxPoint x="600" y="920" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_lmem" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="760" y="655" as="sourcePoint" /><mxPoint x="760" y="920" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_l5" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1090" y="660" as="sourcePoint" /><mxPoint x="1090" y="920" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_l6" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1350" y="660" as="sourcePoint" /><mxPoint x="1350" y="920" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_l1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="270" y="660" as="sourcePoint" /><mxPoint x="270" y="920" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_l2" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="470" y="660" as="sourcePoint" /><mxPoint x="470" y="920" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_l3" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="660" as="sourcePoint" /><mxPoint x="690" y="920" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_lmem" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="860" y="655" as="sourcePoint" /><mxPoint x="860" y="920" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_l5" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1140" y="660" as="sourcePoint" /><mxPoint x="1140" y="920" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_l6" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1380" y="660" as="sourcePoint" /><mxPoint x="1380" y="920" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="p3_l7" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#64748B;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1590" y="660" as="sourcePoint" /><mxPoint x="1590" y="920" as="targetPoint" /></mxGeometry></mxCell>
 
         <!-- Phase 3 Arrows & Action Box -->
-        <mxCell id="p3_arr1" value="Enters multi-silo prompt in UI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="160" y="670" as="sourcePoint" /><mxPoint x="370" y="670" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_arr2" value="Sends prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="370" y="700" as="sourcePoint" /><mxPoint x="600" y="700" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_self" value="Checks Persona and Memory" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="600" y="715" as="sourcePoint" /><mxPoint x="600" y="735" as="targetPoint" /><Array as="points"><mxPoint x="650" y="715" /><mxPoint x="650" y="735" /></Array></mxGeometry></mxCell>
+        <mxCell id="p3_arr1" value="Enters multi-silo prompt in UI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="270" y="670" as="sourcePoint" /><mxPoint x="470" y="670" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_arr2" value="Sends prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="470" y="700" as="sourcePoint" /><mxPoint x="690" y="700" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_self" value="Checks Persona and Memory" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="715" as="sourcePoint" /><mxPoint x="690" y="735" as="targetPoint" /><Array as="points"><mxPoint x="740" y="715" /><mxPoint x="740" y="735" /></Array></mxGeometry></mxCell>
         <mxCell id="p3_iam" value="&lt;b style='font-size:10px;color:#9A3412;'&gt;IAM Integration &amp;amp; Data Masking&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#F97316;align=center;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="460" y="750" width="170" height="35" as="geometry" />
+          <mxGeometry x="550" y="750" width="170" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="p3_iam_arr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#F97316;curved=1;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="545" y="750" as="sourcePoint" /><mxPoint x="625" y="725" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_arr3" value="Sends prompt to Gemini LLM (LLm)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="600" y="740" as="sourcePoint" /><mxPoint x="1090" y="740" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_iam_arr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#F97316;curved=1;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="635" y="750" as="sourcePoint" /><mxPoint x="715" y="725" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_arr3" value="Sends prompt to Gemini LLM (LLm)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="740" as="sourcePoint" /><mxPoint x="1140" y="740" as="targetPoint" /></mxGeometry></mxCell>
 
         <!-- Gemini ReAct Box -->
         <mxCell id="p3_react" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Gemi Reasoner executes ReAct Loop&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#334155;'&gt;Thought: Need multi-silo context Sothesit&lt;br&gt;Action: Call RAG Tool (Vertex AI Search &amp;amp; Conversation)- Synthesis&lt;br&gt;Action: Call BigQuery Analytics, execute SQL&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;align=left;padding=6;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="910" y="755" width="360" height="75" as="geometry" />
+          <mxGeometry x="960" y="755" width="360" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="p3_arr4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1270" y="780" as="sourcePoint" /><mxPoint x="1350" y="780" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_arr4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1320" y="780" as="sourcePoint" /><mxPoint x="1380" y="780" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="p3_rag_txt" value="&lt;b style='font-size:9px;color:#0F172A;'&gt;RAG Tool searches secured GCS Data Corpus, returns context chunks, logs context in Context Corpus&lt;/b&gt;" style="text;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1220" y="795" width="220" height="35" as="geometry" />
+          <mxGeometry x="1250" y="795" width="220" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="p3_arr5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1270" y="810" as="sourcePoint" /><mxPoint x="1590" y="810" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_arr5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1320" y="810" as="sourcePoint" /><mxPoint x="1590" y="810" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="p3_bq_txt" value="&lt;b style='font-size:9px;color:#0F172A;'&gt;BigQuery fetches data, returns results Logs query in Business Analytics tool&lt;/b&gt;" style="text;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
           <mxGeometry x="1480" y="820" width="220" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="p3_arr6" value="Agent executes Thought: Need sales data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1090" y="845" as="sourcePoint" /><mxPoint x="600" y="845" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_arr7" value="Agent executes Thought: Snythesize report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1090" y="870" as="sourcePoint" /><mxPoint x="600" y="870" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_arr8" value="Pushes final report to interface" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="600" y="895" as="sourcePoint" /><mxPoint x="370" y="895" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="p3_arr9" value="Updates Conversation Memory, logs interaction" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="600" y="905" as="sourcePoint" /><mxPoint x="760" y="905" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_arr6" value="Agent executes Thought: Need sales data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1140" y="845" as="sourcePoint" /><mxPoint x="690" y="845" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_arr7" value="Agent executes Thought: Snythesize report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1140" y="870" as="sourcePoint" /><mxPoint x="690" y="870" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_arr8" value="Pushes final report to interface" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="895" as="sourcePoint" /><mxPoint x="470" y="895" as="targetPoint" /></mxGeometry></mxCell>
+        <mxCell id="p3_arr9" value="Updates Conversation Memory, logs interaction" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="905" as="sourcePoint" /><mxPoint x="860" y="905" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="p3_conv_log" value="&lt;span style='font-size:16px;'&gt;📄&lt;/span&gt; &lt;b style='font-size:10px;color:#0F172A;'&gt;Conversation Log&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
-          <mxGeometry x="700" y="880" width="120" height="35" as="geometry" />
+          <mxGeometry x="800" y="880" width="120" height="35" as="geometry" />
         </mxCell>
         <mxCell id="p3_vpc" value="&lt;b style='font-size:10px;color:#9A3412;'&gt;VPC Service Controls Enforcement&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#F97316;align=center;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1730" y="770" width="160" height="45" as="geometry" />
@@ -1310,10 +1310,10 @@ export function getExactMacroSequenceDiagramReferenceXml(): string {
         <!-- 5. Swimlane 4: PHASE 4 -->
         <!-- ========================================== -->
         <mxCell id="p4_lane" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="75" y="930" width="1830" height="250" as="geometry" />
+          <mxGeometry x="185" y="930" width="1720" height="250" as="geometry" />
         </mxCell>
-        <mxCell id="p4_tab" value="&lt;b style='font-size:9px;color:#0F172A;'&gt;PHASE 4:&lt;br&gt;PROTOTYPE&lt;br&gt;DELIVERY &amp;amp;&lt;br&gt;LOGGING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="15" y="930" width="55" height="250" as="geometry" />
+        <mxCell id="p4_tab" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;PHASE 4:&lt;br&gt;PROTOTYPE&lt;br&gt;DELIVERY &amp;amp;&lt;br&gt;LOGGING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="15" y="930" width="160" height="250" as="geometry" />
         </mxCell>
 
         <!-- Phase 4 Headers -->
