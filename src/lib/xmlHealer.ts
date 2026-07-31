@@ -244,7 +244,7 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
   return {
     isValid: true,
     isHealed,
-    xml: finalXml,
+    xml: finalXml.replace(/^<\?xml[^>]*\?>\s*/i, '').replace(/&(?!amp;|lt;|gt;|quot;|apos;|#[0-9]+;|#x[0-9a-fA-F]+;)/g, '&amp;').trim(),
     healingLog
   };
 }
