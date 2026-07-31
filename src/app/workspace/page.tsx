@@ -2922,8 +2922,35 @@ function WorkspaceContent() {
         });
       setChatMessages(messages);
     } else {
-      setPendingArchType(newArchId);
-      setIsArchConsentModalOpen(true);
+      // Instant Seamless Switch: Load reference backbone instantly without blocking modal friction!
+      setSelectedArchType(newArchId);
+      if (activeDiagram?.id) {
+        fetch(`/api/diagrams/${activeDiagram.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ architecture_type: newArchId }),
+        }).catch(console.error);
+      }
+      const refXml = getDefaultXmlForArchitecture(newArchId);
+      const tempVersion: DiagramVersion = {
+        id: `temp_ref_${newArchId}_${Date.now()}`,
+        diagram_id: activeDiagram?.id || 'temp',
+        version_number: 1,
+        xml_content: refXml,
+        comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name}`,
+        created_by: 'System',
+        created_at: new Date().toISOString(),
+        architecture_type: newArchId
+      };
+      setActiveVersion(tempVersion);
+      setPreviewVersion(null);
+      setChatMessages([{
+        id: `msg_ref_switch_${Date.now()}`,
+        sender: 'ai',
+        text: `Loaded master reference architecture backbone for "${getArchitectureTypeById(newArchId)?.name}". Click "✨ Generate AI Flavor" to customize for your prompt!`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        versionNumber: 1
+      }]);
     }
   };
 
@@ -3242,10 +3269,17 @@ function WorkspaceContent() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             )}
-            <div className="flex items-center gap-2.5 shrink-0">
-              <h2 className="font-bold text-sm md:text-base text-white whitespace-nowrap truncate max-w-[130px] md:max-w-[170px]" title={activeDiagram ? activeDiagram.name : ''}>
-                {activeDiagram ? activeDiagram.name : 'Select or Create a Diagram'}
+            {/* Breadcrumb Navigation Path */}
+            <div className="flex items-center gap-1.5 shrink-0 text-xs">
+              <Link href="/dashboard" className="text-slate-400 hover:text-teal-300 font-bold transition-colors flex items-center gap-1">
+                <LayoutGrid className="w-3.5 h-3.5 text-teal-400" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Link>
+              <span className="text-slate-600 font-bold">/</span>
+              <h2 className="font-bold text-xs md:text-sm text-slate-100 whitespace-nowrap truncate max-w-[110px] md:max-w-[150px]" title={activeDiagram ? activeDiagram.name : ''}>
+                {activeDiagram ? activeDiagram.name : 'Workspace'}
               </h2>
+            </div>
               {activeDiagram && (
                 <>
                   {/* 1. Unified Architecture Category Dropdown */}
@@ -3366,7 +3400,6 @@ function WorkspaceContent() {
                 </>
               )}
             </div>
-          </div>
 
           {isAnyAIBusy && (
             <div className="hidden lg:flex items-center gap-2 px-3.5 py-1 bg-amber-500/15 border border-amber-500/30 rounded-full text-amber-300 text-xs font-semibold animate-pulse">
