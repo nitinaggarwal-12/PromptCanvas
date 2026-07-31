@@ -14,8 +14,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   let xml = xmlInput || '';
 
   // 1. Recover full multi-node architecture if XML is truncated or missing mxCell nodes
-  if (!xml || xml.length < 300 || xml.includes('value="Cloud Architecture"') || !xml.includes('<mxCell') || xml.includes('aws_vpc_secret_network') || xml.includes('cicd-pipeline-architecture')) {
-    xml = getTechnicalArchitectureXml(archType || 'tech_cicd_pipeline');
+  if (!xml || xml.length < 300 || xml.includes('value="Cloud Architecture"') || !xml.includes('<mxCell') || xml.includes('aws_vpc_secret_network') || xml.includes('cicd-pipeline-architecture') || xml.includes('id="ingress"') || xml.includes('Access tokens verification')) {
+    xml = getTechnicalArchitectureXml(archType === 'conceptual_diagram' ? 'conceptual_diagram' : (archType || 'tech_rag_gcp'));
   }
 
   // 2. VISUAL & GEOMETRY AST HEALING (Zero Line-to-Text Collisions):

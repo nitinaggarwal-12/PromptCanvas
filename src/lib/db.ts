@@ -7,6 +7,7 @@ import { join, dirname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { mkdirSync } from 'fs';
 import { Pool } from 'pg';
+import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 
 // Define TypeScript interfaces for our models
 export interface User {
@@ -2070,33 +2071,7 @@ const CICD_PIPELINE_XML = `
 </mxfile>
 `.trim();
 
-const AI_RAG_XML = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="ai_rag" name="AI RAG Core Pipeline">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="ingress" value="&lt;b&gt;[1] API Gateway&lt;/b&gt;&lt;br&gt;&lt;i&gt;Access tokens verification&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="300" width="180" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="embed" value="&lt;b&gt;[2] Cloud Run Embeddings&lt;/b&gt;&lt;br&gt;&lt;i&gt;Vector encoding engine&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="340" y="300" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="pgvector" value="&lt;b&gt;[3] Cloud SQL (pgvector)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Vector database storage&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="640" y="290" width="180" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="gemini" value="&lt;b&gt;[4] Vertex AI Gemini LLM&lt;/b&gt;&lt;br&gt;&lt;i&gt;Augmented inference engine&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="900" y="300" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="e1" value="POST Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="ingress" target="embed"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" value="Cosine Similarity" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="embed" target="pgvector"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" value="Prompt Context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="pgvector" target="gemini"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-`.trim();
+const AI_RAG_XML = getTechnicalArchitectureXml('tech_rag_gcp');
 
 async function seedDiagram(name: string, xml: string, comment: string, prompt: string) {
   const diagramId = uuidv4();
