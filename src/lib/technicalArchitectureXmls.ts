@@ -647,8 +647,10 @@ const TECH_XML_CICD_PIPELINE = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
+import { getExactItacsReferenceXml } from './diagramCompiler';
+
 export function getTechnicalArchitectureXml(archId: string): string {
-  if (archId === 'conceptual_diagram' || archId === 'conceptual') return TECH_XML_SERVERLESS_GCP;
+  if (archId === 'conceptual_diagram' || archId === 'conceptual' || archId === '1. Conceptual Diagram') return getExactItacsReferenceXml();
   if (archId === 'tech_serverless_gcp' || archId === 'serverless_gcp') return TECH_XML_SERVERLESS_GCP;
   if (archId === 'tech_streaming_analytics' || archId === 'streaming_pipeline') return TECH_XML_STREAMING_ANALYTICS;
   if (archId === 'tech_microservices_aws' || archId === 'k8s_mesh') return TECH_XML_MICROSERVICES_AWS;
@@ -660,5 +662,5 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (archId === 'tech_iot_telemetry' || archId === 'hybrid_interconnect') return TECH_XML_IOT_TELEMETRY;
   if (archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') return TECH_XML_CICD_PIPELINE;
   
-  return TECH_XML_SERVERLESS_GCP;
+  return getExactItacsReferenceXml();
 }
