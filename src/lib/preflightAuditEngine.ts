@@ -76,9 +76,6 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     return `${p1}${s}${p3}`;
   });
 
-  // Auto-heal narrow vertical tab pill widths (<140px width for Phase/Swimlane tabs)
-  xml = xml.replace(/(<mxCell\s+id="[^"]*_tab"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")55(")/gi, '$1160"');
-
   // Fix dark text on dark glass fill contrast
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
 
