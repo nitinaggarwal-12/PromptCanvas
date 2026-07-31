@@ -115,18 +115,13 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Fix dark text on dark glass fill contrast
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
 
-  // 9. AUTOMATED 2D BOUNDING BOX LINE COLLISION HEALING:
+  // 9. AUTOMATED 2D BOUNDING BOX LINE & EDGE LABEL OVERLAP HEALING:
   xml = heal2DBoundingBoxLineCollisions(xml);
 
-  // 10. TEMPLATE TYPE EMBEDDED HEADER BANNER HEALER:
-  // Ensure a prominent dark-glass banner pill is embedded at (x: 40, y: 20) on top of the XML canvas
-  if (!xml.includes('id="template_type_hdr"')) {
-    const tTitle = getTemplateTitle(archType);
-    const hdrNode = `<mxCell id="template_type_hdr" value="&lt;b style='font-size:12px;color:#38BDF8;'&gt;⚡ ARCHITECTURE TEMPLATE:&lt;/b&gt; &lt;span style='font-size:13px;color:#FFFFFF;font-weight:bold;'&gt;${tTitle}&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#0F172A;strokeColor=#0284C7;strokeWidth=2;fontColor=#FFFFFF;padding=8;spacingLeft=12;" vertex="1" parent="1"><mxGeometry x="40" y="20" width="720" height="45" as="geometry" /></mxCell>`;
-    xml = xml.replace('<root>', `<root>${hdrNode}`);
-  }
+  // Remove any legacy template_type_hdr nodes
+  xml = xml.replace(/<mxCell\s+id="template_type_hdr"[\s\S]*?<\/mxCell>/gi, '');
 
-  // 11. Validate & Auto-Heal XML via Schema Healer
+  // 10. Validate & Auto-Heal XML via Schema Healer
   const healResult = validateAndHealDrawioXml(xml);
   return healResult.xml;
 }
@@ -157,40 +152,83 @@ export function heal2DBoundingBoxLineCollisions(xml: string): string {
 
   if (boxes.length === 0) return xml;
 
+  const pairCounts = new Map<string, number>();
+
   return xml.replace(
-    /(<mxCell\s+id="([^"]+)"[^>]*\bedge="1"[^>]*source="([^"]+)"\s+target="([^"]+)"[^>]*>)([\s\S]*?)(<\/mxCell>)/gi,
-    (match, openTag, edgeId, sourceId, targetId, innerBody, closeTag) => {
+    /(<mxCell\s+id="([^"]+)"[^>]*\bedge="1"[^>]*style="([^"]*)"[^>]*source="([^"]+)"\s+target="([^"]+)"[^>]*>)([\s\S]*?)(<\/mxCell>)/gi,
+    (match, openTag, edgeId, styleStr, sourceId, targetId, innerBody, closeTag) => {
       const srcBox = boxes.find(b => b.id === sourceId);
       const tgtBox = boxes.find(b => b.id === targetId);
 
       if (!srcBox || !tgtBox) return match;
-      if (innerBody.includes('<Array as="points">')) return match;
+
+      // Track parallel edges between same pair of nodes
+      const pairKey = [sourceId, targetId].sort().join('---');
+      const count = (pairCounts.get(pairKey) || 0) + 1;
+      pairCounts.set(pairKey, count);
+
+      let updatedStyle = styleStr;
+      let updatedInner = innerBody;
+
+      // Parallel edge disambiguation: alternate top vs bottom label placement
+      if (count > 1) {
+        if (!updatedStyle.includes('verticalLabelPosition=bottom')) {
+          updatedStyle = updatedStyle
+            .replace(/verticalLabelPosition=[^;]+/g, 'verticalLabelPosition=bottom')
+            .replace(/verticalAlign=[^;]+/g, 'verticalAlign=top')
+            .replace(/spacingBottom=[^;]+/g, 'spacingTop=14');
+        }
+      }
 
       const srcCX = srcBox.x + srcBox.w / 2;
       const srcCY = srcBox.y + srcBox.h / 2;
       const tgtCX = tgtBox.x + tgtBox.w / 2;
       const tgtCY = tgtBox.y + tgtBox.h / 2;
 
-      const minY = Math.min(srcCY, tgtCY);
-      const maxY = Math.max(srcCY, tgtCY);
+      const labelMidX = (srcCX + tgtCX) / 2;
+      const labelMidY = (srcCY + tgtCY) / 2;
 
-      // Detect vertical line collision through intermediate box
-      const blockingBox = boxes.find(b => {
-        if (b.id === sourceId || b.id === targetId) return false;
-        const xOverlap = (srcCX >= b.x - 15 && srcCX <= b.x + b.w + 15);
-        const yOverlap = (b.y > minY + 20) && (b.y + b.h < maxY - 20);
-        return xOverlap && yOverlap;
+      // Check if label midpoint overlaps targetBox or any node box
+      const overlapsNodeBox = boxes.find(b => {
+        return (labelMidX >= b.x - 10 && labelMidX <= b.x + b.w + 10) &&
+               (labelMidY >= b.y - 10 && labelMidY <= b.y + b.h + 10);
       });
 
-      if (blockingBox) {
-        const channelX = (srcCX < blockingBox.x + blockingBox.w / 2)
-          ? Math.max(40, blockingBox.x - 40)
-          : (blockingBox.x + blockingBox.w + 40);
-        const waypoints = `<mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${channelX}" y="${srcCY}"/><mxPoint x="${channelX}" y="${tgtCY}"/></Array></mxGeometry>`;
-        return `${openTag}${waypoints}${closeTag}`;
+      // Shift label offset Y away from shape box
+      if (overlapsNodeBox && !updatedInner.includes('as="offset"')) {
+        const offsetY = count > 1 ? "24" : "-32";
+        if (updatedInner.includes('<mxGeometry')) {
+          updatedInner = updatedInner.replace(/<mxGeometry([^>]*)>/gi, `<mxGeometry$1><mxPoint x="0" y="${offsetY}" as="offset"/></mxGeometry>`);
+        } else {
+          updatedInner = `<mxGeometry relative="1" as="geometry"><mxPoint x="0" y="${offsetY}" as="offset"/></mxGeometry>${updatedInner}`;
+        }
       }
 
-      return match;
+      // Reconstruct tag with updatedStyle if changed
+      const reconstructedTag = openTag.replace(/style="[^"]*"/, `style="${updatedStyle}"`);
+
+      // Detect vertical line collision through intermediate box
+      if (!updatedInner.includes('<Array as="points">')) {
+        const minY = Math.min(srcCY, tgtCY);
+        const maxY = Math.max(srcCY, tgtCY);
+
+        const blockingBox = boxes.find(b => {
+          if (b.id === sourceId || b.id === targetId) return false;
+          const xOverlap = (srcCX >= b.x - 15 && srcCX <= b.x + b.w + 15);
+          const yOverlap = (b.y > minY + 20) && (b.y + b.h < maxY - 20);
+          return xOverlap && yOverlap;
+        });
+
+        if (blockingBox) {
+          const channelX = (srcCX < blockingBox.x + blockingBox.w / 2)
+            ? Math.max(40, blockingBox.x - 40)
+            : (blockingBox.x + blockingBox.w + 40);
+          const waypoints = `<mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${channelX}" y="${srcCY}"/><mxPoint x="${channelX}" y="${tgtCY}"/></Array></mxGeometry>`;
+          return `${reconstructedTag}${waypoints}${closeTag}`;
+        }
+      }
+
+      return `${reconstructedTag}${updatedInner}${closeTag}`;
     }
   );
 }
