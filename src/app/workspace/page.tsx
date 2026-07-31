@@ -48,6 +48,7 @@ import {
   Globe
 } from 'lucide-react';
 import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant } from '@/lib/diagramCleaner';
+import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import DiagramViewer from '@/components/DiagramViewer';
 import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
@@ -2753,9 +2754,9 @@ function WorkspaceContent() {
     }
     if (!baseXml || baseXml === '[object Object]') return '';
 
-    if (displayedVersion?.architecture_type || baseXml.includes('<mxfile') || baseXml.includes('<mxGraphModel') || baseXml.includes('ONCOLOGY DATA PORTAL') || baseXml.includes('itacs_conceptual') || baseXml.includes('INTEGRATED INSIGHTS HUB') || baseXml.includes('Dim_Patient') || baseXml.includes('Sub-Schema') || baseXml.includes('ETL_System_Data_Sources') || baseXml.includes('sequence_diagram') || baseXml.includes('macro_sequence_diagram') || baseXml.includes('COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM') || baseXml.includes('TOTAL UNIFIED SEQUENCE DIAGRAM') || baseXml.includes('Micro Dynamic Sequence') || baseXml.includes('ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM') || baseXml.includes('agentic_rag') || baseXml.includes('data_ai_pipeline') || baseXml.includes('Combining Data Flow (DFD)') || baseXml.includes('secure_deployment_map') || baseXml.includes('Google Cloud Project (ITACS Platform Production)') || baseXml.includes('devops_cicd_pipeline') || baseXml.includes('Diagram: The Operational Flow') || baseXml.includes('governance_state_machine') || baseXml.includes('UNIFIED GOVERNANCE') || baseXml.includes('unified_system_view') || baseXml.includes('TOTAL UNIFIED SYSTEM VIEW') || baseXml.includes('dark_mode_unified_system_view')) {
-      return baseXml;
-    }
+    // Auto-heal baseXml on-the-fly across all 6 preflight audits (fixes old saved DB versions!)
+    const archType = displayedVersion?.architecture_type || activeDiagram?.architecture_type || 'tech_cicd_pipeline';
+    baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);
 
     let formattedXml = baseXml;
     const hasAspectRatio = Boolean(selectedAspectRatio);
@@ -2780,7 +2781,7 @@ function WorkspaceContent() {
     }
 
     return formattedXml;
-  }, [displayedVersion, layoutPreset, selectedAspectRatio, customRatioW, customRatioH]);
+  }, [displayedVersion, activeDiagram, layoutPreset, selectedAspectRatio, customRatioW, customRatioH]);
 
   // Sync active version XML to ref (respecting active view layout: Detailed View vs Clean View)
   useEffect(() => {
