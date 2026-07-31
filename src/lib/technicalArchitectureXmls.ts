@@ -425,12 +425,12 @@ const TECH_XML_VPC_INFRA = `<mxfile host="embed.diagrams.net">
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_12_13" value="Key Management" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;exitX=0.85;exitY=0.9;entryX=0;entryY=0.5;" edge="1" parent="1" source="rds_aurora" target="kms_encryption">
+        <mxCell id="edge_12_13" value="Key Management" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;exitX=0.85;exitY=0.9;entryX=1;entryY=0.5;" edge="1" parent="1" source="rds_aurora" target="kms_encryption">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="574" y="810" />
-              <mxPoint x="1130" y="810" />
-              <mxPoint x="1130" y="357" />
+              <mxPoint x="1300" y="810" />
+              <mxPoint x="1300" y="357" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -443,12 +443,12 @@ const TECH_XML_VPC_INFRA = `<mxfile host="embed.diagrams.net">
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_ec2_vpc_endpoints" value="Private S3/ECR Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="ec2_app_az1" target="vpc_endpoints">
+        <mxCell id="edge_ec2_vpc_endpoints" value="Private S3/ECR Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;entryX=0;entryY=0.5;" edge="1" parent="1" source="ec2_app_az1" target="vpc_endpoints">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="490" y="790" />
-              <mxPoint x="1130" y="790" />
-              <mxPoint x="1130" y="717" />
+              <mxPoint x="970" y="790" />
+              <mxPoint x="970" y="717" />
             </Array>
           </mxGeometry>
         </mxCell>
