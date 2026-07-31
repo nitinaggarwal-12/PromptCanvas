@@ -204,6 +204,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
   2. **Domain Flavoring (`injectUseCaseFlavor`)**: Pass the user's prompt text to `injectUseCaseFlavor(xml, prompt)` to dynamically replace all node titles, lifelines, step arrows, and audit log headers with the user's specific domain entities while preserving pristine 2D spatial coordinates.
   3. **Validation & Healing**: Execute `preflightVerifyAndHealXmlAcrossAll6Audits()` and `validateAndHealDrawioXml()` to ensure 100% XML AST validity and ampersand entity escaping (`&amp;`).
 
+---
+
+# 🛡️ Universal Text Buffer & Zero-Overflow Safety Margin Protocol (Mandatory for ALL Diagrams)
+
+* **Minimum 140px–160px Tab & Container Width**: All Phase tabs, swimlane vertical tab pills, and container title boxes MUST allocate at least `140px–160px` width (or `whiteSpace=wrap;overflow=hidden;`) so multi-word text never overflows past left/right shape borders.
+* **Internal Text Padding**: Every node rectangle, card, tab, or callout shape MUST enforce `whiteSpace=wrap;` and internal padding (`padding=8` or `spacingLeft=8;spacingRight=8;`) to guarantee at least a **20px internal safety margin** inside the shape.
+* **Text-to-Border Safety Clear-Zone**: Floating badges, callouts, and step labels MUST maintain at least a **30px vertical and 50px horizontal safety clear-zone** from outer container borders, swimlane edges, and adjacent shapes.
+* **Line & Arrow Clearance (White Background Pills)**: All edge labels crossing arrow vectors or connecting lines MUST enforce solid white background pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;`) with `spacingTop=4;spacingBottom=4;` so lines never cut through or obscure text.
+* **Mandatory Preflight Healing**: All generated XML MUST pass through `preflightVerifyAndHealXmlAcrossAll6Audits()` to programmatically auto-heal narrow tab widths, enforce `whiteSpace=wrap;`, and inject label background pills prior to rendering.
+
+
 
 
 

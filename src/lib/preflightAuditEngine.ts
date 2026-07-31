@@ -61,11 +61,23 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // 5. ACCESSIBILITY & EDGE LABEL CONTRAST HEALING:
   // Enforce solid high-contrast background pills on all edge connector labels
   xml = xml.replace(/(<mxCell[^>]*\bedge="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
-    if (!p2.includes('labelBackgroundColor')) {
-      return `${p1}${p2};labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;${p3}`;
+    let s = p2;
+    if (!s.includes('labelBackgroundColor')) {
+      s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;spacingTop=4;spacingBottom=4;';
     }
-    return m;
+    return `${p1}${s}${p3}`;
   });
+
+  // Enforce whiteSpace=wrap and overflow=hidden on all vertex cards to prevent text overflow outside shapes
+  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
+    let s = p2;
+    if (!s.includes('whiteSpace=wrap')) s += ';whiteSpace=wrap;';
+    if (!s.includes('overflow=hidden') && !s.includes('swimlane')) s += ';overflow=hidden;';
+    return `${p1}${s}${p3}`;
+  });
+
+  // Auto-heal narrow vertical tab pill widths (<140px width for Phase/Swimlane tabs)
+  xml = xml.replace(/(<mxCell\s+id="[^"]*_tab"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")55(")/gi, '$1160"');
 
   // Fix dark text on dark glass fill contrast
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
