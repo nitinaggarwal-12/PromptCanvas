@@ -89,12 +89,15 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xml = xml.replace(/(&lt;br&gt;\s*|&lt;br\/&gt;\s*)+/gi, '&lt;br&gt;');
   xml = xml.replace(/(Batch Reconciliation\s*)+/gi, 'Batch Reconciliation ');
 
-  // 8. ACCESSIBILITY & PROCESS FLOW EDGE LABEL CONTRAST HEALING:
-  // Enforce solid high-contrast background pills and generous padding on all edge connector labels
+  // 8. ACCESSIBILITY & PROCESS FLOW EDGE LABEL CONTRAST & POSITION HEALING:
+  // Force process flow edge labels to sit ABOVE line vectors and OUTSIDE component shape boxes
   xml = xml.replace(/(<mxCell[^>]*\bedge="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
     let s = p2;
     if (!s.includes('labelBackgroundColor')) {
-      s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=10;spacingTop=4;spacingBottom=4;spacingLeft=6;spacingRight=6;padding=4;';
+      s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;padding=4;';
+    } else {
+      if (!s.includes('verticalLabelPosition')) s += ';verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;';
+      if (!s.includes('labelBorderColor')) s += ';labelBorderColor=#0284C7;';
     }
     return `${p1}${s}${p3}`;
   });
