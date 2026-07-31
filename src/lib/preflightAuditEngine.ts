@@ -73,19 +73,9 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Auto-expand narrow vertex cards (200px to 250px) to 270px width so text titles never clip
   xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr"|rhombus).)*?<mxGeometry\s+(?:[^>]*?\s+)?width=")(?:200|220|240|250)(")/gi, '$1270$2');
 
-  // Auto-expand Column 2 cards (x=400..480) rightwards to x=520 to open a wide 160px channel for edge labels
-  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr"|rhombus).)*?<mxGeometry\s+(?:[^>]*?\s+)?x=")(?:420|440|450|460|480)(")/gi, '$1520$2');
-
   // 6. RHOMBUS SHAPE DIMENSION & TEXT OVERFLOW HEALER (Fixes Rhombus Edge Overflow):
   // Auto-expand all rhombus/diamond shapes to width=280 and height=90 so text never spills over sloped edges
   xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")\d+("\s+height=")\d+(")/gi, '$1280$290"');
-  xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+x=")(\d+)(")/gi, (m, p1, xVal, p3) => {
-    const numX = parseInt(xVal, 10);
-    if (numX >= 400 && numX <= 480) {
-      return `${p1}520${p3}`;
-    }
-    return m;
-  });
 
   // 7. EDGE LABEL MULTI-LINE SPLITTING & TEXT OVERLAP HEALER:
   // Compact multi-word edge labels so they fit perfectly inside 160px corridors without clipping cards
