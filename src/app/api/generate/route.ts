@@ -262,24 +262,15 @@ export async function POST(request: Request) {
                               prompt.includes('ONCOLOGY DATA PORTAL')
     ));
 
-    if (isErdTypeOrPrompt) {
+    const templateXmlBackbone = getDefaultXmlForArchitecture(effectiveArchType, prompt, prompt);
+    if (templateXmlBackbone) {
       activeSystemPrompt += `
 
-### SPECIAL ERD DIAGRAM OVERRIDE (Unified Database Schema):
-CRITICAL: You MUST strictly use this exact, pixel-perfect ERD Unified Database Schema layout XML structure without altering tables, columns, or cardinalities:
+### MASTER REFERENCE TEMPLATE LAYOUT BACKBONE (${effectiveArchType}):
+CRITICAL MANDATE: You MUST strictly preserve this exact, pixel-perfect 2D layout XML backbone structure. Maintain all container frames, coordinates, swimlanes, 3D shapes, badges, and zero-collision arrow line routing. Only customize the text labels, titles, and data entities to fit the user's specific use-case prompt:
 
 \`\`\`xml
-${getDefaultXmlForArchitecture('erd')}
-\`\`\`
-`;
-    } else if (isConceptualTypeOrPrompt) {
-      activeSystemPrompt += `
-
-### SPECIAL CONCEPTUAL DIAGRAM OVERRIDE (ITACS Oncology Platform):
-CRITICAL: DO NOT use Google Cloud icons (<img src="...logos:google-cloud.svg">) anywhere in this diagram! You MUST strictly use this exact, pixel-perfect 3-column layout XML structure without altering shapes, colors, or icons:
-
-\`\`\`xml
-${getDefaultXmlForArchitecture('conceptual_diagram')}
+${templateXmlBackbone}
 \`\`\`
 `;
     }
