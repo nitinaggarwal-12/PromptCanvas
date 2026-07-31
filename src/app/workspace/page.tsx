@@ -2858,6 +2858,22 @@ function WorkspaceContent() {
     );
   }
 
+  const getLatestVersionBadgeForArchType = (archId: string): string => {
+    if (!activeDiagram?.versions || activeDiagram.versions.length === 0) return '';
+    const matchingVersions = activeDiagram.versions.filter(v => {
+      const vArch = (v.architecture_type || 'conceptual_diagram').toLowerCase();
+      const targetArch = archId.toLowerCase();
+      return vArch === targetArch ||
+             (targetArch === 'conceptual_diagram' && (vArch === 'conceptual' || vArch === '1. conceptual diagram')) ||
+             (targetArch === 'tech_rag_gcp' && (vArch === 'rag_gcp' || vArch === 'ai_rag')) ||
+             (targetArch === 'secure_deployment_map' && vArch.includes('secure_deployment')) ||
+             (targetArch === 'governance_state_machine' && vArch.includes('governance'));
+    });
+    if (matchingVersions.length === 0) return '';
+    const maxVer = Math.max(...matchingVersions.map(v => v.version_number));
+    return ` (v${maxVer})`;
+  };
+
   const handleArchitectureSwitch = (newArchId: string) => {
     if (!newArchId || newArchId === selectedArchType || newArchId.startsWith('slot_')) return;
     const existingVersionsForArch = activeDiagram?.versions?.filter(
@@ -3244,11 +3260,14 @@ function WorkspaceContent() {
                       <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                         🏢 Business Architecture ▾
                       </option>
-                      {BUSINESS_ARCHITECTURE_TYPES.map((t) => (
-                        <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
-                          {t.name}
-                        </option>
-                      ))}
+                      {BUSINESS_ARCHITECTURE_TYPES.map((t) => {
+                        const vBadge = getLatestVersionBadgeForArchType(t.id);
+                        return (
+                          <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
+                            {t.name}{vBadge}
+                          </option>
+                        );
+                      })}
                     </select>
                     <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                   </div>
@@ -3266,11 +3285,14 @@ function WorkspaceContent() {
                       <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                         ⚙️ Technical Architecture ▾
                       </option>
-                      {TECHNICAL_ARCHITECTURE_TYPES.map((t) => (
-                        <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
-                          {t.name}
-                        </option>
-                      ))}
+                      {TECHNICAL_ARCHITECTURE_TYPES.map((t) => {
+                        const vBadge = getLatestVersionBadgeForArchType(t.id);
+                        return (
+                          <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
+                            {t.name}{vBadge}
+                          </option>
+                        );
+                      })}
                     </select>
                     <ChevronDown className="w-3.5 h-3.5 text-indigo-400 absolute right-2 pointer-events-none" />
                   </div>
