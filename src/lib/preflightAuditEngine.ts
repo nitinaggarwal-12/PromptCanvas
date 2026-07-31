@@ -71,17 +71,28 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Auto-expand standard 60px high vertex cards to 75px height for text buffer margin
   xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr").)*?<mxGeometry\s+(?:[^>]*?\s+)?height=")60(")/gi, '$175"');
 
-  // 6. TEXT OVERLAP & SUBTITLE DEDUPLICATION HEALER:
+  // 6. RHOMBUS SHAPE DIMENSION & TEXT OVERFLOW HEALER (Fixes Rhombus Edge Overflow):
+  // Auto-expand all rhombus/diamond shapes to width=280 and height=90 so text never spills over sloped edges
+  xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")\d+("\s+height=")\d+(")/gi, '$1280$290"');
+  xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+x=")(\d+)(")/gi, (m, p1, xVal, p3) => {
+    const numX = parseInt(xVal, 10);
+    if (numX >= 400 && numX <= 450) {
+      return `${p1}385${p3}`;
+    }
+    return m;
+  });
+
+  // 7. TEXT OVERLAP & SUBTITLE DEDUPLICATION HEALER:
   // Clean up duplicate overlapping strings inside node values
   xml = xml.replace(/(&lt;br&gt;\s*|&lt;br\/&gt;\s*)+/gi, '&lt;br&gt;');
   xml = xml.replace(/(Batch Reconciliation\s*)+/gi, 'Batch Reconciliation ');
 
-  // 7. ACCESSIBILITY & EDGE LABEL CONTRAST HEALING:
-  // Enforce solid high-contrast background pills on all edge connector labels
+  // 8. ACCESSIBILITY & PROCESS FLOW EDGE LABEL CONTRAST HEALING:
+  // Enforce solid high-contrast background pills and generous padding on all edge connector labels
   xml = xml.replace(/(<mxCell[^>]*\bedge="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
     let s = p2;
     if (!s.includes('labelBackgroundColor')) {
-      s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=10;spacingTop=4;spacingBottom=4;';
+      s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=10;spacingTop=4;spacingBottom=4;spacingLeft=6;spacingRight=6;padding=4;';
     }
     return `${p1}${s}${p3}`;
   });
