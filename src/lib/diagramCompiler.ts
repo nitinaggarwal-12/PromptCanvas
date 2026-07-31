@@ -2727,110 +2727,111 @@ export function getExactGovernanceStateMachineReferenceXml(): string {
         </mxCell>
 
         <!-- 7. Footer Region -->
-        <!-- Legend Box -->
-        <mxCell id="legend_box_statemachine" value="&lt;b style='font-size:14px;color:#202124;'&gt;Legend:&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=8;arcSize=3;" vertex="1" parent="1">
-          <mxGeometry x="20" y="660" width="1810" height="130" as="geometry" />
+        <!-- 7. Footer Region (Side-by-Side Legend & Why It Works Box) -->
+        <!-- Legend Box (Left Half) -->
+        <mxCell id="legend_box_statemachine" value="&lt;b style='font-size:13px;color:#202124;'&gt;Legend:&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=8;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="20" y="660" width="920" height="130" as="geometry" />
         </mxCell>
         <!-- Column 1 -->
         <mxCell id="leg_sm_c1_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Managed Compute&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="100" y="28" width="120" height="20" as="geometry" />
+          <mxGeometry x="70" y="28" width="120" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c1_1_box" value="" style="rounded=0;fillColor=#12385B;strokeColor=#0F172A;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="75" y="29" width="18" height="18" as="geometry" />
+          <mxGeometry x="45" y="29" width="18" height="18" as="geometry" />
         </mxCell>
 
         <mxCell id="leg_sm_c1_2" value="&lt;font style='font-size:11px;color:#202124;'&gt;Storage&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="100" y="58" width="120" height="20" as="geometry" />
+          <mxGeometry x="70" y="58" width="120" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c1_2_box" value="" style="rounded=0;fillColor=#2A7B9B;strokeColor=#1E5A72;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="75" y="59" width="18" height="18" as="geometry" />
+          <mxGeometry x="45" y="59" width="18" height="18" as="geometry" />
         </mxCell>
 
         <mxCell id="leg_sm_c1_3" value="&lt;font style='font-size:11px;color:#202124;'&gt;Secure boundary&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="100" y="88" width="120" height="20" as="geometry" />
+          <mxGeometry x="70" y="88" width="120" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c1_3_box" value="" style="rounded=0;fillColor=#D37324;strokeColor=#9C531A;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="75" y="89" width="18" height="18" as="geometry" />
+          <mxGeometry x="45" y="89" width="18" height="18" as="geometry" />
         </mxCell>
 
         <!-- Column 2 -->
         <mxCell id="leg_sm_c2_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Data Type&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="350" y="28" width="120" height="20" as="geometry" />
+          <mxGeometry x="235" y="28" width="100" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c2_1_box" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="325" y="29" width="18" height="18" as="geometry" />
+          <mxGeometry x="210" y="29" width="18" height="18" as="geometry" />
         </mxCell>
 
         <mxCell id="leg_sm_c2_2" value="&lt;font style='font-size:11px;color:#202124;'&gt;Data Description&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="350" y="58" width="120" height="20" as="geometry" />
+          <mxGeometry x="235" y="58" width="100" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c2_2_box" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="325" y="59" width="18" height="18" as="geometry" />
+          <mxGeometry x="210" y="59" width="18" height="18" as="geometry" />
         </mxCell>
 
         <mxCell id="leg_sm_c2_3" value="&lt;font style='font-size:11px;color:#202124;'&gt;TimeRes&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="350" y="88" width="120" height="20" as="geometry" />
+          <mxGeometry x="235" y="88" width="100" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c2_3_box" value="" style="rounded=0;fillColor=none;strokeColor=#64748B;strokeWidth=1;strokeDashArray=3 3;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="325" y="89" width="18" height="18" as="geometry" />
+          <mxGeometry x="210" y="89" width="18" height="18" as="geometry" />
         </mxCell>
 
-        <!-- Column 3 (Crucial: Replicate exact typos Demmondiate Demendiate Relationsins!) -->
+        <!-- Column 3 -->
         <mxCell id="leg_sm_c3_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Key Definition&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="600" y="28" width="150" height="20" as="geometry" />
+          <mxGeometry x="415" y="28" width="130" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c3_1_icon" value="&lt;span style='font-size:16px;'&gt;🔑&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="575" y="27" width="20" height="20" as="geometry" />
+          <mxGeometry x="390" y="27" width="20" height="20" as="geometry" />
         </mxCell>
 
         <mxCell id="leg_sm_c3_2" value="&lt;font style='font-size:11px;color:#202124;'&gt;Key Definition (FK)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="600" y="58" width="150" height="20" as="geometry" />
+          <mxGeometry x="415" y="58" width="130" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c3_2_icon" value="&lt;span style='font-size:16px;'&gt;🔐&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="575" y="57" width="20" height="20" as="geometry" />
+          <mxGeometry x="390" y="57" width="20" height="20" as="geometry" />
         </mxCell>
 
         <mxCell id="leg_sm_c3_3" value="&lt;font style='font-size:11px;color:#202124;'&gt;Key Demmondiate&lt;br&gt;Demendiate Relationsins&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="600" y="88" width="180" height="28" as="geometry" />
+          <mxGeometry x="415" y="88" width="150" height="28" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c3_3_icon" value="&lt;span style='font-size:16px;'&gt;🗝️&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="575" y="92" width="20" height="20" as="geometry" />
+          <mxGeometry x="390" y="92" width="20" height="20" as="geometry" />
         </mxCell>
 
-        <!-- Column 4 (Crucial: Replicate typo One-to-mankey!) -->
+        <!-- Column 4 -->
         <mxCell id="leg_sm_c4_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;One-to-mankey&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="900" y="28" width="150" height="20" as="geometry" />
+          <mxGeometry x="660" y="28" width="140" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c4_1_arr" value="" style="endArrow=block;endFill=1;strokeColor=#202124;strokeWidth=1.5;html=1;" edge="1" parent="legend_box_statemachine">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="860" y="38" as="sourcePoint" />
-            <mxPoint x="890" y="38" as="targetPoint" />
+            <mxPoint x="620" y="38" as="sourcePoint" />
+            <mxPoint x="650" y="38" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
         <mxCell id="leg_sm_c4_2" value="&lt;font style='font-size:11px;color:#202124;'&gt;One-to-many Relationship&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="900" y="58" width="180" height="20" as="geometry" />
+          <mxGeometry x="660" y="58" width="160" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c4_2_arr" value="" style="endArrow=open;endFill=0;strokeColor=#202124;strokeWidth=1.5;html=1;" edge="1" parent="legend_box_statemachine">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="860" y="68" as="sourcePoint" />
-            <mxPoint x="890" y="68" as="targetPoint" />
+            <mxPoint x="620" y="68" as="sourcePoint" />
+            <mxPoint x="650" y="68" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
         <mxCell id="leg_sm_c4_3" value="&lt;font style='font-size:11px;color:#202124;'&gt;Line Type: Relationship&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
-          <mxGeometry x="900" y="88" width="180" height="20" as="geometry" />
+          <mxGeometry x="660" y="88" width="160" height="20" as="geometry" />
         </mxCell>
         <mxCell id="leg_sm_c4_3_arr" value="" style="endArrow=none;strokeColor=#64748B;strokeWidth=1.5;strokeDashArray=3 3;html=1;" edge="1" parent="legend_box_statemachine">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="860" y="98" as="sourcePoint" />
-            <mxPoint x="890" y="98" as="targetPoint" />
+            <mxPoint x="620" y="98" as="sourcePoint" />
+            <mxPoint x="650" y="98" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Why It Works Box (Bottom Right / Full Width below Legend) -->
-        <mxCell id="why_works_statemachine" value="&lt;font style='font-size:13px;color:#0F172A;line-height:1.4;'&gt;&lt;b&gt;WHY IT WORKS:&lt;/b&gt; This total system view ensures uncompcompromised end-to-end design, integrating ethical data sourcing, adversarial security verification, proactive societal audits, and robust post-production drift monitoring for truly complete governance and safety.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;display=flex;align=center;verticalAlign=middle;padding=15;arcSize=3;" vertex="1" parent="1">
-          <mxGeometry x="20" y="805" width="1810" height="75" as="geometry" />
+        <!-- Why It Works Box (Right Half, Side-by-Side with Legend) -->
+        <mxCell id="why_works_statemachine" value="&lt;font style='font-size:13px;color:#0F172A;line-height:1.4;'&gt;&lt;b&gt;**WHY IT WORKS:**&lt;/b&gt; This total system view ensures uncompcompromised end-to-end design, integrating ethical data sourcing, adversarial security verification, proactive societal audits, and robust post-production drift monitoring for truly complete governance and safety.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;display=flex;align=center;verticalAlign=middle;padding=15;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="960" y="660" width="870" height="130" as="geometry" />
         </mxCell>
 
       </root>
