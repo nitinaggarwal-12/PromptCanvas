@@ -68,24 +68,34 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // 5. SHAPE HEIGHT & VERTICAL TEXT BUFFER HEALER:
   // Auto-expand all cylinder shapes to 95px height to ensure 3-line database subtitles never touch cylinder rims
   xml = xml.replace(/(<mxCell[^>]*style="[^"]*shape=cylinder3[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?height=")\d+(")/gi, '$195"');
-  // Auto-expand standard 60px high vertex cards to 75px height for text buffer margin
-  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr").)*?<mxGeometry\s+(?:[^>]*?\s+)?height=")60(")/gi, '$175"');
-  // Auto-expand narrow 200px or 220px vertex cards to 260px width so text titles never clip
-  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr"|rhombus).)*?<mxGeometry\s+(?:[^>]*?\s+)?width=")(?:200|220)(")/gi, '$1260$2');
+  // Auto-expand standard vertex cards to 80px height for text buffer margin
+  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr").)*?<mxGeometry\s+(?:[^>]*?\s+)?height=")(?:60|65|70|75)(")/gi, '$180$2');
+  // Auto-expand narrow vertex cards (200px to 250px) to 270px width so text titles never clip
+  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr"|rhombus).)*?<mxGeometry\s+(?:[^>]*?\s+)?width=")(?:200|220|240|250)(")/gi, '$1270$2');
+
+  // Auto-expand Column 2 cards (x=400..480) rightwards to x=520 to open a wide 160px channel for edge labels
+  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr"|rhombus).)*?<mxGeometry\s+(?:[^>]*?\s+)?x=")(?:420|440|450|460|480)(")/gi, '$1520$2');
 
   // 6. RHOMBUS SHAPE DIMENSION & TEXT OVERFLOW HEALER (Fixes Rhombus Edge Overflow):
   // Auto-expand all rhombus/diamond shapes to width=280 and height=90 so text never spills over sloped edges
   xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")\d+("\s+height=")\d+(")/gi, '$1280$290"');
   xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+x=")(\d+)(")/gi, (m, p1, xVal, p3) => {
     const numX = parseInt(xVal, 10);
-    if (numX >= 400 && numX <= 450) {
-      return `${p1}385${p3}`;
+    if (numX >= 400 && numX <= 480) {
+      return `${p1}520${p3}`;
     }
     return m;
   });
 
-  // 7. TEXT OVERLAP & SUBTITLE DEDUPLICATION HEALER:
-  // Clean up duplicate overlapping strings inside node values
+  // 7. EDGE LABEL MULTI-LINE SPLITTING & TEXT OVERLAP HEALER:
+  // Compact multi-word edge labels so they fit perfectly inside 160px corridors without clipping cards
+  xml = xml.replace(/value="Promote to Production"/gi, 'value="Promote to&lt;br&gt;Production"');
+  xml = xml.replace(/value="Sync GitOps Manifest"/gi, 'value="Sync GitOps&lt;br&gt;Manifest"');
+  xml = xml.replace(/value="Trigger Build"/gi, 'value="Trigger&lt;br&gt;Build"');
+  xml = xml.replace(/value="Stream Batch Archive"/gi, 'value="Stream Batch&lt;br&gt;Archive"');
+  xml = xml.replace(/value="Train Anomaly Models"/gi, 'value="Train Anomaly&lt;br&gt;Models"');
+  xml = xml.replace(/value="Trigger Operational Alert"/gi, 'value="Trigger Operational&lt;br&gt;Alert"');
+  xml = xml.replace(/value="Canary Telemetry Fail -&amp;gt; Auto Rollback"/gi, 'value="Canary Fail -&amp;gt;&lt;br&gt;Auto Rollback"');
   xml = xml.replace(/(&lt;br&gt;\s*|&lt;br\/&gt;\s*)+/gi, '&lt;br&gt;');
   xml = xml.replace(/(Batch Reconciliation\s*)+/gi, 'Batch Reconciliation ');
 
@@ -190,17 +200,35 @@ export function heal2DBoundingBoxLineCollisions(xml: string): string {
 
       // Check if label midpoint overlaps targetBox or any node box
       const overlapsNodeBox = boxes.find(b => {
-        return (labelMidX >= b.x - 10 && labelMidX <= b.x + b.w + 10) &&
-               (labelMidY >= b.y - 10 && labelMidY <= b.y + b.h + 10);
+        return (labelMidX >= b.x - 15 && labelMidX <= b.x + b.w + 15) &&
+               (labelMidY >= b.y - 15 && labelMidY <= b.y + b.h + 15);
       });
 
-      // Shift label offset Y away from shape box cleanly without closing mxGeometry tag prematurely
+      // Shift label offset X/Y away from shape box cleanly into open channel corridor
       if (overlapsNodeBox && !updatedInner.includes('as="offset"')) {
-        const offsetY = count > 1 ? "24" : "-32";
-        if (updatedInner.includes('<mxGeometry')) {
-          updatedInner = updatedInner.replace(/(<mxGeometry[^>]*>)/gi, `$1<mxPoint x="0" y="${offsetY}" as="offset"/>`);
+        let offsetX = 0;
+        let offsetY = 0;
+
+        if (Math.abs(srcCY - tgtCY) < 40) {
+          offsetY = count > 1 ? 20 : -28;
+          // Calculate midpoint of open horizontal channel between source and target cards
+          const srcRight = srcBox.x + srcBox.w;
+          const tgtLeft = tgtBox.x;
+          if (tgtLeft > srcRight) {
+            const channelMidX = (srcRight + tgtLeft) / 2;
+            offsetX = Math.round(channelMidX - labelMidX);
+          } else {
+            const channelMidX = (tgtBox.x + tgtBox.w + srcBox.x) / 2;
+            offsetX = Math.round(channelMidX - labelMidX);
+          }
         } else {
-          updatedInner = `<mxGeometry relative="1" as="geometry"><mxPoint x="0" y="${offsetY}" as="offset"/></mxGeometry>${updatedInner}`;
+          offsetY = count > 1 ? 24 : -32;
+        }
+
+        if (updatedInner.includes('<mxGeometry')) {
+          updatedInner = updatedInner.replace(/(<mxGeometry[^>]*>)/gi, `$1<mxPoint x="${offsetX}" y="${offsetY}" as="offset"/>`);
+        } else {
+          updatedInner = `<mxGeometry relative="1" as="geometry"><mxPoint x="${offsetX}" y="${offsetY}" as="offset"/></mxGeometry>${updatedInner}`;
         }
       }
 
