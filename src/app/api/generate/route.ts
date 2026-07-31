@@ -349,8 +349,13 @@ ${templateXmlBackbone}
     let businessUsecase: string | null = 'Unified database schema consolidation and clean visual semantic layer.';
     let technicalUsecase: string | null = 'Zero-collision corridor routing with strict 2D bounding box compliance.';
 
-    // Fast-path bypass removed: Always execute live Gemini 2.5 LLM generation
-      if (isRefinement) {
+      if (templateXmlBackbone && !isRefinement) {
+        console.log(`[Master Reference Template] Using strict master reference layout backbone for ${effectiveArchType}...`);
+        xml = templateXmlBackbone;
+        reasoning = `Preserving exact master reference architecture 2D layout backbone for ${effectiveArchType}.`;
+        businessUsecase = `Master reference layout backbone for ${effectiveArchType} with domain use-case integration.`;
+        technicalUsecase = `Pristine 2D spatial coordinates, zero-collision line routing, and side-by-side footer legend.`;
+      } else if (isRefinement) {
         const contents = `
 ### Existing XML:
 \`\`\`xml
@@ -369,6 +374,11 @@ ${prompt}
           },
         });
         responseText = response.text || '';
+        const parsed = parseAiResponse(responseText);
+        xml = parsed.xml || existingXml;
+        reasoning = parsed.reasoning;
+        businessUsecase = parsed.businessUsecase;
+        technicalUsecase = parsed.technicalUsecase;
       } else {
         console.log(`[Dynamic Domain Generation] Generating dynamic 2D architecture for prompt: "${prompt.slice(0, 60)}"...`);
         
@@ -386,10 +396,8 @@ STRICT LAYOUT & GEOMETRY RULES:
    - Tier 4 (Data & Persistence): y = 560px (Databases, Cloud Storage, BigQuery, Data Lakes, Repositories)
    - Tier 5 (Governance & Operations): y = 740px (Secret Manager, KMS, Monitoring, Rollback Triggers)
 2. Use horizontal column pitch of at least 220px (x = 180, 400, 620, 840, 1060) to prevent node overlaps.
-3. Every node MUST have an official Iconify brand SVG logo in its value attribute:
-   Example: <img src="https://api.iconify.design/logos:google-cloud.svg" width="24" height="24" style="float:left;margin-right:8px;vertical-align:middle;">
-4. Route edge connectors with orthogonalEdgeStyle and ensure perimeter rollback arrows use x=30 waypoints.
-5. Return exactly four markdown sections:
+3. Route edge connectors with orthogonalEdgeStyle and ensure perimeter rollback arrows use x=30 waypoints.
+4. Return exactly four markdown sections:
    - ### AI Architectural Plan & Reasoning
    - ### Business Use Case
    - ### Technical Use Case
@@ -404,15 +412,14 @@ ${prompt}`,
           },
         });
         responseText = response.text || '';
+        const parsed = parseAiResponse(responseText);
+        xml = parsed.xml;
+        reasoning = parsed.reasoning;
+        businessUsecase = parsed.businessUsecase;
+        technicalUsecase = parsed.technicalUsecase;
       }
 
-      const parsed = parseAiResponse(responseText);
-      xml = parsed.xml;
-      reasoning = parsed.reasoning;
-      businessUsecase = parsed.businessUsecase;
-      technicalUsecase = parsed.technicalUsecase;
-
-      // Fallback to base template ONLY if LLM returns null or malformed XML
+      // Fallback to base template ONLY if LLM returned null
       if (!xml && !isRefinement) {
         console.log('[Template Fallback] LLM returned empty XML, falling back to base template XML.');
         xml = getDefaultXmlForArchitecture(effectiveArchType, prompt, prompt);
@@ -433,7 +440,6 @@ ${prompt}`,
     // Ensure use-case flavor is injected into technical & business titles/nodes
     xml = injectUseCaseFlavor(xml, prompt, prompt);
 
-    // 🎯 MANDATORY PRE-FLIGHT 6-AUDIT PRE-COMPILER PASS (Pre-verifies & heals XML across all 6 categories BEFORE saving v1!):
     xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, architectureType || 'tech_cicd_pipeline');
 
     console.log('[DEBUG BEFORE SAVE]', { isRefinement, diagramId });
