@@ -205,18 +205,19 @@ export default function DiagramViewer({
           right: 0;
           padding: 16px;
           box-sizing: border-box;
+          overflow: auto;
         }
         .mxgraph {
           width: 100%;
-          height: 100%;
+          min-height: 100%;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
         }
         .mxgraph > svg, .mxgraph > div {
           max-width: 100% !important;
-          max-height: 100% !important;
-          margin: auto !important;
+          height: auto !important;
+          margin: 0 auto !important;
         }
         .geEditor {
           background-color: transparent !important;

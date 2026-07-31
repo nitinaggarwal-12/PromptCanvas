@@ -41,29 +41,44 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Strip broken inline onerror attributes to prevent Draw.io XML parser breaks
   xml = xml.replace(/\s*onerror="[^"]*"/gi, '');
   // Remove broken remote image URLs (e.g. <img src="http..."/>) and fallback to clean vector emojis/icons
-  xml = xml.replace(/<img[^>]*src="http[^"]*"[^>]*>/gi, '📄 ');
-  xml = xml.replace(/<img[^>]*src=""[^>]*>/gi, '');
+  xml = xml.replace(/<img[^>]*src="https:\/\/api\.iconify\.design[^"]*"[^>]*>/gi, '');
+  xml = xml.replace(/<img[^>]*src="http[^"]*"[^>]*>/gi, '');
   xml = xml.replace(/argo-icon\.svg/gi, 'logos:argo.svg');
 
-  // Enforce float:left on all image tags to prevent icon-over-text collision
-  xml = xml.replace(/<img src="([^"]+)" width="24" height="24" style="([^"]*)"/gi, (m, src, style) => {
-    if (!style.includes('float:left')) {
-      return `<img src="${src}" width="24" height="24" style="float:left;margin-right:8px;vertical-align:middle;${style}"`;
+  // 4. DYNAMIC CANVAS BOUNDARY HEALER (Prevent Bottom Clipping):
+  // Calculate maximum Y coordinate of all vertex nodes in XML
+  let maxY = 0;
+  const geomMatches = xml.matchAll(/<mxGeometry\s+(?:[^>]*?\s+)?y="(\d+)"\s+(?:[^>]*?\s+)?height="(\d+)"/gi);
+  for (const m of geomMatches) {
+    const yVal = parseInt(m[1], 10) || 0;
+    const hVal = parseInt(m[2], 10) || 0;
+    if (yVal + hVal > maxY) {
+      maxY = yVal + hVal;
     }
-    return m;
-  });
+  }
 
-  // 4. TEXT OVERLAP & SUBTITLE DEDUPLICATION HEALER:
+  // Auto-expand pageHeight and pageWidth if nodes extend past default boundaries
+  if (maxY > 700) {
+    const targetHeight = Math.max(1600, maxY + 250);
+    xml = xml.replace(/(<mxGraphModel[^>]*\bpageHeight=")\d+(")/gi, `$1${targetHeight}"`);
+    xml = xml.replace(/(<mxGraphModel[^>]*\bpageWidth=")\d+(")/gi, '$11600"');
+  }
+
+  // 5. CYLINDER SHAPE HEIGHT HEALER:
+  // Auto-expand cylinder height from 60px to 80px to prevent subtitle overlap over cylinder rims
+  xml = xml.replace(/(<mxCell[^>]*style="[^"]*shape=cylinder3[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?height=")60(")/gi, '$180"');
+
+  // 6. TEXT OVERLAP & SUBTITLE DEDUPLICATION HEALER:
   // Clean up duplicate overlapping strings inside node values
   xml = xml.replace(/(&lt;br&gt;\s*|&lt;br\/&gt;\s*)+/gi, '&lt;br&gt;');
   xml = xml.replace(/(Batch Reconciliation\s*)+/gi, 'Batch Reconciliation ');
 
-  // 5. ACCESSIBILITY & EDGE LABEL CONTRAST HEALING:
+  // 7. ACCESSIBILITY & EDGE LABEL CONTRAST HEALING:
   // Enforce solid high-contrast background pills on all edge connector labels
   xml = xml.replace(/(<mxCell[^>]*\bedge="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
     let s = p2;
     if (!s.includes('labelBackgroundColor')) {
-      s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;spacingTop=4;spacingBottom=4;';
+      s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=10;spacingTop=4;spacingBottom=4;';
     }
     return `${p1}${s}${p3}`;
   });
@@ -79,7 +94,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Fix dark text on dark glass fill contrast
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
 
-  // 6. Validate & Auto-Heal XML via Schema Healer
+  // 8. Validate & Auto-Heal XML via Schema Healer
   const healResult = validateAndHealDrawioXml(xml);
   return healResult.xml;
 }
