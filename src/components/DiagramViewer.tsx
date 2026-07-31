@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
-import { getTechnicalArchitectureXml } from '@/lib/architectureTypes';
+import { getTechnicalArchitectureXml, getTemplateTitle } from '@/lib/architectureTypes';
 import { getArchitectureMeta } from '@/lib/architectureMetadata';
 
 interface DiagramViewerProps {
@@ -54,19 +54,24 @@ export default function DiagramViewer({
     }
   }, [xml]);
 
+  // Derive template title (e.g., Serverless Web Application (GCP), DevOps CI/CD Pipeline, etc.)
+  const templateName = React.useMemo(() => {
+    return getTemplateTitle(diagramType || diagramId);
+  }, [diagramType, diagramId]);
+
   // Derive comprehensive architecture metadata
   const meta = React.useMemo(() => {
-    const defaultMeta = getArchitectureMeta(diagramId);
+    const defaultMeta = getArchitectureMeta(diagramId || diagramType);
     return {
       useCase: useCaseName || defaultMeta.useCase,
-      title: diagramType || defaultMeta.title,
+      title: defaultMeta.title || templateName,
       category: defaultMeta.category,
       businessUseCase: defaultMeta.businessUseCase,
       primaryActors: defaultMeta.primaryActors,
       targetOutcomes: defaultMeta.targetOutcomes,
       desc: description || defaultMeta.desc,
     };
-  }, [diagramId, useCaseName, diagramType, description]);
+  }, [diagramId, useCaseName, diagramType, description, templateName]);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
@@ -238,9 +243,9 @@ export default function DiagramViewer({
     <body>
       <div class="header-banner">
         <div class="header-top-row">
-          <div class="header-left-title">
-            <span class="usecase-tag" style="background: rgba(14, 165, 233, 0.15); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 3px 10px; border-radius: 9999px; font-weight: 700; letter-spacing: 0.05em;">⚡ ARCHITECTURE TEMPLATE TYPE</span>
-            <span class="diagram-title" style="font-size: 16px; font-weight: 800; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; text-transform: none; margin-left: 8px;">${meta.title || diagramType || 'Architecture Diagram'}</span>
+          <div class="header-left-title" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span class="usecase-tag" style="background: rgba(14, 165, 233, 0.15); color: ${bgTheme === 'light' ? '#0284C7' : '#38BDF8'}; border: 1px solid rgba(56, 189, 248, 0.4); padding: 4px 12px; border-radius: 9999px; font-weight: 800; font-size: 12px; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 4px;">⚡ TEMPLATE: <strong style="color: ${bgTheme === 'light' ? '#0369A1' : '#38BDF8'}; font-weight: 800; text-transform: uppercase;">${templateName}</strong></span>
+            <span class="diagram-title" style="font-size: 16px; font-weight: 800; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; text-transform: none; margin-left: 4px;">${useCaseName || meta.useCase || meta.title}</span>
           </div>
           <div>
             <span class="category-badge" style="background: ${bgTheme === 'light' ? '#F1F5F9' : '#334155'}; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; font-weight: 700; padding: 4px 10px; border-radius: 6px; border: 1px solid ${bgTheme === 'light' ? '#CBD5E1' : '#475569'};">${meta.category}</span>

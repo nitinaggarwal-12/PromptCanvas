@@ -4169,9 +4169,9 @@ function WorkspaceContent() {
                     <div className="pointer-events-auto w-full h-full flex items-center justify-center p-4">
                       <DiagramViewer
                         xml={currentXmlToRender}
-                        diagramId={activeDiagram?.architecture_type || activeVersion?.architecture_type || activeDiagram?.id}
-                        useCaseName={activeVersion?.business_usecase || activeVersion?.technical_usecase || activeDiagram?.name}
-                        diagramType={activeDiagram?.name}
+                        diagramId={activeDiagram?.id}
+                        useCaseName={(activeDiagram?.name || activeVersion?.business_usecase || activeVersion?.technical_usecase) ?? undefined}
+                        diagramType={(activeVersion?.architecture_type || activeDiagram?.architecture_type) ?? undefined}
                         aspectRatioId={selectedAspectRatio}
                         customW={customRatioW}
                         customH={customRatioH}
