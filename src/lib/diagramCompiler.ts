@@ -2610,14 +2610,14 @@ export function getExactGovernanceStateMachineReferenceXml(): string {
         </mxCell>
 
         <!-- 5. Column 4: Deployment & Operations -->
-        <mxCell id="canary_deploy" value="&lt;span style='font-size:24px;'&gt;📊&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;CANARY&lt;br&gt;DEPLOYMENT&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#334155;'&gt;Live Ingress Validation&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1280" y="160" width="160" height="80" as="geometry" />
+        <mxCell id="canary_deploy" value="&lt;div style='font-size:11px;line-height:1.2;color:#0F172A;text-align:center;'&gt;&lt;span style='font-size:18px;'&gt;📊&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[9] CANARY DEPLOYMENT&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#334155;'&gt;Live Ingress Validation&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;fontSize=11;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="155" width="180" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="promoted_prod" value="&lt;span style='font-size:28px;'&gt;🚀🏢&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;PROMOTED TO&lt;br&gt;PRODUCTION&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#334155;'&gt;Fully deployed state&lt;br&gt;serving live traffic&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1280" y="300" width="170" height="90" as="geometry" />
+        <mxCell id="promoted_prod" value="&lt;div style='font-size:11px;line-height:1.2;color:#0F172A;text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🚀🏢&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;PROMOTED TO PRODUCTION&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#334155;'&gt;Fully deployed state serving live traffic&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;fontSize=11;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="300" width="180" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="multi_silo" value="&lt;span style='font-size:28px;'&gt;🗄️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Multi-Silo Agentic&lt;br&gt;Workflow Tooling&lt;br&gt;Vetting&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1280" y="450" width="160" height="80" as="geometry" />
+        <mxCell id="multi_silo" value="&lt;div style='font-size:11px;line-height:1.2;color:#0F172A;text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🗄️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Multi-Silo Agentic Tooling Vetting&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;fontSize=11;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="450" width="180" height="80" as="geometry" />
         </mxCell>
         <!-- Connectors Column 4 -->
         <mxCell id="arr_hil_canary" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="human_loop" target="canary_deploy">
@@ -2682,48 +2682,52 @@ export function getExactGovernanceStateMachineReferenceXml(): string {
           </mxGeometry>
         </mxCell>
 
-        <!-- Archival Nodes (Far Right Stack - Separated from Pills) -->
-        <mxCell id="archival_top" value="&lt;span style='font-size:24px;'&gt;📦&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;ARCHIVAL (RETIRED)&lt;br&gt;(Safety Incident)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1710" y="270" width="120" height="80" as="geometry" />
+        <!-- Archival Nodes (Far Right Stack - Completely Separated with 65px Clear Gap) -->
+        <mxCell id="archival_top" value="&lt;div style='font-size:10px;line-height:1.2;color:#0F172A;text-align:center;'&gt;&lt;span style='font-size:20px;'&gt;📦&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;'&gt;ARCHIVAL (RETIRED)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#334155;'&gt;(Safety Incident)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;fontSize=10;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="270" width="140" height="85" as="geometry" />
         </mxCell>
-        <mxCell id="archival_bot" value="&lt;span style='font-size:24px;'&gt;📦&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;ARCHIVAL (RETIRED)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1710" y="590" width="120" height="70" as="geometry" />
+
+        <!-- Trigger Connectors & Pills Stacked in Channel y = 470 to 570 -->
+        <mxCell id="pill_trig1" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Model Obsolescence&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="470" width="140" height="24" as="geometry" />
         </mxCell>
-        <!-- Trigger Connectors (4 arrows with orange pills floating cleanly above archival_bot) -->
+        <mxCell id="pill_trig2" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Regulatory Change&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="500" width="140" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_trig3" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Societal Drift (Harm Detected)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="530" width="160" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_trig4" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Safety Incident (Recall triggered)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1695" y="560" width="170" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- Archival Bottom Box Shifted Down to y = 650 (66px Clear Vertical Gap below pill_trig4!) -->
+        <mxCell id="archival_bot" value="&lt;div style='font-size:10px;line-height:1.2;color:#0F172A;text-align:center;'&gt;&lt;span style='font-size:20px;'&gt;📦&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;'&gt;[12] MODEL ARCHIVAL&lt;br&gt;&amp;amp; RETIREMENT&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;fontSize=10;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="650" width="150" height="85" as="geometry" />
+        </mxCell>
         <mxCell id="arr_trig1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="soc_reg_mon" target="archival_bot">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1700" y="435" />
-              <mxPoint x="1700" y="625" />
+              <mxPoint x="1690" y="435" />
+              <mxPoint x="1690" y="692" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="pill_trig1" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Model Obsolescence&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1690" y="475" width="120" height="22" as="geometry" />
-        </mxCell>
-        <mxCell id="pill_trig2" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Regulatory Change&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1690" y="502" width="120" height="22" as="geometry" />
-        </mxCell>
-        <mxCell id="pill_trig3" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Societal Drift (Harm Detected)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1690" y="529" width="145" height="22" as="geometry" />
-        </mxCell>
-        <mxCell id="pill_trig4" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Safety Incident (Recall triggered)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1690" y="556" width="155" height="22" as="geometry" />
-        </mxCell>
+
         <!-- Incident Loop Connector -->
         <mxCell id="arr_inc_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="archival_bot" target="archival_top">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1800" y="470" />
-              <mxPoint x="1800" y="470" />
+              <mxPoint x="1880" y="692" />
+              <mxPoint x="1880" y="312" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="lbl_trig_checks" value="&lt;font style='font-size:10px;color:#202124;'&gt;3) Trigger Checks&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1635" y="515" width="95" height="20" as="geometry" />
+          <mxGeometry x="1620" y="515" width="80" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="lbl_architv" value="&lt;font style='font-size:10px;color:#202124;'&gt;4) Architv&lt;br&gt;(Safety Incident)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1780" y="420" width="85" height="30" as="geometry" />
+        <mxCell id="lbl_architv" value="&lt;font style='font-size:10px;color:#202124;'&gt;4) Archival&lt;br&gt;(Safety Incident)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1890" y="480" width="85" height="30" as="geometry" />
         </mxCell>
 
         <!-- 7. Footer Region -->
