@@ -1,6 +1,6 @@
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 export { getTechnicalArchitectureXml };
-import { compileSpecToDrawioXml, getExactItacsReferenceXml, getExactSequenceDiagramReferenceXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkMacroSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec, getBenchmarkTechnicalArchitectureSpec } from './diagramCompiler';
+import { compileSpecToDrawioXml, getExactItacsReferenceXml, getExactSequenceDiagramReferenceXml, getExactMacroSequenceDiagramReferenceXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkMacroSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec, getBenchmarkTechnicalArchitectureSpec } from './diagramCompiler';
 import { injectUseCaseFlavor } from './diagramCleaner';
 
 export interface ArchitectureTypeOption {
@@ -163,7 +163,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (archId === 'sequence_diagram') {
     xml = getExactSequenceDiagramReferenceXml();
   } else if (archId === 'macro_sequence_diagram') {
-    xml = getExactSequenceDiagramReferenceXml();
+    xml = getExactMacroSequenceDiagramReferenceXml();
   } else if (archId === 'data_ai_pipeline') {
     xml = compileSpecToDrawioXml(getBenchmarkDataAiPipelineSpec());
   } else if (archId === 'secure_deployment_map') {
