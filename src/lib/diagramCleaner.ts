@@ -860,6 +860,46 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Fact_Clinical/gi, 'Fact_Assay_Binding');
   }
 
+  const isECommercePrompt = promptLower.includes('e-commerce') || promptLower.includes('ecommerce') || promptLower.includes('supply chain') || promptLower.includes('fulfillment') || promptLower.includes('stripe') || promptLower.includes('inventory') || promptLower.includes('warehouse') || promptLower.includes('order');
+
+  if (isECommercePrompt) {
+    updatedXml = updatedXml
+      .replace(/Silo Analysts/g, 'Customer &amp; Operations')
+      .replace(/Google Workspace Connectors/g, 'API Gateway')
+      .replace(/GCS Secure Bucket/g, 'Inventory Service (Real-Time)')
+      .replace(/Airflow Scheduler/g, 'Event Stream / EventBridge')
+      .replace(/dbt Transformation/g, 'Autonomous Inventory Allocation')
+      .replace(/BigQuery Feature Store/g, 'Stripe Payment Gateway')
+      .replace(/ETL Audit Log/g, 'Fulfillment Audit Log')
+      .replace(/ML Engineer/g, 'Supply Chain Operations')
+      .replace(/Model Training \(Vertex AI\)/g, 'Predictive Reordering Service')
+      .replace(/Model Registry/g, 'Fulfillment Node Registry')
+      .replace(/Governance Board \(Human-in-the-Loop\)/g, 'Logistics Operations Board')
+      .replace(/GKE Inference Endpoint/g, 'GPS Telemetry Service')
+      .replace(/Monitoring/g, 'Carrier Delivery Monitor')
+      .replace(/ML Inference Log/g, 'Shipment &amp; GPS Telemetry Log')
+      .replace(/Oncology Analyst/g, 'Customer / Buyer')
+      .replace(/User Interface/g, 'E-Commerce Storefront App')
+      .replace(/Agent Orchestrator \(Vertex AI\)/g, 'Supply Chain Agent Orchestrator')
+      .replace(/Deck Studio API/g, 'Carrier Shipping API')
+      .replace(/Global Market Radar API/g, 'Real-Time GPS Tracking API')
+      .replace(/Requests PPT deck/g, 'Place E-Commerce Order')
+      .replace(/Requests request/g, 'Verify Stock &amp; Authorize Payment')
+      .replace(/Orchestrator calls Deck Studio API with synthesized report and request/g, 'Allocate Warehouse Stock &amp; Assign Logistics Node')
+      .replace(/Orchestrator calls Global Market Radar API, generates interactive visualization/g, 'Dispatch Shipment &amp; Stream GPS Telemetry')
+      .replace(/Analysts upload raw docs/g, 'Customer places order')
+      .replace(/Executes logic \(Clean, Normalize, Aggregate, Encode\)/g, 'Verify inventory &amp; allocate warehouse stock')
+      .replace(/Stores model-ready features/g, 'Authorize payment &amp; emit OrderPlaced event')
+      .replace(/Pushes metadata \(lineage, job status, row counts\)/g, 'Log order fulfillment &amp; audit status')
+      .replace(/Initiates training/g, 'Trigger predictive stock reorder')
+      .replace(/Pulls features from BigQuery/g, 'Query inventory levels &amp; lead times')
+      .replace(/Executes training, generates Metrics/g, 'Run Gemini predictive reorder analysis')
+      .replace(/Provides Human-in-the-Loop Approval/g, 'Approve purchase order for supplier')
+      .replace(/Deployment Pipeline pulls model/g, 'Dispatch purchase order to logistics')
+      .replace(/Logs inference and drift/g, 'Track carrier delivery SLA &amp; status')
+      .replace(/Pushes logs to ML Inference Log/g, 'Stream delivery status to BigQuery');
+  }
+
   // Conceptual Diagram Specific Replacements
   updatedXml = updatedXml
     .replace(/Legacy SAP S\/4HANA/gi, 'PubMed REST API &amp; USPTO Patent Ingest')
