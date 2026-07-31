@@ -68,43 +68,43 @@ export function getExactItacsReferenceXml(): string {
 
         <!-- Card 1: Manual Data Sources Card -->
         <mxCell id="src_card" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[1a] Manual Data Sources Card&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#64748B;&quot;&gt;Raw Scientific Literature &amp; PPT Decks&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;verticalAlign=top;padding=8;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="140" width="280" height="110" as="geometry" />
+          <mxGeometry x="70" y="140" width="280" height="120" as="geometry" />
         </mxCell>
         <!-- Red PDF Badge -->
         <mxCell id="pdf_badge" value="&lt;b style=&quot;color:#FFFFFF;font-size:11px;&quot;&gt;PDF&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DC2231;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="95" y="170" width="36" height="42" as="geometry" />
+          <mxGeometry x="95" y="188" width="36" height="42" as="geometry" />
         </mxCell>
         <mxCell id="pdf_lbl" value="PDFs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="88" y="215" width="50" height="20" as="geometry" />
+          <mxGeometry x="88" y="232" width="50" height="20" as="geometry" />
         </mxCell>
         <!-- Orange PPT Badge -->
         <mxCell id="ppt_badge" value="&lt;b style=&quot;color:#FFFFFF;font-size:11px;&quot;&gt;PPT&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EA580C;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="160" y="170" width="36" height="42" as="geometry" />
+          <mxGeometry x="160" y="188" width="36" height="42" as="geometry" />
         </mxCell>
         <mxCell id="ppt_lbl" value="PPTs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="153" y="215" width="50" height="20" as="geometry" />
+          <mxGeometry x="153" y="232" width="50" height="20" as="geometry" />
         </mxCell>
         <!-- Document Badge -->
         <mxCell id="doc_badge" value="📄" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;fontSize=20;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="235" y="170" width="36" height="42" as="geometry" />
+          <mxGeometry x="235" y="188" width="36" height="42" as="geometry" />
         </mxCell>
         <mxCell id="doc_lbl" value="Unstructured&lt;br&gt;Documents" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#1E293B;" vertex="1" parent="1">
-          <mxGeometry x="215" y="215" width="76" height="25" as="geometry" />
+          <mxGeometry x="215" y="232" width="76" height="25" as="geometry" />
         </mxCell>
 
         <!-- SHIFT Label -->
         <mxCell id="shift_label" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;SHIFT: Manual gathering -&gt; Strategic planning.&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;fontColor=#15803D;fontStyle=1;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="260" width="280" height="28" as="geometry" />
+          <mxGeometry x="70" y="270" width="280" height="28" as="geometry" />
         </mxCell>
 
         <!-- Card 2: 5 Functional Areas Card -->
         <mxCell id="func_areas" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[1b] 5 Functional Silos Ingestion&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;table style=&quot;width:100%;text-align:center;font-size:11px;border-collapse:separate;border-spacing:6px;margin-top:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;🔍&lt;br&gt;&lt;b&gt;Market Research&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;🩺&lt;br&gt;&lt;b&gt;Medical Affairs&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;💰&lt;br&gt;&lt;b&gt;Market Access&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;⚖️&lt;br&gt;&lt;b&gt;Outcomes Research&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;🧠&lt;br&gt;&lt;b&gt;Competitive Intelligence&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;fontColor=#1E293B;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="298" width="280" height="210" as="geometry" />
+          <mxGeometry x="70" y="308" width="280" height="210" as="geometry" />
         </mxCell>
 
         <!-- Card 3: User Node with Analyst Workspace -->
         <mxCell id="user_node" value="&lt;table style=&quot;width:100%;border:none;text-align:left;margin-top:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:55px;font-size:38px;text-align:center;vertical-align:middle;&quot;&gt;👩‍💻&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;b style=&quot;font-size:13px;color:#1E293B;&quot;&gt;[1c] Researcher Node&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#334155;&quot;&gt;Analyst Workspace Portal&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;Asset Analysis &amp; Query Interface&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="520" width="280" height="110" as="geometry" />
+          <mxGeometry x="70" y="528" width="280" height="110" as="geometry" />
         </mxCell>
 
         <!-- COLUMN 2: INTEGRATED INSIGHTS HUB (X: 430, Y: 80, W: 380, H: 640) -->
@@ -191,8 +191,9 @@ export function getExactItacsReferenceXml(): string {
 
         <!-- 5. BRANCHING CONNECTORS (Exact routing from cards to cube, and branching from cube to outputs) -->
         <!-- Arrow 1: Manual Data Sources -> Cube -->
-        <mxCell id="e_in_1" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;1. Raw Literature PDF Stream&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="src_card" target="core_platform">
+        <mxCell id="e_in_1" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;1. Raw Literature&lt;br&gt;PDF Stream&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="src_card" target="core_platform">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
             <Array as="points">
               <mxPoint x="390" y="195" />
               <mxPoint x="390" y="300" />
@@ -200,19 +201,21 @@ export function getExactItacsReferenceXml(): string {
           </mxGeometry>
         </mxCell>
         <!-- Arrow 2: 5 Functional Areas -> Cube (with DATA INGESTION label) -->
-        <mxCell id="e_in_2" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;2. DATA INGESTION &amp; EXTRACTION&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="func_areas" target="core_platform">
+        <mxCell id="e_in_2" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;2. DATA INGESTION&lt;br&gt;&amp;amp; EXTRACTION&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="func_areas" target="core_platform">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
             <Array as="points">
-              <mxPoint x="400" y="403" />
+              <mxPoint x="400" y="413" />
               <mxPoint x="400" y="385" />
             </Array>
           </mxGeometry>
         </mxCell>
         <!-- Arrow 3: User Node -> Cube -->
-        <mxCell id="e_in_3" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;3. Researcher Query Request&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="user_node" target="core_platform">
+        <mxCell id="e_in_3" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;3. Researcher Query&lt;br&gt;Request&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="user_node" target="core_platform">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
             <Array as="points">
-              <mxPoint x="390" y="575" />
+              <mxPoint x="390" y="583" />
               <mxPoint x="390" y="480" />
             </Array>
           </mxGeometry>
@@ -226,8 +229,9 @@ export function getExactItacsReferenceXml(): string {
         </mxCell>
 
         <!-- Branch 1: Branch Point -> Executive Strategy Dashboard -->
-        <mxCell id="e_out_1" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;4. Synthesize Dashboard KPIs&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+        <mxCell id="e_out_1" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;4. Synthesize Dashboard<br>KPIs &amp;amp; Metrics&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
             <mxPoint x="835" y="385" as="sourcePoint" />
             <mxPoint x="900" y="337" as="targetPoint" />
             <Array as="points">
@@ -236,8 +240,9 @@ export function getExactItacsReferenceXml(): string {
           </mxGeometry>
         </mxCell>
         <!-- Branch 2: Branch Point -> Competitor Comparison View -->
-        <mxCell id="e_out_2" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;5. Rank Target Discovery Timelines&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+        <mxCell id="e_out_2" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;5. Rank Target Discovery<br>Timelines&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
             <mxPoint x="835" y="385" as="sourcePoint" />
             <mxPoint x="900" y="495" as="targetPoint" />
             <Array as="points">
@@ -246,8 +251,9 @@ export function getExactItacsReferenceXml(): string {
           </mxGeometry>
         </mxCell>
         <!-- Branch 3: Branch Point -> Strategic Priority Advisory -->
-        <mxCell id="e_out_3" value="&lt;b style=&quot;color:#991B1B;background:#FEF2F2;padding:2px 6px;border-radius:4px;border:1px solid #FCA5A5;&quot;&gt;6. Strategic Advisory Priority Alert&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EF4444;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+        <mxCell id="e_out_3" value="&lt;b style=&quot;color:#991B1B;background:#FEF2F2;padding:2px 6px;border-radius:4px;border:1px solid #FCA5A5;&quot;&gt;6. Strategic Advisory<br>Priority Alert&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EF4444;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
             <mxPoint x="835" y="385" as="sourcePoint" />
             <mxPoint x="900" y="632" as="targetPoint" />
             <Array as="points">
