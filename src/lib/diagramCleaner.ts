@@ -677,6 +677,7 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
  */
 export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPrompt?: string): string {
   if (!xml || typeof xml !== 'string') return xml;
+  if (isPreservedCustomLayout(xml)) return xml;
 
   let topic = useCaseTitle ? useCaseTitle.trim() : '';
 
