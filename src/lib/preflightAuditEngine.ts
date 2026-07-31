@@ -42,7 +42,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Strip broken inline onerror attributes to prevent Draw.io XML parser breaks
   xml = xml.replace(/\s*onerror="[^"]*"/gi, '');
   // Remove broken remote image URLs (e.g. <img src="http..."/> or escaped &lt;img...&gt;) and fallback to clean vector emojis/icons
-  xml = xml.replace(/(&lt;|<)img[^>]*?src=["&quot;]*https?:\/\/[^\s"'>&]+["&quot;]*[^>]*?(&gt;|>)/gi, '');
+  xml = xml.replace(/&lt;img\s+[\s\S]*?&gt;/gi, '');
+  xml = xml.replace(/<img\s+[\s\S]*?>/gi, '');
   xml = xml.replace(/argo-icon\.svg/gi, 'logos:argo.svg');
 
   // 4. DYNAMIC CANVAS BOUNDARY HEALER (Prevent Bottom Clipping):

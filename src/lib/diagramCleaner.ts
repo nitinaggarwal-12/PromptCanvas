@@ -404,6 +404,13 @@ function isPreservedCustomLayout(xml: string): boolean {
     lower.includes('react loop') ||
     lower.includes('sequence_diagram') ||
     lower.includes('macro sequence') ||
+    lower.includes('governance_state_machine') ||
+    lower.includes('unified_governance') ||
+    lower.includes('secure_deployment_map') ||
+    lower.includes('unified_system_view') ||
+    lower.includes('devops_cicd_pipeline') ||
+    lower.includes('data_ai_pipeline') ||
+    xml.includes('governance_state_machine_compiled') ||
     xml.includes('itacs_conceptual_compiled')
   );
 }
