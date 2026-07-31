@@ -1,6 +1,29 @@
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 export { getTechnicalArchitectureXml };
-import { compileSpecToDrawioXml, getExactItacsReferenceXml, getExactSequenceDiagramReferenceXml, getExactMacroSequenceDiagramReferenceXml, getBenchmarkItacsSpec, getBenchmarkErdSpec, getBenchmarkAgenticRagSpec, getBenchmarkSequenceDiagramSpec, getBenchmarkMacroSequenceDiagramSpec, getBenchmarkDataAiPipelineSpec, getBenchmarkSecureDeploymentMapSpec, getBenchmarkDevopsCicdPipelineSpec, getBenchmarkGovernanceStateMachineSpec, getBenchmarkUnifiedSystemViewSpec, getBenchmarkDarkModeUnifiedSystemViewSpec, getBenchmarkTechnicalArchitectureSpec } from './diagramCompiler';
+import {
+  compileSpecToDrawioXml,
+  getExactItacsReferenceXml,
+  getExactSequenceDiagramReferenceXml,
+  getExactMacroSequenceDiagramReferenceXml,
+  getExactDataAiPipelineReferenceXml,
+  getExactSecureDeploymentMapReferenceXml,
+  getExactDevopsCicdPipelineReferenceXml,
+  getExactGovernanceStateMachineReferenceXml,
+  getExactUnifiedSystemViewReferenceXml,
+  getExactDarkModeUnifiedSystemViewReferenceXml,
+  getBenchmarkItacsSpec,
+  getBenchmarkErdSpec,
+  getBenchmarkAgenticRagSpec,
+  getBenchmarkSequenceDiagramSpec,
+  getBenchmarkMacroSequenceDiagramSpec,
+  getBenchmarkDataAiPipelineSpec,
+  getBenchmarkSecureDeploymentMapSpec,
+  getBenchmarkDevopsCicdPipelineSpec,
+  getBenchmarkGovernanceStateMachineSpec,
+  getBenchmarkUnifiedSystemViewSpec,
+  getBenchmarkDarkModeUnifiedSystemViewSpec,
+  getBenchmarkTechnicalArchitectureSpec
+} from './diagramCompiler';
 import { injectUseCaseFlavor } from './diagramCleaner';
 
 export interface ArchitectureTypeOption {
@@ -183,17 +206,17 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (archId === 'macro_sequence_diagram') {
     xml = getExactMacroSequenceDiagramReferenceXml();
   } else if (archId === 'data_ai_pipeline') {
-    xml = compileSpecToDrawioXml(getBenchmarkDataAiPipelineSpec());
+    xml = getExactDataAiPipelineReferenceXml();
   } else if (archId === 'secure_deployment_map') {
-    xml = compileSpecToDrawioXml(getBenchmarkSecureDeploymentMapSpec());
+    xml = getExactSecureDeploymentMapReferenceXml();
   } else if (archId === 'devops_cicd_pipeline') {
-    xml = compileSpecToDrawioXml(getBenchmarkDevopsCicdPipelineSpec());
+    xml = getExactDevopsCicdPipelineReferenceXml();
   } else if (archId === 'governance_state_machine') {
-    xml = compileSpecToDrawioXml(getBenchmarkGovernanceStateMachineSpec());
+    xml = getExactGovernanceStateMachineReferenceXml();
   } else if (archId === 'unified_system_view') {
-    xml = compileSpecToDrawioXml(getBenchmarkUnifiedSystemViewSpec());
+    xml = getExactUnifiedSystemViewReferenceXml();
   } else if (archId === 'dark_mode_unified_system_view') {
-    xml = compileSpecToDrawioXml(getBenchmarkDarkModeUnifiedSystemViewSpec());
+    xml = getExactDarkModeUnifiedSystemViewReferenceXml();
   } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline')) {
     xml = getTechnicalArchitectureXml(archId);
   } else {
