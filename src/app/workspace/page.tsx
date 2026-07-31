@@ -541,6 +541,7 @@ function WorkspaceContent() {
   const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean' | 'vendor'>('detailed');
   const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(true);
   
   // Chat History
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -3247,54 +3248,38 @@ function WorkspaceContent() {
               </h2>
               {activeDiagram && (
                 <>
-                  {/* 1a. Business Architecture Dropdown */}
+                  {/* 1. Unified Architecture Category Dropdown */}
                   <div className="relative inline-flex items-center shrink-0">
                     <select
                       id="workspace-header-architecture-select"
-                      value={BUSINESS_ARCHITECTURE_TYPES.some(t => t.id === selectedArchType) ? selectedArchType : ""}
+                      value={selectedArchType}
                       disabled={isAnyAIBusy}
                       onChange={(e) => handleArchitectureSwitch(e.target.value)}
-                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[160px] md:max-w-[200px] truncate"
-                      title="Business Architecture (Use-Case Focused)"
+                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] md:max-w-[250px] truncate"
+                      title="Architecture Category Selector (Business & Technical)"
                     >
-                      <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
-                        🏢 Business Architecture ▾
-                      </option>
-                      {BUSINESS_ARCHITECTURE_TYPES.map((t) => {
-                        const vBadge = getLatestVersionBadgeForArchType(t.id);
-                        return (
-                          <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
-                            {t.name}{vBadge}
-                          </option>
-                        );
-                      })}
+                      <optgroup label="🏢 BUSINESS ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
+                        {BUSINESS_ARCHITECTURE_TYPES.map((t) => {
+                          const vBadge = getLatestVersionBadgeForArchType(t.id);
+                          return (
+                            <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
+                              🏢 {t.name}{vBadge}
+                            </option>
+                          );
+                        })}
+                      </optgroup>
+                      <optgroup label="⚙️ TECHNICAL ARCHITECTURES" className="bg-[#0b101d] text-indigo-400 font-extrabold">
+                        {TECHNICAL_ARCHITECTURE_TYPES.map((t) => {
+                          const vBadge = getLatestVersionBadgeForArchType(t.id);
+                          return (
+                            <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
+                              ⚙️ {t.name}{vBadge}
+                            </option>
+                          );
+                        })}
+                      </optgroup>
                     </select>
                     <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
-                  </div>
-
-                  {/* 1b. Technical Architecture Dropdown */}
-                  <div className="relative inline-flex items-center shrink-0">
-                    <select
-                      id="workspace-header-tech-architecture-select"
-                      value={TECHNICAL_ARCHITECTURE_TYPES.some(t => t.id === selectedArchType) ? selectedArchType : ""}
-                      disabled={isAnyAIBusy}
-                      onChange={(e) => handleArchitectureSwitch(e.target.value)}
-                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-indigo-500/40 text-indigo-300 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-indigo-400/30 max-w-[160px] md:max-w-[200px] truncate"
-                      title="Technical Architecture (System/Cloud Focused)"
-                    >
-                      <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
-                        ⚙️ Technical Architecture ▾
-                      </option>
-                      {TECHNICAL_ARCHITECTURE_TYPES.map((t) => {
-                        const vBadge = getLatestVersionBadgeForArchType(t.id);
-                        return (
-                          <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
-                            {t.name}{vBadge}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-indigo-400 absolute right-2 pointer-events-none" />
                   </div>
 
                   {/* 2. Version Dropdown */}
@@ -3456,14 +3441,24 @@ function WorkspaceContent() {
           {/* A. LEFT PANE: Chat & Prompt Panel */}
           <section 
             id="tour-ai-panel"
-            className={getTourClass(tourStep, 3, "w-80 border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden")}
+            className={getTourClass(tourStep, 3, `border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden transition-all duration-300 ${isAssistantOpen ? 'w-80' : 'w-11'}`)}
           >
             {/* Panel Title */}
-            <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20 shrink-0">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-teal-accent" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">AI Architect Assistant</span>
+            <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20 shrink-0 select-none">
+              <div className="flex items-center gap-2 min-w-0">
+                <MessageSquare className="w-4 h-4 text-teal-accent shrink-0" />
+                {isAssistantOpen && (
+                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-300 truncate">AI Architect Assistant</span>
+                )}
               </div>
+              <button
+                type="button"
+                onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                title={isAssistantOpen ? "Collapse Assistant Panel" : "Expand Assistant Panel"}
+                className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
+              >
+                {isAssistantOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              </button>
             </div>
 
             {/* Scrollable Upper Section: Version Details, Prompt Applied, Audit Trail & Chat History */}
