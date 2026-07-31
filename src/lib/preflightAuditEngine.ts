@@ -194,11 +194,11 @@ export function heal2DBoundingBoxLineCollisions(xml: string): string {
                (labelMidY >= b.y - 10 && labelMidY <= b.y + b.h + 10);
       });
 
-      // Shift label offset Y away from shape box
+      // Shift label offset Y away from shape box cleanly without closing mxGeometry tag prematurely
       if (overlapsNodeBox && !updatedInner.includes('as="offset"')) {
         const offsetY = count > 1 ? "24" : "-32";
         if (updatedInner.includes('<mxGeometry')) {
-          updatedInner = updatedInner.replace(/<mxGeometry([^>]*)>/gi, `<mxGeometry$1><mxPoint x="0" y="${offsetY}" as="offset"/></mxGeometry>`);
+          updatedInner = updatedInner.replace(/(<mxGeometry[^>]*>)/gi, `$1<mxPoint x="0" y="${offsetY}" as="offset"/>`);
         } else {
           updatedInner = `<mxGeometry relative="1" as="geometry"><mxPoint x="0" y="${offsetY}" as="offset"/></mxGeometry>${updatedInner}`;
         }
@@ -223,8 +223,12 @@ export function heal2DBoundingBoxLineCollisions(xml: string): string {
           const channelX = (srcCX < blockingBox.x + blockingBox.w / 2)
             ? Math.max(40, blockingBox.x - 40)
             : (blockingBox.x + blockingBox.w + 40);
-          const waypoints = `<mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${channelX}" y="${srcCY}"/><mxPoint x="${channelX}" y="${tgtCY}"/></Array></mxGeometry>`;
-          return `${reconstructedTag}${waypoints}${closeTag}`;
+          
+          if (updatedInner.includes('<mxGeometry')) {
+            updatedInner = updatedInner.replace(/(<\/mxGeometry>)/gi, `<Array as="points"><mxPoint x="${channelX}" y="${srcCY}"/><mxPoint x="${channelX}" y="${tgtCY}"/></Array>$1`);
+          } else {
+            updatedInner = `<mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${channelX}" y="${srcCY}"/><mxPoint x="${channelX}" y="${tgtCY}"/></Array></mxGeometry>${updatedInner}`;
+          }
         }
       }
 
