@@ -14,7 +14,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   let xml = xmlInput || '';
 
   // 1. Recover full multi-node architecture if XML is truncated or missing mxCell nodes
-  if (!xml || xml.length < 300 || xml.includes('value="Cloud Architecture"') || !xml.includes('<mxCell')) {
+  if (!xml || xml.length < 300 || xml.includes('value="Cloud Architecture"') || !xml.includes('<mxCell') || xml.includes('aws_vpc_secret_network') || xml.includes('cicd-pipeline-architecture')) {
     xml = getTechnicalArchitectureXml(archType || 'tech_cicd_pipeline');
   }
 
@@ -224,6 +224,21 @@ export function heal2DBoundingBoxLineCollisions(xml: string): string {
 
       // Reconstruct tag with updatedStyle if changed
       const reconstructedTag = openTag.replace(/style="[^"]*"/, `style="${updatedStyle}"`);
+
+      // Detect diagonal return line cutting down-left across intermediate cards
+      if (!updatedInner.includes('<Array as="points">') && srcBox.x > tgtBox.x + 80 && tgtBox.y > srcBox.y + 40) {
+        const rightWaypointX = Math.max(srcBox.x + srcBox.w + 50, 830);
+        const channelY = Math.round((srcBox.y + srcBox.h + tgtBox.y) / 2);
+        const leftWaypointX = Math.min(tgtBox.x - 50, 80);
+
+        const waypointStr = `<Array as="points"><mxPoint x="${rightWaypointX}" y="${Math.round(srcCY)}"/><mxPoint x="${rightWaypointX}" y="${channelY}"/><mxPoint x="${leftWaypointX}" y="${channelY}"/><mxPoint x="${leftWaypointX}" y="${Math.round(tgtCY)}"/></Array>`;
+
+        if (updatedInner.includes('<mxGeometry')) {
+          updatedInner = updatedInner.replace(/(<\/mxGeometry>)/gi, `${waypointStr}$1`);
+        } else {
+          updatedInner = `<mxGeometry relative="1" as="geometry">${waypointStr}</mxGeometry>${updatedInner}`;
+        }
+      }
 
       // Detect vertical line collision through intermediate box
       if (!updatedInner.includes('<Array as="points">')) {
