@@ -99,6 +99,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       if (!s.includes('verticalLabelPosition')) s += ';verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;';
       if (!s.includes('labelBorderColor')) s += ';labelBorderColor=#0284C7;';
     }
+    if (!s.includes('jumpStyle')) s += ';jumpStyle=arc;jumpSize=6;';
     return `${p1}${s}${p3}`;
   });
 
@@ -114,7 +115,10 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Fix dark text on dark glass fill contrast
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
 
-  // 8. TEMPLATE TYPE EMBEDDED HEADER BANNER HEALER:
+  // 9. AUTOMATED 2D BOUNDING BOX LINE COLLISION HEALING:
+  xml = heal2DBoundingBoxLineCollisions(xml);
+
+  // 10. TEMPLATE TYPE EMBEDDED HEADER BANNER HEALER:
   // Ensure a prominent dark-glass banner pill is embedded at (x: 40, y: 20) on top of the XML canvas
   if (!xml.includes('id="template_type_hdr"')) {
     const tTitle = getTemplateTitle(archType);
@@ -122,7 +126,71 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xml = xml.replace('<root>', `<root>${hdrNode}`);
   }
 
-  // 9. Validate & Auto-Heal XML via Schema Healer
+  // 11. Validate & Auto-Heal XML via Schema Healer
   const healResult = validateAndHealDrawioXml(xml);
   return healResult.xml;
+}
+
+export function heal2DBoundingBoxLineCollisions(xml: string): string {
+  interface Box {
+    id: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  }
+
+  const boxes: Box[] = [];
+  const nodeMatches = xml.matchAll(/<mxCell\s+id="([^"]+)"[^>]*\bvertex="1"[^>]*>(?:[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?x="(\d+)"\s+y="(\d+)"\s+width="(\d+)"\s+height="(\d+)")?/gi);
+
+  for (const m of nodeMatches) {
+    const id = m[1];
+    if (id.includes('container') || id.includes('subnet') || id.includes('lane') || id.includes('hdr') || id.includes('page') || id.includes('vpc_')) continue;
+    const x = parseInt(m[2], 10);
+    const y = parseInt(m[3], 10);
+    const w = parseInt(m[4], 10);
+    const h = parseInt(m[5], 10);
+    if (!isNaN(x) && !isNaN(y) && !isNaN(w) && !isNaN(h)) {
+      boxes.push({ id, x, y, w, h });
+    }
+  }
+
+  if (boxes.length === 0) return xml;
+
+  return xml.replace(
+    /(<mxCell\s+id="([^"]+)"[^>]*\bedge="1"[^>]*source="([^"]+)"\s+target="([^"]+)"[^>]*>)([\s\S]*?)(<\/mxCell>)/gi,
+    (match, openTag, edgeId, sourceId, targetId, innerBody, closeTag) => {
+      const srcBox = boxes.find(b => b.id === sourceId);
+      const tgtBox = boxes.find(b => b.id === targetId);
+
+      if (!srcBox || !tgtBox) return match;
+      if (innerBody.includes('<Array as="points">')) return match;
+
+      const srcCX = srcBox.x + srcBox.w / 2;
+      const srcCY = srcBox.y + srcBox.h / 2;
+      const tgtCX = tgtBox.x + tgtBox.w / 2;
+      const tgtCY = tgtBox.y + tgtBox.h / 2;
+
+      const minY = Math.min(srcCY, tgtCY);
+      const maxY = Math.max(srcCY, tgtCY);
+
+      // Detect vertical line collision through intermediate box
+      const blockingBox = boxes.find(b => {
+        if (b.id === sourceId || b.id === targetId) return false;
+        const xOverlap = (srcCX >= b.x - 15 && srcCX <= b.x + b.w + 15);
+        const yOverlap = (b.y > minY + 20) && (b.y + b.h < maxY - 20);
+        return xOverlap && yOverlap;
+      });
+
+      if (blockingBox) {
+        const channelX = (srcCX < blockingBox.x + blockingBox.w / 2)
+          ? Math.max(40, blockingBox.x - 40)
+          : (blockingBox.x + blockingBox.w + 40);
+        const waypoints = `<mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${channelX}" y="${srcCY}"/><mxPoint x="${channelX}" y="${tgtCY}"/></Array></mxGeometry>`;
+        return `${openTag}${waypoints}${closeTag}`;
+      }
+
+      return match;
+    }
+  );
 }
