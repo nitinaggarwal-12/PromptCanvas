@@ -647,20 +647,62 @@ const TECH_XML_CICD_PIPELINE = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-import { getExactItacsReferenceXml } from './diagramCompiler';
+import {
+  getExactItacsReferenceXml,
+  getExactSequenceDiagramReferenceXml,
+  getExactMacroSequenceDiagramReferenceXml,
+  getExactDataAiPipelineReferenceXml,
+  getExactSecureDeploymentMapReferenceXml,
+  getExactDevopsCicdPipelineReferenceXml,
+  getExactGovernanceStateMachineReferenceXml,
+  getExactUnifiedSystemViewReferenceXml,
+  getExactDarkModeUnifiedSystemViewReferenceXml
+} from './diagramCompiler';
 
 export function getTechnicalArchitectureXml(archId: string): string {
-  if (archId === 'conceptual_diagram' || archId === 'conceptual' || archId === '1. Conceptual Diagram') return getExactItacsReferenceXml();
-  if (archId === 'tech_serverless_gcp' || archId === 'serverless_gcp') return TECH_XML_SERVERLESS_GCP;
-  if (archId === 'tech_streaming_analytics' || archId === 'streaming_pipeline') return TECH_XML_STREAMING_ANALYTICS;
-  if (archId === 'tech_microservices_aws' || archId === 'k8s_mesh') return TECH_XML_MICROSERVICES_AWS;
-  if (archId === 'tech_data_lakehouse' || archId === 'data_lakehouse') return TECH_XML_DATA_LAKEHOUSE;
-  if (archId === 'tech_rag_gcp' || archId === 'rag_gcp') return TECH_XML_RAG_GCP;
-  if (archId === 'tech_event_driven_aws' || archId === 'event_driven_aws') return TECH_XML_EVENT_DRIVEN_AWS;
-  if (archId === 'tech_multi_region_dr' || archId === 'multi_region_dr') return TECH_XML_MULTI_REGION_DR;
-  if (archId === 'tech_vpc_infra' || archId === 'zero_trust') return TECH_XML_VPC_INFRA;
-  if (archId === 'tech_iot_telemetry' || archId === 'hybrid_interconnect') return TECH_XML_IOT_TELEMETRY;
-  if (archId === 'tech_cicd_pipeline' || archId === 'cicd_pipeline') return TECH_XML_CICD_PIPELINE;
+  if (!archId) return getExactItacsReferenceXml();
+  const id = archId.toLowerCase();
+
+  // Business Architecture Master Reference Mappings
+  if (id === 'conceptual_diagram' || id === 'conceptual' || id.includes('conceptual')) {
+    return getExactItacsReferenceXml();
+  }
+  if (id === 'sequence_diagram' || id.includes('micro dynamic sequence')) {
+    return getExactSequenceDiagramReferenceXml();
+  }
+  if (id === 'macro_sequence_diagram' || id.includes('macro dynamic sequence')) {
+    return getExactMacroSequenceDiagramReferenceXml();
+  }
+  if (id === 'data_ai_pipeline' || id.includes('data & ai pipeline')) {
+    return getExactDataAiPipelineReferenceXml();
+  }
+  if (id === 'secure_deployment_map' || id.includes('secure deployment')) {
+    return getExactSecureDeploymentMapReferenceXml();
+  }
+  if (id === 'devops_cicd_pipeline' || id.includes('devops & ci/cd') || id.includes('operational flow')) {
+    return getExactDevopsCicdPipelineReferenceXml();
+  }
+  if (id === 'governance_state_machine' || id.includes('governance') || id.includes('state machine')) {
+    return getExactGovernanceStateMachineReferenceXml();
+  }
+  if (id === 'unified_system_view' || id.includes('unified system view')) {
+    return getExactUnifiedSystemViewReferenceXml();
+  }
+  if (id === 'dark_mode_unified_system_view' || id.includes('architecture')) {
+    return getExactDarkModeUnifiedSystemViewReferenceXml();
+  }
+
+  // Technical Topology Mappings
+  if (id === 'tech_serverless_gcp' || id === 'serverless_gcp') return TECH_XML_SERVERLESS_GCP;
+  if (id === 'tech_streaming_analytics' || id === 'streaming_pipeline') return TECH_XML_STREAMING_ANALYTICS;
+  if (id === 'tech_microservices_aws' || id === 'k8s_mesh') return TECH_XML_MICROSERVICES_AWS;
+  if (id === 'tech_data_lakehouse' || id === 'data_lakehouse') return TECH_XML_DATA_LAKEHOUSE;
+  if (id === 'tech_rag_gcp' || id === 'rag_gcp') return TECH_XML_RAG_GCP;
+  if (id === 'tech_event_driven_aws' || id === 'event_driven_aws') return TECH_XML_EVENT_DRIVEN_AWS;
+  if (id === 'tech_multi_region_dr' || id === 'multi_region_dr') return TECH_XML_MULTI_REGION_DR;
+  if (id === 'tech_vpc_infra' || id === 'zero_trust') return TECH_XML_VPC_INFRA;
+  if (id === 'tech_iot_telemetry' || id === 'hybrid_interconnect') return TECH_XML_IOT_TELEMETRY;
+  if (id === 'tech_cicd_pipeline' || id === 'cicd_pipeline') return TECH_XML_CICD_PIPELINE;
   
   return getExactItacsReferenceXml();
 }
