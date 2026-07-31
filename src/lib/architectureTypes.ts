@@ -151,6 +151,24 @@ export function getArchitectureTypeById(id: string): ArchitectureTypeOption {
   return ARCHITECTURE_TYPES.find(t => t.id === id) || BUSINESS_ARCHITECTURE_TYPES[0];
 }
 
+export function getTemplateTitle(archId?: string | null): string {
+  if (!archId) return 'Architecture Diagram';
+  const opt = ARCHITECTURE_TYPES.find(t => t.id === archId);
+  if (opt) return opt.name;
+  // Handle version number or technical ID matching
+  if (archId.includes('serverless')) return '1. Serverless Web Application (GCP)';
+  if (archId.includes('streaming')) return '2. Real-time Streaming Analytics (GCP)';
+  if (archId.includes('microservices') || archId.includes('k8s')) return '3. Microservices Kubernetes Cluster (AWS)';
+  if (archId.includes('lakehouse')) return '4. Data Lakehouse (AWS)';
+  if (archId.includes('rag')) return '5. AI Retrieval-Augmented Generation / RAG (GCP)';
+  if (archId.includes('event_driven')) return '6. Event-Driven Microservices (AWS)';
+  if (archId.includes('multi_region')) return '7. Multi-Region Disaster Recovery (GCP)';
+  if (archId.includes('vpc')) return '8. Secure VPC Network Infrastructure (AWS)';
+  if (archId.includes('iot')) return '9. IoT Telemetry Ingestion (GCP)';
+  if (archId.includes('cicd')) return '10. CI/CD Pipeline Architecture';
+  return archId;
+}
+
 export function getDefaultXmlForArchitecture(archId?: string | null, useCaseContext?: string, userPrompt?: string): string {
   let xml = '';
 

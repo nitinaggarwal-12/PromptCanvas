@@ -1,5 +1,6 @@
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { validateAndHealDrawioXml } from './xmlHealer';
+import { getTemplateTitle } from './architectureTypes';
 
 /**
  * 🎯 PRE-FLIGHT 6-AUDIT PRE-COMPILER ENGINE
@@ -97,7 +98,15 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Fix dark text on dark glass fill contrast
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
 
-  // 8. Validate & Auto-Heal XML via Schema Healer
+  // 8. TEMPLATE TYPE EMBEDDED HEADER BANNER HEALER:
+  // Ensure a prominent dark-glass banner pill is embedded at (x: 40, y: 20) on top of the XML canvas
+  if (!xml.includes('id="template_type_hdr"')) {
+    const tTitle = getTemplateTitle(archType);
+    const hdrNode = `<mxCell id="template_type_hdr" value="&lt;b style='font-size:12px;color:#38BDF8;'&gt;⚡ ARCHITECTURE TEMPLATE:&lt;/b&gt; &lt;span style='font-size:13px;color:#FFFFFF;font-weight:bold;'&gt;${tTitle}&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#0F172A;strokeColor=#0284C7;strokeWidth=2;fontColor=#FFFFFF;padding=8;spacingLeft=12;" vertex="1" parent="1"><mxGeometry x="40" y="20" width="720" height="45" as="geometry" /></mxCell>`;
+    xml = xml.replace('<root>', `<root>${hdrNode}`);
+  }
+
+  // 9. Validate & Auto-Heal XML via Schema Healer
   const healResult = validateAndHealDrawioXml(xml);
   return healResult.xml;
 }

@@ -239,11 +239,11 @@ export default function DiagramViewer({
       <div class="header-banner">
         <div class="header-top-row">
           <div class="header-left-title">
-            <span class="usecase-tag">BUSINESS USE CASE</span>
-            <span class="diagram-title">${meta.title ? meta.title.replace(/^(\d+\.\s*)+/, (match) => { const nums = match.match(/\d+/g); return nums ? `${nums[nums.length - 1]}. ` : match; }) : ''}</span>
+            <span class="usecase-tag" style="background: rgba(14, 165, 233, 0.15); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 3px 10px; border-radius: 9999px; font-weight: 700; letter-spacing: 0.05em;">⚡ ARCHITECTURE TEMPLATE TYPE</span>
+            <span class="diagram-title" style="font-size: 16px; font-weight: 800; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; text-transform: none; margin-left: 8px;">${meta.title || diagramType || 'Architecture Diagram'}</span>
           </div>
           <div>
-            <span class="category-badge">${meta.category}</span>
+            <span class="category-badge" style="background: ${bgTheme === 'light' ? '#F1F5F9' : '#334155'}; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; font-weight: 700; padding: 4px 10px; border-radius: 6px; border: 1px solid ${bgTheme === 'light' ? '#CBD5E1' : '#475569'};">${meta.category}</span>
           </div>
         </div>
         <div class="business-usecase-box">
