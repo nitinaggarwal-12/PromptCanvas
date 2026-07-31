@@ -242,9 +242,12 @@ export default function DiagramViewer({
     </head>
     <body>
       <div class="header-banner">
-        <div class="header-top-row">
+        <div class="header-top-row" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;">
           <div class="header-left-title" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <span class="diagram-title" style="font-size: 16px; font-weight: 800; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; text-transform: none;">${useCaseName || meta.useCase || meta.title}</span>
+          </div>
+          <div>
+            <span class="arch-type-badge" style="background: ${bgTheme === 'light' ? '#F1F5F9' : '#334155'}; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 6px; border: 1px solid ${bgTheme === 'light' ? '#CBD5E1' : '#475569'}; text-transform: uppercase;">${templateName}</span>
           </div>
         </div>
         <div class="business-usecase-box">
