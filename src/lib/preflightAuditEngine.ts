@@ -64,9 +64,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xml = xml.replace(/(<mxGraphModel[^>]*\bpageWidth=")\d+(")/gi, '$11600"');
   }
 
-  // 5. CYLINDER SHAPE HEIGHT HEALER:
-  // Auto-expand cylinder height from 60px to 80px to prevent subtitle overlap over cylinder rims
-  xml = xml.replace(/(<mxCell[^>]*style="[^"]*shape=cylinder3[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?height=")60(")/gi, '$180"');
+  // 5. SHAPE HEIGHT & VERTICAL TEXT BUFFER HEALER:
+  // Auto-expand all cylinder shapes to 95px height to ensure 3-line database subtitles never touch cylinder rims
+  xml = xml.replace(/(<mxCell[^>]*style="[^"]*shape=cylinder3[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?height=")\d+(")/gi, '$195"');
+  // Auto-expand standard 60px high vertex cards to 75px height for text buffer margin
+  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr").)*?<mxGeometry\s+(?:[^>]*?\s+)?height=")60(")/gi, '$175"');
 
   // 6. TEXT OVERLAP & SUBTITLE DEDUPLICATION HEALER:
   // Clean up duplicate overlapping strings inside node values
@@ -83,11 +85,12 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     return `${p1}${s}${p3}`;
   });
 
-  // Enforce whiteSpace=wrap and overflow=hidden on all vertex cards to prevent text overflow outside shapes
+  // Enforce whiteSpace=wrap, overflow=hidden, and vertical padding on all vertex cards
   xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
     let s = p2;
     if (!s.includes('whiteSpace=wrap')) s += ';whiteSpace=wrap;';
     if (!s.includes('overflow=hidden') && !s.includes('swimlane')) s += ';overflow=hidden;';
+    if (!s.includes('spacingTop')) s += ';spacingTop=6;spacingBottom=6;';
     return `${p1}${s}${p3}`;
   });
 
