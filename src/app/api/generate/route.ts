@@ -8,6 +8,8 @@ import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { tryCompileJsonOrFallback, compileSpecToDrawioXml, getBenchmarkItacsSpec } from '@/lib/diagramCompiler';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
+import { isLayoutEngineV2Enabled } from '@/lib/featureFlags';
+import { runV2Pipeline } from '@/lib/pipeline/v2Pipeline';
 const ai = new GoogleGenAI({});
 
 const SYSTEM_PROMPT = `
@@ -233,6 +235,44 @@ export async function POST(request: Request) {
         { error: 'Invalid request: "prompt" is required and must be a string' },
         { status: 400 }
       );
+    }
+
+    // Check LAYOUT_ENGINE_V2 feature flag
+    const useV2 = isLayoutEngineV2Enabled(body, request.url, request.headers);
+    if (useV2) {
+      console.log('[Pipeline V2] Executing Pipeline V2 deterministic layout engine...');
+      const v2Result = await runV2Pipeline(prompt, process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash', ai);
+
+      if (diagramId) {
+        const version = await saveDiagramVersion(
+          diagramId,
+          v2Result.xml,
+          `V2 Graph Refinement: "${prompt.slice(0, 40)}"`,
+          'AI-V2',
+          prompt,
+          'Pipeline V2 Graph-then-Layout Engine',
+          'Deterministic ELK.js layout',
+          'Validated mxGraph AST',
+          architectureType || 'unified_system_view'
+        );
+        return NextResponse.json({ version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry });
+      } else {
+        const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
+        const { isPrivate, is_private } = body;
+        const { diagram, version } = await createDiagram(
+          diagramName,
+          v2Result.xml,
+          `V2 Graph Generated: "${prompt.slice(0, 40)}"`,
+          prompt,
+          'Pipeline V2 Graph-then-Layout Engine',
+          'Deterministic ELK.js layout',
+          'Validated mxGraph AST',
+          user?.id || null,
+          architectureType || 'unified_system_view',
+          Boolean(isPrivate ?? is_private)
+        );
+        return NextResponse.json({ diagram, version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry }, { status: 201 });
+      }
     }
 
     // Note: GoogleGenAI automatically picks up GEMINI_API_KEY or falls back to Google Cloud ADC
