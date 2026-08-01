@@ -327,6 +327,7 @@ function WorkspaceContent() {
       }
     }
   }, [previewVersion, activeVersion]);
+  const [selectedPersona, setSelectedPersona] = useState<string>('architect');
   
   const suggestions = React.useMemo(() => {
     if (!activeDiagram) return [];
@@ -497,6 +498,10 @@ function WorkspaceContent() {
     }
     return false;
   });
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const [inspectVersion, setInspectVersion] = useState<DiagramVersion | null>(null);
   const [isInspectModalOpen, setIsInspectModalOpen] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -597,7 +602,6 @@ function WorkspaceContent() {
   const [isTerraformModalOpen, setIsTerraformModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<string>('architect');
   
 
   
@@ -4723,7 +4727,7 @@ function WorkspaceContent() {
       />
 
       {/* Interactive Onboarding Guided Tour Overlay */}
-      {tourStep !== null && (
+      {isMounted && tourStep !== null && (
         <>
           {/* Backdrop Mask */}
           <div 
