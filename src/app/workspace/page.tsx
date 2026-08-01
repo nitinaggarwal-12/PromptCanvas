@@ -3784,7 +3784,60 @@ function WorkspaceContent() {
               </button>
             </div>
 
-            {/* Scrollable Upper Section: Version Details, Prompt Applied, Audit Trail & Chat History */}
+            {/* Pinned Top Section: Prompt Chat Input Box & Suggested Next Actions (Eye-Level Access) */}
+            <div className="p-3 border-b border-panel-border bg-panel-dark/95 backdrop-blur shrink-0 z-10 shadow-md">
+              <form onSubmit={handleSendPrompt} className="relative mb-2">
+                <textarea
+                  value={promptInput}
+                  onChange={(e) => setPromptInput(e.target.value)}
+                  placeholder={dynamicPlaceholder}
+                  disabled={!activeDiagram || isAnyAIBusy}
+                  rows={2}
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg pl-3 pr-10 py-2.5 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendPrompt(e);
+                    }
+                  }}
+                />
+                <button
+                  type="submit"
+                  disabled={!activeDiagram || isAnyAIBusy || !promptInput.trim()}
+                  className="absolute right-2.5 bottom-3.5 p-1.5 rounded-md bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </form>
+
+              {activeDiagram && suggestions.length > 0 && (
+                <div>
+                  <h5 className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-teal-accent" />
+                    <span>Suggested Next Actions</span>
+                  </h5>
+                  <div className="flex flex-wrap gap-1.5 max-h-[70px] overflow-y-auto pr-1">
+                    {suggestions.map((suggestion, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setPromptInput(suggestion)}
+                        disabled={isAnyAIBusy}
+                        className="text-[9px] bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 hover:text-teal-accent border border-slate-700/60 hover:border-teal-500/30 px-2 py-1 rounded transition-all truncate text-left cursor-pointer max-w-full disabled:opacity-50"
+                        title={suggestion}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <p className="text-[10px] text-slate-500 mt-1.5 text-center">
+                Press Enter to send. Gemini 2.0 Flash will refine your active diagram.
+              </p>
+            </div>
+
+            {/* Scrollable Lower Section: Version Details, Prompt Applied, Audit Trail & Chat History */}
             <div className="flex-1 min-h-0 overflow-y-auto space-y-4">
               {/* Selected Version Details & Prompt Card */}
               {activeDiagram && displayedVersion && (
@@ -3926,58 +3979,6 @@ function WorkspaceContent() {
                 )}
                 <div ref={chatEndRef} />
               </div>
-            </div>
-
-            {/* Always-Pinned Sticky Bottom Prompt Input Form */}
-            <div className="p-3 border-t border-panel-border bg-panel-dark/95 backdrop-blur shrink-0 mt-auto shadow-lg z-10">
-              {activeDiagram && suggestions.length > 0 && (
-                <div className="mb-2">
-                  <h5 className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                    <Sparkles className="w-3-h-3 text-teal-accent" />
-                    <span>Suggested Next Actions</span>
-                  </h5>
-                  <div className="flex flex-wrap gap-1.5 max-h-[70px] overflow-y-auto pr-1">
-                    {suggestions.map((suggestion, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setPromptInput(suggestion)}
-                        disabled={isAnyAIBusy}
-                        className="text-[9px] bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 hover:text-teal-accent border border-slate-700/60 hover:border-teal-500/30 px-2 py-1 rounded transition-all truncate text-left cursor-pointer max-w-full disabled:opacity-50"
-                        title={suggestion}
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <form onSubmit={handleSendPrompt} className="relative">
-                <textarea
-                  value={promptInput}
-                  onChange={(e) => setPromptInput(e.target.value)}
-                  placeholder={dynamicPlaceholder}
-                  disabled={!activeDiagram || isAnyAIBusy}
-                  rows={2}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg pl-3 pr-10 py-2.5 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendPrompt(e);
-                    }
-                  }}
-                />
-                <button
-                  type="submit"
-                  disabled={!activeDiagram || isAnyAIBusy || !promptInput.trim()}
-                  className="absolute right-2.5 bottom-3.5 p-1.5 rounded-md bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                </button>
-              </form>
-              <p className="text-[10px] text-slate-500 mt-1.5 text-center">
-                Press Enter to send. Gemini 2.0 Flash will refine your active diagram.
-              </p>
             </div>
           </section>
 
