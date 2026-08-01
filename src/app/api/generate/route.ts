@@ -477,7 +477,15 @@ You are incrementally updating an existing architecture diagram (${effectiveArch
     let technicalUsecase: string | null = 'Zero-collision corridor routing with strict 2D bounding box compliance.';
 
       if (isRefinement) {
-        const contents = `
+        const isSimpleUpdatePrompt = /^(updte|update|update it|refresh|rebuild|sync)$/i.test(prompt.trim());
+        if (isSimpleUpdatePrompt && existingXml) {
+          console.log(`[Fast Refinement] Preserving exact template layout for simple update prompt: "${prompt}"`);
+          xml = injectUseCaseFlavor(existingXml, prompt, prompt);
+          reasoning = `Preserved exact ${effectiveArchType} layout structure while refreshing domain labeling for "${prompt}".`;
+          businessUsecase = `Refined enterprise visual architecture for ${effectiveArchType}.`;
+          technicalUsecase = `Layout structure and component coordinates locked and preserved across versions.`;
+        } else {
+          const contents = `
 ### Existing XML:
 \`\`\`xml
 ${existingXml}
@@ -485,36 +493,33 @@ ${existingXml}
 
 ### Refinement Prompt:
 ${prompt}
-        `.trim();
+          `.trim();
 
-        const response = await ai.models.generateContent({
-          model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
-          contents: contents,
-          config: {
-            systemInstruction: activeSystemPrompt,
-          },
-        });
-        responseText = response.text || '';
-        const parsed = parseAiResponse(responseText);
-        xml = parsed.xml || existingXml;
-        reasoning = parsed.reasoning;
-        businessUsecase = parsed.businessUsecase;
-        technicalUsecase = parsed.technicalUsecase;
+          const response = await ai.models.generateContent({
+            model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+            contents: contents,
+            config: {
+              systemInstruction: activeSystemPrompt,
+            },
+          });
+          responseText = response.text || '';
+          const parsed = parseAiResponse(responseText);
+          xml = parsed.xml || existingXml;
+          reasoning = parsed.reasoning;
+          businessUsecase = parsed.businessUsecase;
+          technicalUsecase = parsed.technicalUsecase;
+        }
+      } else if (templateXmlBackbone) {
+        console.log(`[Decided Template Backbone] Using pristine layout structure for decided template (${effectiveArchType}) and prompt: "${prompt.slice(0, 60)}"...`);
+        xml = injectUseCaseFlavor(templateXmlBackbone, prompt, prompt);
+        reasoning = `Architected using decided ${effectiveArchType} structural layout backbone tailored strictly to "${prompt}".`;
+        businessUsecase = `Pristine ${effectiveArchType} architecture tailored for "${prompt}".`;
+        technicalUsecase = `Zero-collision 2D corridor layout with side-by-side executive dashboard and domain telemetry.`;
       } else {
-        console.log(`[Gemini LLM Generation] Generating dynamic 2D architecture for new canvas using decided template (${effectiveArchType}) and prompt: "${prompt.slice(0, 60)}"...`);
+        console.log(`[Gemini LLM Generation] Generating dynamic 2D architecture for new canvas using prompt: "${prompt.slice(0, 60)}"...`);
         
-        const templateGuide = templateXmlBackbone
-          ? `
-MANDATE FOR NEW CANVAS DOMAIN ARCHITECTURE (${effectiveArchType}):
-You are building a brand new architecture diagram strictly tailored to the user's prompt:
-"${prompt}"
+        const dynamicGenerationPrompt = `You are a Principal Cloud Architect and Enterprise Draw.io Diagram Engineer.
 
-Follow the structural pattern of the decided template family (${effectiveArchType}):
-- Maintain a clean 3-to-5 tier spatial layout with clear horizontal column spacing (min 220px pitch).
-- Every node MUST be formatted as: <b>[Number] Component Title</b><br><i>Specific Technical Subtitle</i>
-- Tailor ALL 10 to 14 components strictly to "${prompt}". Do NOT include unrelated domain entities or decorative device mockups.
-- Use native modern color palettes: Ingestion (#FFE6CC), Core Engine (#DAE8FC), AI/LLM (#E1D5E7), Delivery/Outputs (#D5E8D4).`
-          : `
 YOUR TASK:
 Generate a pristine, production-grade Draw.io XML architecture diagram representing the user's prompt:
 "${prompt}"
@@ -529,7 +534,7 @@ STRICT LAYOUT & GEOMETRY RULES:
 2. Use horizontal column pitch of at least 220px (x = 180, 400, 620, 840, 1060) to prevent node overlaps.
 3. Route edge connectors with orthogonalEdgeStyle and ensure perimeter rollback arrows use x=30 waypoints.`;
 
-        const generationSystemInstruction = `${activeSystemPrompt}\n\n${templateGuide}\n\nReturn exactly four markdown sections:\n- ### AI Architectural Plan & Reasoning\n- ### Business Use Case\n- ### Technical Use Case\n- ### Draw.io XML (wrapped in \`\`\`xml ... \`\`\`)`;
+        const generationSystemInstruction = `${activeSystemPrompt}\n\n${dynamicGenerationPrompt}\n\nReturn exactly four markdown sections:\n- ### AI Architectural Plan & Reasoning\n- ### Business Use Case\n- ### Technical Use Case\n- ### Draw.io XML (wrapped in \`\`\`xml ... \`\`\`)`;
 
         const response = await ai.models.generateContent({
           model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
@@ -542,7 +547,7 @@ ${prompt}`,
         responseText = response.text || '';
         const parsed = parseAiResponse(responseText);
         xml = parsed.xml;
-        reasoning = parsed.reasoning || `Architected using Gemini latest model strictly tailored to "${prompt}" under the ${effectiveArchType} layout pattern.`;
+        reasoning = parsed.reasoning || `Architected using Gemini latest model strictly tailored to "${prompt}".`;
         businessUsecase = parsed.businessUsecase;
         technicalUsecase = parsed.technicalUsecase;
       }
