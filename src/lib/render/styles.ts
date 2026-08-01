@@ -31,6 +31,7 @@ export const NODE_TYPE_STYLES: Record<NodeTypeEnum, StyleToken> = {
   cache: { fillColor: '#FFF2CC', strokeColor: '#D6B656', fontColor: '#000000' },
   ai: { fillColor: '#E1D5E7', strokeColor: '#9673A6', fontColor: '#000000' },
   analytics: { fillColor: '#DAE8FC', strokeColor: '#6C8EBF', fontColor: '#000000' },
+  gateway: { fillColor: '#F8CECC', strokeColor: '#B85450', fontColor: '#000000', shape: 'rhombus' },
 };
 
 export function getProductIconUrl(product: string, cloud: CloudEnum): string {

@@ -26,6 +26,10 @@ export const GraphTierSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   order: z.number().int().min(1).max(8),
+  x: z.number().optional(),
+  y: z.number().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
 });
 export type GraphTier = z.infer<typeof GraphTierSchema>;
 
@@ -68,7 +72,7 @@ export const ArchitectureGraphSchema = z.object({
   tiers: z.array(GraphTierSchema).min(1).max(8),
   nodes: z.array(GraphNodeSchema).min(1).max(60),
   edges: z.array(GraphEdgeSchema),
-  narrative: NarrativeSchema,
+  narrative: NarrativeSchema.optional(),
 });
 export type ArchitectureGraph = z.infer<typeof ArchitectureGraphSchema>;
 

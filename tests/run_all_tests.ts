@@ -1,6 +1,7 @@
 import { runSchemaTests } from './unit/schema.test';
 import { runValidatorTests } from './unit/validator.test';
 import { runElkDeterminismTests } from './unit/elk-determinism.test';
+import { runXmlToGraphTests } from './unit/xmlToGraph.test';
 import { runGoldenPipelineTests } from './golden/golden-pipeline.test';
 
 async function main() {
@@ -10,13 +11,14 @@ async function main() {
   const schemaOk = runSchemaTests();
   const validatorOk = runValidatorTests();
   const elkOk = await runElkDeterminismTests();
+  const xmlToGraphOk = runXmlToGraphTests();
   const goldenOk = await runGoldenPipelineTests();
 
   const totalTime = Date.now() - start;
 
   console.log('\n========================================');
   console.log(`Test Execution Time: ${totalTime}ms`);
-  if (schemaOk && validatorOk && elkOk && goldenOk) {
+  if (schemaOk && validatorOk && elkOk && xmlToGraphOk && goldenOk) {
     console.log('🎉 ALL TESTS PASSED SUCCESSFULLY! (100% Green)');
     process.exit(0);
   } else {
