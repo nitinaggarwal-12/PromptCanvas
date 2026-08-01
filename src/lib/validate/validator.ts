@@ -38,6 +38,8 @@ interface ParsedEdge {
   id: string;
   source: string;
   target: string;
+  hasSourcePoint?: boolean;
+  hasTargetPoint?: boolean;
 }
 
 export function validateDrawioXml(xmlString: string): ValidationResult {
@@ -171,7 +173,13 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     } else if (isEdge) {
       const source = cell['@_source'];
       const target = cell['@_target'];
-      edgesMap.set(id, { id, source, target });
+      // Edges anchored by explicit mxPoint sourcePoint/targetPoint (sequence arrows,
+      // legend decorations) are valid draw.io constructs, not dangling edges.
+      const geom = cell.mxGeometry;
+      const points = geom?.mxPoint ? (Array.isArray(geom.mxPoint) ? geom.mxPoint : [geom.mxPoint]) : [];
+      const hasSourcePoint = points.some((pt: any) => pt?.['@_as'] === 'sourcePoint');
+      const hasTargetPoint = points.some((pt: any) => pt?.['@_as'] === 'targetPoint');
+      edgesMap.set(id, { id, source, target, hasSourcePoint, hasTargetPoint });
     }
   }
 
@@ -204,11 +212,13 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   const connectedNodeIds = new Set<string>();
   for (const [edgeId, edge] of edgesMap.entries()) {
     if (!edge.source || !verticesMap.has(edge.source)) {
-      errors.push({
-        code: 'EDGE_DANGLING',
-        cells: [edgeId],
-        detail: `Edge "${edgeId}" source "${edge.source}" is not a valid vertex`,
-      });
+      if (!edge.hasSourcePoint) {
+        errors.push({
+          code: 'EDGE_DANGLING',
+          cells: [edgeId],
+          detail: `Edge "${edgeId}" source "${edge.source}" is not a valid vertex and has no explicit sourcePoint`,
+        });
+      }
     } else {
       connectedNodeIds.add(edge.source);
       if (verticesMap.get(edge.source)?.isContainer) {
@@ -221,11 +231,13 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
 
     if (!edge.target || !verticesMap.has(edge.target)) {
-      errors.push({
-        code: 'EDGE_DANGLING',
-        cells: [edgeId],
-        detail: `Edge "${edgeId}" target "${edge.target}" is not a valid vertex`,
-      });
+      if (!edge.hasTargetPoint) {
+        errors.push({
+          code: 'EDGE_DANGLING',
+          cells: [edgeId],
+          detail: `Edge "${edgeId}" target "${edge.target}" is not a valid vertex and has no explicit targetPoint`,
+        });
+      }
     } else {
       connectedNodeIds.add(edge.target);
       if (verticesMap.get(edge.target)?.isContainer) {
