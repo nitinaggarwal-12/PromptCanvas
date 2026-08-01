@@ -1,10 +1,79 @@
 import { XMLParser } from 'fast-xml-parser';
-import { ArchitectureGraph, GraphTier, GraphNode, GraphEdge } from './schema';
 
-export function xmlToGraph(xml: string): ArchitectureGraph | null {
-  if (!xml || typeof xml !== 'string' || !xml.includes('<mxfile')) {
-    return null;
-  }
+export interface ExtractedTier {
+  id: string;
+  label: string;
+  kind: 'layer' | 'stage' | 'lane';
+}
+
+export interface ExtractedComponent {
+  id: string;
+  label: string;
+  subtitle?: string;
+  type?: string;
+  tier: string;
+}
+
+export interface ExtractedFlow {
+  id: string;
+  from: string;
+  to: string;
+  label?: string;
+  protocol?: string;
+  async: boolean;
+}
+
+export interface ExtractedActor {
+  id: string;
+  label: string;
+}
+
+export interface ExtractedTransition {
+  id: string;
+  from: string;
+  to: string;
+  gate?: string;
+}
+
+export interface ExtractedGraph {
+  title?: string;
+  tiers: ExtractedTier[];
+  components: ExtractedComponent[];
+  nodes: ExtractedComponent[];
+  flows: ExtractedFlow[];
+  edges: ExtractedFlow[];
+  actors: ExtractedActor[];
+  transitions: ExtractedTransition[];
+  unmapped: string[];
+}
+
+function stripHtml(raw: string | undefined): string {
+  if (!raw) return '';
+  return String(raw)
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractProtocol(label: string): string | undefined {
+  const match = label.match(/\b(gRPC|JDBC|HTTP|HTTPS|mTLS|Kafka|REST|AMQP|SQS|TLS|OIDC|OAuth2)\b/i);
+  return match ? match[1].toUpperCase() : undefined;
+}
+
+function isGateTransition(label: string): boolean {
+  if (!label) return false;
+  return /\b(APPROVED|REJECTED|VALID|INVALID|GATE|CONDITION|IF|WHEN)\b/i.test(label) || label.includes('[') && label.includes(']');
+}
+
+export function xmlToGraph(mxGraphXml: string): ExtractedGraph | null {
+  if (!mxGraphXml || typeof mxGraphXml !== 'string') return null;
 
   try {
     const parser = new XMLParser({
@@ -13,144 +82,176 @@ export function xmlToGraph(xml: string): ArchitectureGraph | null {
       textNodeName: '#text',
     });
 
-    const parsed = parser.parse(xml);
-    const model = parsed?.mxfile?.diagram?.mxGraphModel || parsed?.mxGraphModel;
-    if (!model || !model.root) {
-      return null;
-    }
+    const parsed = parser.parse(mxGraphXml);
+    if (!parsed) return null;
 
-    const cells: any[] = Array.isArray(model.root.mxCell)
+    // Support both direct <mxGraphModel> and wrapped <mxfile><diagram><mxGraphModel>
+    const model = parsed.mxGraphModel || parsed.mxfile?.diagram?.mxGraphModel;
+    if (!model || !model.root || !model.root.mxCell) return null;
+
+    const rawCells = Array.isArray(model.root.mxCell)
       ? model.root.mxCell
-      : model.root.mxCell
-      ? [model.root.mxCell]
-      : [];
+      : [model.root.mxCell];
 
-    if (cells.length === 0) {
-      return null;
-    }
+    const tiersMap = new Map<string, ExtractedTier>();
+    const componentsMap = new Map<string, ExtractedComponent>();
+    const flows: ExtractedFlow[] = [];
+    const actorsMap = new Map<string, ExtractedActor>();
+    const transitions: ExtractedTransition[] = [];
+    const unmapped: string[] = [];
 
-    const tiers: GraphTier[] = [];
-    const nodes: GraphNode[] = [];
-    const edges: GraphEdge[] = [];
-
-    const tierMap = new Map<string, GraphTier>();
-    const nodeMap = new Map<string, GraphNode>();
-
-    let tierCount = 0;
-
-    // First pass: Find container vertices (tiers)
-    for (const cell of cells) {
+    // Pre-pass: Identify tier containers
+    for (const cell of rawCells) {
       const id = cell['@_id'];
-      const value = cell['@_value'] || '';
-      const style = cell['@_style'] || '';
-      const vertex = cell['@_vertex'];
+      if (!id || id === '0' || id === '1') continue;
 
-      if (vertex && (style.includes('container=1') || style.includes('swimlane'))) {
-        tierCount++;
-        const label = value.replace(/<[^>]*>/g, '').trim() || `Tier ${tierCount}`;
-        const tier: GraphTier = {
-          id: id || `tier_${tierCount}`,
-          label,
-          order: tierCount,
-        };
-        tierMap.set(id, tier);
-        tiers.push(tier);
+      const style = cell['@_style'] || '';
+      const rawValue = cell['@_value'] || '';
+      const cleanLabel = stripHtml(rawValue);
+
+      const isContainer =
+        cell['@_isContainer'] === '1' ||
+        style.includes('swimlane') ||
+        id.startsWith('col_') ||
+        id.startsWith('sw') ||
+        id.startsWith('tier_') ||
+        id.startsWith('phase_') ||
+        cleanLabel.toUpperCase().startsWith('[STAGE') ||
+        cleanLabel.toUpperCase().includes('TIER') ||
+        cleanLabel.toUpperCase().includes('LAYER') ||
+        cleanLabel.toUpperCase().includes('ZONE');
+
+      if (isContainer && cleanLabel) {
+        let kind: 'layer' | 'stage' | 'lane' = 'layer';
+        if (cleanLabel.toUpperCase().startsWith('[STAGE') || style.includes('horizontal=0')) {
+          kind = 'stage';
+        } else if (style.includes('swimlane')) {
+          kind = 'lane';
+        }
+        tiersMap.set(id, {
+          id,
+          label: cleanLabel,
+          kind,
+        });
       }
     }
 
-    // Default tier if no containers found
-    if (tiers.length === 0) {
-      const defaultTier: GraphTier = {
-        id: 'tier_default',
-        label: 'General Architecture Tier',
-        order: 1,
-      };
-      tiers.push(defaultTier);
-      tierMap.set('1', defaultTier);
+    // Default tier if none found
+    if (tiersMap.size === 0) {
+      tiersMap.set('default_tier', {
+        id: 'default_tier',
+        label: 'System Components',
+        kind: 'layer',
+      });
     }
 
-    // Second pass: Find node vertices
-    for (const cell of cells) {
+    const tierIds = new Set(tiersMap.keys());
+
+    // Main pass: Process vertices and edges
+    for (const cell of rawCells) {
       const id = cell['@_id'];
-      const value = cell['@_value'] || '';
+      if (!id || id === '0' || id === '1') continue;
+
+      const isVertex = cell['@_vertex'] === '1';
+      const isEdge = cell['@_edge'] === '1';
+      const rawValue = cell['@_value'] || '';
+      const cleanLabel = stripHtml(rawValue);
       const style = cell['@_style'] || '';
-      const vertex = cell['@_vertex'];
-      const parent = cell['@_parent'] || '1';
+      const parent = cell['@_parent'] || 'default_tier';
 
-      if (vertex && id && id !== '0' && id !== '1' && !tierMap.has(id)) {
-        // Strip HTML tags for clean label
-        const plainText = value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-        const labelParts = plainText.split(/\s+—\s+|\s+-\s+|\n/);
-        const label = labelParts[0] || `Node ${id}`;
-        const subtitle = labelParts.slice(1).join(' ') || undefined;
+      if (tiersMap.has(id)) {
+        continue; // already a tier
+      }
 
-        const parentTier = tierMap.get(parent) || tiers[0];
-
-        // Infer node type
-        let type: GraphNode['type'] = 'compute';
-        if (style.includes('cylinder') || style.includes('database') || style.includes('storage')) {
-          type = 'database';
-        } else if (style.includes('rhombus') || style.includes('gateway') || style.includes('ingress')) {
-          type = 'gateway';
-        } else if (style.includes('security') || style.includes('shield') || style.includes('armor')) {
-          type = 'security';
-        } else if (style.includes('ai') || style.includes('brain') || style.includes('vertex')) {
-          type = 'ai';
-        } else if (style.includes('queue') || style.includes('pubsub') || style.includes('kafka')) {
-          type = 'queue';
+      if (isVertex) {
+        if (!cleanLabel || cleanLabel.length < 2) {
+          unmapped.push(id);
+          continue;
         }
 
-        const node: GraphNode = {
+        // Avoid mapping pure legend/note boxes or watermarks as components if they contain meta text
+        const lines = cleanLabel.split('\n').map(s => s.trim()).filter(Boolean);
+        const label = lines[0] || cleanLabel;
+        const subtitle = lines.length > 1 ? lines.slice(1).join(' - ') : undefined;
+
+        const resolvedTier = tierIds.has(parent) ? parent : Array.from(tierIds)[0];
+
+        // Infer node type
+        let type: string | undefined = undefined;
+        const lower = cleanLabel.toLowerCase();
+        if (lower.includes('user') || lower.includes('actor') || lower.includes('client') || lower.includes('analyst') || lower.includes('physician') || lower.includes('payer')) {
+          type = 'user';
+        } else if (lower.includes('database') || lower.includes('db') || lower.includes('table') || lower.includes('warehouse') || lower.includes('lakehouse')) {
+          type = 'database';
+        } else if (lower.includes('storage') || lower.includes('bucket') || lower.includes('s3')) {
+          type = 'storage';
+        } else if (lower.includes('queue') || lower.includes('kafka') || lower.includes('pubsub') || lower.includes('event')) {
+          type = 'queue';
+        } else if (lower.includes('security') || lower.includes('auth') || lower.includes('iam') || lower.includes('firewall') || lower.includes('vpc')) {
+          type = 'security';
+        } else if (lower.includes('ai') || lower.includes('llm') || lower.includes('gemini') || lower.includes('rag') || lower.includes('model')) {
+          type = 'ai';
+        }
+
+        const component: ExtractedComponent = {
           id,
           label,
           subtitle,
-          tier: parentTier.id,
           type,
+          tier: resolvedTier,
         };
-        nodeMap.set(id, node);
-        nodes.push(node);
+
+        componentsMap.set(id, component);
+
+        if (type === 'user' || resolvedTier.toLowerCase().includes('client') || resolvedTier.toLowerCase().includes('user')) {
+          actorsMap.set(id, { id, label });
+        }
+      } else if (isEdge) {
+        const source = cell['@_source'];
+        const target = cell['@_target'];
+
+        if (!source || !target) {
+          unmapped.push(id);
+          continue;
+        }
+
+        const protocol = extractProtocol(cleanLabel);
+        const isAsync = style.includes('dashed=1') || cleanLabel.toLowerCase().includes('async') || cleanLabel.toLowerCase().includes('event');
+
+        if (isGateTransition(cleanLabel) || style.includes('state') || style.includes('transition')) {
+          transitions.push({
+            id,
+            from: source,
+            to: target,
+            gate: cleanLabel || undefined,
+          });
+        } else {
+          flows.push({
+            id,
+            from: source,
+            to: target,
+            label: cleanLabel || undefined,
+            protocol,
+            async: isAsync,
+          });
+        }
+      } else {
+        unmapped.push(id);
       }
     }
 
-    // Third pass: Find edges
-    for (const cell of cells) {
-      const id = cell['@_id'];
-      const value = cell['@_value'] || '';
-      const style = cell['@_style'] || '';
-      const edge = cell['@_edge'];
-      const source = cell['@_source'];
-      const target = cell['@_target'];
-
-      if (edge && source && target && nodeMap.has(source) && nodeMap.has(target)) {
-        const plainLabel = value.replace(/<[^>]*>/g, '').trim();
-        const graphEdge: GraphEdge = {
-          id: id || `edge_${edges.length + 1}`,
-          source,
-          target,
-          label: plainLabel || undefined,
-          style: style.includes('dashed') ? 'dashed' : 'solid',
-        };
-        edges.push(graphEdge);
-      }
-    }
-
-    if (nodes.length === 0) {
-      return null;
-    }
-
+    const componentsList = Array.from(componentsMap.values());
     return {
-      title: 'Extracted Architecture Graph',
-      cloud: 'generic',
-      tiers,
-      nodes,
-      edges,
-      narrative: {
-        reasoning: 'Extracted from mxGraph XML structure',
-        businessUsecase: 'Template Architecture View',
-        technicalUsecase: 'Extracted Node-Edge Topology',
-      },
+      tiers: Array.from(tiersMap.values()),
+      components: componentsList,
+      nodes: componentsList,
+      flows,
+      edges: flows,
+      actors: Array.from(actorsMap.values()),
+      transitions,
+      unmapped,
     };
-  } catch (err) {
+  } catch {
     return null;
   }
 }
