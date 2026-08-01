@@ -114,8 +114,37 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   }
 
   // 5. SHAPE HEIGHT & VERTICAL TEXT BUFFER HEALER (Gemini-authored XML only:
-  // resizing v2 nodes without re-running ELK manufactures overlaps and container escapes)
-  if (!isV2LayoutEngineOutput) {
+  // resizing structured template nodes or v2 nodes without re-running ELK manufactures overlaps and container escapes)
+  const isStructuredTemplateXml =
+    xml.includes('PromptCanvas-LayoutEngineV2') ||
+    xml.includes('col_ingestion') ||
+    xml.includes('col_processing') ||
+    xml.includes('col_delivery') ||
+    xml.includes('col_top') ||
+    xml.includes('col_central') ||
+    xml.includes('col_right') ||
+    xml.includes('box_mlops') ||
+    xml.includes('box_rag') ||
+    xml.includes('erd_compiled') ||
+    xml.includes('agentic_rag') ||
+    xml.includes('itacs_conceptual_compiled') ||
+    xml.includes('governance_state_machine_compiled') ||
+    xml.includes('unified_system_view') ||
+    xml.includes('devops_cicd_pipeline') ||
+    xml.includes('data_ai_pipeline') ||
+    xml.includes('secure_deployment_map') ||
+    xml.includes('sequence_diagram') ||
+    xml.includes('macro_sequence_diagram') ||
+    xml.includes('tech_') ||
+    xml.includes('serverless_gcp') ||
+    xml.includes('sw1_') ||
+    xml.includes('sw2_') ||
+    xml.includes('sw3_') ||
+    xml.includes('dm_l1_') ||
+    xml.includes('etl_src') ||
+    xml.includes('fact_ins');
+
+  if (!isStructuredTemplateXml && !isV2LayoutEngineOutput) {
     // Auto-expand all cylinder shapes to 95px height to ensure 3-line database subtitles never touch cylinder rims
     xml = xml.replace(/(<mxCell[^>]*style="[^"]*shape=cylinder3[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?height=")\d+(")/gi, '$195"');
     // Auto-expand standard vertex cards to 80px height for text buffer margin
@@ -128,7 +157,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // Auto-expand all rhombus/diamond shapes to width=280 and height=90 so text never spills over sloped edges
   xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")\d+("\s+height=")\d+(")/gi, '$1280$290"');
 
-  // 7. EDGE LABEL MULTI-LINE SPLITTING & TEXT OVERLAP HEALER:
+  // 7. EDGE LABEL MULTI-LINE SPLITTING & TEXT OVERLAP HEALING:
   // Compact multi-word edge labels so they fit perfectly inside 160px corridors without clipping cards
   xml = xml.replace(/value="Promote to Production"/gi, 'value="Promote to&lt;br&gt;Production"');
   xml = xml.replace(/value="Sync GitOps Manifest"/gi, 'value="Sync GitOps&lt;br&gt;Manifest"');
@@ -169,26 +198,6 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // 9. AUTOMATED 2D BOUNDING BOX LINE & EDGE LABEL OVERLAP HEALING:
   // All pre-engineered template diagrams and V2 Layout Engine outputs already have explicit,
   // collision-free spatial coordinates. Naive 1D tier collision heuristics must never shift cards or distort templates.
-  const isStructuredTemplateXml =
-    xml.includes('PromptCanvas-LayoutEngineV2') ||
-    xml.includes('col_ingestion') ||
-    xml.includes('col_processing') ||
-    xml.includes('col_delivery') ||
-    xml.includes('itacs_conceptual_compiled') ||
-    xml.includes('governance_state_machine_compiled') ||
-    xml.includes('unified_system_view') ||
-    xml.includes('devops_cicd_pipeline') ||
-    xml.includes('data_ai_pipeline') ||
-    xml.includes('secure_deployment_map') ||
-    xml.includes('agentic_rag') ||
-    xml.includes('sequence_diagram') ||
-    xml.includes('macro_sequence_diagram') ||
-    xml.includes('tech_') ||
-    xml.includes('serverless_gcp') ||
-    xml.includes('sw1_') ||
-    xml.includes('sw2_') ||
-    xml.includes('sw3_');
-
   if (!isStructuredTemplateXml) {
     xml = heal2DBoundingBoxLineCollisions(xml);
     xml = heal2DSameTierNodeCollisions(xml);
