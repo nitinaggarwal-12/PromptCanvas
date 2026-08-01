@@ -562,6 +562,9 @@ function WorkspaceContent() {
     if (searchParams.get('setupPassword') === 'true') {
       setIsPasswordSetupOpen(true);
     }
+    if (searchParams.get('tour') === 'true') {
+      setTourStep(1);
+    }
   }, [searchParams]);
 
   const openCreateModal = () => {
@@ -980,6 +983,8 @@ function WorkspaceContent() {
     // Tour Step
     if (tourStep !== null) {
       params.set('tour', 'true');
+    } else {
+      params.delete('tour');
     }
 
     const currentSearch = window.location.search;
