@@ -476,12 +476,15 @@ You are incrementally updating an existing architecture diagram (${effectiveArch
     let businessUsecase: string | null = 'Unified database schema consolidation and clean visual semantic layer.';
     let technicalUsecase: string | null = 'Zero-collision corridor routing with strict 2D bounding box compliance.';
 
+      const isConceptualDiagram = effectiveArchType === 'conceptual_diagram';
+      const isExistingXmlConceptual = existingXml && existingXml.includes('col_ingestion');
+
       if (isRefinement) {
-        const isSimpleUpdatePrompt = /^(updte|update|update it|refresh|rebuild|sync)$/i.test(prompt.trim());
-        if (isSimpleUpdatePrompt && existingXml) {
-          console.log(`[Fast Refinement] Preserving exact template layout for simple update prompt: "${prompt}"`);
-          xml = injectUseCaseFlavor(existingXml, prompt, prompt);
-          reasoning = `Preserved exact ${effectiveArchType} layout structure while refreshing domain labeling for "${prompt}".`;
+        const isSimpleUpdatePrompt = /^(updte|update|update it|can u pdate it|can you update it|refresh|rebuild|sync)$/i.test(prompt.trim());
+        if ((isConceptualDiagram || isSimpleUpdatePrompt) && (!isExistingXmlConceptual || isSimpleUpdatePrompt) && templateXmlBackbone) {
+          console.log(`[Conceptual / Template Guard] Enforcing pristine 3-Stage layout for ${effectiveArchType} on refinement prompt: "${prompt}"`);
+          xml = injectUseCaseFlavor(templateXmlBackbone, prompt, prompt);
+          reasoning = `Preserved exact 3-Stage ${effectiveArchType} layout structure while refreshing domain labeling for "${prompt}".`;
           businessUsecase = `Refined enterprise visual architecture for ${effectiveArchType}.`;
           technicalUsecase = `Layout structure and component coordinates locked and preserved across versions.`;
         } else {
