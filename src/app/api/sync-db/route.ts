@@ -4,10 +4,10 @@ import { syncDatabase } from '@/lib/db';
 export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get('Authorization');
-    const expectedKey = process.env.SYNC_DB_SECRET || process.env.GEMINI_API_KEY || 'dev-sync-secret';
+    const syncSecret = process.env.SYNC_DB_SECRET || (process.env.NODE_ENV === 'development' ? 'dev-sync-secret' : null);
 
-    if (authHeader !== `Bearer ${expectedKey}` && expectedKey !== 'dev-sync-secret') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!syncSecret || authHeader !== `Bearer ${syncSecret}`) {
+      return NextResponse.json({ error: 'Unauthorized: SYNC_DB_SECRET is missing or invalid' }, { status: 401 });
     }
 
     const body = await req.json();

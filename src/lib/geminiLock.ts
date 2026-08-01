@@ -2,7 +2,7 @@
 // Prevents API quota exhaustion, rate limit issues, and overlapping state mutations.
 
 const activeGeminiRequests = new Map<string, number>();
-const LOCK_TIMEOUT_MS = 15 * 1000; // 15 seconds auto-expiry safeguard
+const LOCK_TIMEOUT_MS = 120 * 1000; // 120 seconds auto-expiry safeguard (matches 20-60s Gemini call durations)
 
 /**
  * Attempt to acquire the Gemini API execution lock for a given user or session key.

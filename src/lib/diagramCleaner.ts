@@ -1124,45 +1124,54 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security on Account Data (PCI-DSS &amp; Banking Compliance)');
   }
 
-  // Universal Catch-All Scrubber: Eliminate any remaining residual medical/oncology/pharma terms from ALL diagrams
-  updatedXml = updatedXml
-    .replace(/Raw Scientific Literature &amp; PPT Decks/g, `${topic} Data Ingress &amp; Client Docs`)
-    .replace(/Manual Data Sources Card/g, `${topic} Ingress Card`)
-    .replace(/Market Research/g, 'Client Gateway')
-    .replace(/Medical Affairs/g, 'Core Operations')
-    .replace(/Market Access/g, 'Integration APIs')
-    .replace(/Outcomes Research/g, 'Analytics &amp; Metrics')
-    .replace(/Competitive Intelligence/g, 'Business Intelligence')
-    .replace(/Researcher Node/g, 'User &amp; Operator Node')
-    .replace(/Analyst Workspace Portal/g, `${topic} Application Portal`)
-    .replace(/Asset Analysis &amp; Query Interface/g, 'Data Analysis &amp; Query Interface')
-    .replace(/Genomic &amp; Clinical Correlation Engine/g, 'Core Business Data Engine')
-    .replace(/PubMed PDF &amp; PPT Chunking Engine/g, 'Document &amp; Stream Processing Engine')
-    .replace(/Oncology Scenario Planning/g, 'Scenario Planning &amp; Operations')
-    .replace(/Oncology Analyst/g, 'Operations Analyst')
-    .replace(/Oncology Trends/g, 'Performance Trends')
-    .replace(/OUTMANEUVER COMPETITION/g, 'OPTIMIZE SYSTEM EFFICIENCY')
-    .replace(/REACH PATIENTS FASTER/g, 'ACCELERATE TIME-TO-VALUE')
-    .replace(/STRATEGIC PLANNING &amp; ANALYSIS/g, 'ENTERPRISE GOVERNANCE &amp; ANALYTICS')
-    .replace(/Competitor Comparison View/g, 'System Component Performance View')
-    .replace(/Review ITACS Oncology Operational Strategy/gi, `Review ${topic} Operational Strategy`)
-    .replace(/Dim_Patient/g, 'Dim_Customer_Entity')
-    .replace(/Patient Key/g, 'Customer ID (PK)')
-    .replace(/Patient Type/g, 'Entity Type')
-    .replace(/Disease History/g, 'Activity History')
-    .replace(/Dim_Physician/g, 'Dim_Provider_Service')
-    .replace(/Physician Key/g, 'Provider ID (PK)')
-    .replace(/Specialization/g, 'Service Category')
-    .replace(/Dim_Payer/g, 'Dim_Billing_Channel')
-    .replace(/Payer Key/g, 'Billing ID (PK)')
-    .replace(/Payer Name/g, 'Channel Name')
-    .replace(/Fact_Patient_Encounters/g, 'Fact_System_Transactions')
-    .replace(/Fact_Oncology_Insights/g, 'Fact_Business_Insights')
-    .replace(/Dim_Oncology_Product/g, 'Dim_Product_Catalog')
-    .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security &amp; Compliance Audit')
-    .replace(/Oncology/gi, topic || 'Enterprise')
-    .replace(/PubMed/gi, `${topic} API`)
-    .replace(/ITACS/gi, topic || 'Enterprise');
+  const isHealthcareOrPharma = promptLower.includes('patient') || promptLower.includes('hospital') || promptLower.includes('medical') || promptLower.includes('pharma') || promptLower.includes('oncology') || promptLower.includes('clinical') || promptLower.includes('health') || promptLower.includes('drug') || promptLower.includes('biotech');
+
+  // Universal Scrubber: Clean legacy ITACS/Oncology boilerplate out of templates for NON-healthcare/pharma diagrams
+  if (!isHealthcareOrPharma) {
+    updatedXml = updatedXml
+      .replace(/Raw Scientific Literature &amp; PPT Decks/g, `${topic} Data Ingress &amp; Client Docs`)
+      .replace(/Manual Data Sources Card/g, `${topic} Ingress Card`)
+      .replace(/Market Research/g, 'Client Gateway')
+      .replace(/Medical Affairs/g, 'Core Operations')
+      .replace(/Market Access/g, 'Integration APIs')
+      .replace(/Outcomes Research/g, 'Analytics &amp; Metrics')
+      .replace(/Competitive Intelligence/g, 'Business Intelligence')
+      .replace(/Researcher Node/g, 'User &amp; Operator Node')
+      .replace(/Analyst Workspace Portal/g, `${topic} Application Portal`)
+      .replace(/Asset Analysis &amp; Query Interface/g, 'Data Analysis &amp; Query Interface')
+      .replace(/Genomic &amp; Clinical Correlation Engine/g, 'Core Business Data Engine')
+      .replace(/PubMed PDF &amp; PPT Chunking Engine/g, 'Document &amp; Stream Processing Engine')
+      .replace(/Oncology Scenario Planning/g, 'Scenario Planning &amp; Operations')
+      .replace(/Oncology Analyst/g, 'Operations Analyst')
+      .replace(/Oncology Trends/g, 'Performance Trends')
+      .replace(/OUTMANEUVER COMPETITION/g, 'OPTIMIZE SYSTEM EFFICIENCY')
+      .replace(/REACH PATIENTS FASTER/g, 'ACCELERATE TIME-TO-VALUE')
+      .replace(/STRATEGIC PLANNING &amp; ANALYSIS/g, 'ENTERPRISE GOVERNANCE &amp; ANALYTICS')
+      .replace(/Competitor Comparison View/g, 'System Component Performance View')
+      .replace(/Review ITACS Oncology Operational Strategy/gi, `Review ${topic} Operational Strategy`)
+      .replace(/Dim_Patient/g, 'Dim_Customer_Entity')
+      .replace(/Patient Key/g, 'Customer ID (PK)')
+      .replace(/Patient Type/g, 'Entity Type')
+      .replace(/Disease History/g, 'Activity History')
+      .replace(/Dim_Physician/g, 'Dim_Provider_Service')
+      .replace(/Physician Key/g, 'Provider ID (PK)')
+      .replace(/Specialization/g, 'Service Category')
+      .replace(/Dim_Payer/g, 'Dim_Billing_Channel')
+      .replace(/Payer Key/g, 'Billing ID (PK)')
+      .replace(/Payer Name/g, 'Channel Name')
+      .replace(/Fact_Patient_Encounters/g, 'Fact_System_Transactions')
+      .replace(/Fact_Oncology_Insights/g, 'Fact_Business_Insights')
+      .replace(/Dim_Oncology_Product/g, 'Dim_Product_Catalog')
+      .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security &amp; Compliance Audit')
+      .replace(/Oncology/gi, topic || 'Enterprise')
+      .replace(/PubMed/gi, `${topic} API`)
+      .replace(/ITACS/gi, topic || 'Enterprise');
+  } else {
+    // For Healthcare/Pharma prompts: preserve generic medical vocabulary, only clean ITACS brand boilerplate
+    updatedXml = updatedXml
+      .replace(/ITACS Oncology Platform/g, `${topic} Platform`)
+      .replace(/ITACS/gi, topic || 'Healthcare');
+  }
 
   return updatedXml;
 }

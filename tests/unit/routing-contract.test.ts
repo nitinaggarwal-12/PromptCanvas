@@ -247,6 +247,11 @@ describe('V2 Pipeline & Architecture Routing Contract Tests', () => {
     expect(bankErdXml.includes('Patient Key')).toBe(false);
     expect(bankErdXml.includes('Dim_Physician')).toBe(false);
     expect(bankErdXml.includes('Dim_Customer_Account')).toBe(true);
+
+    const healthcareErdXml = getDefaultXmlForArchitecture('erd', 'hospital network', 'patient encounter data platform for a hospital network') || '';
+    expect(healthcareErdXml.includes('Dim_Patient')).toBe(true);
+    expect(healthcareErdXml.includes('Patient Key')).toBe(true);
+    expect(healthcareErdXml.includes('Fact_Patient_Encounters')).toBe(true);
   });
 
   it('(vii) Intent Router high confidence (>=0.8) -> routes to template path with classified architecture_type', async () => {
