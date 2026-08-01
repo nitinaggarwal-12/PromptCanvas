@@ -14,40 +14,65 @@ function getTierName(model: SystemModel, id: string): string {
 export const componentDescriptionsMapper: DerivationMapperFn = (model, sectionId = 'components') => {
   const paragraphs: ProvenanceText[] = [];
   const bullets: ProvenanceText[] = [];
+  const tableRows: TableRow[] = [];
 
-  for (const tier of model.tiers) {
-    const tierComponents = model.components.filter((c) => c.tier === tier.id);
+  const activeTiers = model.tiers.filter((tier) =>
+    model.components.some((c) => c.tier === tier.id)
+  );
+
+  if (activeTiers.length > 0) {
     paragraphs.push({
-      text: `Tier "${tier.label}" (${tier.kind.toUpperCase()}) contains ${tierComponents.length} operational component(s).`,
-      sourceRefs: [tier.id],
+      text: `The system architecture is organized across ${activeTiers.length} functional subsystem tiers comprising ${model.components.length} operational components.`,
+      sourceRefs: activeTiers.map((t) => t.id),
     });
-
-    for (const comp of tierComponents) {
-      const inbound = model.flows.filter((f) => f.to === comp.id);
-      const outbound = model.flows.filter((f) => f.from === comp.id);
-
-      const refs = [comp.id, ...inbound.map((f) => `${f.from}->${f.to}`), ...outbound.map((f) => `${f.from}->${f.to}`)];
-      const sub = comp.subtitle ? ` (${comp.subtitle})` : '';
-
-      let text = `[Component] ${comp.label}${sub}: Primary type is ${comp.type || 'service component'}.`;
-      if (inbound.length > 0) {
-        const desc = inbound
-          .map((f) => `receives ${f.protocol ? `*${f.protocol}* ` : ''}${f.label ? `"${f.label}" ` : ''}from ${getComponentName(model, f.from)}`)
-          .join('; ');
-        text += ` Inbound: ${desc}.`;
-      }
-      if (outbound.length > 0) {
-        const desc = outbound
-          .map((f) => `transmits ${f.protocol ? `*${f.protocol}* ` : ''}${f.label ? `"${f.label}" ` : ''}to ${getComponentName(model, f.to)}`)
-          .join('; ');
-        text += ` Outbound: ${desc}.`;
-      }
-
-      bullets.push({ text, sourceRefs: refs });
-    }
+  } else if (model.components.length > 0) {
+    paragraphs.push({
+      text: `The architecture defines ${model.components.length} operational software and infrastructure components.`,
+      sourceRefs: model.components.map((c) => c.id),
+    });
   }
 
-  return { sectionId, paragraphs, bullets };
+  for (const comp of model.components) {
+    const tierName = comp.tier ? getTierName(model, comp.tier) : 'Core Subsystem';
+    const inbound = model.flows.filter((f) => f.to === comp.id);
+    const outbound = model.flows.filter((f) => f.from === comp.id);
+
+    const interactions: string[] = [];
+    if (inbound.length > 0) {
+      interactions.push(`Inbound from ${inbound.map((f) => getComponentName(model, f.from)).join(', ')}`);
+    }
+    if (outbound.length > 0) {
+      interactions.push(`Outbound to ${outbound.map((f) => getComponentName(model, f.to)).join(', ')}`);
+    }
+    const flowDesc = interactions.length > 0 ? interactions.join(' | ') : 'Internal processing / standalone node';
+
+    tableRows.push({
+      cells: [
+        comp.label,
+        tierName,
+        comp.type || 'Service Component',
+        comp.subtitle || 'Operational component',
+        flowDesc,
+      ],
+      sourceRefs: [comp.id],
+    });
+
+    const subText = comp.subtitle ? ` (${comp.subtitle})` : '';
+    bullets.push({
+      text: `${comp.label}${subText} — Deployed in "${tierName}" tier. ${flowDesc}.`,
+      sourceRefs: [comp.id],
+    });
+  }
+
+  return {
+    sectionId,
+    paragraphs,
+    bullets,
+    table: {
+      headers: ['Component Name', 'Subsystem / Tier', 'Type', 'Description / Role', 'Interactions & Communication'],
+      rows: tableRows,
+    },
+  };
 };
 
 export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 'interfaces') => {
@@ -59,8 +84,8 @@ export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 
         consumer,
         provider,
         flow.label || 'Data / Event Exchange',
-        flow.protocol || 'HTTPS/REST',
-        flow.async ? 'Asynchronous' : 'Synchronous',
+        flow.protocol || 'HTTPS / REST / gRPC',
+        flow.async ? 'Asynchronous Event' : 'Synchronous Request',
       ],
       sourceRefs: [flow.from, flow.to],
     };
@@ -70,13 +95,13 @@ export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 
     sectionId,
     paragraphs: [
       {
-        text: `The system defines ${model.flows.length} distinct service interfaces and communication channels extracted directly from graph connectors.`,
+        text: `The architecture specifies ${model.flows.length} integrated service-to-service communication contracts and data exchange interfaces derived directly from system topology.`,
         sourceRefs: model.flows.map((f) => `${f.from}->${f.to}`),
       },
     ],
     bullets: [],
     table: {
-      headers: ['Consumer (Source)', 'Provider (Target)', 'Interface / Purpose', 'Protocol', 'Execution Mode'],
+      headers: ['Consumer / Source', 'Provider / Destination', 'Interface Purpose & Data Exchange', 'Protocol', 'Execution Pattern'],
       rows,
     },
   };
@@ -90,20 +115,19 @@ export const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functi
       const actorFlows = model.flows.filter((f) => f.from === actor.id);
       for (const flow of actorFlows) {
         const targetName = getComponentName(model, flow.to);
-        const goal = flow.label || `interact with ${targetName}`;
+        const goal = flow.label || `execute operational requests against ${targetName}`;
         bullets.push({
-          text: `As a ${actor.label}, I want to ${goal} so that I can execute system operations against ${targetName}.`,
+          text: `As a ${actor.label}, I want to ${goal} so that end-to-end processing is executed reliably through ${targetName}.`,
           sourceRefs: [actor.id, flow.to],
         });
       }
     }
   }
 
-  // Fallback to flow stories if no actors explicit
   if (bullets.length === 0) {
     for (const flow of model.flows) {
       bullets.push({
-        text: `As a system consumer (${getComponentName(model, flow.from)}), I want to call ${getComponentName(model, flow.to)} (${flow.label || 'service request'}) so that processing completes.`,
+        text: `As ${getComponentName(model, flow.from)}, I want to communicate with ${getComponentName(model, flow.to)} (${flow.label || 'service request'}) to complete processing.`,
         sourceRefs: [flow.from, flow.to],
       });
     }
@@ -113,7 +137,7 @@ export const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functi
     sectionId,
     paragraphs: [
       {
-        text: `Functional interactions and actor-initiated flows derived mechanically from graph connectors.`,
+        text: `Functional sequence scenarios and user/system interaction flows extracted mechanically from visual graph connectors:`,
         sourceRefs: [],
       },
     ],
@@ -129,22 +153,21 @@ export const acceptanceCriteriaMapper: DerivationMapperFn = (model, sectionId = 
     const toName = getComponentName(model, trans.to);
     if (trans.gate) {
       bullets.push({
-        text: `Given state "${fromName}", when transition condition "${trans.gate}" is satisfied, then system advances to state "${toName}".`,
+        text: `Given state "${fromName}", when condition "${trans.gate}" evaluates to true, then system transitions to "${toName}".`,
         sourceRefs: [trans.from, trans.to],
       });
     } else {
       bullets.push({
-        text: `Given lifecycle phase "${fromName}", system transitions deterministically to "${toName}".`,
+        text: `Given lifecycle phase "${fromName}", the system transitions deterministically to "${toName}".`,
         sourceRefs: [trans.from, trans.to],
       });
     }
   }
 
-  // Fallback to flow acceptance criteria if state transitions empty
   if (bullets.length === 0) {
     for (const flow of model.flows) {
       bullets.push({
-        text: `Given component "${getComponentName(model, flow.from)}", when request "${flow.label || 'invocation'}" occurs, then "${getComponentName(model, flow.to)}" must respond successfully.`,
+        text: `Given operational component "${getComponentName(model, flow.from)}", when request "${flow.label || 'invocation'}" occurs, then "${getComponentName(model, flow.to)}" must process and acknowledge within SLA threshold.`,
         sourceRefs: [flow.from, flow.to],
       });
     }
@@ -154,8 +177,8 @@ export const acceptanceCriteriaMapper: DerivationMapperFn = (model, sectionId = 
     sectionId,
     paragraphs: [
       {
-        text: `Gated state transitions and functional acceptance criteria extracted from state machine edges.`,
-        sourceRefs: model.transitions.map((t) => `${t.from}->${t.to}`),
+        text: `Verifiable Given-When-Then acceptance criteria governing state transitions and interface interactions:`,
+        sourceRefs: [],
       },
     ],
     bullets,
@@ -164,142 +187,113 @@ export const acceptanceCriteriaMapper: DerivationMapperFn = (model, sectionId = 
 
 export const epicsFromStagesMapper: DerivationMapperFn = (model, sectionId = 'epics') => {
   const bullets: ProvenanceText[] = [];
+  const stages = model.tiers.filter((t) => t.kind === 'stage' || t.label.toLowerCase().includes('phase'));
+  const targetTiers = stages.length > 0 ? stages : model.tiers;
 
-  for (const tier of model.tiers) {
-    const memberComps = model.components.filter((c) => c.tier === tier.id);
-    const compNames = memberComps.map((c) => c.label).join(', ');
+  for (const stage of targetTiers) {
+    const comps = model.components.filter((c) => c.tier === stage.id);
     bullets.push({
-      text: `Epic [${tier.label}]: Encompasses functional capabilities (${compNames || 'Core Services'}).`,
-      sourceRefs: [tier.id, ...memberComps.map((c) => c.id)],
+      text: `EPIC [${stage.label}]: Deliver capability across ${comps.length} architectural component(s): ${comps.map((c) => c.label).join(', ')}.`,
+      sourceRefs: [stage.id, ...comps.map((c) => c.id)],
     });
   }
 
   return {
     sectionId,
-    paragraphs: [
-      {
-        text: `Product Epics mapped directly to architectural tiers and platform stages.`,
-        sourceRefs: model.tiers.map((t) => t.id),
-      },
-    ],
+    paragraphs: [{ text: `High-level capability epics organized by system stage:`, sourceRefs: [] }],
     bullets,
   };
 };
 
 export const personasFromActorsMapper: DerivationMapperFn = (model, sectionId = 'personas') => {
   const bullets: ProvenanceText[] = [];
-
   for (const actor of model.actors) {
-    const connectedFlows = model.flows.filter((f) => f.from === actor.id || f.to === actor.id);
-    const touchpoints = Array.from(
-      new Set(connectedFlows.map((f) => (f.from === actor.id ? getComponentName(model, f.to) : getComponentName(model, f.from))))
-    );
-
     bullets.push({
-      text: `Persona "${actor.label}": Primary interaction touchpoints include ${touchpoints.join(', ') || 'System Interface'}. [Further demographic & behavioral detail is human-managed]`,
+      text: `Persona [${actor.label}]: External or system actor engaging via ${model.flows.filter((f) => f.from === actor.id).length} interface channel(s).`,
       sourceRefs: [actor.id],
     });
   }
-
   if (bullets.length === 0) {
     bullets.push({
-      text: `Persona "System API Consumer": Interacts with primary platform edge gateways.`,
+      text: `Default Persona [System Operator]: Governs operations across ${model.components.length} infrastructure components.`,
       sourceRefs: [],
     });
   }
-
   return {
     sectionId,
-    paragraphs: [
-      {
-        text: `Target user personas derived from actor nodes and client-tier entry points.`,
-        sourceRefs: model.actors.map((a) => a.id),
-      },
-    ],
+    paragraphs: [{ text: `System actors and operational personas:`, sourceRefs: [] }],
     bullets,
   };
 };
 
 export const nfrsFromGovernanceMapper: DerivationMapperFn = (model, sectionId = 'nfrs') => {
   const bullets: ProvenanceText[] = [];
-
-  const govComps = model.components.filter(
-    (c) => c.type === 'security' || /\b(auth|iam|security|governance|audit|vpc|firewall|rls)\b/i.test(c.label)
+  const govNodes = model.components.filter((c) =>
+    c.label.toLowerCase().includes('governance') ||
+    c.label.toLowerCase().includes('audit') ||
+    c.label.toLowerCase().includes('security') ||
+    c.label.toLowerCase().includes('compliance')
   );
-
-  for (const comp of govComps) {
+  for (const gov of govNodes) {
     bullets.push({
-      text: `Security & Compliance Control "${comp.label}": Enforces zero-trust isolation, continuous audit trail logging, and policy compliance in tier "${getTierName(model, comp.tier)}".`,
-      sourceRefs: [comp.id],
+      text: `Non-Functional Constraint [${gov.label}]: Policy/security invariant enforced within subsystem "${getTierName(model, gov.tier || '')}".`,
+      sourceRefs: [gov.id],
     });
   }
-
-  // Ensure baseline NFRs exist with sourceRefs
   bullets.push({
-    text: `Data Protection & Encryption: All inter-service communications enforce mTLS / TLS 1.3 encryption in transit.`,
-    sourceRefs: model.flows.map((f) => `${f.from}->${f.to}`),
+    text: `Availability SLA: System components (${model.components.length} total) must maintain >= 99.9% uptime.`,
+    sourceRefs: [],
   });
-
   return {
     sectionId,
-    paragraphs: [
-      {
-        text: `Non-functional requirements and governance controls mechanically derived from security nodes and policies.`,
-        sourceRefs: govComps.map((c) => c.id),
-      },
-    ],
+    paragraphs: [{ text: `Non-functional requirements and governance rules:`, sourceRefs: [] }],
     bullets,
   };
 };
 
 export const trustBoundaryCrossingsMapper: DerivationMapperFn = (model, sectionId = 'trust_boundaries') => {
-  const rows: TableRow[] = [];
-
+  const bullets: ProvenanceText[] = [];
+  const tableRows: TableRow[] = [];
   for (const flow of model.flows) {
-    const sourceComp = model.components.find((c) => c.id === flow.from);
-    const targetComp = model.components.find((c) => c.id === flow.to);
-
-    if (sourceComp && targetComp && sourceComp.tier !== targetComp.tier) {
-      const sourceTier = getTierName(model, sourceComp.tier);
-      const targetTier = getTierName(model, targetComp.tier);
-      rows.push({
+    const fromComp = model.components.find((c) => c.id === flow.from);
+    const toComp = model.components.find((c) => c.id === flow.to);
+    if (fromComp && toComp && fromComp.tier !== toComp.tier) {
+      bullets.push({
+        text: `Cross-Boundary Data Crossing: Flow "${flow.label || 'Data Transit'}" crosses tier boundary from "${getTierName(model, fromComp.tier || '')}" to "${getTierName(model, toComp.tier || '')}".`,
+        sourceRefs: [flow.from, flow.to],
+      });
+      tableRows.push({
         cells: [
-          `${sourceComp.label} (${sourceTier})`,
-          `${targetComp.label} (${targetTier})`,
-          flow.label || 'Cross-Zone Flow',
-          flow.protocol || 'TLS 1.3',
-          'Inter-Tier Boundary Crossing',
+          flow.label || 'Data Flow',
+          getTierName(model, fromComp.tier || ''),
+          getTierName(model, toComp.tier || ''),
+          `${fromComp.label} ➔ ${toComp.label}`,
         ],
         sourceRefs: [flow.from, flow.to],
       });
     }
   }
-
   return {
     sectionId,
-    paragraphs: [
-      {
-        text: `Identified ${rows.length} inter-tier trust boundary crossings that require perimeter inspection and STRIDE threat analysis.`,
-        sourceRefs: [],
-      },
-    ],
-    bullets: [],
+    paragraphs: [{ text: `Security trust-boundary network crossings:`, sourceRefs: [] }],
+    bullets,
     table: {
-      headers: ['Source Component (Tier)', 'Target Component (Tier)', 'Flow Label', 'Protocol', 'Boundary Class'],
-      rows,
+      headers: ['Data Flow / Signal', 'Source Tier', 'Destination Tier', 'Crossing Components'],
+      rows: tableRows,
     },
   };
 };
 
 export const assumptionsMapper: DerivationMapperFn = (model, sectionId = 'assumptions') => {
-  const assumptions = model.assumptions || [
-    'Derived diagrams describe what is designed, not what was excluded; absence of a capability here is not a scope decision.',
-  ];
-
   return {
     sectionId,
-    paragraphs: assumptions.map((text) => ({ text, sourceRefs: ['system_model'] })),
-    bullets: [],
+    paragraphs: [
+      { text: `System assumptions derived from diagram boundaries and network topologies:`, sourceRefs: [] },
+    ],
+    bullets: [
+      { text: `Assumes deployment across ${model.tiers.length} distinct infrastructure network tiers.`, sourceRefs: [] },
+      { text: `Assumes communication between components adheres to extracted flow protocols.`, sourceRefs: [] },
+    ],
   };
 };
 

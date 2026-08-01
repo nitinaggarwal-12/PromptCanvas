@@ -84,8 +84,7 @@ export function renderMarkdown(input: ComposeRenderInput): string {
     const sec = sections[spec.id];
     if (sec) {
       for (const p of sec.paragraphs) {
-        const refs = p.sourceRefs.length > 0 ? ` *[refs: ${p.sourceRefs.join(', ')}]*` : '';
-        lines.push(`${p.text}${refs}`);
+        lines.push(`${p.text}`);
         lines.push('');
       }
 
@@ -99,8 +98,7 @@ export function renderMarkdown(input: ComposeRenderInput): string {
       }
 
       for (const b of sec.bullets) {
-        const refs = b.sourceRefs.length > 0 ? ` *[refs: ${b.sourceRefs.join(', ')}]*` : '';
-        lines.push(`- ${b.text}${refs}`);
+        lines.push(`- ${b.text}`);
       }
       lines.push('');
     }
