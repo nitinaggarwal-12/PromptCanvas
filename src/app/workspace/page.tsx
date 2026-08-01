@@ -3816,204 +3816,208 @@ function WorkspaceContent() {
               </button>
             </div>
 
-            {/* Pinned Top Section: Taller Chatbot Input Box & Clear Suggested Refinement Cards */}
-            <div className="p-3.5 border-b border-panel-border bg-panel-dark/95 backdrop-blur shrink-0 z-10 shadow-md space-y-3">
-              <form onSubmit={handleSendPrompt} className="relative">
-                <textarea
-                  value={promptInput}
-                  onChange={(e) => setPromptInput(e.target.value)}
-                  placeholder={dynamicPlaceholder}
-                  disabled={!activeDiagram || isAnyAIBusy}
-                  rows={4}
-                  className="w-full bg-slate-900/90 border-2 border-slate-500/80 hover:border-teal-400 focus:border-teal-accent rounded-xl pl-3.5 pr-11 py-3 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50 leading-relaxed shadow-lg ring-1 ring-slate-600/40 focus:ring-2 focus:ring-teal-400/40 font-medium"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendPrompt(e);
-                    }
-                  }}
-                />
-                <button
-                  type="submit"
-                  disabled={!activeDiagram || isAnyAIBusy || !promptInput.trim()}
-                  title="Send Prompt (Enter)"
-                  className="absolute right-3 bottom-3.5 p-2 rounded-lg bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer shadow-md"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
+            {isAssistantOpen && (
+              <>
+                {/* Pinned Top Section: Taller Chatbot Input Box & Clear Suggested Refinement Cards */}
+                <div className="p-3.5 border-b border-panel-border bg-panel-dark/95 backdrop-blur shrink-0 z-10 shadow-md space-y-3">
+                  <form onSubmit={handleSendPrompt} className="relative">
+                    <textarea
+                      value={promptInput}
+                      onChange={(e) => setPromptInput(e.target.value)}
+                      placeholder={dynamicPlaceholder}
+                      disabled={!activeDiagram || isAnyAIBusy}
+                      rows={4}
+                      className="w-full bg-slate-900/90 border-2 border-slate-500/80 hover:border-teal-400 focus:border-teal-accent rounded-xl pl-3.5 pr-11 py-3 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50 leading-relaxed shadow-lg ring-1 ring-slate-600/40 focus:ring-2 focus:ring-teal-400/40 font-medium"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendPrompt(e);
+                        }
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={!activeDiagram || isAnyAIBusy || !promptInput.trim()}
+                      title="Send Prompt (Enter)"
+                      className="absolute right-3 bottom-3.5 p-2 rounded-lg bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer shadow-md"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </form>
 
-              {activeDiagram && suggestions.length > 0 && (
-                <div className="space-y-1.5 pt-1">
-                  <h5 className="text-[10px] text-teal-300 font-extrabold uppercase tracking-wider flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-teal-accent" />
-                    <span>Suggested Next Refinements</span>
-                  </h5>
-                  <div className="space-y-1.5">
-                    {suggestions.map((suggestion, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setPromptInput(suggestion)}
-                        disabled={isAnyAIBusy}
-                        className="w-full text-left text-xs bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-teal-accent border border-slate-700/80 hover:border-teal-500/50 p-2.5 rounded-lg transition-all flex items-center justify-between gap-2 group cursor-pointer disabled:opacity-50 shadow-sm"
-                        title={suggestion}
-                      >
-                        <span className="leading-snug font-medium">{suggestion}</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-teal-400 shrink-0 transition-colors" />
-                      </button>
-                    ))}
-                  </div>
+                  {activeDiagram && suggestions.length > 0 && (
+                    <div className="space-y-1.5 pt-1">
+                      <h5 className="text-[10px] text-teal-300 font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-teal-accent" />
+                        <span>Suggested Next Refinements</span>
+                      </h5>
+                      <div className="space-y-1.5">
+                        {suggestions.map((suggestion, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setPromptInput(suggestion)}
+                            disabled={isAnyAIBusy}
+                            className="w-full text-left text-xs bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-teal-accent border border-slate-700/80 hover:border-teal-500/50 p-2.5 rounded-lg transition-all flex items-center justify-between gap-2 group cursor-pointer disabled:opacity-50 shadow-sm"
+                            title={suggestion}
+                          >
+                            <span className="leading-snug font-medium">{suggestion}</span>
+                            <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-teal-400 shrink-0 transition-colors" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <p className="text-[10px] text-slate-500 text-center font-medium">
+                    Press Enter to send. Gemini 2.0 Flash will refine your active diagram.
+                  </p>
                 </div>
-              )}
-              <p className="text-[10px] text-slate-500 text-center font-medium">
-                Press Enter to send. Gemini 2.0 Flash will refine your active diagram.
-              </p>
-            </div>
 
-            {/* Scrollable Lower Section: Version Details, Prompt Applied, Audit Trail & Chat History */}
-            <div className="flex-1 min-h-0 overflow-y-auto space-y-4">
-              {/* Selected Version Details & Prompt Card */}
-              {activeDiagram && displayedVersion && (
-                <div className="p-4 border-b border-panel-border bg-slate-900/40 space-y-3 animate-fade-in">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-black text-teal-accent">Version {displayedVersion.version_number}</span>
-                    <span className="text-[10px] text-slate-500 shrink-0">
-                      {new Date(displayedVersion.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
+                {/* Scrollable Lower Section: Version Details, Prompt Applied, Audit Trail & Chat History */}
+                <div className="flex-1 min-h-0 overflow-y-auto space-y-4">
+                  {/* Selected Version Details & Prompt Card */}
+                  {activeDiagram && displayedVersion && (
+                    <div className="p-4 border-b border-panel-border bg-slate-900/40 space-y-3 animate-fade-in">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-black text-teal-accent">Version {displayedVersion.version_number}</span>
+                        <span className="text-[10px] text-slate-500 shrink-0">
+                          {new Date(displayedVersion.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
 
-                  <div className="space-y-1">
-                    <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Change Description</span>
-                    <p className="text-xs text-slate-300 leading-normal bg-bg-dark/40 px-2 py-1.5 rounded border border-panel-border/30">
-                      {displayedVersion.comment || 'Initial version'}
-                    </p>
-                  </div>
+                      <div className="space-y-1">
+                        <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Change Description</span>
+                        <p className="text-xs text-slate-300 leading-normal bg-bg-dark/40 px-2 py-1.5 rounded border border-panel-border/30">
+                          {displayedVersion.comment || 'Initial version'}
+                        </p>
+                      </div>
 
-                  {displayedVersion.prompt && (
-                    <div className="space-y-1">
-                      <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Prompt Applied</span>
-                      <p className="text-xs text-slate-300 bg-[#090d16] border border-panel-border/30 rounded p-2 italic leading-relaxed max-h-24 overflow-y-auto select-text font-sans scrollbar-thin">
-                        &ldquo;{displayedVersion.prompt}&rdquo;
-                      </p>
+                      {displayedVersion.prompt && (
+                        <div className="space-y-1">
+                          <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Prompt Applied</span>
+                          <p className="text-xs text-slate-300 bg-[#090d16] border border-panel-border/30 rounded p-2 italic leading-relaxed max-h-24 overflow-y-auto select-text font-sans scrollbar-thin">
+                            &ldquo;{displayedVersion.prompt}&rdquo;
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Audit Trail of Changes */}
+                      {(() => {
+                        const sorted = activeDiagram?.versions
+                          ?.filter(v => (v.architecture_type || 'conceptual_diagram') === selectedArchType)
+                          .slice()
+                          .sort((a, b) => a.version_number - b.version_number) || [];
+                        const curIdx = sorted.findIndex(v => v.id === displayedVersion.id);
+                        const parent = curIdx > 0 ? sorted[curIdx - 1] : null;
+
+                        const diff = parent 
+                          ? computeVersionDiff(displayedVersion.xml_content, parent.xml_content)
+                          : { added: parseXmlNodesAndEdges(displayedVersion.xml_content).map(i => i.isEdge ? `Connection` : i.label), removed: [], modified: [] };
+
+                        const hasChanges = diff.added.length > 0 || diff.removed.length > 0 || diff.modified.length > 0;
+
+                        return (
+                          <div className="space-y-1.5 pt-2 border-t border-panel-border/30">
+                            <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Audit Trail (Components Changes)</span>
+                            {!hasChanges ? (
+                              <p className="text-[10px] text-slate-500 italic">No structural changes detected.</p>
+                            ) : (
+                              <div className="space-y-1 max-h-28 overflow-y-auto pr-1 bg-bg-dark/40 p-2 rounded border border-panel-border/30 font-mono text-[9px]">
+                                {diff.added.map((item, i) => (
+                                  <div key={`add-${i}`} className="flex items-start gap-1.5 text-emerald-400 font-medium">
+                                    <span className="text-emerald-500 font-extrabold shrink-0">+</span>
+                                    <span>Added {item}</span>
+                                  </div>
+                                ))}
+                                {diff.modified.map((item, i) => (
+                                  <div key={`mod-${i}`} className="flex items-start gap-1.5 text-amber-400 font-medium">
+                                    <span className="text-amber-500 font-extrabold shrink-0">~</span>
+                                    <span>{item}</span>
+                                  </div>
+                                ))}
+                                {diff.removed.map((item, i) => (
+                                  <div key={`rem-${i}`} className="flex items-start gap-1.5 text-rose-400 font-medium">
+                                    <span className="text-rose-500 font-extrabold shrink-0">-</span>
+                                    <span className="line-through opacity-70">Removed {item}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
+
+                      <div className="pt-2 flex gap-1.5">
+                        {displayedVersion.ai_reasoning && (
+                          <button
+                            onClick={() => {
+                              setInspectVersion(displayedVersion);
+                              setIsInspectModalOpen(true);
+                            }}
+                            className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-[9px] font-bold transition-all cursor-pointer"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>Inspect Plan</span>
+                          </button>
+                        )}
+                        
+                        {previewVersion && (
+                          <button
+                            onClick={() => handleRestoreVersion(previewVersion)}
+                            className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[9px] font-bold transition-all cursor-pointer"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                            <span>Restore version</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   )}
 
-                  {/* Audit Trail of Changes */}
-                  {(() => {
-                    const sorted = activeDiagram?.versions
-                      ?.filter(v => (v.architecture_type || 'conceptual_diagram') === selectedArchType)
-                      .slice()
-                      .sort((a, b) => a.version_number - b.version_number) || [];
-                    const curIdx = sorted.findIndex(v => v.id === displayedVersion.id);
-                    const parent = curIdx > 0 ? sorted[curIdx - 1] : null;
-
-                    const diff = parent 
-                      ? computeVersionDiff(displayedVersion.xml_content, parent.xml_content)
-                      : { added: parseXmlNodesAndEdges(displayedVersion.xml_content).map(i => i.isEdge ? `Connection` : i.label), removed: [], modified: [] };
-
-                    const hasChanges = diff.added.length > 0 || diff.removed.length > 0 || diff.modified.length > 0;
-
-                    return (
-                      <div className="space-y-1.5 pt-2 border-t border-panel-border/30">
-                        <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Audit Trail (Components Changes)</span>
-                        {!hasChanges ? (
-                          <p className="text-[10px] text-slate-500 italic">No structural changes detected.</p>
-                        ) : (
-                          <div className="space-y-1 max-h-28 overflow-y-auto pr-1 bg-bg-dark/40 p-2 rounded border border-panel-border/30 font-mono text-[9px]">
-                            {diff.added.map((item, i) => (
-                              <div key={`add-${i}`} className="flex items-start gap-1.5 text-emerald-400 font-medium">
-                                <span className="text-emerald-500 font-extrabold shrink-0">+</span>
-                                <span>Added {item}</span>
-                              </div>
-                            ))}
-                            {diff.modified.map((item, i) => (
-                              <div key={`mod-${i}`} className="flex items-start gap-1.5 text-amber-400 font-medium">
-                                <span className="text-amber-500 font-extrabold shrink-0">~</span>
-                                <span>{item}</span>
-                              </div>
-                            ))}
-                            {diff.removed.map((item, i) => (
-                              <div key={`rem-${i}`} className="flex items-start gap-1.5 text-rose-400 font-medium">
-                                <span className="text-rose-500 font-extrabold shrink-0">-</span>
-                                <span className="line-through opacity-70">Removed {item}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                  {/* Chat Messages */}
+                  <div className="p-4 space-y-4">
+                    {!activeDiagram ? (
+                      <div className="py-8 flex flex-col items-center justify-center text-center p-4">
+                        <Sparkles className="w-8 h-8 text-slate-600 mb-2" />
+                        <p className="text-sm text-slate-500">Select a diagram from the sidebar to start designing with AI.</p>
                       </div>
-                    );
-                  })()}
-
-                  <div className="pt-2 flex gap-1.5">
-                    {displayedVersion.ai_reasoning && (
-                      <button
-                        onClick={() => {
-                          setInspectVersion(displayedVersion);
-                          setIsInspectModalOpen(true);
-                        }}
-                        className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-[9px] font-bold transition-all cursor-pointer"
-                      >
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>Inspect Plan</span>
-                      </button>
+                    ) : chatMessages.length === 0 ? (
+                      <div className="py-8 flex flex-col items-center justify-center text-center p-4">
+                        <MessageSquare className="w-8 h-8 text-slate-600 mb-2" />
+                        <p className="text-sm text-slate-500">Ask the AI to generate your first architecture diagram!</p>
+                      </div>
+                    ) : (
+                      chatMessages.map((msg) => (
+                        <div 
+                          key={msg.id}
+                          className={`flex flex-col max-w-[85%] ${
+                            msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
+                          }`}
+                        >
+                          <div className={`p-3 rounded-lg text-sm leading-relaxed ${
+                            msg.sender === 'user'
+                              ? 'bg-teal-accent text-bg-dark font-medium rounded-tr-none'
+                              : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border'
+                          }`}>
+                            {msg.text}
+                          </div>
+                          <span className="text-[10px] text-slate-500 mt-1 px-1">
+                            {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
+                          </span>
+                        </div>
+                      ))
                     )}
-                    
-                    {previewVersion && (
-                      <button
-                        onClick={() => handleRestoreVersion(previewVersion)}
-                        className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[9px] font-bold transition-all cursor-pointer"
-                      >
-                        <RotateCcw className="w-3 h-3" />
-                        <span>Restore version</span>
-                      </button>
+                    {isGenerating && (
+                      <div className="flex items-center gap-2 mr-auto bg-slate-hover/50 border border-panel-border p-3 rounded-lg rounded-tl-none max-w-[85%]">
+                        <Loader2 className="w-4 h-4 animate-spin text-teal-accent" />
+                        <span className="text-xs text-slate-400 animate-pulse">PromptCanvas-Graph is sketching...</span>
+                      </div>
                     )}
+                    <div ref={chatEndRef} />
                   </div>
                 </div>
-              )}
-
-              {/* Chat Messages */}
-              <div className="p-4 space-y-4">
-                {!activeDiagram ? (
-                  <div className="py-8 flex flex-col items-center justify-center text-center p-4">
-                    <Sparkles className="w-8 h-8 text-slate-600 mb-2" />
-                    <p className="text-sm text-slate-500">Select a diagram from the sidebar to start designing with AI.</p>
-                  </div>
-                ) : chatMessages.length === 0 ? (
-                  <div className="py-8 flex flex-col items-center justify-center text-center p-4">
-                    <MessageSquare className="w-8 h-8 text-slate-600 mb-2" />
-                    <p className="text-sm text-slate-500">Ask the AI to generate your first architecture diagram!</p>
-                  </div>
-                ) : (
-                  chatMessages.map((msg) => (
-                    <div 
-                      key={msg.id}
-                      className={`flex flex-col max-w-[85%] ${
-                        msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
-                      }`}
-                    >
-                      <div className={`p-3 rounded-lg text-sm leading-relaxed ${
-                        msg.sender === 'user'
-                          ? 'bg-teal-accent text-bg-dark font-medium rounded-tr-none'
-                          : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border'
-                      }`}>
-                        {msg.text}
-                      </div>
-                      <span className="text-[10px] text-slate-500 mt-1 px-1">
-                        {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
-                      </span>
-                    </div>
-                  ))
-                )}
-                {isGenerating && (
-                  <div className="flex items-center gap-2 mr-auto bg-slate-hover/50 border border-panel-border p-3 rounded-lg rounded-tl-none max-w-[85%]">
-                    <Loader2 className="w-4 h-4 animate-spin text-teal-accent" />
-                    <span className="text-xs text-slate-400 animate-pulse">PromptCanvas-Graph is sketching...</span>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-            </div>
+              </>
+            )}
           </section>
 
           {/* Resizable Split Pane Divider Handle */}
