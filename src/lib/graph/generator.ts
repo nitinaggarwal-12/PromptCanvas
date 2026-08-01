@@ -26,6 +26,7 @@ export async function generateLogicalGraph(
         config: {
           systemInstruction: GENERATE_GRAPH_SYSTEM_PROMPT,
           responseMimeType: 'application/json',
+          maxOutputTokens: 8192,
           responseSchema: {
             type: Type.OBJECT,
             required: ['title', 'cloud', 'tiers', 'nodes', 'edges'],
