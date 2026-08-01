@@ -262,7 +262,7 @@ export async function POST(request: Request) {
           reasoning,
           businessUsecase,
           technicalUsecase,
-          architectureType || 'unified_system_view',
+          architectureType || 'v2_freeform',
           graphJsonStr
         );
         return NextResponse.json({ version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry });
@@ -278,7 +278,7 @@ export async function POST(request: Request) {
           businessUsecase,
           technicalUsecase,
           user?.id || null,
-          architectureType || 'unified_system_view',
+          architectureType || 'v2_freeform',
           Boolean(isPrivate ?? is_private)
         );
         return NextResponse.json({ diagram, version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry }, { status: 201 });

@@ -163,6 +163,12 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "10. CI/CD Pipeline Architecture",
     category: "Technical Architecture",
     prompt: "Act as a Principal DevSecOps Architect. Design an enterprise technical CI/CD Pipeline architecture. Include: Git polyrepo source control (GitHub/GitLab) with branch protection rules, CI pipeline triggering automated unit tests, SAST code scanning (SonarQube/Snyk), and Docker container build in Cloud Build / GitHub Actions, artifact vulnerability scanning in Artifact Registry / ECR, GitOps deployment orchestration via ArgoCD / Flux to staging and production Kubernetes clusters (GKE/EKS), and automated rollback on Canary monitoring failure."
+  },
+  {
+    id: "v2_freeform",
+    name: "Freeform Technical (V2)",
+    category: "Technical Architecture",
+    prompt: "Freeform technical architecture generated via Pipeline V2 deterministic ELK.js layout engine."
   }
 ];
 
@@ -193,7 +199,10 @@ export function getTemplateTitle(archId?: string | null): string {
   return archId;
 }
 
-export function getDefaultXmlForArchitecture(archId?: string | null, useCaseContext?: string, userPrompt?: string): string {
+export function getDefaultXmlForArchitecture(archId?: string | null, useCaseContext?: string, userPrompt?: string): string | null {
+  if (archId === 'v2_freeform') {
+    return null;
+  }
   let xml = '';
 
   if (archId === 'conceptual_diagram') {
