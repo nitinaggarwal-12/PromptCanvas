@@ -625,7 +625,7 @@ function WorkspaceContent() {
   };
   
   // UI Panels
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(() => {
@@ -3530,233 +3530,233 @@ function WorkspaceContent() {
         ) : (
           <>
             {/* Top Navbar */}
-            <header className={`h-16 border-b border-panel-border flex items-center justify-between px-3 md:px-6 bg-panel-dark/50 backdrop-blur gap-3 relative ${tourStep !== null ? 'z-[60]' : 'z-30'}`}>
-          <div className="flex items-center gap-3 shrink-0">
-            {/* Sidebar toggle if collapsed */}
-            {!isSidebarOpen && (
-              <button 
-                onClick={() => setIsSidebarOpen(true)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400 shrink-0"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            )}
-            {/* Breadcrumb Navigation Path */}
-            <div className="flex items-center gap-1.5 shrink-0 text-xs">
-              <Link href="/dashboard" className="text-slate-400 hover:text-teal-300 font-bold transition-colors flex items-center gap-1">
-                <LayoutGrid className="w-3.5 h-3.5 text-teal-400" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </Link>
-              <span className="text-slate-600 font-bold">/</span>
-              <h2 className="font-bold text-xs md:text-sm text-slate-100 whitespace-nowrap truncate max-w-[110px] md:max-w-[150px]" title={activeDiagram ? activeDiagram.name : ''}>
-                {activeDiagram ? activeDiagram.name : 'Workspace'}
-              </h2>
-            </div>
-              {activeDiagram && (
-                <>
-                  {/* 1. Unified Architecture Category Dropdown */}
-                  <div className="relative inline-flex items-center shrink-0">
-                    <select
-                      id="workspace-header-architecture-select"
-                      value={selectedArchType}
-                      disabled={isAnyAIBusy}
-                      onChange={(e) => handleArchitectureSwitch(e.target.value)}
-                      className={getTourClass(
-                        tourStep,
-                        2,
-                        "appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] md:max-w-[250px] truncate"
-                      )}
-                      title="Architecture Category Selector (Business & Technical)"
-                    >
-                      <optgroup label="🏢 BUSINESS ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
-                        {BUSINESS_ARCHITECTURE_TYPES.map((t) => {
-                          const vBadge = getLatestVersionBadgeForArchType(t.id);
-                          return (
-                            <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
-                              🏢 {t.name}{vBadge}
-                            </option>
-                          );
-                        })}
-                      </optgroup>
-                      <optgroup label="⚙️ TECHNICAL ARCHITECTURES" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                        {TECHNICAL_ARCHITECTURE_TYPES.map((t) => {
-                          const vBadge = getLatestVersionBadgeForArchType(t.id);
-                          return (
-                            <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
-                              ⚙️ {t.name}{vBadge}
-                            </option>
-                          );
-                        })}
-                      </optgroup>
-                    </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
-                  </div>
-
-                  {/* 2. Version Dropdown */}
-                  {activeVersion && (
-                    <div className="flex items-center gap-2 shrink-0">
-                      {renderVersionDropdown("top-header-version-dropdown")}
-                    </div>
-                  )}
-
-                  {/* 3. Edit Options Dropdown */}
-                  <div className="relative inline-flex items-center shrink-0 w-[135px]">
-                    <select
-                      value=""
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === 'inline') {
-                          setIsInlineEditorOpen(true);
-                        } else if (val === 'newtab') {
-                          openInNewTab();
-                        }
-                      }}
-                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[135px] truncate"
-                    >
-                      <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
-                        ✏️ Edit Options ▾
-                      </option>
-                      <option value="inline" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                        ✏️ Edit Diagram Inline
-                      </option>
-                      <option value="newtab" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                        ↗️ Open Editor in New Tab
-                      </option>
-                    </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
-                  </div>
-
-                  {/* 4. Theme Toggle */}
-                  <button
-                    id="canvas-theme-toggle"
-                    onClick={() => {
-                      setCanvasTheme(prev => prev === 'dark' ? 'light' : 'dark');
-                      if (tourStep === 4) setTourStep(5);
-                    }}
-                    title={`Switch to ${canvasTheme === 'dark' ? 'Light' : 'Dark'} Canvas Theme`}
-                    className={getTourClass(tourStep, 4, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0")}
+            <header className={`h-14 border-b border-panel-border flex items-center justify-between px-3 md:px-6 bg-panel-dark/80 backdrop-blur-md gap-3 relative shrink-0 ${tourStep !== null ? 'z-[60]' : 'z-30'}`}>
+              {/* Group 1: Left - Navigation Identity, Category & Version */}
+              <div className="flex items-center gap-2.5 shrink-0 min-w-0">
+                {!isSidebarOpen && (
+                  <button 
+                    onClick={() => setIsSidebarOpen(true)}
+                    title="Expand Navigation Sidebar"
+                    className="p-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-panel-border text-slate-300 hover:text-teal-accent shrink-0 transition-all cursor-pointer"
                   >
-                    {canvasTheme === 'dark' ? (
-                      <>
-                        <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                        <span>Dark Theme</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sun className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Light Theme</span>
-                      </>
-                    )}
+                    <ChevronRight className="w-4 h-4" />
                   </button>
-
-                  {/* 5. Visibility Checkbox & Public/Private Toggle */}
-                  <label
-                    id="diagram-visibility-toggle"
-                    title={isPrivate ? "Private: Visible only to you" : "Public: Shared & accessible across sessions so users don't need to regenerate"}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 select-none"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isPrivate}
-                      onChange={(e) => toggleDiagramPrivacy(e.target.checked)}
-                      className="w-3.5 h-3.5 rounded border-slate-700 bg-slate-900 text-teal-400 focus:ring-teal-400 focus:ring-offset-slate-900 cursor-pointer"
-                    />
-                    {isPrivate ? (
-                      <span className="flex items-center gap-1 text-amber-300">
-                        <Lock className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Private</span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-teal-300">
-                        <Globe className="w-3.5 h-3.5 text-teal-400" />
-                        <span>Public</span>
-                      </span>
-                    )}
-                  </label>
-
-                  {/* 6. Persona Tour Trigger Button */}
-                  <button
-                    type="button"
-                    onClick={() => setTourStep(1)}
-                    title="Change Architectural Persona & Re-Run Onboarding Tour"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/40 bg-teal-500/15 hover:bg-teal-500/25 text-slate-100 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-teal-400 animate-pulse" />
-                    <span>🎭 Persona Tour</span>
-                  </button>
-
-                  {/* 7. Feedback Widget */}
-                  <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
-                </>
-              )}
-            </div>
-
-          {isAnyAIBusy && (
-            <div className="hidden lg:flex items-center gap-2 px-3.5 py-1 bg-amber-500/15 border border-amber-500/30 rounded-full text-amber-300 text-xs font-semibold animate-pulse">
-              <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-              <span>⚡ Gemini API active: Other AI options disabled until current request completes</span>
-            </div>
-          )}
-
-          {/* Quick Actions (only if diagram active) */}
-          <div className="flex items-center gap-2 shrink-0">
-            <AccessRequestsInbox user={currentUser} />
-            {activeDiagram && (
-              <>
-                {/* Exporters Dropdown */}
-                <div className="relative inline-flex items-center shrink-0 w-[130px]">
-                  <select
-                    value=""
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === 'terraform') {
-                        setIsTerraformModalOpen(true);
-                      } else if (val === 'slides') {
-                        setIsExportModalOpen(true);
-                      }
-                    }}
-                    disabled={isAnyAIBusy}
-                    className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[130px] truncate disabled:opacity-50"
-                  >
-                    <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
-                      📥 Export ▾
-                    </option>
-                    <option value="terraform" className="bg-[#0b101d] text-teal-300 py-1 font-bold">
-                      📦 Export GCP Terraform Code (.tf)
-                    </option>
-                    <option value="slides" className="bg-[#0b101d] text-purple-300 py-1 font-bold">
-                      📊 Export Presentation Deck & Files (PPTX, PDF, PNG, XML)
-                    </option>
-                  </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                )}
+                
+                <div className="flex items-center gap-1.5 shrink-0 text-xs">
+                  <Link href="/dashboard" className="text-slate-400 hover:text-teal-300 font-bold transition-colors flex items-center gap-1">
+                    <LayoutGrid className="w-3.5 h-3.5 text-teal-400" />
+                    <span className="hidden lg:inline">Dashboard</span>
+                  </Link>
+                  <span className="text-slate-600 font-bold">/</span>
+                  <h2 className="font-bold text-xs md:text-sm text-slate-100 whitespace-nowrap truncate max-w-[120px] md:max-w-[160px]" title={activeDiagram ? activeDiagram.name : ''}>
+                    {activeDiagram ? activeDiagram.name : 'Workspace'}
+                  </h2>
                 </div>
 
-                {/* Audit Security Primary CTA */}
-                <button
-                  id="audit-diagram-btn"
-                  onClick={() => handleAuditDiagram()}
-                  disabled={isAuditing}
-                  className={getTourClass(tourStep, 5, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50 shrink-0")}
-                >
-                  {isAuditing ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : (
-                    <Shield className="w-3.5 h-3.5" />
-                  )}
-                  <span>{isAuditing ? 'Auditing...' : 'Audit Security'}</span>
-                </button>
-                <button
-                  id="header-contact-us-btn"
-                  onClick={() => setIsContactOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-panel-border hover:bg-slate-hover text-xs font-medium transition-all text-slate-300 hover:text-white cursor-pointer"
-                >
-                  <Mail className="w-3.5 h-3.5 text-teal-accent" />
-                  <span>Contact Us</span>
-                </button>
-              </>
-            )}
-          </div>
-        </header>
+                {activeDiagram && (
+                  <>
+                    <div className="h-4 w-px bg-panel-border/60 mx-0.5 shrink-0" />
+                    
+                    {/* Unified Architecture Category Dropdown */}
+                    <div className="relative inline-flex items-center shrink-0">
+                      <select
+                        id="workspace-header-architecture-select"
+                        value={selectedArchType}
+                        disabled={isAnyAIBusy}
+                        onChange={(e) => handleArchitectureSwitch(e.target.value)}
+                        className={getTourClass(
+                          tourStep,
+                          2,
+                          "appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[180px] md:max-w-[220px] truncate"
+                        )}
+                        title="Architecture Category Selector (Business & Technical)"
+                      >
+                        <optgroup label="🏢 BUSINESS ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
+                          {BUSINESS_ARCHITECTURE_TYPES.map((t) => {
+                            const vBadge = getLatestVersionBadgeForArchType(t.id);
+                            return (
+                              <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
+                                🏢 {t.name}{vBadge}
+                              </option>
+                            );
+                          })}
+                        </optgroup>
+                        <optgroup label="⚙️ TECHNICAL ARCHITECTURES" className="bg-[#0b101d] text-indigo-400 font-extrabold">
+                          {TECHNICAL_ARCHITECTURE_TYPES.map((t) => {
+                            const vBadge = getLatestVersionBadgeForArchType(t.id);
+                            return (
+                              <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
+                                ⚙️ {t.name}{vBadge}
+                              </option>
+                            );
+                          })}
+                        </optgroup>
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                    </div>
+
+                    {/* Version Dropdown */}
+                    {activeVersion && (
+                      <div className="flex items-center gap-2 shrink-0">
+                        {renderVersionDropdown("top-header-version-dropdown")}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Group 2: Center - Status Indicators & Theme */}
+              <div className="hidden xl:flex items-center gap-2 shrink-0">
+                {isAnyAIBusy && (
+                  <div className="flex items-center gap-2 px-3 py-1 bg-amber-500/15 border border-amber-500/30 rounded-full text-amber-300 text-xs font-semibold animate-pulse">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+                    <span>⚡ Gemini API active...</span>
+                  </div>
+                )}
+                {activeDiagram && (
+                  <>
+                    <button
+                      id="canvas-theme-toggle"
+                      onClick={() => {
+                        setCanvasTheme(prev => prev === 'dark' ? 'light' : 'dark');
+                        if (tourStep === 4) setTourStep(5);
+                      }}
+                      title={`Switch to ${canvasTheme === 'dark' ? 'Light' : 'Dark'} Canvas Theme`}
+                      className={getTourClass(tourStep, 4, "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0")}
+                    >
+                      {canvasTheme === 'dark' ? (
+                        <>
+                          <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                          <span>Dark</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sun className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Light</span>
+                        </>
+                      )}
+                    </button>
+
+                    <label
+                      id="diagram-visibility-toggle"
+                      title={isPrivate ? "Private: Visible only to you" : "Public: Shared & accessible across sessions"}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 select-none"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isPrivate}
+                        onChange={(e) => toggleDiagramPrivacy(e.target.checked)}
+                        className="w-3.5 h-3.5 rounded border-slate-700 bg-slate-900 text-teal-400 focus:ring-teal-400 focus:ring-offset-slate-900 cursor-pointer"
+                      />
+                      {isPrivate ? (
+                        <span className="flex items-center gap-1 text-amber-300">
+                          <Lock className="w-3 h-3 text-amber-400" />
+                          <span>Private</span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-teal-300">
+                          <Globe className="w-3 h-3 text-teal-400" />
+                          <span>Public</span>
+                        </span>
+                      )}
+                    </label>
+                  </>
+                )}
+              </div>
+
+              {/* Group 3: Right - Edit Options, Exporters, Security Audit & Actions */}
+              <div className="flex items-center gap-2 shrink-0">
+                <AccessRequestsInbox user={currentUser} />
+                {activeDiagram && (
+                  <>
+                    {/* Edit Options Dropdown */}
+                    <div className="relative inline-flex items-center shrink-0 w-[125px]">
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === 'inline') {
+                            setIsInlineEditorOpen(true);
+                          } else if (val === 'newtab') {
+                            openInNewTab();
+                          }
+                        }}
+                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[125px] truncate"
+                      >
+                        <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
+                          ✏️ Edit ▾
+                        </option>
+                        <option value="inline" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                          ✏️ Edit Diagram Inline
+                        </option>
+                        <option value="newtab" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                          ↗️ Open Editor in New Tab
+                        </option>
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                    </div>
+
+                    {/* Exporters Dropdown */}
+                    <div className="relative inline-flex items-center shrink-0 w-[115px]">
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === 'terraform') {
+                            setIsTerraformModalOpen(true);
+                          } else if (val === 'slides') {
+                            setIsExportModalOpen(true);
+                          }
+                        }}
+                        disabled={isAnyAIBusy}
+                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[115px] truncate disabled:opacity-50"
+                      >
+                        <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
+                          📥 Export ▾
+                        </option>
+                        <option value="terraform" className="bg-[#0b101d] text-teal-300 py-1 font-bold">
+                          📦 Export GCP Terraform Code (.tf)
+                        </option>
+                        <option value="slides" className="bg-[#0b101d] text-purple-300 py-1 font-bold">
+                          📊 Export Presentation Deck & Files (PPTX, PDF, PNG, XML)
+                        </option>
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                    </div>
+
+                    {/* Audit Security Primary CTA */}
+                    <button
+                      id="audit-diagram-btn"
+                      onClick={() => handleAuditDiagram()}
+                      disabled={isAuditing}
+                      className={getTourClass(tourStep, 5, "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50 shrink-0")}
+                    >
+                      {isAuditing ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Shield className="w-3.5 h-3.5" />
+                      )}
+                      <span className="hidden sm:inline">{isAuditing ? 'Auditing...' : 'Audit Security'}</span>
+                    </button>
+
+                    {/* Persona Tour Button */}
+                    <button
+                      type="button"
+                      onClick={() => setTourStep(1)}
+                      title="Change Architectural Persona & Re-Run Onboarding Tour"
+                      className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-teal-500/40 bg-teal-500/15 hover:bg-teal-500/25 text-slate-100 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-teal-400 animate-pulse" />
+                      <span>Tour</span>
+                    </button>
+
+                    {/* Feedback Widget */}
+                    <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
+                  </>
+                )}
+              </div>
+            </header>
 
         {/* Workspace Body: Split Pane */}
         <div className="flex-1 flex min-h-0 relative">
