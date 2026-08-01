@@ -14,7 +14,7 @@ export function loadPromptTemplate(filename: string): string {
 
 export async function generateLogicalGraph(
   userPrompt: string,
-  modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash',
+  modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
   aiClient?: GoogleGenAI
 ): Promise<ArchitectureGraph> {
   const ai = aiClient || new GoogleGenAI({});
@@ -116,7 +116,7 @@ export async function generateLogicalGraph(
 export async function editLogicalGraph(
   currentGraph: ArchitectureGraph,
   userChangePrompt: string,
-  modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash',
+  modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
   aiClient?: GoogleGenAI
 ): Promise<ArchitectureGraph> {
   const ai = aiClient || new GoogleGenAI({});

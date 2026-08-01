@@ -502,7 +502,7 @@ Respond strictly in JSON matching the schema provided:
 
       if (lockAcquired) {
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
           contents: multimodalContents,
           config: {
             systemInstruction,

@@ -55,7 +55,7 @@ ${remediationInstructions}
 `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
         contents: [
           { text: `Here is the current Draw.io XML:\n\n${currentXml}` },
         ],

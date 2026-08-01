@@ -407,7 +407,7 @@ ${prompt}
         `.trim();
 
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
           contents: contents,
           config: {
             systemInstruction: activeSystemPrompt,
@@ -444,7 +444,7 @@ STRICT LAYOUT & GEOMETRY RULES:
    - ### Draw.io XML (wrapped in \`\`\`xml ... \`\`\`)`;
 
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
           contents: `### User Target System Prompt:
 ${prompt}`,
           config: {

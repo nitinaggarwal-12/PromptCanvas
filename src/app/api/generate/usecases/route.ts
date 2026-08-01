@@ -126,7 +126,7 @@ ${version.xml_content}
 
     console.log(`Generating in-place metadata for version ${versionId}...`);
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
       contents: contents,
     });
 

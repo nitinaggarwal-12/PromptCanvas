@@ -2687,23 +2687,23 @@ export function getExactGovernanceStateMachineReferenceXml(): string {
           <mxGeometry x="1720" y="270" width="140" height="85" as="geometry" />
         </mxCell>
 
-        <!-- Trigger Connectors & Pills Stacked in Channel y = 470 to 570 -->
+        <!-- Trigger Connectors & Pills Stacked in Channel y = 440 to 540 -->
         <mxCell id="pill_trig1" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Model Obsolescence&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1710" y="470" width="140" height="24" as="geometry" />
+          <mxGeometry x="1710" y="440" width="140" height="22" as="geometry" />
         </mxCell>
         <mxCell id="pill_trig2" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Regulatory Change&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1710" y="500" width="140" height="24" as="geometry" />
+          <mxGeometry x="1710" y="468" width="140" height="22" as="geometry" />
         </mxCell>
         <mxCell id="pill_trig3" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Societal Drift (Harm Detected)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1700" y="530" width="160" height="24" as="geometry" />
+          <mxGeometry x="1700" y="496" width="160" height="22" as="geometry" />
         </mxCell>
         <mxCell id="pill_trig4" value="&lt;b style='font-size:9px;color:#7C2D12;'&gt;Safety Incident (Recall triggered)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFEDD5;strokeColor=#EA580C;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1695" y="560" width="170" height="24" as="geometry" />
+          <mxGeometry x="1695" y="524" width="170" height="22" as="geometry" />
         </mxCell>
 
         <!-- Archival Bottom Box Shifted Down to y = 650 (66px Clear Vertical Gap below pill_trig4!) -->
         <mxCell id="archival_bot" value="&lt;div style='font-size:10px;line-height:1.2;color:#0F172A;text-align:center;'&gt;&lt;span style='font-size:20px;'&gt;📦&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;'&gt;[12] MODEL ARCHIVAL&lt;br&gt;&amp;amp; RETIREMENT&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;fontFamily=Helvetica;shadow=1;arcSize=6;fontSize=10;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1710" y="650" width="150" height="85" as="geometry" />
+          <mxGeometry x="1710" y="560" width="150" height="85" as="geometry" />
         </mxCell>
         <mxCell id="arr_trig1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="soc_reg_mon" target="archival_bot">
           <mxGeometry relative="1" as="geometry">
@@ -2734,7 +2734,7 @@ export function getExactGovernanceStateMachineReferenceXml(): string {
         <!-- 7. Footer Region (Side-by-Side Legend & Why It Works Box) -->
         <!-- Legend Box (Left Half) -->
         <mxCell id="legend_box_statemachine" value="&lt;b style='font-size:13px;color:#202124;'&gt;Legend:&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=8;arcSize=3;" vertex="1" parent="1">
-          <mxGeometry x="20" y="660" width="920" height="130" as="geometry" />
+          <mxGeometry x="20" y="685" width="920" height="130" as="geometry" />
         </mxCell>
         <!-- Column 1 -->
         <mxCell id="leg_sm_c1_1" value="&lt;font style='font-size:11px;color:#202124;'&gt;Managed Compute&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="legend_box_statemachine">
@@ -2835,7 +2835,7 @@ export function getExactGovernanceStateMachineReferenceXml(): string {
 
         <!-- Why It Works Box (Right Half, Side-by-Side with Legend) -->
         <mxCell id="why_works_statemachine" value="&lt;font style='font-size:13px;color:#0F172A;line-height:1.4;'&gt;&lt;b&gt;**WHY IT WORKS:**&lt;/b&gt; This total system view ensures uncompcompromised end-to-end design, integrating ethical data sourcing, adversarial security verification, proactive societal audits, and robust post-production drift monitoring for truly complete governance and safety.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;display=flex;align=center;verticalAlign=middle;padding=15;arcSize=3;" vertex="1" parent="1">
-          <mxGeometry x="960" y="660" width="870" height="130" as="geometry" />
+          <mxGeometry x="960" y="685" width="870" height="130" as="geometry" />
         </mxCell>
 
       </root>

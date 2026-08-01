@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     }
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
       contents: [
         { text: `Here is the Draw.io XML of the GCP architecture to convert to Terraform HCL:\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },
       ],
