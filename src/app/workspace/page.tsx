@@ -77,6 +77,7 @@ interface Diagram {
   versions?: DiagramVersion[];
   architecture_type?: string | null;
   is_private?: boolean | number | null;
+  prompt?: string | null;
 }
 
 interface DiagramVersion {
@@ -343,7 +344,7 @@ function WorkspaceContent() {
     if (!activeDiagram) return { suggestions: [], dynamicPlaceholder: 'Select a diagram first...' };
 
     const name = String(activeDiagram?.name || '').toLowerCase();
-    const prompt = String(activeDiagram?.prompt || '').toLowerCase();
+    const prompt = String(activeVersion?.prompt || activeDiagram?.prompt || '').toLowerCase();
     const xml = String(activeVersion?.xml_content || '').toLowerCase();
     const archType = String(activeDiagram?.architecture_type || '').toLowerCase();
     const combo = `${name} ${prompt} ${xml} ${archType}`;
