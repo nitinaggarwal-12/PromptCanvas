@@ -241,6 +241,12 @@ describe('V2 Pipeline & Architecture Routing Contract Tests', () => {
     expect(bankXml.toLowerCase().includes('oncology')).toBe(false);
     expect(bankXml.toLowerCase().includes('pubmed')).toBe(false);
     expect(bankXml.toLowerCase().includes('banking system')).toBe(true);
+
+    const bankErdXml = getDefaultXmlForArchitecture('erd', 'banking app', 'create an entity relationship diagram for a banking app') || '';
+    expect(bankErdXml.includes('Dim_Patient')).toBe(false);
+    expect(bankErdXml.includes('Patient Key')).toBe(false);
+    expect(bankErdXml.includes('Dim_Physician')).toBe(false);
+    expect(bankErdXml.includes('Dim_Customer_Account')).toBe(true);
   });
 
   it('(vii) Intent Router high confidence (>=0.8) -> routes to template path with classified architecture_type', async () => {

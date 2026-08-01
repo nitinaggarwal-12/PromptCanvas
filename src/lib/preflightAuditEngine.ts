@@ -28,7 +28,18 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     .replace(/Core ITACS Synthesis Engine/g, 'Core AI Synthesis Engine')
     .replace(/ITACS Target/g, 'Enterprise Target')
     .replace(/\bITACS\b/g, 'Enterprise')
-    // 1d. Scrub legacy OCR typos
+    // 1d. Scrub legacy medical/patient residual terms
+    .replace(/Dim_Patient/g, 'Dim_Customer_Account')
+    .replace(/Patient Key/g, 'Account Key (PK)')
+    .replace(/Patient Type/g, 'Account Type')
+    .replace(/Disease History/g, 'Account History')
+    .replace(/Dim_Physician/g, 'Dim_Provider_Merchant')
+    .replace(/Physician Key/g, 'Provider Key (PK)')
+    .replace(/Dim_Payer/g, 'Dim_Payment_Gateway')
+    .replace(/Payer Key/g, 'Gateway Key (PK)')
+    .replace(/Fact_Patient_Encounters/g, 'Fact_Transactions')
+    .replace(/Row-Level Security on Patient Data/g, 'Row-Level Access Security &amp; Compliance')
+    // 1e. Scrub legacy OCR typos
     .replace(/Entire ultra-diate in organizing across major phases/g, 'End-to-End Enterprise Architecture across major phases')
     .replace(/Poots &amp; Pl[aa]nnin[cg] Phases/gi, 'Planning &amp; Ingestion Phases')
     .replace(/Poots &amp; Plonning/gi, 'Planning &amp; Ingestion')
