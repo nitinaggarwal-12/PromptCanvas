@@ -339,93 +339,227 @@ function WorkspaceContent() {
   }, [previewVersion, activeVersion]);
   const [selectedPersona, setSelectedPersona] = useState<string>('architect');
   
-  const suggestions = React.useMemo(() => {
-    if (!activeDiagram) return [];
-
-    if (selectedPersona === 'data_engineer') {
-      return [
-        'Add Snowflake Fact Table with 1:N cardinality',
-        'Integrate dbt Transformation DAG node',
-        'Connect BigQuery Feature Store for ML models',
-        'Enforce Data Lineage logging & PII redaction'
-      ];
-    }
-    if (selectedPersona === 'ai_engineer') {
-      return [
-        'Integrate LangChain orchestrator with Vertex AI',
-        'Add Pinecone / Vector Index for embedding retrieval',
-        'Inject ReAct Thought-Action reasoning loop',
-        'Connect Apigee Gateway for API rate limiting'
-      ];
-    }
-    if (selectedPersona === 'security_lead') {
-      return [
-        'Audit DLP scanning & PII redaction rules',
-        'Inject Cloud Armor WAF Ingress Filtering',
-        'Enforce VPC Service Controls perimeter boundary',
-        'Add SRE Canary Rollback threshold'
-      ];
-    }
-    if (selectedPersona === 'architect') {
-      return [
-        'Add HTTPS Load Balancer with Cloud Armor WAF',
-        'Connect Private Application & Data Subnets via PSC',
-        'Integrate Terraform export config module',
-        'Set up Multi-Region HA & RDS Failover'
-      ];
-    }
+  const { suggestions, dynamicPlaceholder } = React.useMemo(() => {
+    if (!activeDiagram) return { suggestions: [], dynamicPlaceholder: 'Select a diagram first...' };
 
     const name = String(activeDiagram?.name || '').toLowerCase();
+    const prompt = String(activeDiagram?.prompt || '').toLowerCase();
     const xml = String(activeVersion?.xml_content || '').toLowerCase();
+    const archType = String(activeDiagram?.architecture_type || '').toLowerCase();
+    const combo = `${name} ${prompt} ${xml} ${archType}`;
 
-    // 1. AWS/Kubernetes
-    if (name.includes('aws') || name.includes('eks') || name.includes('kubernetes') || xml.includes('eks') || xml.includes('aws.svg') || xml.includes('logos:aws')) {
-      return [
-        'Add an Application Load Balancer (ALB)',
-        'Secure database with RDS Multi-AZ replication',
-        'Integrate AWS WAF to block web exploits',
-        'Add CloudWatch monitoring & alert dashboards'
-      ];
+    const isBanking = combo.includes('bank') || combo.includes('fintech') || combo.includes('payment') || combo.includes('card') || combo.includes('ledger') || combo.includes('atm');
+    const isECom = combo.includes('ecom') || combo.includes('store') || combo.includes('shop') || combo.includes('cart') || combo.includes('order') || combo.includes('retail');
+    const isInsurance = combo.includes('insurance') || combo.includes('claim') || combo.includes('policy') || combo.includes('underwrite');
+    const isHealthcare = combo.includes('health') || combo.includes('clinical') || combo.includes('medical') || combo.includes('patient');
+    const isAi = combo.includes('rag') || combo.includes('agent') || combo.includes('vector') || combo.includes('llm') || combo.includes('embedding');
+    
+    const isErd = archType === 'erd' || combo.includes('erd') || combo.includes('dimensional');
+    const isSeq = archType.includes('sequence') || combo.includes('sequence');
+
+    // 1. Banking / FinTech Domain
+    if (isBanking) {
+      if (isErd) {
+        return {
+          suggestions: [
+            'Add Dim_Customer_Account & Dim_Merchant tables',
+            'Connect Fact_Account_Transactions with 1:N cardinality',
+            'Enforce PCI-DSS & KYC Compliance Rules',
+            'Add Card Network Fee Tier Attributes'
+          ],
+          dynamicPlaceholder: 'e.g., Add Dim_Customer_Account table with PK/FK relationships...'
+        };
+      }
+      if (isSeq) {
+        return {
+          suggestions: [
+            'Add OAuth2 Token Validation step',
+            'Inject Real-Time AML Fraud Screening Loop',
+            'Add ISO 8583 Message Payload Check',
+            'Connect Payment Gateway Callback Webhook'
+          ],
+          dynamicPlaceholder: 'e.g., Add PCI-DSS Tokenization step to payment processing...'
+        };
+      }
+      return {
+        suggestions: [
+          'Add PCI-DSS Ingestion Gateway',
+          'Integrate Real-Time Fraud & AML Detection Engine',
+          'Connect ATM & Web Banking API Feeds',
+          'Enforce Double-Entry Ledger Security'
+        ],
+        dynamicPlaceholder: 'e.g., Add Real-Time Fraud Screening to transaction pipeline...'
+      };
     }
 
-    // 2. GCP / Serverless
-    if (name.includes('gcp') || name.includes('serverless') || xml.includes('cloud-run') || xml.includes('google-cloud') || xml.includes('apigee') || xml.includes('gcs')) {
-      return [
-        'Add Cloud Armor for WAF security',
-        'Set up Cloud Memorystore for Redis caching',
-        'Integrate Pub/Sub for event-driven flows',
-        'Attach Cloud Monitoring alert policies'
-      ];
+    // 2. E-Commerce Domain
+    if (isECom) {
+      if (isErd) {
+        return {
+          suggestions: [
+            'Add Dim_Shopper & Dim_Product_Catalog tables',
+            'Connect Fact_Order_Fulfillment with SKU Key',
+            'Enforce Inventory Stock Allocation Rules',
+            'Add Shipping Address & Carrier Attributes'
+          ],
+          dynamicPlaceholder: 'e.g., Add Dim_Product_Catalog table with SKU Key...'
+        };
+      }
+      if (isSeq) {
+        return {
+          suggestions: [
+            'Add Cart Checkout API Handshake',
+            'Inject Payment Authorization & Hold Step',
+            'Add Inventory Reservation Lock',
+            'Connect Order Confirmation Webhook'
+          ],
+          dynamicPlaceholder: 'e.g., Add Inventory Stock Reservation service before checkout...'
+        };
+      }
+      return {
+        suggestions: [
+          'Add Shopping Cart & Checkout Portal',
+          'Integrate Payment & Logistics Carrier Gateway',
+          'Connect Product Inventory & Stock Engine',
+          'Set Up Customer Loyalty & Promo Engine'
+        ],
+        dynamicPlaceholder: 'e.g., Add Product Recommendation Engine to Checkout...'
+      };
     }
 
-    // 3. AI / RAG / Big Data
-    if (name.includes('rag') || name.includes('pipeline') || name.includes('bigquery') || xml.includes('bigquery') || xml.includes('vector') || xml.includes('vertex') || xml.includes('llm')) {
-      return [
-        'Add Cloud Storage bucket for raw data ingestion',
-        'Integrate LangChain orchestrator with Vertex AI',
-        'Enforce DLP API to redact PII data',
-        'Set up BigQuery cache with BI Engine'
-      ];
+    // 3. Insurance Domain
+    if (isInsurance) {
+      if (isErd) {
+        return {
+          suggestions: [
+            'Add Dim_Policyholder & Dim_Claim_Record tables',
+            'Connect Fact_Insurance_Policies with 1:N cardinality',
+            'Enforce Risk Rating & Underwriting Rules',
+            'Add Coverage Limit & Deductible Attributes'
+          ],
+          dynamicPlaceholder: 'e.g., Add Dim_Policyholder table with PK/FK relationships...'
+        };
+      }
+      if (isSeq) {
+        return {
+          suggestions: [
+            'Add Claim Filing API Handshake',
+            'Inject Automated Fraud & Risk Score Check',
+            'Add Adjuster Review & Approval Step',
+            'Connect Claim Settlement Payout API'
+          ],
+          dynamicPlaceholder: 'e.g., Add Automated Claims Fraud Score check step...'
+        };
+      }
+      return {
+        suggestions: [
+          'Add Policyholder Ingestion Portal',
+          'Integrate Claims Processing & Underwriting Engine',
+          'Connect Risk Assessment & Actuarial Models',
+          'Set Up Premium Billing & Payout Gateway'
+        ],
+        dynamicPlaceholder: 'e.g., Add Actuarial Risk Assessment Engine to Underwriting...'
+      };
     }
 
-    // 4. CI/CD / DevOps
-    if (name.includes('ci/cd') || name.includes('build') || name.includes('devops') || xml.includes('github') || xml.includes('jenkins') || xml.includes('sonar')) {
-      return [
-        'Add SonarQube for static code analysis',
-        'Integrate Slack notifications for build alerts',
-        'Enforce artifact signing with Cosign',
-        'Set up staging deploy step in pipeline'
-      ];
+    // 4. Healthcare Domain
+    if (isHealthcare) {
+      return {
+        suggestions: [
+          'Add HIPAA-Compliant Patient Data Portal',
+          'Integrate Clinical Analytics & Diagnostic Engine',
+          'Connect Electronic Health Record (EHR) APIs',
+          'Set Up Patient Outcomes & Care Management'
+        ],
+        dynamicPlaceholder: 'e.g., Add HIPAA Audit Logging service to patient records...'
+      };
     }
 
-    // 5. General Fallback
-    return [
-      'Add an HTTPS Load Balancer at ingress',
-      'Integrate Redis Cache for fast query response',
-      'Enforce IAM roles & service network isolation',
-      'Attach Prometheus & Grafana dashboard metrics'
-    ];
-  }, [activeDiagram, activeVersion?.xml_content]);
+    // 5. ERD Diagram Type (Generic Domain)
+    if (isErd) {
+      return {
+        suggestions: [
+          'Add Dim_Customer & Dim_Provider tables',
+          'Connect Fact_Transactions with 1:N cardinality',
+          'Enforce Foreign Key constraints & Indexes',
+          'Add Audit Timestamp & Status Attributes'
+        ],
+        dynamicPlaceholder: 'e.g., Add Dim_Customer table with PK/FK relationships...'
+      };
+    }
+
+    // 6. Sequence Diagram Type (Generic Domain)
+    if (isSeq) {
+      return {
+        suggestions: [
+          'Add API Authentication Token check',
+          'Inject Rate Limiting & Throttle Step',
+          'Add Service Response Payload Validation',
+          'Connect Asynchronous Event Callback Webhook'
+        ],
+        dynamicPlaceholder: 'e.g., Add OAuth2 Token Validation step before API execution...'
+      };
+    }
+
+    // 7. AI / RAG Ecosystem
+    if (isAi) {
+      return {
+        suggestions: [
+          'Integrate Vector Embedding Index (pgvector/Pinecone)',
+          'Add ReAct Thought-Action reasoning loop',
+          'Connect Document Chunking & Ingestion Pipeline',
+          'Enforce PII & Safety Guardrails'
+        ],
+        dynamicPlaceholder: 'e.g., Add RAG Context Reranker before LLM generation...'
+      };
+    }
+
+    // 8. Persona-aware fallback
+    if (selectedPersona === 'data_engineer') {
+      return {
+        suggestions: [
+          'Add Snowflake Fact Table with 1:N cardinality',
+          'Integrate dbt Transformation DAG node',
+          'Connect BigQuery Feature Store for ML models',
+          'Enforce Data Lineage logging & PII redaction'
+        ],
+        dynamicPlaceholder: 'e.g., Add dbt transformation step to pipeline...'
+      };
+    }
+    if (selectedPersona === 'ai_engineer') {
+      return {
+        suggestions: [
+          'Integrate LangChain orchestrator with Vertex AI',
+          'Add Pinecone / Vector Index for embedding retrieval',
+          'Inject ReAct Thought-Action reasoning loop',
+          'Connect Apigee Gateway for API rate limiting'
+        ],
+        dynamicPlaceholder: 'e.g., Add Vector Index node to RAG pipeline...'
+      };
+    }
+    if (selectedPersona === 'security_lead') {
+      return {
+        suggestions: [
+          'Audit DLP scanning & PII redaction rules',
+          'Inject Cloud Armor WAF Ingress Filtering',
+          'Enforce VPC Service Controls perimeter boundary',
+          'Add SRE Canary Rollback threshold'
+        ],
+        dynamicPlaceholder: 'e.g., Add Cloud Armor WAF rule to ingress...'
+      };
+    }
+
+    // 9. General Fallback
+    return {
+      suggestions: [
+        'Add HTTPS Load Balancer with Cloud Armor WAF',
+        'Connect Private Application & Data Subnets via PSC',
+        'Integrate Redis Caching for fast query response',
+        'Attach Cloud Monitoring & Alerting Dashboards'
+      ],
+      dynamicPlaceholder: 'e.g., Add an Apigee Gateway in front of Cloud Run...'
+    };
+  }, [activeDiagram, activeVersion?.xml_content, selectedPersona]);
   
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
@@ -3821,7 +3955,7 @@ function WorkspaceContent() {
                 <textarea
                   value={promptInput}
                   onChange={(e) => setPromptInput(e.target.value)}
-                  placeholder={activeDiagram ? "e.g., Add an Apigee Gateway in front of Cloud Run..." : "Select a diagram first..."}
+                  placeholder={dynamicPlaceholder}
                   disabled={!activeDiagram || isAnyAIBusy}
                   rows={2}
                   className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg pl-3 pr-10 py-2.5 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50"
