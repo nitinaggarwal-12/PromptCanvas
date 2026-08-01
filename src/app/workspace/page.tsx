@@ -768,6 +768,37 @@ function WorkspaceContent() {
   const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(true);
+  const [assistantWidth, setAssistantWidth] = useState<number>(340);
+  const [isResizingAssistant, setIsResizingAssistant] = useState<boolean>(false);
+
+  const handleMouseDownAssistantResize = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizingAssistant(true);
+  };
+
+  React.useEffect(() => {
+    if (!isResizingAssistant) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const sidebarWidth = isSidebarOpen ? 256 : 64;
+      const newWidth = e.clientX - sidebarWidth;
+      if (newWidth >= 240 && newWidth <= 650) {
+        setAssistantWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizingAssistant(false);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizingAssistant, isSidebarOpen]);
   
   // Chat History
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -3764,7 +3795,8 @@ function WorkspaceContent() {
           {/* A. LEFT PANE: Chat & Prompt Panel */}
           <section 
             id="tour-ai-panel"
-            className={getTourClass(tourStep, 3, `border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden transition-all duration-300 ${isAssistantOpen ? 'w-80' : 'w-11'}`)}
+            style={{ width: isAssistantOpen ? `${assistantWidth}px` : '44px' }}
+            className={getTourClass(tourStep, 3, `border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden ${isResizingAssistant ? '' : 'transition-all duration-200'}`)}
           >
             {/* Panel Title */}
             <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20 shrink-0 select-none">
@@ -3983,6 +4015,19 @@ function WorkspaceContent() {
               </div>
             </div>
           </section>
+
+          {/* Resizable Split Pane Divider Handle */}
+          {isAssistantOpen && (
+            <div
+              onMouseDown={handleMouseDownAssistantResize}
+              title="Drag to resize Assistant Chatbot panel width"
+              className={`w-1.5 hover:w-2 bg-panel-border/40 hover:bg-teal-400/80 active:bg-teal-400 cursor-col-resize h-full z-30 transition-all flex items-center justify-center shrink-0 group select-none ${
+                isResizingAssistant ? 'bg-teal-400 w-2 shadow-lg shadow-teal-500/20' : ''
+              }`}
+            >
+              <div className="w-0.5 h-6 rounded-full bg-slate-600 group-hover:bg-bg-dark transition-colors" />
+            </div>
+          )}
 
           {/* B. CENTER PANE: Diagram Viewport & In-Place Editor */}
           <section className={`flex-1 flex flex-col h-full relative overflow-hidden min-w-0 transition-colors duration-300 ${canvasTheme === 'light' && viewMode === 'canvas' ? 'bg-[#F1F5F9]' : 'bg-bg-dark'}`}>
