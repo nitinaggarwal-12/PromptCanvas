@@ -30,6 +30,7 @@ interface WorkspaceHeaderProps {
   onOpenImport: () => void;
   onOpenFeedback: () => void;
   onOpenPersonaModal: () => void;
+  onOpenCompose?: () => void;
   onArchitectureTypeChange: (typeId: string) => void;
 }
 
@@ -46,6 +47,7 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
   onOpenImport,
   onOpenFeedback,
   onOpenPersonaModal,
+  onOpenCompose,
   onArchitectureTypeChange,
 }) => {
   const currentVersion = previewVersion || activeVersion;
@@ -136,6 +138,18 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
             <Upload className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Import</span>
           </button>
+
+          {/* Compose Doc */}
+          {onOpenCompose && (
+            <button
+              onClick={onOpenCompose}
+              className="px-3 py-1.5 text-xs font-semibold text-sky-200 bg-sky-600/20 hover:bg-sky-600/30 rounded-lg border border-sky-500/40 transition-colors flex items-center gap-1.5"
+              title="Compose Deliverable Document (PRD, SDD, FDD, Threat Model)"
+            >
+              <FileText className="w-3.5 h-3.5 text-sky-400" />
+              <span className="hidden sm:inline">Compose Doc</span>
+            </button>
+          )}
 
           {/* Export Terraform */}
           <button
