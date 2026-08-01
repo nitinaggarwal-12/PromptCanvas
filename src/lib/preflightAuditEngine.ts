@@ -13,6 +13,14 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 ): string {
   let xml = xmlInput || '';
 
+  // V2 layout-engine output (graph -> ELK -> renderer) is deterministically laid out and
+  // validator-gated with its own repair loop. Geometric "healers" below assume absolute
+  // integer coordinates and fixed attribute order; applied to v2's parent-relative decimal
+  // geometry they relocate nodes out of containers, strip legitimate edge waypoints, and
+  // resize nodes without re-layout. Text/brand scrubbing still applies; geometry surgery
+  // must never touch v2 output. (Regression: "fresh diagrams losing structure post generation".)
+  const isV2LayoutEngineOutput = xml.includes('PromptCanvas-LayoutEngineV2');
+
   // 1b. Fix double/triple-escaped ampersands: &amp;amp; -> &amp;
   xml = xml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
 
@@ -66,8 +74,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     .replace(/ACTION gRP\/HTTP/gi, 'ACTION gRPC/HTTP')
     .replace(/Priocla call/gi, 'Private call');
 
-  // Remove stray edge waypoints that drop into y > 1100 margin
-  xml = xml.replace(/<mxPoint\s+x="(\d+)"\s+y="(?:1[1-9]\d\d|2000)"\s*\/>/gi, '');
+  // Remove stray edge waypoints that drop into y > 1100 margin (Gemini-authored XML only:
+  // v2/ELK diagrams are legitimately taller than 1100px and their waypoints are routed)
+  if (!isV2LayoutEngineOutput) {
+    xml = xml.replace(/<mxPoint\s+x="(\d+)"\s+y="(?:1[1-9]\d\d|2000)"\s*\/>/gi, '');
+  }
 
   // 4. DYNAMIC CANVAS BOUNDARY HEALER (Prevent Bottom & Right Clipping):
   // Calculate maximum Y and X coordinates of all vertex nodes in XML
@@ -101,13 +112,16 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xml = xml.replace(/(<mxGraphModel[^>]*\bpageWidth=")\d+(")/gi, `$1${targetWidth}"`);
   }
 
-  // 5. SHAPE HEIGHT & VERTICAL TEXT BUFFER HEALER:
-  // Auto-expand all cylinder shapes to 95px height to ensure 3-line database subtitles never touch cylinder rims
-  xml = xml.replace(/(<mxCell[^>]*style="[^"]*shape=cylinder3[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?height=")\d+(")/gi, '$195"');
-  // Auto-expand standard vertex cards to 80px height for text buffer margin
-  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr").)*?<mxGeometry\s+(?:[^>]*?\s+)?height=")(?:60|65|70|75)(")/gi, '$180$2');
-  // Auto-expand narrow vertex cards (200px to 250px) to 270px width so text titles never clip
-  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr"|rhombus).)*?<mxGeometry\s+(?:[^>]*?\s+)?width=")(?:200|220|240|250)(")/gi, '$1270$2');
+  // 5. SHAPE HEIGHT & VERTICAL TEXT BUFFER HEALER (Gemini-authored XML only:
+  // resizing v2 nodes without re-running ELK manufactures overlaps and container escapes)
+  if (!isV2LayoutEngineOutput) {
+    // Auto-expand all cylinder shapes to 95px height to ensure 3-line database subtitles never touch cylinder rims
+    xml = xml.replace(/(<mxCell[^>]*style="[^"]*shape=cylinder3[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?height=")\d+(")/gi, '$195"');
+    // Auto-expand standard vertex cards to 80px height for text buffer margin
+    xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr").)*?<mxGeometry\s+(?:[^>]*?\s+)?height=")(?:60|65|70|75)(")/gi, '$180$2');
+    // Auto-expand narrow vertex cards (200px to 250px) to 270px width so text titles never clip
+    xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style="[^"]*"(?:(?!parent="0"|parent="1"|id="[^"]*_lane"|id="[^"]*_tab"|id="[^"]*_hdr"|rhombus).)*?<mxGeometry\s+(?:[^>]*?\s+)?width=")(?:200|220|240|250)(")/gi, '$1270$2');
+  }
 
   // 6. RHOMBUS SHAPE DIMENSION & TEXT OVERFLOW HEALER (Fixes Rhombus Edge Overflow):
   // Auto-expand all rhombus/diamond shapes to width=280 and height=90 so text never spills over sloped edges
@@ -152,8 +166,10 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
 
   // 9. AUTOMATED 2D BOUNDING BOX LINE & EDGE LABEL OVERLAP HEALING:
-  xml = heal2DBoundingBoxLineCollisions(xml);
-  xml = heal2DSameTierNodeCollisions(xml);
+  if (!isV2LayoutEngineOutput) {
+    xml = heal2DBoundingBoxLineCollisions(xml);
+    xml = heal2DSameTierNodeCollisions(xml);
+  }
 
   // Remove any legacy template_type_hdr nodes
   xml = xml.replace(/<mxCell\s+id="template_type_hdr"[\s\S]*?<\/mxCell>/gi, '');
