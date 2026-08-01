@@ -3784,16 +3784,16 @@ function WorkspaceContent() {
               </button>
             </div>
 
-            {/* Pinned Top Section: Prompt Chat Input Box & Suggested Next Actions (Eye-Level Access) */}
-            <div className="p-3 border-b border-panel-border bg-panel-dark/95 backdrop-blur shrink-0 z-10 shadow-md">
-              <form onSubmit={handleSendPrompt} className="relative mb-2">
+            {/* Pinned Top Section: Taller Chatbot Input Box & Clear Suggested Refinement Cards */}
+            <div className="p-3.5 border-b border-panel-border bg-panel-dark/95 backdrop-blur shrink-0 z-10 shadow-md space-y-3">
+              <form onSubmit={handleSendPrompt} className="relative">
                 <textarea
                   value={promptInput}
                   onChange={(e) => setPromptInput(e.target.value)}
                   placeholder={dynamicPlaceholder}
                   disabled={!activeDiagram || isAnyAIBusy}
-                  rows={2}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg pl-3 pr-10 py-2.5 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50"
+                  rows={4}
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl pl-3.5 pr-11 py-3 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50 leading-relaxed shadow-inner"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -3804,35 +3804,37 @@ function WorkspaceContent() {
                 <button
                   type="submit"
                   disabled={!activeDiagram || isAnyAIBusy || !promptInput.trim()}
-                  className="absolute right-2.5 bottom-3.5 p-1.5 rounded-md bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer"
+                  title="Send Prompt (Enter)"
+                  className="absolute right-3 bottom-3.5 p-2 rounded-lg bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer shadow-md"
                 >
-                  <Send className="w-3.5 h-3.5" />
+                  <Send className="w-4 h-4" />
                 </button>
               </form>
 
               {activeDiagram && suggestions.length > 0 && (
-                <div>
-                  <h5 className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                    <Sparkles className="w-3 h-3 text-teal-accent" />
-                    <span>Suggested Next Actions</span>
+                <div className="space-y-1.5 pt-1">
+                  <h5 className="text-[10px] text-teal-300 font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-accent" />
+                    <span>Suggested Next Refinements</span>
                   </h5>
-                  <div className="flex flex-wrap gap-1.5 max-h-[70px] overflow-y-auto pr-1">
+                  <div className="space-y-1.5">
                     {suggestions.map((suggestion, idx) => (
                       <button
                         key={idx}
                         type="button"
                         onClick={() => setPromptInput(suggestion)}
                         disabled={isAnyAIBusy}
-                        className="text-[9px] bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 hover:text-teal-accent border border-slate-700/60 hover:border-teal-500/30 px-2 py-1 rounded transition-all truncate text-left cursor-pointer max-w-full disabled:opacity-50"
+                        className="w-full text-left text-xs bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-teal-accent border border-slate-700/80 hover:border-teal-500/50 p-2.5 rounded-lg transition-all flex items-center justify-between gap-2 group cursor-pointer disabled:opacity-50 shadow-sm"
                         title={suggestion}
                       >
-                        {suggestion}
+                        <span className="leading-snug font-medium">{suggestion}</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-teal-400 shrink-0 transition-colors" />
                       </button>
                     ))}
                   </div>
                 </div>
               )}
-              <p className="text-[10px] text-slate-500 mt-1.5 text-center">
+              <p className="text-[10px] text-slate-500 text-center font-medium">
                 Press Enter to send. Gemini 2.0 Flash will refine your active diagram.
               </p>
             </div>
