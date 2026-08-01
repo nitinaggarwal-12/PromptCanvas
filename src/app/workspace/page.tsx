@@ -474,7 +474,7 @@ function WorkspaceContent() {
       const hasPosition = /\b(relative|absolute|fixed|sticky)\b/.test(cleanedBase);
       const positionClass = hasPosition ? '' : 'relative';
       
-      return `${cleanedBase} ${positionClass} z-[60] ring-4 ring-teal-400 shadow-[0_0_35px_rgba(20,184,166,0.9)] animate-pulse transition-all duration-300 pointer-events-auto scale-[1.02]`;
+      return `${cleanedBase} ${positionClass} z-[70] ring-4 ring-teal-400 border-2 border-teal-400 bg-teal-950/90 text-teal-200 shadow-[0_0_35px_rgba(20,184,166,1)] animate-pulse transition-all duration-300 pointer-events-auto scale-105`;
     }
     return baseClass;
   };
@@ -3311,7 +3311,7 @@ function WorkspaceContent() {
         ) : (
           <>
             {/* Top Navbar */}
-            <header className="h-16 border-b border-panel-border flex items-center justify-between px-3 md:px-6 bg-panel-dark/50 backdrop-blur overflow-x-auto no-scrollbar gap-3">
+            <header className={`h-16 border-b border-panel-border flex items-center justify-between px-3 md:px-6 bg-panel-dark/50 backdrop-blur gap-3 relative ${tourStep !== null ? 'z-[60]' : 'z-30'}`}>
           <div className="flex items-center gap-3 shrink-0">
             {/* Sidebar toggle if collapsed */}
             {!isSidebarOpen && (
@@ -3336,13 +3336,17 @@ function WorkspaceContent() {
               {activeDiagram && (
                 <>
                   {/* 1. Unified Architecture Category Dropdown */}
-                  <div className={getTourClass(tourStep, 2, "relative inline-flex items-center shrink-0")}>
+                  <div className="relative inline-flex items-center shrink-0">
                     <select
                       id="workspace-header-architecture-select"
                       value={selectedArchType}
                       disabled={isAnyAIBusy}
                       onChange={(e) => handleArchitectureSwitch(e.target.value)}
-                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] md:max-w-[250px] truncate"
+                      className={getTourClass(
+                        tourStep,
+                        2,
+                        "appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-3 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] md:max-w-[250px] truncate"
+                      )}
                       title="Architecture Category Selector (Business & Technical)"
                     >
                       <optgroup label="🏢 BUSINESS ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
@@ -4947,7 +4951,7 @@ function WorkspaceContent() {
           )}
 
           {tourStep === 2 && (
-            <div className="fixed left-[540px] top-20 w-88 bg-slate-900 border border-teal-400 p-5 rounded-2xl shadow-2xl z-[70] space-y-3 animate-fade-in">
+            <div className="fixed right-20 top-24 w-88 bg-slate-900 border-2 border-teal-400 p-5 rounded-2xl shadow-2xl z-[80] space-y-3 animate-fade-in">
               <div className="flex items-center justify-between border-b border-panel-border/40 pb-2">
                 <span className="text-[10px] font-black text-teal-300 uppercase tracking-widest bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
                   Step 1 of 5
@@ -4958,11 +4962,11 @@ function WorkspaceContent() {
               </div>
               <div className="space-y-1.5">
                 <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <span className="text-teal-400 text-base">↖️</span>
+                  <span className="text-teal-400 text-base">👈</span>
                   <span>Action Required: Switch Architecture</span>
                 </h4>
                 <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                  Click the glowing <strong className="text-teal-300">Architecture Category</strong> dropdown to the left in the top header and select <strong className="text-teal-300">9. Governance & State Machine</strong> (or any template). Notice how the canvas instantly renders the backbone!
+                  Look at the glowing <strong className="text-teal-300">Architecture Category</strong> dropdown highlighted in bright cyan on the left side of the top header bar. Click it and select any template to observe live backbone rendering!
                 </p>
               </div>
               <div className="pt-1 flex items-center justify-between gap-2">
@@ -4975,6 +4979,7 @@ function WorkspaceContent() {
                 </button>
                 <button
                   type="button"
+                  id="tour-next-btn"
                   onClick={() => setTourStep(3)}
                   className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
                 >
@@ -5013,6 +5018,7 @@ function WorkspaceContent() {
                 </button>
                 <button
                   type="button"
+                  id="tour-next-btn"
                   onClick={() => setTourStep(4)}
                   className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
                 >
@@ -5051,6 +5057,7 @@ function WorkspaceContent() {
                 </button>
                 <button
                   type="button"
+                  id="tour-next-btn"
                   onClick={() => setTourStep(5)}
                   className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
                 >
@@ -5089,6 +5096,7 @@ function WorkspaceContent() {
                 </button>
                 <button
                   type="button"
+                  id="tour-next-btn"
                   onClick={() => setTourStep(6)}
                   className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
                 >
@@ -5114,7 +5122,7 @@ function WorkspaceContent() {
               </div>
               <div className="pt-2 flex justify-center">
                 <button
-                  id="tour-next-btn"
+                  id="tour-finish-btn"
                   type="button"
                   onClick={() => setTourStep(null)}
                   className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-bg-dark text-xs font-black transition-all shadow-lg shadow-teal-500/30 cursor-pointer"
