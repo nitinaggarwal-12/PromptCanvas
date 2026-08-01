@@ -461,7 +461,7 @@ function WorkspaceContent() {
   const [tourStep, setTourStep] = useState<number | null>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('tour') === 'true') {
+      if (params.get('tour') === 'true' || !localStorage.getItem('pc_user_persona')) {
         return 1;
       }
     }
@@ -3071,6 +3071,9 @@ function WorkspaceContent() {
                 onClick={() => {
                   const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
                   setCurrentTab(newTab);
+                  if (newTab === 'walkthrough') {
+                    setTourStep(1);
+                  }
                   if (typeof window !== 'undefined') {
                     const params = new URLSearchParams(window.location.search);
                     if (newTab === 'editor') {
@@ -3443,7 +3446,18 @@ function WorkspaceContent() {
                     )}
                   </label>
 
-                  {/* 6. Feedback Widget */}
+                  {/* 6. Persona Tour Trigger Button */}
+                  <button
+                    type="button"
+                    onClick={() => setTourStep(1)}
+                    title="Change Architectural Persona & Re-Run Onboarding Tour"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/40 bg-teal-500/15 hover:bg-teal-500/25 text-slate-100 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-teal-400 animate-pulse" />
+                    <span>🎭 Persona Tour</span>
+                  </button>
+
+                  {/* 7. Feedback Widget */}
                   <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
                 </>
               )}
