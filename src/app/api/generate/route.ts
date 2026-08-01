@@ -412,11 +412,11 @@ ${templateXmlBackbone}
     } else {
       activeSystemPrompt += `
 
-### REFINEMENT MODE MANDATE (${effectiveArchType}):
-You are incrementally refining an existing architecture diagram (${effectiveArchType}).
-CRITICAL MANDATES FOR REFINEMENT:
-1. Preservative Continuity: You MUST maintain the overall layout structure, swimlane/tier coordinates, component IDs, and visual theme of the provided Existing XML.
-2. Targeted Editing: Only add, remove, or modify components and connectors that are directly affected by the user's Refinement Prompt. Do NOT replace unrelated components or change the template family.
+### CRITICAL REFINEMENT MODE MANDATE (${effectiveArchType}):
+You are incrementally updating an existing architecture diagram (${effectiveArchType}).
+1. STRICT LAYOUT LOCK: DO NOT change the architecture template family, do NOT convert a 3-Stage Conceptual Diagram or ERD into a 5-tier vertical flowchart, and do NOT recalculate component coordinates unless requested.
+2. PRESERVE COMPONENT IDS & COORDINATES: Keep all existing <mxCell> IDs, parent IDs, x/y coordinates, width, height, and edge routing lines from the Existing XML intact.
+3. MINIMAL SURGICAL EDITING: Only edit the specific text inside value="..." attributes or add/remove nodes if explicitly asked. If the user prompt is a generic update or typo fix (e.g. "updte", "update", "refresh"), preserve the exact visual diagram structure.
 `;
     }
 
