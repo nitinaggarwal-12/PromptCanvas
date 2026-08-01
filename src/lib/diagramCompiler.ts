@@ -3610,10 +3610,46 @@ export function getExactDarkModeUnifiedSystemViewReferenceXml(): string {
     .replace(/10\. Unified System View/g, '11. Architecture')
     .replace(/10\./g, '11.')
     .replace(/unified_system_view/g, 'dark_mode_unified_system_view')
+    // Container fills to dark slate theme
     .replace(/fillColor=#FFFFFF/g, 'fillColor=#0F172A')
     .replace(/fillColor=#F8FAFC/g, 'fillColor=#1E293B')
+    .replace(/fillColor=#EFF6FF/g, 'fillColor=#1E293B')
+    .replace(/fillColor=#DBEAFE/g, 'fillColor=#1E3A8A')
+    .replace(/fillColor=#F0FDF4/g, 'fillColor=#064E3B')
+    .replace(/fillColor=#DCFCE7/g, 'fillColor=#14532D')
+    .replace(/fillColor=#E0F2FE/g, 'fillColor=#0C4A6E')
+    .replace(/fillColor=#F1F5F9/g, 'fillColor=#1E293B')
+    .replace(/fillColor=#F3F4F6/g, 'fillColor=#1E293B')
+    .replace(/labelBackgroundColor=#FFFFFF/g, 'labelBackgroundColor=#0F172A')
+    // Inline HTML dark text colors to bright light typography
+    .replace(/color:#202124;/g, 'color:#F8FAFC;')
+    .replace(/color:#000;/g, 'color:#F8FAFC;')
+    .replace(/color:#000000;/g, 'color:#F8FAFC;')
+    .replace(/color:#333;/g, 'color:#F8FAFC;')
+    .replace(/color:#333333;/g, 'color:#F8FAFC;')
+    .replace(/color:#0F172A;/g, 'color:#F8FAFC;')
+    .replace(/color:#1E293B;/g, 'color:#F1F5F9;')
+    .replace(/color:#334155;/g, 'color:#E2E8F0;')
+    .replace(/color:#475569;/g, 'color:#CBD5E1;')
+    .replace(/color:#64748B;/g, 'color:#94A3B8;')
+    .replace(/color:#1E3A8A;/g, 'color:#93C5FD;')
+    .replace(/color:#1D4ED8;/g, 'color:#60A5FA;')
+    .replace(/color:#0369A1;/g, 'color:#38BDF8;')
+    .replace(/color:#15803D;/g, 'color:#4ADE80;')
+    .replace(/color:#166534;/g, 'color:#86EFAC;')
+    .replace(/color:#C2410C;/g, 'color:#FB923C;')
+    .replace(/color:#9C531A;/g, 'color:#FDBA74;')
+    // Draw.io fontColor properties to bright light font color
+    .replace(/fontColor=#000000/g, 'fontColor=#F8FAFC')
+    .replace(/fontColor=#202124/g, 'fontColor=#F8FAFC')
     .replace(/fontColor=#0F172A/g, 'fontColor=#F8FAFC')
-    .replace(/fontColor=#1E293B/g, 'fontColor=#E2E8F0');
+    .replace(/fontColor=#1E293B/g, 'fontColor=#F1F5F9')
+    .replace(/fontColor=#334155/g, 'fontColor=#E2E8F0')
+    .replace(/fontColor=#475569/g, 'fontColor=#CBD5E1')
+    .replace(/fontColor=#64748B/g, 'fontColor=#94A3B8')
+    .replace(/fontColor=#1E3A8A/g, 'fontColor=#93C5FD')
+    .replace(/strokeColor=#202124/g, 'strokeColor=#E2E8F0')
+    .replace(/strokeColor=#0F172A/g, 'strokeColor=#CBD5E1');
 }
 
 function escapeXml(str: string): string {
