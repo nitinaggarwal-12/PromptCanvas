@@ -137,6 +137,7 @@ export interface DiagramVersion {
   business_usecase?: string | null;
   technical_usecase?: string | null;
   architecture_type?: string | null;
+  graph_json?: string | null;
 }
 
 export interface AuditReport {
@@ -397,6 +398,9 @@ export async function ensureTablesExist(): Promise<void> {
     await pool.query(`
       ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS architecture_type TEXT DEFAULT 'conceptual_diagram';
     `);
+    await pool.query(`
+      ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS graph_json TEXT;
+    `);
   } else {
     const db = getSqliteDb();
     db.exec(`
@@ -632,6 +636,11 @@ export async function ensureTablesExist(): Promise<void> {
     }
     try {
       db.exec("ALTER TABLE diagram_versions ADD COLUMN architecture_type TEXT DEFAULT 'conceptual_diagram';");
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE diagram_versions ADD COLUMN graph_json TEXT;');
     } catch {
       // Ignored if column already exists
     }
@@ -975,7 +984,8 @@ export async function saveDiagramVersion(
   aiReasoning?: string | null,
   businessUsecase?: string | null,
   technicalUsecase?: string | null,
-  architectureType: string = 'conceptual_diagram'
+  architectureType: string = 'conceptual_diagram',
+  graphJson?: string | null
 ): Promise<DiagramVersion> {
   await ensureTablesExist();
   const versionId = uuidv4();
@@ -990,8 +1000,8 @@ export async function saveDiagramVersion(
       const nextVersionNumber = (maxVer.rows[0].max_version || 0) + 1;
 
       await client.query(`
-        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `, [
         versionId,
         diagramId,
@@ -1003,7 +1013,8 @@ export async function saveDiagramVersion(
         aiReasoning || null,
         businessUsecase || null,
         technicalUsecase || null,
-        architectureType || 'tech_cicd_pipeline'
+        architectureType || 'tech_cicd_pipeline',
+        graphJson || null
       ]);
 
       await client.query('UPDATE diagrams SET updated_at = CURRENT_TIMESTAMP WHERE id = $1', [diagramId]);
@@ -1027,8 +1038,8 @@ export async function saveDiagramVersion(
       const nextVersionNumber = versionResult.max_version + 1;
 
       const insertVersion = db.prepare(`
-        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       insertVersion.run(
         versionId,
@@ -1041,7 +1052,8 @@ export async function saveDiagramVersion(
         aiReasoning || null,
         businessUsecase || null,
         technicalUsecase || null,
-        architectureType || 'tech_cicd_pipeline'
+        architectureType || 'conceptual_diagram',
+        graphJson || null
       );
 
       const updateDiagram = db.prepare("UPDATE diagrams SET updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");

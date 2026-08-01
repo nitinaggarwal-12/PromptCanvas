@@ -1,9 +1,11 @@
 import { GoogleGenAI } from '@google/genai';
-import { generateLogicalGraph, editLogicalGraph, loadPromptTemplate } from '../graph/generator';
+import { generateLogicalGraph, editLogicalGraph } from '../graph/generator';
 import { computeElkLayout } from '../layout/elk-layout';
 import { renderGraphToDrawioXml } from '../render/drawio-xml';
 import { validateDrawioXml, ValidationResult } from '../validate/validator';
 import { ArchitectureGraph } from '../graph/schema';
+import { REPAIR_XML_SYSTEM_PROMPT, buildRepairXmlPrompt } from '../../prompts/repairXml';
+import { GEMINI_MODEL_ID, getGenConfig } from '../geminiConfig';
 
 export interface V2PipelineTelemetry {
   modelId: string;
@@ -26,7 +28,7 @@ export interface V2PipelineResult {
 
 export async function runV2Pipeline(
   userPrompt: string,
-  modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+  modelId: string = GEMINI_MODEL_ID,
   aiClient?: GoogleGenAI
 ): Promise<V2PipelineResult> {
   const startTime = Date.now();
@@ -34,7 +36,7 @@ export async function runV2Pipeline(
 
   let repairAttempts = 0;
 
-  // 1. Generate Logical Graph JSON (schema validation retry <= 1 inside generateLogicalGraph)
+  // 1. Generate Logical Graph JSON
   const logicalGraph = await generateLogicalGraph(userPrompt, modelId, ai);
 
   // 2. Compute ELK.js Layout
@@ -48,22 +50,24 @@ export async function runV2Pipeline(
 
   // 5. Automated Repair Loop (if invalid, max 2 attempts)
   if (!validation.valid) {
-    const repairTemplate = loadPromptTemplate('repair_xml.md');
-
     while (repairAttempts < 2 && !validation.valid) {
       repairAttempts++;
-      const repairPrompt = repairTemplate
-        .replace('{validation_report_json}', JSON.stringify(validation.errors, null, 2))
-        .replace('{current_xml}', currentXml);
+      const repairPrompt = buildRepairXmlPrompt(
+        JSON.stringify(validation.errors, null, 2),
+        currentXml
+      );
 
       try {
         const response = await ai.models.generateContent({
           model: modelId,
           contents: repairPrompt,
+          config: {
+            systemInstruction: REPAIR_XML_SYSTEM_PROMPT,
+            ...getGenConfig('repair'),
+          },
         });
 
         let repairedText = response.text || '';
-        // Strip markdown code fences if model output wrapped in ```xml
         const match = repairedText.match(/```xml\s*([\s\S]*?)\s*```/) || repairedText.match(/```\s*([\s\S]*?)\s*```/);
         if (match && match[1]) {
           repairedText = match[1].trim();
@@ -103,7 +107,7 @@ export async function runV2Pipeline(
 export async function runV2EditPipeline(
   currentGraph: ArchitectureGraph,
   userChangePrompt: string,
-  modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+  modelId: string = GEMINI_MODEL_ID,
   aiClient?: GoogleGenAI
 ): Promise<V2PipelineResult> {
   const startTime = Date.now();
@@ -125,18 +129,21 @@ export async function runV2EditPipeline(
 
   // 5. Repair Loop if needed
   if (!validation.valid) {
-    const repairTemplate = loadPromptTemplate('repair_xml.md');
-
     while (repairAttempts < 2 && !validation.valid) {
       repairAttempts++;
-      const repairPrompt = repairTemplate
-        .replace('{validation_report_json}', JSON.stringify(validation.errors, null, 2))
-        .replace('{current_xml}', currentXml);
+      const repairPrompt = buildRepairXmlPrompt(
+        JSON.stringify(validation.errors, null, 2),
+        currentXml
+      );
 
       try {
         const response = await ai.models.generateContent({
           model: modelId,
           contents: repairPrompt,
+          config: {
+            systemInstruction: REPAIR_XML_SYSTEM_PROMPT,
+            ...getGenConfig('repair'),
+          },
         });
 
         let repairedText = response.text || '';

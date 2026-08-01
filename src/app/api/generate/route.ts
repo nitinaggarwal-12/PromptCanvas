@@ -10,6 +10,7 @@ import { tryCompileJsonOrFallback, compileSpecToDrawioXml, getBenchmarkItacsSpec
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { isLayoutEngineV2Enabled } from '@/lib/featureFlags';
 import { runV2Pipeline } from '@/lib/pipeline/v2Pipeline';
+import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 const ai = new GoogleGenAI({});
 
 const SYSTEM_PROMPT = `
@@ -241,7 +242,12 @@ export async function POST(request: Request) {
     const useV2 = isLayoutEngineV2Enabled(body, request.url, request.headers);
     if (useV2) {
       console.log('[Pipeline V2] Executing Pipeline V2 deterministic layout engine...');
-      const v2Result = await runV2Pipeline(prompt, process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash', ai);
+      const v2Result = await runV2Pipeline(prompt, GEMINI_MODEL_ID, ai);
+
+      const reasoning = v2Result.graph.narrative?.reasoning || 'Pipeline V2 Graph-then-Layout Engine';
+      const businessUsecase = v2Result.graph.narrative?.businessUsecase || 'Deterministic ELK.js layout';
+      const technicalUsecase = v2Result.graph.narrative?.technicalUsecase || 'Validated mxGraph AST';
+      const graphJsonStr = JSON.stringify(v2Result.graph);
 
       if (diagramId) {
         const version = await saveDiagramVersion(
@@ -250,10 +256,11 @@ export async function POST(request: Request) {
           `V2 Graph Refinement: "${prompt.slice(0, 40)}"`,
           'AI-V2',
           prompt,
-          'Pipeline V2 Graph-then-Layout Engine',
-          'Deterministic ELK.js layout',
-          'Validated mxGraph AST',
-          architectureType || 'unified_system_view'
+          reasoning,
+          businessUsecase,
+          technicalUsecase,
+          architectureType || 'unified_system_view',
+          graphJsonStr
         );
         return NextResponse.json({ version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry });
       } else {
@@ -264,9 +271,9 @@ export async function POST(request: Request) {
           v2Result.xml,
           `V2 Graph Generated: "${prompt.slice(0, 40)}"`,
           prompt,
-          'Pipeline V2 Graph-then-Layout Engine',
-          'Deterministic ELK.js layout',
-          'Validated mxGraph AST',
+          reasoning,
+          businessUsecase,
+          technicalUsecase,
           user?.id || null,
           architectureType || 'unified_system_view',
           Boolean(isPrivate ?? is_private)
