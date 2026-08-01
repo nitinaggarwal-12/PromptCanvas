@@ -68,6 +68,7 @@ export function rearrangeDiagramForAspectRatio(
     allowBooleanAttributes: true,
     parseTagValue: false,
     parseAttributeValue: false,
+    maxNestedTags: 1000,
   });
 
   let ast: any = null;

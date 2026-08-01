@@ -87,6 +87,7 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
     allowBooleanAttributes: true,
     parseTagValue: false,
     parseAttributeValue: false,
+    maxNestedTags: 1000,
   });
 
   let ast: any = null;

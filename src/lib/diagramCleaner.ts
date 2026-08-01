@@ -429,6 +429,7 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
     allowBooleanAttributes: true,
     parseTagValue: false,
     parseAttributeValue: false,
+    maxNestedTags: 1000,
   });
 
   let ast: any = null;
@@ -591,6 +592,7 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
     allowBooleanAttributes: true,
     parseTagValue: false,
     parseAttributeValue: false,
+    maxNestedTags: 1000,
   });
 
   let ast: any = null;
@@ -1025,6 +1027,7 @@ export function createVendorIconsVariant(xmlInput: string): string {
     allowBooleanAttributes: true,
     parseTagValue: false,
     parseAttributeValue: false,
+    maxNestedTags: 1000,
   });
 
   let ast: any = null;
