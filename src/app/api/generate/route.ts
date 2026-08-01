@@ -11,6 +11,8 @@ import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditE
 import { isLayoutEngineV2Enabled } from '@/lib/featureFlags';
 import { runV2Pipeline, runV2EditPipeline } from '@/lib/pipeline/v2Pipeline';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { classifyIntent } from '@/lib/router/intentClassifier';
+import { TEMPLATE_CONFIDENCE_THRESHOLD, FREEFORM_CONFIDENCE_THRESHOLD } from '@/lib/router/constants';
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const SYSTEM_PROMPT = `
@@ -137,8 +139,6 @@ CRITICAL SYNTAX PROHIBITIONS:
   3. For Incremental Refinements, retain existing node IDs, coordinates, and styles for unmodified elements to ensure visual continuity, EXCEPT when the prompt explicitly requests style, coloring, formatting, or icon updates.
   4. For Complete Redesigns, generate new node IDs, clean grid-aligned coordinates, and domain-specific HTML labels (\`<b>[Number] Title</b><br><i>Subtitle</i>\`) with appropriate \`<img>\` icon prefixes for all components.
   5. Ensure ALL nodes representing cloud services, databases, or key technologies (both existing and newly added) are prefix-styled with the appropriate \`<img>\` tag icon inside their \`value\` attribute as defined in the Node Icon & Image Rules.
-
-
 `;
 
 // Helper to extract AI Reasoning Plan, Use Cases, and XML from response text
@@ -241,8 +241,73 @@ export async function POST(request: Request) {
     const TEMPLATE_TRIGGER_PHRASES = /unified system view|entity relationship diagram|\berd\b|sequence diagram|governance & state machine|state-machine lifecycle|secure deployment map|devops & ci\/cd pipeline|data & ai pipeline|cognitive architecture|conceptual diagram|dimensional data model|itacs|oncology data portal/i;
     const isTypedOrTemplateRequest = Boolean(architectureType) || TEMPLATE_TRIGGER_PHRASES.test(prompt || '');
 
+    const v2Enabled = isLayoutEngineV2Enabled(body, request.url, request.headers);
+
+    // Intent Router: 4-stage routing for untyped prompts
+    if (v2Enabled && !isTypedOrTemplateRequest && !diagramId) {
+      console.log('[Intent Router] Untyped prompt detected, executing intent classifier...');
+      const classification = await classifyIntent(prompt);
+
+      if (classification) {
+        console.log('[Intent Router] Classification result:', {
+          selectedType: classification.selectedType,
+          confidence: classification.confidence,
+          reasoning: classification.reasoning
+        });
+
+        if (classification.confidence >= TEMPLATE_CONFIDENCE_THRESHOLD && classification.selectedType && classification.selectedType !== 'v2_freeform') {
+          // High-confidence template match
+          const templateXml = getDefaultXmlForArchitecture(classification.selectedType, prompt, prompt);
+          if (templateXml) {
+            const flavoredXml = injectUseCaseFlavor(templateXml, prompt);
+            const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(flavoredXml);
+
+            const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
+            const { isPrivate, is_private } = body;
+            const { diagram, version } = await createDiagram(
+              diagramName,
+              healedXml,
+              `Intent Classifier: "${prompt.slice(0, 40)}"`,
+              prompt,
+              classification.reasoning,
+              'Intent Router template classification',
+              'Pristine master reference layout backbone',
+              user?.id || null,
+              classification.selectedType,
+              Boolean(isPrivate ?? is_private)
+            );
+
+            return NextResponse.json({
+              diagram,
+              version,
+              classification,
+              classifiedType: classification.selectedType,
+              assumptions: classification.assumptions,
+              alternativeTypes: classification.alternativeTypes
+            }, { status: 201 });
+          }
+        } else if (classification.confidence < FREEFORM_CONFIDENCE_THRESHOLD && classification.selectedType !== 'v2_freeform') {
+          // Low-confidence ambiguous intent -> return disambiguation chips
+          console.log('[Intent Router] Ambiguous intent detected, surfacing disambiguation options...');
+          const suggestedTypes = classification.alternativeTypes.length > 0
+            ? classification.alternativeTypes
+            : ['conceptual_diagram', 'sequence_diagram', 'tech_serverless_gcp'];
+
+          return NextResponse.json({
+            needsDisambiguation: true,
+            prompt,
+            suggestedTypes,
+            assumptions: classification.assumptions,
+            reasoning: classification.reasoning,
+            classification
+          }, { status: 200 });
+        }
+        // If confidence is between 0.6 and 0.8, or selectedType is v2_freeform, let it flow down to runV2Pipeline!
+      }
+    }
+
     // Check LAYOUT_ENGINE_V2 feature flag
-    const useV2 = isLayoutEngineV2Enabled(body, request.url, request.headers) && !isTypedOrTemplateRequest;
+    const useV2 = v2Enabled && !isTypedOrTemplateRequest;
     if (useV2) {
       if (diagramId) {
         const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
@@ -298,7 +363,7 @@ export async function POST(request: Request) {
           architectureType || 'v2_freeform',
           Boolean(isPrivate ?? is_private)
         );
-        return NextResponse.json({ diagram, version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry }, { status: 201 });
+        return NextResponse.json({ diagram, version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry, classifiedType: 'v2_freeform' }, { status: 201 });
       }
     }
 

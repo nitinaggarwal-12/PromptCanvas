@@ -242,6 +242,58 @@ describe('V2 Pipeline & Architecture Routing Contract Tests', () => {
     expect(bankXml.toLowerCase().includes('pubmed')).toBe(false);
     expect(bankXml.toLowerCase().includes('banking system')).toBe(true);
   });
+
+  it('(vii) Intent Router high confidence (>=0.8) -> routes to template path with classified architecture_type', async () => {
+    const intentClassifierModule = await import('@/lib/router/intentClassifier');
+    vi.spyOn(intentClassifierModule, 'classifyIntent').mockResolvedValueOnce({
+      selectedType: 'conceptual_diagram',
+      confidence: 0.9,
+      reasoning: 'High confidence conceptual match',
+      assumptions: ['Cloud provider is GCP'],
+      alternativeTypes: ['erd']
+    });
+
+    const request = new Request('http://localhost:3001/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'build a global banking platform',
+        layoutEngineV2: true,
+      }),
+    });
+
+    const res = await POST(request);
+    expect(res.status).toBe(201);
+    const data = await res.json();
+    expect(data.classifiedType).toBe('conceptual_diagram');
+    expect(data.assumptions).toEqual(['Cloud provider is GCP']);
+  });
+
+  it('(viii) Intent Router low confidence (<0.6) -> returns needsDisambiguation: true with suggested types', async () => {
+    const intentClassifierModule = await import('@/lib/router/intentClassifier');
+    vi.spyOn(intentClassifierModule, 'classifyIntent').mockResolvedValueOnce({
+      selectedType: 'conceptual_diagram',
+      confidence: 0.4,
+      reasoning: 'Vague intent',
+      assumptions: [],
+      alternativeTypes: ['sequence_diagram', 'tech_serverless_gcp']
+    });
+
+    const request = new Request('http://localhost:3001/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'do some system stuff',
+        layoutEngineV2: true,
+      }),
+    });
+
+    const res = await POST(request);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.needsDisambiguation).toBe(true);
+    expect(data.suggestedTypes).toEqual(['sequence_diagram', 'tech_serverless_gcp']);
+  });
 });
 
 export function runRoutingContractTests() {

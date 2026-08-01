@@ -64,6 +64,8 @@ import { AspectRatioSelector } from '@/components/AspectRatioSelector';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
+import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
+import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -528,6 +530,48 @@ function WorkspaceContent() {
   const [isArchConsentModalOpen, setIsArchConsentModalOpen] = useState(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [newDiagramIsPrivate, setNewDiagramIsPrivate] = useState<boolean>(false);
+
+  const [disambiguationData, setDisambiguationData] = useState<{
+    prompt: string;
+    name?: string;
+    suggestedTypes: string[];
+    assumptions?: string[];
+    reasoning?: string;
+  } | null>(null);
+
+  const [activeAssumptions, setActiveAssumptions] = useState<string[]>([]);
+  const [activeAlternativeTypes, setActiveAlternativeTypes] = useState<string[]>([]);
+
+  const handleSelectDisambiguationType = async (typeId: string) => {
+    const promptToGen = disambiguationData?.prompt || newDiagramPrompt || activeDiagram?.name || 'Architecture Diagram';
+    const nameToGen = disambiguationData?.name || newDiagramName || activeDiagram?.name || 'Architecture Diagram';
+    setDisambiguationData(null);
+    setIsGenerating(true);
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: nameToGen,
+          prompt: promptToGen,
+          architectureType: typeId
+        })
+      });
+      if (!res.ok) throw new Error('Failed to generate diagram');
+      const data = await res.json();
+      if (data.assumptions) setActiveAssumptions(data.assumptions);
+      if (data.alternativeTypes) setActiveAlternativeTypes(data.alternativeTypes);
+      await fetchDiagrams();
+      if (data.diagram?.id) {
+        await loadDiagramDetails(data.diagram.id);
+      }
+    } catch (err) {
+      console.error('Error generating selected diagram type:', err);
+      alert('Failed to generate diagram with selected type.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const toggleDiagramPrivacy = async (newPrivate: boolean) => {
     if (!activeDiagram) return;
@@ -1080,10 +1124,24 @@ function WorkspaceContent() {
           });
           if (!res.ok) throw new Error('Failed to generate diagram');
           const data = await res.json();
+          if (data.needsDisambiguation) {
+            setDisambiguationData({
+              prompt: promptToGenerate,
+              name: newDiagramName.trim(),
+              suggestedTypes: data.suggestedTypes,
+              assumptions: data.assumptions,
+              reasoning: data.reasoning
+            });
+            return;
+          }
+          if (data.assumptions) setActiveAssumptions(data.assumptions);
+          if (data.alternativeTypes) setActiveAlternativeTypes(data.alternativeTypes);
           setNewDiagramName('');
           setNewDiagramPrompt('');
           await fetchDiagrams();
-          await loadDiagramDetails(data.diagram.id);
+          if (data.diagram?.id) {
+            await loadDiagramDetails(data.diagram.id);
+          }
         } catch (genErr) {
           console.warn('AI Generation endpoint failed, falling back to local benchmark synthesis:', genErr);
           const fallbackRes = await fetch('/api/diagrams', {
@@ -3304,6 +3362,15 @@ function WorkspaceContent() {
       {/* 2. MAIN WORKSPACE: Split Pane */}
       {currentTab === 'editor' && (
         <main className="flex-1 flex flex-col min-w-0 h-full">
+          <AssumptionBanner
+            assumptions={activeAssumptions}
+            alternativeTypes={activeAlternativeTypes}
+            onSwitchType={(typeId) => handleSelectDisambiguationType(typeId)}
+            onDismiss={() => {
+              setActiveAssumptions([]);
+              setActiveAlternativeTypes([]);
+            }}
+          />
           {currentUser?.is_guest && (
             <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2 px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0">
               <div className="flex items-center gap-2 font-medium">
@@ -4481,6 +4548,18 @@ function WorkspaceContent() {
 
       {/* AI GENERATION REAL-TIME PROGRESS MODAL */}
       <AIGenerationProgressModal isOpen={isGenerating} promptTitle={newDiagramPrompt || activeDiagram?.name} />
+
+      {/* INTENT ROUTER DISAMBIGUATION CHIPS MODAL */}
+      {disambiguationData && (
+        <DiagramTypeSelector
+          prompt={disambiguationData.prompt}
+          suggestedTypes={disambiguationData.suggestedTypes}
+          assumptions={disambiguationData.assumptions}
+          reasoning={disambiguationData.reasoning}
+          onSelectType={handleSelectDisambiguationType}
+          onCancel={() => setDisambiguationData(null)}
+        />
+      )}
 
       {/* 2. Save Version Modal (Mock) */}
       {isSaveModalOpen && (
