@@ -3003,7 +3003,7 @@ function WorkspaceContent() {
         id: `temp_ref_${newArchId}_${Date.now()}`,
         diagram_id: activeDiagram?.id || 'temp',
         version_number: 1,
-        xml_content: refXml,
+        xml_content: refXml || '',
         comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name}`,
         created_by: 'System',
         created_at: new Date().toISOString(),

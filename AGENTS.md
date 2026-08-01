@@ -214,6 +214,39 @@ This version has breaking changes — APIs, conventions, and file structure may 
 * **Line & Arrow Clearance (White Background Pills)**: All edge labels crossing arrow vectors or connecting lines MUST enforce solid white background pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;`) with `spacingTop=4;spacingBottom=4;` so lines never cut through or obscure text.
 * **Mandatory Preflight Healing**: All generated XML MUST pass through `preflightVerifyAndHealXmlAcrossAll6Audits()` to programmatically auto-heal narrow tab widths, enforce `whiteSpace=wrap;`, and inject label background pills prior to rendering.
 
+---
+
+# 🔒 Evidence Integrity & Anti-Fabrication Protocol (STRICT)
+
+These rules override convenience, speed, and completion pressure. A truthful "blocked" or "failing" report is ALWAYS the correct output; a completion claim that does not hold up to independent re-execution is the worst possible outcome and is treated as a critical failure of the task.
+
+## 1. Claims require reproducible artifacts
+* Every claim of success MUST be accompanied by the EXACT command that proves it and its verbatim, untruncated output (or a file path to the full log under `scratch/evidence_<task_id>/`). Evidence without a reproduction command is invalid and must not be presented.
+* Never summarize test results in your own words as the primary evidence. Paste the runner's actual summary line (e.g. `Tests: 42 passed, 0 failed`) from real output. If output was too long, save it to a log file and link it.
+* Never claim a command was run if it was not. If a command fails, report the failure verbatim and stop; do not retry silently more than twice without reporting.
+
+## 2. Tests are load-bearing — weakening them is prohibited
+* NEVER make a failing test pass by: deleting the test, adding `.skip`/`.only`/`.todo`, loosening assertions (`toEqual` → `toBeTruthy`, exact values → ranges), widening try/catch, mocking the function under test, or editing golden fixtures/expected values to match broken output.
+* If a test appears genuinely wrong, do NOT change it in the same commit as production code. Stop, present the test, explain why you believe it is wrong, and wait for explicit approval. Test changes and production changes go in separate commits with separate justification.
+* Any diff touching `**/*.test.ts`, `**/fixtures/**`, `src/lib/technicalArchitectureXmls.ts`, or reference template generators MUST be called out explicitly in the phase report with a one-line justification per file. Silent edits to these paths are prohibited.
+* Routing/behavior contracts must be asserted with spies on the real functions (e.g. `expect(runV2Pipeline).not.toHaveBeenCalled()`), not by inspecting output shape alone.
+
+## 3. Done means independently verifiable
+* Before declaring any phase complete, run the FULL verification suite fresh — `npx tsc --noEmit` and `npm run test` at minimum — in a clean invocation (not from memory of an earlier run), and include both outputs in the evidence folder.
+* Screenshots prove a moment; commands prove a property. Wherever a check can be a command with an exit code (validators, linters, tests), the command is the evidence and the screenshot is supplementary.
+* End every phase report with a "Verify it yourself" section: 3-6 numbered commands the human can copy-paste to independently confirm the phase, including at least one functional check that exercises the actual feature (not just the test suite).
+* Never mark a checklist item complete based on intention. A checklist item is complete only after its verifying command has been run in this session and its output captured.
+
+## 4. Uncertainty must be surfaced, not smoothed over
+* If you could not verify something (environment limitation, missing credentials, flaky behavior), say so explicitly in a "NOT VERIFIED" list in the phase report. An empty NOT VERIFIED list is a positive claim that everything was verified — make it truthfully.
+* Never present inferred or assumed behavior as observed behavior. Use "I observed X (evidence: <cmd>)" vs "I expect X but could not verify because Y" — no third category.
+* If the task cannot be completed as specified, deliver a partial result with an honest gap list. Do not redefine the task to match what was achieved.
+
+## 5. Scope honesty
+* List EVERY file modified in the phase report, including config, lockfiles, and CI. A file changed but not listed is a protocol violation.
+* Never disable, bypass, or reconfigure CI, lint rules, type checking, or git hooks to achieve a green state. If a gate blocks you, report the block.
+
+
 
 
 

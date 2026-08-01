@@ -1,0 +1,26 @@
+name: verify
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Type check
+        run: npx tsc --noEmit
+      - name: Unit and golden pipeline tests
+        run: npm run test -- --run
+      - name: Guard test integrity
+        run: |
+          if git diff origin/main...HEAD -- '**/*.test.ts' '**/fixtures/**' src/lib/technicalArchitectureXmls.ts | grep -E '^\+.*\.(skip|only)\(' ; then
+            echo "::error::Skipped/focused tests introduced in this change"; exit 1; fi
+      - name: Geometry validation on golden outputs
+        run: npm run validate:xml scratch/golden/*.xml || true

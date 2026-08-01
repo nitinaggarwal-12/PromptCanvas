@@ -450,7 +450,7 @@ export async function POST(request: Request) {
     let xmlContent = targetVersion.xml_content;
 
     if (!xmlContent || xmlContent.length < 500) {
-      xmlContent = getDefaultXmlForArchitecture(effectiveArchType, ucContext, userPrompt);
+      xmlContent = getDefaultXmlForArchitecture(effectiveArchType, ucContext, userPrompt) || '';
     } else {
       xmlContent = injectUseCaseFlavor(xmlContent, ucContext, userPrompt);
     }

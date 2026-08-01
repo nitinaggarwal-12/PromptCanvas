@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "validate": "npx tsx bin/validate-cli.ts",
-    "test": "vitest run"
+    "test": "npx tsx tests/run_all_tests.ts && vitest run"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
