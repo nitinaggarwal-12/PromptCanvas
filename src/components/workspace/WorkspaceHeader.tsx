@@ -75,7 +75,7 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
               )}
             </div>
             <h1 className="text-lg font-bold text-white tracking-tight truncate max-w-[400px]">
-              {activeDiagram?.name || 'Untitled Architecture Diagram'}
+              {activeDiagram?.name || 'HSDC'}
             </h1>
           </div>
         </div>
