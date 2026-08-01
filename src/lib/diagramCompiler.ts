@@ -3096,32 +3096,32 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
 
         <!-- Private Application Subnet (Left Inner Box) -->
         <mxCell id="sw3_app_sub" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F97316;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="475" y="615" width="465" height="260" as="geometry" />
+          <mxGeometry x="460" y="615" width="485" height="272" as="geometry" />
         </mxCell>
         <mxCell id="sw3_app_sub_title" value="&lt;b style='font-size:11px;color:#C2410C;'&gt;Private Application Subnet (Isolated)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="485" y="620" width="250" height="20" as="geometry" />
+          <mxGeometry x="470" y="620" width="250" height="20" as="geometry" />
         </mxCell>
         <!-- Central Card: ITACS Agent Orchestrator (GKE Pod) -->
         <mxCell id="sw3_orch_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="488" y="645" width="440" height="220" as="geometry" />
+          <mxGeometry x="472" y="645" width="460" height="232" as="geometry" />
         </mxCell>
         <mxCell id="sw3_orch_title" value="&lt;b style='font-size:11px;color:#1E3A8A;'&gt;ITACS Agent Orchestrator (GKE Pod)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="495" y="650" width="250" height="20" as="geometry" />
+          <mxGeometry x="480" y="650" width="260" height="20" as="geometry" />
         </mxCell>
         <!-- Pure 2D Smooth Tangential Circular ReAct Loop Ring with Zero Overlap -->
         <mxCell id="sw3_react_loop" value="&lt;b style='font-size:11px;color:#1E3A8A;'&gt;ReAct&lt;br&gt;Loop&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:20px;'&gt;🔄&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="500" y="675" width="110" height="110" as="geometry" />
+          <mxGeometry x="485" y="695" width="105" height="105" as="geometry" />
         </mxCell>
-        <mxCell id="sw3_rl_th" value="&lt;b style='font-size:9px;color:#1E3A8A;'&gt;Thought&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;padding=1;align=center;" vertex="1" parent="1"><mxGeometry x="525" y="660" width="60" height="18" as="geometry" /></mxCell>
-        <mxCell id="sw3_rl_ac" value="&lt;b style='font-size:9px;color:#1E3A8A;'&gt;Action&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;padding=1;align=center;" vertex="1" parent="1"><mxGeometry x="618" y="722" width="52" height="18" as="geometry" /></mxCell>
-        <mxCell id="sw3_rl_ob" value="&lt;b style='font-size:9px;color:#1E3A8A;'&gt;Observation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;padding=1;align=center;" vertex="1" parent="1"><mxGeometry x="515" y="792" width="80" height="18" as="geometry" /></mxCell>
+        <mxCell id="sw3_rl_th" value="&lt;b style='font-size:9px;color:#1E3A8A;'&gt;Thought&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;padding=1;align=center;" vertex="1" parent="1"><mxGeometry x="508" y="678" width="60" height="18" as="geometry" /></mxCell>
+        <mxCell id="sw3_rl_ac" value="&lt;b style='font-size:9px;color:#1E3A8A;'&gt;Action&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;padding=1;align=center;" vertex="1" parent="1"><mxGeometry x="595" y="700" width="52" height="18" as="geometry" /></mxCell>
+        <mxCell id="sw3_rl_ob" value="&lt;b style='font-size:9px;color:#1E3A8A;'&gt;Observation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;padding=1;align=center;" vertex="1" parent="1"><mxGeometry x="498" y="806" width="80" height="18" as="geometry" /></mxCell>
         <!-- 3 stacked green nodes -->
-        <mxCell id="sw3_gn1" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Integrated System Prompt&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="680" y="675" width="235" height="42" as="geometry" /></mxCell>
-        <mxCell id="sw3_gn2" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Conversation Memory&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="680" y="730" width="235" height="42" as="geometry" /></mxCell>
-        <mxCell id="sw3_gn3" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Gemini LLM (Reasoner)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="680" y="785" width="235" height="42" as="geometry" /></mxCell>
+        <mxCell id="sw3_gn1" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Integrated System Prompt&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="668" y="686" width="248" height="42" as="geometry" /></mxCell>
+        <mxCell id="sw3_gn2" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Conversation Memory&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="668" y="741" width="248" height="42" as="geometry" /></mxCell>
+        <mxCell id="sw3_gn3" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Gemini LLM (Reasoner)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="668" y="796" width="248" height="42" as="geometry" /></mxCell>
         <!-- Bottom of Card text list neatly positioned below Observation with zero collision -->
         <mxCell id="sw3_orch_list" value="&lt;font style='font-size:9px;color:#1E3A8A;'&gt;• ReAct/Thought loop &amp;nbsp;• Action decision Thought &amp;nbsp;• Action decision Memory&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="495" y="836" width="425" height="22" as="geometry" />
+          <mxGeometry x="480" y="848" width="445" height="22" as="geometry" />
         </mxCell>
         <mxCell id="arr_rl_gn" value="" style="endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1;html=1;" edge="1" parent="1" source="sw3_react_loop" target="sw3_gn1"><mxGeometry relative="1" as="geometry" /></mxCell>
         <mxCell id="arr_gn_rl" value="" style="endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1;html=1;" edge="1" parent="1" source="sw3_gn2" target="sw3_react_loop"><mxGeometry relative="1" as="geometry" /></mxCell>
