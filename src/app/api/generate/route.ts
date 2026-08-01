@@ -9,7 +9,7 @@ import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { tryCompileJsonOrFallback, compileSpecToDrawioXml, getBenchmarkItacsSpec } from '@/lib/diagramCompiler';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { isLayoutEngineV2Enabled } from '@/lib/featureFlags';
-import { runV2Pipeline } from '@/lib/pipeline/v2Pipeline';
+import { runV2Pipeline, runV2EditPipeline } from '@/lib/pipeline/v2Pipeline';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 const ai = new GoogleGenAI({});
 
@@ -242,31 +242,48 @@ export async function POST(request: Request) {
     const isTypedOrTemplateRequest = Boolean(architectureType) || TEMPLATE_TRIGGER_PHRASES.test(prompt || '');
 
     // Check LAYOUT_ENGINE_V2 feature flag
-    const useV2 = isLayoutEngineV2Enabled(body, request.url, request.headers) && !isTypedOrTemplateRequest && !diagramId;
+    const useV2 = isLayoutEngineV2Enabled(body, request.url, request.headers) && !isTypedOrTemplateRequest;
     if (useV2) {
-      console.log('[Pipeline V2] Executing Pipeline V2 deterministic layout engine...');
-      const v2Result = await runV2Pipeline(prompt, GEMINI_MODEL_ID, ai);
-
-      const reasoning = v2Result.graph.narrative?.reasoning || 'Pipeline V2 Graph-then-Layout Engine';
-      const businessUsecase = v2Result.graph.narrative?.businessUsecase || 'Deterministic ELK.js layout';
-      const technicalUsecase = v2Result.graph.narrative?.technicalUsecase || 'Validated mxGraph AST';
-      const graphJsonStr = JSON.stringify(v2Result.graph);
-
       if (diagramId) {
-        const version = await saveDiagramVersion(
-          diagramId,
-          v2Result.xml,
-          `V2 Graph Refinement: "${prompt.slice(0, 40)}"`,
-          'AI-V2',
-          prompt,
-          reasoning,
-          businessUsecase,
-          technicalUsecase,
-          architectureType || 'v2_freeform',
-          graphJsonStr
-        );
-        return NextResponse.json({ version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry });
+        const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
+        if (latestVersion && latestVersion.graph_json) {
+          try {
+            const storedGraph = JSON.parse(latestVersion.graph_json);
+            console.log('[Pipeline V2] Executing Pipeline V2 edit pipeline with stored graph_json...');
+            const v2Result = await runV2EditPipeline(storedGraph, prompt, GEMINI_MODEL_ID, ai);
+
+            const reasoning = v2Result.graph.narrative?.reasoning || 'Pipeline V2 Graph Edit Engine';
+            const businessUsecase = v2Result.graph.narrative?.businessUsecase || 'Deterministic ELK.js layout edit';
+            const technicalUsecase = v2Result.graph.narrative?.technicalUsecase || 'Validated mxGraph AST edit';
+            const graphJsonStr = JSON.stringify(v2Result.graph);
+
+            const version = await saveDiagramVersion(
+              diagramId,
+              v2Result.xml,
+              `V2 Graph Refinement: "${prompt.slice(0, 40)}"`,
+              'AI-V2',
+              prompt,
+              reasoning,
+              businessUsecase,
+              technicalUsecase,
+              architectureType || 'v2_freeform',
+              graphJsonStr
+            );
+            return NextResponse.json({ version, validationReport: v2Result.validationReport, telemetry: v2Result.telemetry });
+          } catch (err) {
+            console.error('[Pipeline V2] Failed to execute runV2EditPipeline, falling back to legacy refinement:', err);
+          }
+        }
+        // Template-backed versions and versions without graph_json stay on legacy refinement path
       } else {
+        console.log('[Pipeline V2] Executing Pipeline V2 deterministic layout engine...');
+        const v2Result = await runV2Pipeline(prompt, GEMINI_MODEL_ID, ai);
+
+        const reasoning = v2Result.graph.narrative?.reasoning || 'Pipeline V2 Graph-then-Layout Engine';
+        const businessUsecase = v2Result.graph.narrative?.businessUsecase || 'Deterministic ELK.js layout';
+        const technicalUsecase = v2Result.graph.narrative?.technicalUsecase || 'Validated mxGraph AST';
+        const graphJsonStr = JSON.stringify(v2Result.graph);
+
         const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
         const { isPrivate, is_private } = body;
         const { diagram, version } = await createDiagram(
