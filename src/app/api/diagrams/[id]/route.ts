@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDiagram, deleteDiagram, getDiagramVersions, updateDiagramArchitectureType, updateDiagramPrivacy } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 
 interface RouteParams {
   params: Promise<{
@@ -35,8 +36,8 @@ export async function GET(request: Request, { params }: RouteParams) {
           xmlStr = String(xmlStr);
         }
       }
-      const healed = validateAndHealDrawioXml(xmlStr || '');
-      return { ...v, xml_content: healed.xml };
+      const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(xmlStr || '', diagram.architecture_type || 'unified_system_view');
+      return { ...v, xml_content: healedXml };
     });
 
     return NextResponse.json({

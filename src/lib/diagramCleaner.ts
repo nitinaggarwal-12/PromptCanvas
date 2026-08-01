@@ -585,6 +585,7 @@ export function resolveVendorIconUrl(text: string): string {
 export function restoreDetailedView(xmlInput: string, skipLayout: boolean = false): string {
   if (!xmlInput) return xmlInput;
   if (isPreservedCustomLayout(xmlInput)) return xmlInput;
+  if (xmlInput.includes('unified_system_view') || xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') || xmlInput.includes('sw3_') || xmlInput.includes('sw1_')) return xmlInput;
 
   const parser = new XMLParser({
     ignoreAttributes: false,

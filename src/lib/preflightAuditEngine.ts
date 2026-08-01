@@ -27,7 +27,47 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     .replace(/ITACS Oncology Platform/g, 'Enterprise AI Platform')
     .replace(/Core ITACS Synthesis Engine/g, 'Core AI Synthesis Engine')
     .replace(/ITACS Target/g, 'Enterprise Target')
-    .replace(/\bITACS\b/g, 'Enterprise');
+    .replace(/\bITACS\b/g, 'Enterprise')
+    // 1d. Scrub legacy OCR typos
+    .replace(/Entire ultra-diate in organizing across major phases/g, 'End-to-End Enterprise Architecture across major phases')
+    .replace(/Poots &amp; Pl[aa]nnin[cg] Phases/gi, 'Planning &amp; Ingestion Phases')
+    .replace(/Poots &amp; Plonning/gi, 'Planning &amp; Ingestion')
+    .replace(/Poots/gi, 'Planning')
+    .replace(/insograto4 MLOps\(L\)MLOps State Machine &amp; Pipalinos/gi, 'Integrated MLOps State Machine &amp; Pipelines')
+    .replace(/insograto4/gi, 'integrated')
+    .replace(/Pipalinos/gi, 'Pipelines')
+    .replace(/DEYIRBMENT/gi, 'RETIREMENT')
+    .replace(/Yavates/gi, 'Nodes')
+    .replace(/incogporating/gi, 'incorporating')
+    .replace(/Metripls metica/gi, 'Metrics &amp; Audits')
+    .replace(/Regeslation/gi, 'Regulation')
+    .replace(/fiennon nao integration/gi, 'detailed role integration')
+    .replace(/Noman-in-the-Loop/gi, 'Human-in-the-Loop')
+    .replace(/dhified Soromance Beant/gi, 'Unified Governance Board')
+    .replace(/analists aplioad rao osss/gi, 'analysts upload raw data')
+    .replace(/Modsl\/Prompt/gi, 'Model/Prompt')
+    .replace(/offhoe Metrics/gi, 'offline metrics')
+    .replace(/Pairoess Audit/gi, 'Fairness Audit')
+    .replace(/Accursay\/P1/gi, 'Accuracy/F1')
+    .replace(/Zonss 2/gi, 'Zones 2')
+    .replace(/Eaterprise Nnowledge/gi, 'Enterprise Knowledge')
+    .replace(/Danaged RiAG/gi, 'Managed RAG')
+    .replace(/GCS\?Vertes A\? Search/gi, 'GCS / Vertex AI Search')
+    .replace(/Boslouss Avalytics/gi, 'Business Analytics')
+    .replace(/Auakehce/gi, 'Analytics')
+    .replace(/Agenlic/gi, 'Agentic')
+    .replace(/Orchestratien 5 Analytics/gi, 'Orchestration &amp; Analytics')
+    .replace(/leference/gi, 'Inference')
+    .replace(/ML lnference/gi, 'ML Inference')
+    .replace(/Betlict Theoghd loop/gi, 'ReAct Thought loop')
+    .replace(/Actien deoision Tbnoglt/gi, 'Action decision Thought')
+    .replace(/Actien deesion Memery/gi, 'Action decision Memory')
+    .replace(/Private Dete\/AI Subwet/gi, 'Private Data/AI Subnet')
+    .replace(/ACTION gRP\/HTTP/gi, 'ACTION gRPC/HTTP')
+    .replace(/Priocla call/gi, 'Private call');
+
+  // Remove stray edge waypoints that drop into y > 1100 margin
+  xml = xml.replace(/<mxPoint\s+x="(\d+)"\s+y="(?:1[1-9]\d\d|2000)"\s*\/>/gi, '');
 
   // 4. DYNAMIC CANVAS BOUNDARY HEALER (Prevent Bottom & Right Clipping):
   // Calculate maximum Y and X coordinates of all vertex nodes in XML

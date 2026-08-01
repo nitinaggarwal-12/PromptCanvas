@@ -3164,12 +3164,9 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="arr_gn_rl" value="" style="endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1;html=1;" edge="1" parent="1" source="sw3_gn2" target="sw3_react_loop"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- Cross-Subnet Connectors -->
-        <mxCell id="arr_cs_act1" value="" style="endArrow=block;endFill=1;strokeColor=#1E3A8A;strokeWidth=1.5;html=1;" edge="1" parent="1" source="sw3_gn1" target="sw3_tb1"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="lbl_cs_act1" value="&lt;b style='font-size:8px;color:#1E3A8A;'&gt;ACTION gRPC/HTTP&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1"><mxGeometry x="940" y="668" width="55" height="15" as="geometry" /></mxCell>
-        <mxCell id="arr_cs_obs1" value="" style="endArrow=block;endFill=1;strokeColor=#16A34A;strokeWidth=1.5;html=1;" edge="1" parent="1" source="sw3_tb2" target="sw3_gn2"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="lbl_cs_obs1" value="&lt;b style='font-size:8px;color:#16A34A;'&gt;OBSERVATION&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1"><mxGeometry x="940" y="725" width="55" height="15" as="geometry" /></mxCell>
-        <mxCell id="arr_cs_act2" value="" style="endArrow=block;endFill=1;strokeColor=#1E3A8A;strokeWidth=1.5;html=1;" edge="1" parent="1" source="sw3_gn3" target="sw3_tb3"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="lbl_cs_act2" value="&lt;b style='font-size:8px;color:#1E3A8A;'&gt;ACTIONS&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1"><mxGeometry x="940" y="785" width="55" height="15" as="geometry" /></mxCell>
+        <mxCell id="arr_cs_act1" value="&lt;b style='font-size:8px;color:#1E3A8A;'&gt;ACTION gRPC/HTTP&lt;/b&gt;" style="endArrow=block;endFill=1;strokeColor=#1E3A8A;strokeWidth=1.5;html=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;padding=3;" edge="1" parent="1" source="sw3_gn1" target="sw3_tb1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="arr_cs_obs1" value="&lt;b style='font-size:8px;color:#16A34A;'&gt;OBSERVATION&lt;/b&gt;" style="endArrow=block;endFill=1;strokeColor=#16A34A;strokeWidth=1.5;html=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;padding=3;" edge="1" parent="1" source="sw3_tb2" target="sw3_gn2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="arr_cs_act2" value="&lt;b style='font-size:8px;color:#1E3A8A;'&gt;ACTIONS&lt;/b&gt;" style="endArrow=block;endFill=1;strokeColor=#1E3A8A;strokeWidth=1.5;html=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;padding=3;" edge="1" parent="1" source="sw3_gn3" target="sw3_tb3"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- Private Data/AI Subnet (Right Inner Box) -->
         <mxCell id="sw3_data_sub" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F97316;strokeWidth=1.5;" vertex="1" parent="1">
@@ -3189,34 +3186,34 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
           <mxGeometry x="1015" y="800" width="465" height="55" as="geometry" />
         </mxCell>
 
-        <!-- Deployment & Observability (Right side of VPC container) with mandated typo ironction -->
+        <!-- Deployment & Observability -->
         <mxCell id="sw3_can_gke" value="&lt;span style='font-size:24px;'&gt;☸️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;GKE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#172554;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1560" y="625" width="85" height="65" as="geometry" />
+          <mxGeometry x="1530" y="625" width="75" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="sw3_gke_lbl" value="&lt;font style='font-size:9px;color:#1E3A8A;font-weight:bold;'&gt;Canary deployment&lt;br&gt;on GKE&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1"><mxGeometry x="1555" y="692" width="95" height="25" as="geometry" /></mxCell>
+        <mxCell id="sw3_gke_lbl" value="&lt;font style='font-size:9px;color:#1E3A8A;font-weight:bold;'&gt;Canary deployment&lt;br&gt;on GKE&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1"><mxGeometry x="1520" y="692" width="95" height="25" as="geometry" /></mxCell>
         <mxCell id="arr_data_gke" value="" style="endArrow=block;endFill=1;strokeColor=#1E3A8A;strokeWidth=1.5;html=1;" edge="1" parent="1" source="sw3_data_sub" target="sw3_can_gke"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="sw3_obs_box" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Continuous Observation &amp;amp;&lt;br&gt;Alerting monitoring&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#166534;'&gt;- Inference drift&lt;br&gt;- Prompt ironction&lt;br&gt;- Societal Changes&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;strokeWidth=1.5;align=left;verticalAlign=top;padding=8;" vertex="1" parent="1">
-          <mxGeometry x="1535" y="735" width="160" height="110" as="geometry" />
+        <mxCell id="sw3_obs_box" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Continuous Observation &amp;amp;&lt;br&gt;Alerting monitoring&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#166534;'&gt;- Inference drift&lt;br&gt;- Prompt injection&lt;br&gt;- Societal Changes&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;strokeWidth=1.5;align=left;verticalAlign=top;padding=8;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="735" width="160" height="110" as="geometry" />
         </mxCell>
         <mxCell id="arr_gke_obs" value="" style="endArrow=block;endFill=1;strokeColor=#16A34A;strokeWidth=1.5;html=1;" edge="1" parent="1" source="sw3_can_gke" target="sw3_obs_box"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <!-- ARCHIVAL (Far Right outside VPC) with mandated gibberish fiennon nao integration and Regeslation -->
-        <mxCell id="sw3_archival" value="&lt;b style='font-size:11px;color:#1E293B;'&gt;ARCHIVAL (Retired Model/Prompt)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#475569;'&gt;- Incoming triggers&lt;br&gt;- Incoming triggers&lt;br&gt;- fiennon nao integration&lt;br&gt;- Detailed role integration&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;align=left;verticalAlign=top;padding=10;" vertex="1" parent="1">
-          <mxGeometry x="1710" y="640" width="180" height="190" as="geometry" />
+        <!-- ARCHIVAL (Far Right outside VPC) -->
+        <mxCell id="sw3_archival" value="&lt;b style='font-size:11px;color:#1E293B;'&gt;ARCHIVAL (Retired Model/Prompt)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#475569;'&gt;- Incoming triggers&lt;br&gt;- Detailed role integration&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;align=left;verticalAlign=top;padding=10;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="620" width="180" height="230" as="geometry" />
         </mxCell>
         <!-- Inbound Arrows to Archival -->
-        <mxCell id="sw3_mon_top" value="&lt;b style='font-size:9px;color:#333;'&gt;Monitoring &amp;amp; Observability&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;padding=4;" vertex="1" parent="1"><mxGeometry x="1540" y="555" width="150" height="25" as="geometry" /></mxCell>
+        <mxCell id="sw3_mon_top" value="&lt;b style='font-size:9px;color:#333;'&gt;Monitoring &amp;amp; Observability&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;padding=4;" vertex="1" parent="1"><mxGeometry x="1520" y="555" width="150" height="25" as="geometry" /></mxCell>
         <mxCell id="arr_mon_arch" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="sw3_mon_top" target="sw3_archival"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1750" y="568" /></Array></mxGeometry></mxCell>
-        <mxCell id="arr_gke_arch" value="" style="endArrow=block;endFill=1;strokeColor=#64748B;strokeWidth=1.2;html=1;" edge="1" parent="1" source="sw3_can_gke" target="sw3_archival"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="lbl_drift_det" value="&lt;font style='font-size:8px;color:#475569;'&gt;Drift Detection&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1"><mxGeometry x="1650" y="635" width="55" height="15" as="geometry" /></mxCell>
+        <mxCell id="arr_gke_arch" value="" style="endArrow=block;endFill=1;strokeColor=#64748B;strokeWidth=1.2;html=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#64748B;" edge="1" parent="1" source="sw3_can_gke" target="sw3_archival"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lbl_drift_det" value="&lt;font style='font-size:8px;color:#475569;'&gt;Drift Detection&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1"><mxGeometry x="1635" y="635" width="55" height="15" as="geometry" /></mxCell>
 
-        <!-- 4 arrows from Continuous Observation to Archival with Regeslation typo -->
+        <!-- 4 trigger pills placed neatly inside Archival container -->
         <mxCell id="arr_obs_arch1" value="" style="endArrow=block;endFill=1;strokeColor=#D37324;strokeWidth=1.2;html=1;" edge="1" parent="1" source="sw3_obs_box" target="sw3_archival"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="p_reges" value="&lt;b style='font-size:8px;color:#FFFFFF;'&gt;Regeslation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1645" y="745" width="60" height="16" as="geometry" /></mxCell>
-        <mxCell id="p_regchg" value="&lt;b style='font-size:8px;color:#FFFFFF;'&gt;Regulatory Change&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1635" y="768" width="72" height="16" as="geometry" /></mxCell>
-        <mxCell id="p_socdrift" value="&lt;b style='font-size:8px;color:#FFFFFF;'&gt;Societal Drift (Harm Detected)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1615" y="791" width="92" height="16" as="geometry" /></mxCell>
-        <mxCell id="p_safinc" value="&lt;b style='font-size:8px;color:#FFFFFF;'&gt;Safety Incident (Recall triggered)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1610" y="814" width="98" height="16" as="geometry" /></mxCell>
+        <mxCell id="p_reges" value="&lt;b style='font-size:8px;color:#FFFFFF;'&gt;Regulation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1720" y="710" width="160" height="20" as="geometry" /></mxCell>
+        <mxCell id="p_regchg" value="&lt;b style='font-size:8px;color:#FFFFFF;'&gt;Regulatory Change&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1720" y="738" width="160" height="20" as="geometry" /></mxCell>
+        <mxCell id="p_socdrift" value="&lt;b style='font-size:8px;color:#FFFFFF;'&gt;Societal Drift&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1720" y="766" width="160" height="20" as="geometry" /></mxCell>
+        <mxCell id="p_safinc" value="&lt;b style='font-size:8px;color:#FFFFFF;'&gt;Safety Incident&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1720" y="794" width="160" height="20" as="geometry" /></mxCell>
 
         <!-- 5. Bottom Footer Region: Dense Legend (CRITICAL: Retain all gibberish & typos) -->
         <mxCell id="leg_box_uv" value="&lt;b style='font-size:14px;color:#202124;'&gt;Legend&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=8;arcSize=3;" vertex="1" parent="1">
