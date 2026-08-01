@@ -4947,7 +4947,7 @@ function WorkspaceContent() {
           )}
 
           {tourStep === 2 && (
-            <div className="fixed left-64 top-24 w-88 bg-slate-900 border border-teal-400 p-5 rounded-2xl shadow-2xl z-[70] space-y-3 animate-fade-in">
+            <div className="fixed left-[540px] top-20 w-88 bg-slate-900 border border-teal-400 p-5 rounded-2xl shadow-2xl z-[70] space-y-3 animate-fade-in">
               <div className="flex items-center justify-between border-b border-panel-border/40 pb-2">
                 <span className="text-[10px] font-black text-teal-300 uppercase tracking-widest bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
                   Step 1 of 5
@@ -4958,11 +4958,11 @@ function WorkspaceContent() {
               </div>
               <div className="space-y-1.5">
                 <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <span className="text-teal-400 text-base">👉</span>
+                  <span className="text-teal-400 text-base">↖️</span>
                   <span>Action Required: Switch Architecture</span>
                 </h4>
                 <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                  Click the highlighted <strong className="text-teal-300">Architecture Category</strong> dropdown in the top header and select <strong className="text-teal-300">9. Governance & State Machine</strong> (or any template). Notice how the canvas instantly renders the backbone!
+                  Click the glowing <strong className="text-teal-300">Architecture Category</strong> dropdown to the left in the top header and select <strong className="text-teal-300">9. Governance & State Machine</strong> (or any template). Notice how the canvas instantly renders the backbone!
                 </p>
               </div>
               <div className="pt-1 flex items-center justify-between gap-2">
