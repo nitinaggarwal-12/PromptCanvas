@@ -1,0 +1,171 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="itacs_conceptual_compiled" name="Enterprise AI Platform Conceptual Diagram">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="col_ingestion" value="&lt;b style=&quot;font-size:13px;&quot;&gt;[STAGE 1] ONCOLOGY DATA PORTAL&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:12px;font-weight:normal;color:#475569;&quot;&gt;(The Ingestion Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#CBD5E1;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="80" width="320" height="640" as="geometry"/>
+        </mxCell>
+        <mxCell id="src_card" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[1a] Manual Data Sources Card&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#64748B;&quot;&gt;Raw Scientific Literature &amp; PPT Decks&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;verticalAlign=top;padding=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="140" width="280" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="pdf_badge" value="&lt;b style=&quot;color:#FFFFFF;font-size:11px;&quot;&gt;PDF&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DC2231;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="188" width="36" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="pdf_lbl" value="PDFs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="88" y="232" width="50" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="ppt_badge" value="&lt;b style=&quot;color:#FFFFFF;font-size:11px;&quot;&gt;PPT&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EA580C;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="188" width="36" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="ppt_lbl" value="PPTs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="153" y="232" width="50" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="doc_badge" value="📄" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;fontSize=20;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="235" y="188" width="36" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="doc_lbl" value="Unstructured&lt;br&gt;Documents" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#1E293B;" vertex="1" parent="1">
+          <mxGeometry x="215" y="232" width="76" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="shift_label" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;SHIFT: Manual gathering -&gt; Strategic planning.&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;fontColor=#15803D;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="270" width="280" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="func_areas" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[1b] 5 Functional Silos Ingestion&lt;/b&gt;&lt;br&gt;&lt;table style=&quot;width:100%;text-align:center;font-size:11px;border-collapse:separate;border-spacing:6px;margin-top:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;🔍&lt;br&gt;&lt;b&gt;Market Research&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;🩺&lt;br&gt;&lt;b&gt;Medical Affairs&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;💰&lt;br&gt;&lt;b&gt;Market Access&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;⚖️&lt;br&gt;&lt;b&gt;Outcomes Research&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;🧠&lt;br&gt;&lt;b&gt;Competitive Intelligence&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;fontColor=#1E293B;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="308" width="280" height="210" as="geometry"/>
+        </mxCell>
+        <mxCell id="user_node" value="&lt;table style=&quot;width:100%;border:none;text-align:left;margin-top:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:55px;font-size:38px;text-align:center;vertical-align:middle;&quot;&gt;👩‍💻&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;b style=&quot;font-size:13px;color:#1E293B;&quot;&gt;[1c] Researcher Node&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#334155;&quot;&gt;Analyst Workspace Portal&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;Asset Analysis &amp; Query Interface&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;padding=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="528" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="col_processing" value="&lt;b style=&quot;font-size:13px;&quot;&gt;[STAGE 2] INTEGRATED INSIGHTS HUB&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:12px;font-weight:normal;color:#1E3A8A;&quot;&gt;(The AI Processing Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#60A5FA;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#1E3A8A;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="80" width="380" height="640" as="geometry"/>
+        </mxCell>
+        <mxCell id="core_platform" value="&lt;b style=&quot;font-size:14px;color:#1E3A8A;&quot;&gt;[2] Core AI Synthesis Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;font-weight:normal;color:#3B82F6;&quot;&gt;(Powered by Gemini Enterprise LLM)&lt;/span&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;fillColor=#DBEAFE;gradientColor=#EFF6FF;gradientDirection=south;strokeColor=#2563EB;strokeWidth=3;size=20;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1E3A8A;padding=15;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="145" width="340" height="480" as="geometry"/>
+        </mxCell>
+        <mxCell id="synth" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[2a] Multi-Functional Data Synthesis&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#64748B;font-size:11px;&quot;&gt;(Genomic &amp; Clinical Correlation Engine)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="215" width="300" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="content" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[2b] Unstructured Content Analysis&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#64748B;font-size:11px;&quot;&gt;(PubMed PDF &amp; PPT Chunking Engine)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="290" width="300" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="chatbot" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[2c] Strategic Chatbot Reasoning&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#64748B;font-size:11px;&quot;&gt;(ReAct Natural Language Agent Interface)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="365" width="300" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="sim" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[2d] Competitive Launch Simulation&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#64748B;font-size:11px;&quot;&gt;(Oncology Scenario Planning)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="440" width="300" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="processing_footer" value="PARALLEL EXECUTION PATH:&lt;br&gt;&lt;b style=&quot;color:#1E3A8A;&quot;&gt;No-Code MVP (immediate)&lt;/b&gt; -&gt; &lt;b style=&quot;color:#1E3A8A;&quot;&gt;Custom High-Code Agent&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;(production/approval)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="440" y="650" width="360" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="col_delivery" value="&lt;b style=&quot;font-size:13px;&quot;&gt;[STAGE 3] STRATEGIC DELIVERY &amp; INSIGHTS&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:12px;font-weight:normal;color:#14532D;&quot;&gt;(The Output Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#4ADE80;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#14532D;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="80" width="360" height="640" as="geometry"/>
+        </mxCell>
+        <mxCell id="out_1" value="&lt;b&gt;[3a] OUTMANEUVER COMPETITION&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#15803D;fontStyle=1;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="145" width="300" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="out_2" value="&lt;b&gt;[3b] REACH PATIENTS FASTER&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#15803D;fontStyle=1;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="187" width="300" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="out_3" value="&lt;b&gt;[3c] STRATEGIC PLANNING &amp; ANALYSIS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#15803D;fontStyle=1;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="229" width="300" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="exec_dash_foot" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#64748B;strokeColor=#475569;strokeWidth=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="420" width="80" height="5" as="geometry"/>
+        </mxCell>
+        <mxCell id="exec_dash_stand" value="" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fillColor=#94A3B8;strokeColor=#64748B;direction=south;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1035" y="400" width="30" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="exec_dash_bezel" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#0F172A;strokeWidth=2;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="275" width="300" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="exec_dash_chin" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="902" y="386" width="296" height="12" as="geometry"/>
+        </mxCell>
+        <mxCell id="exec_dash" value="&lt;div style=&quot;background:#0F172A;color:#FFFFFF;padding:4px 8px;font-size:11px;font-weight:bold;text-align:left;border-top-left-radius:2px;border-top-right-radius:2px;&quot;&gt;&lt;span style=&quot;color:#EF4444;margin-right:4px;&quot;&gt;●&lt;/span&gt;&lt;span style=&quot;color:#F59E0B;margin-right:4px;&quot;&gt;●&lt;/span&gt;&lt;span style=&quot;color:#10B981;margin-right:8px;&quot;&gt;●&lt;/span&gt; [3d] Executive Strategy Dashboard&lt;/div&gt;&lt;table style=&quot;width:100%;text-align:center;border:none;margin-top:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:50%;border-right:1px solid #E2E8F0;padding:4px;&quot;&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;Real-time KPIs&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-size:16px;color:#3B82F6;&quot;&gt;94.8%&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#10B981;background:#D1FAE5;padding:1px 4px;border-radius:3px;&quot;&gt;▲ +12.4%&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;Launch Readiness&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-size:16px;color:#10B981;&quot;&gt;Phase 3&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;background:#F1F5F9;padding:1px 4px;border-radius:3px;&quot;&gt;On Schedule&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#1E293B;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="906" y="281" width="288" height="103" as="geometry"/>
+        </mxCell>
+        <mxCell id="comp_view_bezel" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#1E293B;strokeWidth=3;arcSize=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="440" width="300" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="comp_view_cam" value="" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#64748B;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1047" y="443" width="6" height="6" as="geometry"/>
+        </mxCell>
+        <mxCell id="comp_view" value="&lt;div style=&quot;font-size:11px;font-weight:bold;color:#1E293B;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:4px 6px;text-align:left;&quot;&gt;[3e] Competitor Comparison View &lt;span style=&quot;float:right;font-size:10px;color:#64748B;font-weight:normal;&quot;&gt;Target Timelines&lt;/span&gt;&lt;/div&gt;&lt;table style=&quot;width:100%;text-align:center;font-size:10px;margin-top:6px;border-collapse:separate;border-spacing:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:4px;padding:4px;&quot;&gt;&lt;b style=&quot;color:#DC2231;&quot;&gt;Competitor X&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#991B1B;&quot;&gt;Q3 Launch&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;background:#FFFBEB;border:1px solid #FDE68A;border-radius:4px;padding:4px;&quot;&gt;&lt;b style=&quot;color:#D97706;&quot;&gt;Competitor Y&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#92400E;&quot;&gt;Phase 2b&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;background:#ECFDF5;border:1px solid #6EE7B7;border-radius:4px;padding:4px;&quot;&gt;&lt;b style=&quot;color:#10B981;&quot;&gt;Enterprise Target&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#065F46;&quot;&gt;Q1 Market Lead&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#1E293B;padding=4;arcSize=6;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="908" y="452" width="284" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="advisory_bezel" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEFCF7;strokeColor=#DC2231;strokeWidth=4;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="565" width="300" height="135" as="geometry"/>
+        </mxCell>
+        <mxCell id="advisory_notch" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F87171;strokeColor=none;arcSize=50;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="571" width="50" height="5" as="geometry"/>
+        </mxCell>
+        <mxCell id="advisory" value="&lt;div style=&quot;color:#DC2231;font-size:13px;line-height:1.4;text-align:center;&quot;&gt;&lt;div style=&quot;background:#FEE2E2;color:#991B1B;font-size:11px;font-weight:bold;padding:2px 6px;border-radius:4px;margin-bottom:6px;display:inline-block;&quot;&gt;🚨 STRATEGIC ADVISORY ALERT&lt;/div&gt;&lt;br&gt;&lt;b style=&quot;font-size:14px;color:#7F1D1D;&quot;&gt;Review Drug Launch Strategy&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#991B1B;background:#FEF2F2;padding:2px 8px;border-radius:999px;border:1px solid #F87171;display:inline-block;margin-top:4px;&quot;&gt;Alert ID: #T-731&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;fontColor=#7F1D1D;padding=8;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="910" y="583" width="280" height="107" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_in_1" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;1. Raw Literature&lt;br&gt;PDF Stream&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="src_card" target="core_platform">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+            <Array as="points">
+              <mxPoint x="390" y="195"/>
+              <mxPoint x="390" y="300"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_in_2" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;2. DATA INGESTION&lt;br&gt;&amp; EXTRACTION&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="func_areas" target="core_platform">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+            <Array as="points">
+              <mxPoint x="400" y="413"/>
+              <mxPoint x="400" y="385"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_in_3" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;3. Researcher Query&lt;br&gt;Request&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="user_node" target="core_platform">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+            <Array as="points">
+              <mxPoint x="390" y="583"/>
+              <mxPoint x="390" y="480"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_out_main" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;TARGET INSIGHTS FEED&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#10B981;endArrow=none;endFill=0;labelBackgroundColor=none;fontStyle=1;fontSize=11;" edge="1" parent="1" source="core_platform">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="835" y="385" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_out_1" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;4. Synthesize Dashboard&lt;br&gt;KPIs &amp; Metrics&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+            <mxPoint x="835" y="385" as="sourcePoint"/>
+            <mxPoint x="900" y="337" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="835" y="337"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_out_2" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;5. Rank Target Discovery&lt;br&gt;Timelines&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+            <mxPoint x="835" y="385" as="sourcePoint"/>
+            <mxPoint x="900" y="495" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="835" y="495"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_out_3" value="&lt;b style=&quot;color:#991B1B;background:#FEF2F2;padding:2px 6px;border-radius:4px;border:1px solid #FCA5A5;&quot;&gt;6. Strategic Advisory&lt;br&gt;Priority Alert&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EF4444;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+            <mxPoint x="835" y="385" as="sourcePoint"/>
+            <mxPoint x="900" y="632" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="835" y="632"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,101 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="aws_enterprise_arch" name="AWS Enterprise Cloud Architecture">
+    <mxGraphModel dx="1434" dy="799" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="850" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="node_waf" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[1] Hsdc Intern Ion Nking AWS WAF &amp; Shield&lt;/b&gt;&lt;br&gt;&lt;i&gt;DDoS Protection &amp; Web Firewall&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_alb" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[2] AWS Application Load Balancer&lt;/b&gt;&lt;br&gt;&lt;i&gt;HTTP/S Traffic Distribution&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_apigw" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[3] Amazon API Gateway&lt;/b&gt;&lt;br&gt;&lt;i&gt;Managed API Endpoints&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="800" y="100" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_ecs" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[4] Amazon ECS Fargate Cluster&lt;/b&gt;&lt;br&gt;&lt;i&gt;Serverless Containerized Services&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;" vertex="1" parent="1">
+          <mxGeometry x="280" y="280" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_lambda" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[5] AWS Lambda Microservices&lt;/b&gt;&lt;br&gt;&lt;i&gt;Event-Driven Functions&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#E1D5E7;strokeColor=#9673A6;" vertex="1" parent="1">
+          <mxGeometry x="680" y="280" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_dynamodb" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[6] Amazon DynamoDB NoSQL&lt;/b&gt;&lt;br&gt;&lt;i&gt;Key-Value &amp; Document Database&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="100" y="460" width="220" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_aurora" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[7] Amazon Aurora PostgreSQL&lt;/b&gt;&lt;br&gt;&lt;i&gt;Managed Relational Database&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="450" y="460" width="220" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_opensearch" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[8] AWS OpenSearch Vector Index&lt;/b&gt;&lt;br&gt;&lt;i&gt;Search, Analytics &amp; Vector DB&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#E1D5E7;strokeColor=#9673A6;" vertex="1" parent="1">
+          <mxGeometry x="800" y="460" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_s3" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[9] Amazon S3 Data Lake&lt;/b&gt;&lt;br&gt;&lt;i&gt;Raw &amp; Processed Data Storage&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="280" y="640" width="220" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_cloudwatch" value="&lt;img src=&quot;https://api.iconify.design/logos:aws.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[10] AWS CloudWatch &amp; X-Ray&lt;/b&gt;&lt;br&gt;&lt;i&gt;Monitoring, Logs &amp; Tracing&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#CCCCCC;" vertex="1" parent="1">
+          <mxGeometry x="680" y="640" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_user_waf" value="User Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210" y="50" as="sourcePoint"/>
+            <mxPoint x="210" y="100" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_waf_alb" value="Protected HTTP/S" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_waf" target="node_alb">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_waf_apigw" value="Protected API Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_waf" target="node_apigw">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="210" y="200"/>
+              <mxPoint x="910" y="200"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_alb_ecs" value="Application Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_alb" target="node_ecs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_apigw_lambda" value="API Invocation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_apigw" target="node_lambda">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_ecs_dynamodb" value="NoSQL Operations" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_ecs" target="node_dynamodb">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_ecs_aurora" value="Relational Queries" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_ecs" target="node_aurora">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_ecs_opensearch" value="Search &amp; Indexing" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_ecs" target="node_opensearch">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_lambda_dynamodb" value="Event Persistence" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_lambda" target="node_dynamodb">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="790" y="340"/>
+              <mxPoint x="790" y="400"/>
+              <mxPoint x="210" y="400"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_lambda_aurora" value="Microservice Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_lambda" target="node_aurora">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_lambda_opensearch" value="Vector Operations" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_lambda" target="node_opensearch">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_dynamodb_s3" value="Archival &amp; Analytics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_dynamodb" target="node_s3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_aurora_s3" value="Data Warehousing" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_aurora" target="node_s3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_ecs_cloudwatch" value="Logs &amp; Traces" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_ecs" target="node_cloudwatch">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="740"/>
+              <mxPoint x="790" y="740"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

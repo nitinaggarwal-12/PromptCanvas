@@ -1,0 +1,94 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="gcp_microservice_diagram" name="Page-1">
+    <mxGraphModel dx="1434" dy="854" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1920" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="node_1" value="&lt;b&gt;[1] Hsdc Intern Ion Nking External API Clients&lt;/b&gt;&lt;br&gt;&lt;i&gt;Web, Mobile &amp; Partner Apps&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#CCCCCC;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_2" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[2] GCP Global Load Balancer&lt;/b&gt;&lt;br&gt;&lt;i&gt;HTTPS L7 Traffic Management&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFE6CC;strokeColor=#D79B00;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="380" y="85" width="280" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_3" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[3] Cloud Endpoints (API Gateway)&lt;/b&gt;&lt;br&gt;&lt;i&gt;API Security, AuthN/AuthZ, Routing&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="380" y="245" width="280" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_4" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[4] Cloud Run Microservice&lt;/b&gt;&lt;br&gt;&lt;i&gt;Auto-scaling Containerized Service&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="400" y="420" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_5" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[5] Cloud Tasks Queue&lt;/b&gt;&lt;br&gt;&lt;i&gt;Managed Asynchronous Task Queue&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="700" y="420" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_6" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[6] Cloud SQL (PostgreSQL)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Managed Relational Database&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="400" y="580" width="200" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_7" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[7] Cloud Memorystore (Redis)&lt;/b&gt;&lt;br&gt;&lt;i&gt;High-Performance Caching Layer&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="700" y="580" width="200" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_8" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[8] Cloud Logging&lt;/b&gt;&lt;br&gt;&lt;i&gt;Centralized Log Management&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="100" y="740" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_9" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[9] Cloud Monitoring&lt;/b&gt;&lt;br&gt;&lt;i&gt;Metrics, Tracing &amp; Alerting&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="400" y="740" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_10" value="&lt;img src=&quot;https://api.iconify.design/logos:github-icon.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[10] Cloud Source Repositories&lt;/b&gt;&lt;br&gt;&lt;i&gt;Git-based Code Management&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="700" y="740" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_11" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[11] Cloud Build (CI/CD Pipeline)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Automated Build, Test &amp; Deploy&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="740" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_12" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;[12] Artifact Registry&lt;/b&gt;&lt;br&gt;&lt;i&gt;Container Image Storage&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="900" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_1" value="API Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_1" target="node_2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_2" value="Routes Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_2" target="node_3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_3" value="Invokes Service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_3" target="node_4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4" value="Database Read/Write" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_4" target="node_6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_5" value="Cache Access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_4" target="node_7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_6" value="Sends Async Tasks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_4" target="node_5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_7" value="Processes Tasks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_5" target="node_4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_8" value="Emits Logs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_4" target="node_8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_9" value="Sends Metrics &amp; Traces" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_4" target="node_9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_10" value="Logs DB Events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_6" target="node_8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_11" value="Monitors DB Health" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_6" target="node_9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_12" value="Code Push Trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_10" target="node_11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_13" value="Build &amp; Push Image" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_11" target="node_12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_14" value="Deploys New Revision" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;jumpStyle=arc;jumpSize=6;html=1;strokeWidth=2;strokeColor=#94A3B8;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_12" target="node_4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="990"/>
+              <mxPoint x="300" y="990"/>
+              <mxPoint x="300" y="450"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

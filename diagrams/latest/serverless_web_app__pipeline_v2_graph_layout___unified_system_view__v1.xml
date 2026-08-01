@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="embed.diagrams.net" modified="2026-08-01T06:04:57.231Z" agent="PromptCanvas-LayoutEngineV2" version="21.0.0" type="embed">
+  <diagram id="page-1" name="Serverless Web Application (Pipeline V2)">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+      <root>
+<mxCell id="0" />
+<mxCell id="1" parent="0" />
+  <mxCell id="tier_ingress" value="<b>1. Ingestion &amp; Edge Protection</b>" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=15;spacingTop=10;fontStyle=1;fontSize=14;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=2;container=1;collapsible=0;" vertex="1" parent="1">
+    <mxGeometry x="40" y="40" width="600" height="294" as="geometry" />
+  </mxCell>
+  <mxCell id="tier_compute" value="<b>2. Application Microservices</b>" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=15;spacingTop=10;fontStyle=1;fontSize=14;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=2;container=1;collapsible=0;" vertex="1" parent="1">
+    <mxGeometry x="40" y="374" width="600" height="152" as="geometry" />
+  </mxCell>
+  <mxCell id="tier_data" value="<b>3. Data &amp; Storage Layer</b>" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=15;spacingTop=10;fontStyle=1;fontSize=14;fillColor=#EFF6FF;strokeColor=#94A3B8;strokeWidth=2;container=1;collapsible=0;" vertex="1" parent="1">
+    <mxGeometry x="40" y="566" width="600" height="152" as="geometry" />
+  </mxCell>
+  <mxCell id="n1" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;20&quot; height=&quot;20&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;Google Cloud Armor WAF&lt;/b&gt;&lt;br&gt;&lt;i&gt;Edge WAF Security&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#F8CECC;strokeColor=#B85450;fontColor=#000000;strokeWidth=2;" vertex="1" parent="tier_ingress">
+    <mxGeometry x="30" y="50" width="205" height="72" as="geometry" />
+  </mxCell>
+  <mxCell id="n2" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;20&quot; height=&quot;20&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;Apigee API Gateway&lt;/b&gt;&lt;br&gt;&lt;i&gt;API Management&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#E1D5E7;strokeColor=#9673A6;fontColor=#000000;strokeWidth=2;" vertex="1" parent="tier_ingress">
+    <mxGeometry x="43" y="192" width="180" height="72" as="geometry" />
+  </mxCell>
+  <mxCell id="n3" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;20&quot; height=&quot;20&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;Cloud Run: Order Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;Containerized API&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#E1D5E7;strokeColor=#9673A6;fontColor=#000000;strokeWidth=2;" vertex="1" parent="tier_compute">
+    <mxGeometry x="30" y="50" width="220" height="72" as="geometry" />
+  </mxCell>
+  <mxCell id="n4" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;20&quot; height=&quot;20&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;Cloud Run: Auth Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;JWT Authentication&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#E1D5E7;strokeColor=#9673A6;fontColor=#000000;strokeWidth=2;" vertex="1" parent="tier_compute">
+    <mxGeometry x="310" y="50" width="213" height="72" as="geometry" />
+  </mxCell>
+  <mxCell id="n5" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;20&quot; height=&quot;20&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;Cloud SQL (PostgreSQL)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Relational DB&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;shape=cylinder3;fillColor=#D5E8D4;strokeColor=#82B366;fontColor=#000000;strokeWidth=2;" vertex="1" parent="tier_data">
+    <mxGeometry x="30" y="50" width="205" height="72" as="geometry" />
+  </mxCell>
+  <mxCell id="n6" value="&lt;img src=&quot;https://api.iconify.design/logos:redis.svg&quot; width=&quot;20&quot; height=&quot;20&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot; onerror=&quot;this.style.display=&apos;none&apos;&quot;&gt;&lt;b&gt;Memorystore Redis Cache&lt;/b&gt;&lt;br&gt;&lt;i&gt;Session Cache&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#000000;strokeWidth=2;" vertex="1" parent="tier_data">
+    <mxGeometry x="295" y="50" width="213" height="72" as="geometry" />
+  </mxCell>
+  <mxCell id="e1" value="&lt;i&gt;HTTPS&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n1" target="n2">
+    <mxGeometry relative="1" as="geometry"></mxGeometry>
+  </mxCell>
+  <mxCell id="e2" value="&lt;i&gt;gRPC&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n2" target="n3">
+    <mxGeometry relative="1" as="geometry"></mxGeometry>
+  </mxCell>
+  <mxCell id="e3" value="&lt;i&gt;gRPC&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n2" target="n4">
+    <mxGeometry relative="1" as="geometry">
+      <Array as="points">
+        <mxPoint x="212" y="321" />
+        <mxPoint x="429" y="321" />
+      </Array>
+    </mxGeometry>
+  </mxCell>
+  <mxCell id="e4" value="&lt;i&gt;JDBC&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n3" target="n5">
+    <mxGeometry relative="1" as="geometry"></mxGeometry>
+  </mxCell>
+  <mxCell id="e5" value="&lt;i&gt;RESP&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n4" target="n6">
+    <mxGeometry relative="1" as="geometry">
+      <Array as="points">
+        <mxPoint x="429" y="553" />
+        <mxPoint x="421" y="553" />
+      </Array>
+    </mxGeometry>
+  </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

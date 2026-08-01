@@ -1,0 +1,129 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="ecommerce-order-fulfillment" name="Page-1">
+    <mxGraphModel dx="1634" dy="1106" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="node_1" value="&lt;img src=&quot;https://api.iconify.design/ri:global-line.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[1] Web/Mobile Clients&lt;/b&gt;&lt;br&gt;&lt;i&gt;User Interfaces for Order Placement&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="400" y="100" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_2" value="&lt;img src=&quot;https://api.iconify.design/logos:apigee.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[2] API Gateway&lt;/b&gt;&lt;br&gt;&lt;i&gt;Request Routing &amp; Policy Enforcement&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="400" y="250" width="280" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_2a" value="&lt;img src=&quot;https://api.iconify.design/ic:baseline-security.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[2a] Authentication &amp; Authz Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;OAuth2 / JWT Validation&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="700" y="250" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_3" value="&lt;img src=&quot;https://api.iconify.design/ph:orchestra-fill.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[3] Saga Pattern Orchestrator&lt;/b&gt;&lt;br&gt;&lt;i&gt;Distributed Transaction Management&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;" vertex="1" parent="1">
+          <mxGeometry x="400" y="400" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_4" value="&lt;img src=&quot;https://api.iconify.design/logos:apache-kafka.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[4] Kafka Event Broker&lt;/b&gt;&lt;br&gt;&lt;i&gt;Asynchronous Event Stream&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="400" y="550" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_4a" value="&lt;img src=&quot;https://api.iconify.design/ph:dead-brave-fill.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[4a] Dead-Letter Queue (DLQ)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Failed Message Holding Area&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_5" value="&lt;img src=&quot;https://api.iconify.design/fluent:clipboard-task-add-24-filled.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[5] Order Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;Manages Order Lifecycle&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#CCCCCC;" vertex="1" parent="1">
+          <mxGeometry x="100" y="700" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_6" value="&lt;img src=&quot;https://api.iconify.design/ic:round-payment.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[6] Payment Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;Secure Payment Processing&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#CCCCCC;" vertex="1" parent="1">
+          <mxGeometry x="400" y="700" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_7" value="&lt;img src=&quot;https://api.iconify.design/material-symbols:inventory-2-sharp.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[7] Inventory Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;Stock Management &amp; Reservation&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#CCCCCC;" vertex="1" parent="1">
+          <mxGeometry x="700" y="700" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_8" value="&lt;img src=&quot;https://api.iconify.design/ic:baseline-notifications.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[8] Customer Notification Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;Email/SMS Order Updates&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#CCCCCC;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="700" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_5a" value="&lt;img src=&quot;https://api.iconify.design/logos:postgresql.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[5a] Orders Database&lt;/b&gt;&lt;br&gt;&lt;i&gt;PostgreSQL / NewSQL&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="100" y="850" width="200" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_6a" value="&lt;img src=&quot;https://api.iconify.design/fa6-brands:stripe.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[6a] Payment Gateway Integration&lt;/b&gt;&lt;br&gt;&lt;i&gt;PCI DSS Compliant API&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#CCCCCC;" vertex="1" parent="1">
+          <mxGeometry x="400" y="850" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_7a" value="&lt;img src=&quot;https://api.iconify.design/logos:postgresql.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[7a] Inventory Database&lt;/b&gt;&lt;br&gt;&lt;i&gt;PostgreSQL / NoSQL&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="700" y="850" width="200" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_8a" value="&lt;img src=&quot;https://api.iconify.design/ic:baseline-local-shipping.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[8a] Shipping &amp; Logistics API&lt;/b&gt;&lt;br&gt;&lt;i&gt;Carrier Integration&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#CCCCCC;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="850" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_9" value="&lt;img src=&quot;https://api.iconify.design/material-symbols:fraud-outlined.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[9] Fraud Detection &amp; Compliance&lt;/b&gt;&lt;br&gt;&lt;i&gt;Real-time Risk Assessment&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1000" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_1_2" value="&lt;i&gt;Place Order Request (HTTPS)&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_1" target="node_2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_2_2a" value="&lt;i&gt;Authenticate User / Validate JWT&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_2" target="node_2a">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_2a_2" value="&lt;i&gt;Auth Token / Decision&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_2a" target="node_2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_2_3" value="&lt;i&gt;Validated Order Request&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_2" target="node_3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_3_4" value="&lt;i&gt;OrderCreated Event&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_3" target="node_4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4_4a" value="&lt;i&gt;Failed Messages&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#EF4444;" edge="1" parent="1" source="node_4" target="node_4a">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4_5" value="&lt;i&gt;Consume Order Events&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_4" target="node_5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_5_5a" value="&lt;i&gt;CRUD Orders&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_5" target="node_5a">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_5a_5" value="&lt;i&gt;Order Data&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_5a" target="node_5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_5_4" value="&lt;i&gt;OrderUpdated Event&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_5" target="node_4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4_6" value="&lt;i&gt;Consume Payment Events&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_4" target="node_6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_6_6a" value="&lt;i&gt;Process Payment (HTTPS)&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_6" target="node_6a">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_6a_6" value="&lt;i&gt;Payment Status Callback&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_6a" target="node_6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_6_4" value="&lt;i&gt;PaymentProcessed Event&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_6" target="node_4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4_7" value="&lt;i&gt;Consume Inventory Events&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_4" target="node_7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_7_7a" value="&lt;i&gt;Reserve / Update Stock&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_7" target="node_7a">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_7a_7" value="&lt;i&gt;Stock Levels&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_7a" target="node_7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_7_4" value="&lt;i&gt;InventoryReserved Event&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_7" target="node_4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4_8" value="&lt;i&gt;Consume Order Status Events&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_4" target="node_8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_8_8a" value="&lt;i&gt;Initiate Shipment / Track&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_8" target="node_8a">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4_9" value="&lt;i&gt;Order/Payment Details for Check&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;" edge="1" parent="1" source="node_4" target="node_9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_9_3_feedback" value="&lt;i&gt;Fraud Check Result&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#EF4444;dashed=1;dashPattern=8 8;startArrow=classic;endArrow=classic;" edge="1" parent="1" source="node_9" target="node_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="970"/>
+              <mxPoint x="500" y="460"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_orchestrator_events_back" value="&lt;i&gt;Saga Compensation Events&lt;/i&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#94A3B8;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="node_3" target="node_4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
