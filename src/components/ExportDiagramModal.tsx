@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Download, X, FileCode, Image, FileText, Presentation, Check, Loader2, Sparkles } from 'lucide-react';
 import PptxGenJS from 'pptxgenjs';
+import { exportDiagramPng } from '../lib/export/diagramRaster';
 
 interface ExportDiagramModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export function ExportDiagramModal({
 }: ExportDiagramModalProps) {
   const [loadingType, setLoadingType] = useState<string | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -33,6 +35,7 @@ export function ExportDiagramModal({
   // 1. Export Raw Draw.io XML (.drawio)
   const handleExportXml = () => {
     setLoadingType('xml');
+    setErrorMessage(null);
     try {
       const blob = new Blob([xmlContent], { type: 'application/xml;charset=utf-8' });
       const url = URL.createObjectURL(blob);
@@ -45,69 +48,45 @@ export function ExportDiagramModal({
       URL.revokeObjectURL(url);
       setDownloadSuccess('xml');
       setTimeout(() => setDownloadSuccess(null), 2500);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert('Failed to export XML.');
+      setErrorMessage('Failed to export XML.');
     } finally {
       setLoadingType(null);
     }
   };
 
-  // 2. Export High-Res PNG Image (.png)
-  const handleExportPng = () => {
+  // 2. Export High-Res Real Diagram PNG Image (.png)
+  const handleExportPng = async () => {
     setLoadingType('png');
+    setErrorMessage(null);
     try {
-      // Convert XML to SVG or SVG canvas element
-      const svgContainer = document.querySelector('.geEditor, svg, iframe');
-      const canvas = document.createElement('canvas');
-      canvas.width = 1600;
-      canvas.height = 900;
-      const ctx = canvas.getContext('2d');
-
-      if (ctx) {
-        ctx.fillStyle = '#070a13';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Draw title header onto PNG
-        ctx.fillStyle = '#14b8a6';
-        ctx.font = 'bold 24px Inter, sans-serif';
-        ctx.fillText(diagramName, 50, 60);
-
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '14px Inter, sans-serif';
-        ctx.fillText(`PromptCanvas Architecture Export • ${new Date().toLocaleDateString()}`, 50, 90);
-
-        ctx.strokeStyle = '#1e293b';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(40, 110, 1520, 740);
-
-        ctx.fillStyle = '#e2e8f0';
-        ctx.font = '16px monospace';
-        ctx.fillText(`Draw.io Architecture Diagram Component Nodes`, 60, 150);
-
-        const dataUrl = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = `${sanitizeFilename(diagramName)}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      const pngDataUrl = await exportDiagramPng(xmlContent, { scale: 2, transparent: false });
+      const link = document.createElement('a');
+      link.href = pngDataUrl;
+      link.download = `${sanitizeFilename(diagramName)}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       setDownloadSuccess('png');
       setTimeout(() => setDownloadSuccess(null), 2500);
-    } catch (e) {
-      console.error(e);
-      alert('Failed to generate PNG image.');
+    } catch (e: any) {
+      console.error('PNG export failed:', e);
+      const msg = e instanceof Error ? e.message : 'Export service unreachable';
+      setErrorMessage(`PNG Export Failed: ${msg}`);
     } finally {
       setLoadingType(null);
     }
   };
 
-  // 3. Export PDF Document (.pdf)
-  const handleExportPdf = () => {
+  // 3. Export PDF Document (.pdf) with real rasterized diagram image
+  const handleExportPdf = async () => {
     setLoadingType('pdf');
+    setErrorMessage(null);
     try {
+      const pngDataUrl = await exportDiagramPng(xmlContent, { scale: 2, transparent: false });
+
       const printWindow = window.open('', '_blank');
       if (printWindow) {
         printWindow.document.write(`
@@ -118,16 +97,18 @@ export function ExportDiagramModal({
               <style>
                 body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #0f172a; }
                 h1 { color: #0d9488; font-size: 28px; margin-bottom: 5px; }
-                .meta { color: #64748b; font-size: 13px; margin-bottom: 30px; }
+                .meta { color: #64748b; font-size: 13px; margin-bottom: 25px; }
+                .diagram-img { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 25px; display: block; }
                 .card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; background: #f8fafc; }
                 .card h3 { color: #334155; margin-top: 0; font-size: 16px; }
-                .code-box { background: #0f172a; color: #f8fafc; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
               </style>
             </head>
             <body>
               <h1>${diagramName}</h1>
               <div class="meta">Exported from PromptCanvas Enterprise Platform on ${new Date().toLocaleDateString()}</div>
               
+              <img src="${pngDataUrl}" alt="${diagramName}" class="diagram-img" />
+
               <div class="card">
                 <h3>Executive Summary & Business Use-Case</h3>
                 <p>${businessUsecase || 'No business description provided.'}</p>
@@ -143,11 +124,6 @@ export function ExportDiagramModal({
                 <p>Compliance Score: <strong>${auditScore}%</strong></p>
               </div>
 
-              <div class="card">
-                <h3>Draw.io XML Definition</h3>
-                <div class="code-box">${xmlContent.slice(0, 1500)}...</div>
-              </div>
-
               <script>
                 window.onload = function() { window.print(); };
               </script>
@@ -158,18 +134,28 @@ export function ExportDiagramModal({
       }
       setDownloadSuccess('pdf');
       setTimeout(() => setDownloadSuccess(null), 2500);
-    } catch (e) {
-      console.error(e);
-      alert('Failed to export PDF document.');
+    } catch (e: any) {
+      console.error('PDF export failed:', e);
+      const msg = e instanceof Error ? e.message : 'Export service unreachable';
+      setErrorMessage(`PDF Export Failed: ${msg}`);
     } finally {
       setLoadingType(null);
     }
   };
 
-  // 4. Export Fully Editable PowerPoint & Google Slides Presentation (.pptx)
+  // 4. Export PowerPoint Presentation (.pptx) with real high-res diagram slide
   const handleExportPptx = async () => {
     setLoadingType('pptx');
+    setErrorMessage(null);
     try {
+      // Rasterize diagram for slide inclusion (structured for multi-diagram support)
+      const diagramItems = [
+        {
+          title: diagramName,
+          xml: xmlContent,
+        },
+      ];
+
       const pptx = new PptxGenJS();
       pptx.layout = 'LAYOUT_16x9';
 
@@ -209,133 +195,33 @@ export function ExportDiagramModal({
         fontFace: 'Arial',
       });
 
-      // Parse diagram nodes from xmlContent for editable Slide 2
-      const regex = /<mxCell[^>]*?id="([^"]+)"[^>]*?value="([^"]*)"[^>]*?style="([^"]*)"[^>]*?vertex="1"[^>]*?>\s*<mxGeometry[^>]*?x="([^"]*)"[^>]*?y="([^"]*)"[^>]*?width="([^"]*)"[^>]*?height="([^"]*)"/gi;
-      const parsedNodes: Array<{
-        id: string;
-        title: string;
-        subtitle: string;
-        x: number;
-        y: number;
-        w: number;
-        h: number;
-        fillColor: string;
-        strokeColor: string;
-      }> = [];
+      // Slide 2: Real Diagram Architecture Image Slide
+      for (const item of diagramItems) {
+        const pngDataUrl = await exportDiagramPng(item.xml, { scale: 2, transparent: false });
+        const slide2 = pptx.addSlide();
+        slide2.background = { color: '0B101D' };
 
-      let match;
-      while ((match = regex.exec(xmlContent)) !== null) {
-        const id = match[1];
-        const rawVal = match[2];
-        const style = match[3];
-        const x = parseFloat(match[4]) || 0;
-        const y = parseFloat(match[5]) || 0;
-        const w = parseFloat(match[6]) || 200;
-        const h = parseFloat(match[7]) || 60;
-
-        if (w < 90 || h < 40 || id.includes('frame') || id.includes('legend')) continue;
-
-        const cleanText = rawVal
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
-          .replace(/&quot;/g, '"')
-          .replace(/<img[^>]*>/gi, '')
-          .trim();
-
-        const titleMatch = cleanText.match(/<b>([\s\S]*?)<\/b>/i);
-        const subtitleMatch = cleanText.match(/<i>([\s\S]*?)<\/i>/i);
-
-        const title = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : cleanText.replace(/<[^>]+>/g, ' ').slice(0, 45);
-        const subtitle = subtitleMatch ? subtitleMatch[1].replace(/<[^>]+>/g, '').trim() : '';
-
-        const fillMatch = style.match(/fillColor=(#[0-9A-Fa-f]{6})/);
-        const strokeMatch = style.match(/strokeColor=(#[0-9A-Fa-f]{6})/);
-
-        const fillColor = fillMatch ? fillMatch[1].replace('#', '') : 'DAE8FC';
-        const strokeColor = strokeMatch ? strokeMatch[1].replace('#', '') : '6C8EBF';
-
-        parsedNodes.push({ id, title, subtitle, x, y, w, h, fillColor, strokeColor });
-      }
-
-      // Slide 2: Editable Vector Diagram Slide (Microsoft PowerPoint & Google Slides compatible)
-      const slide2 = pptx.addSlide();
-      slide2.background = { color: '0B101D' };
-      slide2.addText(`Architecture Canvas Diagram: ${diagramName}`, {
-        x: 0.6,
-        y: 0.4,
-        w: 11.5,
-        h: 0.5,
-        fontSize: 20,
-        color: '14B8A6',
-        bold: true,
-      });
-
-      slide2.addText(`• Fully editable shapes & text in Microsoft PowerPoint & Google Slides (File -> Import Slides)`, {
-        x: 0.6,
-        y: 0.9,
-        w: 11.5,
-        h: 0.3,
-        fontSize: 11,
-        color: '94A3B8',
-        italic: true,
-      });
-
-      if (parsedNodes.length > 0) {
-        const minX = Math.min(...parsedNodes.map(n => n.x));
-        const maxX = Math.max(...parsedNodes.map(n => n.x + n.w));
-        const minY = Math.min(...parsedNodes.map(n => n.y));
-        const maxY = Math.max(...parsedNodes.map(n => n.y + n.h));
-
-        const spanX = Math.max(maxX - minX, 100);
-        const spanY = Math.max(maxY - minY, 100);
-
-        parsedNodes.forEach(node => {
-          const slideW = 12.1;
-          const slideH = 5.6;
-          const leftX = 0.6 + ((node.x - minX) / spanX) * (slideW - 2.1);
-          const topY = 1.3 + ((node.y - minY) / spanY) * (slideH - 1.0);
-          const boxW = Math.max(1.8, Math.min(2.8, (node.w / spanX) * slideW));
-          const boxH = Math.max(0.65, Math.min(1.1, (node.h / spanY) * slideH));
-
-          slide2.addShape(pptx.ShapeType.roundRect, {
-            x: leftX,
-            y: topY,
-            w: boxW,
-            h: boxH,
-            fill: { color: node.fillColor },
-            line: { color: node.strokeColor, width: 1.5 },
-          });
-
-          const textParts: any[] = [
-            { text: node.title, options: { bold: true, fontSize: 10, color: '000000', breakLine: true } },
-          ];
-          if (node.subtitle) {
-            textParts.push({ text: node.subtitle, options: { italic: true, fontSize: 8.5, color: '1E293B' } });
-          }
-
-          slide2.addText(textParts, {
-            x: leftX,
-            y: topY,
-            w: boxW,
-            h: boxH,
-            align: 'center',
-            valign: 'middle',
-          });
+        slide2.addText(`Architecture Canvas Diagram: ${item.title}`, {
+          x: 0.3,
+          y: 0.15,
+          w: 12.0,
+          h: 0.35,
+          fontSize: 16,
+          color: '14B8A6',
+          bold: true,
         });
-      } else {
-        slide2.addText('Component Architecture Diagram Structure', {
-          x: 1.0,
-          y: 3.0,
-          w: 11,
-          h: 1.0,
-          fontSize: 18,
-          color: 'E2E8F0',
-          align: 'center',
+
+        slide2.addImage({
+          data: pngDataUrl,
+          x: 0.3,
+          y: 0.55,
+          w: 12.7,
+          h: 6.6,
+          sizing: { type: 'contain', w: 12.7, h: 6.6 },
         });
       }
 
-      // Slide 3: Executive Summary & Technical Use-Case (Editable Text)
+      // Slide 3: Executive Summary & Technical Use-Case
       const slide3 = pptx.addSlide();
       slide3.background = { color: '070A13' };
 
@@ -384,9 +270,10 @@ export function ExportDiagramModal({
 
       setDownloadSuccess('pptx');
       setTimeout(() => setDownloadSuccess(null), 2500);
-    } catch (e) {
-      console.error(e);
-      alert('Failed to generate PowerPoint PPTX presentation.');
+    } catch (e: any) {
+      console.error('PPTX export failed:', e);
+      const msg = e instanceof Error ? e.message : 'Export service unreachable';
+      setErrorMessage(`PPTX Export Failed: ${msg}`);
     } finally {
       setLoadingType(null);
     }
@@ -414,6 +301,13 @@ export function ExportDiagramModal({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {errorMessage && (
+          <div className="mb-4 p-3.5 bg-red-950/70 border border-red-800/80 rounded-2xl text-red-200 text-xs font-medium flex items-center justify-between">
+            <span>❌ {errorMessage}</span>
+            <button onClick={() => setErrorMessage(null)} className="text-red-300 hover:text-white font-bold ml-2">✕</button>
+          </div>
+        )}
 
         {/* Options Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -464,7 +358,7 @@ export function ExportDiagramModal({
             </div>
             <div>
               <h4 className="font-extrabold text-sm text-white group-hover:text-sky-300 transition-colors">PNG Image Document (.png)</h4>
-              <p className="text-xs text-slate-400 mt-1">High-resolution image snapshot with embedded metadata title block.</p>
+              <p className="text-xs text-slate-400 mt-1">High-resolution vector raster image of the actual diagram canvas.</p>
             </div>
           </div>
 
@@ -514,10 +408,10 @@ export function ExportDiagramModal({
             </div>
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9px] font-black text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider border border-amber-500/30">Editable PPT Slide Deck</span>
+                <span className="text-[9px] font-black text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider border border-amber-500/30">PPTX Presentation Deck</span>
               </div>
               <h4 className="font-extrabold text-sm text-white group-hover:text-amber-200 transition-colors">PowerPoint Slide Deck (.pptx)</h4>
-              <p className="text-xs text-slate-400 mt-1">4-slide editable presentation with cover, diagram slide, business value, and technical breakdown.</p>
+              <p className="text-xs text-slate-400 mt-1">Presentation deck featuring full-width diagram slide, business value, and technical breakdown.</p>
             </div>
           </div>
 
