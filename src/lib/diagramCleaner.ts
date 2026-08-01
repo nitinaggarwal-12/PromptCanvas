@@ -389,7 +389,17 @@ function isPreservedCustomLayout(xml: string): boolean {
   if (!xml || typeof xml !== 'string') return false;
   const lower = xml.toLowerCase();
   return (
+    lower.includes('col_ingestion') ||
+    lower.includes('col_processing') ||
+    lower.includes('col_delivery') ||
+    lower.includes('out_1') ||
+    lower.includes('out_2') ||
+    lower.includes('out_3') ||
+    lower.includes('exec_dash') ||
+    lower.includes('core_platform') ||
+    lower.includes('promptcanvas-layoutenginev2') ||
     lower.includes('conceptual_diagram') ||
+    lower.includes('ingestion portal') ||
     lower.includes('oncology data portal') ||
     lower.includes('itacs_conceptual') ||
     lower.includes('integrated insights hub') ||
@@ -411,7 +421,8 @@ function isPreservedCustomLayout(xml: string): boolean {
     lower.includes('devops_cicd_pipeline') ||
     lower.includes('data_ai_pipeline') ||
     xml.includes('governance_state_machine_compiled') ||
-    xml.includes('itacs_conceptual_compiled')
+    xml.includes('itacs_conceptual_compiled') ||
+    xml.includes('tech_')
   );
 }
 
