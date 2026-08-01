@@ -770,6 +770,7 @@ function WorkspaceContent() {
   const [isAssistantOpen, setIsAssistantOpen] = useState(true);
   const [assistantWidth, setAssistantWidth] = useState<number>(340);
   const [isResizingAssistant, setIsResizingAssistant] = useState<boolean>(false);
+  const [mobileTab, setMobileTab] = useState<'canvas' | 'assistant' | 'audit'>('canvas');
 
   const handleMouseDownAssistantResize = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -3796,7 +3797,7 @@ function WorkspaceContent() {
           <section 
             id="tour-ai-panel"
             style={{ width: isAssistantOpen ? `${assistantWidth}px` : '44px' }}
-            className={getTourClass(tourStep, 3, `border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden ${isResizingAssistant ? '' : 'transition-all duration-200'}`)}
+            className={getTourClass(tourStep, 3, `border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden ${isResizingAssistant ? '' : 'transition-all duration-200'} ${mobileTab === 'assistant' ? 'fixed inset-0 top-14 bottom-14 z-40 bg-panel-dark/95 backdrop-blur-xl md:static md:inset-auto md:h-full flex' : 'hidden md:flex'}`)}
           >
             {/* Panel Title */}
             <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20 shrink-0 select-none">
@@ -4025,7 +4026,7 @@ function WorkspaceContent() {
             <div
               onMouseDown={handleMouseDownAssistantResize}
               title="Drag to resize Assistant Chatbot panel width"
-              className={`w-1.5 hover:w-2 bg-panel-border/40 hover:bg-teal-400/80 active:bg-teal-400 cursor-col-resize h-full z-30 transition-all flex items-center justify-center shrink-0 group select-none ${
+              className={`hidden md:flex w-1.5 hover:w-2 bg-panel-border/40 hover:bg-teal-400/80 active:bg-teal-400 cursor-col-resize h-full z-30 transition-all items-center justify-center shrink-0 group select-none ${
                 isResizingAssistant ? 'bg-teal-400 w-2 shadow-lg shadow-teal-500/20' : ''
               }`}
             >
@@ -4034,7 +4035,7 @@ function WorkspaceContent() {
           )}
 
           {/* B. CENTER PANE: Diagram Viewport & In-Place Editor */}
-          <section className={`flex-1 flex flex-col h-full relative overflow-hidden min-w-0 transition-colors duration-300 ${canvasTheme === 'light' && viewMode === 'canvas' ? 'bg-[#F1F5F9]' : 'bg-bg-dark'}`}>
+          <section className={`flex-1 flex flex-col h-full relative overflow-hidden min-w-0 transition-colors duration-300 ${canvasTheme === 'light' && viewMode === 'canvas' ? 'bg-[#F1F5F9]' : 'bg-bg-dark'} ${mobileTab === 'assistant' ? 'hidden md:flex' : 'flex'}`}>
             
             {/* Center Pane Top Control Bar (Clean Status & Zoom Controls) */}
             {activeDiagram && (
@@ -4589,6 +4590,56 @@ function WorkspaceContent() {
               </div>
             )}
           </section>
+
+          {/* Mobile Bottom Navigation View Switcher (Only visible on screens < 768px) */}
+          {activeDiagram && (
+            <nav className="md:hidden h-14 bg-slate-950/95 backdrop-blur-md border-t border-slate-800/80 flex items-center justify-around px-2 z-50 shrink-0 select-none">
+              <button
+                type="button"
+                onClick={() => setMobileTab('canvas')}
+                className={`flex flex-col items-center justify-center gap-0.5 px-5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  mobileTab === 'canvas'
+                    ? 'text-teal-400 bg-teal-500/15 border border-teal-500/30 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <LayoutGrid className="w-4 h-4" />
+                <span className="text-[10px]">Diagram Canvas</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMobileTab('assistant')}
+                className={`flex flex-col items-center justify-center gap-0.5 px-5 py-1.5 rounded-xl text-xs font-bold transition-all relative cursor-pointer ${
+                  mobileTab === 'assistant'
+                    ? 'text-teal-400 bg-teal-500/15 border border-teal-500/30 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span className="text-[10px]">AI Assistant</span>
+                {suggestions.length > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-teal-400 absolute top-1 right-5 animate-ping" />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileTab('canvas');
+                  handleAuditDiagram();
+                }}
+                className={`flex flex-col items-center justify-center gap-0.5 px-5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isAuditing
+                    ? 'text-teal-400 bg-teal-500/15 border border-teal-500/30 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Shield className="w-4 h-4" />
+                <span className="text-[10px]">Security Audit</span>
+              </button>
+            </nav>
+          )}
         </div>
           </>
         )}
