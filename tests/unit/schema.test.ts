@@ -118,3 +118,11 @@ export function runSchemaTests(): boolean {
 
   return passed;
 }
+
+if (typeof describe !== 'undefined') {
+  describe('Schema Validation Unit Tests', () => {
+    it('should pass schema validation tests', () => {
+      expect(runSchemaTests()).toBe(true);
+    });
+  });
+}

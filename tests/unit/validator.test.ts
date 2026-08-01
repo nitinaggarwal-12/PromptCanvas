@@ -109,3 +109,11 @@ export function runValidatorTests(): boolean {
 
   return passed;
 }
+
+if (typeof describe !== 'undefined') {
+  describe('Validator Unit Tests', () => {
+    it('should pass validator unit tests', () => {
+      expect(runValidatorTests()).toBe(true);
+    });
+  });
+}

@@ -40,6 +40,14 @@ export async function runElkDeterminismTests(): Promise<boolean> {
     return false;
   }
 
-  console.log(' ✅ ELK Layout is 100% deterministic (Run 1 === Run 2)');
   return true;
+}
+
+if (typeof describe !== 'undefined') {
+  describe('ELK Determinism Unit Tests', () => {
+    it('should pass ELK layout determinism test', async () => {
+      const res = await runElkDeterminismTests();
+      expect(res).toBe(true);
+    });
+  });
 }

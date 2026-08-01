@@ -285,3 +285,12 @@ export async function runGoldenPipelineTests(): Promise<boolean> {
 
   return passed;
 }
+
+if (typeof describe !== 'undefined') {
+  describe('Golden Pipeline Tests', () => {
+    it('should pass golden pipeline tests', async () => {
+      const res = await runGoldenPipelineTests();
+      expect(res).toBe(true);
+    });
+  });
+}

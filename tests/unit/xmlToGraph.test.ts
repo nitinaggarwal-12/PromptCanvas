@@ -45,3 +45,11 @@ export function runXmlToGraphTests(): boolean {
 
   return passed;
 }
+
+if (typeof describe !== 'undefined') {
+  describe('xmlToGraph Unit Tests', () => {
+    it('should pass xmlToGraph extraction test', () => {
+      expect(runXmlToGraphTests()).toBe(true);
+    });
+  });
+}
