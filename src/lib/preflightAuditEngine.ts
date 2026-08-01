@@ -166,7 +166,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
 
   // 9. AUTOMATED 2D BOUNDING BOX LINE & EDGE LABEL OVERLAP HEALING:
-  if (!isV2LayoutEngineOutput) {
+  // Multi-column template diagrams (Stage 1 x=50, Stage 2 x=430, Stage 3 x=870) and V2 Layout Engine output
+  // already have explicit, collision-free spatial coordinates. Naive 1D tier collision heuristics must never
+  // shift mid-column cards rightward out of their containers.
+  const isMultiColumnTemplate = xml.includes('col_ingestion') || xml.includes('col_processing') || xml.includes('col_delivery') || isV2LayoutEngineOutput;
+  if (!isMultiColumnTemplate) {
     xml = heal2DBoundingBoxLineCollisions(xml);
     xml = heal2DSameTierNodeCollisions(xml);
   }
