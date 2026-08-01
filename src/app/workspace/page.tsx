@@ -55,6 +55,7 @@ import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 import { TerraformExportModal } from '@/components/TerraformExportModal';
 import { ImportDiagramModal } from '@/components/ImportDiagramModal';
 import { ExportDiagramModal } from '@/components/ExportDiagramModal';
+import { ComposeModal } from '@/components/workspace/ComposeModal';
 import { AuthModal } from '@/components/AuthModal';
 import DiagramFeedbackWidget from '@/components/DiagramFeedbackWidget';
 import { ContactUsModal } from '@/components/ContactUsModal';
@@ -824,6 +825,7 @@ function WorkspaceContent() {
   const [isTerraformModalOpen, setIsTerraformModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isComposeOpen, setIsComposeOpen] = useState(false);
   
 
   
@@ -3766,6 +3768,17 @@ function WorkspaceContent() {
                       <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                     </div>
 
+                    {/* Compose Document Primary CTA (PRD, SDD, Threat Model) */}
+                    <button
+                      type="button"
+                      onClick={() => setIsComposeOpen(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sky-500/50 bg-sky-600/20 hover:bg-sky-600/30 text-xs font-black transition-all text-sky-300 cursor-pointer shadow-sm shrink-0"
+                      title="Generate formal system documentation (PRD, SDD, FDD, Threat Model, etc.)"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-sky-400" />
+                      <span>Compose Doc</span>
+                    </button>
+
                     {/* Audit Security Primary CTA */}
                     <button
                       id="audit-diagram-btn"
@@ -5083,6 +5096,15 @@ function WorkspaceContent() {
         businessUsecase={displayedVersion?.business_usecase || activeVersion?.business_usecase}
         technicalUsecase={displayedVersion?.technical_usecase || activeVersion?.technical_usecase}
         auditScore={auditScore}
+      />
+
+      {/* Document Composer Modal (PRD, SDD, FDD, Threat Model) */}
+      <ComposeModal
+        isOpen={isComposeOpen}
+        onClose={() => setIsComposeOpen(false)}
+        currentTitle={activeDiagram?.name}
+        currentXml={displayedVersion?.xml_content || activeVersion?.xml_content || ''}
+        activeDiagramVersionId={displayedVersion?.id || activeVersion?.id}
       />
 
       {/* 9. Password Setup & Browser Auto-Login Modal */}
