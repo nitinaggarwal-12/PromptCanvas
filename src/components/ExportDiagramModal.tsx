@@ -166,7 +166,7 @@ export function ExportDiagramModal({
     }
   };
 
-  // 4. Export Editable PowerPoint Presentation (.pptx)
+  // 4. Export Fully Editable PowerPoint & Google Slides Presentation (.pptx)
   const handleExportPptx = async () => {
     setLoadingType('pptx');
     try {
@@ -175,9 +175,9 @@ export function ExportDiagramModal({
 
       // Slide 1: Cover Slide
       const slide1 = pptx.addSlide();
-      slide1.background = { color: '070a13' };
+      slide1.background = { color: '070A13' };
 
-      slide1.addText('PROMPTCANVAS ENTERPRISE ARCHITECTURE', {
+      slide1.addText('PROMPTCANVAS ENTERPRISE ARCHITECTURE DECK', {
         x: 0.8,
         y: 1.5,
         w: 10,
@@ -209,41 +209,135 @@ export function ExportDiagramModal({
         fontFace: 'Arial',
       });
 
-      // Slide 2: Diagram Visual Slide
+      // Parse diagram nodes from xmlContent for editable Slide 2
+      const regex = /<mxCell[^>]*?id="([^"]+)"[^>]*?value="([^"]*)"[^>]*?style="([^"]*)"[^>]*?vertex="1"[^>]*?>\s*<mxGeometry[^>]*?x="([^"]*)"[^>]*?y="([^"]*)"[^>]*?width="([^"]*)"[^>]*?height="([^"]*)"/gi;
+      const parsedNodes: Array<{
+        id: string;
+        title: string;
+        subtitle: string;
+        x: number;
+        y: number;
+        w: number;
+        h: number;
+        fillColor: string;
+        strokeColor: string;
+      }> = [];
+
+      let match;
+      while ((match = regex.exec(xmlContent)) !== null) {
+        const id = match[1];
+        const rawVal = match[2];
+        const style = match[3];
+        const x = parseFloat(match[4]) || 0;
+        const y = parseFloat(match[5]) || 0;
+        const w = parseFloat(match[6]) || 200;
+        const h = parseFloat(match[7]) || 60;
+
+        if (w < 90 || h < 40 || id.includes('frame') || id.includes('legend')) continue;
+
+        const cleanText = rawVal
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"')
+          .replace(/<img[^>]*>/gi, '')
+          .trim();
+
+        const titleMatch = cleanText.match(/<b>([\s\S]*?)<\/b>/i);
+        const subtitleMatch = cleanText.match(/<i>([\s\S]*?)<\/i>/i);
+
+        const title = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : cleanText.replace(/<[^>]+>/g, ' ').slice(0, 45);
+        const subtitle = subtitleMatch ? subtitleMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+
+        const fillMatch = style.match(/fillColor=(#[0-9A-Fa-f]{6})/);
+        const strokeMatch = style.match(/strokeColor=(#[0-9A-Fa-f]{6})/);
+
+        const fillColor = fillMatch ? fillMatch[1].replace('#', '') : 'DAE8FC';
+        const strokeColor = strokeMatch ? strokeMatch[1].replace('#', '') : '6C8EBF';
+
+        parsedNodes.push({ id, title, subtitle, x, y, w, h, fillColor, strokeColor });
+      }
+
+      // Slide 2: Editable Vector Diagram Slide (Microsoft PowerPoint & Google Slides compatible)
       const slide2 = pptx.addSlide();
       slide2.background = { color: '0B101D' };
       slide2.addText(`Architecture Canvas Diagram: ${diagramName}`, {
-        x: 0.8,
-        y: 0.6,
-        w: 11,
-        h: 0.6,
-        fontSize: 22,
+        x: 0.6,
+        y: 0.4,
+        w: 11.5,
+        h: 0.5,
+        fontSize: 20,
         color: '14B8A6',
         bold: true,
       });
 
-      slide2.addShape(pptx.ShapeType.rect, {
-        x: 0.8,
-        y: 1.5,
+      slide2.addText(`• Fully editable shapes & text in Microsoft PowerPoint & Google Slides (File -> Import Slides)`, {
+        x: 0.6,
+        y: 0.9,
         w: 11.5,
-        h: 5.0,
-        fill: { color: '0F172A' },
-        line: { color: '334155', width: 2 },
+        h: 0.3,
+        fontSize: 11,
+        color: '94A3B8',
+        italic: true,
       });
 
-      slide2.addText(`[Draw.io Vector Diagram Node Topology: ${diagramName}]\n\n• Modular Cloud Infrastructure Components\n• VPC Network Isolation & Private Subnets\n• Automated Security Armor Controls & IAM Auth`, {
-        x: 1.2,
-        y: 2.5,
-        w: 10.5,
-        h: 3.0,
-        fontSize: 16,
-        color: 'CBD5E1',
-        align: 'center',
-      });
+      if (parsedNodes.length > 0) {
+        const minX = Math.min(...parsedNodes.map(n => n.x));
+        const maxX = Math.max(...parsedNodes.map(n => n.x + n.w));
+        const minY = Math.min(...parsedNodes.map(n => n.y));
+        const maxY = Math.max(...parsedNodes.map(n => n.y + n.h));
+
+        const spanX = Math.max(maxX - minX, 100);
+        const spanY = Math.max(maxY - minY, 100);
+
+        parsedNodes.forEach(node => {
+          const slideW = 12.1;
+          const slideH = 5.6;
+          const leftX = 0.6 + ((node.x - minX) / spanX) * (slideW - 2.1);
+          const topY = 1.3 + ((node.y - minY) / spanY) * (slideH - 1.0);
+          const boxW = Math.max(1.8, Math.min(2.8, (node.w / spanX) * slideW));
+          const boxH = Math.max(0.65, Math.min(1.1, (node.h / spanY) * slideH));
+
+          slide2.addShape(pptx.ShapeType.roundRect, {
+            x: leftX,
+            y: topY,
+            w: boxW,
+            h: boxH,
+            fill: { color: node.fillColor },
+            line: { color: node.strokeColor, width: 1.5 },
+          });
+
+          const textParts: any[] = [
+            { text: node.title, options: { bold: true, fontSize: 10, color: '000000', breakLine: true } },
+          ];
+          if (node.subtitle) {
+            textParts.push({ text: node.subtitle, options: { italic: true, fontSize: 8.5, color: '1E293B' } });
+          }
+
+          slide2.addText(textParts, {
+            x: leftX,
+            y: topY,
+            w: boxW,
+            h: boxH,
+            align: 'center',
+            valign: 'middle',
+          });
+        });
+      } else {
+        slide2.addText('Component Architecture Diagram Structure', {
+          x: 1.0,
+          y: 3.0,
+          w: 11,
+          h: 1.0,
+          fontSize: 18,
+          color: 'E2E8F0',
+          align: 'center',
+        });
+      }
 
       // Slide 3: Executive Summary & Technical Use-Case (Editable Text)
       const slide3 = pptx.addSlide();
-      slide3.background = { color: '070a13' };
+      slide3.background = { color: '070A13' };
 
       slide3.addText('Executive Summary & Business Value', {
         x: 0.8,
