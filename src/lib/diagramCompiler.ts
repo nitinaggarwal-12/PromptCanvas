@@ -3604,7 +3604,16 @@ export function getBenchmarkDarkModeUnifiedSystemViewSpec(): CompiledDiagramSpec
 }
 
 export function getExactDarkModeUnifiedSystemViewReferenceXml(): string {
-  return getExactUnifiedSystemViewReferenceXml();
+  const baseXml = getExactUnifiedSystemViewReferenceXml();
+  return baseXml
+    .replace(/10\. UNIFIED SYSTEM VIEW/g, '11. ARCHITECTURE')
+    .replace(/10\. Unified System View/g, '11. Architecture')
+    .replace(/10\./g, '11.')
+    .replace(/unified_system_view/g, 'dark_mode_unified_system_view')
+    .replace(/fillColor=#FFFFFF/g, 'fillColor=#0F172A')
+    .replace(/fillColor=#F8FAFC/g, 'fillColor=#1E293B')
+    .replace(/fontColor=#0F172A/g, 'fontColor=#F8FAFC')
+    .replace(/fontColor=#1E293B/g, 'fontColor=#E2E8F0');
 }
 
 function escapeXml(str: string): string {

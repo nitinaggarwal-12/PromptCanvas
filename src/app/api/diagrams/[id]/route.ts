@@ -62,6 +62,21 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     const archType = body.architecture_type || body.architectureType;
     if (archType) {
       await updateDiagramArchitectureType(id, archType);
+      try {
+        const { getDefaultXmlForArchitecture } = await import('@/lib/architectureTypes');
+        const { DatabaseSync } = await import('node:sqlite');
+        const path = await import('path');
+        const dbPath = path.join(process.cwd(), 'dev.db');
+        const db = new DatabaseSync(dbPath);
+        const refXml = getDefaultXmlForArchitecture(archType, 'Architecture', 'Architecture');
+        const existingVers = db.prepare('SELECT id, version_number FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC').all(id) as any[];
+        if (existingVers.length > 0) {
+          const latestId = existingVers[0].id;
+          db.prepare('UPDATE diagram_versions SET architecture_type = ?, xml_content = ? WHERE id = ?').run(archType, refXml, latestId);
+        }
+      } catch (syncErr) {
+        console.warn('Failed to sync diagram_versions on PATCH:', syncErr);
+      }
     }
     if (body.is_private !== undefined || body.isPrivate !== undefined) {
       const isPriv = Boolean(body.is_private ?? body.isPrivate);

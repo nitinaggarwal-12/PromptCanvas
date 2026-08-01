@@ -982,7 +982,16 @@ function WorkspaceContent() {
         const targetArch = data.architecture_type || 'conceptual_diagram';
         const archVersions = data.versions.filter(v => (v.architecture_type || 'conceptual_diagram') === targetArch);
         const sortedVersions = (archVersions.length > 0 ? archVersions : data.versions).sort((a, b) => b.version_number - a.version_number);
-        setActiveVersion(sortedVersions[0]);
+        let activeVer = sortedVersions[0];
+        if ((activeVer.architecture_type || 'conceptual_diagram') !== targetArch) {
+          const refXml = getDefaultXmlForArchitecture(targetArch, data.name, data.name);
+          activeVer = {
+            ...activeVer,
+            architecture_type: targetArch,
+            xml_content: refXml || activeVer.xml_content,
+          };
+        }
+        setActiveVersion(activeVer);
         
         // Restore previewVersion if specified in URL query
         const params = new URLSearchParams(window.location.search);
