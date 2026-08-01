@@ -65,18 +65,20 @@ export async function generateLogicalGraph(
                 type: Type.ARRAY,
                 items: {
                   type: Type.OBJECT,
+                  required: ['id', 'source', 'target', 'label'],
                   properties: {
                     id: { type: Type.STRING },
                     source: { type: Type.STRING },
                     target: { type: Type.STRING },
                     label: { type: Type.STRING },
-                    style: { type: Type.STRING },
+                    style: { type: Type.STRING, enum: ['solid', 'dashed'] },
                     protocol: { type: Type.STRING },
                   },
                 },
               },
               narrative: {
                 type: Type.OBJECT,
+                required: ['reasoning', 'businessUsecase', 'technicalUsecase'],
                 properties: {
                   reasoning: { type: Type.STRING },
                   businessUsecase: { type: Type.STRING },
