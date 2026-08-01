@@ -19,6 +19,11 @@ export function runSchemaTests(): boolean {
     edges: [
       { id: 'edge_1', source: 'node_1', target: 'node_2', label: 'HTTPS', style: 'solid' },
     ],
+    narrative: {
+      reasoning: 'Sample reasoning',
+      businessUsecase: 'Sample business use case',
+      technicalUsecase: 'Sample technical use case',
+    },
   };
 
   const res1 = validateGraphJson(validGraph);
