@@ -3336,7 +3336,7 @@ function WorkspaceContent() {
               {activeDiagram && (
                 <>
                   {/* 1. Unified Architecture Category Dropdown */}
-                  <div className="relative inline-flex items-center shrink-0">
+                  <div className={getTourClass(tourStep, 2, "relative inline-flex items-center shrink-0")}>
                     <select
                       id="workspace-header-architecture-select"
                       value={selectedArchType}
@@ -3411,7 +3411,7 @@ function WorkspaceContent() {
                       if (tourStep === 4) setTourStep(5);
                     }}
                     title={`Switch to ${canvasTheme === 'dark' ? 'Light' : 'Dark'} Canvas Theme`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
+                    className={getTourClass(tourStep, 4, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0")}
                   >
                     {canvasTheme === 'dark' ? (
                       <>
@@ -3513,7 +3513,7 @@ function WorkspaceContent() {
                   id="audit-diagram-btn"
                   onClick={() => handleAuditDiagram()}
                   disabled={isAuditing}
-                  className={getTourClass(tourStep, 6, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50 shrink-0")}
+                  className={getTourClass(tourStep, 5, "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50 shrink-0")}
                 >
                   {isAuditing ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
