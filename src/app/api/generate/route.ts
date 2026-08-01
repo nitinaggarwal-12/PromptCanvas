@@ -238,8 +238,11 @@ export async function POST(request: Request) {
       );
     }
 
+    const TEMPLATE_TRIGGER_PHRASES = /unified system view|entity relationship diagram|\berd\b|sequence diagram|governance & state machine|state-machine lifecycle|secure deployment map|devops & ci\/cd pipeline|data & ai pipeline|cognitive architecture|conceptual diagram|dimensional data model|itacs|oncology data portal/i;
+    const isTypedOrTemplateRequest = Boolean(architectureType) || TEMPLATE_TRIGGER_PHRASES.test(prompt || '');
+
     // Check LAYOUT_ENGINE_V2 feature flag
-    const useV2 = isLayoutEngineV2Enabled(body, request.url, request.headers);
+    const useV2 = isLayoutEngineV2Enabled(body, request.url, request.headers) && !isTypedOrTemplateRequest && !diagramId;
     if (useV2) {
       console.log('[Pipeline V2] Executing Pipeline V2 deterministic layout engine...');
       const v2Result = await runV2Pipeline(prompt, GEMINI_MODEL_ID, ai);
