@@ -476,7 +476,13 @@ CRITICAL MANDATES FOR REFINEMENT:
     let businessUsecase: string | null = 'Unified database schema consolidation and clean visual semantic layer.';
     let technicalUsecase: string | null = 'Zero-collision corridor routing with strict 2D bounding box compliance.';
 
-      if (isRefinement) {
+      if (templateXmlBackbone && !isRefinement) {
+        console.log(`[Decided Template Backbone] Using pristine layout structure for decided template (${effectiveArchType}) and prompt: "${prompt.slice(0, 60)}"...`);
+        xml = templateXmlBackbone;
+        reasoning = `Preserving exact master reference architecture 2D layout backbone for decided template (${effectiveArchType}) with dynamic domain use-case integration.`;
+        businessUsecase = `Master reference layout backbone for ${effectiveArchType} tailored to "${prompt}".`;
+        technicalUsecase = `Pristine 2D spatial coordinates, zero-collision line routing, and side-by-side footer legend.`;
+      } else if (isRefinement) {
         const contents = `
 ### Existing XML:
 \`\`\`xml
@@ -501,16 +507,10 @@ ${prompt}
         businessUsecase = parsed.businessUsecase;
         technicalUsecase = parsed.technicalUsecase;
       } else {
-        console.log(`[Gemini LLM Generation] Generating dynamic 2D architecture for new canvas using decided template (${effectiveArchType}) and prompt: "${prompt.slice(0, 60)}"...`);
+        console.log(`[Dynamic Generation Fallback] Generating dynamic 2D architecture for prompt: "${prompt.slice(0, 60)}"...`);
         
-        const templateInstruction = templateXmlBackbone
-          ? `
-MANDATE FOR NEW CANVAS DOMAIN CUSTOMIZATION USING DECIDED TEMPLATE (${effectiveArchType}):
-You MUST generate a brand new, production-grade enterprise architecture diagram using the decided template (${effectiveArchType}).
-Strictly adopt and preserve the decided template's 2D layout backbone, swimlane/tier coordinates, container hierarchy, and zero-collision arrow routing shown in your system instructions.
-Customize EVERY node title, subtitle, vendor icon, and edge label so that it accurately represents the user's specific prompt:
-"${prompt}"`
-          : `
+        const dynamicGenerationPrompt = `You are a Principal Cloud Architect and Enterprise Draw.io Diagram Engineer.
+
 YOUR TASK:
 Generate a pristine, production-grade Draw.io XML architecture diagram representing the user's prompt:
 "${prompt}"
@@ -523,22 +523,25 @@ STRICT LAYOUT & GEOMETRY RULES:
    - Tier 4 (Data & Persistence): y = 560px (Databases, Cloud Storage, BigQuery, Data Lakes, Repositories)
    - Tier 5 (Governance & Operations): y = 740px (Secret Manager, KMS, Monitoring, Rollback Triggers)
 2. Use horizontal column pitch of at least 220px (x = 180, 400, 620, 840, 1060) to prevent node overlaps.
-3. Route edge connectors with orthogonalEdgeStyle and ensure perimeter rollback arrows use x=30 waypoints.`;
-
-        const generationSystemInstruction = `${activeSystemPrompt}\n\n${templateInstruction}\n\nReturn exactly four markdown sections:\n- ### AI Architectural Plan & Reasoning\n- ### Business Use Case\n- ### Technical Use Case\n- ### Draw.io XML (wrapped in \`\`\`xml ... \`\`\`)`;
+3. Route edge connectors with orthogonalEdgeStyle and ensure perimeter rollback arrows use x=30 waypoints.
+4. Return exactly four markdown sections:
+   - ### AI Architectural Plan & Reasoning
+   - ### Business Use Case
+   - ### Technical Use Case
+   - ### Draw.io XML (wrapped in \`\`\`xml ... \`\`\`)`;
 
         const response = await ai.models.generateContent({
           model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
           contents: `### User Target System Prompt:
 ${prompt}`,
           config: {
-            systemInstruction: generationSystemInstruction,
+            systemInstruction: dynamicGenerationPrompt,
           },
         });
         responseText = response.text || '';
         const parsed = parseAiResponse(responseText);
         xml = parsed.xml;
-        reasoning = parsed.reasoning || `Architected using Gemini latest model strictly following the ${effectiveArchType} layout template.`;
+        reasoning = parsed.reasoning;
         businessUsecase = parsed.businessUsecase;
         technicalUsecase = parsed.technicalUsecase;
       }
