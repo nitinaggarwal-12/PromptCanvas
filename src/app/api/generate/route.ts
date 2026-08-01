@@ -372,43 +372,10 @@ export async function POST(request: Request) {
     let responseText = '';
     let isRefinement = false;
     let existingXml = '';
-
     let activeSystemPrompt = SYSTEM_PROMPT;
-    const promptLower = (prompt || '').toLowerCase();
-    const isPipelineOrGenomicPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('pipeline') || promptLower.includes('ci/cd') || promptLower.includes('bwa');
-
-    const isErdTypeOrPrompt = architectureType === 'erd' ||
-                              prompt.includes('ETL & Data Lineage') ||
-                              prompt.includes('Sub-Schema') ||
-                              prompt.includes('Dim_Patient') ||
-                              prompt.includes('Dim_Intel_Map') ||
-                              prompt.includes('Entity Relationship Diagram') ||
-                              prompt.includes('ERD') ||
-                              prompt.includes('Dimensional Data Model') ||
-                              prompt.includes('Database Architect');
-
-    const effectiveArchType = architectureType || (isPipelineOrGenomicPrompt ? 'tech_cicd_pipeline' : 'tech_cicd_pipeline');
-
-    const isConceptualTypeOrPrompt = architectureType === 'conceptual_diagram' || (!isErdTypeOrPrompt && !isPipelineOrGenomicPrompt && (
-                              prompt.includes('ITACS Oncology Platform') ||
-                              prompt.includes('ONCOLOGY DATA PORTAL')
-    ));
-
-    const templateXmlBackbone = getDefaultXmlForArchitecture(effectiveArchType, prompt, prompt);
-    if (templateXmlBackbone) {
-      activeSystemPrompt += `
-
-### MASTER REFERENCE TEMPLATE LAYOUT BACKBONE (${effectiveArchType}):
-CRITICAL MANDATE: You MUST strictly preserve this exact, pixel-perfect 2D layout XML backbone structure. Maintain all container frames, coordinates, swimlanes, 3D shapes, badges, and zero-collision arrow line routing. Only customize the text labels, titles, and data entities to fit the user's specific use-case prompt:
-
-\`\`\`xml
-${templateXmlBackbone}
-\`\`\`
-`;
-    }
+    let resolvedArchType = architectureType || 'conceptual_diagram';
 
     if (diagramId) {
-      // Refinement Loop or New Arch Type Initialization in Existing Workspace
       isRefinement = true;
       const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
       if (!latestVersion && architectureType) {
@@ -421,8 +388,36 @@ ${templateXmlBackbone}
         );
       } else {
         existingXml = latestVersion.xml_content;
-        console.log(`Refining diagram ${diagramId} (v${latestVersion.version_number})...`);
+        resolvedArchType = latestVersion.architecture_type || architectureType || 'conceptual_diagram';
+        console.log(`Refining diagram ${diagramId} (v${latestVersion.version_number}, arch: ${resolvedArchType})...`);
       }
+    }
+
+    const effectiveArchType = resolvedArchType;
+    let templateXmlBackbone: string | null = null;
+
+    if (!isRefinement) {
+      templateXmlBackbone = getDefaultXmlForArchitecture(effectiveArchType, prompt, prompt);
+      if (templateXmlBackbone) {
+        activeSystemPrompt += `
+
+### MASTER REFERENCE TEMPLATE LAYOUT BACKBONE (${effectiveArchType}):
+CRITICAL MANDATE: You MUST strictly preserve this exact, pixel-perfect 2D layout XML backbone structure. Maintain all container frames, coordinates, swimlanes, 3D shapes, badges, and zero-collision arrow line routing. Only customize the text labels, titles, and data entities to fit the user's specific use-case prompt:
+
+\`\`\`xml
+${templateXmlBackbone}
+\`\`\`
+`;
+      }
+    } else {
+      activeSystemPrompt += `
+
+### REFINEMENT MODE MANDATE (${effectiveArchType}):
+You are incrementally refining an existing architecture diagram (${effectiveArchType}).
+CRITICAL MANDATES FOR REFINEMENT:
+1. Preservative Continuity: You MUST maintain the overall layout structure, swimlane/tier coordinates, component IDs, and visual theme of the provided Existing XML.
+2. Targeted Editing: Only add, remove, or modify components and connectors that are directly affected by the user's Refinement Prompt. Do NOT replace unrelated components or change the template family.
+`;
     }
 
     // Only activate benchmark fast-paths if the prompt explicitly contains benchmark test strings (e.g. ITACS Oncology benchmark)
