@@ -330,7 +330,40 @@ function WorkspaceContent() {
   
   const suggestions = React.useMemo(() => {
     if (!activeDiagram) return [];
-    
+
+    if (selectedPersona === 'data_engineer') {
+      return [
+        'Add Snowflake Fact Table with 1:N cardinality',
+        'Integrate dbt Transformation DAG node',
+        'Connect BigQuery Feature Store for ML models',
+        'Enforce Data Lineage logging & PII redaction'
+      ];
+    }
+    if (selectedPersona === 'ai_engineer') {
+      return [
+        'Integrate LangChain orchestrator with Vertex AI',
+        'Add Pinecone / Vector Index for embedding retrieval',
+        'Inject ReAct Thought-Action reasoning loop',
+        'Connect Apigee Gateway for API rate limiting'
+      ];
+    }
+    if (selectedPersona === 'security_lead') {
+      return [
+        'Audit DLP scanning & PII redaction rules',
+        'Inject Cloud Armor WAF Ingress Filtering',
+        'Enforce VPC Service Controls perimeter boundary',
+        'Add SRE Canary Rollback threshold'
+      ];
+    }
+    if (selectedPersona === 'architect') {
+      return [
+        'Add HTTPS Load Balancer with Cloud Armor WAF',
+        'Connect Private Application & Data Subnets via PSC',
+        'Integrate Terraform export config module',
+        'Set up Multi-Region HA & RDS Failover'
+      ];
+    }
+
     const name = String(activeDiagram?.name || '').toLowerCase();
     const xml = String(activeVersion?.xml_content || '').toLowerCase();
 
@@ -564,6 +597,7 @@ function WorkspaceContent() {
   const [isTerraformModalOpen, setIsTerraformModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [selectedPersona, setSelectedPersona] = useState<string>('architect');
   
 
   
@@ -4699,34 +4733,190 @@ function WorkspaceContent() {
 
           {/* Tour Step Cards */}
           {tourStep === 1 && (
-            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] bg-slate-900 border border-teal-500/40 p-6 md:p-8 rounded-3xl shadow-2xl shadow-teal-500/20 z-[70] text-center space-y-5 animate-fade-in">
-              <div className="w-14 h-14 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center mx-auto text-teal-accent">
-                <Sparkles className="w-7 h-7 animate-pulse" />
-              </div>
-              <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-teal-300 bg-teal-500/10 px-3 py-1 rounded-full border border-teal-500/30">
-                  Interactive Demo Mode
-                </span>
-                <h3 className="text-xl font-black text-white">Welcome to PromptCanvas Demo Tour!</h3>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Experience live interactive onboarding! The tour spotlights key controls, tells you exactly where to click, waits for your action, and shows live output end-to-end.
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-4xl bg-slate-950/95 border border-teal-500/40 p-6 md:p-8 rounded-3xl shadow-[0_0_80px_rgba(20,184,166,0.2)] z-[70] space-y-6 animate-fade-in backdrop-blur-2xl">
+              {/* Header Banner */}
+              <div className="text-center space-y-2">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500/15 via-emerald-500/15 to-cyan-500/15 border border-teal-500/30 px-3.5 py-1 rounded-full text-[11px] font-black uppercase tracking-widest text-teal-300">
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-teal-400" />
+                  <span>DesignerUp Principle: Role Personalization</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+                  Choose Your Architectural Persona
+                </h3>
+                <p className="text-xs md:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+                  Select your role to instantly hydrate PromptCanvas with tailored starter blueprints, persona-focused AI prompts, and domain-specific audit rules.
                 </p>
               </div>
-              <div className="pt-2 flex items-center gap-3">
+
+              {/* Persona Cards 2x2 Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                {/* Persona 1: Enterprise Architect */}
+                <div
+                  onClick={() => setSelectedPersona('architect')}
+                  className={`relative p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+                    selectedPersona === 'architect'
+                      ? 'bg-slate-900/90 border-teal-400 ring-2 ring-teal-400/40 shadow-xl shadow-teal-500/15 scale-[1.01]'
+                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="w-11 h-11 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-300">
+                      <Briefcase className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-teal-500/10 text-teal-300 border border-teal-500/30 uppercase tracking-wider">
+                      🏢 System Strategy
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                      <span>Enterprise Systems Architect</span>
+                      {selectedPersona === 'architect' && (
+                        <CheckCircle2 className="w-4 h-4 text-teal-400" />
+                      )}
+                    </h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Master multi-tier cloud topology, VPC perimeters, system boundaries & global ITACS platforms.
+                    </p>
+                  </div>
+                  <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
+                    <span className="text-teal-400 font-bold">Default Blueprint:</span>
+                    <span>10. Unified System View</span>
+                  </div>
+                </div>
+
+                {/* Persona 2: Data Engineer & Modeler */}
+                <div
+                  onClick={() => setSelectedPersona('data_engineer')}
+                  className={`relative p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+                    selectedPersona === 'data_engineer'
+                      ? 'bg-slate-900/90 border-indigo-400 ring-2 ring-indigo-400/40 shadow-xl shadow-indigo-500/15 scale-[1.01]'
+                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-300">
+                      <Database className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 uppercase tracking-wider">
+                      📊 Data & Schemas
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                      <span>Data Engineer & Database Modeler</span>
+                      {selectedPersona === 'data_engineer' && (
+                        <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+                      )}
+                    </h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Design ERDs, dimensional fact/dimension tables, Feature Stores, dbt pipelines & ETL flows.
+                    </p>
+                  </div>
+                  <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
+                    <span className="text-indigo-400 font-bold">Default Blueprint:</span>
+                    <span>2. Dimensional Data Model (ERD)</span>
+                  </div>
+                </div>
+
+                {/* Persona 3: AI & Cognitive Engineer */}
+                <div
+                  onClick={() => setSelectedPersona('ai_engineer')}
+                  className={`relative p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+                    selectedPersona === 'ai_engineer'
+                      ? 'bg-slate-900/90 border-emerald-400 ring-2 ring-emerald-400/40 shadow-xl shadow-emerald-500/15 scale-[1.01]'
+                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-300">
+                      <Cpu className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">
+                      🤖 GenAI & Agents
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                      <span>AI & Cognitive Systems Engineer</span>
+                      {selectedPersona === 'ai_engineer' && (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      )}
+                    </h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Build Agentic RAG systems, ReAct reasoning loops, Vertex AI training & model registries.
+                    </p>
+                  </div>
+                  <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
+                    <span className="text-emerald-400 font-bold">Default Blueprint:</span>
+                    <span>3. Cognitive Architecture (Agentic RAG)</span>
+                  </div>
+                </div>
+
+                {/* Persona 4: Cybersecurity & Compliance Lead */}
+                <div
+                  onClick={() => setSelectedPersona('security_lead')}
+                  className={`relative p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+                    selectedPersona === 'security_lead'
+                      ? 'bg-slate-900/90 border-amber-400 ring-2 ring-amber-400/40 shadow-xl shadow-amber-500/15 scale-[1.01]'
+                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300">
+                      <ShieldCheck className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
+                      🛡️ Security & Governance
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                      <span>Cybersecurity & Compliance Lead</span>
+                      {selectedPersona === 'security_lead' && (
+                        <CheckCircle2 className="w-4 h-4 text-amber-400" />
+                      )}
+                    </h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Audit IAM policies, SOC2/HIPAA compliance, adversarial threat models & governance state machines.
+                    </p>
+                  </div>
+                  <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
+                    <span className="text-amber-400 font-bold">Default Blueprint:</span>
+                    <span>9. Governance & State Machine</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Bar */}
+              <div className="pt-4 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-slate-800/80">
                 <button
                   type="button"
                   onClick={() => setTourStep(null)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
+                  className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
                 >
-                  Exit Demo Mode
+                  Skip Persona Selection
                 </button>
                 <button
                   id="tour-next-btn"
                   type="button"
-                  onClick={() => setTourStep(2)}
-                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-bg-dark text-xs font-black transition-all shadow-lg shadow-teal-500/30 cursor-pointer flex items-center justify-center gap-1.5"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      localStorage.setItem('pc_user_persona', selectedPersona);
+                    }
+                    const targetArch =
+                      selectedPersona === 'architect'
+                        ? 'unified_system_view'
+                        : selectedPersona === 'data_engineer'
+                        ? 'erd'
+                        : selectedPersona === 'ai_engineer'
+                        ? 'agentic_rag'
+                        : 'governance_state_machine';
+                    handleArchitectureSwitch(targetArch);
+                    setTourStep(2);
+                  }}
+                  className="w-full md:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 hover:from-teal-300 hover:to-cyan-300 text-bg-dark text-xs font-black transition-all shadow-xl shadow-teal-500/25 hover:shadow-teal-500/40 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <span>🚀 Start Interactive Tour</span>
+                  <span>🚀 Launch Personalised Canvas</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
