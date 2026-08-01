@@ -246,6 +246,22 @@ These rules override convenience, speed, and completion pressure. A truthful "bl
 * List EVERY file modified in the phase report, including config, lockfiles, and CI. A file changed but not listed is a protocol violation.
 * Never disable, bypass, or reconfigure CI, lint rules, type checking, or git hooks to achieve a green state. If a gate blocks you, report the block.
 
+---
+
+# 🧠 SYSTEMIC REASONING & STRUCTURAL INVARIANT MANDATES (NEVER BRITTLE)
+
+Every modification to diagram compiler, layout engine, cleaner, or preflight code MUST follow these 4 non-negotiable architectural mandates to prevent fragile heuristics and cascade regressions:
+
+1. **Systemic Blast-Radius & Invariant Analysis Before Code Changes**:
+   - Before editing any heuristic, regex, or layout function, trace EVERY downstream consumer (`restoreDetailedView`, `preflightVerifyAndHealXmlAcrossAll6Audits`, `page.tsx`, `diagram_versions` database records) to guarantee that changing string X or coordinate Y does not trigger a secondary layout distortion or break version restoration.
+2. **Container-Aware AST Contracts Over String Regexes**:
+   - Layout protection guards (`isPreservedCustomLayout`, preflight bypasses) MUST NEVER rely on ephemeral domain text strings (`'Oncology Data Portal'`). They MUST key off permanent XML/AST structural identifiers (`col_ingestion`, `col_processing`, `col_delivery`, `out_1`, `exec_dash`, `parent="col_processing"`).
+3. **Visual End-to-End Inspection (DOM / Visual Audit Verification)**:
+   - CLI unit test green status (`npm test`) is necessary but NOT sufficient. After modifying layout or visual cards, physically render and visually inspect the actual browser output across creation AND page refresh (`restoreDetailedView`) before declaring complete.
+4. **Strict Separation of Domain Flavoring vs. Spatial Geometry**:
+   - Content flavoring (`injectUseCaseFlavor`) must ONLY mutate text titles, subtitles, and badges while preserving 100% of spatial coordinates (`<mxGeometry x="..." y="...">`). Geometric healers (`heal2DSameTierNodeCollisions`) must NEVER alter pre-engineered template backbones.
+
+
 
 
 
