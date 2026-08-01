@@ -3793,7 +3793,7 @@ function WorkspaceContent() {
                   placeholder={dynamicPlaceholder}
                   disabled={!activeDiagram || isAnyAIBusy}
                   rows={4}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl pl-3.5 pr-11 py-3 text-xs text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50 leading-relaxed shadow-inner"
+                  className="w-full bg-slate-900/90 border-2 border-slate-500/80 hover:border-teal-400 focus:border-teal-accent rounded-xl pl-3.5 pr-11 py-3 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50 leading-relaxed shadow-lg ring-1 ring-slate-600/40 focus:ring-2 focus:ring-teal-400/40 font-medium"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
