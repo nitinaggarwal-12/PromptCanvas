@@ -11,7 +11,7 @@
           <mxGeometry x="400" y="250" width="280" height="90" as="geometry"/>
         </mxCell>
         <mxCell id="node_2a" value="&lt;img src=&quot;https://api.iconify.design/ic:baseline-security.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[2a] Authentication &amp; Authz Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;OAuth2 / JWT Validation&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D79B00;" vertex="1" parent="1">
-          <mxGeometry x="700" y="250" width="200" height="60" as="geometry"/>
+          <mxGeometry x="725" y="250" width="200" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="node_3" value="&lt;img src=&quot;https://api.iconify.design/ph:orchestra-fill.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;float:left;margin-right:8px;vertical-align:middle;&quot;&gt;&lt;b&gt;[3] Saga Pattern Orchestrator&lt;/b&gt;&lt;br&gt;&lt;i&gt;Distributed Transaction Management&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;" vertex="1" parent="1">
           <mxGeometry x="400" y="400" width="200" height="60" as="geometry"/>

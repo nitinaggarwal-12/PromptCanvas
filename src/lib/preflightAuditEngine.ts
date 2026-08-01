@@ -24,8 +24,9 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // 1b. Fix double/triple-escaped ampersands: &amp;amp; -> &amp;
   xml = xml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
 
-  // 1c. Scrub generic legacy ITACS brand names
+  // 1c. Scrub generic legacy ITACS brand names & dark black box overlays
   xml = xml
+    .replace(/<mxCell\s+id="(?:exec_dash_foot|exec_dash_stand|exec_dash_bezel|exec_dash_chin|comp_view_bezel|comp_view_cam|advisory_bezel|advisory_notch)"[\s\S]*?<\/mxCell>/gi, '')
     .replace(/ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW/g, 'Unified Architecture Platform - System View')
     .replace(/ITACS Integrated Insights Platform/g, 'Enterprise Architecture Platform')
     .replace(/ITACS SECURE GOVERNED CLOUD TENANT/g, 'SECURE GOVERNED CLOUD TENANT')

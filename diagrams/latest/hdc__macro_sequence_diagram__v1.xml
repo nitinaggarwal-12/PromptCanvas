@@ -1,10 +1,10 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="macro_sequence_diagram_compiled" name="COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM">
+  <diagram id="macro_sequence_diagram_compiled" name="COMPLETE MACRO DYNAMIC SEQUENCE COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM">
     <mxGraphModel dx="1920" dy="1450" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2155" pageHeight="1600" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="macro_hdr_title" value="&lt;div style=&apos;text-align:center;color:#0F172A;&apos;&gt;&lt;b style=&apos;font-size:16px;&apos;&gt;Enterprise Architecture Platform - COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM.&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:12px;font-weight:normal;color:#475569;&apos;&gt;Mapping Data Flow, Orchestration, Time, and Governance across Data/AI Solutions.&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="macro_hdr_title" value="&lt;div style=&apos;text-align:center;color:#0F172A;&apos;&gt;&lt;b style=&apos;font-size:16px;&apos;&gt;Enterprise Architecture Platform - COMPLETE MACRO DYNAMIC SEQUENCE COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM.&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:12px;font-weight:normal;color:#475569;&apos;&gt;Mapping Data Flow, Orchestration, Time, and Governance across Data/AI Solutions.&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="15" y="15" width="1890" height="55" as="geometry"/>
         </mxCell>
         <mxCell id="macro_gcp_logo" value="&lt;b style=&apos;color:#4285F4;font-size:18px;&apos;&gt;G&lt;/b&gt;&lt;b style=&apos;color:#EA4335;font-size:18px;&apos;&gt;C&lt;/b&gt;&lt;b style=&apos;color:#FBBC05;font-size:18px;&apos;&gt;P&lt;/b&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -19,7 +19,7 @@
         <mxCell id="p1_tab" value="&lt;b style=&apos;font-size:11px;color:#0F172A;&apos;&gt;PHASE 1:&lt;br&gt;DATA INGESTION,&lt;br&gt;FEATURE ENGINEERING &amp;&lt;br&gt;LINEAGE LOGGING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="80" width="160" height="250" as="geometry"/>
         </mxCell>
-        <mxCell id="p1_h1" value="&lt;span style=&apos;font-size:16px;&apos;&gt;👤&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:10px;color:#0F172A;&apos;&gt;Silo Analysts&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:9px;color:#475569;&apos;&gt;Functional Silos&lt;br&gt;e.g., Medical Affairs,&lt;br&gt;Competitive Intel&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
+        <mxCell id="p1_h1" value="&lt;span style=&apos;font-size:16px;&apos;&gt;👤&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:10px;color:#0F172A;&apos;&gt;Silo Analysts&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:9px;color:#475569;&apos;&gt;Functional Silos&lt;br&gt;e.g., Payments &amp; Transfers,&lt;br&gt;Competitive Intel&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
           <mxGeometry x="210" y="95" width="120" height="50" as="geometry"/>
         </mxCell>
         <mxCell id="p1_h2" value="&lt;b style=&apos;font-size:11px;color:#0F172A;&apos;&gt;Google Workspace&lt;br&gt;Connectors&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;align=center;" vertex="1" parent="1">
@@ -241,10 +241,10 @@
         <mxCell id="p3_lane" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="185" y="600" width="1720" height="320" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_tab" value="&lt;b style=&apos;font-size:11px;color:#0F172A;&apos;&gt;PHASE 3:&lt;br&gt;GENAI / AGENTIC&lt;br&gt;RAG ORCHESTRATION &amp;&lt;br&gt;ANALYTICS TOOLING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="p3_tab" value="&lt;b style=&apos;font-size:11px;color:#0F172A;&apos;&gt;Operational:&lt;br&gt;GENAI / AGENTIC&lt;br&gt;RAG ORCHESTRATION &amp;&lt;br&gt;ANALYTICS TOOLING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="600" width="160" height="320" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_h1" value="&lt;span style=&apos;font-size:14px;&apos;&gt;👤&lt;/span&gt; &lt;b style=&apos;font-size:10px;color:#0F172A;&apos;&gt;Oncology Analyst (User)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
+        <mxCell id="p3_h1" value="&lt;span style=&apos;font-size:14px;&apos;&gt;👤&lt;/span&gt; &lt;b style=&apos;font-size:10px;color:#0F172A;&apos;&gt;Complete Macro Dynamic Sequence Operations User (User)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
           <mxGeometry x="210" y="615" width="120" height="45" as="geometry"/>
         </mxCell>
         <mxCell id="p3_h2" value="&lt;span style=&apos;font-size:14px;&apos;&gt;🖥️&lt;/span&gt; &lt;b style=&apos;font-size:11px;color:#0369A1;&apos;&gt;User Interface&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
@@ -401,7 +401,7 @@
         <mxCell id="p4_tab" value="&lt;b style=&apos;font-size:11px;color:#0F172A;&apos;&gt;PHASE 4:&lt;br&gt;PROTOTYPE&lt;br&gt;DELIVERY &amp;&lt;br&gt;LOGGING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="930" width="160" height="250" as="geometry"/>
         </mxCell>
-        <mxCell id="p4_h1" value="&lt;span style=&apos;font-size:14px;&apos;&gt;👤&lt;/span&gt; &lt;b style=&apos;font-size:10px;color:#0F172A;&apos;&gt;Oncology Analyst (User)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
+        <mxCell id="p4_h1" value="&lt;span style=&apos;font-size:14px;&apos;&gt;👤&lt;/span&gt; &lt;b style=&apos;font-size:10px;color:#0F172A;&apos;&gt;Complete Macro Dynamic Sequence Operations User (User)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
           <mxGeometry x="100" y="945" width="120" height="45" as="geometry"/>
         </mxCell>
         <mxCell id="p4_h2" value="&lt;span style=&apos;font-size:14px;&apos;&gt;🖥️&lt;/span&gt; &lt;b style=&apos;font-size:11px;color:#0369A1;&apos;&gt;User Interface&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">

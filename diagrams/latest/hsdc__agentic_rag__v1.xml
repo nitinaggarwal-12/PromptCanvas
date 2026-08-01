@@ -137,7 +137,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e_tool_1a" value="&lt;b style=&apos;font-size:13px;color:#1D4ED8;&apos;&gt;ACTION: RAG Query&lt;/b&gt;&lt;br&gt;&lt;span style=&apos;font-size:11px;color:#475569;&apos;&gt;(e.g., &amp;quot;Oncology Trends&amp;quot;)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="reasoner_box" target="tool_1_box">
+        <mxCell id="e_tool_1a" value="&lt;b style=&apos;font-size:13px;color:#1D4ED8;&apos;&gt;ACTION: RAG Query&lt;/b&gt;&lt;br&gt;&lt;span style=&apos;font-size:11px;color:#475569;&apos;&gt;(e.g., &amp;quot;Complete Cognitive (agentic Rag) Trends&amp;quot;)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="reasoner_box" target="tool_1_box">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="985" y="440"/>

@@ -115,7 +115,7 @@
         <mxCell id="act_bq_2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60A5FA;strokeColor=#1D4ED8;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1508" y="1270" width="14" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="s1" value="Sends single Oncology prompt:&lt;br&gt;&lt;span style=&apos;font-size:10px;font-weight:normal;&apos;&gt;&apos;Compare market trends across 5 silos,&lt;br&gt;include recent sales figures&apos;&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1E293B;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+        <mxCell id="s1" value="Sends single Complete Micro Dynamic Sequence prompt:&lt;br&gt;&lt;span style=&apos;font-size:10px;font-weight:normal;&apos;&gt;&apos;Compare market trends across 5 silos,&lt;br&gt;include recent sales figures&apos;&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1E293B;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="122" y="160" as="sourcePoint"/>
             <mxPoint x="340" y="160" as="targetPoint"/>

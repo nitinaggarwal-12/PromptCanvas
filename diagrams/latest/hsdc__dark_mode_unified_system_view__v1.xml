@@ -19,7 +19,7 @@
         <mxCell id="dm_l1_b1_title" value="&lt;b style=&apos;font-size:11px;color:#FFFFFF;&apos;&gt;Governing Cloud Tenant (Mensged Services) &lt;font style=&apos;color:#A0AAB5;font-weight:normal;&apos;&gt;(References image 15)&lt;/font&gt;&lt;/b&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="100" y="100" width="450" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="dm_l1_silo" value="&lt;span style=&apos;font-size:32px;&apos;&gt;🧑‍💻&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Silo Analysts&lt;/b&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1">
+        <mxCell id="dm_l1_silo" value="&lt;span style=&apos;font-size:32px;&apos;&gt;🧑‍💻&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Customer &amp; Operations&lt;/b&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1">
           <mxGeometry x="140" y="125" width="100" height="75" as="geometry"/>
         </mxCell>
         <mxCell id="dm_l1_gcp" value="&lt;span style=&apos;font-size:32px;&apos;&gt;☁️&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Google Workspace&lt;br&gt;Connectors&lt;/b&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1">
@@ -40,7 +40,7 @@
         <mxCell id="dm_l1_b2_title" value="&lt;b style=&apos;font-size:11px;color:#FFFFFF;&apos;&gt;Plan &amp; Data Foundation &lt;font style=&apos;color:#A0AAB5;font-weight:normal;&apos;&gt;(Vetting &amp; ERD Integration)&lt;/font&gt;&lt;/b&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="740" y="100" width="320" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="dm_l1_lake" value="&lt;span style=&apos;font-size:28px;&apos;&gt;🪣&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:11px;color:#38BDF8;&apos;&gt;GCS Secure Bucket&lt;br&gt;(Raw Data Lake)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="dm_l1_lake" value="&lt;span style=&apos;font-size:28px;&apos;&gt;🪣&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:11px;color:#38BDF8;&apos;&gt;Inventory Service (Real-Time)&lt;br&gt;(Raw Data Lake)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="830" y="125" width="140" height="75" as="geometry"/>
         </mxCell>
         <mxCell id="dm_l1_arr2" value="" style="endArrow=block;endFill=1;strokeColor=#22D3EE;strokeWidth=2;html=1;" edge="1" parent="1" source="dm_l1_b2" target="dm_l1_b3">
@@ -91,7 +91,7 @@
         <mxCell id="dm_t2a_title" value="&lt;b style=&apos;font-size:11px;color:#FFFFFF;&apos;&gt;DEVELOPMENT &amp; AI LIFECYCLE (iosograto4 MLOps... &lt;font style=&apos;color:#A0AAB5;font-weight:normal;&apos;&gt;(References image 15 &amp; 5)&lt;/font&gt;&lt;/b&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=left;padding=6;" vertex="1" parent="1">
           <mxGeometry x="100" y="255" width="350" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="dm_t2a_p1" value="&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Market Research&lt;/b&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#0F766E;strokeColor=#2DD4BF;arcSize=50;" vertex="1" parent="1">
+        <mxCell id="dm_t2a_p1" value="&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Accounts &amp; Deposits&lt;/b&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#0F766E;strokeColor=#2DD4BF;arcSize=50;" vertex="1" parent="1">
           <mxGeometry x="105" y="285" width="115" height="26" as="geometry"/>
         </mxCell>
         <mxCell id="dm_t2a_p2" value="&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Access&lt;/b&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#0F766E;strokeColor=#2DD4BF;arcSize=50;" vertex="1" parent="1">
@@ -323,7 +323,7 @@
         <mxCell id="dm_lbl_pull_log" value="&lt;font style=&apos;font-size:8px;color:#A0AAB5;&apos;&gt;pulls model, logs inference and dirft&lt;/font&gt;&lt;br&gt;&lt;b style=&apos;font-size:8px;color:#22C55E;&apos;&gt;Status: APPROVED&lt;/b&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1">
           <mxGeometry x="1165" y="575" width="135" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="dm_l3_mon" value="&lt;span style=&apos;font-size:24px;&apos;&gt;📈&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Monitoring&lt;/b&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#1E3A8A;strokeColor=#60A5FA;" vertex="1" parent="1">
+        <mxCell id="dm_l3_mon" value="&lt;span style=&apos;font-size:24px;&apos;&gt;📈&lt;/span&gt;&lt;br&gt;&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Carrier Delivery Monitor&lt;/b&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#1E3A8A;strokeColor=#60A5FA;" vertex="1" parent="1">
           <mxGeometry x="1305" y="590" width="85" height="70" as="geometry"/>
         </mxCell>
         <mxCell id="dm_arr_mon_log" value="" style="endArrow=block;endFill=1;strokeColor=#22D3EE;strokeWidth=1.5;html=1;" edge="1" parent="1" source="dm_l3_mon" target="dm_l3_inf_log">
@@ -389,7 +389,7 @@
         <mxCell id="dm_l3_t2" value="&lt;b style=&apos;font-size:9px;color:#38BDF8;&apos;&gt;Tool 2: Business Analytics (Analytics)&lt;/b&gt; &lt;font style=&apos;font-size:8px;color:#A0AAB5;&apos;&gt;BigQuery SQL&lt;/font&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#0F172A;strokeColor=#38BDF8;" vertex="1" parent="1">
           <mxGeometry x="990" y="798" width="425" height="21" as="geometry"/>
         </mxCell>
-        <mxCell id="dm_l3_t3" value="&lt;b style=&apos;font-size:9px;color:#38BDF8;&apos;&gt;Tool 3: Agentic API Tools&lt;/b&gt; &lt;font style=&apos;font-size:8px;color:#A0AAB5;&apos;&gt;Deck Studio API&lt;/font&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#0F172A;strokeColor=#38BDF8;" vertex="1" parent="1">
+        <mxCell id="dm_l3_t3" value="&lt;b style=&apos;font-size:9px;color:#38BDF8;&apos;&gt;Tool 3: Agentic API Tools&lt;/b&gt; &lt;font style=&apos;font-size:8px;color:#A0AAB5;&apos;&gt;Carrier Shipping API&lt;/font&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#0F172A;strokeColor=#38BDF8;" vertex="1" parent="1">
           <mxGeometry x="990" y="823" width="425" height="21" as="geometry"/>
         </mxCell>
         <mxCell id="dm_arr_sub_act" value="" style="endArrow=block;endFill=1;strokeColor=#22D3EE;strokeWidth=1.5;html=1;" edge="1" parent="1" source="dm_l3_lsub" target="dm_l3_rsub">
@@ -473,7 +473,7 @@
         <mxCell id="dm_arr_u_ui" value="" style="endArrow=block;endFill=1;strokeColor=#22D3EE;strokeWidth=1.5;html=1;" edge="1" parent="1" source="dm_act_user" target="dm_act_ui">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="dm_lbl_req1" value="&lt;font style=&apos;font-size:8px;color:#A0AAB5;&apos;&gt;Requests request, requeslzed request&lt;/font&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1">
+        <mxCell id="dm_lbl_req1" value="&lt;font style=&apos;font-size:8px;color:#A0AAB5;&apos;&gt;Verify Stock &amp; Authorize Payment, requeslzed request&lt;/font&gt;" style="whiteSpace=wrap;text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1">
           <mxGeometry x="600" y="915" width="160" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="dm_act_ui" value="&lt;b style=&apos;font-size:11px;color:#FFFFFF;&apos;&gt;UI&lt;/b&gt;" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#1E3A8A;strokeColor=#60A5FA;strokeWidth=1.5;" vertex="1" parent="1">

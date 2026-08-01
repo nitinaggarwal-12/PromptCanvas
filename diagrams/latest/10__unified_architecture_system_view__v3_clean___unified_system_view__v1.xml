@@ -4,7 +4,7 @@
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="main_title_bar_uv" value="&lt;div style=&apos;display:flex;align-items:center;padding:5px 15px;&apos;&gt;&lt;span style=&apos;font-size:28px;margin-right:15px;&apos;&gt;🌐☁️&lt;/span&gt;&lt;div style=&apos;text-align:left;color:#FFFFFF;&apos;&gt;&lt;b style=&apos;font-size:16px;&apos;&gt;Enterprise Architecture Platform - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, &amp; Governance (End-to-End without Compromise).&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:12px;font-weight:normal;color:#E2E8F0;&apos;&gt;Unified Logical Flow, Technology Stack, Security Boundaries, and Operational Lifecycles&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#12385B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="main_title_bar_uv" value="&lt;div style=&apos;display:flex;align-items:center;padding:5px 15px;&apos;&gt;&lt;span style=&apos;font-size:28px;margin-right:15px;&apos;&gt;🌐☁️&lt;/span&gt;&lt;div style=&apos;text-align:left;color:#FFFFFF;&apos;&gt;&lt;b style=&apos;font-size:16px;&apos;&gt;Enterprise Architecture Platform - COGNITIVE ARCHITECTURE TOTAL UNIFIED SYSTEM VIEW (End-to-End without Compromise).&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:12px;font-weight:normal;color:#E2E8F0;&apos;&gt;Unified Logical Flow, Technology Stack, Security Boundaries, and Operational Lifecycles&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#12385B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="15" y="15" width="1890" height="50" as="geometry"/>
         </mxCell>
         <mxCell id="top_main_lbl_uv" value="&lt;b style=&apos;font-size:13px;color:#1E293B;&apos;&gt;End-to-End Enterprise Architecture across major phases&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
@@ -46,7 +46,7 @@
         <mxCell id="sw1_erd_t4" value="&lt;b style=&apos;font-size:8px;color:#1E3A8A;&apos;&gt;Transform&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;" vertex="1" parent="1">
           <mxGeometry x="920" y="125" width="65" height="25" as="geometry"/>
         </mxCell>
-        <mxCell id="sw1_erd_t5" value="&lt;b style=&apos;font-size:8px;color:#1E3A8A;&apos;&gt;Dim_Patient&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;" vertex="1" parent="1">
+        <mxCell id="sw1_erd_t5" value="&lt;b style=&apos;font-size:8px;color:#1E3A8A;&apos;&gt;Dim_Customer_Entity&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;" vertex="1" parent="1">
           <mxGeometry x="1015" y="125" width="70" height="25" as="geometry"/>
         </mxCell>
         <mxCell id="sw1_erd_t6" value="&lt;b style=&apos;font-size:8px;color:#1E3A8A;&apos;&gt;Fact_Clinical&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;" vertex="1" parent="1">
@@ -94,7 +94,7 @@
         <mxCell id="t2a_hdr" value="&lt;b style=&apos;font-size:11px;color:#0F172A;&apos;&gt;Track 2a: DATA ENGINEERING &amp; DFD&lt;/b&gt; &lt;font style=&apos;font-size:10px;color:#64748B;&apos;&gt;(References image 3)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="85" y="250" width="350" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="t2a_p1" value="&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Market Research&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#0F766E;strokeColor=#115E59;" vertex="1" parent="1">
+        <mxCell id="t2a_p1" value="&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Client Gateway&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#0F766E;strokeColor=#115E59;" vertex="1" parent="1">
           <mxGeometry x="85" y="278" width="110" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="t2a_p2" value="&lt;b style=&apos;font-size:10px;color:#FFFFFF;&apos;&gt;Access&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#0F766E;strokeColor=#115E59;" vertex="1" parent="1">

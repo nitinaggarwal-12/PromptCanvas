@@ -14,13 +14,13 @@
           <mxGeometry x="1160" y="230" width="670" height="760" as="geometry"/>
         </mxCell>
         <mxCell id="box_mlops" value="&lt;b style=&quot;font-size:13px;color:#15803D;&quot;&gt;Structured AI (MLOps)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#86EFAC;strokeWidth=1.5;dashed=1;verticalAlign=top;padding=12;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="270" width="280" height="690" as="geometry"/>
+          <mxGeometry x="1875" y="270" width="280" height="690" as="geometry"/>
         </mxCell>
         <mxCell id="box_rag" value="&lt;b style=&quot;font-size:13px;color:#15803D;&quot;&gt;Unstructured AI (GenAI/RAG)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#86EFAC;strokeWidth=1.5;dashed=1;verticalAlign=top;padding=12;" vertex="1" parent="1">
-          <mxGeometry x="1470" y="270" width="330" height="690" as="geometry"/>
+          <mxGeometry x="2200" y="270" width="330" height="690" as="geometry"/>
         </mxCell>
         <mxCell id="etl_src" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="400" y="70" width="230" height="110" as="geometry"/>
+          <mxGeometry x="1365" y="70" width="230" height="110" as="geometry"/>
         </mxCell>
         <mxCell id="etl_src_hdr" value="🗄️ &lt;b&gt;ETL_System_Data_Sources&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="402" y="72" width="226" height="28" as="geometry"/>
@@ -29,67 +29,67 @@
           <mxGeometry x="402" y="98" width="226" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="etl_src_body" value="&lt;b&gt;PK&lt;/b&gt; Source ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Source System Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Connection String&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Silo ID" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="404" y="102" width="222" height="74" as="geometry"/>
+          <mxGeometry x="673" y="102" width="222" height="74" as="geometry"/>
         </mxCell>
         <mxCell id="etl_log" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="700" y="70" width="240" height="135" as="geometry"/>
+          <mxGeometry x="1665" y="70" width="240" height="135" as="geometry"/>
         </mxCell>
         <mxCell id="etl_log_hdr" value="📑 &lt;b&gt;ETL_Job_Audit_Log&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="702" y="72" width="236" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="etl_log_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="702" y="98" width="236" height="2" as="geometry"/>
+          <mxGeometry x="971" y="98" width="236" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="etl_log_body" value="&lt;b&gt;PK/FK&lt;/b&gt; Job Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Job Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Data Source ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Start/End Time&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Number of Rows Processed&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;User ID" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="704" y="102" width="232" height="99" as="geometry"/>
+          <mxGeometry x="1252" y="102" width="232" height="99" as="geometry"/>
         </mxCell>
         <mxCell id="etl_map" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1010" y="70" width="230" height="110" as="geometry"/>
+          <mxGeometry x="1975" y="70" width="230" height="110" as="geometry"/>
         </mxCell>
         <mxCell id="etl_map_hdr" value="🗺️ &lt;b&gt;Data_Lineage_Map&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="1012" y="72" width="226" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="etl_map_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1012" y="98" width="226" height="2" as="geometry"/>
+          <mxGeometry x="1560" y="98" width="226" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="etl_map_body" value="&lt;b&gt;PK&lt;/b&gt; Target Table/Column ID&lt;br&gt;&lt;b&gt;PK&lt;/b&gt; Source Table/Column ID&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; ETL Job ID" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="1014" y="102" width="222" height="74" as="geometry"/>
+          <mxGeometry x="1831" y="102" width="222" height="74" as="geometry"/>
         </mxCell>
         <mxCell id="dim_pat" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="50" y="280" width="190" height="120" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_pat_hdr" value="👤 &lt;b&gt;Dim_Patient&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
+        <mxCell id="dim_pat_hdr" value="👤 &lt;b&gt;Dim_Customer_Account&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="52" y="282" width="186" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_pat_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="52" y="308" width="186" height="2" as="geometry"/>
+          <mxGeometry x="285" y="308" width="186" height="2" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_pat_body" value="&lt;b&gt;PK&lt;/b&gt; Patient Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Patient Type&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Region&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Age Group&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Demographics&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Disease History" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="54" y="312" width="182" height="84" as="geometry"/>
+        <mxCell id="dim_pat_body" value="&lt;b&gt;PK&lt;/b&gt; Account Key (PK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Account Type (Checking/Savings)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Region&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Age Group&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;KYC Status &amp; Credit Score&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Account Standing &amp; Risk Rating" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
+          <mxGeometry x="516" y="312" width="182" height="84" as="geometry"/>
         </mxCell>
         <mxCell id="dim_phy" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="50" y="430" width="190" height="110" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_phy_hdr" value="🩺 &lt;b&gt;Dim_Physician&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
+        <mxCell id="dim_phy_hdr" value="🩺 &lt;b&gt;Dim_Merchant&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="52" y="432" width="186" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_phy_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="52" y="458" width="186" height="2" as="geometry"/>
+          <mxGeometry x="285" y="458" width="186" height="2" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_phy_body" value="&lt;b&gt;PK&lt;/b&gt; Physician Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Specialization&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Affiliation&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Ranking&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Location" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="54" y="462" width="182" height="74" as="geometry"/>
+        <mxCell id="dim_phy_body" value="&lt;b&gt;PK&lt;/b&gt; Merchant Key (PK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Merchant Category Code (MCC)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Payment Network (Visa/MC)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Risk Rating&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Terminal / Store Location" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
+          <mxGeometry x="516" y="462" width="182" height="74" as="geometry"/>
         </mxCell>
         <mxCell id="dim_prod" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="50" y="570" width="190" height="110" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_prod_hdr" value="💊 &lt;b&gt;Dim_Oncology_Product&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
+        <mxCell id="dim_prod_hdr" value="💊 &lt;b&gt;Dim_Complete_Dimensional_Data_Model_Catalog&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="52" y="572" width="186" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_prod_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="52" y="598" width="186" height="2" as="geometry"/>
+          <mxGeometry x="285" y="598" width="186" height="2" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_prod_body" value="&lt;b&gt;PK&lt;/b&gt; Product Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Product Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Therapy Area&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Competing Products" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="54" y="602" width="182" height="74" as="geometry"/>
+        <mxCell id="dim_prod_body" value="&lt;b&gt;PK&lt;/b&gt; Product Key (PK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Product Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Product Line (Credit/Debit/Mortgage)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Competing Products" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
+          <mxGeometry x="516" y="602" width="182" height="74" as="geometry"/>
         </mxCell>
         <mxCell id="dim_silo" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="50" y="710" width="190" height="120" as="geometry"/>
@@ -98,34 +98,34 @@
           <mxGeometry x="52" y="712" width="186" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_silo_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="52" y="738" width="186" height="2" as="geometry"/>
+          <mxGeometry x="285" y="738" width="186" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="dim_silo_body" value="&lt;b&gt;PK&lt;/b&gt; Silo Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Silo Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Silo Description&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Owner" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="54" y="742" width="182" height="84" as="geometry"/>
+          <mxGeometry x="516" y="742" width="182" height="84" as="geometry"/>
         </mxCell>
         <mxCell id="fact_ins" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="370" y="280" width="220" height="130" as="geometry"/>
+          <mxGeometry x="832" y="280" width="220" height="130" as="geometry"/>
         </mxCell>
-        <mxCell id="fact_ins_hdr" value="📊 &lt;b&gt;Fact_Oncology_Insights&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=none;fontColor=#0369A1;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
+        <mxCell id="fact_ins_hdr" value="📊 &lt;b&gt;Fact_Complete_Dimensional_Data_Model_Transactions&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=none;fontColor=#0369A1;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="372" y="282" width="216" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="fact_ins_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="372" y="308" width="216" height="2" as="geometry"/>
+          <mxGeometry x="1097" y="308" width="216" height="2" as="geometry"/>
         </mxCell>
-        <mxCell id="fact_ins_body" value="&lt;b&gt;PK&lt;/b&gt; Patient ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Product ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Date ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Silo ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Value Metric&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Confidence Score&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Confidence Interval" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="374" y="312" width="212" height="94" as="geometry"/>
+        <mxCell id="fact_ins_body" value="&lt;b&gt;PK&lt;/b&gt; Account Key (FK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Product ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Date ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Silo ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Value Metric&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Confidence Score&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Confidence Interval" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
+          <mxGeometry x="1358" y="312" width="212" height="94" as="geometry"/>
         </mxCell>
         <mxCell id="fact_enc" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="370" y="450" width="220" height="140" as="geometry"/>
+          <mxGeometry x="832" y="450" width="220" height="140" as="geometry"/>
         </mxCell>
-        <mxCell id="fact_enc_hdr" value="🏥 &lt;b&gt;Fact_Patient_Encounters&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=none;fontColor=#0369A1;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
+        <mxCell id="fact_enc_hdr" value="🏥 &lt;b&gt;Fact_Account_Transactions&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=none;fontColor=#0369A1;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="372" y="452" width="216" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="fact_enc_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
           <mxGeometry x="372" y="478" width="216" height="2" as="geometry"/>
         </mxCell>
-        <mxCell id="fact_enc_body" value="&lt;b&gt;PK&lt;/b&gt; Patient ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Encounter ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Date ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Diagnosis ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Physician ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Payer ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Value Metric" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="374" y="482" width="212" height="104" as="geometry"/>
+        <mxCell id="fact_enc_body" value="&lt;b&gt;PK&lt;/b&gt; Account Key (FK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Transaction ID (PK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Date ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Auth Code / ISO 8583 Msg&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Merchant Key (FK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Issuer Key (FK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Value Metric" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
+          <mxGeometry x="633" y="482" width="212" height="104" as="geometry"/>
         </mxCell>
         <mxCell id="fact_comp" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="370" y="620" width="220" height="125" as="geometry"/>
@@ -134,73 +134,73 @@
           <mxGeometry x="372" y="622" width="216" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="fact_comp_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="372" y="648" width="216" height="2" as="geometry"/>
+          <mxGeometry x="635" y="648" width="216" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="fact_comp_body" value="&lt;b&gt;PK&lt;/b&gt; Intel ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Product ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Date ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Source ID&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Metric&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Insight Type" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="374" y="652" width="212" height="89" as="geometry"/>
+          <mxGeometry x="896" y="652" width="212" height="89" as="geometry"/>
         </mxCell>
         <mxCell id="dim_center" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="630" y="490" width="150" height="65" as="geometry"/>
+          <mxGeometry x="890" y="490" width="150" height="65" as="geometry"/>
         </mxCell>
         <mxCell id="dim_center_hdr" value="🔗 &lt;b&gt;Dim_Intel_Map&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="632" y="492" width="146" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_center_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="632" y="518" width="146" height="2" as="geometry"/>
+          <mxGeometry x="1085" y="518" width="146" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="dim_center_body" value="&lt;b&gt;PK&lt;/b&gt; Intel ID&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; Source ID" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="634" y="522" width="142" height="29" as="geometry"/>
+          <mxGeometry x="1276" y="522" width="142" height="29" as="geometry"/>
         </mxCell>
         <mxCell id="dim_time" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="820" y="280" width="180" height="120" as="geometry"/>
+          <mxGeometry x="1804" y="280" width="180" height="120" as="geometry"/>
         </mxCell>
         <mxCell id="dim_time_hdr" value="📅 &lt;b&gt;Dim_Time&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="822" y="282" width="176" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_time_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="822" y="308" width="176" height="2" as="geometry"/>
+          <mxGeometry x="2029" y="308" width="176" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="dim_time_body" value="&lt;b&gt;PK&lt;/b&gt; Time Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Date&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Week&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Month&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Quarter&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Year" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="824" y="312" width="172" height="84" as="geometry"/>
+          <mxGeometry x="2250" y="312" width="172" height="84" as="geometry"/>
         </mxCell>
         <mxCell id="dim_loc" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="820" y="430" width="180" height="120" as="geometry"/>
+          <mxGeometry x="1282" y="430" width="180" height="120" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_loc_hdr" value="📍 &lt;b&gt;Dim_Location&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
+        <mxCell id="dim_loc_hdr" value="📍 &lt;b&gt;Dim_Terminal / Store Location&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="822" y="432" width="176" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_loc_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="822" y="458" width="176" height="2" as="geometry"/>
+          <mxGeometry x="1507" y="458" width="176" height="2" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_loc_body" value="&lt;b&gt;PK&lt;/b&gt; Location Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Facility Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;City&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;State&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Country&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Region" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="824" y="462" width="172" height="84" as="geometry"/>
+        <mxCell id="dim_loc_body" value="&lt;b&gt;PK&lt;/b&gt; Terminal / Store Location Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Facility Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;City&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;State&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Country&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Region" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
+          <mxGeometry x="1728" y="462" width="172" height="84" as="geometry"/>
         </mxCell>
         <mxCell id="dim_payer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="820" y="580" width="180" height="100" as="geometry"/>
+          <mxGeometry x="1282" y="580" width="180" height="100" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_payer_hdr" value="💳 &lt;b&gt;Dim_Payer&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
+        <mxCell id="dim_payer_hdr" value="💳 &lt;b&gt;Dim_Card_Issuer&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="822" y="582" width="176" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_payer_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="822" y="608" width="176" height="2" as="geometry"/>
+          <mxGeometry x="1507" y="608" width="176" height="2" as="geometry"/>
         </mxCell>
-        <mxCell id="dim_payer_body" value="&lt;b&gt;PK&lt;/b&gt; Payer Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Payer Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Type&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Tier" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="824" y="612" width="172" height="64" as="geometry"/>
+        <mxCell id="dim_payer_body" value="&lt;b&gt;PK&lt;/b&gt; Issuer Key (PK)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Card Issuer / Bank&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Type&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Tier" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
+          <mxGeometry x="1728" y="612" width="172" height="64" as="geometry"/>
         </mxCell>
         <mxCell id="dim_src" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="820" y="710" width="180" height="100" as="geometry"/>
+          <mxGeometry x="1282" y="710" width="180" height="100" as="geometry"/>
         </mxCell>
         <mxCell id="dim_src_hdr" value="🌐 &lt;b&gt;Dim_Intel_Source&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=none;fontColor=#1E3A8A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="822" y="712" width="176" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="dim_src_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="822" y="738" width="176" height="2" as="geometry"/>
+          <mxGeometry x="1507" y="738" width="176" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="dim_src_body" value="&lt;b&gt;PK&lt;/b&gt; Source Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Source Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;URL&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Silo ID" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="824" y="742" width="172" height="64" as="geometry"/>
+          <mxGeometry x="1728" y="742" width="172" height="64" as="geometry"/>
         </mxCell>
         <mxCell id="ml_feat" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1210" y="310" width="220" height="150" as="geometry"/>
+          <mxGeometry x="2636" y="310" width="220" height="150" as="geometry"/>
         </mxCell>
         <mxCell id="ml_feat_hdr" value="📦 &lt;b&gt;ML_Feature_Store&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D1FAE5;strokeColor=none;fontColor=#065F46;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="1212" y="312" width="216" height="28" as="geometry"/>
@@ -209,67 +209,67 @@
           <mxGeometry x="1212" y="338" width="216" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="ml_feat_body" value="&lt;b&gt;P/FK&lt;/b&gt; Feature Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Feature Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Feature Description&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Version&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Data Type&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Aggregation&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Source Table ID" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="1214" y="342" width="212" height="114" as="geometry"/>
+          <mxGeometry x="1473" y="342" width="212" height="114" as="geometry"/>
         </mxCell>
         <mxCell id="ml_inf" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1210" y="560" width="220" height="155" as="geometry"/>
+          <mxGeometry x="2114" y="560" width="220" height="155" as="geometry"/>
         </mxCell>
         <mxCell id="ml_inf_hdr" value="🧠 &lt;b&gt;ML_Inference_Log&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D1FAE5;strokeColor=none;fontColor=#065F46;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="1212" y="562" width="216" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="ml_inf_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1212" y="588" width="216" height="2" as="geometry"/>
+          <mxGeometry x="2379" y="588" width="216" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="ml_inf_body" value="&lt;b&gt;PK&lt;/b&gt; Inference Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Model Used&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Input Keys (Patient/Product)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Output Prediction&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Probability Score&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Actual Truth Label&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="1214" y="592" width="212" height="119" as="geometry"/>
+          <mxGeometry x="2640" y="592" width="212" height="119" as="geometry"/>
         </mxCell>
         <mxCell id="gen_corp" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1490" y="310" width="280" height="135" as="geometry"/>
+          <mxGeometry x="2916" y="310" width="280" height="135" as="geometry"/>
         </mxCell>
         <mxCell id="gen_corp_hdr" value="📚 &lt;b&gt;GenAI_Context_Corpus&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D1FAE5;strokeColor=none;fontColor=#065F46;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="1492" y="312" width="276" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="gen_corp_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1492" y="338" width="276" height="2" as="geometry"/>
+          <mxGeometry x="1751" y="338" width="276" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="gen_corp_body" value="&lt;b&gt;PK&lt;/b&gt; Corpus Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Storage Path (GCS)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Doc Name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Doc Type&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Functional Silo Tag&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Chunk Count" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="1494" y="342" width="272" height="99" as="geometry"/>
+          <mxGeometry x="2072" y="342" width="272" height="99" as="geometry"/>
         </mxCell>
         <mxCell id="gen_vec" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1490" y="480" width="280" height="85" as="geometry"/>
+          <mxGeometry x="2132" y="480" width="280" height="85" as="geometry"/>
         </mxCell>
         <mxCell id="gen_vec_hdr" value="🔮 &lt;b&gt;GenAI_Vector_Index&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D1FAE5;strokeColor=none;fontColor=#065F46;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="1492" y="482" width="276" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="gen_vec_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1492" y="508" width="276" height="2" as="geometry"/>
+          <mxGeometry x="2457" y="508" width="276" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="gen_vec_body" value="&lt;b&gt;PK&lt;/b&gt; Chunk Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Vector Embedding" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="1494" y="512" width="272" height="49" as="geometry"/>
+          <mxGeometry x="2778" y="512" width="272" height="49" as="geometry"/>
         </mxCell>
         <mxCell id="gen_conv" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="1490" y="600" width="280" height="175" as="geometry"/>
+          <mxGeometry x="2916" y="600" width="280" height="175" as="geometry"/>
         </mxCell>
         <mxCell id="gen_conv_hdr" value="💬 &lt;b&gt;GenAI_Conversation_Log&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D1FAE5;strokeColor=none;fontColor=#065F46;fontStyle=1;fontSize=12;align=left;paddingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="1492" y="602" width="276" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="gen_conv_line" value="" style="line;strokeColor=#93C5FD;strokeWidth=1;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1492" y="628" width="276" height="2" as="geometry"/>
+          <mxGeometry x="2014" y="628" width="276" height="2" as="geometry"/>
         </mxCell>
         <mxCell id="gen_conv_body" value="&lt;b&gt;PK&lt;/b&gt; User Key&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;User&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Prompt&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Retrieved Context Chunks&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Generated Response&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Feedback Loop (e.g. Thumb Up/Down)&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Token Usage&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Latency&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Timestamp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#064E3B;paddingLeft=10;lineHeight=1.4;" vertex="1" parent="1">
-          <mxGeometry x="1494" y="632" width="272" height="139" as="geometry"/>
+          <mxGeometry x="2335" y="632" width="272" height="139" as="geometry"/>
         </mxCell>
-        <mxCell id="note_iam" value="&lt;b&gt;IAM Roles:&lt;/b&gt;&lt;br&gt;Row-Level Security on Patient Data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.5;fontColor=#92400E;fontSize=11;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+        <mxCell id="note_iam" value="&lt;b&gt;IAM Roles:&lt;/b&gt;&lt;br&gt;Row-Level Security on Account Data (PCI-DSS &amp; Banking Compliance)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.5;fontColor=#92400E;fontSize=11;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="20" y="140" width="230" height="50" as="geometry"/>
         </mxCell>
         <mxCell id="note_vpc1" value="&lt;b&gt;VPC Service Controls:&lt;/b&gt;&lt;br&gt;Secure Access to Gemini APIs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.5;fontColor=#92400E;fontSize=11;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="1540" y="140" width="240" height="50" as="geometry"/>
+          <mxGeometry x="2357" y="140" width="240" height="50" as="geometry"/>
         </mxCell>
         <mxCell id="note_vpc2" value="&lt;b&gt;VPC Service Controls:&lt;/b&gt;&lt;br&gt;Secure Access to Gemini APIs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.5;fontColor=#92400E;fontSize=11;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="1540" y="1050" width="240" height="50" as="geometry"/>
+          <mxGeometry x="2190" y="1050" width="240" height="50" as="geometry"/>
         </mxCell>
         <mxCell id="note_mil" value="&lt;b&gt;MIL Service Controls:&lt;/b&gt;&lt;br&gt;Secure poundsdata" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.5;fontColor=#92400E;fontSize=11;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="1190" y="1050" width="240" height="50" as="geometry"/>
+          <mxGeometry x="1840" y="1050" width="240" height="50" as="geometry"/>
         </mxCell>
         <mxCell id="e_etl_1" value="&lt;b&gt;Audit Key&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;fontColor=#1E3A8A;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;startArrow=block;endArrow=block;startFill=1;endFill=1;" edge="1" parent="1" source="etl_src" target="etl_log">
           <mxGeometry relative="1" as="geometry"/>
@@ -364,13 +364,13 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="gap_lbl_ml" value="&lt;b style=&quot;font-size:16px;color:#15803D;&quot;&gt;ML&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1085" y="320" width="50" height="30" as="geometry"/>
+          <mxGeometry x="2511" y="320" width="50" height="30" as="geometry"/>
         </mxCell>
         <mxCell id="gap_lbl_pull" value="&lt;b style=&quot;font-size:11px;color:#065F46;&quot;&gt;Pull Data &amp;&lt;br&gt;Business Variance&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=1.5;fontColor=#065F46;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1060" y="360" width="105" height="40" as="geometry"/>
         </mxCell>
         <mxCell id="gap_lbl_query" value="&lt;b style=&quot;font-size:10px;color:#065F46;&quot;&gt;Query to&lt;br&gt;Conversation Log&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=1.5;fontColor=#065F46;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="1695" y="520" width="105" height="36" as="geometry"/>
+          <mxGeometry x="3095" y="520" width="105" height="36" as="geometry"/>
         </mxCell>
         <mxCell id="e_ml_gen" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#059669;endArrow=block;endFill=1;" edge="1" parent="1" source="ml_feat" target="gen_corp">
           <mxGeometry relative="1" as="geometry"/>
@@ -413,7 +413,7 @@
           <mxGeometry x="40" y="1030" width="600" height="110" as="geometry"/>
         </mxCell>
         <mxCell id="why_box" value="&lt;div style=&quot;font-size:13px;color:#1E3A8A;line-height:1.5;text-align:center;&quot;&gt;&lt;b&gt;**WHY IT WORKS: This unified schema consolidates structured, unstructured, and derived AI data on a shared foundation. Business analysis, model training, and GenAI grounding all draw from a single, auditable semantic map, ensuring consistency and governance for any data solution.**&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#2563EB;strokeWidth=2;padding=12;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="670" y="1030" width="1110" height="110" as="geometry"/>
+          <mxGeometry x="685" y="1030" width="1110" height="110" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>
