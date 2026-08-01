@@ -153,6 +153,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 
   // 9. AUTOMATED 2D BOUNDING BOX LINE & EDGE LABEL OVERLAP HEALING:
   xml = heal2DBoundingBoxLineCollisions(xml);
+  xml = heal2DSameTierNodeCollisions(xml);
 
   // Remove any legacy template_type_hdr nodes
   xml = xml.replace(/<mxCell\s+id="template_type_hdr"[\s\S]*?<\/mxCell>/gi, '');
@@ -160,6 +161,95 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // 10. Validate & Auto-Heal XML via Schema Healer
   const healResult = validateAndHealDrawioXml(xml);
   return healResult.xml;
+}
+
+export function heal2DSameTierNodeCollisions(xml: string): string {
+  interface NodeItem {
+    fullTag: string;
+    id: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    value: string;
+  }
+
+  // 1. Wrap long subtitles into compact multi-line text so they never horizontally bleed outside node borders
+  xml = xml.replace(/(value="[^"]*")/gi, (match) => {
+    let val = match;
+    val = val.replace(/Fallback Loop PCI Gateway Handler/gi, 'Fallback Loop&lt;br&gt;PCI Gateway Handler');
+    val = val.replace(/Vector Search &amp; Recommendation Engine/gi, 'Vector Search &amp;&lt;br&gt;Recommendation Engine');
+    val = val.replace(/Cloudflare CDN &amp; Next\.js SSR Web Apps/gi, 'Cloudflare CDN &amp;&lt;br&gt;Next.js SSR Web Apps');
+    val = val.replace(/Kong Gateway &amp; OAuth OIDC Auth/gi, 'Kong Gateway &amp;&lt;br&gt;OAuth OIDC Auth');
+    val = val.replace(/Apollo Router &amp; Schema Stitching/gi, 'Apollo Router &amp;&lt;br&gt;Schema Stitching');
+    val = val.replace(/Product Metadata &amp; Pricing APIs/gi, 'Product Metadata &amp;&lt;br&gt;Pricing APIs');
+    val = val.replace(/SAP S\/4HANA &amp; Warehouse Connector/gi, 'SAP S/4HANA &amp;&lt;br&gt;Warehouse Connector');
+    val = val.replace(/Session Store &amp; Stock Locks/gi, 'Session Store &amp;&lt;br&gt;Stock Locks');
+    val = val.replace(/Asynchronous Order Events/gi, 'Asynchronous&lt;br&gt;Order Events');
+    val = val.replace(/PostgreSQL Relational Storage/gi, 'PostgreSQL&lt;br&gt;Relational Storage');
+    val = val.replace(/Desktop APM &amp; Data Warehouse/gi, 'Desktop APM &amp;&lt;br&gt;Data Warehouse');
+    return val;
+  });
+
+  // 2. Scan nodes and prevent horizontal overlapping along same Y tiers
+  const nodes: NodeItem[] = [];
+  const regex = /(<mxCell\s+id="([^"]+)"[^>]*\bvertex="1"[^>]*>([\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?x="(\d+)"\s+y="(\d+)"\s+width="(\d+)"\s+height="(\d+)"[^>]*>[\s\S]*?<\/mxCell>))/gi;
+
+  let m;
+  while ((m = regex.exec(xml)) !== null) {
+    const fullTag = m[1];
+    const id = m[2];
+    if (id.includes('container') || id.includes('subnet') || id.includes('lane') || id.includes('hdr') || id.includes('page') || id.includes('vpc_')) continue;
+    const x = parseInt(m[4], 10);
+    const y = parseInt(m[5], 10);
+    const w = parseInt(m[6], 10);
+    const h = parseInt(m[7], 10);
+    if (!isNaN(x) && !isNaN(y) && !isNaN(w) && !isNaN(h)) {
+      nodes.push({ fullTag, id, x, y, w, h, value: '' });
+    }
+  }
+
+  if (nodes.length === 0) return xml;
+
+  // Group by Y tier (within 45px vertical tolerance)
+  const tiers: NodeItem[][] = [];
+  for (const node of nodes) {
+    let placed = false;
+    for (const tier of tiers) {
+      if (Math.abs(tier[0].y - node.y) <= 45) {
+        tier.push(node);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      tiers.push([node]);
+    }
+  }
+
+  // Resolve horizontal overlaps per tier
+  for (const tier of tiers) {
+    tier.sort((a, b) => a.x - b.x);
+    for (let i = 0; i < tier.length - 1; i++) {
+      const current = tier[i];
+      const next = tier[i + 1];
+      const minClearanceX = current.x + current.w + 45; // Enforce minimum 45px clear horizontal corridor
+      if (minClearanceX > next.x) {
+        const shiftX = minClearanceX - next.x;
+        for (let j = i + 1; j < tier.length; j++) {
+          const oldX = tier[j].x;
+          const newX = oldX + shiftX;
+          tier[j].x = newX;
+
+          // Replace x in XML string for this cell
+          const oldGeomRegex = new RegExp(`(<mxCell\\s+id="${tier[j].id}"[^>]*\\bvertex="1"[^>]*>[\\s\\S]*?<mxGeometry\\s+[^>]*?\\bx=")${oldX}(")`);
+          xml = xml.replace(oldGeomRegex, `$1${newX}$2`);
+        }
+      }
+    }
+  }
+
+  return xml;
 }
 
 export function heal2DBoundingBoxLineCollisions(xml: string): string {
