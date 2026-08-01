@@ -11,7 +11,7 @@ import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditE
 import { isLayoutEngineV2Enabled } from '@/lib/featureFlags';
 import { runV2Pipeline, runV2EditPipeline } from '@/lib/pipeline/v2Pipeline';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
-const ai = new GoogleGenAI({});
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const SYSTEM_PROMPT = `
 You are "Maestro-Graph", an elite enterprise solutions architect and compiler that translates natural language system descriptions into valid, production-grade Draw.io (mxGraph) XML.

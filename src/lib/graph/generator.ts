@@ -11,7 +11,7 @@ export async function generateLogicalGraph(
   modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
   aiClient?: GoogleGenAI
 ): Promise<ArchitectureGraph> {
-  const ai = aiClient || new GoogleGenAI({});
+  const ai = aiClient || new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
   let attempts = 0;
   let lastErrorText = '';
@@ -28,13 +28,15 @@ export async function generateLogicalGraph(
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
+            required: ['title', 'cloud', 'tiers', 'nodes', 'edges'],
             properties: {
               title: { type: Type.STRING },
-              cloud: { type: Type.STRING },
+              cloud: { type: Type.STRING, enum: ['gcp', 'aws', 'azure', 'hybrid', 'generic'] },
               tiers: {
                 type: Type.ARRAY,
                 items: {
                   type: Type.OBJECT,
+                  required: ['id', 'label', 'order'],
                   properties: {
                     id: { type: Type.STRING },
                     label: { type: Type.STRING },
@@ -46,12 +48,13 @@ export async function generateLogicalGraph(
                 type: Type.ARRAY,
                 items: {
                   type: Type.OBJECT,
+                  required: ['id', 'label', 'tier', 'type'],
                   properties: {
                     id: { type: Type.STRING },
                     label: { type: Type.STRING },
                     subtitle: { type: Type.STRING },
                     tier: { type: Type.STRING },
-                    type: { type: Type.STRING },
+                    type: { type: Type.STRING, enum: ['compute', 'database', 'storage', 'queue', 'cache', 'network', 'security', 'ai', 'analytics', 'user', 'external', 'gateway', 'service'] },
                     product: { type: Type.STRING },
                     description: { type: Type.STRING },
                   },
