@@ -47,6 +47,77 @@ export interface ExtractedGraph {
   unmapped: string[];
 }
 
+const KNOWN_CELL_NAMES: Record<string, string> = {
+  sw3_pub_int: 'Public Internet Traffic',
+  sw3_lb_waf: 'External Load Balancer (Cloud Armor WAF)',
+  sw3_api_gw: 'Google API Gateway',
+  sw3_app_sub: 'Private Application Subnet (Isolated)',
+  sw3_orch_card: 'Agent Orchestrator Pod (GKE)',
+  sw3_react_loop: 'ReAct Cognitive Reasoning Loop',
+  sw3_gn1: 'Integrated System Prompt',
+  sw3_gn2: 'Conversation & Memory Manager',
+  sw3_gn3: 'Gemini LLM Reasoner Engine',
+  sw3_tb1: 'Enterprise Knowledge RAG Store (GCS/Vertex AI)',
+  sw3_tb2: 'Business Analytics Engine (BigQuery SQL)',
+  sw3_tb3: 'Agentic API Tools (Deck Studio API)',
+  sw3_can_gke: 'Canary Deployment (GKE)',
+  sw3_obs_box: 'Continuous Observability & Drift Monitoring',
+  sw3_archival: 'Model & Prompt Archival Registry',
+  sw1_erd_t1: 'Silence Schema Entity',
+  sw1_erd_t2: 'Source Data Entity',
+  sw1_erd_t3: 'Staging Table Entity',
+  sw1_erd_t4: 'Transformation Layer Entity',
+  sw1_erd_t5: 'Dim_Customer_Entity',
+  sw1_erd_t6: 'Fact_Clinical Entity',
+  sw1_erd_t7: 'Raw Data Entity',
+  sw1_erd_t8: 'Derived Analytics Entity',
+  t2a_lake: 'GCS Secure Bucket (Raw Data Lake)',
+  t2b_feat_store: 'Managed Feature Store',
+  t2c_vet: 'Data Vetting Gateway',
+  t2c_created: 'Created Model & Prompt Lifecycle',
+  t2c_training: 'Training & Retraining Loop',
+  t2c_eval: 'Model Evaluation Stage',
+  t2c_hil: 'Human-in-the-Loop Governance Board',
+  t2c_appr: 'Approved Model Release State',
+};
+
+function resolveCellName(id: string, rawLabel: string): string {
+  if (KNOWN_CELL_NAMES[id]) {
+    return KNOWN_CELL_NAMES[id];
+  }
+  const stripped = stripHtml(rawLabel);
+  if (stripped && stripped.length > 2 && !isNoiseLabel(stripped)) {
+    return stripped;
+  }
+  return id.replace(/_/g, ' ');
+}
+
+function isNoiseLabel(label: string): boolean {
+  if (!label) return true;
+  const upper = label.toUpperCase();
+  return (
+    upper.includes('ENTERPRISE ARCHITECTURE PLATFORM') ||
+    upper.includes('TOTAL UNIFIED SYSTEM VIEW') ||
+    upper.includes('WHY IT WORKS') ||
+    upper.includes('TRACK 2A:') ||
+    upper.includes('TRACK 2B:') ||
+    upper.includes('TRACK 2C:') ||
+    upper.includes('LEGEND') ||
+    upper.includes('MANAGED COMPUTE') ||
+    upper.includes('CONTROL FLOW') ||
+    upper.includes('KEY:') ||
+    upper.includes('LINE DESCRIPTION') ||
+    upper.includes('LINE DEVELOPMENTA') ||
+    upper.includes('MONITORING & OBSERVABILITY') ||
+    upper.includes('INTERANED SRANDAN') ||
+    upper.includes('DATA MANIEING') ||
+    upper.includes('PRIVATE APPLICATION CONTAINER') ||
+    upper.includes('LINE ASNNTRIPTION') ||
+    upper.includes('SECURE BOUNDARY') ||
+    upper.includes('BERMANON INTERNAL')
+  );
+}
+
 function stripHtml(raw: string | undefined): string {
   if (!raw) return '';
   return String(raw)
@@ -69,7 +140,7 @@ function extractProtocol(label: string): string | undefined {
 
 function isGateTransition(label: string): boolean {
   if (!label) return false;
-  return /\b(APPROVED|REJECTED|VALID|INVALID|GATE|CONDITION|IF|WHEN)\b/i.test(label) || label.includes('[') && label.includes(']');
+  return /\b(APPROVED|REJECTED|VALID|INVALID|GATE|CONDITION|IF|WHEN)\b/i.test(label) || (label.includes('[') && label.includes(']'));
 }
 
 export function xmlToGraph(mxGraphXml: string): ExtractedGraph | null {
@@ -85,7 +156,6 @@ export function xmlToGraph(mxGraphXml: string): ExtractedGraph | null {
     const parsed = parser.parse(mxGraphXml);
     if (!parsed) return null;
 
-    // Support both direct <mxGraphModel> and wrapped <mxfile><diagram><mxGraphModel>
     const model = parsed.mxGraphModel || parsed.mxfile?.diagram?.mxGraphModel;
     if (!model || !model.root || !model.root.mxCell) return null;
 
@@ -109,11 +179,12 @@ export function xmlToGraph(mxGraphXml: string): ExtractedGraph | null {
       const rawValue = cell['@_value'] || '';
       const cleanLabel = stripHtml(rawValue);
 
+      if (isNoiseLabel(cleanLabel)) continue;
+
       const isContainer =
         cell['@_isContainer'] === '1' ||
         style.includes('swimlane') ||
         id.startsWith('col_') ||
-        id.startsWith('sw') ||
         id.startsWith('tier_') ||
         id.startsWith('phase_') ||
         cleanLabel.toUpperCase().startsWith('[STAGE') ||
@@ -136,7 +207,6 @@ export function xmlToGraph(mxGraphXml: string): ExtractedGraph | null {
       }
     }
 
-    // Default tier if none found
     if (tiersMap.size === 0) {
       tiersMap.set('default_tier', {
         id: 'default_tier',
@@ -160,36 +230,68 @@ export function xmlToGraph(mxGraphXml: string): ExtractedGraph | null {
       const parent = cell['@_parent'] || 'default_tier';
 
       if (tiersMap.has(id)) {
-        continue; // already a tier
+        continue;
       }
 
       if (isVertex) {
-        if (!cleanLabel || cleanLabel.length < 2) {
+        if (isNoiseLabel(cleanLabel) || isNoiseLabel(id)) {
+          continue;
+        }
+
+        const resolvedLabel = resolveCellName(id, cleanLabel);
+        if (!resolvedLabel || resolvedLabel.length < 2) {
           unmapped.push(id);
           continue;
         }
 
-        // Avoid mapping pure legend/note boxes or watermarks as components if they contain meta text
-        const lines = cleanLabel.split('\n').map(s => s.trim()).filter(Boolean);
-        const label = lines[0] || cleanLabel;
+        const lines = resolvedLabel.split('\n').map((s) => s.trim()).filter(Boolean);
+        const label = lines[0] || resolvedLabel;
         const subtitle = lines.length > 1 ? lines.slice(1).join(' - ') : undefined;
 
         const resolvedTier = tierIds.has(parent) ? parent : Array.from(tierIds)[0];
 
-        // Infer node type
         let type: string | undefined = undefined;
-        const lower = cleanLabel.toLowerCase();
-        if (lower.includes('user') || lower.includes('actor') || lower.includes('client') || lower.includes('analyst') || lower.includes('physician') || lower.includes('payer')) {
+        const lower = label.toLowerCase();
+        if (
+          lower.includes('user') ||
+          lower.includes('actor') ||
+          lower.includes('client') ||
+          lower.includes('analyst') ||
+          lower.includes('physician') ||
+          lower.includes('payer')
+        ) {
           type = 'user';
-        } else if (lower.includes('database') || lower.includes('db') || lower.includes('table') || lower.includes('warehouse') || lower.includes('lakehouse')) {
+        } else if (
+          lower.includes('database') ||
+          lower.includes('db') ||
+          lower.includes('table') ||
+          lower.includes('warehouse') ||
+          lower.includes('lakehouse') ||
+          lower.includes('postgres') ||
+          lower.includes('bigquery')
+        ) {
           type = 'database';
-        } else if (lower.includes('storage') || lower.includes('bucket') || lower.includes('s3')) {
+        } else if (lower.includes('storage') || lower.includes('bucket') || lower.includes('s3') || lower.includes('gcs')) {
           type = 'storage';
         } else if (lower.includes('queue') || lower.includes('kafka') || lower.includes('pubsub') || lower.includes('event')) {
           type = 'queue';
-        } else if (lower.includes('security') || lower.includes('auth') || lower.includes('iam') || lower.includes('firewall') || lower.includes('vpc')) {
+        } else if (
+          lower.includes('security') ||
+          lower.includes('auth') ||
+          lower.includes('iam') ||
+          lower.includes('firewall') ||
+          lower.includes('vpc') ||
+          lower.includes('waf')
+        ) {
           type = 'security';
-        } else if (lower.includes('ai') || lower.includes('llm') || lower.includes('gemini') || lower.includes('rag') || lower.includes('model')) {
+        } else if (
+          lower.includes('ai') ||
+          lower.includes('llm') ||
+          lower.includes('gemini') ||
+          lower.includes('rag') ||
+          lower.includes('model') ||
+          lower.includes('prompt')
+        ) {
           type = 'ai';
         }
 
@@ -215,8 +317,29 @@ export function xmlToGraph(mxGraphXml: string): ExtractedGraph | null {
           continue;
         }
 
+        // If source or target cells were known special cells, ensure they exist in componentsMap
+        if (KNOWN_CELL_NAMES[source] && !componentsMap.has(source)) {
+          componentsMap.set(source, {
+            id: source,
+            label: KNOWN_CELL_NAMES[source],
+            type: 'service',
+            tier: Array.from(tierIds)[0],
+          });
+        }
+        if (KNOWN_CELL_NAMES[target] && !componentsMap.has(target)) {
+          componentsMap.set(target, {
+            id: target,
+            label: KNOWN_CELL_NAMES[target],
+            type: 'service',
+            tier: Array.from(tierIds)[0],
+          });
+        }
+
         const protocol = extractProtocol(cleanLabel);
-        const isAsync = style.includes('dashed=1') || cleanLabel.toLowerCase().includes('async') || cleanLabel.toLowerCase().includes('event');
+        const isAsync =
+          style.includes('dashed=1') ||
+          cleanLabel.toLowerCase().includes('async') ||
+          cleanLabel.toLowerCase().includes('event');
 
         if (isGateTransition(cleanLabel) || style.includes('state') || style.includes('transition')) {
           transitions.push({

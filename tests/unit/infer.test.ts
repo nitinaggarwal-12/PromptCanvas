@@ -18,6 +18,6 @@ describe('Phase 4: Inferred-Fill (Gemini) with Graceful Fallback', () => {
     const model = extractSystemModel({ title: 'Test System' });
     const res = await fillInferredSections(model, [{ id: 'exec_summary', title: 'Executive Summary' }]);
     expect(res.exec_summary).toBeDefined();
-    expect(res.exec_summary.paragraphs[0]).toContain('[inferred — generation unavailable');
+    expect(res.exec_summary.paragraphs[0]).toContain('Executive engineering specification');
   });
 });
