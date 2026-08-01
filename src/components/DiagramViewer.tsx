@@ -77,7 +77,7 @@ export default function DiagramViewer({
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
   // Dynamically size container frame based on aspect ratio
-  let containerDimensions = 'w-full max-w-[1750px] xl:max-w-[96%] h-[840px] xl:h-[960px]';
+  let containerDimensions = 'w-full h-full max-w-full';
 
   if (aspectRatioId === '1:1') {
     containerDimensions = 'w-full max-w-[950px] h-[980px]';
@@ -86,10 +86,10 @@ export default function DiagramViewer({
   } else if (aspectRatioId === '4:3') {
     containerDimensions = 'w-full max-w-[1350px] h-[1040px]';
   } else if (aspectRatioId === '21:9') {
-    containerDimensions = 'w-full max-w-[1950px] xl:max-w-[98%] h-[780px] xl:h-[890px]';
+    containerDimensions = 'w-full h-full max-w-full';
   } else if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
     const calcH = Math.min(1300, Math.max(600, Math.round(1000 * (customH / customW))));
-    containerDimensions = `w-full max-w-[1100px] h-[${calcH}px]`;
+    containerDimensions = `w-full max-w-full h-[${calcH}px]`;
   }
 
   const bgColor = bgTheme === 'light' ? '#FFFFFF' : '#0F172A';
@@ -304,10 +304,10 @@ export default function DiagramViewer({
           resize: true,
           toolbar: 'zoom layers tags',
           edit: '_blank',
-          border: 40,
+          border: 12,
           transparent: true,
           fit: true,
-          'max-scale': 1.35
+          'max-scale': 2.0
         })};
 
         const container = document.getElementById('diagram-container');

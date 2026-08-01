@@ -564,7 +564,7 @@ function WorkspaceContent() {
   
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
-  const [zoom, setZoom] = useState(0.7);
+  const [zoom, setZoom] = useState(1.0);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanMode, setIsPanMode] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
@@ -973,7 +973,7 @@ function WorkspaceContent() {
         setViewMode('canvas');
         setLayoutPreset('detailed');
       }
-      setZoom(0.7);
+      setZoom(1.0);
       setPan({ x: 0, y: 0 });
       setOutlineEdits({});
       
@@ -4131,7 +4131,7 @@ function WorkspaceContent() {
                         </button>
                         <div className="h-3 w-[1px] bg-panel-border mx-1" />
                         <button
-                          onClick={() => { setZoom(0.7); setPan({ x: 0, y: 0 }); }}
+                          onClick={() => { setZoom(1.0); setPan({ x: 0, y: 0 }); }}
                           className="px-2 py-0.5 text-[10px] hover:text-white transition-colors cursor-pointer font-medium"
                           title="Reset Zoom & Pan"
                         >
