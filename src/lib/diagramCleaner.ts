@@ -680,7 +680,6 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
  */
 export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPrompt?: string): string {
   if (!xml || typeof xml !== 'string') return xml;
-  if (isPreservedCustomLayout(xml)) return xml;
 
   let topic = useCaseTitle ? useCaseTitle.trim() : '';
 
@@ -688,7 +687,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   if (!topic || topic === 'Architecture' || topic === 'Clean Architecture Workspace' || topic.length > 35 || topic.toLowerCase().includes('act as')) {
     const rawText = userPrompt || topic;
     const cleanPrompt = rawText
-      .replace(/act as|chief|enterprise|architect|and|pharma|technology|lead|at|we|are|building|a|generative|ai|platform|to|automate|scientific|literature|mining|accelerate|therapeutic|target|discovery|for|non-small|cell|lung|cancer|design|build|create|system|architecture|diagram/gi, ' ')
+      .replace(/\b(act as|chief|enterprise|architect|and|pharma|technology|lead|at|we|are|building|a|generative|ai|platform|to|automate|scientific|literature|mining|accelerate|therapeutic|target|discovery|for|non-small|cell|lung|cancer|design|build|create|system|architecture|diagram)\b/gi, ' ')
       .replace(/\s+/g, ' ')
       .trim();
     const words = cleanPrompt.split(' ').filter(w => w.length > 2).slice(0, 4);
@@ -701,8 +700,18 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
 
   let updatedXml = xml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
 
-  // 1. Replace generic titles and headers
+  // 1. Replace generic titles, ITACS, and Oncology headers
   updatedXml = updatedXml
+    .replace(/\[STAGE 1\]\s*ONCOLOGY DATA PORTAL/gi, `[STAGE 1] ${topicUpper} INGESTION PORTAL`)
+    .replace(/ONCOLOGY DATA PORTAL/gi, `${topicUpper} INGESTION PORTAL`)
+    .replace(/ITACS Oncology Platform Conceptual Diagram/gi, `${topic} Conceptual Diagram`)
+    .replace(/ITACS Oncology Platform/gi, `${topic} Platform`)
+    .replace(/Oncology Scenario Planning/gi, `${topic} Scenario Planning &amp; Operations`)
+    .replace(/Oncology Trends/gi, `${topic} Trends`)
+    .replace(/Oncology Analyst/gi, `${topic} Operations User`)
+    .replace(/Dim_Oncology_Product/gi, `Dim_${topic.replace(/\s+/g, '_')}_Catalog`)
+    .replace(/Fact_Oncology_Insights/gi, `Fact_${topic.replace(/\s+/g, '_')}_Transactions`)
+    .replace(/PubMed PDF (?:&amp;|&amp;amp;|&) PPT Chunking Engine/gi, `${topic} Data &amp; Stream Processing Engine`)
     .replace(/ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, (?:&amp;|&amp;amp;) Governance \(End-to-End without Compromise\)\./g, `${topic} - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, &amp; Governance`)
     .replace(/ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW/g, `${topic} - TOTAL UNIFIED SYSTEM VIEW`)
     .replace(/ITACS SECURE GOVERNED CLOUD TENANT/g, `${topicUpper} SECURE GOVERNED CLOUD TENANT`)
@@ -725,12 +734,12 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/ITACS Governing Cloud Tenant/g, `${topicUpper} Governing Cloud Tenant`)
     .replace(/ITACS Primary VPC Network/g, `${topicUpper} Primary VPC Network`)
     .replace(/ITACS Agent Orchestrator/g, `${topic} Agent Orchestrator`)
-    .replace(/ITACS Oncology Platform/g, `${topic} Platform`)
     .replace(/Core ITACS Synthesis Engine/g, `Core AI Synthesis Engine`)
-    .replace(/ITACS Integrated Insights Platform/g, `${topic} Integrated Insights Platform`)
     .replace(/ITACS SECURE MANAGED/g, `${topicUpper} SECURE MANAGED`)
     .replace(/ITACS Target/g, `${topic} Target`)
-    .replace(/\bITACS\b/g, topic || 'Enterprise')
+    .replace(/PubMed/gi, `${topic} API`)
+    .replace(/Oncology/gi, topic || 'Enterprise')
+    .replace(/ITACS/gi, topic || 'Enterprise')
     .replace(/&amp;amp;/g, '&amp;');
 
   // 2. Adapt technical nodes if generic
@@ -915,23 +924,54 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   }
 
   // Conceptual Diagram Specific Replacements
-  updatedXml = updatedXml
-    .replace(/Legacy SAP S\/4HANA/gi, 'PubMed REST API &amp; USPTO Patent Ingest')
-    .replace(/Veeva Vault Clinical/gi, 'Internal GxP Clinical Trial Repository')
-    .replace(/Azure API Management/gi, 'LangChain Agentic API Gateway')
-    .replace(/Ping Identity OAuth 2\.0/gi, 'IP Protection &amp; Data Encryption Vault')
-    .replace(/Drug Discovery Cluster/gi, 'Vertex AI Vector Search (pgvector Embeddings)')
-    .replace(/Clinical Trial &amp; Regulatory Cluster/gi, 'Literature Mining &amp; Document Summarization Engine')
-    .replace(/Commercial &amp; Supply Chain Cluster/gi, 'Target &amp; Pathway Consensus Identification Service')
-    .replace(/On-Prem GxP ERP/g, 'Scientific Literature &amp; Patent Ingest')
-    .replace(/eTMF &amp; Submissions Gateway/g, 'GxP Trial Protocol Gateway')
-    .replace(/GxP Part 11 Compliance Enforcement/g, 'LangChain Agentic API Router')
-    .replace(/HIPAA\/PKCE Anonymization/g, 'IP Protection &amp; Data Anonymization')
-    .replace(/Vertex AI, SAS 9\.4 Analytics/g, 'Vertex AI Vector Search &amp; Cosine Index')
-    .replace(/HealthLake, Veeva Connect/g, 'LLM Literature Summarization Engine')
-    .replace(/SAP Batch Reconciler/g, 'Pathway Consensus Identification')
-    .replace(/Genomic Data Lake/g, 'PubMed &amp; Patent Data Lake')
-    .replace(/Clinical Data Warehouse/g, 'NSCLC Clinical Target Repository');
+  if (isLiteratureMiningPrompt || isGenomicPrompt || isEarlyDiscoveryPrompt) {
+    updatedXml = updatedXml
+      .replace(/Legacy SAP S\/4HANA/gi, 'PubMed REST API &amp; USPTO Patent Ingest')
+      .replace(/Veeva Vault Clinical/gi, 'Internal GxP Clinical Trial Repository')
+      .replace(/Azure API Management/gi, 'LangChain Agentic API Gateway')
+      .replace(/Ping Identity OAuth 2\.0/gi, 'IP Protection &amp; Data Encryption Vault')
+      .replace(/Drug Discovery Cluster/gi, 'Vertex AI Vector Search (pgvector Embeddings)')
+      .replace(/Clinical Trial &amp; Regulatory Cluster/gi, 'Literature Mining &amp; Document Summarization Engine')
+      .replace(/Commercial &amp; Supply Chain Cluster/gi, 'Target &amp; Pathway Consensus Identification Service')
+      .replace(/On-Prem GxP ERP/g, 'Scientific Literature &amp; Patent Ingest')
+      .replace(/eTMF &amp; Submissions Gateway/g, 'GxP Trial Protocol Gateway')
+      .replace(/GxP Part 11 Compliance Enforcement/g, 'LangChain Agentic API Router')
+      .replace(/HIPAA\/PKCE Anonymization/g, 'IP Protection &amp; Data Anonymization')
+      .replace(/Vertex AI, SAS 9\.4 Analytics/g, 'Vertex AI Vector Search &amp; Cosine Index')
+      .replace(/HealthLake, Veeva Connect/g, 'LLM Literature Summarization Engine')
+      .replace(/SAP Batch Reconciler/g, 'Pathway Consensus Identification')
+      .replace(/Genomic Data Lake/g, 'PubMed &amp; Patent Data Lake')
+      .replace(/Clinical Data Warehouse/g, 'NSCLC Clinical Target Repository');
+  } else {
+    const domainTitle = topic || 'Enterprise';
+    updatedXml = updatedXml
+      .replace(/Legacy SAP S\/4HANA/gi, `${domainTitle} Core Systems &amp; API Ingress`)
+      .replace(/Veeva Vault Clinical/gi, `${domainTitle} Data Repository &amp; Storage`)
+      .replace(/Azure API Management/gi, `${domainTitle} API Gateway &amp; Router`)
+      .replace(/Ping Identity OAuth 2\.0/gi, `${domainTitle} Zero-Trust Identity &amp; Auth`)
+      .replace(/Drug Discovery Cluster/gi, `${domainTitle} Core Processing &amp; AI Engine`)
+      .replace(/Clinical Trial &amp; Regulatory Cluster/gi, `${domainTitle} Transaction &amp; Business Logic`)
+      .replace(/Commercial &amp; Supply Chain Cluster/gi, `${domainTitle} Analytics &amp; Operations Service`)
+      .replace(/On-Prem GxP ERP/g, `${domainTitle} Core ERP &amp; Database Systems`)
+      .replace(/eTMF &amp; Submissions Gateway/g, `${domainTitle} Integration Gateway`)
+      .replace(/GxP Part 11 Compliance Enforcement/g, `${domainTitle} Security &amp; Compliance Router`)
+      .replace(/HIPAA\/PKCE Anonymization/g, `${domainTitle} Data Encryption Vault`)
+      .replace(/Vertex AI, SAS 9\.4 Analytics/g, `${domainTitle} Analytics &amp; Reporting Engine`)
+      .replace(/HealthLake, Veeva Connect/g, `${domainTitle} Integrations &amp; Connectors`)
+      .replace(/SAP Batch Reconciler/g, `${domainTitle} Data Reconciler`)
+      .replace(/Genomic Data Lake/g, `${domainTitle} Enterprise Data Lake`)
+      .replace(/Clinical Data Warehouse/g, `${domainTitle} Enterprise Data Warehouse`)
+      .replace(/PubMed REST API &amp; USPTO Patent Ingest/gi, `${domainTitle} External Data &amp; API Ingress`)
+      .replace(/PubMed REST API/gi, `${domainTitle} Data Ingress API`)
+      .replace(/PubMed &amp; Patent Data Lake/gi, `${domainTitle} Data Lake`)
+      .replace(/NSCLC Clinical Target Repository/gi, `${domainTitle} Data Repository`)
+      .replace(/Oncology Scenario Planning/gi, `${domainTitle} Operations &amp; Strategy Planning`)
+      .replace(/Oncology Analyst/gi, `${domainTitle} Operations Analyst`)
+      .replace(/Review Drug Launch Strategy/gi, `Review ${domainTitle} Operational Strategy`)
+      .replace(/Drug Launch Strategy/gi, `${domainTitle} Operational Strategy`)
+      .replace(/Biomarker/gi, `Data Attribute`)
+      .replace(/Oncology/gi, domainTitle);
+  }
 
   if (isLiteratureMiningPrompt) {
     updatedXml = updatedXml

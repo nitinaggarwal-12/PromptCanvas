@@ -230,6 +230,18 @@ describe('V2 Pipeline & Architecture Routing Contract Tests', () => {
     expect(v2PipelineModule.runV2Pipeline).not.toHaveBeenCalled();
     expect(v2PipelineModule.runV2EditPipeline).not.toHaveBeenCalled();
   });
+
+  it('(vi) non-life-sciences domain prompts adapt domain flavor without Oncology or PubMed residuals', () => {
+    const ecomXml = getDefaultXmlForArchitecture('conceptual_diagram', 'ecommerce app', 'design an ecommerce app') || '';
+    expect(ecomXml.toLowerCase().includes('oncology')).toBe(false);
+    expect(ecomXml.toLowerCase().includes('pubmed')).toBe(false);
+    expect(ecomXml.toLowerCase().includes('ecommerce app')).toBe(true);
+
+    const bankXml = getDefaultXmlForArchitecture('conceptual_diagram', 'banking system', 'design a banking system') || '';
+    expect(bankXml.toLowerCase().includes('oncology')).toBe(false);
+    expect(bankXml.toLowerCase().includes('pubmed')).toBe(false);
+    expect(bankXml.toLowerCase().includes('banking system')).toBe(true);
+  });
 });
 
 export function runRoutingContractTests() {
