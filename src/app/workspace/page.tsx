@@ -1033,6 +1033,14 @@ function WorkspaceContent() {
       if (!res.ok) throw new Error('Failed to fetch diagrams');
       const data = await res.json();
       setDiagrams(data);
+      if (Array.isArray(data) && data.length > 0) {
+        if (typeof window !== 'undefined') {
+          const params = new URLSearchParams(window.location.search);
+          if (!params.get('diagram') && !activeDiagram) {
+            loadDiagramDetails(data[0].id);
+          }
+        }
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -2923,10 +2931,11 @@ function WorkspaceContent() {
   };
 
   const handleArchitectureSwitch = (newArchId: string) => {
-    if (!newArchId || newArchId === selectedArchType || newArchId.startsWith('slot_')) return;
     if (tourStep === 2) {
       setTourStep(3);
     }
+    if (!newArchId || newArchId.startsWith('slot_')) return;
+    if (newArchId === selectedArchType && tourStep !== 2) return;
     const existingVersionsForArch = activeDiagram?.versions?.filter(
       v => (v.architecture_type || 'conceptual_diagram') === newArchId
     ) || [];
@@ -4926,9 +4935,12 @@ function WorkspaceContent() {
                 <button
                   id="tour-next-btn"
                   type="button"
-                  onClick={() => {
+                  onClick={async () => {
                     if (typeof window !== 'undefined') {
                       localStorage.setItem('pc_user_persona', selectedPersona);
+                    }
+                    if (!activeDiagram && diagrams.length > 0) {
+                      await loadDiagramDetails(diagrams[0].id);
                     }
                     const targetArch =
                       selectedPersona === 'architect'
