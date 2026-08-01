@@ -2848,24 +2848,24 @@ export function getExactGovernanceStateMachineReferenceXml(): string {
 export function getExactUnifiedSystemViewReferenceXml(): string {
   return `
 <mxfile host="embed.diagrams.net">
-  <diagram id="unified_system_view_compiled" name="ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW">
+  <diagram id="unified_system_view_compiled" name="Enterprise Architecture Platform - TOTAL UNIFIED SYSTEM VIEW">
     <mxGraphModel dx="1920" dy="1150" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1150" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
         <!-- 1. Global Header Bar -->
-        <mxCell id="main_title_bar_uv" value="&lt;div style='display:flex;align-items:center;padding:5px 15px;'&gt;&lt;span style='font-size:28px;margin-right:15px;'&gt;🌐☁️&lt;/span&gt;&lt;div style='text-align:left;color:#FFFFFF;'&gt;&lt;b style='font-size:16px;'&gt;ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, &amp;amp; Governance (End-to-End without Compromise).&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:12px;font-weight:normal;color:#E2E8F0;'&gt;Unified Logical Flow, Technology Stack, Security Boundaries, and Operational Lifecycles&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#12385B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="main_title_bar_uv" value="&lt;div style='display:flex;align-items:center;padding:5px 15px;'&gt;&lt;span style='font-size:28px;margin-right:15px;'&gt;🌐☁️&lt;/span&gt;&lt;div style='text-align:left;color:#FFFFFF;'&gt;&lt;b style='font-size:16px;'&gt;Enterprise Architecture Platform - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, &amp;amp; Governance (End-to-End without Compromise).&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:12px;font-weight:normal;color:#E2E8F0;'&gt;Unified Logical Flow, Technology Stack, Security Boundaries, and Operational Lifecycles&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#12385B;strokeColor=#12385B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="15" y="15" width="1890" height="50" as="geometry" />
         </mxCell>
 
-        <!-- Top Main Label across phases (with mandated typo ultra-diate) -->
-        <mxCell id="top_main_lbl_uv" value="&lt;b style='font-size:13px;color:#1E293B;'&gt;Entire ultra-diate in organizing across major phases&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+        <!-- Top Main Label across phases -->
+        <mxCell id="top_main_lbl_uv" value="&lt;b style='font-size:13px;color:#1E293B;'&gt;End-to-End Enterprise Architecture across major phases&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="400" y="70" width="1120" height="20" as="geometry" />
         </mxCell>
 
         <!-- 2. Swimlane 1: PLAN & DATA FOUNDATION -->
-        <mxCell id="sw1_tab" value="&lt;b style='font-size:10px;color:#FFFFFF;'&gt;Poots &amp;amp;&lt;br&gt;Planninc&lt;br&gt;Phases&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#64748B;strokeColor=#475569;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="sw1_tab" value="&lt;b style='font-size:10px;color:#FFFFFF;'&gt;Planning &amp;amp;&lt;br&gt;Ingestion&lt;br&gt;Phases&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#64748B;strokeColor=#475569;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="95" width="55" height="140" as="geometry" />
         </mxCell>
         <mxCell id="sw1_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">

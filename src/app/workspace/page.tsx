@@ -112,8 +112,12 @@ interface DiagramNodeItem {
 function cleanHtmlLabel(label: string): string {
   if (!label) return '';
   
-  // 1. Decode standard HTML entities
+  // 1. Decode standard & double-escaped HTML entities
   let decoded = label
+    .replace(/&amp;amp;/g, '&amp;')
+    .replace(/&amp;lt;/g, '&lt;')
+    .replace(/&amp;gt;/g, '&gt;')
+    .replace(/&amp;quot;/g, '&quot;')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
@@ -121,14 +125,18 @@ function cleanHtmlLabel(label: string): string {
     .replace(/&apos;/g, "'")
     .replace(/&#xa;/g, ' ');
 
+  // Extra pass to ensure no &amp; entity remains
+  decoded = decoded.replace(/&amp;/g, '&');
+
   // 2. Replace <br> variants with visual separators
   decoded = decoded.replace(/<br\s*\/?>/gi, ' — ');
 
   // 3. Strip all other HTML tags
   const stripped = decoded.replace(/<[^>]+>/g, '');
 
-  // 4. Normalize spacing
-  return stripped.trim().replace(/\s+/g, ' ');
+  // 4. Normalize spacing & scrub legacy brand ITACS
+  const clean = stripped.trim().replace(/\s+/g, ' ');
+  return clean.replace(/\bITACS\b/g, 'Enterprise');
 }
 
 function formatRelativeTime(dateStr: string): string {
@@ -4811,7 +4819,7 @@ function WorkspaceContent() {
                       )}
                     </h4>
                     <p className="text-xs text-slate-400 leading-relaxed">
-                      Master multi-tier cloud topology, VPC perimeters, system boundaries & global ITACS platforms.
+                      Master multi-tier cloud topology, VPC perimeters, system boundaries & enterprise AI platforms.
                     </p>
                   </div>
                   <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">

@@ -13,56 +13,52 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 ): string {
   let xml = xmlInput || '';
 
-  // 1. Recover full multi-node architecture if XML is truncated or missing mxCell nodes
-  if (!xml || xml.length < 300 || xml.includes('value="Cloud Architecture"') || !xml.includes('<mxCell') || xml.includes('aws_vpc_secret_network') || xml.includes('cicd-pipeline-architecture') || xml.includes('id="ingress"') || xml.includes('Access tokens verification')) {
-    xml = getTechnicalArchitectureXml(archType === 'conceptual_diagram' ? 'conceptual_diagram' : (archType || 'tech_rag_gcp'));
-  }
+  // 1b. Fix double/triple-escaped ampersands: &amp;amp; -> &amp;
+  xml = xml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
 
-  // 2. VISUAL & GEOMETRY AST HEALING (Zero Line-to-Text Collisions):
-  // Reroute vertical connector lines passing through central node [6] via side-channel waypoints (x=220)
-  if (xml.includes('id="6"') || xml.includes('Compliance Violation Alert')) {
-    xml = xml.replace(
-      /(<mxCell\s+id="(?:e_red_audit|e_in_vertical|e_center)[^"]*"[\s\S]*?)(<\/mxCell>)/gi,
-      (match, body, closing) => {
-        if (!body.includes('<Array as="points">')) {
-          return `${body}<mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="220" y="320"/><mxPoint x="220" y="540"/></Array></mxGeometry>${closing}`;
-        }
-        return match;
-      }
-    );
-  }
+  // 1c. Scrub generic legacy ITACS brand names
+  xml = xml
+    .replace(/ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW/g, 'Unified Architecture Platform - System View')
+    .replace(/ITACS Integrated Insights Platform/g, 'Enterprise Architecture Platform')
+    .replace(/ITACS SECURE GOVERNED CLOUD TENANT/g, 'SECURE GOVERNED CLOUD TENANT')
+    .replace(/ITACS Governing Cloud Tenant/g, 'Governing Cloud Tenant')
+    .replace(/ITACS Primary VPC Network/g, 'Primary VPC Network')
+    .replace(/ITACS Agent Orchestrator/g, 'Agent Orchestrator')
+    .replace(/ITACS Oncology Platform/g, 'Enterprise AI Platform')
+    .replace(/Core ITACS Synthesis Engine/g, 'Core AI Synthesis Engine')
+    .replace(/ITACS Target/g, 'Enterprise Target')
+    .replace(/\bITACS\b/g, 'Enterprise');
 
-  // Reposition Container Registry Y coordinate to Tier 3 (y=380px, x=840px) cleanly
-  xml = xml.replace(
-    /(<mxCell\s+id="[^"]*(?:registry|artifact)[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?x=")\d+("\s+y=")\d+(")/gi,
-    '$1840$2380"'
-  );
-
-  // 3. BROKEN IMAGE & ICON ASSET HEALER:
-  // Strip broken inline onerror attributes to prevent Draw.io XML parser breaks
-  xml = xml.replace(/\s*onerror="[^"]*"/gi, '');
-  // Remove broken remote image URLs (e.g. <img src="http..."/> or escaped &lt;img...&gt;) and fallback to clean vector emojis/icons
-  xml = xml.replace(/&lt;img\s+[\s\S]*?&gt;/gi, '');
-  xml = xml.replace(/<img\s+[\s\S]*?>/gi, '');
-  xml = xml.replace(/argo-icon\.svg/gi, 'logos:argo.svg');
-
-  // 4. DYNAMIC CANVAS BOUNDARY HEALER (Prevent Bottom Clipping):
-  // Calculate maximum Y coordinate of all vertex nodes in XML
+  // 4. DYNAMIC CANVAS BOUNDARY HEALER (Prevent Bottom & Right Clipping):
+  // Calculate maximum Y and X coordinates of all vertex nodes in XML
   let maxY = 0;
-  const geomMatches = xml.matchAll(/<mxGeometry\s+(?:[^>]*?\s+)?y="(\d+)"\s+(?:[^>]*?\s+)?height="(\d+)"/gi);
-  for (const m of geomMatches) {
-    const yVal = parseInt(m[1], 10) || 0;
-    const hVal = parseInt(m[2], 10) || 0;
-    if (yVal + hVal > maxY) {
-      maxY = yVal + hVal;
-    }
+  let maxX = 0;
+  const mxGeomRegex = /<mxGeometry\b([^>]*)\/?>/gi;
+  let geomMatch;
+  while ((geomMatch = mxGeomRegex.exec(xml)) !== null) {
+    const attrs = geomMatch[1];
+    const yMatch = attrs.match(/\by="(\d+)"/i);
+    const hMatch = attrs.match(/\bheight="(\d+)"/i);
+    const xMatch = attrs.match(/\bx="(\d+)"/i);
+    const wMatch = attrs.match(/\bwidth="(\d+)"/i);
+
+    const yVal = yMatch ? parseInt(yMatch[1], 10) : 0;
+    const hVal = hMatch ? parseInt(hMatch[1], 10) : 0;
+    const xVal = xMatch ? parseInt(xMatch[1], 10) : 0;
+    const wVal = wMatch ? parseInt(wMatch[1], 10) : 0;
+
+    if (yVal + hVal > maxY) maxY = yVal + hVal;
+    if (xVal + wVal > maxX) maxX = xVal + wVal;
   }
 
   // Auto-expand pageHeight and pageWidth if nodes extend past default boundaries
-  if (maxY > 700) {
+  if (maxY > 650) {
     const targetHeight = Math.max(1600, maxY + 250);
     xml = xml.replace(/(<mxGraphModel[^>]*\bpageHeight=")\d+(")/gi, `$1${targetHeight}"`);
-    xml = xml.replace(/(<mxGraphModel[^>]*\bpageWidth=")\d+(")/gi, '$11600"');
+  }
+  if (maxX > 1100) {
+    const targetWidth = Math.max(1920, maxX + 250);
+    xml = xml.replace(/(<mxGraphModel[^>]*\bpageWidth=")\d+(")/gi, `$1${targetWidth}"`);
   }
 
   // 5. SHAPE HEIGHT & VERTICAL TEXT BUFFER HEALER:

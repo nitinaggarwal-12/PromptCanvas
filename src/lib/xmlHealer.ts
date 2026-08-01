@@ -34,11 +34,33 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
     healingLog.push('Stripped markdown code fences.');
   }
 
-  // 1b. Fix unescaped ampersands in XML values/attributes
+  // 1b. Fix double-escaped ampersands (&amp;amp;) and unescaped ampersands
+  if (cleaned.includes('&amp;amp;')) {
+    cleaned = cleaned.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
+    isHealed = true;
+    healingLog.push('Auto-collapsed double-escaped ampersands (&amp;amp;) into single &amp; entities.');
+  }
   if (/&(?!amp;|lt;|gt;|quot;|apos;|#[0-9]+;|#x[0-9a-fA-F]+;)/.test(cleaned)) {
     cleaned = cleaned.replace(/&(?!amp;|lt;|gt;|quot;|apos;|#[0-9]+;|#x[0-9a-fA-F]+;)/g, '&amp;');
     isHealed = true;
     healingLog.push('Auto-healed unescaped ampersands into &amp; entities.');
+  }
+
+  // 1c. Scrub generic legacy ITACS brand names
+  if (cleaned.includes('ITACS')) {
+    cleaned = cleaned
+      .replace(/ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW/g, 'Unified Architecture Platform - System View')
+      .replace(/ITACS Integrated Insights Platform/g, 'Enterprise Architecture Platform')
+      .replace(/ITACS SECURE GOVERNED CLOUD TENANT/g, 'SECURE GOVERNED CLOUD TENANT')
+      .replace(/ITACS Governing Cloud Tenant/g, 'Governing Cloud Tenant')
+      .replace(/ITACS Primary VPC Network/g, 'Primary VPC Network')
+      .replace(/ITACS Agent Orchestrator/g, 'Agent Orchestrator')
+      .replace(/ITACS Oncology Platform/g, 'Enterprise AI Platform')
+      .replace(/Core ITACS Synthesis Engine/g, 'Core AI Synthesis Engine')
+      .replace(/ITACS Target/g, 'Enterprise Target')
+      .replace(/\bITACS\b/g, 'Enterprise');
+    isHealed = true;
+    healingLog.push('Scrubbed legacy placeholder brand ITACS.');
   }
 
   // 2. Ensure outer <mxfile> and <diagram> tags exist

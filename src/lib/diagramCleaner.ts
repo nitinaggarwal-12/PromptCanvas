@@ -698,10 +698,12 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
 
   const topicUpper = topic.toUpperCase();
 
-  let updatedXml = xml;
+  let updatedXml = xml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
 
   // 1. Replace generic titles and headers
   updatedXml = updatedXml
+    .replace(/ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, (?:&amp;|&amp;amp;) Governance \(End-to-End without Compromise\)\./g, `${topic} - TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, &amp; Governance`)
+    .replace(/ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW/g, `${topic} - TOTAL UNIFIED SYSTEM VIEW`)
     .replace(/ITACS SECURE GOVERNED CLOUD TENANT/g, `${topicUpper} SECURE GOVERNED CLOUD TENANT`)
     .replace(/ITACS Integrated Insights Platform/g, `${topic} Platform`)
     .replace(/AWS Modern Data Lakehouse Architecture/g, `${topic} - AWS Data Lakehouse Architecture`)
@@ -717,7 +719,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/GCP Industrial IoT Telemetry Ingestion &amp; Analytics/g, `${topic} - Industrial IoT Ingestion &amp; Analytics`)
     .replace(/Enterprise DevSecOps Polyrepo CI\/CD Pipeline Architecture/g, `${topic} - DevSecOps Polyrepo CI/CD Pipeline`)
     .replace(/UNIFIED GOVERNANCE &amp; STATE-MACHINE LIFECYCLE/g, `${topicUpper} UNIFIED GOVERNANCE &amp; STATE-MACHINE LIFECYCLE`)
-    .replace(/TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, &amp; Governance/g, `${topicUpper} TOTAL UNIFIED SYSTEM VIEW`)
+    .replace(/TOTAL UNIFIED SYSTEM VIEW: Data, Cognition, Deployment, (?:&amp;|&amp;amp;) Governance/g, `${topicUpper} TOTAL UNIFIED SYSTEM VIEW`)
     .replace(/COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM/g, `${topicUpper} COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM`)
     .replace(/ITACS Governing Cloud Tenant/g, `${topicUpper} Governing Cloud Tenant`)
     .replace(/ITACS Primary VPC Network/g, `${topicUpper} Primary VPC Network`)
@@ -727,7 +729,8 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/ITACS Integrated Insights Platform/g, `${topic} Integrated Insights Platform`)
     .replace(/ITACS SECURE MANAGED/g, `${topicUpper} SECURE MANAGED`)
     .replace(/ITACS Target/g, `${topic} Target`)
-    .replace(/\bITACS\b/g, topic || 'GenAI');
+    .replace(/\bITACS\b/g, topic || 'Enterprise')
+    .replace(/&amp;amp;/g, '&amp;');
 
   // 2. Adapt technical nodes if generic
   const promptLower = (userPrompt || topic || '').toLowerCase();

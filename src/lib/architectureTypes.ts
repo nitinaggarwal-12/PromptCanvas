@@ -25,6 +25,7 @@ import {
   getBenchmarkTechnicalArchitectureSpec
 } from './diagramCompiler';
 import { injectUseCaseFlavor } from './diagramCleaner';
+import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -223,9 +224,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getTechnicalArchitectureXml('tech_serverless_gcp');
   }
 
-  if (useCaseContext || userPrompt) {
-    xml = injectUseCaseFlavor(xml, useCaseContext || '', userPrompt);
-  }
+  const effectiveContext = useCaseContext || userPrompt || getTemplateTitle(archId || '');
+  xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
+  xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, archId || 'unified_system_view');
 
   return xml;
 }
