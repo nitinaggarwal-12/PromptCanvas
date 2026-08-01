@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PromptCanvas — AI Prompt-to-Draw.io Architecture Diagram Platform
 
-## Getting Started
+PromptCanvas translates natural language architecture descriptions into production-grade, interactive Draw.io (mxGraph) diagrams.
 
-First, run the development server:
+---
+
+## 🚀 Pipeline V2: Graph-then-Layout Engine
+
+Pipeline V2 replaces legacy LLM coordinate prediction with a deterministic **Graph-then-Layout Pipeline**:
+
+1. **Logical Graph Generation**: Gemini (upgraded to `gemini-3.6-flash`) outputs a strict logical architecture JSON graph (WHAT exists and HOW it connects).
+2. **Deterministic Layout**: `elkjs` computes layered container and node coordinates (`(x, y, width, height)`) deterministically.
+3. **mxGraph XML Renderer**: Renders laid-out graphs into valid Draw.io XML with official cloud vendor logos (GCP, AWS, Azure, PostgreSQL, Redis, Kubernetes).
+4. **Pre-Render Validator & Repair Loop**: Automated multi-check validator with an LLM repair safety net.
+
+---
+
+## 🛠️ Environment Variables & Feature Flags
+
+Add to `.env` or `.env.local`:
+
+```env
+# Enable Pipeline V2 Graph-then-Layout Engine (defaults to true)
+LAYOUT_ENGINE_V2=true
+
+# Vertex AI / Gemini Model ID (defaults to gemini-3.6-flash)
+GEMINI_MODEL_ID=gemini-3.6-flash
+```
+
+### Per-Request A/B Feature Flag Override
+Pass `layoutEngineV2: true` (or `false`) in the `POST /api/generate` request body, query parameter `?layoutEngineV2=true`, or HTTP header `x-layout-engine-v2: true` to switch between Pipeline V1 and V2 on the fly.
+
+---
+
+## 🧪 Testing & Validation CLI
+
+### Run Complete Test Suite
+Executes unit tests for schema validation, XML pre-render validator, ELK determinism, golden pipeline tests across 10 blueprint templates, round-trip cell matching, and edit-flow minimal diff:
+
+```bash
+npm test
+```
+
+### Run Pre-Render XML Validator CLI
+Validate any Draw.io mxGraph XML file against geometric bounds, container rules, and line overlap constraints:
+
+```bash
+npm run validate path/to/diagram.xml
+```
+
+---
+
+## 📚 Architecture Documentation
+
+* **[docs/ARCHITECTURE_BEFORE.md](docs/ARCHITECTURE_BEFORE.md)**: Codebase map of Legacy Pipeline V1.
+* **[docs/ARCHITECTURE_AFTER.md](docs/ARCHITECTURE_AFTER.md)**: Pipeline V2 Architecture with Mermaid flow diagram.
+
+---
+
+## 💻 Local Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3001/workspace](http://localhost:3001/workspace) to open the interactive canvas workspace.
