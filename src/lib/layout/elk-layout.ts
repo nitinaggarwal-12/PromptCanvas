@@ -1,4 +1,4 @@
-import ELK, { ElkNode, ElkExtendedEdge } from 'elkjs';
+import ELK, { ElkNode, ElkExtendedEdge } from 'elkjs/lib/elk.bundled.js';
 import { ArchitectureGraph, GraphNode, GraphTier, GraphEdge } from '../graph/schema';
 
 const elk = new ELK();
