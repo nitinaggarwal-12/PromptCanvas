@@ -436,13 +436,11 @@ function WorkspaceContent() {
 
   const getTourClass = (step: number | null, targetStep: number, baseClass: string) => {
     if (step === targetStep) {
-      // Strip any conflicting z-index utilities (e.g. z-20, z-30) from base class
       const cleanedBase = baseClass.replace(/\bz-\d+\b/g, '');
-      // Ensure positioning context exists so z-index functions correctly
       const hasPosition = /\b(relative|absolute|fixed|sticky)\b/.test(cleanedBase);
       const positionClass = hasPosition ? '' : 'relative';
       
-      return `${cleanedBase} ${positionClass} z-50 ring-4 ring-teal-500/40 shadow-[0_0_30px_rgba(20,184,166,0.4)] transition-all duration-300`;
+      return `${cleanedBase} ${positionClass} z-[60] ring-4 ring-teal-400 shadow-[0_0_35px_rgba(20,184,166,0.9)] animate-pulse transition-all duration-300 pointer-events-auto scale-[1.02]`;
     }
     return baseClass;
   };
@@ -1113,6 +1111,9 @@ function WorkspaceContent() {
   const handleSendPrompt = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!promptInput.trim() || !activeDiagram) return;
+    if (tourStep === 3) {
+      setTourStep(4);
+    }
     
     const userPrompt = promptInput.trim();
     setPromptInput('');
@@ -1442,6 +1443,9 @@ function WorkspaceContent() {
   // Audit the active diagram with Multimodal Vision PNG capture
   const handleAuditDiagram = async (category?: string) => {
     if (!activeDiagram) return;
+    if (tourStep === 5) {
+      setTourStep(6);
+    }
     const catToUse = category || selectedAuditCategory;
     setCurrentTab('audit');
     setIsAuditing(true);
@@ -2877,6 +2881,9 @@ function WorkspaceContent() {
 
   const handleArchitectureSwitch = (newArchId: string) => {
     if (!newArchId || newArchId === selectedArchType || newArchId.startsWith('slot_')) return;
+    if (tourStep === 2) {
+      setTourStep(3);
+    }
     const existingVersionsForArch = activeDiagram?.versions?.filter(
       v => (v.architecture_type || 'conceptual_diagram') === newArchId
     ) || [];
@@ -3353,7 +3360,10 @@ function WorkspaceContent() {
                   {/* 4. Theme Toggle */}
                   <button
                     id="canvas-theme-toggle"
-                    onClick={() => setCanvasTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+                    onClick={() => {
+                      setCanvasTheme(prev => prev === 'dark' ? 'light' : 'dark');
+                      if (tourStep === 4) setTourStep(5);
+                    }}
                     title={`Switch to ${canvasTheme === 'dark' ? 'Light' : 'Dark'} Canvas Theme`}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
                   >
@@ -4689,196 +4699,214 @@ function WorkspaceContent() {
 
           {/* Tour Step Cards */}
           {tourStep === 1 && (
-            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] bg-slate-900 border border-panel-border p-6 rounded-2xl shadow-2xl shadow-teal-500/10 z-50 text-center space-y-4 animate-fade-in animate-duration-200">
-              <div className="w-12 h-12 rounded-full bg-teal-500/10 flex items-center justify-center mx-auto text-teal-accent">
-                <Sparkles className="w-6 h-6 animate-pulse" />
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] bg-slate-900 border border-teal-500/40 p-6 md:p-8 rounded-3xl shadow-2xl shadow-teal-500/20 z-[70] text-center space-y-5 animate-fade-in">
+              <div className="w-14 h-14 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center mx-auto text-teal-accent">
+                <Sparkles className="w-7 h-7 animate-pulse" />
               </div>
-              <div className="space-y-1.5">
-                <h3 className="text-lg font-bold text-white">Welcome to Maestro Sketch!</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Let&apos;s take a quick 1-minute guided tour to learn how to generate, edit, and audit production-ready cloud architecture diagrams.
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-teal-300 bg-teal-500/10 px-3 py-1 rounded-full border border-teal-500/30">
+                  Interactive Demo Mode
+                </span>
+                <h3 className="text-xl font-black text-white">Welcome to PromptCanvas Demo Tour!</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Experience live interactive onboarding! The tour spotlights key controls, tells you exactly where to click, waits for your action, and shows live output end-to-end.
                 </p>
               </div>
-              <div className="pt-2 flex items-center gap-2">
+              <div className="pt-2 flex items-center gap-3">
                 <button
+                  type="button"
                   onClick={() => setTourStep(null)}
-                  className="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
                 >
-                  Skip Tour
+                  Exit Demo Mode
                 </button>
                 <button
                   id="tour-next-btn"
+                  type="button"
                   onClick={() => setTourStep(2)}
-                  className="flex-1 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark text-xs font-bold transition-all glow-teal-hover cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-bg-dark text-xs font-black transition-all shadow-lg shadow-teal-500/30 cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  Start Guided Tour
+                  <span>🚀 Start Interactive Tour</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           )}
 
           {tourStep === 2 && (
-            <div className="fixed left-20 top-24 w-80 bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200">
-              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
-                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">1. Navigation Dock</h4>
-                <span className="text-[10px] text-slate-500">Step 2 of 6</span>
+            <div className="fixed left-64 top-24 w-88 bg-slate-900 border border-teal-400 p-5 rounded-2xl shadow-2xl z-[70] space-y-3 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-panel-border/40 pb-2">
+                <span className="text-[10px] font-black text-teal-300 uppercase tracking-widest bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                  Step 1 of 5
+                </span>
+                <span className="text-xs font-bold text-amber-300 animate-pulse flex items-center gap-1">
+                  <span>⏳ Waiting for User Action</span>
+                </span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Use this thin sidebar to toggle between different workspaces: the main interactive canvas, the template preset blueprints, the safety audit reports center, and your settings.
-              </p>
-              <div className="pt-2 flex items-center justify-between gap-2">
+              <div className="space-y-1.5">
+                <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
+                  <span className="text-teal-400 text-base">👉</span>
+                  <span>Action Required: Switch Architecture</span>
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  Click the highlighted <strong className="text-teal-300">Architecture Category</strong> dropdown in the top header and select <strong className="text-teal-300">9. Governance & State Machine</strong> (or any template). Notice how the canvas instantly renders the backbone!
+                </p>
+              </div>
+              <div className="pt-1 flex items-center justify-between gap-2">
                 <button
+                  type="button"
                   onClick={() => setTourStep(1)}
-                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
                 >
                   Back
                 </button>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setTourStep(null)}
-                    className="px-3 py-1.5 rounded bg-transparent hover:bg-slate-800 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
-                  >
-                    Skip
-                  </button>
-                  <button
-                    id="tour-next-btn"
-                    onClick={() => setTourStep(3)}
-                    className="px-3 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all cursor-pointer"
-                  >
-                    Next Step
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setTourStep(3)}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                >
+                  Skip Step ➔
+                </button>
               </div>
             </div>
           )}
 
           {tourStep === 3 && (
-            <div className="fixed left-[340px] top-40 w-80 bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200">
-              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
-                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">2. AI Assistant Panel</h4>
-                <span className="text-[10px] text-slate-500">Step 3 of 6</span>
+            <div className="fixed left-[350px] top-48 w-88 bg-slate-900 border border-teal-400 p-5 rounded-2xl shadow-2xl z-[70] space-y-3 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-panel-border/40 pb-2">
+                <span className="text-[10px] font-black text-teal-300 uppercase tracking-widest bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                  Step 2 of 5
+                </span>
+                <span className="text-xs font-bold text-amber-300 animate-pulse flex items-center gap-1">
+                  <span>⏳ Waiting for User Action</span>
+                </span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Chat with Gemini here to modify your layout, inspect the prompt details, and see an automated audit trail listing every component created, renamed, or deleted.
-              </p>
-              <div className="pt-2 flex items-center justify-between gap-2">
+              <div className="space-y-1.5">
+                <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
+                  <span className="text-teal-400 text-base">👉</span>
+                  <span>Action Required: Refine via AI</span>
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  Type a prompt (e.g., <strong className="text-teal-300">&ldquo;Add Apigee API Gateway&rdquo;</strong>) into the prompt input box and click <strong className="text-teal-300">Send</strong>, OR click one of our suggested prompt pills below!
+                </p>
+              </div>
+              <div className="pt-1 flex items-center justify-between gap-2">
                 <button
+                  type="button"
                   onClick={() => setTourStep(2)}
-                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
                 >
                   Back
                 </button>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setTourStep(null)}
-                    className="px-3 py-1.5 rounded bg-transparent hover:bg-slate-800 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
-                  >
-                    Skip
-                  </button>
-                  <button
-                    id="tour-next-btn"
-                    onClick={() => setTourStep(4)}
-                    className="px-3 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all cursor-pointer"
-                  >
-                    Next Step
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setTourStep(4)}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                >
+                  Skip Step ➔
+                </button>
               </div>
             </div>
           )}
 
           {tourStep === 4 && (
-            <div className="fixed left-1/2 bottom-12 -translate-x-1/2 w-[420px] bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200 text-center">
-              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
-                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">3. Infinite Design Canvas</h4>
-                <span className="text-[10px] text-slate-500">Step 4 of 6</span>
+            <div className="fixed right-64 top-24 w-88 bg-slate-900 border border-teal-400 p-5 rounded-2xl shadow-2xl z-[70] space-y-3 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-panel-border/40 pb-2">
+                <span className="text-[10px] font-black text-teal-300 uppercase tracking-widest bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                  Step 3 of 5
+                </span>
+                <span className="text-xs font-bold text-amber-300 animate-pulse flex items-center gap-1">
+                  <span>⏳ Waiting for User Action</span>
+                </span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Drag to pan and scroll to zoom. You can view components as a canvas or structure tree, or click <b className="text-teal-400">Edit Inline</b> to make manual visual modifications directly inside Draw.io.
-              </p>
-              <div className="pt-2 flex items-center justify-between gap-2">
+              <div className="space-y-1.5">
+                <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
+                  <span className="text-teal-400 text-base">👉</span>
+                  <span>Action Required: Toggle Theme</span>
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  Click the highlighted <strong className="text-teal-300">Light / Dark Theme</strong> button above to observe live canvas theme switching and high-contrast color palette adaptation!
+                </p>
+              </div>
+              <div className="pt-1 flex items-center justify-between gap-2">
                 <button
+                  type="button"
                   onClick={() => setTourStep(3)}
-                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
                 >
                   Back
                 </button>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setTourStep(null)}
-                    className="px-3 py-1.5 rounded bg-transparent hover:bg-slate-800 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
-                  >
-                    Skip
-                  </button>
-                  <button
-                    id="tour-next-btn"
-                    onClick={() => setTourStep(5)}
-                    className="px-3 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all cursor-pointer"
-                  >
-                    Next Step
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setTourStep(5)}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                >
+                  Skip Step ➔
+                </button>
               </div>
             </div>
           )}
 
           {tourStep === 5 && (
-            <div className="fixed right-80 top-48 w-80 bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200">
-              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
-                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">4. Version Control</h4>
-                <span className="text-[10px] text-slate-500">Step 5 of 6</span>
+            <div className="fixed right-20 top-24 w-88 bg-slate-900 border border-teal-400 p-5 rounded-2xl shadow-2xl z-[70] space-y-3 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-panel-border/40 pb-2">
+                <span className="text-[10px] font-black text-teal-300 uppercase tracking-widest bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                  Step 4 of 5
+                </span>
+                <span className="text-xs font-bold text-amber-300 animate-pulse flex items-center gap-1">
+                  <span>⏳ Waiting for User Action</span>
+                </span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Every prompt and edit generates a new version snapshot. Click any version to preview past drafts, view the changes audit trail, or roll back instantly.
-              </p>
-              <div className="pt-2 flex items-center justify-between gap-2">
+              <div className="space-y-1.5">
+                <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
+                  <span className="text-teal-400 text-base">👉</span>
+                  <span>Action Required: Audit Security</span>
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  Click the highlighted <strong className="text-teal-300">🛡️ Audit Security</strong> button above to execute a live 6-category posture and vulnerability evaluation!
+                </p>
+              </div>
+              <div className="pt-1 flex items-center justify-between gap-2">
                 <button
+                  type="button"
                   onClick={() => setTourStep(4)}
-                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
                 >
                   Back
                 </button>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setTourStep(null)}
-                    className="px-3 py-1.5 rounded bg-transparent hover:bg-slate-800 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
-                  >
-                    Skip
-                  </button>
-                  <button
-                    id="tour-next-btn"
-                    onClick={() => setTourStep(6)}
-                    className="px-3 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all cursor-pointer"
-                  >
-                    Next Step
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setTourStep(6)}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                >
+                  Skip Step ➔
+                </button>
               </div>
             </div>
           )}
 
           {tourStep === 6 && (
-            <div className="fixed right-20 top-24 w-80 bg-slate-900 border border-panel-border p-5 rounded-xl shadow-2xl z-50 space-y-3 animate-fade-in animate-duration-200">
-              <div className="flex items-center justify-between border-b border-panel-border/30 pb-2">
-                <h4 className="font-bold text-xs text-teal-accent uppercase tracking-wider">5. Automated Audits</h4>
-                <span className="text-[10px] text-slate-500">Step 6 of 6</span>
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] bg-slate-900 border border-teal-500/40 p-6 md:p-8 rounded-3xl shadow-2xl shadow-teal-500/20 z-[70] text-center space-y-5 animate-fade-in">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400">
+                <CheckCircle2 className="w-7 h-7" />
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Run security and vulnerability audits at any time. The system will audit your architecture layout for common compliance risks and compile safety ratings.
-              </p>
-              <div className="pt-2 flex items-center justify-between gap-2">
-                <button
-                  onClick={() => setTourStep(5)}
-                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition-all cursor-pointer"
-                >
-                  Back
-                </button>
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-300 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">
+                  Demo Mode Complete
+                </span>
+                <h3 className="text-xl font-black text-white">Interactive Demo Complete!</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Congratulations! You have completed the live end-to-end onboarding demo: switching architectures, refining via AI, exploring canvas viewports, and running automated security audits!
+                </p>
+              </div>
+              <div className="pt-2 flex justify-center">
                 <button
                   id="tour-next-btn"
+                  type="button"
                   onClick={() => setTourStep(null)}
-                  className="px-5 py-1.5 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[10px] font-bold transition-all glow-teal-hover cursor-pointer"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-bg-dark text-xs font-black transition-all shadow-lg shadow-teal-500/30 cursor-pointer"
                 >
-                  Finish Tour
+                  Finish Onboarding & Start Designing
                 </button>
               </div>
             </div>
