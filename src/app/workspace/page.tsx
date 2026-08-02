@@ -985,7 +985,7 @@ function WorkspaceContent() {
         const archVersions = data.versions.filter(v => (v.architecture_type || 'conceptual_diagram') === targetArch);
         const sortedVersions = (archVersions.length > 0 ? archVersions : data.versions).sort((a, b) => b.version_number - a.version_number);
         let activeVer = sortedVersions[0];
-        if ((activeVer.architecture_type || 'conceptual_diagram') !== targetArch) {
+        if ((activeVer.architecture_type || 'conceptual_diagram') !== targetArch || targetArch === 'eval_safety_benchmarking') {
           const refXml = getDefaultXmlForArchitecture(targetArch, data.name, data.name);
           activeVer = {
             ...activeVer,
@@ -3179,16 +3179,16 @@ function WorkspaceContent() {
       setTourStep(3);
     }
     if (!newArchId || newArchId.startsWith('slot_')) return;
-    if (newArchId === selectedArchType && tourStep !== 2) return;
+    if (newArchId === selectedArchType && tourStep !== 2 && newArchId !== 'eval_safety_benchmarking') return;
 
     if (newArchId === 'eval_safety_benchmarking') {
       const refXml = getDefaultXmlForArchitecture('eval_safety_benchmarking');
       const tempVersion: DiagramVersion = {
         id: `temp_ref_${newArchId}_${Date.now()}`,
         diagram_id: activeDiagram?.id || 'temp',
-        version_number: 1,
+        version_number: (activeDiagram?.versions?.length || 0) + 1,
         xml_content: refXml || '',
-        comment: `Master Reference Backbone: End-to-End Monitex AI Safety Flow`,
+        comment: `Master Reference Backbone: Vertex AI Safety & Eval Flow`,
         created_by: 'System',
         created_at: new Date().toISOString(),
         architecture_type: newArchId
@@ -3200,6 +3200,24 @@ function WorkspaceContent() {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ architecture_type: newArchId }),
+        }).catch(console.error);
+        fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            xml_content: refXml || '',
+            comment: `Vertex AI Safety & Eval Flow Exact Spec`,
+            architecture_type: newArchId
+          }),
+        }).then(r => r.json()).then(newVer => {
+          if (newVer && newVer.id) {
+            setActiveVersion(newVer);
+            setActiveDiagram(prev => prev ? {
+              ...prev,
+              architecture_type: newArchId,
+              versions: [newVer, ...(prev.versions || []).filter(v => v.id !== newVer.id)]
+            } : prev);
+          }
         }).catch(console.error);
       }
       return;
