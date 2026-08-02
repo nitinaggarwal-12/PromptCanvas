@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
 
     // Check if master publication document exists in scratch/ for this archetype
     const masterFileMap: Record<string, string> = {
+      prd: 'PRD_ENTERPRISE_OIL_ONLY_MASTER.md',
       fdd: 'FDD_ENTERPRISE_OIL_ONLY_MASTER.md',
       sdd: 'SDD_ENTERPRISE_OIL_ONLY_MASTER.md',
       brd: 'BRD_ENTERPRISE_OIL_ONLY_MASTER.md',

@@ -164,7 +164,7 @@ export const acceptanceCriteriaMapper: DerivationMapperFn = (model, sectionId = 
   }
 
   if (bullets.length === 0) {
-    for (const flow of model.flows) {
+    for (const flow of model.flows.slice(0, 6)) {
       bullets.push({
         text: `Given operational component "${getComponentName(model, flow.from)}", when request "${flow.label || 'invocation'}" occurs, then "${getComponentName(model, flow.to)}" must process and acknowledge within SLA threshold.`,
         sourceRefs: [flow.from, flow.to],
@@ -191,15 +191,21 @@ export const epicsFromStagesMapper: DerivationMapperFn = (model, sectionId = 'ep
 
   for (const stage of targetTiers) {
     const comps = model.components.filter((c) => c.tier === stage.id);
+    const topComps = comps.slice(0, 4).map((c) => c.label);
+    const remainingCount = comps.length - topComps.length;
+    const compsSummary =
+      remainingCount > 0
+        ? `${topComps.join(', ')} and ${remainingCount} supporting subsystems`
+        : topComps.join(', ');
     bullets.push({
-      text: `EPIC [${stage.label}]: Deliver capability across ${comps.length} architectural component(s): ${comps.map((c) => c.label).join(', ')}.`,
+      text: `**EPIC — ${stage.label} Capability**: Implements ${comps.length} governed service components including ${compsSummary}.`,
       sourceRefs: [stage.id, ...comps.map((c) => c.id)],
     });
   }
 
   return {
     sectionId,
-    paragraphs: [{ text: `High-level capability epics organized by system stage:`, sourceRefs: [] }],
+    paragraphs: [{ text: `High-level functional epics organized by architectural subsystem tier:`, sourceRefs: [] }],
     bullets,
   };
 };
