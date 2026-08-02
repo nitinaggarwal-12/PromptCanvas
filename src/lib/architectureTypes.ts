@@ -11,6 +11,7 @@ import {
   getExactGovernanceStateMachineReferenceXml,
   getExactUnifiedSystemViewReferenceXml,
   getExactDarkModeUnifiedSystemViewReferenceXml,
+  getExactEvalSafetyBenchmarkingReferenceXml,
   getBenchmarkItacsSpec,
   getBenchmarkErdSpec,
   getBenchmarkAgenticRagSpec,
