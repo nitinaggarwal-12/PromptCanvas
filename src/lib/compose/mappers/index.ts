@@ -22,44 +22,43 @@ export const componentDescriptionsMapper: DerivationMapperFn = (model, sectionId
 
   if (activeTiers.length > 0) {
     paragraphs.push({
-      text: `The system architecture is organized across ${activeTiers.length} functional subsystem tiers comprising ${model.components.length} operational components.`,
+      text: `The target enterprise architecture organizes operational components across ${activeTiers.length} logical subsystem tiers, integrating ${model.components.length} specialized service capabilities and compute workloads.`,
       sourceRefs: activeTiers.map((t) => t.id),
     });
   } else if (model.components.length > 0) {
     paragraphs.push({
-      text: `The architecture defines ${model.components.length} operational software and infrastructure components.`,
+      text: `The system specification defines ${model.components.length} governed service components, data stores, and cognitive processing pods.`,
       sourceRefs: model.components.map((c) => c.id),
     });
   }
 
   for (const comp of model.components) {
-    const tierName = comp.tier ? getTierName(model, comp.tier) : 'Core Subsystem';
+    const tierName = comp.tier ? getTierName(model, comp.tier) : 'Core Platform Subsystem';
     const inbound = model.flows.filter((f) => f.to === comp.id);
     const outbound = model.flows.filter((f) => f.from === comp.id);
 
     const interactions: string[] = [];
     if (inbound.length > 0) {
-      interactions.push(`Inbound from ${inbound.map((f) => getComponentName(model, f.from)).join(', ')}`);
+      interactions.push(`Receives inputs from ${inbound.map((f) => getComponentName(model, f.from)).join(', ')}`);
     }
     if (outbound.length > 0) {
-      interactions.push(`Outbound to ${outbound.map((f) => getComponentName(model, f.to)).join(', ')}`);
+      interactions.push(`Dispatches data to ${outbound.map((f) => getComponentName(model, f.to)).join(', ')}`);
     }
-    const flowDesc = interactions.length > 0 ? interactions.join(' | ') : 'Internal processing / standalone node';
+    const flowDesc = interactions.length > 0 ? interactions.join('; ') : 'Autonomous processing / internal event loop';
 
     tableRows.push({
       cells: [
         comp.label,
         tierName,
         comp.type || 'Service Component',
-        comp.subtitle || 'Operational component',
+        comp.subtitle || 'Active Architecture Node',
         flowDesc,
       ],
       sourceRefs: [comp.id],
     });
 
-    const subText = comp.subtitle ? ` (${comp.subtitle})` : '';
     bullets.push({
-      text: `${comp.label}${subText} — Deployed in "${tierName}" tier. ${flowDesc}.`,
+      text: `**${comp.label}** (${tierName}): ${comp.subtitle || 'Core functional component'}. ${flowDesc}.`,
       sourceRefs: [comp.id],
     });
   }
@@ -69,7 +68,7 @@ export const componentDescriptionsMapper: DerivationMapperFn = (model, sectionId
     paragraphs,
     bullets,
     table: {
-      headers: ['Component Name', 'Subsystem / Tier', 'Type', 'Description / Role', 'Interactions & Communication'],
+      headers: ['Capability / Component', 'Architectural Tier', 'Component Type', 'Operational Role', 'Integration & Event Flow'],
       rows: tableRows,
     },
   };
@@ -83,9 +82,9 @@ export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 
       cells: [
         consumer,
         provider,
-        flow.label || 'Data / Event Exchange',
-        flow.protocol || 'HTTPS / REST / gRPC',
-        flow.async ? 'Asynchronous Event' : 'Synchronous Request',
+        flow.label || 'Data & Event Synchronizing Interface',
+        flow.protocol || 'HTTPS REST / gRPC / mTLS',
+        flow.async ? 'Asynchronous Event Pipeline' : 'Synchronous API Call',
       ],
       sourceRefs: [flow.from, flow.to],
     };
@@ -95,13 +94,13 @@ export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 
     sectionId,
     paragraphs: [
       {
-        text: `The architecture specifies ${model.flows.length} integrated service-to-service communication contracts and data exchange interfaces derived directly from system topology.`,
+        text: `The platform architecture enforces ${model.flows.length} strict service-to-service communication contracts, API interfaces, and enterprise event streams.`,
         sourceRefs: model.flows.map((f) => `${f.from}->${f.to}`),
       },
     ],
     bullets: [],
     table: {
-      headers: ['Consumer / Source', 'Provider / Destination', 'Interface Purpose & Data Exchange', 'Protocol', 'Execution Pattern'],
+      headers: ['Initiating Service / Source', 'Target Service / Destination', 'Interface Scope & Payload Contract', 'Protocol & Security', 'Execution Pattern'],
       rows,
     },
   };
@@ -115,9 +114,9 @@ export const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functi
       const actorFlows = model.flows.filter((f) => f.from === actor.id);
       for (const flow of actorFlows) {
         const targetName = getComponentName(model, flow.to);
-        const goal = flow.label || `execute operational requests against ${targetName}`;
+        const goal = flow.label || `execute governed cognitive workflows through ${targetName}`;
         bullets.push({
-          text: `As a ${actor.label}, I want to ${goal} so that end-to-end processing is executed reliably through ${targetName}.`,
+          text: `**${actor.label} Workflow:** Initiates ${goal} to interact with ${targetName} under deterministic audit and policy controls.`,
           sourceRefs: [actor.id, flow.to],
         });
       }
@@ -127,7 +126,7 @@ export const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functi
   if (bullets.length === 0) {
     for (const flow of model.flows) {
       bullets.push({
-        text: `As ${getComponentName(model, flow.from)}, I want to communicate with ${getComponentName(model, flow.to)} (${flow.label || 'service request'}) to complete processing.`,
+        text: `**${getComponentName(model, flow.from)} ➔ ${getComponentName(model, flow.to)}:** ${flow.label || 'End-to-end multi-step orchestration and event dispatch'}.`,
         sourceRefs: [flow.from, flow.to],
       });
     }
@@ -137,7 +136,7 @@ export const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functi
     sectionId,
     paragraphs: [
       {
-        text: `Functional sequence scenarios and user/system interaction flows extracted mechanically from visual graph connectors:`,
+        text: `End-to-end operational user stories and functional component interaction scenarios derived from the live system topology:`,
         sourceRefs: [],
       },
     ],

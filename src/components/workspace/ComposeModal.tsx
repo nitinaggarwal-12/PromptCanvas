@@ -29,10 +29,189 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({
   const [previewContent, setPreviewContent] = useState<string | null>(null);
   const [copiedSuccess, setCopiedSuccess] = useState(false);
 
+  const [viewMode, setViewMode] = useState<'formatted' | 'raw'>('formatted');
+
   if (!isOpen) return null;
 
   const archetypes = Object.values(ARCHETYPE_REGISTRY);
   const currentArch = ARCHETYPE_REGISTRY[selectedArchetype];
+
+  const renderExecutiveDocument = (text: string) => {
+    const lines = text.split('\n');
+    const elements: React.ReactNode[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
+
+      // H1 Header
+      if (line.startsWith('# ')) {
+        elements.push(
+          <div key={`h1-${i}`} className="pb-3 border-b-2 border-sky-500/60 mt-4 mb-3">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-50">
+              {line.replace('# ', '')}
+            </h1>
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // H2 Header
+      if (line.startsWith('## ')) {
+        elements.push(
+          <div key={`h2-${i}`} className="mt-6 mb-2">
+            <h2 className="text-lg font-bold text-sky-400 flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-sky-400"></span>
+              {line.replace('## ', '')}
+            </h2>
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // H3 Header
+      if (line.startsWith('### ')) {
+        elements.push(
+          <h3 key={`h3-${i}`} className="text-sm font-bold uppercase tracking-wider text-slate-300 mt-4 mb-1">
+            {line.replace('### ', '')}
+          </h3>
+        );
+        i++;
+        continue;
+      }
+
+      // Horizontal rule
+      if (line.trim() === '---') {
+        elements.push(<hr key={`hr-${i}`} className="border-slate-800 my-4" />);
+        i++;
+        continue;
+      }
+
+      // Table parsing
+      if (line.trim().startsWith('|')) {
+        const tableLines: string[] = [];
+        while (i < lines.length && lines[i].trim().startsWith('|')) {
+          tableLines.push(lines[i].trim());
+          i++;
+        }
+
+        const headers = tableLines[0]
+          .split('|')
+          .map((c) => c.trim())
+          .filter(Boolean);
+
+        const dataRows = tableLines
+          .slice(1)
+          .filter((rowLine) => !rowLine.includes('---'))
+          .map((rowLine) =>
+            rowLine
+              .split('|')
+              .map((c) => c.trim())
+              .filter((_, idx, arr) => idx >= 0 && idx < arr.length)
+          );
+
+        elements.push(
+          <div key={`table-${i}`} className="my-4 overflow-x-auto rounded-xl border border-slate-700/80 shadow-lg bg-slate-950/60">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-slate-800/90 text-slate-200 border-b border-slate-700">
+                  {headers.map((h, hIdx) => (
+                    <th key={hIdx} className="px-4 py-2.5 font-bold uppercase tracking-wider text-[11px] text-slate-300">
+                      {h.replace(/\*\*/g, '')}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/80">
+                {dataRows.map((r, rIdx) => (
+                  <tr
+                    key={rIdx}
+                    className={
+                      rIdx % 2 === 0
+                        ? 'bg-slate-900/40 hover:bg-slate-800/50 transition'
+                        : 'bg-slate-950/40 hover:bg-slate-800/50 transition'
+                    }
+                  >
+                    {r.map((cell, cIdx) => (
+                      <td key={cIdx} className="px-4 py-2.5 text-slate-300 leading-relaxed">
+                        {cell.replace(/\*\*/g, '')}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        continue;
+      }
+
+      // Callout Banner
+      if (line.trim().startsWith('>')) {
+        elements.push(
+          <div
+            key={`quote-${i}`}
+            className="my-3 p-3.5 bg-amber-500/10 border-l-4 border-amber-500 rounded-r-lg text-amber-200 text-xs leading-relaxed"
+          >
+            {line.replace(/^>\s*/, '').replace(/\[!NOTE\]|\[!IMPORTANT\]/g, '📌')}
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Bullet items
+      if (line.trim().startsWith('* ') || line.trim().startsWith('- ')) {
+        const bulletText = line.trim().replace(/^[\*\-]\s+/, '');
+        elements.push(
+          <div key={`bullet-${i}`} className="flex items-start gap-2.5 text-xs text-slate-300 ml-2 my-1">
+            <span className="text-sky-400 mt-1 font-bold">•</span>
+            <span className="leading-relaxed">{bulletText.replace(/\*\*(.*?)\*\*/g, '$1')}</span>
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Code blocks / diagrams
+      if (line.trim().startsWith('```')) {
+        const codeLines: string[] = [];
+        i++;
+        while (i < lines.length && !lines[i].trim().startsWith('```')) {
+          codeLines.push(lines[i]);
+          i++;
+        }
+        i++; // skip closing ```
+        elements.push(
+          <pre
+            key={`code-${i}`}
+            className="my-3 p-4 rounded-xl bg-slate-950 border border-slate-800 text-teal-300 font-mono text-xs overflow-x-auto"
+          >
+            {codeLines.join('\n')}
+          </pre>
+        );
+        continue;
+      }
+
+      // Empty line
+      if (!line.trim()) {
+        i++;
+        continue;
+      }
+
+      // Standard paragraph
+      elements.push(
+        <p key={`p-${i}`} className="text-xs text-slate-300 leading-relaxed my-2">
+          {line.replace(/\*\*(.*?)\*\*/g, '$1')}
+        </p>
+      );
+      i++;
+    }
+
+    return elements;
+  };
 
   const handleComposeAndPreview = async (downloadFormat?: 'docx' | 'md') => {
     setIsComposing(true);
@@ -129,8 +308,31 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({
                   ← Change Document Archetype
                 </button>
                 <span className="text-xs text-teal-400 font-semibold px-2.5 py-1 bg-teal-500/10 rounded-md border border-teal-500/20">
-                  {currentArch.name} Preview Ready
+                  {currentArch.name} Publication View Ready
                 </span>
+
+                <div className="ml-2 flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5">
+                  <button
+                    onClick={() => setViewMode('formatted')}
+                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
+                      viewMode === 'formatted'
+                        ? 'bg-sky-500 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    ✨ Executive Paper View
+                  </button>
+                  <button
+                    onClick={() => setViewMode('raw')}
+                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
+                      viewMode === 'raw'
+                        ? 'bg-sky-500 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    💻 Raw Markdown / Text
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2.5">
@@ -169,13 +371,21 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({
             {/* Google Docs Usage Tip Banner */}
             <div className="px-6 py-2 bg-amber-950/40 border-b border-amber-800/40 text-xs text-amber-200 flex items-center justify-between">
               <span>
-                💡 <strong>Mac / Google Docs User Tip:</strong> Click <strong>&ldquo;Copy Text for Google Docs&rdquo;</strong>, then click <strong>&ldquo;Open Google Docs Tab&rdquo;</strong> and press <kbd className="px-1.5 py-0.5 bg-amber-900 rounded font-mono text-[10px]">Cmd + V</kbd> to paste your executive document into Google Docs!
+                💡 <strong>Mac / Google Docs User Tip:</strong> Click <strong>&ldquo;Copy Text for Google Docs&rdquo;</strong>, then click <strong>&ldquo;Open Google Docs Tab&rdquo;</strong> and press <kbd className="px-1.5 py-0.5 bg-amber-900 rounded font-mono text-[10px]">Cmd + V</kbd> to paste your polished document into Google Docs!
               </span>
             </div>
 
-            {/* Reader Container */}
-            <div className="p-6 overflow-y-auto flex-1 bg-[#0b0f17] font-mono text-xs text-slate-200 leading-relaxed whitespace-pre-wrap select-text">
-              {previewContent}
+            {/* Publication-Grade Executive Document Reader */}
+            <div className="p-8 overflow-y-auto flex-1 bg-[#0f172a] text-slate-100 select-text">
+              {viewMode === 'formatted' ? (
+                <div className="max-w-4xl mx-auto bg-slate-900/90 border border-slate-700/80 rounded-2xl p-8 shadow-2xl space-y-6">
+                  {renderExecutiveDocument(previewContent)}
+                </div>
+              ) : (
+                <pre className="max-w-4xl mx-auto p-6 rounded-2xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-200 leading-relaxed whitespace-pre-wrap">
+                  {previewContent}
+                </pre>
+              )}
             </div>
           </div>
         ) : (
