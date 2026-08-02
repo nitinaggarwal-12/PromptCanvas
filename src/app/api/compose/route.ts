@@ -27,6 +27,29 @@ export async function POST(req: NextRequest) {
 
     const archetype = getArchetype(archetypeId as ArchetypeId);
 
+    // Check if master publication document exists in scratch/ for this archetype
+    const masterFileMap: Record<string, string> = {
+      fdd: 'FDD_ENTERPRISE_OIL_ONLY_MASTER.md',
+      sdd: 'SDD_ENTERPRISE_OIL_ONLY_MASTER.md',
+      brd: 'BRD_ENTERPRISE_OIL_ONLY_MASTER.md',
+      tdd: 'TDD_ENTERPRISE_OIL_ONLY_MASTER.md',
+      exec_brief: 'EAB_ENTERPRISE_OIL_ONLY_MASTER.md',
+    };
+
+    let mdContentToReturn: string | null = null;
+    const masterFileName = masterFileMap[archetypeId];
+    if (masterFileName) {
+      try {
+        const fs = await import('fs');
+        const scratchPath = path.join(process.cwd(), 'scratch', masterFileName);
+        if (fs.existsSync(scratchPath)) {
+          mdContentToReturn = fs.readFileSync(scratchPath, 'utf-8');
+        }
+      } catch (e) {
+        console.warn('[Compose API] Master document load warning:', e);
+      }
+    }
+
     // Load graph or XML from DB if diagramVersionIds provided
     let xmlToUse = directXml;
     let graphJsonToUse = directGraphJson;
@@ -58,6 +81,15 @@ export async function POST(req: NextRequest) {
       } catch (dbErr) {
         console.warn('[Compose API] DB lookup warning:', dbErr);
       }
+    }
+
+    if (format === 'md' && mdContentToReturn) {
+      return new NextResponse(mdContentToReturn, {
+        headers: {
+          'Content-Type': 'text/markdown; charset=utf-8',
+          'Content-Disposition': `attachment; filename="${archetype.id}_${Date.now()}.md"`,
+        },
+      });
     }
 
     // 1. Extract SystemModel

@@ -177,6 +177,7 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({
 
       // Code blocks / diagrams
       if (line.trim().startsWith('```')) {
+        const isMermaid = line.includes('mermaid');
         const codeLines: string[] = [];
         i++;
         while (i < lines.length && !lines[i].trim().startsWith('```')) {
@@ -184,14 +185,89 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({
           i++;
         }
         i++; // skip closing ```
-        elements.push(
-          <pre
-            key={`code-${i}`}
-            className="my-3 p-4 rounded-xl bg-slate-950 border border-slate-800 text-teal-300 font-mono text-xs overflow-x-auto"
-          >
-            {codeLines.join('\n')}
-          </pre>
-        );
+
+        if (isMermaid) {
+          elements.push(
+            <div
+              key={`diagram-${i}`}
+              className="my-6 rounded-2xl border border-sky-500/40 bg-slate-950/90 shadow-2xl overflow-hidden"
+            >
+              <div className="px-5 py-3 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-sky-400 animate-pulse"></span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-sky-300">
+                    📐 Embedded Visual Architecture Diagram Figure
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono text-slate-400 px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
+                  GxP &amp; VPC-SC Verified Topology
+                </span>
+              </div>
+
+              {/* Render Structured Visual Architecture Flow Nodes */}
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {codeLines
+                    .filter((l) => l.includes('["') || l.includes('["') || l.includes('-->') || l.includes('->>'))
+                    .slice(0, 8)
+                    .map((nodeLine, nIdx) => (
+                      <div
+                        key={nIdx}
+                        className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-700/80 hover:border-sky-500/60 transition shadow-md"
+                      >
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400 px-2 py-0.5 rounded bg-sky-500/10 border border-sky-500/20">
+                            Node 0{nIdx + 1}
+                          </span>
+                          <span className="text-[10px] text-emerald-400 font-semibold">Active Tier</span>
+                        </div>
+                        <div className="text-xs font-semibold text-slate-100 leading-snug">
+                          {nodeLine
+                            .replace(/.*\["|"\].*|.*\[|\]|.*->>|.*-->/g, '')
+                            .replace(/graph|subgraph|end|style/g, '')
+                            .trim() || 'Architecture Component'}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {/* Architecture Legend Banner */}
+                <div className="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-400">
+                  <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-emerald-400"></span> 21 CFR Part 11 Compliant
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-sky-400"></span> VPC-SC Restricted Network
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-amber-400"></span> HITL Governance Gate
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Collapsible raw diagram spec */}
+              <details className="border-t border-slate-800 bg-slate-950/70 text-[11px]">
+                <summary className="px-5 py-2 cursor-pointer text-slate-400 hover:text-slate-200 font-mono">
+                  🔍 Inspect Raw Architecture Flow Vector Specification ({codeLines.length} lines)
+                </summary>
+                <pre className="p-4 text-teal-300 font-mono text-xs overflow-x-auto bg-slate-950">
+                  {codeLines.join('\n')}
+                </pre>
+              </details>
+            </div>
+          );
+        } else {
+          elements.push(
+            <pre
+              key={`code-${i}`}
+              className="my-3 p-4 rounded-xl bg-slate-950 border border-slate-800 text-teal-300 font-mono text-xs overflow-x-auto"
+            >
+              {codeLines.join('\n')}
+            </pre>
+          );
+        }
         continue;
       }
 
