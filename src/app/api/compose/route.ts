@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
 import { getArchetype, ArchetypeId } from '../../../lib/compose/archetypes';
+import { MASTER_DOCUMENTS } from '../../../lib/compose/masterDocs';
 import { extractSystemModel } from '../../../lib/compose/extract';
 import { MAPPER_REGISTRY } from '../../../lib/compose/mappers';
 import { fillInferredSections } from '../../../lib/compose/infer';
@@ -27,29 +28,7 @@ export async function POST(req: NextRequest) {
 
     const archetype = getArchetype(archetypeId as ArchetypeId);
 
-    // Check if master publication document exists in scratch/ for this archetype
-    const masterFileMap: Record<string, string> = {
-      prd: 'PRD_ENTERPRISE_OIL_ONLY_MASTER.md',
-      fdd: 'FDD_ENTERPRISE_OIL_ONLY_MASTER.md',
-      sdd: 'SDD_ENTERPRISE_OIL_ONLY_MASTER.md',
-      brd: 'BRD_ENTERPRISE_OIL_ONLY_MASTER.md',
-      tdd: 'TDD_ENTERPRISE_OIL_ONLY_MASTER.md',
-      exec_brief: 'EAB_ENTERPRISE_OIL_ONLY_MASTER.md',
-    };
-
-    let mdContentToReturn: string | null = null;
-    const masterFileName = masterFileMap[archetypeId];
-    if (masterFileName) {
-      try {
-        const fs = await import('fs');
-        const scratchPath = path.join(process.cwd(), 'scratch', masterFileName);
-        if (fs.existsSync(scratchPath)) {
-          mdContentToReturn = fs.readFileSync(scratchPath, 'utf-8');
-        }
-      } catch (e) {
-        console.warn('[Compose API] Master document load warning:', e);
-      }
-    }
+    const mdContentToReturn: string | null = MASTER_DOCUMENTS[archetypeId] || null;
 
     // Load graph or XML from DB if diagramVersionIds provided
     let xmlToUse = directXml;

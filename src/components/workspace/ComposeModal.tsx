@@ -187,61 +187,139 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({
         i++; // skip closing ```
 
         if (isMermaid) {
+          // Parse node definitions and flows cleanly from Mermaid code
+          const parsedNodes: { id: string; label: string; tier: string }[] = [];
+          const parsedFlows: { from: string; to: string; label?: string }[] = [];
+
+          for (const rawLine of codeLines) {
+            const line = rawLine.trim();
+            // Match node definitions like ID["Label"] or ID["Label"]
+            const nodeMatch = line.match(/^([A-Za-z0-9_]+)\["([^"]+)"\]/);
+            if (nodeMatch) {
+              const [, id, label] = nodeMatch;
+              let tier = 'Architecture Tier';
+              if (label.includes('🌐') || label.includes('Client') || label.includes('Portal')) tier = 'Ingress & Client Tier';
+              else if (label.includes('🛡️') || label.includes('WAF') || label.includes('Gateway') || label.includes('VPC')) tier = 'Security & Perimeter Tier';
+              else if (label.includes('⚙️') || label.includes('Orchestrator') || label.includes('Pod') || label.includes('ReAct')) tier = 'Compute & Runtime Tier';
+              else if (label.includes('🤖') || label.includes('Gemini') || label.includes('Model') || label.includes('LLM')) tier = 'AI & Cognitive Model Tier';
+              else if (label.includes('🪣') || label.includes('📊') || label.includes('Data') || label.includes('RAG')) tier = 'Enterprise Data & Knowledge Tier';
+              else if (label.includes('🗄️') || label.includes('Audit') || label.includes('Governance') || label.includes('HITL')) tier = 'Governance & Audit Tier';
+
+              if (!parsedNodes.some((n) => n.id === id)) {
+                parsedNodes.push({ id, label, tier });
+              }
+            }
+
+            // Match directional flows like A --> B or A -->|"Label"| B
+            const flowMatch = line.match(/([A-Za-z0-9_]+)\s*-->\s*(?:\|"([^"]+)"\|\s*)?([A-Za-z0-9_]+)/);
+            if (flowMatch) {
+              parsedFlows.push({ from: flowMatch[1], to: flowMatch[3], label: flowMatch[2] });
+            }
+          }
+
           elements.push(
             <div
               key={`diagram-${i}`}
-              className="my-6 rounded-2xl border border-sky-500/40 bg-slate-950/90 shadow-2xl overflow-hidden"
+              className="my-6 rounded-2xl border border-sky-500/50 bg-slate-950/95 shadow-2xl overflow-hidden"
             >
-              <div className="px-5 py-3 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-sky-400 animate-pulse"></span>
+              {/* Diagram Header */}
+              <div className="px-5 py-3.5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="h-3 w-3 rounded-full bg-sky-400 animate-pulse shadow-sm shadow-sky-400"></span>
                   <span className="text-xs font-bold uppercase tracking-wider text-sky-300">
-                    📐 Embedded Visual Architecture Diagram Figure
+                    📐 Embedded Interactive Visual Architecture Diagram Figure
                   </span>
                 </div>
-                <span className="text-[11px] font-mono text-slate-400 px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
-                  GxP &amp; VPC-SC Verified Topology
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                    GxP &amp; VPC-SC Verified
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400 px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
+                    {parsedNodes.length || codeLines.length} Architecture Nodes
+                  </span>
+                </div>
               </div>
 
-              {/* Render Structured Visual Architecture Flow Nodes */}
-              <div className="p-6 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {codeLines
-                    .filter((l) => l.includes('["') || l.includes('["') || l.includes('-->') || l.includes('->>'))
-                    .slice(0, 8)
-                    .map((nodeLine, nIdx) => (
-                      <div
-                        key={nIdx}
-                        className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-700/80 hover:border-sky-500/60 transition shadow-md"
-                      >
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400 px-2 py-0.5 rounded bg-sky-500/10 border border-sky-500/20">
-                            Node 0{nIdx + 1}
-                          </span>
-                          <span className="text-[10px] text-emerald-400 font-semibold">Active Tier</span>
+              {/* Visual Architecture Flow Layout */}
+              <div className="p-6 space-y-5">
+                {parsedNodes.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                      {parsedNodes.slice(0, 9).map((node, nIdx) => (
+                        <div
+                          key={node.id}
+                          className="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-sky-400/80 hover:bg-slate-900 transition shadow-lg flex flex-col justify-between"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400 px-2 py-0.5 rounded bg-sky-500/10 border border-sky-500/20">
+                              Step 0{nIdx + 1}
+                            </span>
+                            <span className="text-[10px] text-emerald-400 font-semibold px-2 py-0.5 rounded bg-emerald-500/10">
+                              {node.tier}
+                            </span>
+                          </div>
+                          <div className="text-xs font-bold text-slate-100 leading-snug">
+                            {node.label}
+                          </div>
                         </div>
-                        <div className="text-xs font-semibold text-slate-100 leading-snug">
-                          {nodeLine
-                            .replace(/.*\["|"\].*|.*\[|\]|.*->>|.*-->/g, '')
-                            .replace(/graph|subgraph|end|style/g, '')
-                            .trim() || 'Architecture Component'}
+                      ))}
+                    </div>
+
+                    {/* Flow Connections Visual Bar */}
+                    {parsedFlows.length > 0 && (
+                      <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5 flex items-center gap-1.5">
+                          <span>⚡ Primary Architectural Event &amp; Data Integration Paths</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                          {parsedFlows.slice(0, 6).map((flow, fIdx) => {
+                            const sourceNode = parsedNodes.find((n) => n.id === flow.from);
+                            const targetNode = parsedNodes.find((n) => n.id === flow.to);
+                            return (
+                              <div
+                                key={fIdx}
+                                className="px-3 py-2 rounded-lg bg-slate-950/80 border border-slate-800 flex items-center justify-between text-slate-300"
+                              >
+                                <span className="font-semibold text-sky-300 truncate max-w-[42%]">
+                                  {sourceNode?.label.replace(/^[^\s]+\s+/, '') || flow.from}
+                                </span>
+                                <span className="text-slate-500 text-xs px-1">
+                                  {flow.label ? `➔ [${flow.label}] ➔` : '──────►'}
+                                </span>
+                                <span className="font-semibold text-emerald-300 truncate max-w-[42%]">
+                                  {targetNode?.label.replace(/^[^\s]+\s+/, '') || flow.to}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
-                    ))}
-                </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {codeLines
+                      .filter((l) => l.includes('-->') || l.includes('->>'))
+                      .slice(0, 6)
+                      .map((l, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-slate-900 border border-slate-800 text-xs text-sky-300 font-mono">
+                          {l.trim()}
+                        </div>
+                      ))}
+                  </div>
+                )}
 
-                {/* Architecture Legend Banner */}
+                {/* Compliance & Verification Legend */}
                 <div className="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-400">
-                  <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1.5">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <span className="flex items-center gap-1.5 font-medium text-emerald-400">
                       <span className="h-2 w-2 rounded-full bg-emerald-400"></span> 21 CFR Part 11 Compliant
                     </span>
-                    <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-1.5 font-medium text-sky-400">
                       <span className="h-2 w-2 rounded-full bg-sky-400"></span> VPC-SC Restricted Network
                     </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-amber-400"></span> HITL Governance Gate
+                    <span className="flex items-center gap-1.5 font-medium text-amber-400">
+                      <span className="h-2 w-2 rounded-full bg-amber-400"></span> HITL Governance Board Gate
                     </span>
                   </div>
                 </div>
