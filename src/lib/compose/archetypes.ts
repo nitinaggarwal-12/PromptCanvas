@@ -140,13 +140,16 @@ export const ARCHETYPE_REGISTRY: Record<ArchetypeId, DocArchetype> = {
   tdd: {
     id: 'tdd',
     name: 'Technical Design Document (TDD)',
-    description: 'Engineering implementation specifications, data schema, API contracts, and non-functional bounds.',
-    diagramTypes: ['unified_system_view', 'erd', 'devops_cicd_pipeline'],
+    description: 'Detailed code-level engineering specifications, ReAct runtime pseudocode, hybrid RAG scoring, saga outbox patterns, and 22-stage CI/CD quality gates.',
+    diagramTypes: ['unified_system_view', 'sequence_diagram', 'erd', 'devops_cicd_pipeline'],
     sections: [
-      { id: 'technical_overview', title: 'Technical Architecture & Service Topology', provenance: 'derived', mapper: 'componentDescriptions' },
-      { id: 'data_schema', title: 'Database Schema & Table Relationships', provenance: 'derived', mapper: 'componentDescriptions' },
-      { id: 'service_contracts', title: 'Internal Service Contracts & Message Schemas', provenance: 'derived', mapper: 'interfaceInventory' },
-      { id: 'observability', title: 'Monitoring, Telemetry & SRE SLOs', provenance: 'human', guidance: 'Define OpenTelemetry tracing, Prometheus alerts, and error budget SLOs.' },
+      { id: 'tech_overview_repo', title: 'Technical Stack Summary & Monorepo Source Layout', provenance: 'inferred', inferPrompt: 'exec_summary' },
+      { id: 'react_runtime_sequence', title: 'ReAct Agent Orchestrator Pseudocode & Runtime Lifecycle', provenance: 'derived', mapper: 'componentDescriptions' },
+      { id: 'retrieval_scoring', title: 'Hybrid RAG Scoring Formulas & Access Entitlement Filters', provenance: 'derived', mapper: 'interfaceInventory' },
+      { id: 'tool_gateway_idempotency', title: 'Tool Gateway Write-Action Sequence & Cryptographic Idempotency', provenance: 'derived', mapper: 'interfaceInventory' },
+      { id: 'saga_outbox_pattern', title: 'Distributed Saga Transactions & Event-Driven Outbox Consistency', provenance: 'derived', mapper: 'componentDescriptions' },
+      { id: 'cicd_quality_gates', title: '22-Stage CI/CD Pipeline, Automated AI Evaluation & Canary Rollout', provenance: 'derived', mapper: 'acceptanceCriteria' },
+      { id: 'traceability_signoff', title: 'Technical Requirements Traceability & Engineering Sign-Off', provenance: 'human', guidance: 'Maintain technical traceability across BRD, PRD, FDD, SDD, TDD components, and validation test cases.' },
     ],
   },
   security_package: {
