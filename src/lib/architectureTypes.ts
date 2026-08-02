@@ -257,14 +257,18 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactUnifiedSystemViewReferenceXml();
   } else if (archId === 'dark_mode_unified_system_view') {
     xml = getExactDarkModeUnifiedSystemViewReferenceXml();
+  } else if (archId === 'eval_safety_benchmarking' || archId?.includes('monitex') || archId?.includes('safety_benchmarking')) {
+    xml = getExactEvalSafetyBenchmarkingReferenceXml();
   } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline')) {
     xml = getTechnicalArchitectureXml(archId);
   } else {
     xml = getTechnicalArchitectureXml('tech_serverless_gcp');
   }
 
-  const effectiveContext = useCaseContext || userPrompt || getTemplateTitle(archId || '');
-  xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
+  if (archId !== 'eval_safety_benchmarking') {
+    const effectiveContext = useCaseContext || userPrompt || getTemplateTitle(archId || '');
+    xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
+  }
   xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, archId || 'unified_system_view');
 
   return xml;

@@ -3180,6 +3180,31 @@ function WorkspaceContent() {
     }
     if (!newArchId || newArchId.startsWith('slot_')) return;
     if (newArchId === selectedArchType && tourStep !== 2) return;
+
+    if (newArchId === 'eval_safety_benchmarking') {
+      const refXml = getDefaultXmlForArchitecture('eval_safety_benchmarking');
+      const tempVersion: DiagramVersion = {
+        id: `temp_ref_${newArchId}_${Date.now()}`,
+        diagram_id: activeDiagram?.id || 'temp',
+        version_number: 1,
+        xml_content: refXml || '',
+        comment: `Master Reference Backbone: End-to-End Monitex AI Safety Flow`,
+        created_by: 'System',
+        created_at: new Date().toISOString(),
+        architecture_type: newArchId
+      };
+      setActiveVersion(tempVersion);
+      setSelectedArchType(newArchId);
+      if (activeDiagram?.id) {
+        fetch(`/api/diagrams/${activeDiagram.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ architecture_type: newArchId }),
+        }).catch(console.error);
+      }
+      return;
+    }
+
     const existingVersionsForArch = activeDiagram?.versions?.filter(
       v => (v.architecture_type || 'conceptual_diagram') === newArchId
     ) || [];

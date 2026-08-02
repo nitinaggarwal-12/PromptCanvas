@@ -656,7 +656,8 @@ import {
   getExactDevopsCicdPipelineReferenceXml,
   getExactGovernanceStateMachineReferenceXml,
   getExactUnifiedSystemViewReferenceXml,
-  getExactDarkModeUnifiedSystemViewReferenceXml
+  getExactDarkModeUnifiedSystemViewReferenceXml,
+  getExactEvalSafetyBenchmarkingReferenceXml
 } from './diagramCompiler';
 
 export function getTechnicalArchitectureXml(archId: string): string {
@@ -664,6 +665,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   const id = archId.toLowerCase();
 
   // Business Architecture Master Reference Mappings
+  if (id === 'eval_safety_benchmarking' || id.includes('monitex') || id.includes('safety_benchmarking') || id.includes('red-teaming')) {
+    return getExactEvalSafetyBenchmarkingReferenceXml();
+  }
   if (id === 'conceptual_diagram' || id === 'conceptual' || id.includes('conceptual')) {
     return getExactItacsReferenceXml();
   }

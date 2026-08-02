@@ -50,11 +50,18 @@ export async function fillInferredSections(
     const prompt = buildInferredPrompt(model, sections);
     const config = getGenConfig('narrative');
 
-    const response = await ai.models.generateContent({
-      model: GEMINI_MODEL_ID,
-      contents: prompt,
-      config,
-    });
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Gemini API timeout (1500ms limit)')), 1500)
+    );
+
+    const response = (await Promise.race([
+      ai.models.generateContent({
+        model: GEMINI_MODEL_ID,
+        contents: prompt,
+        config,
+      }),
+      timeoutPromise,
+    ])) as any;
 
     const text = response.text || '';
     const cleanJson = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
@@ -69,7 +76,7 @@ export async function fillInferredSections(
       }
     }
   } catch (err) {
-    console.warn('[Compose Infer] Gemini inference call failed, using graceful executive fallback:', err);
+    console.warn('[Compose Infer] Gemini inference call failed or timed out, using executive fallback:', err);
   }
 
   return result;
