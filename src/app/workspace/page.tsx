@@ -45,8 +45,12 @@ import {
   Sun,
   Moon,
   Lock,
-  Globe
+  Globe,
+  DollarSign
 } from 'lucide-react';
+import { CloudCostModal } from '@/components/workspace/CloudCostModal';
+import { estimateCloudArchitectureCost } from '@/lib/cost/cloudCostEstimator';
+import { DiagramNodeItem, parseXmlNodesAndEdges, formatRelativeTime } from '@/lib/graph/xmlNodesParser';
 import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant } from '@/lib/diagramCleaner';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import DiagramViewer from '@/components/DiagramViewer';
@@ -104,96 +108,7 @@ interface ChatMessage {
   versionNumber?: number;
 }
 
-interface DiagramNodeItem {
-  id: string;
-  label: string;
-  isEdge: boolean;
-  source?: string;
-  target?: string;
-  style?: string;
-}
-
-function cleanHtmlLabel(label: string): string {
-  if (!label) return '';
-  
-  // 1. Decode standard & double-escaped HTML entities
-  let decoded = label
-    .replace(/&amp;amp;/g, '&amp;')
-    .replace(/&amp;lt;/g, '&lt;')
-    .replace(/&amp;gt;/g, '&gt;')
-    .replace(/&amp;quot;/g, '&quot;')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, '&')
-    .replace(/&apos;/g, "'")
-    .replace(/&#xa;/g, ' ');
-
-  // Extra pass to ensure no &amp; entity remains
-  decoded = decoded.replace(/&amp;/g, '&');
-
-  // 2. Replace <br> variants with visual separators
-  decoded = decoded.replace(/<br\s*\/?>/gi, ' — ');
-
-  // 3. Strip all other HTML tags
-  const stripped = decoded.replace(/<[^>]+>/g, '');
-
-  // 4. Normalize spacing & scrub legacy brand ITACS
-  const clean = stripped.trim().replace(/\s+/g, ' ');
-  return clean.replace(/\bITACS\b/g, 'Enterprise');
-}
-
-function formatRelativeTime(dateStr: string): string {
-  if (!dateStr) return 'Just now';
-  const normalized = dateStr.replace(' ', 'T');
-  const date = new Date(normalized);
-  if (isNaN(date.getTime())) return 'Just now';
-
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHrs = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHrs / 24);
-
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHrs < 24) return `${diffHrs}h ago`;
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
-  
-  return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-}
-
-function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
-  if (!xml) return [];
-  const items: DiagramNodeItem[] = [];
-  
-  // Match all mxCell elements
-  const regex = /<mxCell\s+([^>]+)>/g;
-  let match;
-  while ((match = regex.exec(xml)) !== null) {
-    const attrsStr = match[1];
-    const getId = attrsStr.match(/id="([^"]*)"/)?.[1];
-    const getValue = attrsStr.match(/value="([^"]*)"/)?.[1];
-    const isEdge = attrsStr.includes('edge="1"');
-    const getSource = attrsStr.match(/source="([^"]*)"/)?.[1];
-    const getTarget = attrsStr.match(/target="([^"]*)"/)?.[1];
-    const getStyle = attrsStr.match(/style="([^"]*)"/)?.[1];
-    
-    if (getId && getId !== '0' && getId !== '1') {
-      const rawValue = getValue || (isEdge ? 'Connection' : 'Unnamed Component');
-      items.push({
-        id: getId,
-        label: isEdge ? rawValue : cleanHtmlLabel(rawValue),
-        isEdge,
-        source: getSource,
-        target: getTarget,
-        style: getStyle
-      });
-    }
-  }
-  return items;
-}
+// Using imported DiagramNodeItem and parseXmlNodesAndEdges from '@/lib/graph/xmlNodesParser'
 
 interface VersionChanges {
   added: string[];
@@ -584,6 +499,7 @@ function WorkspaceContent() {
   const [isMetadataGenerating, setIsMetadataGenerating] = useState(false);
   const [sidebarSearch, setSidebarSearch] = useState('');
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
+  const [isCostModalOpen, setIsCostModalOpen] = useState(false);
 
   const filteredSidebarDiagrams = React.useMemo(() => {
     const seen = new Set<string>();
@@ -3042,6 +2958,14 @@ function WorkspaceContent() {
 
   const displayedVersion = previewVersion || activeVersion;
 
+  const costReport = React.useMemo(() => {
+    return estimateCloudArchitectureCost(
+      displayedVersion?.xml_content || activeVersion?.xml_content || '',
+      activeDiagram?.name || 'Cloud Architecture',
+      selectedArchType
+    );
+  }, [displayedVersion?.xml_content, activeVersion?.xml_content, activeDiagram?.name, selectedArchType]);
+
   const currentXmlToRender = React.useMemo(() => {
     let baseXml = '';
     const rawContent = displayedVersion?.xml_content as any;
@@ -3820,6 +3744,17 @@ function WorkspaceContent() {
                     >
                       <FileText className="w-3.5 h-3.5 text-sky-400" />
                       <span>Compose Doc</span>
+                    </button>
+
+                    {/* Live Cloud Cost Estimator Badge (Infracost Engine) */}
+                    <button
+                      type="button"
+                      onClick={() => setIsCostModalOpen(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/50 bg-emerald-500/15 hover:bg-emerald-500/25 text-xs font-black transition-all text-emerald-300 cursor-pointer shadow-sm shrink-0"
+                      title="View live monthly infrastructure cost breakdown & Infracost estimate"
+                    >
+                      <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Est. ${costReport.totalMonthlyCostUsd.toLocaleString()}/mo</span>
                     </button>
 
                     {/* Audit Security Primary CTA */}
@@ -5148,6 +5083,13 @@ function WorkspaceContent() {
         currentTitle={activeDiagram?.name}
         currentXml={displayedVersion?.xml_content || activeVersion?.xml_content || ''}
         activeDiagramVersionId={displayedVersion?.id || activeVersion?.id}
+      />
+
+      {/* Cloud Cost Estimator Modal (Infracost Engine) */}
+      <CloudCostModal
+        isOpen={isCostModalOpen}
+        onClose={() => setIsCostModalOpen(false)}
+        costReport={costReport}
       />
 
       {/* 9. Password Setup & Browser Auto-Login Modal */}

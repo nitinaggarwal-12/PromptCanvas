@@ -279,9 +279,61 @@ export function ExportDiagramModal({
     }
   };
 
+  // 5. Export Python diagrams Script (.py)
+  const handleExportPython = () => {
+    setLoadingType('python');
+    setErrorMessage(null);
+    try {
+      const { exportPythonDiagramsScript } = require('../lib/export/architectureAsCodeExporter');
+      const pyScript = exportPythonDiagramsScript(xmlContent, diagramName);
+      const blob = new Blob([pyScript], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${sanitizeFilename(diagramName)}_architecture.py`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      setDownloadSuccess('python');
+      setTimeout(() => setDownloadSuccess(null), 2500);
+    } catch (e: any) {
+      console.error(e);
+      setErrorMessage('Failed to export Python diagrams script.');
+    } finally {
+      setLoadingType(null);
+    }
+  };
+
+  // 6. Export D2 Lang Script (.d2)
+  const handleExportD2 = () => {
+    setLoadingType('d2');
+    setErrorMessage(null);
+    try {
+      const { exportD2LangScript } = require('../lib/export/architectureAsCodeExporter');
+      const d2Script = exportD2LangScript(xmlContent, diagramName);
+      const blob = new Blob([d2Script], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${sanitizeFilename(diagramName)}_architecture.d2`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      setDownloadSuccess('d2');
+      setTimeout(() => setDownloadSuccess(null), 2500);
+    } catch (e: any) {
+      console.error(e);
+      setErrorMessage('Failed to export D2 Lang script.');
+    } finally {
+      setLoadingType(null);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 font-sans">
-      <div className="relative w-full max-w-2xl bg-[#0b101d] border border-panel-border/60 rounded-3xl p-6 md:p-8 shadow-2xl text-white">
+      <div className="relative w-full max-w-3xl bg-[#0b101d] border border-panel-border/60 rounded-3xl p-6 md:p-8 shadow-2xl text-white max-h-[92vh] overflow-y-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-panel-border/40 pb-4 mb-6">
@@ -290,8 +342,8 @@ export function ExportDiagramModal({
               <Download className="w-5 h-5 text-teal-accent" />
             </div>
             <div>
-              <h3 className="text-xl font-extrabold text-white">Export Diagram & Presentation Deck</h3>
-              <p className="text-xs text-slate-400">Download in vector XML, PNG, PDF, or editable PowerPoint PPTX format</p>
+              <h3 className="text-xl font-extrabold text-white">Export Diagram & Architecture-as-Code</h3>
+              <p className="text-xs text-slate-400">Download interactive Draw.io XML, images, Python diagrams script, D2 Lang, or PPTX presentation</p>
             </div>
           </div>
           <button
@@ -362,7 +414,57 @@ export function ExportDiagramModal({
             </div>
           </div>
 
-          {/* Option 3: PDF Document */}
+          {/* Option 3: Python diagrams Script (.py) */}
+          <div
+            onClick={handleExportPython}
+            className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">
+                🐍
+              </div>
+              {downloadSuccess === 'python' ? (
+                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                  <Check className="w-4 h-4" /> Exported .py
+                </span>
+              ) : loadingType === 'python' ? (
+                <Loader2 className="w-4 h-4 animate-spin text-purple-400" />
+              ) : (
+                <Download className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors" />
+              )}
+            </div>
+            <div>
+              <h4 className="font-extrabold text-sm text-white group-hover:text-purple-300 transition-colors">Python diagrams Script (.py)</h4>
+              <p className="text-xs text-slate-400 mt-1">Mingrammer pure Python Diagram-as-Code with official GCP/AWS clusters.</p>
+            </div>
+          </div>
+
+          {/* Option 4: D2 Lang Declarative Script (.d2) */}
+          <div
+            onClick={handleExportD2}
+            className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm">
+                🔤
+              </div>
+              {downloadSuccess === 'd2' ? (
+                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                  <Check className="w-4 h-4" /> Exported .d2
+                </span>
+              ) : loadingType === 'd2' ? (
+                <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+              ) : (
+                <Download className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+              )}
+            </div>
+            <div>
+              <h4 className="font-extrabold text-sm text-white group-hover:text-cyan-300 transition-colors">D2 Lang Architecture (.d2)</h4>
+              <p className="text-xs text-slate-400 mt-1">Declarative modern text-to-diagram code with directional routing.</p>
+            </div>
+          </div>
+
+          {/* Option 5: PDF Document */}
           <div
             onClick={handleExportPdf}
             className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
@@ -387,7 +489,7 @@ export function ExportDiagramModal({
             </div>
           </div>
 
-          {/* Option 4: Editable PowerPoint Presentation (.pptx) */}
+          {/* Option 6: Editable PowerPoint Presentation (.pptx) */}
           <div
             onClick={handleExportPptx}
             className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 to-purple-500/10 border border-amber-500/30 hover:border-amber-400 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg shadow-amber-500/5"
