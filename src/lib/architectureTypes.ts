@@ -112,6 +112,13 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Business Architecture",
     whenToUse: "Dark mode unified system view mapping data flow, orchestration, time, and governance",
     prompt: "Total Unified System View (Dark Mode):\n- Plan & Data Foundation: Enterprise architecture planning, data vetting, and schema lineage.\n- Development & AI Lifecycle: Data engineering DFD, feature store, model development, and governance.\n- Cognitive Architecture & Deployment: Secure VPC network, agent orchestrator, tool endpoints, and observability."
+  },
+  {
+    id: "eval_safety_benchmarking",
+    name: "12. End-to-End Monitex AI Safety, NLI Claim Benchmarking & Red-Teaming Flow",
+    category: "Business Architecture",
+    whenToUse: "Automated evaluation harnesses (Ragas / G-Eval), NLI factual claim verification, toxicity screening, and Vertex AI safety red-teaming flow",
+    prompt: "END-TO-END MONITEX AI SAFETY, NLI CLAIM BENCHMARKING & RED-TEAMING FLOW:\n- GCP Continuous Integration (CI) & Data Ingestion: Vertex AI Model Checkpoint, Cloud Storage Datasets (Reference & Distractor), Vertex AI Test Prompts & Scenarios.\n- Vertex AI Automated Evaluation: Performance Metrics (Context Relevance, Faithfulness, Answer Relevance via Vertex AI LBC) + NLI Claim Verification (Isolate Claims, Retrieve Supporting Evidence, Classify Claims as Entailed/Contradicted/Neutral via Gemini) -> Evaluation Results Aggregator.\n- Vertex AI Safety Red-Teaming & Screening: Vertex AI Toxicity & Bias Screening (Safety Settings + Cloud Armor WAF) + Vertex AI Safety Red-Teaming (Simulate Jailbreak Attempts, Prompt Injection/Adversarial Attacks, Check against Safety Guidelines) -> Safety Decision Gate.\n- Vertex AI Promotion & Deployment: High Quality AND Safety Passed -> Model Promotion -> Deploy to Vertex AI Endpoints. Low Quality/Reliability -> Block & Remediate. Failed -> Immediate Halt -> Vertex AI Safety Team Intervention & Model Retraining."
   }
 ];
 
