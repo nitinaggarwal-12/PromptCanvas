@@ -135,6 +135,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xml.includes('secure_deployment_map') ||
     xml.includes('sequence_diagram') ||
     xml.includes('macro_sequence_diagram') ||
+    xml.includes('eval_safety_benchmarking') ||
+    xml.includes('vertex-ai-eval-flow') ||
     xml.includes('tech_') ||
     xml.includes('serverless_gcp') ||
     xml.includes('sw1_') ||

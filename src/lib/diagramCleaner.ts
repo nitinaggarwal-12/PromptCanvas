@@ -420,6 +420,9 @@ function isPreservedCustomLayout(xml: string): boolean {
     lower.includes('unified_system_view') ||
     lower.includes('devops_cicd_pipeline') ||
     lower.includes('data_ai_pipeline') ||
+    lower.includes('eval_safety_benchmarking') ||
+    lower.includes('vertex-ai-eval-flow') ||
+    lower.includes('monitex') ||
     xml.includes('governance_state_machine_compiled') ||
     xml.includes('itacs_conceptual_compiled') ||
     xml.includes('tech_')
@@ -596,7 +599,7 @@ export function resolveVendorIconUrl(text: string): string {
 export function restoreDetailedView(xmlInput: string, skipLayout: boolean = false): string {
   if (!xmlInput) return xmlInput;
   if (isPreservedCustomLayout(xmlInput)) return xmlInput;
-  if (xmlInput.includes('unified_system_view') || xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') || xmlInput.includes('sw3_') || xmlInput.includes('sw1_') || xmlInput.includes('legend_box_statemachine') || xmlInput.includes('archival_bot') || xmlInput.includes('pill_trig1')) return xmlInput;
+  if (xmlInput.includes('unified_system_view') || xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') || xmlInput.includes('sw3_') || xmlInput.includes('sw1_') || xmlInput.includes('legend_box_statemachine') || xmlInput.includes('archival_bot') || xmlInput.includes('pill_trig1') || xmlInput.includes('eval_safety_benchmarking') || xmlInput.includes('vertex-ai-eval-flow')) return xmlInput;
 
   const parser = new XMLParser({
     ignoreAttributes: false,
