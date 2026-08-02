@@ -3252,168 +3252,176 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
   `.trim();
 }
 
-/**
- * Returns exact pixel-perfect Draw.io XML matching Monitex AI Safety & NLI Claim Benchmarking Flow
- */
 export function getExactEvalSafetyBenchmarkingReferenceXml(): string {
   return `
 <mxfile host="embed.diagrams.net">
-  <diagram id="eval_safety_benchmarking_compiled" name="End-to-End Monitex AI Safety, NLI Claim Benchmarking & Red-Teaming Flow">
-    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="950" math="0" shadow="0">
+  <diagram id="eval_safety_benchmarking_compiled" name="Vertex AI Safety, NLI Claim Benchmarking &amp; Red-Teaming Flow (GCP Focus)">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="980" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- HEADER BANNER -->
-        <mxCell id="header_frame" value="&lt;b style=&quot;font-size:18px;letter-spacing:1px;color:#FFFFFF;&quot;&gt;🛡️ END-TO-END MONITEX AI SAFETY, NLI CLAIM BENCHMARKING &amp; RED-TEAMING FLOW&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#E2E8F0;font-style:italic;&quot;&gt;Illustrates how automated evaluation harnesses (Ragas / G-Eval), Natural Language Inference (NLI) factual claim verification, toxicity screening, and safety red-teaming execute continuously before model promotion.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;gradientColor=#1E293B;gradientDirection=south;strokeColor=#38BDF8;strokeWidth=2;verticalAlign=center;fontStyle=1;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="20" width="1640" height="70" as="geometry" />
+        <!-- FUTURISTIC METALLIC FRAME WITH GLOWING SHIELD MOTIF CORNERS & HEADER BANNER -->
+        <mxCell id="header_frame" value="&lt;b style=&quot;font-size:19px;letter-spacing:1px;color:#FFFFFF;&quot;&gt;🛡️ VERTEX AI SAFETY, NLI CLAIM BENCHMARKING &amp; RED-TEAMING FLOW&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#E2E8F0;&quot;&gt;Illustrates how Vertex AI evaluation harnesses (metrics), Natural Language Inference (NLI) claim verification powered by Gemini, safety screenings, and safety red-teaming execute continuously before model promotion.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;gradientColor=#1E293B;gradientDirection=south;strokeColor=#38BDF8;strokeWidth=2.5;verticalAlign=center;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="20" width="1680" height="75" as="geometry" />
         </mxCell>
 
         <!-- COLUMN 1: GCP CONTINUOUS INTEGRATION (CI) & DATA INGESTION -->
         <mxCell id="col1_ci" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;GCP CONTINUOUS INTEGRATION (CI)&lt;br&gt;&amp; DATA INGESTION&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="110" width="280" height="730" as="geometry" />
+          <mxGeometry x="30" y="115" width="290" height="730" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_checkpoint" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;💾 Vertex AI Model Checkpoint&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;Model Weights &amp; Evaluation Artifacts&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;shadow=1;padding=8;" vertex="1" parent="1">
-          <mxGeometry x="55" y="180" width="230" height="120" as="geometry" />
+        <!-- Asset 1: Vertex AI Model Checkpoint -->
+        <mxCell id="node_checkpoint" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;💾 Vertex AI Model Checkpoint&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;Saved Model Icon Overlaid with Vertex AI Logo&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;shadow=1;padding=8;" vertex="1" parent="1">
+          <mxGeometry x="55" y="180" width="240" height="115" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_datasets" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;🛢️ Cloud Storage Datasets&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;(Reference &amp; Distractor Benchmark Sets)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;shadow=1;padding=8;" vertex="1" parent="1">
-          <mxGeometry x="55" y="340" width="230" height="130" as="geometry" />
+        <!-- Asset 2: Cloud Storage Datasets (Reference & Distractor) -->
+        <mxCell id="node_datasets" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;🛢️📄 Cloud Storage Datasets&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#2563EB;font-weight:bold;&quot;&gt;(Reference &amp; Distractor)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Cloud Storage Bucket Icon on Document Stack&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;shadow=1;padding=8;" vertex="1" parent="1">
+          <mxGeometry x="55" y="325" width="240" height="130" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_prompts" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;💬 Vertex AI Test Prompts&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;&amp; Gold Standard Scenarios&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;shadow=1;padding=8;" vertex="1" parent="1">
-          <mxGeometry x="55" y="500" width="230" height="120" as="geometry" />
+        <!-- Asset 3: Vertex AI Test Prompts & Scenarios -->
+        <mxCell id="node_prompts" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;💬 Vertex AI Test Prompts&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#1E293B;font-weight:bold;&quot;&gt;&amp; Scenarios&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Google-style Chat Bubbles Harness&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;shadow=1;padding=8;" vertex="1" parent="1">
+          <mxGeometry x="55" y="485" width="240" height="125" as="geometry" />
         </mxCell>
 
-        <!-- Trigger CI Pipeline Badge -->
+        <!-- Trigger CI Pipeline Arrow Badge -->
         <mxCell id="trigger_badge" value="&lt;b style=&quot;font-size:12px;color:#FFFFFF;&quot;&gt;Trigger CI Pipeline ➔&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=none;shadow=1;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="75" y="660" width="190" height="42" as="geometry" />
+          <mxGeometry x="75" y="650" width="200" height="44" as="geometry" />
         </mxCell>
 
-        <!-- COLUMN 2: VERTEX AI AUTOMATED EVALUATION -->
-        <mxCell id="col2_eval" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;VERTEX AI AUTOMATED EVALUATION&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="345" y="110" width="410" height="730" as="geometry" />
+        <!-- COLUMN 2: Vertex AI Automated Evaluation -->
+        <mxCell id="col2_eval" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Vertex AI Automated Evaluation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="115" width="430" height="730" as="geometry" />
         </mxCell>
 
-        <!-- SUB-BOX A: PERFORMANCE METRICS -->
-        <mxCell id="sub_a" value="&lt;b style=&quot;font-size:11px;color:#166534;&quot;&gt;A. PERFORMANCE METRICS (Benchmark &amp; Vertex AI LBC)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1.5;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="365" y="160" width="370" height="175" as="geometry" />
+        <!-- Top Track (Track A): Performance Metrics (Benchmark & Vertex AI LBC) -->
+        <mxCell id="sub_a" value="&lt;b style=&quot;font-size:11px;color:#166534;&quot;&gt;Top Track (Track A): Performance Metrics (Benchmark &amp; Vertex AI LBC)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1.5;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="380" y="165" width="390" height="170" as="geometry" />
         </mxCell>
-        <mxCell id="m_context" value="&lt;b style=&quot;font-size:10.5px;&quot;&gt;🔍 Context Relevance&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Vertex AI LBC)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="200" width="105" height="115" as="geometry" />
+        <mxCell id="m_context" value="&lt;b style=&quot;font-size:10px;&quot;&gt;🔍 Context Relevance&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#15803D;&quot;&gt;(Vertex AI LBC)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="395" y="205" width="110" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="m_faith" value="&lt;b style=&quot;font-size:10.5px;&quot;&gt;🤝 Faithfulness&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Vertex AI LBC)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="498" y="200" width="105" height="115" as="geometry" />
+        <mxCell id="m_faith" value="&lt;b style=&quot;font-size:10px;&quot;&gt;🤝 Faithfulness&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#15803D;&quot;&gt;(Vertex AI LBC)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="205" width="110" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="m_answer" value="&lt;b style=&quot;font-size:10.5px;&quot;&gt;🎯 Answer Relevance&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Vertex AI LBC)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="615" y="200" width="105" height="115" as="geometry" />
-        </mxCell>
-
-        <!-- SUB-BOX B: NLI CLAIM VERIFICATION -->
-        <mxCell id="sub_b" value="&lt;b style=&quot;font-size:11px;color:#1E40AF;&quot;&gt;B. Natural Language Inference (NLI) Claim Verification (Gemini)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="365" y="355" width="370" height="205" as="geometry" />
-        </mxCell>
-        <mxCell id="nli_isolate" value="&lt;b style=&quot;font-size:10.5px;&quot;&gt;✂️ Isolate Claims&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Gemini-driven extraction)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="395" width="105" height="145" as="geometry" />
-        </mxCell>
-        <mxCell id="nli_evidence" value="&lt;b style=&quot;font-size:10.5px;&quot;&gt;📖 Supporting Evidence&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Cloud Storage / AlloyDB Retrieval)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="498" y="395" width="105" height="145" as="geometry" />
-        </mxCell>
-        <mxCell id="nli_classify" value="&lt;b style=&quot;font-size:10.5px;&quot;&gt;✅❌⚠️ Classify Claims&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Entailed, Contradicted, Neutral)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="615" y="395" width="105" height="145" as="geometry" />
+        <mxCell id="m_answer" value="&lt;b style=&quot;font-size:10px;&quot;&gt;🎯 Answer Relevance&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#15803D;&quot;&gt;(Vertex AI LBC)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="645" y="205" width="110" height="110" as="geometry" />
         </mxCell>
 
-        <!-- Evaluation Results Aggregator Hub -->
-        <mxCell id="aggregator" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;📊 Evaluation Results Aggregator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;Composite Quality &amp; NLI Entailment Score Threshold Audit&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="365" y="580" width="370" height="75" as="geometry" />
+        <!-- Bottom Track (Track B): Natural Language Inference (NLI) Claim Verification (Powered by Gemini) -->
+        <mxCell id="sub_b" value="&lt;b style=&quot;font-size:11px;color:#1E40AF;&quot;&gt;Bottom Track (Track B): Natural Language Inference (NLI) Claim Verification (Powered by Gemini ✨)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="380" y="355" width="390" height="215" as="geometry" />
+        </mxCell>
+        <mxCell id="nli_isolate" value="&lt;b style=&quot;font-size:10px;&quot;&gt;📋 Isolate Claims&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#1E40AF;&quot;&gt;(Gemini-driven)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="395" y="395" width="110" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="nli_evidence" value="&lt;b style=&quot;font-size:10px;&quot;&gt;🔍📖 Retrieve Supporting Evidence&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;(Cloud Storage / AlloyDB Retrieval)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="395" width="110" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="nli_classify" value="&lt;b style=&quot;font-size:10px;&quot;&gt;✅❌⚠️ Classify Claims&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;(Entailed, Contradicted, Neutral)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="645" y="395" width="110" height="150" as="geometry" />
         </mxCell>
 
-        <!-- COLUMN 3: VERTEX AI SAFETY RED-TEAMING & SCREENING -->
-        <mxCell id="col3_safety" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;VERTEX AI SAFETY RED-TEAMING&lt;br&gt;&amp; SCREENING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="785" y="110" width="410" height="730" as="geometry" />
+        <!-- Central Logic Box: Evaluation Results Aggregator -->
+        <mxCell id="aggregator" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;📊 Evaluation Results Aggregator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;Central Logic Convergence Hub &amp; Continuous Improvement Trigger&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="595" width="390" height="85" as="geometry" />
         </mxCell>
 
-        <!-- SUB-BOX C: TOXICITY & BIAS SCREENING -->
-        <mxCell id="sub_c" value="&lt;b style=&quot;font-size:11px;color:#B45309;&quot;&gt;C. Vertex AI TOXICITY &amp; BIAS SCREENING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF08A;strokeColor=#F59E0B;strokeWidth=1.5;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="805" y="160" width="370" height="145" as="geometry" />
-        </mxCell>
-        <mxCell id="tox_settings" value="&lt;b style=&quot;font-size:11px;&quot;&gt;🛡️ Vertex AI Safety Settings&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Toxicity &amp; Hate Detection)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FBBF24;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="825" y="200" width="155" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="tox_waf" value="&lt;b style=&quot;font-size:11px;&quot;&gt;🛡️ Cloud Armor WAF&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Toxicity &amp; Bias Filter Gate)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FBBF24;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="998" y="200" width="155" height="90" as="geometry" />
+        <!-- Feedback Loop: Continuous Improvement running back to Column 1 -->
+        <mxCell id="fb_col2" value="&lt;b style=&quot;font-size:11px;color:#0284C7;&quot;&gt;↩️ Continuous Improvement (Dataset &amp; Metric Remediation Loop)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="380" y="705" width="390" height="40" as="geometry" />
         </mxCell>
 
-        <!-- SUB-BOX D: SAFETY RED-TEAMING -->
-        <mxCell id="sub_d" value="&lt;b style=&quot;font-size:11px;color:#991B1B;&quot;&gt;D. Vertex AI Safety Red-Teaming &amp; Adversarial Testing&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="805" y="325" width="370" height="205" as="geometry" />
-        </mxCell>
-        <mxCell id="red_jailbreak" value="&lt;b style=&quot;font-size:10.5px;&quot;&gt;🥷 Simulate Jailbreak&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;System Prompt Override Attempts&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="825" y="365" width="155" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="red_injection" value="&lt;b style=&quot;font-size:10.5px;&quot;&gt;⚡ Prompt Injection&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Adversarial Ingress Simulation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="998" y="365" width="155" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="red_guidelines" value="&lt;b style=&quot;font-size:11px;&quot;&gt;⚖️ Check against Safety Guidelines &amp; Enterprise Compliance Mandate&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="825" y="450" width="328" height="60" as="geometry" />
+        <!-- COLUMN 3: Vertex AI Safety Red-Teaming & Screening -->
+        <mxCell id="col3_safety" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Vertex AI Safety Red-Teaming &amp; Screening&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="830" y="115" width="440" height="730" as="geometry" />
         </mxCell>
 
-        <!-- SAFETY DECISION GATE WIDGET -->
-        <mxCell id="safety_gate" value="&lt;b style=&quot;font-size:14px;color:#FFFFFF;&quot;&gt;🚦 Safety Decision Gate&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#E2E8F0;&quot;&gt;Automated Pass / Block / Halt Verification Barrier&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#38BDF8;strokeWidth=2.5;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="805" y="560" width="370" height="95" as="geometry" />
+        <!-- Operation C (Top): Vertex AI Toxicity & Bias Screening -->
+        <mxCell id="sub_c" value="&lt;b style=&quot;font-size:11px;color:#B45309;&quot;&gt;Operation C (Top): Vertex AI Toxicity &amp; Bias Screening&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF08A;strokeColor=#F59E0B;strokeWidth=1.5;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="850" y="165" width="400" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="tox_settings" value="&lt;b style=&quot;font-size:10px;&quot;&gt;💀 Vertex AI Safety Settings&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;(Toxicity Detection)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FBBF24;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="865" y="205" width="120" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="tox_waf" value="&lt;b style=&quot;font-size:10px;&quot;&gt;🛡️ Cloud Armor WAF&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;(Toxicity/Bias Filter)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FBBF24;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="205" width="120" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="tox_fair" value="&lt;b style=&quot;font-size:10px;&quot;&gt;⚖️ Vertex AI Fairness Monitoring&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Disparate Impact Audit&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FBBF24;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1125" y="205" width="115" height="95" as="geometry" />
         </mxCell>
 
-        <!-- COLUMN 4: VERTEX AI PROMOTION & DEPLOYMENT -->
-        <mxCell id="col4_promotion" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;VERTEX AI PROMOTION&lt;br&gt;&amp; DEPLOYMENT&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=2;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="1230" y="110" width="440" height="730" as="geometry" />
+        <!-- Operation D (Bottom): Vertex AI Safety Red-Teaming -->
+        <mxCell id="sub_d" value="&lt;b style=&quot;font-size:11px;color:#991B1B;&quot;&gt;Operation D (Bottom): Vertex AI Safety Red-Teaming&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="850" y="340" width="400" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="red_services" value="&lt;b style=&quot;font-size:10px;&quot;&gt;🛡️🥷 Vertex AI Red-Teaming Services&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#991B1B;&quot;&gt;(Hacker-simulated Attacks)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="865" y="380" width="120" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="red_jailbreak" value="&lt;b style=&quot;font-size:10px;&quot;&gt;🔓 Simulate Jailbreak Attempts&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;(Automated / Human)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="380" width="120" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="red_injection" value="&lt;b style=&quot;font-size:10px;&quot;&gt;⚡ Prompt Injection / Adversarial Attacks&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Payload Ingress &amp; Exfiltration Audit&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1125" y="380" width="115" height="115" as="geometry" />
         </mxCell>
 
-        <!-- PATH 1: PASSED (GREEN) -->
-        <mxCell id="card_promote" value="&lt;b style=&quot;font-size:12px;color:#15803D;&quot;&gt;🚀 Model Promotion (Vertex AI Model Registry)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#166534;&quot;&gt;Deploy to Vertex AI Endpoints (Production Controlled Pilot)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=2;shadow=1;padding=10;" vertex="1" parent="1">
-          <mxGeometry x="1255" y="160" width="390" height="135" as="geometry" />
+        <!-- PHYSICAL SAFETY DECISION GATE WITH BARRIER & TRAFFIC LIGHT -->
+        <mxCell id="safety_gate" value="&lt;b style=&quot;font-size:15px;color:#FFFFFF;&quot;&gt;🚧 🚦 Safety Decision Gate&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#38BDF8;font-weight:bold;&quot;&gt;Physical Barrier &amp; Traffic Light Authorization System&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#CBD5E1;&quot;&gt;Converges Aggregator Output, Toxicity Screening &amp; Red-Teaming Results&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#38BDF8;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="850" y="555" width="400" height="120" as="geometry" />
         </mxCell>
 
-        <!-- PATH 2: REMEDIATE (AMBER) -->
-        <mxCell id="card_remediate" value="&lt;b style=&quot;font-size:12px;color:#B45309;&quot;&gt;🛠️ Block &amp; Remediate&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#92400E;&quot;&gt;(Vertex AI Model Registry Review &amp; Metric Remediation Loop)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;shadow=1;padding=10;" vertex="1" parent="1">
-          <mxGeometry x="1255" y="335" width="390" height="115" as="geometry" />
+        <!-- COLUMN 4: Vertex AI Promotion & Deployment -->
+        <mxCell id="col4_promotion" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Vertex AI Promotion &amp; Deployment&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=2;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="115" width="400" height="730" as="geometry" />
         </mxCell>
 
-        <!-- PATH 3: FAILED IMMEDIATE HALT (RED) -->
-        <mxCell id="card_halt" value="&lt;b style=&quot;font-size:13px;color:#DC2626;&quot;&gt;🛑 Immediate Halt&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#991B1B;&quot;&gt;Automatic Release Lock &amp; Safety Team Trigger&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=2.5;shadow=1;padding=8;" vertex="1" parent="1">
-          <mxGeometry x="1255" y="485" width="390" height="195" as="geometry" />
+        <!-- Passed Path (Top, Green): Evaluation: High Quality AND Safety: Passed -->
+        <mxCell id="card_promote" value="&lt;b style=&quot;font-size:12px;color:#15803D;&quot;&gt;🚀 Model Promotion (Vertex AI Model Registry)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#166534;font-weight:bold;&quot;&gt;➔ Deploy to Vertex AI Endpoints&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Green Rocket Launching into Production Traffic&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=2.5;shadow=1;padding=10;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="165" width="360" height="140" as="geometry" />
         </mxCell>
 
-        <mxCell id="sub_team" value="&lt;b style=&quot;font-size:11px;&quot;&gt;👥 Vertex AI Safety Team Intervention&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="1275" y="540" width="350" height="55" as="geometry" />
-        </mxCell>
-        <mxCell id="sub_retrain" value="&lt;b style=&quot;font-size:11px;&quot;&gt;🏭 Vertex AI Model Retraining &amp; Update&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="1275" y="605" width="350" height="55" as="geometry" />
+        <!-- Blocked Path (Middle, Red): Low Quality / Low Reliability -->
+        <mxCell id="card_remediate" value="&lt;b style=&quot;font-size:12px;color:#B45309;&quot;&gt;🛑 Block &amp; Remediate (Vertex AI Model Registry Review)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#92400E;&quot;&gt;Red Stop Sign Icon — Triggers Parameter &amp; Metric Remediation Loop&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;shadow=1;padding=10;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="340" width="360" height="120" as="geometry" />
         </mxCell>
 
-        <!-- BOTTOM RETURN FEEDBACK ARROW: CONTINUOUS IMPROVEMENT -->
-        <mxCell id="feedback_bar" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;↩️ CONTINUOUS IMPROVEMENT FEEDBACK LOOP (Model Retraining &amp; Dataset Augmentation)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="55" y="775" width="1590" height="45" as="geometry" />
+        <!-- Failed Path (Bottom, Red): Safety Gate: Failed -->
+        <mxCell id="card_halt" value="&lt;b style=&quot;font-size:13px;color:#DC2626;&quot;&gt;✋ Immediate Halt&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#991B1B;font-weight:bold;&quot;&gt;Stop Hand Safety Lock Interception&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=2.5;shadow=1;padding=8;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="495" width="360" height="200" as="geometry" />
         </mxCell>
 
-        <!-- CONNECTORS -->
-        <mxCell id="c_trig_eval" value="Trigger CI" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=3;fontColor=#2563EB;fontStyle=1;" edge="1" parent="1" source="trigger_badge" target="sub_a">
+        <mxCell id="sub_team" value="&lt;b style=&quot;font-size:11px;color:#991B1B;&quot;&gt;👥 Vertex AI Safety Team Intervention&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(People Icons at a Table Review Board)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="555" width="320" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="sub_retrain" value="&lt;b style=&quot;font-size:11px;color:#991B1B;&quot;&gt;🏭 Vertex AI Model Retraining &amp; Update&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Factory Icon Model Pipeline Re-trigger)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="625" width="320" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- LARGE FEEDBACK LOOP: Continuous Monitoring & Improvement from Column 4 to Column 1 -->
+        <mxCell id="feedback_bar" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;↩️ Continuous Monitoring &amp; Improvement (Feedback Loop from Column 4 Model Registry / Safety Intervention back to Column 1 GCP CI &amp; Data Ingestion)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="785" width="1680" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- CONNECTING ARROWS ACROSS COLUMNS -->
+        <mxCell id="c_trig_eval" value="&lt;b style=&quot;color:#2563EB;background:#FFFFFF;padding:2px 4px;&quot;&gt;Trigger CI Pipeline&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=3;fontColor=#2563EB;fontStyle=1;" edge="1" parent="1" source="trigger_badge" target="sub_a">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="c_eval_gate" value="Continuous Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=3;fontColor=#16A34A;fontStyle=1;" edge="1" parent="1" source="aggregator" target="safety_gate">
+        <mxCell id="c_eval_gate" value="&lt;b style=&quot;color:#16A34A;background:#FFFFFF;padding:2px 4px;&quot;&gt;Continuous Traffic&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=3;fontColor=#16A34A;fontStyle=1;" edge="1" parent="1" source="aggregator" target="safety_gate">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="c_passed" value="Evaluation: High Quality AND Safety: Passed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=4;fontColor=#15803D;fontStyle=1;" edge="1" parent="1" source="safety_gate" target="card_promote">
+        <mxCell id="c_passed" value="&lt;b style=&quot;color:#15803D;background:#DCFCE7;padding:3px 6px;border:1px solid #22C55E;&quot;&gt;Evaluation: High Quality AND Safety: Passed&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=4;fontColor=#15803D;fontStyle=1;" edge="1" parent="1" source="safety_gate" target="card_promote">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="c_low" value="Low Quality / Low Reliability" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D97706;strokeWidth=3;fontColor=#B45309;fontStyle=1;" edge="1" parent="1" source="safety_gate" target="card_remediate">
+        <mxCell id="c_low" value="&lt;b style=&quot;color:#B45309;background:#FEF3C7;padding:3px 6px;border:1px solid #F59E0B;&quot;&gt;Low Quality / Low Reliability&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D97706;strokeWidth=3;fontColor=#B45309;fontStyle=1;" edge="1" parent="1" source="safety_gate" target="card_remediate">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="c_failed" value="FAILED" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#DC2626;strokeWidth=4;fontColor=#DC2626;fontStyle=1;" edge="1" parent="1" source="safety_gate" target="card_halt">
+        <mxCell id="c_failed" value="&lt;b style=&quot;color:#DC2626;background:#FEE2E2;padding:3px 6px;border:1px solid #EF4444;&quot;&gt;Safety Gate: Failed&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#DC2626;strokeWidth=4;fontColor=#DC2626;fontStyle=1;" edge="1" parent="1" source="safety_gate" target="card_halt">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
