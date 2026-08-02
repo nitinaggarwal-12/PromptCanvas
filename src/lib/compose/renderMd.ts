@@ -8,15 +8,42 @@ export interface ComposeRenderInput {
   model: SystemModel;
   sections: Record<string, SectionContent>;
   inferredMap: Record<string, InferredSectionOutput>;
+  diagramRepository?: Record<string, { id: string; architecture_type: string; graph_json?: any; xml?: string; prompt?: string }>;
 }
 
-function generateDynamicMermaidFlow(model: SystemModel): string {
+function generateMermaidForDiagram(diagramObj: { architecture_type: string; graph_json?: any; prompt?: string }, fallbackModel: SystemModel): string {
   const lines: string[] = ['graph TD'];
-  const activeTiers = model.tiers.filter((t) => model.components.some((c) => c.tier === t.id));
+  if (diagramObj?.graph_json?.nodes && Array.isArray(diagramObj.graph_json.nodes)) {
+    const nodes = diagramObj.graph_json.nodes.slice(0, 8);
+    for (let idx = 0; idx < nodes.length; idx++) {
+      const n = nodes[idx];
+      const safeId = (n.id || `node_${idx}`).replace(/[^a-zA-Z0-9]/g, '_');
+      const cleanLabel = (n.label || n.title || `Component ${idx + 1}`).replace(/"/g, "'");
+      lines.push(`    ${safeId}["${cleanLabel}"]`);
+    }
+    if (diagramObj.graph_json.edges && Array.isArray(diagramObj.graph_json.edges)) {
+      for (const e of diagramObj.graph_json.edges.slice(0, 6)) {
+        const fromId = (e.source || e.from || '').replace(/[^a-zA-Z0-9]/g, '_');
+        const toId = (e.target || e.to || '').replace(/[^a-zA-Z0-9]/g, '_');
+        if (fromId && toId) {
+          if (e.label) {
+            const cleanLabel = e.label.replace(/"/g, "'");
+            lines.push(`    ${fromId} -->|"${cleanLabel}"| ${toId}`);
+          } else {
+            lines.push(`    ${fromId} --> ${toId}`);
+          }
+        }
+      }
+    }
+    return lines.join('\n');
+  }
+
+  // Fallback to active model nodes
+  const activeTiers = fallbackModel.tiers.filter((t) => fallbackModel.components.some((c) => c.tier === t.id));
   const tiersToRender = activeTiers.length > 0 ? activeTiers.slice(0, 5) : [{ id: 'core', label: 'Core System Subsystem', kind: 'tier' }];
 
   for (const tier of tiersToRender) {
-    const tierComps = model.components.filter((c) => c.tier === tier.id).slice(0, 3);
+    const tierComps = fallbackModel.components.filter((c) => c.tier === tier.id).slice(0, 3);
     const safeTierId = tier.id.replace(/[^a-zA-Z0-9]/g, '_');
     lines.push(`    subgraph TIER_${safeTierId}["🛡️ ${tier.label}"]`);
     for (const comp of tierComps) {
@@ -27,8 +54,7 @@ function generateDynamicMermaidFlow(model: SystemModel): string {
     lines.push('    end');
   }
 
-  // Flows
-  const activeFlows = model.flows.slice(0, 8);
+  const activeFlows = fallbackModel.flows.slice(0, 8);
   for (const flow of activeFlows) {
     const fromId = flow.from.replace(/[^a-zA-Z0-9]/g, '_');
     const toId = flow.to.replace(/[^a-zA-Z0-9]/g, '_');
@@ -44,12 +70,35 @@ function generateDynamicMermaidFlow(model: SystemModel): string {
 }
 
 export function renderMarkdown(input: ComposeRenderInput): string {
-  const { archetype, model, sections, inferredMap } = input;
+  const { archetype, model, sections, inferredMap, diagramRepository = {} } = input;
   const lines: string[] = [];
 
   const systemTitle = model.title || 'Enterprise Architecture System';
   const domainName = model.domain || 'Enterprise Software & Governed AI System';
   const timestamp = new Date().toISOString().split('T')[0];
+  const availableDiagramTypes = Object.keys(diagramRepository);
+
+  // Archetype section diagram mapping out of the 21 stored diagrams
+  const archetypeDiagramMap: Record<string, string[]> = {
+    prd: ['conceptual_diagram', 'unified_system_view', 'agentic_rag', 'sequence_diagram', 'governance_state_machine'],
+    fdd: ['unified_system_view', 'macro_sequence_diagram', 'agentic_rag', 'governance_state_machine', 'sequence_diagram'],
+    sdd: [
+      'unified_system_view',
+      'secure_deployment_map',
+      'tech_vpc_infra',
+      'tech_serverless_gcp',
+      'agentic_rag',
+      'governance_state_machine',
+      'tech_multi_region_dr',
+      'tech_event_driven_aws',
+      'tech_cicd_pipeline',
+    ],
+    brd: ['conceptual_diagram', 'unified_system_view', 'governance_state_machine', 'tech_multi_region_dr', 'data_ai_pipeline'],
+    tdd: ['tech_microservices_aws', 'tech_event_driven_aws', 'tech_rag_gcp', 'tech_cicd_pipeline', 'tech_data_lakehouse', 'tech_vpc_infra'],
+    exec_brief: ['unified_system_view', 'conceptual_diagram', 'macro_sequence_diagram', 'governance_state_machine', 'tech_multi_region_dr'],
+  };
+
+  const targetDiagrams = archetypeDiagramMap[archetype.id] || availableDiagramTypes.slice(0, 6);
 
   // 1. Executive Publication Header & Metadata Table
   lines.push(`# ${archetype.name}`);
@@ -63,6 +112,7 @@ export function renderMarkdown(input: ComposeRenderInput): string {
   lines.push(`| **Enterprise Domain & Scope** | ${domainName} | Active Operational Domain |`);
   lines.push(`| **Architectural Subsystem Tiers** | ${model.tiers.length || 1} Logical Tiers (${model.components.length} Service Pods) | GxP & Enterprise Governed |`);
   lines.push(`| **Integrated Service Interfaces** | ${model.flows.length} API & Event Exchange Contracts | VPC-SC Security Perimeter |`);
+  lines.push(`| **Use-Case Architecture Suite** | ${availableDiagramTypes.length || 21} Visual Architecture Diagrams Available | Linked System Repository |`);
   lines.push(`| **Specification Date** | ${timestamp} | Continuous Verification |`);
   lines.push('');
   lines.push('---');
@@ -76,20 +126,24 @@ export function renderMarkdown(input: ComposeRenderInput): string {
   lines.push(`The target architecture synthesizes **${model.components.length} specialized service components and workloads** distributed across **${model.tiers.length || 1} functional subsystem tiers**, synchronized via **${model.flows.length} enterprise service-to-service communication contracts**.`);
   lines.push('');
 
-  // 3. Embedded Live Visual Architecture Flow Diagram
-  lines.push('### 📐 Figure 1.0: End-to-End Architecture Topology & Subsystem Integration Blueprint');
-  lines.push('```mermaid');
-  lines.push(generateDynamicMermaidFlow(model));
-  lines.push('```');
-  lines.push('');
-  lines.push('---');
-  lines.push('');
-
-  // 4. Render Archetype Sections Dynamically Without Debug Clutter
+  // 3. Render Archetype Sections Dynamically With Visual Diagram Figures for relevant diagrams out of the 21
   let sectionCounter = 2;
-  for (const spec of archetype.sections) {
+  for (let sIdx = 0; sIdx < archetype.sections.length; sIdx++) {
+    const spec = archetype.sections[sIdx];
     lines.push(`# ${sectionCounter}. ${spec.title}`);
     lines.push('');
+
+    // Attach visual diagram figure if mapped out of the 21 diagrams
+    const assignedDiagramType = targetDiagrams[sIdx % targetDiagrams.length];
+    const diagramObj = diagramRepository[assignedDiagramType] || Object.values(diagramRepository)[sIdx % Math.max(1, availableDiagramTypes.length)];
+    if (diagramObj) {
+      const diagramTitle = assignedDiagramType.replace(/_/g, ' ').toUpperCase();
+      lines.push(`### 📐 Figure ${sectionCounter}.1: ${diagramTitle} — Architectural Topology & Visual Flow Schematic`);
+      lines.push('```mermaid');
+      lines.push(generateMermaidForDiagram(diagramObj, model));
+      lines.push('```');
+      lines.push('');
+    }
 
     // Handle Inferred Sections with executive narrative formatting
     if (spec.provenance === 'inferred') {
@@ -161,7 +215,7 @@ export function renderMarkdown(input: ComposeRenderInput): string {
     lines.push('');
   }
 
-  // 5. Formal Architecture Review Board Sign-Off Matrix
+  // 4. Formal Architecture Review Board Sign-Off Matrix
   lines.push(`# ${sectionCounter}. Architecture Review Board (ARB) & Technical Approval Sign-Off`);
   lines.push('');
   lines.push('| Reviewer Board / Functional Leadership Role | Attributed Enterprise Leader | Verification Status | Timestamp |');

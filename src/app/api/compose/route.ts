@@ -60,11 +60,46 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Load all diagrams present for this workspace / usecase from dev.db
+    const diagramRepository: Record<string, { id: string; architecture_type: string; graph_json?: any; xml?: string; prompt?: string }> = {};
+    try {
+      const dbPath = path.join(process.cwd(), 'dev.db');
+      const db = new DatabaseSync(dbPath);
+      const rows = db
+        .prepare(
+          `SELECT id, diagram_id, version_number, graph_json, mxgraph_xml, architecture_type, prompt FROM diagram_versions ORDER BY version_number DESC`
+        )
+        .all() as any[];
+
+      for (const row of rows) {
+        const archType = row.architecture_type || 'conceptual_diagram';
+        if (!diagramRepository[archType]) {
+          let parsedGraph: any = null;
+          if (row.graph_json) {
+            try {
+              parsedGraph = JSON.parse(row.graph_json);
+            } catch {
+              // ignore
+            }
+          }
+          diagramRepository[archType] = {
+            id: row.id,
+            architecture_type: archType,
+            graph_json: parsedGraph,
+            xml: row.mxgraph_xml,
+            prompt: row.prompt,
+          };
+        }
+      }
+    } catch (dbErr) {
+      console.warn('[Compose API] DB repository lookup warning:', dbErr);
+    }
+
     // 1. Extract SystemModel
     const model = extractSystemModel({
-      graph_json: graphJsonToUse,
-      xml: xmlToUse,
-      title: titleToUse,
+      graph_json: directGraphJson || Object.values(diagramRepository)[0]?.graph_json,
+      xml: directXml || Object.values(diagramRepository)[0]?.xml,
+      title: title || 'Enterprise Governed Architecture Platform',
       domain,
     });
 
@@ -86,6 +121,7 @@ export async function POST(req: NextRequest) {
       model,
       sections: derivedSections,
       inferredMap,
+      diagramRepository,
     };
 
     if (format === 'md') {
