@@ -78,27 +78,56 @@ export function renderMarkdown(input: ComposeRenderInput): string {
   const timestamp = new Date().toISOString().split('T')[0];
   const availableDiagramTypes = Object.keys(diagramRepository);
 
-  // Archetype section diagram mapping out of the 21 stored diagrams
-  const archetypeDiagramMap: Record<string, string[]> = {
-    prd: ['conceptual_diagram', 'unified_system_view', 'agentic_rag', 'sequence_diagram', 'governance_state_machine'],
-    fdd: ['unified_system_view', 'macro_sequence_diagram', 'agentic_rag', 'governance_state_machine', 'sequence_diagram'],
-    sdd: [
-      'unified_system_view',
-      'secure_deployment_map',
-      'tech_vpc_infra',
-      'tech_serverless_gcp',
-      'agentic_rag',
-      'governance_state_machine',
-      'tech_multi_region_dr',
-      'tech_event_driven_aws',
-      'tech_cicd_pipeline',
-    ],
-    brd: ['conceptual_diagram', 'unified_system_view', 'governance_state_machine', 'tech_multi_region_dr', 'data_ai_pipeline'],
-    tdd: ['tech_microservices_aws', 'tech_event_driven_aws', 'tech_rag_gcp', 'tech_cicd_pipeline', 'tech_data_lakehouse', 'tech_vpc_infra'],
-    exec_brief: ['unified_system_view', 'conceptual_diagram', 'macro_sequence_diagram', 'governance_state_machine', 'tech_multi_region_dr'],
+  // Exact Section-ID to Diagram Location Insertion Map across all 21 architectural diagrams
+  const SECTION_DIAGRAM_INSERTION_MAP: Record<string, Record<string, string[]>> = {
+    sdd: {
+      deployment_topology: ['secure_deployment_map', 'tech_serverless_gcp'],
+      network_security: ['tech_vpc_infra'],
+      react_runtime: ['macro_sequence_diagram', 'tech_serverless_gcp'],
+      model_gateway: ['tech_serverless_gcp'],
+      data_retrieval: ['agentic_rag', 'tech_rag_gcp', 'tech_data_lakehouse'],
+      tool_gateway_audit: ['governance_state_machine', 'sequence_diagram'],
+      observability_reliability: ['tech_multi_region_dr', 'tech_iot_telemetry'],
+    },
+    prd: {
+      problem_statement: ['conceptual_diagram'],
+      personas: ['unified_system_view'],
+      epics: ['sequence_diagram'],
+      functional_reqs: ['agentic_rag'],
+      acceptance_criteria: ['governance_state_machine'],
+      nfrs: ['devops_cicd_pipeline'],
+    },
+    fdd: {
+      functional_overview: ['unified_system_view'],
+      roles_permissions: ['sequence_diagram'],
+      planning_orchestration: ['macro_sequence_diagram'],
+      retrieval_evidence: ['agentic_rag', 'tech_rag_gcp'],
+      safety_pv_detection: ['governance_state_machine'],
+      compliance_qc: ['erd'],
+    },
+    brd: {
+      exec_problem_solution: ['conceptual_diagram'],
+      business_context: ['unified_system_view'],
+      business_capabilities: ['data_ai_pipeline'],
+      autonomy_matrix: ['governance_state_machine'],
+      value_realization: ['tech_multi_region_dr'],
+    },
+    tdd: {
+      tech_overview_repo: ['tech_microservices_aws'],
+      architecture_patterns: ['tech_event_driven_aws', 'tech_streaming_analytics'],
+      data_persistence: ['tech_data_lakehouse', 'erd'],
+      cicd_automation: ['tech_cicd_pipeline'],
+    },
+    exec_brief: {
+      proposal_decision: ['unified_system_view'],
+      eight_layer_blueprint: ['conceptual_diagram'],
+      specialized_agent_delegation: ['macro_sequence_diagram'],
+      autonomy_ladder_oversight: ['governance_state_machine'],
+      roadmap_investment_gates: ['tech_multi_region_dr'],
+    },
   };
 
-  const targetDiagrams = archetypeDiagramMap[archetype.id] || availableDiagramTypes.slice(0, 6);
+  const archetypeInsertionMap = SECTION_DIAGRAM_INSERTION_MAP[archetype.id] || {};
 
   // 1. Executive Publication Header & Metadata Table
   lines.push(`# ${archetype.name}`);
@@ -133,16 +162,19 @@ export function renderMarkdown(input: ComposeRenderInput): string {
     lines.push(`# ${sectionCounter}. ${spec.title}`);
     lines.push('');
 
-    // Attach visual diagram figure if mapped out of the 21 diagrams
-    const assignedDiagramType = targetDiagrams[sIdx % targetDiagrams.length];
-    const diagramObj = diagramRepository[assignedDiagramType] || Object.values(diagramRepository)[sIdx % Math.max(1, availableDiagramTypes.length)];
-    if (diagramObj) {
-      const diagramTitle = assignedDiagramType.replace(/_/g, ' ').toUpperCase();
-      lines.push(`### 📐 Figure ${sectionCounter}.1: ${diagramTitle} — Architectural Topology & Visual Flow Schematic`);
-      lines.push('```mermaid');
-      lines.push(generateMermaidForDiagram(diagramObj, model));
-      lines.push('```');
-      lines.push('');
+    // Attach exact visual architecture diagrams mapped to this section location out of the 21 diagrams
+    const assignedDiagramTypes = archetypeInsertionMap[spec.id] || [];
+    for (let dIdx = 0; dIdx < assignedDiagramTypes.length; dIdx++) {
+      const diagramType = assignedDiagramTypes[dIdx];
+      const diagramObj = diagramRepository[diagramType] || Object.values(diagramRepository)[0];
+      if (diagramObj) {
+        const diagramTitle = diagramType.replace(/_/g, ' ').toUpperCase();
+        lines.push(`### 📐 Figure ${sectionCounter}.${dIdx + 1}: ${diagramTitle} — Architectural Topology & Visual Flow Schematic`);
+        lines.push('```mermaid');
+        lines.push(generateMermaidForDiagram(diagramObj, model));
+        lines.push('```');
+        lines.push('');
+      }
     }
 
     // Handle Inferred Sections with executive narrative formatting
