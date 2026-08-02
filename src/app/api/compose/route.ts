@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
 import { getArchetype, ArchetypeId } from '../../../lib/compose/archetypes';
-import { MASTER_DOCUMENTS } from '../../../lib/compose/masterDocs';
 import { extractSystemModel } from '../../../lib/compose/extract';
 import { MAPPER_REGISTRY } from '../../../lib/compose/mappers';
 import { fillInferredSections } from '../../../lib/compose/infer';
@@ -27,8 +26,6 @@ export async function POST(req: NextRequest) {
     }
 
     const archetype = getArchetype(archetypeId as ArchetypeId);
-
-    const mdContentToReturn: string | null = MASTER_DOCUMENTS[archetypeId] || null;
 
     // Load graph or XML from DB if diagramVersionIds provided
     let xmlToUse = directXml;
@@ -61,15 +58,6 @@ export async function POST(req: NextRequest) {
       } catch (dbErr) {
         console.warn('[Compose API] DB lookup warning:', dbErr);
       }
-    }
-
-    if (format === 'md' && mdContentToReturn) {
-      return new NextResponse(mdContentToReturn, {
-        headers: {
-          'Content-Type': 'text/markdown; charset=utf-8',
-          'Content-Disposition': `attachment; filename="${archetype.id}_${Date.now()}.md"`,
-        },
-      });
     }
 
     // 1. Extract SystemModel
