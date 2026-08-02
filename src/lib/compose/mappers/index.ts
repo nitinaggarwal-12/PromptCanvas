@@ -13,76 +13,74 @@ function getTierName(model: SystemModel, id: string): string {
 
 export const componentDescriptionsMapper: DerivationMapperFn = (model, sectionId = 'components') => {
   const paragraphs: ProvenanceText[] = [];
-  const bullets: ProvenanceText[] = [];
   const tableRows: TableRow[] = [];
 
   const activeTiers = model.tiers.filter((tier) =>
     model.components.some((c) => c.tier === tier.id)
   );
 
-  if (activeTiers.length > 0) {
-    paragraphs.push({
-      text: `The target enterprise architecture organizes operational components across ${activeTiers.length} logical subsystem tiers, integrating ${model.components.length} specialized service capabilities and compute workloads.`,
-      sourceRefs: activeTiers.map((t) => t.id),
-    });
-  } else if (model.components.length > 0) {
-    paragraphs.push({
-      text: `The system specification defines ${model.components.length} governed service components, data stores, and cognitive processing pods.`,
-      sourceRefs: model.components.map((c) => c.id),
-    });
-  }
+  paragraphs.push({
+    text: `The enterprise architecture organizes ${model.components.length} governed software components and microservices across ${activeTiers.length || 1} core logical architectural tiers.`,
+    sourceRefs: activeTiers.map((t) => t.id),
+  });
 
-  for (const comp of model.components) {
-    const tierName = comp.tier ? getTierName(model, comp.tier) : 'Core Platform Subsystem';
-    const inbound = model.flows.filter((f) => f.to === comp.id);
-    const outbound = model.flows.filter((f) => f.from === comp.id);
+  // Group components by architectural tier (max 8 rows to maintain publication-grade executive readability)
+  const tiersToSummarize = activeTiers.length > 0 ? activeTiers.slice(0, 8) : [{ id: 'core', label: 'Core Software & Compute Tier', kind: 'tier' }];
 
-    const interactions: string[] = [];
-    if (inbound.length > 0) {
-      interactions.push(`Receives inputs from ${inbound.map((f) => getComponentName(model, f.from)).join(', ')}`);
-    }
-    if (outbound.length > 0) {
-      interactions.push(`Dispatches data to ${outbound.map((f) => getComponentName(model, f.to)).join(', ')}`);
-    }
-    const flowDesc = interactions.length > 0 ? interactions.join('; ') : 'Autonomous processing / internal event loop';
+  for (const tier of tiersToSummarize) {
+    const tierComps = model.components.filter((c) => c.tier === tier.id);
+    const compNames = tierComps.slice(0, 4).map((c) => c.label);
+    const extraCount = tierComps.length - topCompsLength(compNames);
+    const summaryList =
+      tierComps.length > 0
+        ? `${compNames.join(', ')}${tierComps.length > 4 ? ` (+${tierComps.length - 4} additional pods)` : ''}`
+        : 'Governed Compute & Service Pods';
+
+    const sampleFlow = model.flows.find(
+      (f) => tierComps.some((c) => c.id === f.from) || tierComps.some((c) => c.id === f.to)
+    );
+    const flowDesc = sampleFlow
+      ? `Synchronizes via ${getComponentName(model, sampleFlow.from)} ➔ ${getComponentName(model, sampleFlow.to)}`
+      : 'Internal container network & service mesh';
 
     tableRows.push({
       cells: [
-        comp.label,
-        tierName,
-        comp.type || 'Service Component',
-        comp.subtitle || 'Active Architecture Node',
+        tier.label,
+        `${tierComps.length || 1} Pod(s)`,
+        compNames[0] || 'Active Architecture Tier',
+        summaryList,
         flowDesc,
       ],
-      sourceRefs: [comp.id],
-    });
-
-    bullets.push({
-      text: `**${comp.label}** (${tierName}): ${comp.subtitle || 'Core functional component'}. ${flowDesc}.`,
-      sourceRefs: [comp.id],
+      sourceRefs: tierComps.map((c) => c.id),
     });
   }
 
   return {
     sectionId,
     paragraphs,
-    bullets,
+    bullets: [],
     table: {
-      headers: ['Capability / Component', 'Architectural Tier', 'Component Type', 'Operational Role', 'Integration & Event Flow'],
+      headers: ['Architectural Subsystem Tier', 'Component Count', 'Primary Lead Capability', 'Key Components & Microservices', 'Primary Integration & Event Flow'],
       rows: tableRows,
     },
   };
 };
 
+function topCompsLength(arr: string[]): number {
+  return arr.length;
+}
+
 export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 'interfaces') => {
-  const rows: TableRow[] = model.flows.map((flow) => {
+  // Select top 6 representative inter-service contracts instead of dumping 80 raw rows
+  const representativeFlows = model.flows.slice(0, 6);
+  const rows: TableRow[] = representativeFlows.map((flow) => {
     const consumer = getComponentName(model, flow.from);
     const provider = getComponentName(model, flow.to);
     return {
       cells: [
         consumer,
         provider,
-        flow.label || 'Data & Event Synchronizing Interface',
+        flow.label || 'Governed API / Event Payload Exchange',
         flow.protocol || 'HTTPS REST / gRPC / mTLS',
         flow.async ? 'Asynchronous Event Pipeline' : 'Synchronous API Call',
       ],
@@ -94,8 +92,8 @@ export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 
     sectionId,
     paragraphs: [
       {
-        text: `The platform architecture enforces ${model.flows.length} strict service-to-service communication contracts, API interfaces, and enterprise event streams.`,
-        sourceRefs: model.flows.map((f) => `${f.from}->${f.to}`),
+        text: `The platform architecture enforces ${model.flows.length} integrated service-to-service communication contracts, API interfaces, and enterprise event streams across VPC-SC network boundaries.`,
+        sourceRefs: representativeFlows.map((f) => `${f.from}->${f.to}`),
       },
     ],
     bullets: [],
@@ -110,21 +108,20 @@ export const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functi
   const bullets: ProvenanceText[] = [];
 
   if (model.actors.length > 0) {
-    for (const actor of model.actors) {
+    for (const actor of model.actors.slice(0, 4)) {
       const actorFlows = model.flows.filter((f) => f.from === actor.id);
-      for (const flow of actorFlows) {
-        const targetName = getComponentName(model, flow.to);
-        const goal = flow.label || `execute governed cognitive workflows through ${targetName}`;
-        bullets.push({
-          text: `**${actor.label} Workflow:** Initiates ${goal} to interact with ${targetName} under deterministic audit and policy controls.`,
-          sourceRefs: [actor.id, flow.to],
-        });
-      }
+      const topFlow = actorFlows[0];
+      const targetName = topFlow ? getComponentName(model, topFlow.to) : 'Agent Orchestration Service';
+      const goal = topFlow?.label || `execute governed cognitive workflows through ${targetName}`;
+      bullets.push({
+        text: `**${actor.label} Workflow:** Initiates ${goal} to interact with ${targetName} under deterministic audit and policy controls.`,
+        sourceRefs: [actor.id],
+      });
     }
   }
 
   if (bullets.length === 0) {
-    for (const flow of model.flows) {
+    for (const flow of model.flows.slice(0, 5)) {
       bullets.push({
         text: `**${getComponentName(model, flow.from)} ➔ ${getComponentName(model, flow.to)}:** ${flow.label || 'End-to-end multi-step orchestration and event dispatch'}.`,
         sourceRefs: [flow.from, flow.to],
@@ -136,7 +133,7 @@ export const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functi
     sectionId,
     paragraphs: [
       {
-        text: `End-to-end operational user stories and functional component interaction scenarios derived from the live system topology:`,
+        text: `Core operational user scenarios and functional component interaction flows derived from the live system topology:`,
         sourceRefs: [],
       },
     ],
