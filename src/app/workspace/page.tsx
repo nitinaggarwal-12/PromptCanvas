@@ -1866,6 +1866,9 @@ function WorkspaceContent() {
     ];
 
     const personaRelevantIds: Record<string, string[]> = {
+      executive: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'business_agent_governance_hitl', 'eval_safety_benchmarking'],
+      fintech: ['erd', 'data_ai_pipeline', 'governance_state_machine', 'secure_deployment_map', 'tech_streaming_analytics'],
+      legal: ['business_agent_governance_hitl', 'eval_safety_benchmarking', 'governance_state_machine', 'secure_deployment_map', 'tech_vpc_infra'],
       architect: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'tech_serverless_gcp', 'tech_microservices_aws', 'tech_multi_region_dr'],
       devops: ['sequence_diagram', 'macro_sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_aws', 'tech_cicd_pipeline'],
       security: ['secure_deployment_map', 'governance_state_machine', 'business_agent_governance_hitl', 'eval_safety_benchmarking', 'tech_vpc_infra'],
@@ -1873,6 +1876,9 @@ function WorkspaceContent() {
     };
 
     const getPersonaBadge = (id: string) => {
+      if (personaRelevantIds.executive.includes(id)) return { label: '💼 Executive & Product', color: 'text-teal-400 bg-teal-500/10 border-teal-500/30' };
+      if (personaRelevantIds.fintech.includes(id)) return { label: '🏦 FinTech & Banking', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
+      if (personaRelevantIds.legal.includes(id)) return { label: '📋 Compliance & Legal', color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30' };
       if (personaRelevantIds.architect.includes(id)) return { label: '🏛️ Cloud Architect', color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' };
       if (personaRelevantIds.devops.includes(id)) return { label: '⚙️ DevOps Lead', color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' };
       if (personaRelevantIds.security.includes(id)) return { label: '🛡️ Security CISO', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' };
@@ -1907,11 +1913,18 @@ function WorkspaceContent() {
                   onChange={(e) => setSelectedPersonaFilter(e.target.value)}
                   className="appearance-none bg-slate-900 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-bold text-xs rounded-xl pl-8 pr-8 py-2 outline-none cursor-pointer shadow-sm"
                 >
-                  <option value="all">👤 Filter by Persona: All Roles ({allTemplates.length})</option>
-                  <option value="architect">🏛️ Enterprise Cloud Architect ({personaRelevantIds.architect.length})</option>
-                  <option value="devops">⚙️ DevOps &amp; SRE Lead ({personaRelevantIds.devops.length})</option>
-                  <option value="security">🛡️ Security &amp; CISO Governance Officer ({personaRelevantIds.security.length})</option>
-                  <option value="data">📊 Data &amp; AI / ML Architect ({personaRelevantIds.data.length})</option>
+                  <optgroup label="💼 BUSINESS & EXECUTIVE PERSONAS" className="bg-[#0b101d] text-teal-400 font-extrabold">
+                    <option value="all">👤 All Enterprise Roles ({allTemplates.length} Blueprints)</option>
+                    <option value="executive">💼 Executive, Product &amp; Operations Leadership ({personaRelevantIds.executive.length})</option>
+                    <option value="fintech">🏦 FinTech, Banking &amp; Operational Risk Lead ({personaRelevantIds.fintech.length})</option>
+                    <option value="legal">📋 Legal, Compliance &amp; AI Safety Officer ({personaRelevantIds.legal.length})</option>
+                  </optgroup>
+                  <optgroup label="⚙️ TECHNICAL ENGINEERING PERSONAS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
+                    <option value="architect">🏛️ Enterprise Cloud &amp; Systems Architect ({personaRelevantIds.architect.length})</option>
+                    <option value="devops">⚙️ DevOps, GitOps &amp; SRE Reliability Lead ({personaRelevantIds.devops.length})</option>
+                    <option value="security">🛡️ Security, Cyber &amp; CISO Governance Officer ({personaRelevantIds.security.length})</option>
+                    <option value="data">📊 Data Engineering, Lakehouse &amp; AI/ML Architect ({personaRelevantIds.data.length})</option>
+                  </optgroup>
                 </select>
                 <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
               </div>
