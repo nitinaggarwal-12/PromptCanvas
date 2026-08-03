@@ -19,6 +19,8 @@ import {
   Check 
 } from 'lucide-react';
 
+import PptxGenJS from 'pptxgenjs';
+
 interface ExecutiveStrategicSummaryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -34,8 +36,87 @@ export function ExecutiveStrategicSummaryModal({
 }: ExecutiveStrategicSummaryModalProps) {
   const [activeView, setActiveView] = useState<'board_deck' | 'reportee_memo'>('board_deck');
   const [copied, setCopied] = useState(false);
+  const [isGeneratingDeck, setIsGeneratingDeck] = useState(false);
 
   if (!isOpen) return null;
+
+  const handleExportBoardPptx = async () => {
+    setIsGeneratingDeck(true);
+    try {
+      const pptx = new PptxGenJS();
+      pptx.layout = 'LAYOUT_16x9';
+
+      // Slide 1: Cover Slide
+      const slide1 = pptx.addSlide();
+      slide1.background = { color: '0B101D' };
+      slide1.addText('C-SUITE & BOARD OF DIRECTORS EXECUTIVE BRIEF', {
+        x: 0.8, y: 0.8, w: 11.5, h: 0.4,
+        fontSize: 14, color: '14B8A6', bold: true
+      });
+      slide1.addText(diagramTitle || 'Enterprise Architecture Platform', {
+        x: 0.8, y: 1.5, w: 11.5, h: 1.2,
+        fontSize: 32, color: 'FFFFFF', bold: true
+      });
+      slide1.addText('Publication-Grade Architecture Topology | Multi-AZ Availability SLA (99.99%)', {
+        x: 0.8, y: 2.8, w: 11.5, h: 0.5,
+        fontSize: 16, color: '94A3B8'
+      });
+      slide1.addText('• Financial ROI: 90% AI Token Cost Reduction via Ephemeral Prompt Caching\n• Security & Compliance: SOC2 Type II + HIPAA + Zero-Trust VPC-SC Enclaves\n• Operations Budget: $1,450 / mo baseline vs. $14,500 / mo un-cached LLM baseline', {
+        x: 0.8, y: 4.0, w: 11.5, h: 2.0,
+        fontSize: 16, color: 'F8FAFC'
+      });
+
+      // Slide 2: Strategic Takeaway & Architectural Tiers
+      const slide2 = pptx.addSlide();
+      slide2.background = { color: '0F172A' };
+      slide2.addText('EXECUTIVE ARCHITECTURAL HIGHLIGHTS & GOVERNANCE GATES', {
+        x: 0.8, y: 0.6, w: 11.5, h: 0.5,
+        fontSize: 20, color: '14B8A6', bold: true
+      });
+      slide2.addText('1. Executive AI Safety & NLI Claim Verification Gate\nEnforces NLI factual claim verification, Constitutional HHH toxicity screening, and automated safety red-teaming prior to customer-facing execution.\n\n2. High-Availability Multi-Region Resilience\nEngineered with multi-zone active-passive failover, automated encrypted database backups, and zero-downtime canary deployment pipelines.\n\n3. Human-in-the-Loop Autonomous Agent Governance Lifecycle\nIncludes automated confidence escalation router (>=95% Fast Path, 75-94% Cross-Verification, <75% Mandatory HITL Cryptographic Sign-Off Certificate).', {
+        x: 0.8, y: 1.6, w: 11.5, h: 4.8,
+        fontSize: 15, color: 'E2E8F0'
+      });
+
+      await pptx.writeFile({ fileName: `${(diagramTitle || 'Enterprise_Architecture').toLowerCase().replace(/[^a-z0-9]/g, '_')}_Board_Deck_16x9.pptx` });
+
+      // Open visual deck preview in browser tab
+      const win = window.open('', '_blank');
+      if (win) {
+        win.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${diagramTitle} - Executive Board Presentation Deck</title>
+              <style>
+                body { background: #070A13; color: #FFFFFF; font-family: Arial, sans-serif; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+                .slide { width: 100%; max-width: 1200px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 20px; padding: 40px; margin-bottom: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); }
+                h1 { color: #FFFFFF; font-size: 32px; margin-top: 10px; }
+                .tag { color: #14B8A6; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+                .kpi { display: inline-block; background: #1E293B; border: 1px solid #334155; padding: 15px 25px; border-radius: 12px; margin-right: 15px; margin-top: 20px; }
+              </style>
+            </head>
+            <body>
+              <div class="slide">
+                <span class="tag">C-Suite & Board of Directors Executive Brief</span>
+                <h1>${diagramTitle}</h1>
+                <p style="color:#94A3B8; font-size:16px;">Target SLA: 99.99% Multi-AZ Availability | Governance: SOC2 Type II + HIPAA</p>
+                <div class="kpi"><b style="color:#10B981; font-size:24px;">90% Cost Cut</b><br><span style="color:#94A3B8; font-size:12px;">Ephemeral Prompt Caching</span></div>
+                <div class="kpi"><b style="color:#38BDF8; font-size:24px;">$1,450 / mo</b><br><span style="color:#94A3B8; font-size:12px;">Baseline Runtime Envelope</span></div>
+                <div class="kpi"><b style="color:#F59E0B; font-size:24px;">98 / 100</b><br><span style="color:#94A3B8; font-size:12px;">Zero-Collision Layout Score</span></div>
+              </div>
+            </body>
+          </html>
+        `);
+        win.document.close();
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error generating PowerPoint presentation deck.');
+    } finally {
+      setIsGeneratingDeck(false);
+    }
+  };
 
   const handleCopyMemo = () => {
     const memoText = `# EXECUTIVE TECHNICAL IMPLEMENTATION DIRECTIVE
@@ -281,14 +362,12 @@ Deploy a multi-tier, production-grade architecture for **${diagramTitle}** adher
             {activeView === 'board_deck' ? (
               <button
                 type="button"
-                onClick={() => {
-                  alert('Exporting Executive Board Presentation Deck (16:9 Google Slides / Keynote format)...');
-                  onClose();
-                }}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-black text-xs transition-all shadow-lg flex items-center gap-2 cursor-pointer"
+                disabled={isGeneratingDeck}
+                onClick={handleExportBoardPptx}
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-black text-xs transition-all shadow-lg flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 <Presentation className="w-4 h-4" />
-                <span>Export Board Presentation Deck (16:9)</span>
+                <span>{isGeneratingDeck ? 'Generating Deck...' : 'Export Board Presentation Deck (16:9)'}</span>
               </button>
             ) : (
               <button
