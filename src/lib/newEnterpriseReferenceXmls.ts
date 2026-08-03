@@ -439,3 +439,241 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
 </mxfile>
   `.trim();
 }
+
+/**
+ * 🏛️ BLUEPRINT #26: GOOGLE VERTEX AI GRAPHRAG ENTERPRISE ARCHITECTURE
+ */
+export function getExactVertexAiGraphRagReferenceXml(): string {
+  return `
+<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="vertex-ai-graphrag" name="Google Vertex AI GraphRAG Enterprise Architecture">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1060" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="35" width="1860" height="980" as="geometry" />
+        </mxCell>
+
+        <mxCell id="header_title" value="GOOGLE VERTEX AI GRAPHRAG ENTERPRISE ARCHITECTURE (GEMINI 2.5 + SPANNER GRAPH)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="1820" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="header_sub" value="High-Precision Multi-Hop Relational Graph RAG • Gemini 2.5 Ephemeral Context Caching (90% OPEX Cut) • Spanner Graph &amp; AlloyDB • VPC-SC Zero-Trust Enclave" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
+          <mxGeometry x="50" y="78" width="1820" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 1: INGRESS & EPHEMERAL CONTEXT CACHING -->
+        <mxCell id="t1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="420" height="840" as="geometry" />
+        </mxCell>
+        <mxCell id="t1_title" value="TIER 1: MULTIMODAL INGRESS &amp;amp; EPHEMERAL CACHING" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=#0369A1;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="140" width="380" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_client" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Enterprise Workspace &amp;amp; Web Client&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Multimodal Search &amp;amp; Graph Query Ingress&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="85" y="210" width="370" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="node_ephemeral_cache" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Gemini 2.5 Flash Ephemeral Context Cache&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#16A34A;font-weight:bold;'&gt;⚡ 90% Token OPEX Reduction • 0.4s Query Routing&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Pre-loads Enterprise Ontology &amp;amp; Schema Graph&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="85" y="360" width="370" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="node_vpc_sc" value="&lt;b style='font-size:13px;color:#7F1D1D;'&gt;VPC Service Controls (VPC-SC) Perimeter&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#7F1D1D;'&gt;Zero-Trust Data Exfiltration Protection &amp;amp; IAM KMS Gate&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontColor=#7F1D1D;" vertex="1" parent="1">
+          <mxGeometry x="85" y="550" width="370" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 2: RELATIONAL GRAPH & ENTITY KNOWLEDGE STORE -->
+        <mxCell id="t2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="540" y="120" width="760" height="840" as="geometry" />
+        </mxCell>
+        <mxCell id="t2_title" value="TIER 2: RELATIONAL KNOWLEDGE GRAPH &amp;amp; VERTEX AI GRAPHRAG INDEX" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7C3AED;strokeColor=#5B21B6;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="140" width="720" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_spanner_graph" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Google Cloud Spanner Graph Engine&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Globally Synchronous Property Graph Store (ISO/GQL Standard)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="575" y="210" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="node_alloydb_graph" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;AlloyDB for PostgreSQL + pgvector&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Operational Entity Context &amp;amp; Low-Latency Hybrid Search&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="935" y="210" width="330" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_graphrag_index" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Vertex AI GraphRAG Multi-Hop Indexing Core&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#4C1D95;font-weight:bold;'&gt;• Traverses 3-to-5 Hop Entity Relationship Paths&lt;br/&gt;• Resolves Sub-Graph Community Clusters &amp;amp; Global Summaries&lt;br/&gt;• Zero Hallucination Entity Grounding Verification&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=2.5;align=left;spacingLeft=18;" vertex="1" parent="1">
+          <mxGeometry x="575" y="380" width="690" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_bigquery_lakehouse" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;BigQuery Vector &amp;amp; Open Apache Iceberg Lakehouse&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Long-Horizon Telemetry &amp;amp; Unstructured Document Corpus Repository&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="575" y="580" width="690" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 3: REASONING & EXECUTIVE SYNTHESIS -->
+        <mxCell id="t3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="120" width="490" height="840" as="geometry" />
+        </mxCell>
+        <mxCell id="t3_title" value="TIER 3: GEMINI 2.5 PRO SYNTHESIS &amp;amp; DASHBOARD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#16A34A;strokeColor=#15803D;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="140" width="450" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_gemini_pro" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Gemini 2.5 Pro Relational Synthesis Engine&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#14532D;'&gt;Synthesizes Graph Sub-Structure + Provenance Citations into Executable Decisions&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2.5;" vertex="1" parent="1">
+          <mxGeometry x="1385" y="210" width="440" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="node_hitl_cert" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Cryptographic HITL Compliance Sign-Off&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Audited Executive Certificate &amp;amp; Immutable Audit Trail&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1385" y="410" width="440" height="130" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+
+/**
+ * 🏛️ BLUEPRINT #27: GOOGLE AGENT-TO-AGENT (A2A) AUTONOMOUS ENTERPRISE PROTOCOL
+ */
+export function getExactGoogleA2AProtocolReferenceXml(): string {
+  return `
+<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="google-a2a-protocol" name="Google Agent-to-Agent (A2A) Autonomous Enterprise Protocol">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1060" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="35" width="1860" height="980" as="geometry" />
+        </mxCell>
+
+        <mxCell id="header_title" value="GOOGLE AGENT-TO-AGENT (A2A) AUTONOMOUS ENTERPRISE FEDERATION PROTOCOL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="1820" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="header_sub" value="Horizontal Agent Delegation • Vertex AI A2A Protocol Supervisor • Cryptographic Capability Tokens • Private Cloud Run Sandbox Execution" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
+          <mxGeometry x="50" y="78" width="1820" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 1: A2A MASTER SUPERVISOR -->
+        <mxCell id="t1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="440" height="840" as="geometry" />
+        </mxCell>
+        <mxCell id="t1_title" value="TIER 1: MASTER A2A FEDERATION SUPERVISOR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=#0369A1;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="140" width="400" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="node_a2a_supervisor" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Master Vertex AI A2A Protocol Supervisor&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#0369A1;font-weight:bold;'&gt;• Issues Signed A2A Delegation Tokens&lt;br/&gt;• Manages Inter-Agent Capability Directory&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2.5;" vertex="1" parent="1">
+          <mxGeometry x="85" y="210" width="390" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="node_a2a_registry" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;A2A Agent Capability &amp;amp; Schema Registry&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Validates input/output contracts across agent clusters&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="85" y="410" width="390" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 2: FEDERATED WORKER AGENT CLUSTER -->
+        <mxCell id="t2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="550" y="120" width="750" height="840" as="geometry" />
+        </mxCell>
+        <mxCell id="t2_title" value="TIER 2: AUTONOMOUS SPECIALIZED AGENT NETWORK (A2A PEER HAND-OFFS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7C3AED;strokeColor=#5B21B6;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="570" y="140" width="710" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="node_agent_research" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Autonomous Research &amp;amp; Grounding Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Fetches enterprise knowledge base &amp;amp; clinical docs&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="580" y="210" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="node_agent_analytics" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;BigQuery &amp;amp; Databricks SQL Synthesis Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Executes vectorized telemetry &amp;amp; financial SQL joins&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="935" y="210" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="node_agent_critic" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Constitutional Safety &amp;amp; Compliance Critic Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Evaluates confidence matrix (≥95% Fast-Path vs &lt;75% HITL)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=2.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="380" width="685" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 3: EXECUTION & HITL COMPLIANCE -->
+        <mxCell id="t3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="120" width="500" height="840" as="geometry" />
+        </mxCell>
+        <mxCell id="t3_title" value="TIER 3: CLOUD RUN SANDBOX &amp;amp; HITL APPROVAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#16A34A;strokeColor=#15803D;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="140" width="460" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="node_sandbox" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Cloud Run Isolated Code Execution Sandbox&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#14532D;'&gt;GVisor container isolation for automated Python/SQL execution&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2.5;" vertex="1" parent="1">
+          <mxGeometry x="1375" y="210" width="450" height="150" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+
+/**
+ * 🏛️ BLUEPRINT #28: MCP + GOOGLE A2A HYBRID ENTERPRISE AGENTIC PLATFORM
+ */
+export function getExactMcpGoogleA2AHybridReferenceXml(): string {
+  return `
+<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="mcp-google-a2a-hybrid" name="MCP + Google A2A Hybrid Enterprise Agentic Platform">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1060" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="35" width="1860" height="980" as="geometry" />
+        </mxCell>
+
+        <mxCell id="header_title" value="MCP + GOOGLE A2A HYBRID ENTERPRISE AGENTIC PLATFORM (FEDERATED A2A + MCP TOOL STACK)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="1820" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="header_sub" value="Horizontal Google A2A Agent Federation Layer • Vertical Model Context Protocol (MCP) Execution Layer • MCP BigQuery &amp;amp; Vault Servers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
+          <mxGeometry x="50" y="78" width="1820" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- HORIZONTAL LAYER 1: GOOGLE A2A AGENT FEDERATION LAYER -->
+        <mxCell id="l1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="1800" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="l1_title" value="HORIZONTAL ENTERPRISE FEDERATION LAYER (GOOGLE A2A PROTOCOL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=#0369A1;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="135" width="600" height="36" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mcp_node_supervisor" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Master Enterprise A2A Supervisor Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#0369A1;'&gt;Orchestrates High-Level Task Delegation via Signed A2A Tokens&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2.5;" vertex="1" parent="1">
+          <mxGeometry x="85" y="190" width="480" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mcp_node_research_agent" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Autonomous Data &amp;amp; Analytics Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Communicates via A2A Protocol • Delegates tools via MCP Client&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="615" y="190" width="370" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mcp_node_code_agent" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Autonomous DevOps &amp;amp; Code Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Communicates via A2A Protocol • Delegates tools via MCP Client&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1035" y="190" width="370" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mcp_node_security_agent" value="&lt;b style='font-size:13px;color:#0F172A;'&gt;Autonomous Security &amp;amp; Audit Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#334155;'&gt;Communicates via A2A Protocol • Delegates tools via MCP Client&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1455" y="190" width="370" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- VERTICAL LAYER 2: MODEL CONTEXT PROTOCOL (MCP) EXECUTION STACK -->
+        <mxCell id="l2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="400" width="1800" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_title" value="VERTICAL TOOL EXECUTION LAYER (ANTHROPIC MODEL CONTEXT PROTOCOL / MCP SERVERS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7C3AED;strokeColor=#5B21B6;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="415" width="700" height="36" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mcp_server_bigquery" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;MCP BigQuery &amp;amp; Snowflake Server&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#4C1D95;font-weight:bold;'&gt;• Exposes Read/Write SQL Tool Endpoint&lt;br/&gt;• Live Schema &amp;amp; Table Resource Streaming&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2.5;align=left;spacingLeft=18;" vertex="1" parent="1">
+          <mxGeometry x="85" y="475" width="530" height="210" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mcp_server_github" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;MCP GitHub &amp;amp; Cloud Run Execution Server&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#4C1D95;font-weight:bold;'&gt;• Exposes Pull Request &amp;amp; Git commit tools&lt;br/&gt;• Sandboxed Container Execution Endpoint&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2.5;align=left;spacingLeft=18;" vertex="1" parent="1">
+          <mxGeometry x="665" y="475" width="530" height="210" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mcp_server_vault" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;MCP HashiCorp Vault &amp;amp; KMS Server&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#4C1D95;font-weight:bold;'&gt;• Envelope Encryption Key Access Tool&lt;br/&gt;• Dynamic Ephemeral Credentials Resource&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2.5;align=left;spacingLeft=18;" vertex="1" parent="1">
+          <mxGeometry x="1245" y="475" width="580" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 3: CRYPTOGRAPHIC HITL GOVERNANCE & OPEN-TELEMETRY TRACING -->
+        <mxCell id="l3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="750" width="1800" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="mcp_hitl_cert" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Cryptographic Human-in-the-Loop (HITL) Sign-Off Gate &amp;amp; Distributed OpenTelemetry Tracing&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#14532D;'&gt;Verifies A2A delegation tokens + MCP tool execution traces before production commitment&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=2.5;" vertex="1" parent="1">
+          <mxGeometry x="85" y="780" width="1740" height="140" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+  `.trim();
+}
+

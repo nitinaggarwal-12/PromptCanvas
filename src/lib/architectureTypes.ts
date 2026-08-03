@@ -299,15 +299,24 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (archId === 'tech_multi_agent_langgraph' || archId?.includes('langgraph')) {
     const { getExactMultiAgentLangGraphReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactMultiAgentLangGraphReferenceXml();
+  } else if (archId === 'vertex_ai_graphrag') {
+    const { getExactVertexAiGraphRagReferenceXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactVertexAiGraphRagReferenceXml();
+  } else if (archId === 'google_a2a_agentic_ecosystem') {
+    const { getExactGoogleA2AProtocolReferenceXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactGoogleA2AProtocolReferenceXml();
+  } else if (archId === 'mcp_google_a2a_hybrid_platform') {
+    const { getExactMcpGoogleA2AHybridReferenceXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactMcpGoogleA2AHybridReferenceXml();
   } else if (archId === 'eval_safety_benchmarking' || archId?.includes('monitex') || archId?.includes('safety_benchmarking')) {
     xml = getExactEvalSafetyBenchmarkingReferenceXml();
-  } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline')) {
+  } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline' || archId === 'gcp_industrial_iot' || archId === 'enterprise_devsecops_polyrepo')) {
     xml = getTechnicalArchitectureXml(archId);
   } else {
-    xml = getTechnicalArchitectureXml('tech_serverless_gcp');
+    xml = getTechnicalArchitectureXml(archId || 'tech_serverless_gcp');
   }
 
-  if (archId !== 'eval_safety_benchmarking' && archId !== 'business_agent_governance_hitl' && archId !== 'tech_multi_agent_langgraph') {
+  if (archId !== 'eval_safety_benchmarking' && archId !== 'business_agent_governance_hitl' && archId !== 'tech_multi_agent_langgraph' && archId !== 'vertex_ai_graphrag' && archId !== 'google_a2a_agentic_ecosystem' && archId !== 'mcp_google_a2a_hybrid_platform') {
     const effectiveContext = useCaseContext || userPrompt || getTemplateTitle(archId || '');
     xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
   }

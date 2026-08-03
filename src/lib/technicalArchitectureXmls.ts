@@ -697,20 +697,28 @@ export function getTechnicalArchitectureXml(archId: string): string {
   }
 
   // Technical Topology Mappings
+  if (id === 'vertex_ai_graphrag') {
+    const { getExactVertexAiGraphRagReferenceXml } = require('./newEnterpriseReferenceXmls');
+    return getExactVertexAiGraphRagReferenceXml();
+  }
+  if (id === 'google_a2a_agentic_ecosystem') {
+    const { getExactGoogleA2AProtocolReferenceXml } = require('./newEnterpriseReferenceXmls');
+    return getExactGoogleA2AProtocolReferenceXml();
+  }
+  if (id === 'mcp_google_a2a_hybrid_platform') {
+    const { getExactMcpGoogleA2AHybridReferenceXml } = require('./newEnterpriseReferenceXmls');
+    return getExactMcpGoogleA2AHybridReferenceXml();
+  }
   if (id === 'tech_serverless_gcp' || id === 'serverless_gcp' || id === 'gcp_serverless_web_app' || id === 'gcp_project_itacs_production') return TECH_XML_SERVERLESS_GCP;
   if (id === 'tech_streaming_analytics' || id === 'streaming_pipeline' || id === 'gcp_realtime_streaming_pipeline') return TECH_XML_STREAMING_ANALYTICS;
   if (id === 'tech_microservices_aws' || id === 'k8s_mesh' || id === 'aws_eks_microservices_mesh') return TECH_XML_MICROSERVICES_AWS;
   if (id === 'tech_data_lakehouse' || id === 'data_lakehouse' || id === 'aws_modern_data_lakehouse') return TECH_XML_DATA_LAKEHOUSE;
-  if (id === 'tech_rag_gcp' || id === 'rag_gcp' || id === 'gcp_ai_cognitive_rag' || id === 'vertex_ai_graphrag') return TECH_XML_RAG_GCP;
+  if (id === 'tech_rag_gcp' || id === 'rag_gcp' || id === 'gcp_ai_cognitive_rag') return TECH_XML_RAG_GCP;
   if (id === 'tech_event_driven_aws' || id === 'event_driven_aws' || id === 'aws_serverless_event_driven') return TECH_XML_EVENT_DRIVEN_AWS;
   if (id === 'tech_multi_region_dr' || id === 'multi_region_dr') return TECH_XML_MULTI_REGION_DR;
   if (id === 'tech_vpc_infra' || id === 'zero_trust' || id === 'aws_zerotrust_vpc_network') return TECH_XML_VPC_INFRA;
   if (id === 'tech_iot_telemetry' || id === 'hybrid_interconnect' || id === 'gcp_industrial_iot') return TECH_XML_IOT_TELEMETRY;
   if (id === 'tech_cicd_pipeline' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') return TECH_XML_CICD_PIPELINE;
-  if (id === 'google_a2a_agentic_ecosystem' || id === 'mcp_google_a2a_hybrid_platform' || id.includes('a2a') || id.includes('mcp')) {
-    const { getExactMultiAgentLangGraphReferenceXml } = require('./newEnterpriseReferenceXmls');
-    return getExactMultiAgentLangGraphReferenceXml();
-  }
   
   return getExactUnifiedSystemViewReferenceXml();
 }
