@@ -549,12 +549,17 @@ export function resolveVendorIconUrl(text: string): string {
   // Healthcare & Regulatory (FDA, HealthLake, Clinical)
   if (lower.includes('fda') || lower.includes('health') || lower.includes('gxp') || lower.includes('clinical') || lower.includes('esg')) return 'https://api.iconify.design/logos:redhat.svg';
 
-  // Databricks Ecosystem
-  if (lower.includes('databricks') || lower.includes('dlt') || lower.includes('delta live') || lower.includes('auto loader') || lower.includes('unity catalog') || lower.includes('mosaic')) {
+  // Databricks Ecosystem & Genie AI
+  if (lower.includes('databricks') || lower.includes('genie') || lower.includes('dlt') || lower.includes('delta live') || lower.includes('auto loader') || lower.includes('unity catalog') || lower.includes('mosaic')) {
     return 'https://api.iconify.design/logos:databricks.svg';
   }
   if (lower.includes('delta lake') || lower.includes('bronze') || lower.includes('silver') || lower.includes('gold') || lower.includes('spark') || lower.includes('pyspark')) {
     return 'https://api.iconify.design/logos:apache-spark.svg';
+  }
+
+  // Snowflake & Cortex AI Ecosystem
+  if (lower.includes('snowflake') || lower.includes('cortex')) {
+    return 'https://api.iconify.design/logos:snowflake.svg';
   }
 
   // Google Cloud Platform (GCP)
@@ -564,16 +569,16 @@ export function resolveVendorIconUrl(text: string): string {
   if (lower.includes('gcs') || lower.includes('cloud storage') || lower.includes('object storage')) return 'https://api.iconify.design/logos:google-cloud.svg';
   if (lower.includes('apigee') || lower.includes('api gateway')) return 'https://api.iconify.design/logos:google-cloud.svg';
 
-  // Amazon Web Services (AWS)
+  // Amazon Web Services (AWS) & Bedrock
   if (lower.includes('lambda')) return 'https://api.iconify.design/logos:aws-lambda.svg';
   if (lower.includes('s3') || lower.includes('aws s3')) return 'https://api.iconify.design/logos:aws-s3.svg';
   if (lower.includes('dynamodb')) return 'https://api.iconify.design/logos:aws-dynamodb.svg';
-  if (lower.includes('rds') || lower.includes('aurora') || lower.includes('redshift') || lower.includes('healthlake')) return 'https://api.iconify.design/logos:aws.svg';
+  if (lower.includes('bedrock') || lower.includes('rds') || lower.includes('aurora') || lower.includes('redshift') || lower.includes('healthlake')) return 'https://api.iconify.design/logos:aws.svg';
   if (lower.includes('ec2') || lower.includes('ecs') || lower.includes('eks') || lower.includes('aws') || lower.includes('amazon')) return 'https://api.iconify.design/logos:aws.svg';
 
-  // Microsoft Azure & Fabric
+  // Microsoft Azure, Fabric & Copilot
   if (lower.includes('fabric') || lower.includes('power bi')) return 'https://api.iconify.design/logos:microsoft-power-bi.svg';
-  if (lower.includes('azure') || lower.includes('event hub') || lower.includes('apim')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
+  if (lower.includes('azure') || lower.includes('copilot') || lower.includes('event hub') || lower.includes('apim')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
 
   // Oracle Cloud Infrastructure (OCI)
   if (lower.includes('oracle') || lower.includes('oci') || lower.includes('autonomous db')) return 'https://api.iconify.design/logos:oracle.svg';
