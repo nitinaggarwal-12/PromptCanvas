@@ -3562,6 +3562,14 @@ function WorkspaceContent() {
                       <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>🔍 Version &amp; Visual Diff</span>
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsExecutiveSummaryOpen(true)}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-amber-300 hover:text-white hover:bg-amber-500/20 transition-all cursor-pointer text-left"
+                    >
+                      <Briefcase className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>💼 Executive Board Suite</span>
+                    </button>
                   </div>
                 )}
 
@@ -3901,36 +3909,9 @@ function WorkspaceContent() {
                       <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                     </div>
 
-                    {/* Version Dropdown & Visual Diff Button + Use Case Intake Form */}
+                    {/* Version Selector Dropdown */}
                     <div className="flex items-center gap-2 shrink-0">
                       {activeVersion && renderVersionDropdown("top-header-version-dropdown")}
-                      <button
-                        type="button"
-                        onClick={() => setIsVersionDiffModalOpen(true)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 hover:border-teal-400 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
-                        title="Compare diagram versions & inspect visual geometric diffs"
-                      >
-                        <FileCode className="w-3.5 h-3.5 text-teal-400" />
-                        <span>🔍 Version &amp; Visual Diff</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsExecutiveSummaryOpen(true)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
-                        title="Open C-Suite Executive Strategic Summary & Board Brief"
-                      >
-                        <Briefcase className="w-3.5 h-3.5 text-amber-300" />
-                        <span>💼 Executive Strategic Summary</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsUseCaseModalOpen(true)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-400 bg-teal-400/20 hover:bg-teal-400/30 text-teal-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
-                        title="Open New Use Case Architectural Intake Form"
-                      >
-                        <ClipboardList className="w-3.5 h-3.5 text-teal-300" />
-                        <span>📋 Use Case Intake Form</span>
-                      </button>
                     </div>
                   </>
                 )}
@@ -3995,13 +3976,41 @@ function WorkspaceContent() {
                 )}
               </div>
 
-              {/* Group 3: Right - Theme, Visibility, Edit Mode & Inbox */}
+              {/* Group 3: Right - Executive & Stakeholder Actions */}
               <div className="flex items-center gap-2 shrink-0">
                 <AccessRequestsInbox user={currentUser} />
                 {activeDiagram && (
                   <>
+                    <button
+                      type="button"
+                      onClick={() => setIsExecutiveSummaryOpen(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                      title="Open C-Suite Executive Strategic Summary & Board Brief"
+                    >
+                      <Briefcase className="w-3.5 h-3.5 text-amber-300" />
+                      <span className="hidden md:inline">💼 Executive Board Suite</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsUseCaseModalOpen(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-400 bg-teal-400/20 hover:bg-teal-400/30 text-teal-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                      title="Open New Use Case Architectural Intake Form"
+                    >
+                      <ClipboardList className="w-3.5 h-3.5 text-teal-300" />
+                      <span className="hidden md:inline">📋 Use Case Form</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsVersionDiffModalOpen(true)}
+                      className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 hover:border-teal-400 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                      title="Compare diagram versions & inspect visual geometric diffs"
+                    >
+                      <FileCode className="w-3.5 h-3.5 text-teal-400" />
+                      <span>🔍 Visual Diff</span>
+                    </button>
+
                     {/* Edit Options Dropdown */}
-                    <div className="relative inline-flex items-center shrink-0 w-[125px]">
+                    <div className="relative inline-flex items-center shrink-0 w-[120px]">
                       <select
                         value=""
                         onChange={(e) => {
@@ -4012,7 +4021,7 @@ function WorkspaceContent() {
                             openInNewTab();
                           }
                         }}
-                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[125px] truncate"
+                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[120px] truncate"
                       >
                         <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                           ✏️ Edit ▾
