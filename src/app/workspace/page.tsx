@@ -3311,30 +3311,69 @@ function WorkspaceContent() {
             }
 
             return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
-                  setCurrentTab(newTab);
-                  if (newTab === 'walkthrough') {
-                    setTourStep(1);
-                  }
-                  if (typeof window !== 'undefined') {
-                    const params = new URLSearchParams(window.location.search);
-                    if (newTab === 'editor') {
-                      params.delete('tab');
-                    } else {
-                      params.set('tab', newTab);
+              <div key={item.id} className="space-y-1">
+                <button
+                  onClick={() => {
+                    const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
+                    setCurrentTab(newTab);
+                    if (newTab === 'walkthrough') {
+                      setTourStep(1);
                     }
-                    const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
-                    window.history.replaceState({}, '', newUrl);
-                  }
-                  if (!isSidebarOpen) setIsSidebarOpen(true);
-                }}
-                className="w-full text-left block"
-              >
-                {buttonContent}
-              </button>
+                    if (typeof window !== 'undefined') {
+                      const params = new URLSearchParams(window.location.search);
+                      if (newTab === 'editor') {
+                        params.delete('tab');
+                      } else {
+                        params.set('tab', newTab);
+                      }
+                      const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+                      window.history.replaceState({}, '', newUrl);
+                    }
+                    if (!isSidebarOpen) setIsSidebarOpen(true);
+                  }}
+                  className="w-full text-left block"
+                >
+                  {buttonContent}
+                </button>
+
+                {/* Collapsible Nested Sub-Menu under Design Canvas */}
+                {item.id === 'editor' && isSidebarOpen && (
+                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-teal-500/40 ml-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsUseCaseModalOpen(true)}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-teal-300 hover:text-white hover:bg-teal-500/20 transition-all cursor-pointer text-left"
+                    >
+                      <ClipboardList className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                      <span>📋 Use Case Intake Form</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsCreateModalOpen(true)}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <Plus className="w-3.5 h-3.5 text-teal-accent shrink-0" />
+                      <span>✨ New Diagram Canvas</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsImportModalOpen(true)}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      <span>📥 Import (.drawio / .tf)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsVersionDiffModalOpen(true)}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>🔍 Version &amp; Visual Diff</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
