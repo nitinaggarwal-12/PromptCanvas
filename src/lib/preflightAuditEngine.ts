@@ -137,6 +137,10 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xml.includes('macro_sequence_diagram') ||
     xml.includes('eval_safety_benchmarking') ||
     xml.includes('vertex-ai-eval-flow') ||
+    xml.includes('hitl-agent-gov') ||
+    xml.includes('multi-agent-langgraph') ||
+    xml.includes('agent_governance') ||
+    xml.includes('langgraph') ||
     xml.includes('tech_') ||
     xml.includes('serverless_gcp') ||
     xml.includes('sw1_') ||

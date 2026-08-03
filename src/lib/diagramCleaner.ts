@@ -422,6 +422,10 @@ function isPreservedCustomLayout(xml: string): boolean {
     lower.includes('data_ai_pipeline') ||
     lower.includes('eval_safety_benchmarking') ||
     lower.includes('vertex-ai-eval-flow') ||
+    lower.includes('hitl-agent-gov') ||
+    lower.includes('multi-agent-langgraph') ||
+    lower.includes('agent_governance') ||
+    lower.includes('langgraph') ||
     lower.includes('monitex') ||
     xml.includes('governance_state_machine_compiled') ||
     xml.includes('itacs_conceptual_compiled') ||
@@ -599,7 +603,7 @@ export function resolveVendorIconUrl(text: string): string {
 export function restoreDetailedView(xmlInput: string, skipLayout: boolean = false): string {
   if (!xmlInput) return xmlInput;
   if (isPreservedCustomLayout(xmlInput)) return xmlInput;
-  if (xmlInput.includes('unified_system_view') || xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') || xmlInput.includes('sw3_') || xmlInput.includes('sw1_') || xmlInput.includes('legend_box_statemachine') || xmlInput.includes('archival_bot') || xmlInput.includes('pill_trig1') || xmlInput.includes('eval_safety_benchmarking') || xmlInput.includes('vertex-ai-eval-flow')) return xmlInput;
+  if (xmlInput.includes('unified_system_view') || xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') || xmlInput.includes('sw3_') || xmlInput.includes('sw1_') || xmlInput.includes('legend_box_statemachine') || xmlInput.includes('archival_bot') || xmlInput.includes('pill_trig1') || xmlInput.includes('eval_safety_benchmarking') || xmlInput.includes('vertex-ai-eval-flow') || xmlInput.includes('hitl-agent-gov') || xmlInput.includes('multi-agent-langgraph') || xmlInput.includes('agent_governance') || xmlInput.includes('langgraph')) return xmlInput;
 
   const parser = new XMLParser({
     ignoreAttributes: false,
