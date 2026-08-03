@@ -254,6 +254,7 @@ function WorkspaceContent() {
   const [leftVersionSelection, setLeftVersionSelection] = useState<string>('v1_initial');
   const [rightVersionSelection, setRightVersionSelection] = useState<string>('v2_current');
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
+  const [templateCategoryFilter, setTemplateCategoryFilter] = useState<'all' | 'business' | 'technical'>('all');
 
   const handleAspectRatioChange = useCallback((ratioId: string, customW?: number, customH?: number) => {
     setSelectedAspectRatio(ratioId);
@@ -1856,35 +1857,73 @@ function WorkspaceContent() {
   };
 
   const renderTemplatesView = () => {
+    const allTemplates = [
+      ...BUSINESS_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'business' as const })),
+      ...TECHNICAL_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'technical' as const }))
+    ];
+
+    const filteredTemplates = templateCategoryFilter === 'all'
+      ? allTemplates
+      : allTemplates.filter(t => t.category === templateCategoryFilter);
+
     return (
       <div className="flex-1 overflow-y-auto p-8 bg-bg-dark select-none animate-fade-in">
         <div className="max-w-[1600px] mx-auto space-y-8">
-          <div>
-            <h1 className="text-2xl font-extrabold text-white">Architectural Blueprint Library</h1>
-            <p className="text-sm text-slate-400 mt-1">Select an out-of-the-box cloud architecture template to bootstrap your canvas instantly.</p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-panel-border/40 pb-6">
+            <div>
+              <h1 className="text-2xl font-extrabold text-white">Architectural Blueprint Library</h1>
+              <p className="text-sm text-slate-400 mt-1">Select an out-of-the-box publication architecture template to bootstrap your canvas instantly.</p>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
+              <button
+                type="button"
+                onClick={() => setTemplateCategoryFilter('all')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  templateCategoryFilter === 'all' ? 'bg-teal-accent text-bg-dark shadow-sm' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                All Blueprints ({allTemplates.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setTemplateCategoryFilter('business')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  templateCategoryFilter === 'business' ? 'bg-teal-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                🏢 Business Architectures (5)
+              </button>
+              <button
+                type="button"
+                onClick={() => setTemplateCategoryFilter('technical')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  templateCategoryFilter === 'technical' ? 'bg-indigo-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                ⚙️ Technical Cloud Stacks (5)
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TEMPLATE_PROMPTS.slice(1).map((t, idx) => {
-              const isAws = t.name.includes('AWS');
-              const isGcp = t.name.includes('GCP');
-              const provider = isAws ? 'AWS' : isGcp ? 'GCP' : 'DevOps';
-              const providerColor = isAws 
-                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
-                : isGcp 
-                  ? 'bg-teal-500/10 text-teal-400 border-teal-500/20' 
-                  : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {filteredTemplates.map((t, idx) => {
+              const isBusiness = t.category === 'business';
+              const badgeColor = isBusiness
+                ? 'bg-teal-500/10 text-teal-400 border-teal-500/30'
+                : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
 
               return (
-                <div key={idx} className="glass-panel border-panel-border/50 hover:border-teal-500/30 rounded-xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01]">
+                <div key={t.id} className="glass-panel border-panel-border/50 hover:border-teal-500/40 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01]">
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${providerColor}`}>
-                        {provider}
+                      <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badgeColor}`}>
+                        {isBusiness ? '🏢 BUSINESS' : '⚙️ TECHNICAL'}
                       </span>
                       <Sparkles className="w-3.5 h-3.5 text-teal-accent/30 group-hover:text-teal-accent transition-colors" />
                     </div>
-                    <h3 className="font-bold text-sm text-white group-hover:text-teal-accent transition-colors mb-2">
+                    <h3 className="font-extrabold text-sm text-white group-hover:text-teal-accent transition-colors mb-2">
                       {t.name}
                     </h3>
                     <p className="text-xs text-slate-400 line-clamp-4 leading-relaxed mb-4">
@@ -1895,13 +1934,13 @@ function WorkspaceContent() {
                     onClick={() => {
                       setNewDiagramName(t.name);
                       setNewDiagramPrompt(t.prompt);
-                      setSelectedTemplate((idx + 1).toString());
+                      setSelectedArchType(t.id);
                       setIsCreateModalOpen(true);
                     }}
-                    className="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-semibold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="w-full py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <span>Use Template</span>
-                    <ArrowRight className="w-3 h-3" />
+                    <span>Use Blueprint</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               );
@@ -3462,15 +3501,19 @@ function WorkspaceContent() {
                   <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-indigo-500/40 ml-4">
                     <button
                       type="button"
-                      onClick={() => { setCurrentTab('templates'); }}
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                      onClick={() => { setCurrentTab('templates'); setTemplateCategoryFilter('business'); }}
+                      className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer text-left ${
+                        templateCategoryFilter === 'business' ? 'text-teal-300 bg-teal-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                      }`}
                     >
                       <span>🏢 Business Architectures (5)</span>
                     </button>
                     <button
                       type="button"
-                      onClick={() => { setCurrentTab('templates'); }}
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                      onClick={() => { setCurrentTab('templates'); setTemplateCategoryFilter('technical'); }}
+                      className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer text-left ${
+                        templateCategoryFilter === 'technical' ? 'text-indigo-300 bg-indigo-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                      }`}
                     >
                       <span>⚙️ Technical Cloud Stacks (5)</span>
                     </button>
