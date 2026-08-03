@@ -84,178 +84,235 @@ export function ExecutiveStrategicSummaryModal({
 
       await pptx.writeFile({ fileName: `${cleanTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}_Board_Deck_16x9.pptx` });
 
-      // Open interactive multi-slide executive presentation viewer tab in browser
+      // Open interactive Google CEO 16:9 Keynote Presentation Deck Viewer tab in browser
       const win = window.open('', '_blank');
       if (win) {
         win.document.write(`
           <!DOCTYPE html>
           <html>
             <head>
-              <title>${cleanTitle} - Executive Board Presentation Deck (16:9)</title>
+              <title>${cleanTitle} - Google CEO Strategic Funding Brief (16:9 Keynote)</title>
               <style>
-                * { box-sizing: border-box; }
-                body { background: #070A13; color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 24px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-                .topbar { width: 100%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #0B101D; padding: 14px 24px; border-radius: 16px; border: 1px solid #1E293B; }
-                .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; color: #14B8A6; font-size: 18px; }
-                .nav-btns { display: flex; gap: 10px; }
-                .btn { background: #1E293B; color: #F8FAFC; border: 1px solid #334155; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body { background: #070A13; color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+                .topbar { height: 64px; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: #0B101D; border-b: 1px solid #1E293B; shrink-0; z-index: 10; }
+                .logo { display: flex; items-center; gap: 12px; font-weight: 900; font-size: 17px; color: #14B8A6; letter-spacing: 0.5px; }
+                .controls { display: flex; items-center; gap: 14px; }
+                .btn { background: #1E293B; color: #F8FAFC; border: 1px solid #334155; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
                 .btn:hover { background: #334155; border-color: #14B8A6; }
-                .btn-primary { background: #14B8A6; color: #070A13; border: none; }
-                .slides-container { width: 100%; max-width: 1400px; display: flex; flex-direction: column; gap: 40px; align-items: center; }
-                .slide { width: 100%; aspect-ratio: 16 / 9; max-height: 740px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 24px; padding: 48px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); position: relative; overflow: hidden; }
-                .slide-header { display: flex; justify-content: space-between; align-items: flex-start; }
-                .slide-tag { color: #14B8A6; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
-                .slide-title { font-size: 38px; font-weight: 900; margin: 10px 0 6px 0; color: #FFFFFF; }
-                .slide-subtitle { color: #94A3B8; font-size: 17px; margin: 0; }
-                .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
-                .kpi-card { background: #111827; border: 1px solid #1E293B; border-radius: 16px; padding: 24px; }
-                .kpi-val { font-size: 36px; font-weight: 900; }
-                .kpi-lbl { font-size: 13px; font-weight: 700; color: #94A3B8; margin-top: 6px; }
-                .bullet-list { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
-                .bullet-item { background: #111827; border: 1px solid #1E293B; padding: 20px 24px; border-radius: 16px; }
-                .bullet-head { color: #14B8A6; font-size: 17px; font-weight: 800; margin-bottom: 6px; }
-                .bullet-desc { color: #CBD5E1; font-size: 15px; line-height: 1.5; }
-                .footer { display: flex; justify-content: space-between; align-items: center; border-t: 1px solid #1E293B; pt: 16px; color: #64748B; font-size: 12px; font-weight: 600; }
+                .btn-teal { background: #14B8A6; color: #070A13; border: none; font-weight: 900; }
+                .slide-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; position: relative; }
+                .slide { display: none; width: 100%; max-width: 1440px; aspect-ratio: 16 / 9; max-height: 820px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 28px; padding: 56px 64px; flex-direction: column; justify-content: space-between; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.85); animation: fadeIn 0.3s ease; }
+                .slide.active { display: flex; }
+                @keyframes fadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
+                .slide-tag { color: #14B8A6; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+                .slide-title { font-size: 46px; font-weight: 900; margin: 12px 0 10px 0; color: #FFFFFF; line-height: 1.1; }
+                .slide-subtitle { color: #94A3B8; font-size: 19px; line-height: 1.4; margin-bottom: 24px; }
+                .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; }
+                .card { background: #111827; border: 1px solid #1E293B; border-radius: 20px; padding: 28px; }
+                .kpi-num { font-size: 44px; font-weight: 900; line-height: 1.1; }
+                .kpi-label { font-size: 14px; font-weight: 700; color: #94A3B8; margin-top: 8px; }
+                .chart-bar-bg { width: 100%; height: 36px; background: #1E293B; border-radius: 10px; overflow: hidden; margin-top: 8px; position: relative; }
+                .chart-bar-fill { height: 100%; display: flex; align-items: center; padding-left: 14px; font-weight: 900; font-size: 13px; border-radius: 10px; }
+                .badge { display: inline-block; background: #065F46; color: #A7F3D0; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 99px; border: 1px solid #10B981; }
+                .footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1E293B; pt: 18px; color: #64748B; font-size: 13px; font-weight: 600; }
               </style>
             </head>
             <body>
               <div class="topbar">
-                <div class="brand">
-                  <span>✨ PROMPTCANVAS C-SUITE EXECUTIVE BOARD DECK</span>
+                <div class="logo">
+                  <span>☁️ GOOGLE CLOUD STRATEGIC PITCH • PROMPTCANVAS KEYNOTE</span>
                 </div>
-                <div class="nav-btns">
-                  <span style="color:#94A3B8; font-size:13px; margin-right:15px; align-self:center;">4-Slide 16:9 Presentation Deck Ready</span>
-                  <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+                <div class="controls">
+                  <span id="slideIndicator" style="color:#14B8A6; font-size:14px; font-weight:800; margin-right:10px;">SLIDE 1 OF 4</span>
+                  <button class="btn" onclick="changeSlide(-1)">◄ Previous (←)</button>
+                  <button class="btn" onclick="changeSlide(1)">Next (→) ►</button>
+                  <button class="btn btn-teal" onclick="window.print()">🖨️ Export PDF / Slides</button>
                 </div>
               </div>
 
-              <div class="slides-container">
-                <!-- Slide 1 -->
-                <div class="slide">
+              <div class="slide-stage">
+                <!-- SLIDE 1: STRATEGIC BREAKTHROUGH & GOOGLE CLOUD DOMINANCE -->
+                <div class="slide active" id="slide-1">
                   <div>
-                    <div class="slide-header">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span class="slide-tag">01 // STRATEGIC VALUE PROPOSITION FOR GOOGLE LEADERSHIP</span>
+                      <span class="badge">PROPOSED GOOGLE CLOUD NATIVE ENGINE</span>
+                    </div>
+                    <h1 class="slide-title">${cleanTitle}</h1>
+                    <p class="slide-subtitle">Deterministic Text-to-Architecture Compiler powering Google Cloud Console with Gemini 2.5 Flash + Ephemeral Context Caching.</p>
+
+                    <div className="grid-2" style="display:grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top:20px;">
+                      <div class="card" style="border-color:#14B8A6; background:#0F172A;">
+                        <span class="slide-tag" style="color:#14B8A6;">WHY GOOGLE CLOUD WINS WITH PROMPTCANVAS</span>
+                        <ul style="margin-top:16px; color:#E2E8F0; font-size:16px; line-height:1.8; padding-left:20px;">
+                          <li><b>6-Second Time-to-Architecture:</b> Replaces 6 weeks of architectural design with instant, policy-validated Draw.io &amp; Terraform blueprints.</li>
+                          <li><b>Gemini 2.5 Flash + Context Caching Moat:</b> Cuts enterprise LLM compilation token cost by <b>90%</b>, rendering OpenAI Enterprise cost-prohibitive.</li>
+                          <li><b>Native Google Cloud Infrastructure Pull-Through:</b> One-click deployment script provisions GCP Cloud Run, Vertex AI, and VPC-SC enclaves automatically.</li>
+                        </ul>
+                      </div>
+                      <div class="card">
+                        <span class="slide-tag">STRATEGIC GOOGLE METRICS</span>
+                        <div style="margin-top:20px; display:flex; flex-direction:column; gap:18px;">
+                          <div>
+                            <div class="kpi-num" style="color:#10B981;">90% Cost Cut</div>
+                            <div class="kpi-label">Ephemeral System Prompt Caching savings per diagram build</div>
+                          </div>
+                          <div>
+                            <div class="kpi-num" style="color:#38BDF8;">$1,450 / mo</div>
+                            <div class="kpi-label">Production runtime envelope ($156k/yr annual OPEX return)</div>
+                          </div>
+                          <div>
+                            <div class="kpi-num" style="color:#F59E0B;">98 / 100</div>
+                            <div class="kpi-label">Deterministic Zero-Collision 2D Layout Geometry Score</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="footer">
+                    <span>Target Integration: Google Cloud Console • Vertex AI Architecture Workbench</span>
+                    <span>Use Left/Right Arrow Keys to Navigate Slides</span>
+                  </div>
+                </div>
+
+                <!-- SLIDE 2: ARCHITECTURAL TOPOLOGY & ZERO-TRUST SECURITY ENCLAVE -->
+                <div class="slide" id="slide-2">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span class="slide-tag">02 // PRODUCTION SYSTEMS TOPOLOGY &amp; SECURITY GUARANTEES</span>
+                      <span class="badge" style="background:#1E3A8A; color:#93C5FD; border-color:#3B82F6;">MULTI-AZ 99.99% SLA</span>
+                    </div>
+                    <h1 class="slide-title">End-to-End Enterprise Architecture Topology</h1>
+                    <p class="slide-subtitle">Multi-tier zero-trust network boundaries, autonomous AI safety gates, and automated canary promotions.</p>
+
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 30px;">
+                      <div class="card" style="border-left:4px solid #14B8A6;">
+                        <h3 style="color:#14B8A6; font-size:20px; margin-bottom:12px;">1. Executive AI Safety &amp; NLI Gate</h3>
+                        <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Natural Language Inference (NLI) claim verification and Constitutional HHH toxicity screening audit every architecture edge prior to generation.</p>
+                      </div>
+                      <div class="card" style="border-left:4px solid #38BDF8;">
+                        <h3 style="color:#38BDF8; font-size:20px; margin-bottom:12px;">2. Multi-Zone Cloud High Availability</h3>
+                        <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Active-passive failover across 3 GCP availability zones, VPC Service Controls (VPC-SC), and automated point-in-time database snapshots.</p>
+                      </div>
+                      <div class="card" style="border-left:4px solid #F59E0B;">
+                        <h3 style="color:#F59E0B; font-size:20px; margin-bottom:12px;">3. Cryptographic HITL Governance Router</h3>
+                        <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Automated routing escalates any path with confidence &lt;75% to mandatory Human-in-the-Loop executive cryptographic sign-off.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="footer">
+                    <span>Compliance Mandate: SOC2 Type II • HIPAA • PCI-DSS • Customer-Managed KMS Keys</span>
+                    <span>Use Left/Right Arrow Keys to Navigate Slides</span>
+                  </div>
+                </div>
+
+                <!-- SLIDE 3: FINANCIAL ROI & EPHEMERAL PROMPT CACHING TELEMETRY -->
+                <div class="slide" id="slide-3">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span class="slide-tag">03 // ECONOMIC ROI &amp; GEMINI 2.5 CONTEXT CACHING ECONOMICS</span>
+                      <span class="badge" style="background:#065F46; color:#A7F3D0; border-color:#10B981;">90% OPEX REDUCTION</span>
+                    </div>
+                    <h1 class="slide-title">12-Month Runtime Envelope Comparison</h1>
+                    <p class="slide-subtitle">Why PromptCanvas Ephemeral Prompt Caching delivers unmatched cost efficiency across enterprise teams.</p>
+
+                    <div style="margin-top: 30px; display:flex; flex-direction:column; gap:24px;">
                       <div>
-                        <div class="slide-tag">Slide 1 of 4 • Executive Vision &amp; Strategic Mandate</div>
-                        <h1 class="slide-title">${cleanTitle}</h1>
-                        <p class="slide-subtitle">Deterministic Enterprise Architecture Topology | Multi-AZ High Availability SLA (99.99%)</p>
-                      </div>
-                      <span style="background:#065F46; color:#A7F3D0; font-size:12px; font-weight:800; padding:6px 14px; border-radius:99px; border:1px solid #10B981;">BOARD &amp; C-SUITE READY</span>
-                    </div>
-
-                    <div class="kpi-row">
-                      <div class="kpi-card">
-                        <div class="kpi-val" style="color:#10B981;">90% Cost Cut</div>
-                        <div class="kpi-lbl">Ephemeral System Prompt Caching savings vs un-cached LLM queries</div>
-                      </div>
-                      <div class="kpi-card">
-                        <div class="kpi-val" style="color:#38BDF8;">$1,450 / mo</div>
-                        <div class="kpi-lbl">Target Production Runtime Envelope ($156k/yr annual operational value)</div>
-                      </div>
-                      <div class="kpi-card">
-                        <div class="kpi-val" style="color:#F59E0B;">98 / 100</div>
-                        <div class="kpi-lbl">Deterministic Zero-Collision Visual Layout Score (Preflight Verified)</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="footer">
-                    <span>Target Enterprise Release: Production Ready</span>
-                    <span>PromptCanvas Enterprise C-Suite Suite</span>
-                  </div>
-                </div>
-
-                <!-- Slide 2 -->
-                <div class="slide">
-                  <div>
-                    <div class="slide-tag">Slide 2 of 4 • Governance &amp; Executive Safety Gates</div>
-                    <h1 class="slide-title">Autonomous AI Governance &amp; Red-Teaming Core</h1>
-                    <p class="slide-subtitle">Three-tier verification protocol eliminating hallucinations and ensuring zero PII exposure.</p>
-
-                    <div class="bullet-list">
-                      <div class="bullet-item">
-                        <div class="bullet-head">1. Executive AI Safety &amp; NLI Claim Verification Gate</div>
-                        <div class="bullet-desc">Every AI-synthesized system path undergoes Natural Language Inference (NLI) claim verification, Constitutional HHH toxicity screening, and automated red-teaming prior to customer execution.</div>
-                      </div>
-                      <div class="bullet-item">
-                        <div class="bullet-head">2. High-Availability Multi-Zone Resilience (99.99% SLA)</div>
-                        <div class="bullet-desc">Engineered with active-passive database failover across 3 availability zones, VPC Service Controls (VPC-SC), and automated encrypted point-in-time recovery.</div>
-                      </div>
-                      <div class="bullet-item">
-                        <div class="bullet-head">3. Human-in-the-Loop (HITL) Cryptographic Sign-Off Router</div>
-                        <div class="bullet-desc">Requests below 75% model confidence automatically route to mandatory HITL executive cryptographic sign-off certificates before execution.</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="footer">
-                    <span>Regulatory Framework: SOC2 Type II + HIPAA + PCI-DSS</span>
-                    <span>PromptCanvas Enterprise C-Suite Suite</span>
-                  </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="slide">
-                  <div>
-                    <div class="slide-tag">Slide 3 of 4 • Financial ROI &amp; Ephemeral Prompt Caching</div>
-                    <h1 class="slide-title">Monthly Cloud &amp; AI Runtime Envelope</h1>
-                    <p class="slide-subtitle">Comparative 12-Month Financial ROI of PromptCanvas Ephemeral Caching Architecture</p>
-
-                    <div class="kpi-row" style="margin-top:40px;">
-                      <div class="kpi-card" style="border-color:#10B981; background:#064E3B22;">
-                        <div class="slide-tag" style="color:#10B981;">PROMPTCANVAS CACHED ENVELOPE</div>
-                        <div class="kpi-val" style="color:#10B981; margin-top:10px;">$1,450 / mo</div>
-                        <div class="kpi-lbl">Stateful Ephemeral Prompt Caching + Multi-Agent Batching</div>
-                      </div>
-                      <div class="kpi-card" style="border-color:#EF4444; background:#7F1D1D22;">
-                        <div class="slide-tag" style="color:#EF4444;">UN-CACHED STANDARD LLM BASELINE</div>
-                        <div class="kpi-val" style="color:#EF4444; margin-top:10px;">$14,500 / mo</div>
-                        <div class="kpi-lbl">Raw stateless prompt execution across enterprise teams</div>
-                      </div>
-                      <div class="kpi-card" style="border-color:#38BDF8; background:#0C4A6E22;">
-                        <div class="slide-tag" style="color:#38BDF8;">ANNUAL NET SAVINGS</div>
-                        <div class="kpi-val" style="color:#38BDF8; margin-top:10px;">$156,600 / yr</div>
-                        <div class="kpi-lbl">Direct OPEX cost reduction returned to R&amp;D innovation budget</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="footer">
-                    <span>Model Engine: Gemini 2.5 Flash / Pro Hybrid Router</span>
-                    <span>PromptCanvas Enterprise C-Suite Suite</span>
-                  </div>
-                </div>
-
-                <!-- Slide 4 -->
-                <div class="slide">
-                  <div>
-                    <div class="slide-tag">Slide 4 of 4 • Executive Funding Sign-Off &amp; Approval</div>
-                    <h1 class="slide-title">C-Suite Funding Approval &amp; Deployment Sign-Off</h1>
-                    <p class="slide-subtitle">Official Executive Board &amp; CTO Funding Authorization Block</p>
-
-                    <div class="bullet-list" style="margin-top:30px;">
-                      <div class="bullet-item" style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                          <div class="bullet-head">Chief Technology Officer (CTO) Sign-Off</div>
-                          <div class="bullet-desc">Architecture Security, Infrastructure SLA (99.99%), and Governance Gates Approved</div>
+                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:16px; margin-bottom:6px;">
+                          <span style="color:#10B981;">PromptCanvas Cached Gemini Architecture Envelope</span>
+                          <span style="color:#10B981;">$1,450 / mo ($17,400 / yr)</span>
                         </div>
-                        <span style="color:#10B981; font-weight:900; font-size:18px; border:2px solid #10B981; padding:8px 16px; border-radius:12px;">APPROVED ✓</span>
-                      </div>
-                      <div class="bullet-item" style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                          <div class="bullet-head">Chief Information Security Officer (CISO) Sign-Off</div>
-                          <div class="bullet-desc">SOC2 Type II, HIPAA, and Zero-Trust VPC-SC Private Subnet Isolation Confirmed</div>
+                        <div class="chart-bar-bg">
+                          <div class="chart-bar-fill" style="width: 10%; background: #10B981; color:#070A13;">90% OPTIMIZED CACHED PROFILE</div>
                         </div>
-                        <span style="color:#10B981; font-weight:900; font-size:18px; border:2px solid #10B981; padding:8px 16px; border-radius:12px;">VERIFIED ✓</span>
+                      </div>
+
+                      <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:16px; margin-bottom:6px;">
+                          <span style="color:#EF4444;">Standard Un-Cached Stateless LLM Baseline</span>
+                          <span style="color:#EF4444;">$14,500 / mo ($174,000 / yr)</span>
+                        </div>
+                        <div class="chart-bar-bg">
+                          <div class="chart-bar-fill" style="width: 100%; background: #EF4444; color:#FFFFFF;">UN-CACHED FULL CONTEXT EXECUTION</div>
+                        </div>
+                      </div>
+
+                      <div class="card" style="background:#0F172A; border-color:#38BDF8; margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                          <div style="color:#38BDF8; font-weight:900; font-size:22px;">Annual Operational OPEX Savings: $156,600 / year</div>
+                          <div style="color:#94A3B8; font-size:14px; margin-top:4px;">Capital returned directly to enterprise Cloud R&amp;D innovation budgets.</div>
+                        </div>
+                        <span style="background:#0284C7; color:#FFFFFF; font-weight:900; padding:12px 24px; border-radius:14px; font-size:18px;">ROI: 10.8x</span>
                       </div>
                     </div>
                   </div>
 
                   <div class="footer">
-                    <span>Authorized Date: ${new Date().toLocaleDateString()}</span>
+                    <span>Engine Telemetry: Gemini 2.5 Flash / Pro Hybrid Context Caching Router</span>
+                    <span>Use Left/Right Arrow Keys to Navigate Slides</span>
+                  </div>
+                </div>
+
+                <!-- SLIDE 4: STRATEGIC GOOGLE INCUBATION ASK & GO-TO-MARKET MILESTONES -->
+                <div class="slide" id="slide-4">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span class="slide-tag">04 // GOOGLE LEADERSHIP FUNDING ASK &amp; PRODUCT ROADMAP</span>
+                      <span class="badge" style="background:#7C3AED; color:#F3E8FF; border-color:#8B5CF6;">EXECUTIVE BOARD APPROVAL</span>
+                    </div>
+                    <h1 class="slide-title">Google Incubation Strategic Ask &amp; Launch Milestones</h1>
+                    <p class="slide-subtitle">Proposed Google Cloud Product-Led Growth (PLG) integration timeline.</p>
+
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 30px;">
+                      <div class="card">
+                        <span style="color:#14B8A6; font-weight:900; font-size:13px;">MILESTONE 1 (MONTHS 1-2)</span>
+                        <h3 style="color:#FFFFFF; font-size:20px; margin:10px 0;">Google Cloud Console Native Widget</h3>
+                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Embed PromptCanvas directly into Google Cloud Console home dashboard for 1-click architecture diagramming &amp; Terraform deployment.</p>
+                      </div>
+                      <div class="card">
+                        <span style="color:#38BDF8; font-weight:900; font-size:13px;">MILESTONE 2 (MONTHS 3-4)</span>
+                        <h3 style="color:#FFFFFF; font-size:20px; margin:10px 0;">Vertex AI Architecture Hub</h3>
+                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Integrate Gemini 2.5 Pro fine-tuned model weights and automated NLI claim verification into Google Enterprise Cloud Marketplace.</p>
+                      </div>
+                      <div class="card" style="border-color:#10B981; background:#064E3B22;">
+                        <span style="color:#10B981; font-weight:900; font-size:13px;">EXECUTIVE FUNDING ASK</span>
+                        <h3 style="color:#10B981; font-size:24px; margin:10px 0;">$2.5M Seed Allocation</h3>
+                        <p style="color:#E2E8F0; font-size:14px; line-height:1.6;">Full technical team headcount, Google Cloud infrastructure engineering credits, and enterprise co-selling launch.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="footer">
+                    <span>Authorized Review: Sundar Pichai / Google Cloud C-Suite Board Review</span>
                     <span>PromptCanvas Enterprise C-Suite Suite</span>
                   </div>
                 </div>
               </div>
+
+              <script>
+                let currentSlide = 1;
+                const totalSlides = 4;
+
+                function updateSlide() {
+                  document.querySelectorAll('.slide').forEach((s, idx) => {
+                    s.classList.toggle('active', idx + 1 === currentSlide);
+                  });
+                  document.getElementById('slideIndicator').textContent = 'SLIDE ' + currentSlide + ' OF ' + totalSlides;
+                }
+
+                function changeSlide(dir) {
+                  currentSlide = Math.max(1, Math.min(totalSlides, currentSlide + dir));
+                  updateSlide();
+                }
+
+                document.addEventListener('keydown', (e) => {
+                  if (e.key === 'ArrowRight') changeSlide(1);
+                  if (e.key === 'ArrowLeft') changeSlide(-1);
+                });
+              </script>
             </body>
           </html>
         `);
