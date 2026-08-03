@@ -1,12 +1,11 @@
 /**
  * 🏛️ Master Widescreen Reference Layouts for New Enterprise Blueprints:
- * OPENAI + VERTEX AI + LANGGRAPH UNIVERSAL PUBLICATION-GRADE ARCHITECTURES
- * Incorporating OpenAI Bleeding-Edge Production Agent Primitives:
- * - OpenAI Swarm Handoff Routines (handoff_to_agent() function transfers)
- * - OpenAI Strict Structured Outputs (Pydantic / JSON Schema strict validation)
- * - OpenAI Assistants API Run State Machine (queued -> in_progress -> requires_action -> completed)
- * - OpenAI Model Spec & Automated Jailbreak Red-Teaming Guardrails
- * - Multimodal Realtime Voice (WebRTC) & Vision Ingress
+ * UNIVERSAL MULTI-MODEL ENTERPRISE AI ARCHITECTURE (GOOGLE VERTEX AI + OPENAI + ANTHROPIC CLAUDE)
+ * Incorporating Anthropic Claude Signature Enterprise AI Breakthroughs:
+ * - Anthropic Constitutional AI (CAI) Helpful, Harmless, Honest (HHH) Alignment Engine
+ * - Claude 3.5 Sonnet Computer Use GUI OS Container (mouse_click, type_text, take_screenshot)
+ * - Anthropic Ephemeral Prompt Caching (cache_control: 90% Cost & 85% Latency Reduction)
+ * - Claude Extended Reasoning Token Budget Allocation (thinking: budget_tokens)
  */
 
 export function getExactAgentGovernanceHitlReferenceXml(): string {
@@ -24,10 +23,10 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         </mxCell>
 
         <!-- Figure Title Banner -->
-        <mxCell id="header_title" value="FIGURE 1: OPENAI &amp; ENTERPRISE AUTONOMOUS AI AGENT GOVERNANCE &amp; RISK ESCALATION LIFECYCLE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxCell id="header_title" value="FIGURE 1: UNIVERSAL MULTI-MODEL ENTERPRISE AI AGENT GOVERNANCE &amp; RISK ESCALATION LIFECYCLE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="50" y="50" width="1820" height="28" as="geometry" />
         </mxCell>
-        <mxCell id="header_sub" value="OpenAI &amp;amp; Enterprise Primitives: [1. Multimodal WebRTC/Vision Ingress] • [2. Model Spec &amp;amp; Jailbreak Guardrails] • [3. OpenAI Run State Machine (requires_action)] • [4. Strict JSON Schema Validation] • [5. Continuous RLHF Loop]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
+        <mxCell id="header_sub" value="Unified Multi-Model Stack: [1. Anthropic Constitutional AI (CAI) HHH Layer] • [2. Claude Prompt Caching (90% Cost Cut)] • [3. OpenAI Run State Machine (requires_action)] • [4. Claude Computer Use GUI OS]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
           <mxGeometry x="50" y="78" width="1820" height="22" as="geometry" />
         </mxCell>
 
@@ -35,11 +34,11 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         <mxCell id="col1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="60" y="110" width="380" height="700" as="geometry" />
         </mxCell>
-        <mxCell id="col1_title" value="TIER 1: MULTIMODAL INGRESS &amp;amp; MODEL SPEC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="col1_title" value="TIER 1: INGRESS &amp;amp; ANTHROPIC CONSTITUTIONAL AI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="80" y="125" width="340" height="40" as="geometry" />
         </mxCell>
 
-        <mxCell id="c1_box1" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Multimodal Agent Action Ingress Payload&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• OpenAI Realtime WebRTC Audio &amp;amp; Vision Document Streams&lt;br/&gt;• Structured JSON/Pydantic Tool Call Arguments &amp;amp; Credentials&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="c1_box1" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Multimodal Agent Action Ingress Payload&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• OpenAI Realtime WebRTC Audio &amp;amp; Vision Document Streams&lt;br/&gt;• Anthropic Ephemeral Prompt Caching (90% Cost Reduction)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="85" y="180" width="330" height="115" as="geometry" />
         </mxCell>
 
@@ -61,7 +60,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
           <mxGeometry x="310" y="355" width="95" height="235" as="geometry" />
         </mxCell>
 
-        <mxCell id="c1_gate" value="🛡️ OpenAI Model Spec &amp;amp; Jailbreak Guardrail Pass" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E40AF;strokeColor=#1E3A8A;strokeWidth=2;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="c1_gate" value="🛡️ Anthropic Constitutional AI (CAI) HHH Safety Pass" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E40AF;strokeColor=#1E3A8A;strokeWidth=2;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="85" y="630" width="330" height="55" as="geometry" />
         </mxCell>
 
@@ -139,11 +138,11 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         <mxCell id="col4_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1400" y="110" width="440" height="700" as="geometry" />
         </mxCell>
-        <mxCell id="col4_title" value="TIER 4: STRICT PYDANTIC EXECUTION &amp;amp; AUDIT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="col4_title" value="TIER 4: COMPUTER USE &amp;amp; STRICT PYDANTIC EXECUTION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="1420" y="125" width="400" height="40" as="geometry" />
         </mxCell>
 
-        <mxCell id="c4_exec" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Strict JSON Schema / Pydantic Tool Execution&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#14532D;'&gt;• Guarantees Strict OpenAI Structured Output schema compliance&lt;br/&gt;• Idempotent API Execution with Transactional Rollback Protection&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="c4_exec" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Claude Computer Use GUI &amp;amp; Strict Pydantic Execution&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#14532D;'&gt;• Claude 3.5 Sonnet Virtual OS GUI Automation (mouse/type/screenshot)&lt;br/&gt;• Idempotent API Execution with Transactional Rollback Protection&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="1425" y="180" width="390" height="115" as="geometry" />
         </mxCell>
 
@@ -156,7 +155,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         </mxCell>
 
         <!-- FORMAL AGENTIC PATTERNS & AGENT ROLES COMPREHENSIVE BOX (y=825..930) -->
-        <mxCell id="legend_box" value="&lt;b style='font-size:11px;'&gt;OPENAI BLEEDING-EDGE PRIMITIVES &amp;amp; AGENTIC ROUTING:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;[OpenAI Swarm handoff_to_agent()] • [Strict JSON Schema / Pydantic Structured Outputs] • [Assistants API Run State Machine (requires_action)] • [Model Spec &amp;amp; Jailbreak Guardrails]&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• &lt;b&gt;Routing Rules:&lt;/b&gt; Confidence &amp;ge; 95% &amp;rarr; Fast-Path Auto-Approve  |  75%–94% &amp;rarr; Supervisor AI Cross-Verification  |  &amp;lt; 75% &amp;rarr; Mandatory Human Review Escalation (submit_tool_outputs)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;align=center;" vertex="1" parent="1">
+        <mxCell id="legend_box" value="&lt;b style='font-size:11px;'&gt;UNIFIED MULTI-MODEL ENTERPRISE AI STACK:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;[Anthropic Constitutional AI (CAI)] • [Claude 3.5 Sonnet Computer Use GUI OS] • [Claude Ephemeral Prompt Caching (90% Cost Cut)] • [OpenAI Strict Structured Outputs] • [OpenAI requires_action HITL Gate]&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• &lt;b&gt;Routing Rules:&lt;/b&gt; Confidence &amp;ge; 95% &amp;rarr; Fast-Path Auto-Approve  |  75%–94% &amp;rarr; Supervisor AI Cross-Verification  |  &amp;lt; 75% &amp;rarr; Mandatory Human Review Escalation (submit_tool_outputs)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;align=center;" vertex="1" parent="1">
           <mxGeometry x="60" y="825" width="1780" height="55" as="geometry" />
         </mxCell>
 
@@ -174,7 +173,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         <mxCell id="e_c1_down" value="Assess Risk Dimensions" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;fontColor=#0284C7;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="c1_box1" target="c1_track_bg">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_c1_gate" value="Model Spec Pass" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;fontColor=#0284C7;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="c1_track_bg" target="c1_gate">
+        <mxCell id="e_c1_gate" value="Constitutional AI Pass" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;fontColor=#0284C7;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="c1_track_bg" target="c1_gate">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="c_1" value="Action Payload ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontColor=#0284C7;fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="c1_gate" target="decision_hub">
@@ -239,10 +238,10 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         </mxCell>
 
         <!-- Figure Title Banner -->
-        <mxCell id="header_title" value="FIGURE 2: OPENAI &amp; ENTERPRISE MULTI-AGENT AUTONOMOUS ORCHESTRATION PLATFORM (SWARM / LANGGRAPH)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxCell id="header_title" value="FIGURE 2: UNIVERSAL MULTI-MODEL ENTERPRISE ORCHESTRATION PLATFORM (CLAUDE 3.5 / VERTEX AI / OPENAI)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="50" y="50" width="1820" height="28" as="geometry" />
         </mxCell>
-        <mxCell id="header_sub" value="OpenAI Bleeding-Edge Primitives: [1. OpenAI Swarm handoff_to_agent()] • [2. Strict Structured Outputs JSON Schema] • [3. OpenAI Run State Machine (requires_action)] • [4. Realtime Audio WebRTC &amp;amp; Vision Ingress]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
+        <mxCell id="header_sub" value="Anthropic Claude + OpenAI Stack: [1. Claude Computer Use GUI OS Container] • [2. Ephemeral Prompt Caching (90% Cost Cut)] • [3. OpenAI Swarm handoff_to_agent()] • [4. Claude Extended Reasoning Budget]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
           <mxGeometry x="50" y="78" width="1820" height="22" as="geometry" />
         </mxCell>
 
@@ -250,14 +249,14 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="col1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="60" y="110" width="380" height="700" as="geometry" />
         </mxCell>
-        <mxCell id="col1_title" value="TIER 1: MASTER SUPERVISOR &amp;amp; THREAD STATE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="col1_title" value="TIER 1: MASTER SUPERVISOR &amp;amp; CLAUDE PROMPT CACHE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="80" y="125" width="340" height="40" as="geometry" />
         </mxCell>
 
-        <mxCell id="c1_client" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;OpenAI Realtime WebRTC / Enterprise API Ingress&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• Multimodal Voice/Vision Streams &amp;amp; Tool Call Requests&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="c1_client" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;OpenAI Realtime WebRTC / Enterprise API Ingress&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• Multimodal Voice/Vision Streams &amp;amp; Claude Ephemeral Cache Headers&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="85" y="180" width="330" height="115" as="geometry" />
         </mxCell>
-        <mxCell id="c1_supervisor" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;[Agent 1: Orchestrator] LangGraph Master Supervisor&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#0284C7;'&gt;• Decomposes Goal into Directed Acyclic Task Graph (DAG)&lt;br/&gt;• OpenAI Swarm handoff_to_agent() Routines &amp;amp; Plan Router&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="c1_supervisor" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;[Agent 1: Orchestrator] LangGraph Master Supervisor&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#0284C7;'&gt;• Decomposes Goal into Directed Acyclic Task Graph (DAG)&lt;br/&gt;• OpenAI Swarm handoff_to_agent() Routines &amp;amp; Claude Extended Reasoning&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="85" y="330" width="330" height="135" as="geometry" />
         </mxCell>
         <mxCell id="c1_state" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;OpenAI Assistants API Run State &amp;amp; Checkpoint Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• Manages Run Object Lifecycle (queued -&amp;gt; in_progress -&amp;gt; requires_action)&lt;br/&gt;• Thread Artifact Checkpointer &amp;amp; Fault-Tolerant Step Memory&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
@@ -278,12 +277,12 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         </mxCell>
 
         <!-- Worker Stack 2: Code & SQL Generator -->
-        <mxCell id="w_code" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;[Agent 3: Synthesis Specialist] Code, SQL &amp;amp; IaC Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#0284C7;'&gt;• Synthesizes executable Python code, BigQuery SQL &amp;amp; Terraform&lt;br/&gt;• Generates OpenAI Strict Structured Outputs JSON Schemas&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="w_code" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;[Agent 3: Synthesis Specialist] Code, SQL &amp;amp; Computer Use&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#0284C7;'&gt;• Synthesizes executable Python code, BigQuery SQL &amp;amp; Terraform&lt;br/&gt;• Generates Claude 3.5 Computer Use GUI Action Script (mouse/type)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="500" y="320" width="380" height="115" as="geometry" />
         </mxCell>
 
         <!-- Worker Stack 3: Verification Critic -->
-        <mxCell id="w_verify" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;[Agent 4: Reflection Agent] Verification &amp;amp; Safety Critic&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#14532D;'&gt;• Performs OpenAI Model Spec validation, syntax check &amp;amp; grounding audit&lt;br/&gt;• Evaluates generated code prior to isolated sandbox dispatch&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="w_verify" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;[Agent 4: Reflection Agent] Verification &amp;amp; Safety Critic&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#14532D;'&gt;• Performs Anthropic Constitutional AI audit &amp;amp; grounding verification&lt;br/&gt;• Evaluates generated code prior to isolated sandbox dispatch&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="500" y="460" width="380" height="115" as="geometry" />
         </mxCell>
 
@@ -295,16 +294,17 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <!-- COLUMN 3 (x=940, width=420): Isolated Tool Sandbox & Vector Memory Store -->
         <mxCell id="col3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="940" y="110" width="420" height="700" as="geometry" />
+        </geometry>
         </mxCell>
-        <mxCell id="col3_title" value="TIER 3: TOOL SANDBOX &amp;amp; STRICT JSON SCHEMA [PATTERN 2]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="col3_title" value="TIER 3: CLAUDE COMPUTER USE &amp;amp; SANDBOX [PATTERN 2]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="960" y="125" width="380" height="40" as="geometry" />
         </mxCell>
 
-        <mxCell id="c3_sandbox" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Cloud Run Containerized Isolated Code Sandbox&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#14532D;'&gt;• Ephemeral MicroVM Sandbox for Safe Code &amp;amp; Query Execution&lt;br/&gt;• Enforces Strict CPU/Memory Quotas &amp;amp; Zero External Exfiltration&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="c3_sandbox" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Claude 3.5 Sonnet Computer Use Virtual OS Desktop Sandbox&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#14532D;'&gt;• Autonomous GUI desktop navigation (mouse_click, type_text, screenshot)&lt;br/&gt;• Ephemeral Cloud Run MicroVM Container with zero network exfiltration&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="965" y="180" width="370" height="135" as="geometry" />
         </mxCell>
 
-        <mxCell id="store_pgvector" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;🗄️ Cloud SQL (pgvector) Long-Term Knowledge Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#0284C7;'&gt;• Persists Cross-Session Agent Embeddings &amp;amp; Episodic Memory&lt;br/&gt;• High-Scale Approximate Nearest Neighbor (ANN) Vector Search&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="store_pgvector" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;🗄️ Cloud SQL (pgvector) Long-Term Knowledge Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#0284C7;'&gt;• Persists Cross-Session Agent Embeddings &amp;amp; Episodic Memory&lt;br/&gt;• Anthropic Ephemeral Prompt Caching (90% Cost &amp;amp; 85% Latency Cut)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;fontColor=#0F172A;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="965" y="335" width="370" height="130" as="geometry" />
         </mxCell>
 
@@ -316,7 +316,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="col4_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1400" y="110" width="440" height="700" as="geometry" />
         </mxCell>
-        <mxCell id="col4_title" value="TIER 4: REQUIRES_ACTION HITL GATE &amp;amp; SUBMIT_TOOL_OUTPUTS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="col4_title" value="TIER 4: REQUIRES_ACTION HITL GATE &amp;amp; OBSERVABILITY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="1420" y="125" width="400" height="40" as="geometry" />
         </mxCell>
 
@@ -333,7 +333,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         </mxCell>
 
         <!-- FORMAL SCIENTIFIC ENUMERATION OF ALL AGENTS & AGENTIC PATTERNS BOX (y=825..930) -->
-        <mxCell id="legend_box" value="&lt;b style='font-size:11px;'&gt;OPENAI BLEEDING-EDGE PRIMITIVES &amp;amp; AGENTIC ROUTING:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;[OpenAI Swarm handoff_to_agent()] • [Strict JSON Schema / Pydantic Structured Outputs] • [Assistants API Run State Machine (requires_action)] • [Model Spec &amp;amp; Jailbreak Guardrails]&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• &lt;b&gt;Routing Rules:&lt;/b&gt; Confidence &amp;ge; 95% &amp;rarr; Fast-Path Auto-Approve  |  75%–94% &amp;rarr; Supervisor AI Cross-Verification  |  &amp;lt; 75% &amp;rarr; Mandatory Human Review Escalation (submit_tool_outputs)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;align=center;" vertex="1" parent="1">
+        <mxCell id="legend_box" value="&lt;b style='font-size:11px;'&gt;UNIFIED MULTI-MODEL ENTERPRISE AI ARCHITECTURE (ANTHROPIC CLAUDE + OPENAI + GOOGLE VERTEX AI):&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;[Anthropic Constitutional AI (CAI)] • [Claude 3.5 Sonnet Computer Use GUI OS] • [Claude Ephemeral Prompt Caching (90% Cost Cut)] • [OpenAI Swarm handoff_to_agent()] • [OpenAI Strict Structured Outputs]&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• &lt;b&gt;Routing Rules:&lt;/b&gt; Confidence &amp;ge; 95% &amp;rarr; Fast-Path Auto-Approve  |  75%–94% &amp;rarr; Supervisor AI Cross-Verification  |  &amp;lt; 75% &amp;rarr; Mandatory Human Review Escalation (submit_tool_outputs)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;align=center;" vertex="1" parent="1">
           <mxGeometry x="60" y="825" width="1780" height="55" as="geometry" />
         </mxCell>
 
@@ -369,7 +369,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         </mxCell>
 
         <!-- Inter-Column Flow 2: Consensus Hub -> Isolated Sandbox via Dedicated Channel x=920 -->
-        <mxCell id="e_consensus_to_sandbox" value="Strict JSON Schema Execution ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontColor=#14532D;fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="consensus_hub" target="c3_sandbox">
+        <mxCell id="e_consensus_to_sandbox" value="Claude Computer Use GUI ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontColor=#14532D;fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="consensus_hub" target="c3_sandbox">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="920" y="657" />
