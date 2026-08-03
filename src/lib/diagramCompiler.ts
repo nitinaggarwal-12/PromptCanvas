@@ -3447,7 +3447,7 @@ export function getExactEvalSafetyBenchmarkingReferenceXml(): string {
         <!-- DECISION GATE BRANCHING VIA DEDICATED INTER-COLUMN CHANNEL (x=1380) -->
         <!-- ZERO OVERLAP: All paths exit right of Decision Gate (x=1290) into open corridor x=1380 -->
         <!-- Green Path (Top): Exits right tip (x=1290 y=635) -> goes to x=1380 -> UP vertical channel x=1380 to y=272 -> enters out_pass (x=1430) -->
-        <mxCell id="edge_pass" value="Passed &amp;amp; High Quality" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#22C55E;strokeWidth=3;fontColor=#22C55E;fontStyle=1;fontSize=11;labelBackgroundColor=#0F172A;spacingTop=2;" edge="1" parent="1" source="gate" target="out_pass">
+        <mxCell id="edge_pass" value="Passed &amp;amp; High Quality" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#22C55E;strokeWidth=3;fontColor=#22C55E;fontStyle=1;fontSize=11;labelBackgroundColor=#0F172A;spacingTop=2;" edge="1" parent="1" source="gate" target="out_pass">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1380" y="635" />
@@ -3457,7 +3457,7 @@ export function getExactEvalSafetyBenchmarkingReferenceXml(): string {
         </mxCell>
 
         <!-- Yellow Path (Middle): Exits right tip (x=1290 y=635) -> goes to x=1380 -> UP vertical channel x=1380 to y=462 -> enters out_block (x=1430) -->
-        <mxCell id="edge_block" value="Low Reliability" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#F59E0B;strokeWidth=3;fontColor=#F59E0B;fontStyle=1;fontSize=11;labelBackgroundColor=#0F172A;spacingTop=2;" edge="1" parent="1" source="gate" target="out_block">
+        <mxCell id="edge_block" value="Low Reliability" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#F59E0B;strokeWidth=3;fontColor=#F59E0B;fontStyle=1;fontSize=11;labelBackgroundColor=#0F172A;spacingTop=2;" edge="1" parent="1" source="gate" target="out_block">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1380" y="635" />
@@ -3467,7 +3467,7 @@ export function getExactEvalSafetyBenchmarkingReferenceXml(): string {
         </mxCell>
 
         <!-- Red Path (Bottom): Exits right tip (x=1290 y=635) -> goes to x=1380 -> DOWN vertical channel x=1380 to y=657 -> enters out_fail (x=1430) -->
-        <mxCell id="edge_fail" value="Safety Violation" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=3;fontColor=#EF4444;fontStyle=1;fontSize=11;labelBackgroundColor=#0F172A;spacingTop=2;" edge="1" parent="1" source="gate" target="out_fail">
+        <mxCell id="edge_fail" value="Safety Violation" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#EF4444;strokeWidth=3;fontColor=#EF4444;fontStyle=1;fontSize=11;labelBackgroundColor=#0F172A;spacingTop=2;" edge="1" parent="1" source="gate" target="out_fail">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1380" y="635" />

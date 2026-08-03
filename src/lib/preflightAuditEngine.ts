@@ -171,28 +171,30 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xml = xml.replace(/(&lt;br&gt;\s*|&lt;br\/&gt;\s*)+/gi, '&lt;br&gt;');
   xml = xml.replace(/(Batch Reconciliation\s*)+/gi, 'Batch Reconciliation ');
 
-  // 8. ACCESSIBILITY & PROCESS FLOW EDGE LABEL CONTRAST & POSITION HEALING:
-  // Force process flow edge labels to sit ABOVE line vectors and OUTSIDE component shape boxes
-  xml = xml.replace(/(<mxCell[^>]*\bedge="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
-    let s = p2;
-    if (!s.includes('labelBackgroundColor')) {
-      s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;padding=4;';
-    } else {
-      if (!s.includes('verticalLabelPosition')) s += ';verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;';
-      if (!s.includes('labelBorderColor')) s += ';labelBorderColor=#0284C7;';
-    }
-    if (!s.includes('jumpStyle')) s += ';jumpStyle=arc;jumpSize=6;';
-    return `${p1}${s}${p3}`;
-  });
+  // 8. ACCESSIBILITY & PROCESS FLOW EDGE LABEL CONTRAST & POSITION HEALING (Skipped for pre-engineered structured templates):
+  if (!isStructuredTemplateXml) {
+    // Force process flow edge labels to sit ABOVE line vectors and OUTSIDE component shape boxes
+    xml = xml.replace(/(<mxCell[^>]*\bedge="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
+      let s = p2;
+      if (!s.includes('labelBackgroundColor')) {
+        s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;padding=4;';
+      } else {
+        if (!s.includes('verticalLabelPosition')) s += ';verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;';
+        if (!s.includes('labelBorderColor')) s += ';labelBorderColor=#0284C7;';
+      }
+      if (!s.includes('jumpStyle')) s += ';jumpStyle=arc;jumpSize=6;';
+      return `${p1}${s}${p3}`;
+    });
 
-  // Enforce whiteSpace=wrap, overflow=hidden, and vertical padding on all vertex cards
-  xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
-    let s = p2;
-    if (!s.includes('whiteSpace=wrap')) s += ';whiteSpace=wrap;';
-    if (!s.includes('overflow=hidden') && !s.includes('swimlane')) s += ';overflow=hidden;';
-    if (!s.includes('spacingTop')) s += ';spacingTop=6;spacingBottom=6;';
-    return `${p1}${s}${p3}`;
-  });
+    // Enforce whiteSpace=wrap, overflow=hidden, and vertical padding on all vertex cards
+    xml = xml.replace(/(<mxCell[^>]*\bvertex="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
+      let s = p2;
+      if (!s.includes('whiteSpace=wrap')) s += ';whiteSpace=wrap;';
+      if (!s.includes('overflow=hidden') && !s.includes('swimlane')) s += ';overflow=hidden;';
+      if (!s.includes('spacingTop')) s += ';spacingTop=6;spacingBottom=6;';
+      return `${p1}${s}${p3}`;
+    });
+  }
 
   // Fix dark text on dark glass fill contrast
   xml = xml.replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1');
