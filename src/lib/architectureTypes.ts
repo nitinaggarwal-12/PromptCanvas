@@ -214,27 +214,6 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Technical Architecture",
     whenToUse: "Freeform untyped technical architecture diagram generated dynamically via ELK.js layout engine",
     prompt: "Freeform technical architecture generated via Pipeline V2 deterministic ELK.js layout engine."
-  },
-  {
-    id: "vertex_ai_graphrag",
-    name: "26. Google Vertex AI GraphRAG Enterprise Architecture (Latest Google AI Stack)",
-    category: "Technical Architecture",
-    whenToUse: "Google's latest flagship enterprise AI architecture combining Gemini 2.5 Flash Ephemeral Caching, Vertex AI Graph Search Index, Google Spanner/AlloyDB Graph, and Multi-Hop Relational Knowledge Graph reasoning",
-    prompt: "Google Vertex AI GraphRAG Enterprise Architecture:\n- Ingress & Ephemeral Caching: Enterprise Workspace Ingress -> Gemini 2.5 Flash Ephemeral Context Caching Router (90% OPEX cut).\n- Graph Knowledge Engine: Google Spanner Graph & AlloyDB Relational Entity Graph -> Vertex AI GraphRAG Multi-Hop Index.\n- Semantic & Relational Synthesis: Gemini 2.5 Pro Relational Synthesis Engine -> VPC Service Controls Enclave -> Real-Time Executive Insights."
-  },
-  {
-    id: "google_a2a_agentic_ecosystem",
-    name: "27. Google Agent-to-Agent (A2A) Autonomous Enterprise Protocol",
-    category: "Technical Architecture",
-    whenToUse: "Google's latest enterprise Agent-to-Agent (A2A) delegation protocol linking Vertex AI Agent Builder, Google Workspace extensions, and private cloud agent enclaves",
-    prompt: "Google Agent-to-Agent (A2A) Autonomous Enterprise Protocol:\n- Primary Orchestrator: Master Vertex AI A2A Protocol Supervisor -> Ephemeral Context Caching Gate.\n- Federated Agent Network: Research Agent -> SQL/BigQuery Synthesis Agent -> Compliance & Safety Critic Agent via A2A Signed Protocol Tokens.\n- Execution & Audit: Private Cloud Run Execution Sandbox -> Cryptographic Cryptographic HITL Audit Trail."
-  },
-  {
-    id: "mcp_google_a2a_hybrid_platform",
-    name: "28. MCP + Google A2A Hybrid Enterprise Agentic Platform (MCP Tool Stack + A2A Federation)",
-    category: "Technical Architecture",
-    whenToUse: "Enterprise architecture uniting Google A2A (Agent-to-Agent horizontal federation) with Anthropic Model Context Protocol (MCP vertical tool/database execution layer)",
-    prompt: "MCP + Google A2A Hybrid Enterprise Agentic Platform:\n- Horizontal Agent Federation (Google A2A Protocol): Master Enterprise Supervisor Agent -> A2A Agent Capability Registry -> Autonomous Peer Delegation Network.\n- Vertical Tool Execution Layer (Model Context Protocol / MCP): Research Agent -> MCP GitHub/BigQuery Server | Code Agent -> MCP Cloud Run & Docker Server | Security Agent -> MCP HashiCorp Vault Server.\n- State, Governance & Audit: Vertex AI Ephemeral Context Caching -> Spanner Graph -> Cryptographic Human-in-the-Loop Approval Gate."
   }
 ];
 
@@ -299,15 +278,6 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (archId === 'tech_multi_agent_langgraph' || archId?.includes('langgraph')) {
     const { getExactMultiAgentLangGraphReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactMultiAgentLangGraphReferenceXml();
-  } else if (archId === 'vertex_ai_graphrag') {
-    const { getExactVertexAiGraphRagReferenceXml } = require('./newEnterpriseReferenceXmls');
-    xml = getExactVertexAiGraphRagReferenceXml();
-  } else if (archId === 'google_a2a_agentic_ecosystem') {
-    const { getExactGoogleA2AProtocolReferenceXml } = require('./newEnterpriseReferenceXmls');
-    xml = getExactGoogleA2AProtocolReferenceXml();
-  } else if (archId === 'mcp_google_a2a_hybrid_platform') {
-    const { getExactMcpGoogleA2AHybridReferenceXml } = require('./newEnterpriseReferenceXmls');
-    xml = getExactMcpGoogleA2AHybridReferenceXml();
   } else if (archId === 'eval_safety_benchmarking' || archId?.includes('monitex') || archId?.includes('safety_benchmarking')) {
     xml = getExactEvalSafetyBenchmarkingReferenceXml();
   } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline' || archId === 'gcp_industrial_iot' || archId === 'enterprise_devsecops_polyrepo')) {
@@ -316,7 +286,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getTechnicalArchitectureXml(archId || 'tech_serverless_gcp');
   }
 
-  if (archId !== 'eval_safety_benchmarking' && archId !== 'business_agent_governance_hitl' && archId !== 'tech_multi_agent_langgraph' && archId !== 'vertex_ai_graphrag' && archId !== 'google_a2a_agentic_ecosystem' && archId !== 'mcp_google_a2a_hybrid_platform') {
+  if (archId !== 'eval_safety_benchmarking' && archId !== 'business_agent_governance_hitl' && archId !== 'tech_multi_agent_langgraph') {
     const effectiveContext = useCaseContext || userPrompt || getTemplateTitle(archId || '');
     xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
   }
