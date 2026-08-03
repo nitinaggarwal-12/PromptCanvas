@@ -24,7 +24,8 @@ import {
   ShieldAlert,
   Settings,
   Mail,
-  ClipboardList
+  ClipboardList,
+  BookOpen
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
@@ -289,6 +290,7 @@ export default function Dashboard() {
             { id: 'editor', name: 'Design Canvas', icon: Network, href: '/workspace' },
             { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
             { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid, href: '/workspace?tab=templates' },
+            { id: 'walkthrough', name: 'Visual Walkthrough', icon: BookOpen, href: '/workspace?tab=walkthrough' },
             { id: 'audit', name: 'Security Audit Hub', icon: ShieldAlert, href: '/workspace?tab=audit' },
             { id: 'settings', name: 'Settings & Config', icon: Settings, href: '/workspace?tab=settings' }
           ].map((item) => {
