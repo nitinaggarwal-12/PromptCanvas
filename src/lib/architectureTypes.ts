@@ -118,25 +118,25 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     id: "business_agent_governance_hitl",
     name: "12. Human-in-the-Loop Autonomous AI Agent Governance Lifecycle",
     category: "Business Architecture",
-    whenToUse: "Executive workflow showing autonomous agent decision tiers, confidence escalation rules (>=95%, 75-94%, <75%), and mandatory human sign-off gates",
-    prompt: "Human-in-the-Loop Autonomous AI Agent Governance Lifecycle:\n- Tier 1: Enterprise Action Request & Intent Classification Engine\n- Tier 2: Confidence Escalation & Routing (>=95% Fast Path, 75-94% Supervisor AI Cross-Verification, <75% Mandatory HITL Escalation Router)\n- Tier 3: Human-in-the-Loop (HITL) Review Workbench & Cryptographic Sign-Off Certificate\n- Tier 4: Safe Downstream Execution, Immutable Regulatory Audit Ledger & RLHF Fine-Tuning Feedback Loop"
+    whenToUse: "Executive workflow showing autonomous agent decision tiers, multi-dimensional risk matrix, confidence escalation rules (>=95%, 75-94%, <75%), and mandatory human sign-off gates",
+    prompt: "Human-in-the-Loop Autonomous AI Agent Governance Lifecycle:\n- Tier 1: Multimodal Ingress & Constitutional HHH Safety Gate\n- Tier 2: Run State Machine & Confidence Escalation (>=95% Fast Path, 75-94% Supervisor AI Cross-Verification, <75% Mandatory HITL Escalation Router)\n- Tier 3: Human-in-the-Loop (HITL) Review Workbench & Cryptographic Sign-Off Certificate\n- Tier 4: Autonomous GUI Computer Use OS, Immutable Regulatory Audit Ledger & RLHF Fine-Tuning Feedback Loop"
   },
   {
     id: "eval_safety_benchmarking",
-    name: "13. End-to-End Monitex AI Safety, NLI Claim Benchmarking & Red-Teaming Flow",
+    name: "13. End-to-End Enterprise AI Safety, NLI Claim Benchmarking & Red-Teaming Flow",
     category: "Business Architecture",
-    whenToUse: "Automated evaluation harnesses (Ragas / G-Eval), NLI factual claim verification, toxicity screening, and Vertex AI safety red-teaming flow",
-    prompt: "END-TO-END MONITEX AI SAFETY, NLI CLAIM BENCHMARKING & RED-TEAMING FLOW:\n- GCP Continuous Integration (CI) & Data Ingestion: Vertex AI Model Checkpoint, Cloud Storage Datasets (Reference & Distractor), Vertex AI Test Prompts & Scenarios.\n- Vertex AI Automated Evaluation: Performance Metrics (Context Relevance, Faithfulness, Answer Relevance via Vertex AI LBC) + NLI Claim Verification (Isolate Claims, Retrieve Supporting Evidence, Classify Claims as Entailed/Contradicted/Neutral via Gemini) -> Evaluation Results Aggregator.\n- Vertex AI Safety Red-Teaming & Screening: Vertex AI Toxicity & Bias Screening (Safety Settings + Cloud Armor WAF) + Vertex AI Safety Red-Teaming (Simulate Jailbreak Attempts, Prompt Injection/Adversarial Attacks, Check against Safety Guidelines) -> Safety Decision Gate.\n- Vertex AI Promotion & Deployment: High Quality AND Safety Passed -> Model Promotion -> Deploy to Vertex AI Endpoints. Low Quality/Reliability -> Block & Remediate. Failed -> Immediate Halt -> Vertex AI Safety Team Intervention & Model Retraining."
+    whenToUse: "Automated evaluation harnesses (Ragas / G-Eval), NLI factual claim verification, toxicity screening, and automated safety red-teaming flow",
+    prompt: "END-TO-END ENTERPRISE AI SAFETY, NLI CLAIM BENCHMARKING & RED-TEAMING FLOW:\n- Continuous Integration (CI) & Data Ingestion: Model Checkpoints, Reference & Distractor Datasets, Test Prompts & Scenarios.\n- Automated Evaluation: Performance Metrics (Context Relevance, Faithfulness, Answer Relevance) + NLI Claim Verification (Isolate Claims, Retrieve Supporting Evidence, Classify Claims as Entailed/Contradicted/Neutral) -> Evaluation Results Aggregator.\n- Safety Red-Teaming & Screening: Toxicity & Bias Screening + Safety Red-Teaming (Simulate Jailbreak Attempts, Prompt Injection/Adversarial Attacks, Check against Safety Guidelines) -> Safety Decision Gate.\n- Model Promotion & Deployment: High Quality AND Safety Passed -> Model Promotion -> Production Endpoint Deployment. Low Quality/Reliability -> Block & Remediate. Failed -> Immediate Halt -> AI Safety Team Intervention & Model Retraining."
   }
 ];
 
 export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   {
     id: "tech_multi_agent_langgraph",
-    name: "0. Multi-Agent Autonomous LLM Orchestration Platform (Vertex AI / LangGraph)",
+    name: "0. Multi-Agent Autonomous Orchestration Platform (Stateful Directed Acyclic Graph)",
     category: "Technical Architecture",
-    whenToUse: "Production LangGraph & Vertex AI multi-agent graph with Master Agent Router, worker agents, isolated Cloud Run code sandbox, and pgvector memory store",
-    prompt: "Multi-Agent Autonomous LLM Orchestration Platform (Vertex AI / LangGraph):\n- Tier 1: Client Application, LangGraph Master Supervisor Agent & Shared State Channel\n- Tier 2: Specialized Autonomous Worker Agents (Research RAG Agent, Code/SQL Generation Agent, Verification & Test Critic Agent)\n- Tier 3: Cloud Run Isolated Code Execution Sandbox, gRPC/REST Tool Call Gateway & Cloud SQL pgvector Long-Term Memory\n- Tier 4: LangGraph Human Interrupt Approval Gate, Output Synthesizer & Cloud Trace Observability"
+    whenToUse: "Production Stateful Directed Acyclic Graph multi-agent platform with Master Agent Router, worker agents, parallel Cloud Run code sandbox, and pgvector long-term memory store",
+    prompt: "Multi-Agent Autonomous Orchestration Platform (Stateful Directed Acyclic Graph):\n- Tier 1: Multimodal WebRTC / 2M+ Token Long-Context Ingress, Master Directed Graph Supervisor Agent & Run State Machine Checkpoint Store\n- Tier 2: Specialized Autonomous Worker Cluster (Research & Grounding Agent, Code/SQL/GUI Synthesis Agent, Verification & Safety Critic Agent) with Hierarchical Peer Hand-off Routines\n- Tier 3: Parallel Sandboxed Code Execution Kernel, Autonomous GUI OS Computer Use Container, gRPC/REST Tool Call Gateway & Long-Term Vector Memory with Ephemeral System Prompt Caching (90% Cost Cut)\n- Tier 4: Run Lifecycle Human Interrupt Approval Gate (requires_action), Final Grounded Response Synthesizer & Distributed Trace Observability"
   },
   {
     id: "tech_serverless_gcp",
