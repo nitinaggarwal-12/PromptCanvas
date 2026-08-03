@@ -283,8 +283,8 @@ export default function Dashboard() {
         {/* Tab Navigation Menu */}
         <div className="p-3 space-y-1 shrink-0">
           {[
-            { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
             { id: 'editor', name: 'Design Canvas', icon: Network, href: '/workspace' },
+            { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
             { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid, href: '/workspace?tab=templates' },
             { id: 'audit', name: 'Security Audit Hub', icon: ShieldAlert, href: '/workspace?tab=audit' },
             { id: 'settings', name: 'Settings & Config', icon: Settings, href: '/workspace?tab=settings' }
