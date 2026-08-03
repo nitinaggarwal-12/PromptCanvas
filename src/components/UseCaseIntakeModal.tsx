@@ -109,6 +109,13 @@ export function UseCaseIntakeModal({ isOpen, onClose, onSubmitUseCase }: UseCase
                 <option value="Healthcare & Genomics">Healthcare &amp; Genomics</option>
                 <option value="Autonomous AI & Robotics">Autonomous AI &amp; Robotics</option>
                 <option value="E-Commerce & Retail Scale">E-Commerce &amp; Retail Scale</option>
+                <option value="Enterprise SaaS & Multi-Tenant Cloud">Enterprise SaaS &amp; Multi-Tenant Cloud</option>
+                <option value="Defense, Aerospace & Sovereign Cloud">Defense, Aerospace &amp; Sovereign Cloud</option>
+                <option value="Energy, Smart Grid & Climate Tech">Energy, Smart Grid &amp; Climate Tech</option>
+                <option value="Automotive, Connected Mobility & Telematics">Automotive, Connected Mobility &amp; Telematics</option>
+                <option value="Manufacturing, Supply Chain & Logistics 4.0">Manufacturing, Supply Chain &amp; Logistics 4.0</option>
+                <option value="Media, Streaming & High-Throughput Content CDN">Media, Streaming &amp; High-Throughput Content CDN</option>
+                <option value="EdTech, Research & Academic AI Compute">EdTech, Research &amp; Academic AI Compute</option>
                 <option value="DevSecOps & Multi-Cloud">DevSecOps &amp; Multi-Cloud</option>
               </select>
             </div>
