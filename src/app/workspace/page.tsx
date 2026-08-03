@@ -50,6 +50,7 @@ import {
 } from 'lucide-react';
 import { CloudCostModal } from '@/components/workspace/CloudCostModal';
 import { estimateCloudArchitectureCost } from '@/lib/cost/cloudCostEstimator';
+import { exportPythonDiagramsScript, exportD2LangScript } from '@/lib/export/architectureAsCodeExporter';
 import { DiagramNodeItem, parseXmlNodesAndEdges, formatRelativeTime } from '@/lib/graph/xmlNodesParser';
 import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant } from '@/lib/diagramCleaner';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
@@ -3708,28 +3709,54 @@ function WorkspaceContent() {
                     </div>
 
                     {/* Exporters Dropdown */}
-                    <div className="relative inline-flex items-center shrink-0 w-[115px]">
+                    <div className="relative inline-flex items-center shrink-0 w-[125px]">
                       <select
                         value=""
                         onChange={(e) => {
                           const val = e.target.value;
-                          if (val === 'terraform') {
+                          const currentXml = activeVersion?.xml_content || activeDiagram?.versions?.[0]?.xml_content || '';
+                          const cleanName = (activeDiagram?.name || 'Architecture').replace(/\s+/g, '_');
+                          if (val === 'python') {
+                            const pyCode = exportPythonDiagramsScript(currentXml, activeDiagram?.name || 'Cloud Architecture');
+                            const blob = new Blob([pyCode], { type: 'text/x-python' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${cleanName}_diagrams.py`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          } else if (val === 'd2') {
+                            const d2Code = exportD2LangScript(currentXml, activeDiagram?.name || 'Cloud Architecture');
+                            const blob = new Blob([d2Code], { type: 'text/plain' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${cleanName}_architecture.d2`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          } else if (val === 'terraform') {
                             setIsTerraformModalOpen(true);
                           } else if (val === 'slides') {
                             setIsExportModalOpen(true);
                           }
                         }}
                         disabled={isAnyAIBusy}
-                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[115px] truncate disabled:opacity-50"
+                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[125px] truncate disabled:opacity-50"
                       >
                         <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                           📥 Export ▾
+                        </option>
+                        <option value="python" className="bg-[#0b101d] text-emerald-400 py-1 font-bold">
+                          🐍 Python diagrams Code (.py)
+                        </option>
+                        <option value="d2" className="bg-[#0b101d] text-cyan-300 py-1 font-bold">
+                          🔤 D2 Lang Architecture (.d2)
                         </option>
                         <option value="terraform" className="bg-[#0b101d] text-teal-300 py-1 font-bold">
                           📦 Export GCP Terraform Code (.tf)
                         </option>
                         <option value="slides" className="bg-[#0b101d] text-purple-300 py-1 font-bold">
-                          📊 Export Presentation Deck & Files (PPTX, PDF, PNG, XML)
+                          📊 Export Presentation Deck &amp; Files (PPTX, PDF, PNG, XML)
                         </option>
                       </select>
                       <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
