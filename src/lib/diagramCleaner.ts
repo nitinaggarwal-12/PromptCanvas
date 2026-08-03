@@ -1240,7 +1240,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     }
 
     // Dynamic Purpose & Problem Statement card update
-    if (useCaseTitle) {
+    if (useCaseTitle && !/^(Today|Yesterday|v\d+|Untitled|Design Canvas|Diagram)/i.test(useCaseTitle.trim())) {
       updatedXml = updatedXml
         .replace(/Purpose &amp; Problem Statement:[^<]*/g, `Purpose &amp; Problem Statement: ${useCaseTitle} — Automated Enterprise Architecture Topology`)
         .replace(/Purpose & Problem Statement:[^<]*/g, `Purpose &amp; Problem Statement: ${useCaseTitle} — Automated Enterprise Architecture Topology`);
