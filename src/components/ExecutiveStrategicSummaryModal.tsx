@@ -20,19 +20,22 @@ import {
 } from 'lucide-react';
 
 import PptxGenJS from 'pptxgenjs';
+import { exportDiagramPng } from '../lib/export/diagramRaster';
 
 interface ExecutiveStrategicSummaryModalProps {
   isOpen: boolean;
   onClose: () => void;
   diagramTitle: string;
   architectureType: string;
+  xmlContent?: string;
 }
 
 export function ExecutiveStrategicSummaryModal({
   isOpen,
   onClose,
   diagramTitle,
-  architectureType
+  architectureType,
+  xmlContent = ''
 }: ExecutiveStrategicSummaryModalProps) {
   const [activeView, setActiveView] = useState<'board_deck' | 'reportee_memo'>('board_deck');
   const [copied, setCopied] = useState(false);
@@ -47,6 +50,16 @@ export function ExecutiveStrategicSummaryModal({
   const handleExportBoardPptx = async () => {
     setIsGeneratingDeck(true);
     try {
+      // Rasterize actual architecture canvas diagram image
+      let diagramPngUrl = '';
+      if (xmlContent) {
+        try {
+          diagramPngUrl = await exportDiagramPng(xmlContent, { scale: 2, transparent: false });
+        } catch(e) {
+          console.warn('PNG raster preview fallback', e);
+        }
+      }
+
       const pptx = new PptxGenJS();
       pptx.layout = 'LAYOUT_16x9';
 
@@ -178,39 +191,40 @@ export function ExecutiveStrategicSummaryModal({
                   </div>
                 </div>
 
-                <!-- SLIDE 2: THE $10B ENTERPRISE BOTTLENECK VS DETERMINISTIC COMPILATION -->
+                <!-- SLIDE 2: ARCHITECTURAL TOPOLOGY & LIVE RENDERED ARCHITECTURE SHOWCASE -->
                 <div class="slide" id="slide-2">
                   <div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                      <span class="slide-tag">02 // PROBLEM VS SOLUTION • ENTERPRISE ARCHITECTURE BOTTLENECK</span>
-                      <span class="badge" style="background:#1E3A8A; color:#93C5FD; border-color:#3B82F6;">PATENTABLE DETERMINISTIC COMPILER</span>
+                      <span class="slide-tag">02 // PRODUCTION SYSTEMS TOPOLOGY &amp; LIVE VISUAL CANVAS SHOWCASE</span>
+                      <span class="badge" style="background:#1E3A8A; color:#93C5FD; border-color:#3B82F6;">LIVE RENDERED PUBLICATION DIAGRAM</span>
                     </div>
-                    <h1 class="slide-title">Replaces 6 Weeks of Manual Design with 6-Second Verified Synthesis</h1>
-                    <p class="slide-subtitle">Why traditional visual diagramming tools fail enterprise cloud and AI engineering teams.</p>
+                    <h1 class="slide-title">End-to-End Enterprise Architecture Topology Showcase</h1>
+                    <p class="slide-subtitle">Live high-resolution visual layout compiled by PromptCanvas with zero 2D node collision.</p>
 
-                    <div class="grid-2" style="margin-top:20px;">
-                      <div class="card" style="border-color:#EF4444; background:#7F1D1D15;">
-                        <span style="color:#EF4444; font-weight:900; font-size:14px; text-transform:uppercase;">TRADITIONAL ENTERPRISE PROCESS (BROKEN)</span>
-                        <ul style="margin-top:16px; color:#FCA5A5; font-size:15px; line-height:1.8; padding-left:20px;">
-                          <li><b>4 to 6 Weeks Lead Time:</b> Manual Draw.io/Lucidchart diagramming delays executive sign-off and cloud provisioning.</li>
-                          <li><b>Visual &amp; Configuration Drift:</b> Visual diagrams desynchronize from actual Terraform / Kubernetes infrastructure within days.</li>
-                          <li><b>Brittle Unverified AI Prompts:</b> Standard LLMs produce overlapping visual nodes, truncated labels, and unverified PII risks.</li>
-                        </ul>
+                    ${diagramPngUrl ? `
+                      <div style="display:flex; justify-content:center; align-items:center; background:#070A13; border:2px solid #14B8A6; border-radius:20px; padding:16px; margin: 12px 0; max-height: 420px; overflow: hidden; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
+                        <img src="${diagramPngUrl}" alt="Live Architecture Topology Snapshot" style="max-width:100%; max-height:380px; object-fit:contain; border-radius:12px;" />
                       </div>
-
-                      <div class="card" style="border-color:#10B981; background:#064E3B15;">
-                        <span style="color:#10B981; font-weight:900; font-size:14px; text-transform:uppercase;">PROMPTCANVAS DETERMINISTIC ENGINE (SOLUTION)</span>
-                        <ul style="margin-top:16px; color:#A7F3D0; font-size:15px; line-height:1.8; padding-left:20px;">
-                          <li><b>6-Second Compilation:</b> Instant production-ready Draw.io vector XML, high-res raster PNG, and Terraform HCL.</li>
-                          <li><b>Deterministic 2D Collision Preflight:</b> Programmatic AST audit guarantees zero overlapping lines and 140px safe line splitting.</li>
-                          <li><b>Full-Lifecycle Multi-Model Publication:</b> Exports editable Google Slides 16:9 decks, GCP Cloud Shell scripts, and Python Mingrammer code.</li>
-                        </ul>
+                    ` : `
+                      <div class="grid-3" style="margin-top: 24px;">
+                        <div class="card" style="border-left:4px solid #14B8A6;">
+                          <h3 style="color:#14B8A6; font-size:20px; margin-bottom:12px;">1. Executive AI Safety &amp; NLI Gate</h3>
+                          <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Natural Language Inference (NLI) claim verification and Constitutional HHH toxicity screening audit every architecture edge prior to generation.</p>
+                        </div>
+                        <div class="card" style="border-left:4px solid #38BDF8;">
+                          <h3 style="color:#38BDF8; font-size:20px; margin-bottom:12px;">2. Multi-Zone Cloud High Availability</h3>
+                          <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Active-passive failover across 3 GCP availability zones, VPC Service Controls (VPC-SC), and automated point-in-time database snapshots.</p>
+                        </div>
+                        <div class="card" style="border-left:4px solid #F59E0B;">
+                          <h3 style="color:#F59E0B; font-size:20px; margin-bottom:12px;">3. Cryptographic HITL Governance Router</h3>
+                          <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Automated routing escalates any path with confidence &lt;75% to mandatory Human-in-the-Loop executive cryptographic sign-off.</p>
+                        </div>
                       </div>
-                    </div>
+                    `}
                   </div>
 
                   <div class="footer">
-                    <span>Core Moat: Deterministic 2D Layout Geometry + Policy Verification Pipeline</span>
+                    <span>Visual Audit Engine: Zero-Collision Layout Geometry + Policy Enclave Verification</span>
                     <span>Use Left/Right Arrow Keys to Navigate Slides</span>
                   </div>
                 </div>

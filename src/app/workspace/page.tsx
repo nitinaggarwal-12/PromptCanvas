@@ -6113,6 +6113,7 @@ function WorkspaceContent() {
         onClose={() => setIsExecutiveSummaryOpen(false)}
         diagramTitle={activeDiagram?.name && !activeDiagram.name.match(/^\d+\./) ? activeDiagram.name : 'PromptCanvas: Universal Enterprise AI Architecture Compiler'}
         architectureType={selectedArchType}
+        xmlContent={(activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactMultiAgentLangGraphReferenceXml()}
       />
     </div>
   );
