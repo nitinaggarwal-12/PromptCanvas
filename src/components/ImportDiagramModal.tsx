@@ -14,24 +14,22 @@ interface ImportDiagramModalProps {
 export function ImportDiagramModal({ isOpen, onClose, onImportSuccess }: ImportDiagramModalProps) {
   const [activeTab, setActiveTab] = useState<'file' | 'terraform'>('file');
   const [file, setFile] = useState<File | null>(null);
-  const [terraformHcl, setTerraformHcl] = useState(`resource "google_cloud_run_service" "api_gateway" {
-  name     = "enterprise-api-gateway"
-  location = "us-central1"
+  const [terraformHcl, setTerraformHcl] = useState(`resource "container_service" "api_gateway" {
+  name  = "enterprise-api-gateway"
+  port  = 8080
 }
 
-resource "google_sql_database_instance" "primary_db" {
-  name             = "enterprise-postgres-db"
-  database_version = "POSTGRES_15"
-  region           = "us-central1"
+resource "relational_database" "primary_db" {
+  name    = "enterprise-production-db"
+  engine  = "postgresql"
 }
 
-resource "google_compute_security_policy" "waf_policy" {
-  name = "cloud-armor-waf-rules"
+resource "web_application_firewall" "waf_policy" {
+  name    = "cloud-waf-rules"
 }
 
-resource "google_storage_bucket" "ingestion_bucket" {
-  name     = "enterprise-data-ingestion"
-  location = "US"
+resource "object_storage_bucket" "ingestion_bucket" {
+  name    = "enterprise-data-ingestion"
 }`);
   const [diagramName, setDiagramName] = useState('');
   const [loading, setLoading] = useState(false);
