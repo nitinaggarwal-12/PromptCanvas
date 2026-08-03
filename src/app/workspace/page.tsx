@@ -72,6 +72,7 @@ import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModa
 import { PasswordSetupModal } from '@/components/PasswordSetupModal';
 import { AspectRatioSelector } from '@/components/AspectRatioSelector';
 import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
+import { ExecutiveStrategicSummaryModal } from '@/components/ExecutiveStrategicSummaryModal';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { getExactMultiAgentLangGraphReferenceXml } from '@/lib/newEnterpriseReferenceXmls';
@@ -258,6 +259,7 @@ function WorkspaceContent() {
   const [templateCategoryFilter, setTemplateCategoryFilter] = useState<'all' | 'business' | 'technical'>('all');
   const [expandedSubMenu, setExpandedSubMenu] = useState<string>('editor');
   const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
+  const [isExecutiveSummaryOpen, setIsExecutiveSummaryOpen] = useState(false);
 
   const handleAspectRatioChange = useCallback((ratioId: string, customW?: number, customH?: number) => {
     setSelectedAspectRatio(ratioId);
@@ -3913,6 +3915,15 @@ function WorkspaceContent() {
                       </button>
                       <button
                         type="button"
+                        onClick={() => setIsExecutiveSummaryOpen(true)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                        title="Open C-Suite Executive Strategic Summary & Board Brief"
+                      >
+                        <Briefcase className="w-3.5 h-3.5 text-amber-300" />
+                        <span>💼 Executive Strategic Summary</span>
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => setIsUseCaseModalOpen(true)}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-400 bg-teal-400/20 hover:bg-teal-400/30 text-teal-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
                         title="Open New Use Case Architectural Intake Form"
@@ -6052,6 +6063,13 @@ function WorkspaceContent() {
           const promptText = `Act as an Enterprise Cloud Architect for ${data.domain} on ${data.cloudProvider} with ${data.complianceTier}. Build standard publication-grade architecture for: ${data.title}. System details: ${data.description}`;
           setPromptInput(promptText);
         }}
+      />
+
+      <ExecutiveStrategicSummaryModal
+        isOpen={isExecutiveSummaryOpen}
+        onClose={() => setIsExecutiveSummaryOpen(false)}
+        diagramTitle={activeDiagram?.name || 'Enterprise Architecture'}
+        architectureType={selectedArchType}
       />
     </div>
   );
