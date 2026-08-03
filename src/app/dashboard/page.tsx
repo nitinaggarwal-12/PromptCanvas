@@ -773,7 +773,14 @@ export default function Dashboard() {
                   onChange={(e) => {
                     const val = e.target.value;
                     setSelectedTemplate(val);
-                    if (val !== 'custom') {
+                    if (val.startsWith('arch_')) {
+                      const archId = val.replace('arch_', '');
+                      setSelectedArchType(archId);
+                      const arch = getArchitectureTypeById(archId);
+                      if (arch) {
+                        setNewDiagramPrompt(arch.prompt);
+                      }
+                    } else if (val !== 'custom') {
                       const idx = parseInt(val, 10);
                       const t = TEMPLATE_PROMPTS[idx];
                       if (t) {
@@ -783,7 +790,15 @@ export default function Dashboard() {
                   }}
                   className="w-full bg-[#0b0f19] border border-teal-500/50 hover:border-teal-400 rounded-xl px-5 py-4 text-base text-teal-300 font-bold focus:outline-none transition-all cursor-pointer shadow-lg"
                 >
-                  <optgroup label="🤖 ENTERPRISE AI, GENAI & SAFETY SYSTEMS" className="bg-[#0b101d] text-teal-400 font-extrabold">
+                  <optgroup label="🏢 BUSINESS & STRATEGIC ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
+                    {BUSINESS_ARCHITECTURE_TYPES.map((b) => (
+                      <option key={b.id} value={`arch_${b.id}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
+                        🏢 {b.name}
+                      </option>
+                    ))}
+                  </optgroup>
+
+                  <optgroup label="🤖 ENTERPRISE AI, GENAI & SAFETY SYSTEMS" className="bg-[#0b101d] text-cyan-400 font-extrabold">
                     <option value="8" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 Enterprise LLM Evaluation, Toxicity & Safety Benchmarking (7-Tier Platform)</option>
                     <option value="9" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 Multi-Agent AI & LLM Orchestration Platform (Vertex AI / LangGraph)</option>
                     <option value="5" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 AI Retrieval-Augmented Generation / RAG (GCP)</option>
