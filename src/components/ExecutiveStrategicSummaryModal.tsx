@@ -143,6 +143,8 @@ export function ExecutiveStrategicSummaryModal({
                   <button class="btn" onclick="changeSlide(1)">Next (→) ►</button>
                   <button class="btn btn-teal" onclick="window.print()">🖨️ Export PDF / Slides</button>
                 </div>
+              </div>
+
               <div class="slide-stage">
                 <!-- SLIDE 1: STRATEGIC VISION & WHOLE PRODUCT MANDATE -->
                 <div class="slide active" id="slide-1">
