@@ -797,7 +797,7 @@ function WorkspaceContent() {
         sourceWindow?.postMessage(JSON.stringify({
           action: 'load',
           xml: activeXmlRef.current,
-          fit: false
+          fit: true
         }), '*');
 
         // Inject PromptCanvas Enterprise Stencils into left sidebar palette!
