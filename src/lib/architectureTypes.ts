@@ -214,6 +214,20 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Technical Architecture",
     whenToUse: "Freeform untyped technical architecture diagram generated dynamically via ELK.js layout engine",
     prompt: "Freeform technical architecture generated via Pipeline V2 deterministic ELK.js layout engine."
+  },
+  {
+    id: "vertex_ai_graphrag",
+    name: "26. Google Vertex AI GraphRAG Enterprise Architecture (Latest Google AI Stack)",
+    category: "Technical Architecture",
+    whenToUse: "Google's latest flagship enterprise AI architecture combining Gemini 2.5 Flash Ephemeral Caching, Vertex AI Graph Search Index, Google Spanner/AlloyDB Graph, and Multi-Hop Relational Knowledge Graph reasoning",
+    prompt: "Google Vertex AI GraphRAG Enterprise Architecture:\n- Ingress & Ephemeral Caching: Enterprise Workspace Ingress -> Gemini 2.5 Flash Ephemeral Context Caching Router (90% OPEX cut).\n- Graph Knowledge Engine: Google Spanner Graph & AlloyDB Relational Entity Graph -> Vertex AI GraphRAG Multi-Hop Index.\n- Semantic & Relational Synthesis: Gemini 2.5 Pro Relational Synthesis Engine -> VPC Service Controls Enclave -> Real-Time Executive Insights."
+  },
+  {
+    id: "google_a2a_agentic_ecosystem",
+    name: "27. Google Agent-to-Agent (A2A) Autonomous Enterprise Protocol",
+    category: "Technical Architecture",
+    whenToUse: "Google's latest enterprise Agent-to-Agent (A2A) delegation protocol linking Vertex AI Agent Builder, Google Workspace extensions, and private cloud agent enclaves",
+    prompt: "Google Agent-to-Agent (A2A) Autonomous Enterprise Protocol:\n- Primary Orchestrator: Master Vertex AI A2A Protocol Supervisor -> Ephemeral Context Caching Gate.\n- Federated Agent Network: Research Agent -> SQL/BigQuery Synthesis Agent -> Compliance & Safety Critic Agent via A2A Signed Protocol Tokens.\n- Execution & Audit: Private Cloud Run Execution Sandbox -> Cryptographic Cryptographic HITL Audit Trail."
   }
 ];
 
