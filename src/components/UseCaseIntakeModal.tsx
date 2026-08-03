@@ -130,22 +130,40 @@ export function UseCaseIntakeModal({ isOpen, onClose, onSubmitUseCase }: UseCase
             </div>
           </div>
 
-          {/* Compliance & Security Tier */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2 flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Compliance &amp; Security Mandate</span>
-            </label>
-            <select
-              value={complianceTier}
-              onChange={(e) => setComplianceTier(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 focus:border-teal-400 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-100 outline-none cursor-pointer"
-            >
-              <option value="SOC2 Type II + Zero-Trust Network">SOC2 Type II + Zero-Trust Network Perimeter</option>
-              <option value="HIPAA Compliance + KMS Envelope Encryption">HIPAA Compliance + KMS Envelope Encryption</option>
-              <option value="PCI-DSS Active-Active Financial Ledger">PCI-DSS Active-Active Financial Ledger</option>
-              <option value="GDPR / PII Dynamic Data Masking">GDPR / PII Dynamic Data Masking</option>
-            </select>
+          {/* Grid: Deployment Topology + Compliance Tier */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2 flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5 text-teal-400" />
+                <span>Deployment Topology</span>
+              </label>
+              <select
+                defaultValue="Multi-AZ Active-Passive High Availability"
+                className="w-full bg-slate-950 border border-slate-700 focus:border-teal-400 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-100 outline-none cursor-pointer"
+              >
+                <option value="Multi-AZ Active-Passive High Availability">Multi-AZ Active-Passive High Availability</option>
+                <option value="Multi-Region Active-Active Distributed Ledger">Multi-Region Active-Active Distributed Ledger</option>
+                <option value="Global Edge CDN + Serverless Container Core">Global Edge CDN + Serverless Container Core</option>
+                <option value="Air-Gapped Sovereign Enterprise Cloud">Air-Gapped Sovereign Enterprise Cloud</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2 flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Compliance &amp; Security Mandate</span>
+              </label>
+              <select
+                value={complianceTier}
+                onChange={(e) => setComplianceTier(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-700 focus:border-teal-400 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-100 outline-none cursor-pointer"
+              >
+                <option value="SOC2 Type II + Zero-Trust Network">SOC2 Type II + Zero-Trust Network Perimeter</option>
+                <option value="HIPAA Compliance + KMS Envelope Encryption">HIPAA Compliance + KMS Envelope Encryption</option>
+                <option value="PCI-DSS Active-Active Financial Ledger">PCI-DSS Active-Active Financial Ledger</option>
+                <option value="GDPR / PII Dynamic Data Masking">GDPR / PII Dynamic Data Masking</option>
+              </select>
+            </div>
           </div>
 
           {/* Prompt Description */}
