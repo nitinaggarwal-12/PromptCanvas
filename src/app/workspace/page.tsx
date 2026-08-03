@@ -6111,7 +6111,11 @@ function WorkspaceContent() {
 
           // Immediately compile & apply user-specific domain workflow nodes onto the active canvas
           try {
-            const baseXml = (activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactMultiAgentLangGraphReferenceXml();
+            const selectedXml = data.archType ? getDefaultXmlForArchitecture(data.archType) : null;
+            const baseXml = selectedXml || (activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactMultiAgentLangGraphReferenceXml();
+            if (data.archType) {
+              setSelectedArchType(data.archType);
+            }
             const flavoredXml = injectUseCaseFlavor(baseXml, data.title, `${data.title}. ${data.description}. Domain: ${data.domain}. Cloud: ${data.cloudProvider}. Compliance: ${data.complianceTier}`);
             setPendingXml(flavoredXml);
             if (activeDiagram) {
