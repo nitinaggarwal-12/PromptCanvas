@@ -3562,10 +3562,30 @@ function WorkspaceContent() {
                     <LayoutGrid className="w-3.5 h-3.5 text-teal-400" />
                     <span className="hidden lg:inline">Dashboard</span>
                   </Link>
-                  <span className="text-slate-600 font-bold">/</span>
-                  <h2 className="font-bold text-xs md:text-sm text-slate-100 whitespace-nowrap truncate max-w-[120px] md:max-w-[160px]" title={activeDiagram ? activeDiagram.name : ''}>
-                    {activeDiagram ? activeDiagram.name : 'Workspace'}
-                  </h2>
+                  {/* Single Unified Saved Designs Dropdown replacing long diagram title & list */}
+                  <div className="relative inline-flex items-center shrink-0">
+                    <select
+                      value={activeDiagram?.id || ''}
+                      onChange={(e) => {
+                        const id = e.target.value;
+                        if (id) {
+                          loadDiagramDetails(id);
+                        }
+                      }}
+                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm max-w-[170px] md:max-w-[210px] truncate"
+                      title="Switch between your saved architecture designs"
+                    >
+                      <option value="" disabled className="bg-[#0b101d] text-slate-400 font-bold">
+                        📁 Saved Designs ({diagrams.length}) ▾
+                      </option>
+                      {diagrams.map((d) => (
+                        <option key={d.id} value={d.id} className="bg-[#0b101d] text-slate-200 py-1.5 font-bold">
+                          {d.id === activeDiagram?.id ? '✓ ' : ''}{d.name} ({formatRelativeTime(d.updated_at)})
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                  </div>
                 </div>
 
                 {activeDiagram && (
@@ -3679,7 +3699,7 @@ function WorkspaceContent() {
                 )}
               </div>
 
-              {/* Group 3: Right - Edit Options, Exporters, Security Audit & Actions */}
+              {/* Group 3: Right - Theme, Visibility, Edit Mode & Inbox */}
               <div className="flex items-center gap-2 shrink-0">
                 <AccessRequestsInbox user={currentUser} />
                 {activeDiagram && (
@@ -3710,108 +3730,6 @@ function WorkspaceContent() {
                       </select>
                       <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                     </div>
-
-                    {/* Exporters Dropdown */}
-                    <div className="relative inline-flex items-center shrink-0 w-[125px]">
-                      <select
-                        value=""
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          if (val === 'python') {
-                            setCodeViewerFormat('python');
-                            setIsCodeViewerOpen(true);
-                          } else if (val === 'd2') {
-                            setCodeViewerFormat('d2');
-                            setIsCodeViewerOpen(true);
-                          } else if (val === 'terraform') {
-                            setIsTerraformModalOpen(true);
-                          } else if (val === 'slides') {
-                            setIsExportModalOpen(true);
-                          }
-                        }}
-                        disabled={isAnyAIBusy}
-                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[125px] truncate disabled:opacity-50"
-                      >
-                        <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
-                          📥 Export ▾
-                        </option>
-                        <option value="python" className="bg-[#0b101d] text-emerald-400 py-1 font-bold">
-                          🐍 Python diagrams Code (.py)
-                        </option>
-                        <option value="d2" className="bg-[#0b101d] text-cyan-300 py-1 font-bold">
-                          🔤 D2 Lang Architecture (.d2)
-                        </option>
-                        <option value="terraform" className="bg-[#0b101d] text-teal-300 py-1 font-bold">
-                          📦 Export GCP Terraform Code (.tf)
-                        </option>
-                        <option value="slides" className="bg-[#0b101d] text-purple-300 py-1 font-bold">
-                          📊 Export Presentation Deck &amp; Files (PPTX, PDF, PNG, XML)
-                        </option>
-                      </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
-                    </div>
-
-                    {/* Compose Document Primary CTA (PRD, SDD, Threat Model) */}
-                    <button
-                      type="button"
-                      onClick={() => setIsComposeOpen(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sky-500/50 bg-sky-600/20 hover:bg-sky-600/30 text-xs font-black transition-all text-sky-300 cursor-pointer shadow-sm shrink-0"
-                      title="Generate formal system documentation (PRD, SDD, FDD, Threat Model, etc.)"
-                    >
-                      <FileText className="w-3.5 h-3.5 text-sky-400" />
-                      <span>Compose Doc</span>
-                    </button>
-
-                    {/* Reverse-Engineer Terraform .tf to Architecture Diagram */}
-                    <button
-                      type="button"
-                      onClick={() => setIsImportModalOpen(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/50 bg-amber-500/15 hover:bg-amber-500/25 text-xs font-black transition-all text-amber-300 cursor-pointer shadow-sm shrink-0"
-                      title="Paste or upload Terraform (.tf) HCL code to generate a live architecture diagram"
-                    >
-                      <Upload className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Import .tf Code</span>
-                    </button>
-
-                    {/* Live Cloud Cost Estimator Badge (Infracost Engine) */}
-                    <button
-                      type="button"
-                      onClick={() => setIsCostModalOpen(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/50 bg-emerald-500/15 hover:bg-emerald-500/25 text-xs font-black transition-all text-emerald-300 cursor-pointer shadow-sm shrink-0"
-                      title="View live monthly infrastructure cost breakdown & Infracost estimate"
-                    >
-                      <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Est. ${costReport.totalMonthlyCostUsd.toLocaleString()}/mo</span>
-                    </button>
-
-                    {/* Audit Security Primary CTA */}
-                    <button
-                      id="audit-diagram-btn"
-                      onClick={() => handleAuditDiagram()}
-                      disabled={isAuditing}
-                      className={getTourClass(tourStep, 5, "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-teal-500/50 bg-teal-500/15 hover:bg-teal-500/25 text-xs font-black transition-all text-teal-accent cursor-pointer shadow-sm disabled:opacity-50 shrink-0")}
-                    >
-                      {isAuditing ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      ) : (
-                        <Shield className="w-3.5 h-3.5" />
-                      )}
-                      <span className="hidden sm:inline">{isAuditing ? 'Auditing...' : 'Audit Security'}</span>
-                    </button>
-
-                    {/* Persona Tour Button */}
-                    <button
-                      type="button"
-                      onClick={() => setTourStep(1)}
-                      title="Change Architectural Persona & Re-Run Onboarding Tour"
-                      className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-teal-500/40 bg-teal-500/15 hover:bg-teal-500/25 text-slate-100 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-teal-400 animate-pulse" />
-                      <span>Tour</span>
-                    </button>
-
-                    {/* Feedback Widget */}
-                    <DiagramFeedbackWidget diagramId={activeDiagram.id} versionId={displayedVersion?.id} />
                   </>
                 )}
               </div>
@@ -3826,22 +3744,73 @@ function WorkspaceContent() {
             style={{ width: isAssistantOpen ? `${assistantWidth}px` : '44px' }}
             className={getTourClass(tourStep, 3, `border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden ${isResizingAssistant ? '' : 'transition-all duration-200'} ${mobileTab === 'assistant' ? 'fixed inset-0 top-14 bottom-14 z-40 bg-panel-dark/95 backdrop-blur-xl md:static md:inset-auto md:h-full flex' : 'hidden md:flex'}`)}
           >
-            {/* Panel Title */}
-            <div className="p-3 border-b border-panel-border flex items-center justify-between bg-panel-dark/20 shrink-0 select-none">
-              <div className="flex items-center gap-2 min-w-0">
-                <MessageSquare className="w-4 h-4 text-teal-accent shrink-0" />
-                {isAssistantOpen && (
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-300 truncate">AI Architect Assistant</span>
-                )}
+            {/* Left Assistant Panel Header & Architectural Tool Strip */}
+            <div className="p-2.5 border-b border-panel-border flex flex-col gap-2 bg-panel-dark/40 shrink-0 select-none">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 min-w-0">
+                  <MessageSquare className="w-4 h-4 text-teal-accent shrink-0" />
+                  {isAssistantOpen && (
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-200 truncate">Architect Suite & AI</span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                  title={isAssistantOpen ? "Collapse Assistant Panel" : "Expand Assistant Panel"}
+                  className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
+                >
+                  {isAssistantOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsAssistantOpen(!isAssistantOpen)}
-                title={isAssistantOpen ? "Collapse Assistant Panel" : "Expand Assistant Panel"}
-                className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
-              >
-                {isAssistantOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-              </button>
+
+              {isAssistantOpen && activeDiagram && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
+                  {/* Export & DaC Studio */}
+                  <button
+                    type="button"
+                    onClick={() => setIsExportModalOpen(true)}
+                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-teal-500/50 text-teal-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                    title="Export Diagram PNG, PDF, PPTX, Python .py, D2 .d2"
+                  >
+                    <Download className="w-3.5 h-3.5 text-teal-400" />
+                    <span>Export Studio</span>
+                  </button>
+
+                  {/* Cloud Cost Estimator */}
+                  <button
+                    type="button"
+                    onClick={() => setIsCostModalOpen(true)}
+                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/40 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                    title="View Cloud Cost Estimator & Infracost breakdown"
+                  >
+                    <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Est. ${costReport.totalMonthlyCostUsd.toLocaleString()}/mo</span>
+                  </button>
+
+                  {/* Compose Doc */}
+                  <button
+                    type="button"
+                    onClick={() => setIsComposeOpen(true)}
+                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-sky-950/40 hover:bg-sky-900/40 border border-sky-500/40 text-sky-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                    title="Compose formal System Documentation (PRD, SDD, Threat Model)"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Compose Doc</span>
+                  </button>
+
+                  {/* Audit Security */}
+                  <button
+                    type="button"
+                    onClick={() => handleAuditDiagram()}
+                    disabled={isAuditing}
+                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-teal-950/40 hover:bg-teal-900/40 border border-teal-500/40 text-teal-accent text-[11px] font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50"
+                    title="Run static security audit on architecture"
+                  >
+                    {isAuditing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Shield className="w-3.5 h-3.5" />}
+                    <span>{isAuditing ? 'Auditing...' : 'Security Audit'}</span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {isAssistantOpen && (
