@@ -84,47 +84,48 @@ export function ExecutiveStrategicSummaryModal({
 
       await pptx.writeFile({ fileName: `${cleanTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}_Board_Deck_16x9.pptx` });
 
-      // Open interactive Google CEO 16:9 Keynote Presentation Deck Viewer tab in browser
+      // Open interactive 7-Slide Whole Product Google CEO 16:9 Keynote Presentation Deck Viewer tab in browser
       const win = window.open('', '_blank');
       if (win) {
         win.document.write(`
           <!DOCTYPE html>
           <html>
             <head>
-              <title>${cleanTitle} - Google CEO Strategic Funding Brief (16:9 Keynote)</title>
+              <title>PromptCanvas - Whole Product Strategic Business Deck for Google CEO (7 Slides)</title>
               <style>
                 * { box-sizing: border-box; margin: 0; padding: 0; }
                 body { background: #070A13; color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
-                .topbar { height: 64px; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: #0B101D; border-b: 1px solid #1E293B; shrink-0; z-index: 10; }
-                .logo { display: flex; items-center; gap: 12px; font-weight: 900; font-size: 17px; color: #14B8A6; letter-spacing: 0.5px; }
-                .controls { display: flex; items-center; gap: 14px; }
+                .topbar { height: 64px; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: #0B101D; border-bottom: 1px solid #1E293B; shrink-0; z-index: 10; }
+                .logo { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 17px; color: #14B8A6; letter-spacing: 0.5px; }
+                .controls { display: flex; align-items: center; gap: 14px; }
                 .btn { background: #1E293B; color: #F8FAFC; border: 1px solid #334155; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
                 .btn:hover { background: #334155; border-color: #14B8A6; }
                 .btn-teal { background: #14B8A6; color: #070A13; border: none; font-weight: 900; }
-                .slide-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; position: relative; }
-                .slide { display: none; width: 100%; max-width: 1440px; aspect-ratio: 16 / 9; max-height: 820px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 28px; padding: 56px 64px; flex-direction: column; justify-content: space-between; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.85); animation: fadeIn 0.3s ease; }
+                .slide-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 32px; position: relative; }
+                .slide { display: none; width: 100%; max-width: 1440px; aspect-ratio: 16 / 9; max-height: 820px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 28px; padding: 48px 56px; flex-direction: column; justify-content: space-between; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.85); animation: fadeIn 0.3s ease; }
                 .slide.active { display: flex; }
                 @keyframes fadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
-                .slide-tag { color: #14B8A6; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
-                .slide-title { font-size: 46px; font-weight: 900; margin: 12px 0 10px 0; color: #FFFFFF; line-height: 1.1; }
-                .slide-subtitle { color: #94A3B8; font-size: 19px; line-height: 1.4; margin-bottom: 24px; }
-                .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; }
-                .card { background: #111827; border: 1px solid #1E293B; border-radius: 20px; padding: 28px; }
-                .kpi-num { font-size: 44px; font-weight: 900; line-height: 1.1; }
-                .kpi-label { font-size: 14px; font-weight: 700; color: #94A3B8; margin-top: 8px; }
-                .chart-bar-bg { width: 100%; height: 36px; background: #1E293B; border-radius: 10px; overflow: hidden; margin-top: 8px; position: relative; }
+                .slide-tag { color: #14B8A6; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+                .slide-title { font-size: 42px; font-weight: 900; margin: 10px 0 8px 0; color: #FFFFFF; line-height: 1.1; }
+                .slide-subtitle { color: #94A3B8; font-size: 18px; line-height: 1.4; margin-bottom: 20px; }
+                .grid-2 { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; align-items: center; }
+                .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+                .card { background: #111827; border: 1px solid #1E293B; border-radius: 20px; padding: 24px; }
+                .kpi-num { font-size: 40px; font-weight: 900; line-height: 1.1; }
+                .kpi-label { font-size: 13px; font-weight: 700; color: #94A3B8; margin-top: 6px; }
+                .chart-bar-bg { width: 100%; height: 34px; background: #1E293B; border-radius: 10px; overflow: hidden; margin-top: 8px; position: relative; }
                 .chart-bar-fill { height: 100%; display: flex; align-items: center; padding-left: 14px; font-weight: 900; font-size: 13px; border-radius: 10px; }
                 .badge { display: inline-block; background: #065F46; color: #A7F3D0; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 99px; border: 1px solid #10B981; }
-                .footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1E293B; pt: 18px; color: #64748B; font-size: 13px; font-weight: 600; }
+                .footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1E293B; padding-top: 16px; color: #64748B; font-size: 12px; font-weight: 600; }
               </style>
             </head>
             <body>
               <div class="topbar">
                 <div class="logo">
-                  <span>☁️ GOOGLE CLOUD STRATEGIC PITCH • PROMPTCANVAS KEYNOTE</span>
+                  <span>✨ PROMPTCANVAS: WHOLE PRODUCT STRATEGIC BUSINESS DECK • GOOGLE C-SUITE</span>
                 </div>
                 <div class="controls">
-                  <span id="slideIndicator" style="color:#14B8A6; font-size:14px; font-weight:800; margin-right:10px;">SLIDE 1 OF 4</span>
+                  <span id="slideIndicator" style="color:#14B8A6; font-size:14px; font-weight:800; margin-right:10px;">SLIDE 1 OF 7</span>
                   <button class="btn" onclick="changeSlide(-1)">◄ Previous (←)</button>
                   <button class="btn" onclick="changeSlide(1)">Next (→) ►</button>
                   <button class="btn btn-teal" onclick="window.print()">🖨️ Export PDF / Slides</button>
@@ -132,39 +133,39 @@ export function ExecutiveStrategicSummaryModal({
               </div>
 
               <div class="slide-stage">
-                <!-- SLIDE 1: STRATEGIC BREAKTHROUGH & GOOGLE CLOUD DOMINANCE -->
+                <!-- SLIDE 1: STRATEGIC VISION & WHOLE PRODUCT MANDATE -->
                 <div class="slide active" id="slide-1">
                   <div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                      <span class="slide-tag">01 // STRATEGIC VALUE PROPOSITION FOR GOOGLE LEADERSHIP</span>
-                      <span class="badge">PROPOSED GOOGLE CLOUD NATIVE ENGINE</span>
+                      <span class="slide-tag">01 // WHOLE PRODUCT STRATEGIC VALUE PROPOSITION</span>
+                      <span class="badge">FLAGSHIP GOOGLE CLOUD ENTERPRISE SUITE</span>
                     </div>
-                    <h1 class="slide-title">${cleanTitle}</h1>
-                    <p class="slide-subtitle">Deterministic Text-to-Architecture Compiler powering Google Cloud Console with Gemini 2.5 Flash + Ephemeral Context Caching.</p>
+                    <h1 class="slide-title">PromptCanvas: Universal Enterprise AI Architecture &amp; Publication Suite</h1>
+                    <p class="slide-subtitle">The industry's first Deterministic Text-to-Architecture Compiler powered by Gemini 2.5 Flash + Ephemeral Context Caching.</p>
 
-                    <div className="grid-2" style="display:grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top:20px;">
+                    <div class="grid-2" style="margin-top:16px;">
                       <div class="card" style="border-color:#14B8A6; background:#0F172A;">
-                        <span class="slide-tag" style="color:#14B8A6;">WHY GOOGLE CLOUD WINS WITH PROMPTCANVAS</span>
-                        <ul style="margin-top:16px; color:#E2E8F0; font-size:16px; line-height:1.8; padding-left:20px;">
-                          <li><b>6-Second Time-to-Architecture:</b> Replaces 6 weeks of architectural design with instant, policy-validated Draw.io &amp; Terraform blueprints.</li>
-                          <li><b>Gemini 2.5 Flash + Context Caching Moat:</b> Cuts enterprise LLM compilation token cost by <b>90%</b>, rendering OpenAI Enterprise cost-prohibitive.</li>
-                          <li><b>Native Google Cloud Infrastructure Pull-Through:</b> One-click deployment script provisions GCP Cloud Run, Vertex AI, and VPC-SC enclaves automatically.</li>
+                        <span class="slide-tag" style="color:#14B8A6;">WHOLE-PRODUCT CORE CAPABILITIES</span>
+                        <ul style="margin-top:14px; color:#E2E8F0; font-size:15px; line-height:1.7; padding-left:20px;">
+                          <li><b>Instant Natural Prompt to Draw.io &amp; Terraform:</b> Converts natural language descriptions into zero-collision publication diagrams and deployment-ready Infrastructure-as-Code.</li>
+                          <li><b>100% Coverage Across 7 Enterprise Personas &amp; 12 Global Industries:</b> Dedicated toolkits for C-Suite Leadership, FinTech Risk Leads, Compliance Officers, Cloud Architects, and DevOps leads.</li>
+                          <li><b>Google Cloud Native Revenue Driver:</b> Native pull-through provisioning GCP Cloud Run, Vertex AI, and VPC Service Controls (VPC-SC).</li>
                         </ul>
                       </div>
                       <div class="card">
-                        <span class="slide-tag">STRATEGIC GOOGLE METRICS</span>
-                        <div style="margin-top:20px; display:flex; flex-direction:column; gap:18px;">
+                        <span class="slide-tag">FLAGSHIP BUSINESS ROI</span>
+                        <div style="margin-top:16px; display:flex; flex-direction:column; gap:14px;">
                           <div>
-                            <div class="kpi-num" style="color:#10B981;">90% Cost Cut</div>
-                            <div class="kpi-label">Ephemeral System Prompt Caching savings per diagram build</div>
+                            <div class="kpi-num" style="color:#10B981;">6 Secs vs 6 Wks</div>
+                            <div class="kpi-label">Time-to-Architecture reduction for enterprise engineering orgs</div>
                           </div>
                           <div>
-                            <div class="kpi-num" style="color:#38BDF8;">$1,450 / mo</div>
-                            <div class="kpi-label">Production runtime envelope ($156k/yr annual OPEX return)</div>
+                            <div class="kpi-num" style="color:#38BDF8;">90% Cost Cut</div>
+                            <div class="kpi-label">Gemini Ephemeral Context Caching OPEX savings vs un-cached LLMs</div>
                           </div>
                           <div>
-                            <div class="kpi-num" style="color:#F59E0B;">98 / 100</div>
-                            <div class="kpi-label">Deterministic Zero-Collision 2D Layout Geometry Score</div>
+                            <div class="kpi-num" style="color:#F59E0B;">$156.6K / yr</div>
+                            <div class="kpi-label">Net annual OPEX savings returned per enterprise customer deployment</div>
                           </div>
                         </div>
                       </div>
@@ -172,57 +173,137 @@ export function ExecutiveStrategicSummaryModal({
                   </div>
 
                   <div class="footer">
-                    <span>Target Integration: Google Cloud Console • Vertex AI Architecture Workbench</span>
+                    <span>Executive Presentation: Google CEO &amp; Google Cloud Board Review</span>
                     <span>Use Left/Right Arrow Keys to Navigate Slides</span>
                   </div>
                 </div>
 
-                <!-- SLIDE 2: ARCHITECTURAL TOPOLOGY & ZERO-TRUST SECURITY ENCLAVE -->
+                <!-- SLIDE 2: THE $10B ENTERPRISE BOTTLENECK VS DETERMINISTIC COMPILATION -->
                 <div class="slide" id="slide-2">
                   <div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                      <span class="slide-tag">02 // PRODUCTION SYSTEMS TOPOLOGY &amp; SECURITY GUARANTEES</span>
-                      <span class="badge" style="background:#1E3A8A; color:#93C5FD; border-color:#3B82F6;">MULTI-AZ 99.99% SLA</span>
+                      <span class="slide-tag">02 // PROBLEM VS SOLUTION • ENTERPRISE ARCHITECTURE BOTTLENECK</span>
+                      <span class="badge" style="background:#1E3A8A; color:#93C5FD; border-color:#3B82F6;">PATENTABLE DETERMINISTIC COMPILER</span>
                     </div>
-                    <h1 class="slide-title">End-to-End Enterprise Architecture Topology</h1>
-                    <p class="slide-subtitle">Multi-tier zero-trust network boundaries, autonomous AI safety gates, and automated canary promotions.</p>
+                    <h1 class="slide-title">Replaces 6 Weeks of Manual Design with 6-Second Verified Synthesis</h1>
+                    <p class="slide-subtitle">Why traditional visual diagramming tools fail enterprise cloud and AI engineering teams.</p>
 
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 30px;">
-                      <div class="card" style="border-left:4px solid #14B8A6;">
-                        <h3 style="color:#14B8A6; font-size:20px; margin-bottom:12px;">1. Executive AI Safety &amp; NLI Gate</h3>
-                        <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Natural Language Inference (NLI) claim verification and Constitutional HHH toxicity screening audit every architecture edge prior to generation.</p>
+                    <div class="grid-2" style="margin-top:20px;">
+                      <div class="card" style="border-color:#EF4444; background:#7F1D1D15;">
+                        <span style="color:#EF4444; font-weight:900; font-size:14px; text-transform:uppercase;">TRADITIONAL ENTERPRISE PROCESS (BROKEN)</span>
+                        <ul style="margin-top:16px; color:#FCA5A5; font-size:15px; line-height:1.8; padding-left:20px;">
+                          <li><b>4 to 6 Weeks Lead Time:</b> Manual Draw.io/Lucidchart diagramming delays executive sign-off and cloud provisioning.</li>
+                          <li><b>Visual &amp; Configuration Drift:</b> Visual diagrams desynchronize from actual Terraform / Kubernetes infrastructure within days.</li>
+                          <li><b>Brittle Unverified AI Prompts:</b> Standard LLMs produce overlapping visual nodes, truncated labels, and unverified PII risks.</li>
+                        </ul>
                       </div>
-                      <div class="card" style="border-left:4px solid #38BDF8;">
-                        <h3 style="color:#38BDF8; font-size:20px; margin-bottom:12px;">2. Multi-Zone Cloud High Availability</h3>
-                        <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Active-passive failover across 3 GCP availability zones, VPC Service Controls (VPC-SC), and automated point-in-time database snapshots.</p>
-                      </div>
-                      <div class="card" style="border-left:4px solid #F59E0B;">
-                        <h3 style="color:#F59E0B; font-size:20px; margin-bottom:12px;">3. Cryptographic HITL Governance Router</h3>
-                        <p style="color:#CBD5E1; font-size:15px; line-height:1.6;">Automated routing escalates any path with confidence &lt;75% to mandatory Human-in-the-Loop executive cryptographic sign-off.</p>
+
+                      <div class="card" style="border-color:#10B981; background:#064E3B15;">
+                        <span style="color:#10B981; font-weight:900; font-size:14px; text-transform:uppercase;">PROMPTCANVAS DETERMINISTIC ENGINE (SOLUTION)</span>
+                        <ul style="margin-top:16px; color:#A7F3D0; font-size:15px; line-height:1.8; padding-left:20px;">
+                          <li><b>6-Second Compilation:</b> Instant production-ready Draw.io vector XML, high-res raster PNG, and Terraform HCL.</li>
+                          <li><b>Deterministic 2D Collision Preflight:</b> Programmatic AST audit guarantees zero overlapping lines and 140px safe line splitting.</li>
+                          <li><b>Full-Lifecycle Multi-Model Publication:</b> Exports editable Google Slides 16:9 decks, GCP Cloud Shell scripts, and Python Mingrammer code.</li>
+                        </ul>
                       </div>
                     </div>
                   </div>
 
                   <div class="footer">
-                    <span>Compliance Mandate: SOC2 Type II • HIPAA • PCI-DSS • Customer-Managed KMS Keys</span>
+                    <span>Core Moat: Deterministic 2D Layout Geometry + Policy Verification Pipeline</span>
                     <span>Use Left/Right Arrow Keys to Navigate Slides</span>
                   </div>
                 </div>
 
-                <!-- SLIDE 3: FINANCIAL ROI & EPHEMERAL PROMPT CACHING TELEMETRY -->
+                <!-- SLIDE 3: FULL-SPECTRUM PERSONA & 12-INDUSTRY DOMAIN SUITE -->
                 <div class="slide" id="slide-3">
                   <div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                      <span class="slide-tag">03 // ECONOMIC ROI &amp; GEMINI 2.5 CONTEXT CACHING ECONOMICS</span>
-                      <span class="badge" style="background:#065F46; color:#A7F3D0; border-color:#10B981;">90% OPEX REDUCTION</span>
+                      <span class="slide-tag">03 // MARKET REACH • 7 ENTERPRISE PERSONAS &amp; 12 GLOBAL INDUSTRY SECTORS</span>
+                      <span class="badge">100% BUSINESS &amp; TECHNICAL COVERAGE</span>
                     </div>
-                    <h1 class="slide-title">12-Month Runtime Envelope Comparison</h1>
-                    <p class="slide-subtitle">Why PromptCanvas Ephemeral Prompt Caching delivers unmatched cost efficiency across enterprise teams.</p>
+                    <h1 class="slide-title">Built for C-Suite Executives &amp; Cloud Engineers Alike</h1>
+                    <p class="slide-subtitle">Instant persona-filtered blueprint library and industry-tailored architectural synthesis presets.</p>
 
-                    <div style="margin-top: 30px; display:flex; flex-direction:column; gap:24px;">
+                    <div class="grid-3" style="margin-top:20px;">
+                      <div class="card" style="border-left:4px solid #14B8A6;">
+                        <h3 style="color:#14B8A6; font-size:18px; margin-bottom:8px;">💼 Executive &amp; C-Suite Suite</h3>
+                        <p style="color:#CBD5E1; font-size:14px; line-height:1.5;">16:9 Board Presentation Decks, Financial ROI Scorecards, and Direct Reportee Technical Implementation Directives (.md).</p>
+                      </div>
+                      <div class="card" style="border-left:4px solid #38BDF8;">
+                        <h3 style="color:#38BDF8; font-size:18px; margin-bottom:8px;">🏛️ Cloud &amp; Security CISOs</h3>
+                        <p style="color:#CBD5E1; font-size:14px; line-height:1.5;">Zero-Trust VPC Service Control enclaves, SOC2 Type II, HIPAA, PCI-DSS compliance tags, and NLI factual claim verification.</p>
+                      </div>
+                      <div class="card" style="border-left:4px solid #F59E0B;">
+                        <h3 style="color:#F59E0B; font-size:18px; margin-bottom:8px;">📊 Data &amp; AI Engineers</h3>
+                        <p style="color:#CBD5E1; font-size:14px; line-height:1.5;">Multi-Agent LangGraph topologies, Stateful RAG lakehouse streaming pipelines, and automated DevOps/GitOps CI/CD tracks.</p>
+                      </div>
+                    </div>
+
+                    <div class="card" style="margin-top:20px; background:#0F172A; border-color:#334155; display:flex; justify-content:space-between; align-items:center;">
                       <div>
-                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:16px; margin-bottom:6px;">
-                          <span style="color:#10B981;">PromptCanvas Cached Gemini Architecture Envelope</span>
+                        <span style="color:#14B8A6; font-weight:800; font-size:13px;">12 GLOBAL INDUSTRY SECTOR PRESETS</span>
+                        <div style="color:#E2E8F0; font-size:14px; font-weight:600; margin-top:4px;">FinTech &amp; Banking • Healthcare HIPAA • Defense Sovereign Cloud • Autonomous Robotics • Automotive Telematics • Energy Smart Grid • EdTech • Media CDN</div>
+                      </div>
+                      <span style="background:#1E293B; color:#F8FAFC; font-weight:800; padding:10px 18px; border-radius:12px; font-size:13px; border:1px solid #475569;">25 BLUEPRINTS LIVE</span>
+                    </div>
+                  </div>
+
+                  <div class="footer">
+                    <span>Product Architecture: Multi-Persona Single-Accordion Ergonomics</span>
+                    <span>Use Left/Right Arrow Keys to Navigate Slides</span>
+                  </div>
+                </div>
+
+                <!-- SLIDE 4: WHY GOOGLE CLOUD WINS (GEMINI 2.5 CONTEXT CACHING MOAT) -->
+                <div class="slide" id="slide-4">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span class="slide-tag">04 // GOOGLE CLOUD ECOSYSTEM SYNERGY • GEMINI 2.5 CACHING MOAT</span>
+                      <span class="badge" style="background:#065F46; color:#A7F3D0; border-color:#10B981;">DEEP GCP INFRASTRUCTURE PULL-THROUGH</span>
+                    </div>
+                    <h1 class="slide-title">Why PromptCanvas Makes Google Cloud the #1 Enterprise AI Platform</h1>
+                    <p class="slide-subtitle">Leverages Gemini 2.5 Flash Ephemeral Context Caching to create an unassailable economic advantage over OpenAI &amp; AWS.</p>
+
+                    <div class="grid-3" style="margin-top:24px;">
+                      <div class="card">
+                        <span style="color:#10B981; font-weight:900; font-size:13px;">GEMINI 2.5 CACHING MOAT</span>
+                        <h3 style="color:#FFFFFF; font-size:20px; margin:8px 0;">90% Lower LLM OPEX</h3>
+                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">PromptCanvas caches multi-tier system architectural schemas in Gemini 2.5 ephemeral context windows, reducing repeated compilation costs by 90%.</p>
+                      </div>
+                      <div class="card">
+                        <span style="color:#38BDF8; font-weight:900; font-size:13px;">GOOGLE CLOUD CONSUMPTION</span>
+                        <h3 style="color:#FFFFFF; font-size:20px; margin:8px 0;">Native GCP Cloud Pull-Through</h3>
+                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Every generated diagram includes a 1-click Google Cloud Shell deployment script provisioning Cloud Run, Vertex AI, BigQuery, and VPC-SC.</p>
+                      </div>
+                      <div class="card">
+                        <span style="color:#F59E0B; font-weight:900; font-size:13px;">COMPETITIVE DEFENSE</span>
+                        <h3 style="color:#FFFFFF; font-size:20px; margin:8px 0;">Lock-Out AWS / Azure</h3>
+                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">By offering zero-friction visual architecture design directly inside Google Cloud Console, enterprise customers standardize their stacks on GCP.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="footer">
+                    <span>Technical Integration: Gemini 2.5 Flash / Pro Router + Google Cloud Shell API</span>
+                    <span>Use Left/Right Arrow Keys to Navigate Slides</span>
+                  </div>
+                </div>
+
+                <!-- SLIDE 5: FINANCIAL ROI & EPHEMERAL PROMPT CACHING TELEMETRY -->
+                <div class="slide" id="slide-5">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span class="slide-tag">05 // FINANCIAL MODEL • ENTERPRISE COST EFFICIENCY &amp; OPEX RETURN</span>
+                      <span class="badge" style="background:#065F46; color:#A7F3D0; border-color:#10B981;">10.8X ANNUAL ROI</span>
+                    </div>
+                    <h1 class="slide-title">Comparative 12-Month Financial ROI Profile</h1>
+                    <p class="slide-subtitle">Economic telemetry demonstrating why enterprise CTOs mandate PromptCanvas across their engineering organizations.</p>
+
+                    <div style="margin-top: 24px; display:flex; flex-direction:column; gap:20px;">
+                      <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:15px; margin-bottom:6px;">
+                          <span style="color:#10B981;">PromptCanvas Cached Gemini Architecture Runtime Envelope</span>
                           <span style="color:#10B981;">$1,450 / mo ($17,400 / yr)</span>
                         </div>
                         <div class="chart-bar-bg">
@@ -231,7 +312,7 @@ export function ExecutiveStrategicSummaryModal({
                       </div>
 
                       <div>
-                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:16px; margin-bottom:6px;">
+                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:15px; margin-bottom:6px;">
                           <span style="color:#EF4444;">Standard Un-Cached Stateless LLM Baseline</span>
                           <span style="color:#EF4444;">$14,500 / mo ($174,000 / yr)</span>
                         </div>
@@ -240,53 +321,85 @@ export function ExecutiveStrategicSummaryModal({
                         </div>
                       </div>
 
-                      <div class="card" style="background:#0F172A; border-color:#38BDF8; margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+                      <div class="card" style="background:#0F172A; border-color:#38BDF8; margin-top:6px; display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                          <div style="color:#38BDF8; font-weight:900; font-size:22px;">Annual Operational OPEX Savings: $156,600 / year</div>
-                          <div style="color:#94A3B8; font-size:14px; margin-top:4px;">Capital returned directly to enterprise Cloud R&amp;D innovation budgets.</div>
+                          <div style="color:#38BDF8; font-weight:900; font-size:20px;">Annual Net Operational Savings: $156,600 / year per Enterprise Team</div>
+                          <div style="color:#94A3B8; font-size:13px; margin-top:4px;">Direct engineering productivity acceleration + OPEX capital returned to core product development.</div>
                         </div>
-                        <span style="background:#0284C7; color:#FFFFFF; font-weight:900; padding:12px 24px; border-radius:14px; font-size:18px;">ROI: 10.8x</span>
+                        <span style="background:#0284C7; color:#FFFFFF; font-weight:900; padding:10px 20px; border-radius:12px; font-size:16px;">10.8x ROI</span>
                       </div>
                     </div>
                   </div>
 
                   <div class="footer">
-                    <span>Engine Telemetry: Gemini 2.5 Flash / Pro Hybrid Context Caching Router</span>
+                    <span>Financial Metrics: Calculated for 50-Engineer Enterprise Architecture Team</span>
                     <span>Use Left/Right Arrow Keys to Navigate Slides</span>
                   </div>
                 </div>
 
-                <!-- SLIDE 4: STRATEGIC GOOGLE INCUBATION ASK & GO-TO-MARKET MILESTONES -->
-                <div class="slide" id="slide-4">
+                <!-- SLIDE 6: AUTONOMOUS AI GOVERNANCE, NLI CLAIM VERIFICATION & HITL SAFETY -->
+                <div class="slide" id="slide-6">
                   <div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                      <span class="slide-tag">04 // GOOGLE LEADERSHIP FUNDING ASK &amp; PRODUCT ROADMAP</span>
-                      <span class="badge" style="background:#7C3AED; color:#F3E8FF; border-color:#8B5CF6;">EXECUTIVE BOARD APPROVAL</span>
+                      <span class="slide-tag">06 // AI TRUST &amp; SAFETY • DETERMINISTIC GOVERNANCE ENCLAVE</span>
+                      <span class="badge" style="background:#1E3A8A; color:#93C5FD; border-color:#3B82F6;">ZERO HALLUCINATION PROTOCOL</span>
                     </div>
-                    <h1 class="slide-title">Google Incubation Strategic Ask &amp; Launch Milestones</h1>
-                    <p class="slide-subtitle">Proposed Google Cloud Product-Led Growth (PLG) integration timeline.</p>
+                    <h1 class="slide-title">Autonomous AI Governance, NLI Claim Verification &amp; HITL Safety</h1>
+                    <p class="slide-subtitle">Three-tier verification architecture ensuring 100% compliance with corporate and regulatory standards.</p>
 
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 30px;">
-                      <div class="card">
-                        <span style="color:#14B8A6; font-weight:900; font-size:13px;">MILESTONE 1 (MONTHS 1-2)</span>
-                        <h3 style="color:#FFFFFF; font-size:20px; margin:10px 0;">Google Cloud Console Native Widget</h3>
-                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Embed PromptCanvas directly into Google Cloud Console home dashboard for 1-click architecture diagramming &amp; Terraform deployment.</p>
+                    <div class="grid-3" style="margin-top:24px;">
+                      <div class="card" style="border-left:4px solid #14B8A6;">
+                        <h3 style="color:#14B8A6; font-size:19px; margin-bottom:10px;">1. NLI Factual Claim Gate</h3>
+                        <p style="color:#CBD5E1; font-size:14px; line-height:1.6;">Natural Language Inference (NLI) claim verification checks every generated node and connection against corporate policy templates to eliminate silent hallucinated services.</p>
                       </div>
-                      <div class="card">
-                        <span style="color:#38BDF8; font-weight:900; font-size:13px;">MILESTONE 2 (MONTHS 3-4)</span>
-                        <h3 style="color:#FFFFFF; font-size:20px; margin:10px 0;">Vertex AI Architecture Hub</h3>
-                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Integrate Gemini 2.5 Pro fine-tuned model weights and automated NLI claim verification into Google Enterprise Cloud Marketplace.</p>
+                      <div class="card" style="border-left:4px solid #38BDF8;">
+                        <h3 style="color:#38BDF8; font-size:19px; margin-bottom:10px;">2. Zero-Trust Security Enclaves</h3>
+                        <p style="color:#CBD5E1; font-size:14px; line-height:1.6;">All internal communication paths enforce VPC Service Controls (VPC-SC), mTLS encryption, customer-managed KMS keys, and strict SOC2 Type II / HIPAA audit logs.</p>
                       </div>
-                      <div class="card" style="border-color:#10B981; background:#064E3B22;">
-                        <span style="color:#10B981; font-weight:900; font-size:13px;">EXECUTIVE FUNDING ASK</span>
-                        <h3 style="color:#10B981; font-size:24px; margin:10px 0;">$2.5M Seed Allocation</h3>
-                        <p style="color:#E2E8F0; font-size:14px; line-height:1.6;">Full technical team headcount, Google Cloud infrastructure engineering credits, and enterprise co-selling launch.</p>
+                      <div class="card" style="border-left:4px solid #F59E0B;">
+                        <h3 style="color:#F59E0B; font-size:19px; margin-bottom:10px;">3. Cryptographic HITL Router</h3>
+                        <p style="color:#CBD5E1; font-size:14px; line-height:1.6;">Requests below 75% confidence automatically route to mandatory Human-in-the-Loop executive cryptographic sign-off before cloud deployment.</p>
                       </div>
                     </div>
                   </div>
 
                   <div class="footer">
-                    <span>Authorized Review: Sundar Pichai / Google Cloud C-Suite Board Review</span>
+                    <span>Safety Framework: Constitutional AI HHH • Responsible AI Red-Teaming Suite</span>
+                    <span>Use Left/Right Arrow Keys to Navigate Slides</span>
+                  </div>
+                </div>
+
+                <!-- SLIDE 7: GOOGLE STRATEGIC INCUBATION ASK & GO-TO-MARKET MILESTONES -->
+                <div class="slide" id="slide-7">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span class="slide-tag">07 // INVESTMENT RECOMMENDATION • GOOGLE INCUBATION ROADMAP</span>
+                      <span class="badge" style="background:#7C3AED; color:#F3E8FF; border-color:#8B5CF6;">EXECUTIVE BOARD SIGN-OFF</span>
+                    </div>
+                    <h1 class="slide-title">Google Incubation Strategic Ask &amp; Launch Milestones</h1>
+                    <p class="slide-subtitle">Proposed Product-Led Growth (PLG) roadmap to embed PromptCanvas across Google Cloud Platform.</p>
+
+                    <div class="grid-3" style="margin-top:24px;">
+                      <div class="card">
+                        <span style="color:#14B8A6; font-weight:900; font-size:12px;">MILESTONE 1 (MONTHS 1-2)</span>
+                        <h3 style="color:#FFFFFF; font-size:19px; margin:8px 0;">Google Cloud Console Widget</h3>
+                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Embed PromptCanvas directly into Google Cloud Console home dashboard for 1-click architecture diagramming &amp; GCP Shell deployment.</p>
+                      </div>
+                      <div class="card">
+                        <span style="color:#38BDF8; font-weight:900; font-size:12px;">MILESTONE 2 (MONTHS 3-4)</span>
+                        <h3 style="color:#FFFFFF; font-size:19px; margin:8px 0;">Vertex AI Architecture Hub</h3>
+                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Publish Gemini 2.5 fine-tuned architectural models and NLI claim verification engines on Google Enterprise Cloud Marketplace.</p>
+                      </div>
+                      <div class="card" style="border-color:#10B981; background:#064E3B22;">
+                        <span style="color:#10B981; font-weight:900; font-size:12px;">EXECUTIVE FUNDING ASK</span>
+                        <h3 style="color:#10B981; font-size:24px; margin:8px 0;">$2.5M Seed Allocation</h3>
+                        <p style="color:#E2E8F0; font-size:14px; line-height:1.6;">Dedicated Google Cloud engineering incubator headcount, GCP infrastructure credits, and enterprise sales enablement co-selling.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="footer">
+                    <span>Authorized Pitch: Sundar Pichai / Google Cloud C-Suite Investment Board</span>
                     <span>PromptCanvas Enterprise C-Suite Suite</span>
                   </div>
                 </div>
@@ -294,7 +407,7 @@ export function ExecutiveStrategicSummaryModal({
 
               <script>
                 let currentSlide = 1;
-                const totalSlides = 4;
+                const totalSlides = 7;
 
                 function updateSlide() {
                   document.querySelectorAll('.slide').forEach((s, idx) => {
