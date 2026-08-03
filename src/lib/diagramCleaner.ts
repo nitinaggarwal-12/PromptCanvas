@@ -534,78 +534,82 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
 }
 
 export function resolveVendorIconUrl(text: string): string {
-  if (!text) return 'https://cdn.simpleicons.org/googlecloud/4285F4';
+  if (!text) return 'https://api.iconify.design/logos:google-cloud.svg';
   const lower = text.toLowerCase();
 
-  // SAP & ERP Systems
-  if (lower.includes('sap ') || lower.includes(' s/4hana') || /\berp\b/.test(lower)) return 'https://api.iconify.design/logos:sap.svg';
+  // 1. AI, LLM & Agentic Ecosystem (Genie, Cortex, Gemini, Claude, OpenAI, Bedrock, etc.)
+  if (lower.includes('genie') || lower.includes('databricks')) return 'https://api.iconify.design/logos:databricks.svg';
+  if (lower.includes('cortex') || lower.includes('snowflake')) return 'https://api.iconify.design/logos:snowflake.svg';
+  if (lower.includes('gemini') || lower.includes('vertex') || lower.includes('gcp') || lower.includes('google cloud')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('claude') || lower.includes('anthropic')) return 'https://api.iconify.design/logos:anthropic-icon.svg';
+  if (lower.includes('gpt') || lower.includes('openai')) return 'https://api.iconify.design/logos:openai-icon.svg';
+  if (lower.includes('copilot') || lower.includes('azure')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
+  if (lower.includes('bedrock') || lower.includes('aws') || lower.includes('amazon')) return 'https://api.iconify.design/logos:aws.svg';
+  if (lower.includes('langchain') || lower.includes('langgraph')) return 'https://api.iconify.design/logos:langchain-icon.svg';
+  if (lower.includes('pinecone')) return 'https://api.iconify.design/logos:pinecone.svg';
+  if (lower.includes('milvus')) return 'https://api.iconify.design/logos:milvus.svg';
+  if (lower.includes('qdrant')) return 'https://api.iconify.design/logos:qdrant.svg';
+  if (lower.includes('huggingface') || lower.includes('hugging face')) return 'https://api.iconify.design/logos:huggingface.svg';
+  if (lower.includes('mlflow')) return 'https://api.iconify.design/logos:mlflow.svg';
+  if (lower.includes('ray')) return 'https://api.iconify.design/logos:ray.svg';
 
-  // Pharma & Clinical Systems (Veeva, Salesforce)
-  if (lower.includes('veeva') || lower.includes('salesforce') || lower.includes('etmf')) return 'https://api.iconify.design/logos:salesforce.svg';
-
-  // Identity & Security (Ping Identity, Okta, Auth0, OAuth)
-  if (lower.includes('ping') || lower.includes('okta') || lower.includes('oauth') || lower.includes('auth0') || lower.includes('anonymization')) return 'https://api.iconify.design/logos:okta.svg';
-
-  // Healthcare & Regulatory (FDA, HealthLake, Clinical)
-  if (lower.includes('fda') || lower.includes('health') || lower.includes('gxp') || lower.includes('clinical') || lower.includes('esg')) return 'https://api.iconify.design/logos:redhat.svg';
-
-  // Databricks Ecosystem & Genie AI
-  if (lower.includes('databricks') || lower.includes('genie') || lower.includes('dlt') || lower.includes('delta live') || lower.includes('auto loader') || lower.includes('unity catalog') || lower.includes('mosaic')) {
-    return 'https://api.iconify.design/logos:databricks.svg';
-  }
-  if (lower.includes('delta lake') || lower.includes('bronze') || lower.includes('silver') || lower.includes('gold') || lower.includes('spark') || lower.includes('pyspark')) {
-    return 'https://api.iconify.design/logos:apache-spark.svg';
-  }
-
-  // Snowflake & Cortex AI Ecosystem
-  if (lower.includes('snowflake') || lower.includes('cortex')) {
-    return 'https://api.iconify.design/logos:snowflake.svg';
-  }
-
-  // Google Cloud Platform (GCP)
-  if (lower.includes('cloud run')) return 'https://api.iconify.design/logos:google-cloud.svg';
-  if (lower.includes('bigquery')) return 'https://api.iconify.design/logos:google-cloud.svg';
-  if (lower.includes('vertex') || lower.includes('gemini') || lower.includes('gcp')) return 'https://api.iconify.design/logos:google-cloud.svg';
-  if (lower.includes('gcs') || lower.includes('cloud storage') || lower.includes('object storage')) return 'https://api.iconify.design/logos:google-cloud.svg';
-  if (lower.includes('apigee') || lower.includes('api gateway')) return 'https://api.iconify.design/logos:google-cloud.svg';
-
-  // Amazon Web Services (AWS) & Bedrock
-  if (lower.includes('lambda')) return 'https://api.iconify.design/logos:aws-lambda.svg';
-  if (lower.includes('s3') || lower.includes('aws s3')) return 'https://api.iconify.design/logos:aws-s3.svg';
-  if (lower.includes('dynamodb')) return 'https://api.iconify.design/logos:aws-dynamodb.svg';
-  if (lower.includes('bedrock') || lower.includes('rds') || lower.includes('aurora') || lower.includes('redshift') || lower.includes('healthlake')) return 'https://api.iconify.design/logos:aws.svg';
-  if (lower.includes('ec2') || lower.includes('ecs') || lower.includes('eks') || lower.includes('aws') || lower.includes('amazon')) return 'https://api.iconify.design/logos:aws.svg';
-
-  // Microsoft Azure, Fabric & Copilot
-  if (lower.includes('fabric') || lower.includes('power bi')) return 'https://api.iconify.design/logos:microsoft-power-bi.svg';
-  if (lower.includes('azure') || lower.includes('copilot') || lower.includes('event hub') || lower.includes('apim')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
-
-  // Oracle Cloud Infrastructure (OCI)
-  if (lower.includes('oracle') || lower.includes('oci') || lower.includes('autonomous db')) return 'https://api.iconify.design/logos:oracle.svg';
-
-  // Enterprise SaaS & Operations
-  if (lower.includes('servicenow')) return 'https://api.iconify.design/logos:servicenow.svg';
-  if (lower.includes('workday')) return 'https://api.iconify.design/logos:workday.svg';
-
-  // Common Tech Stack & Frameworks
+  // 2. Data & Analytics Ecosystem
+  if (lower.includes('spark') || lower.includes('delta lake') || lower.includes('pyspark')) return 'https://api.iconify.design/logos:apache-spark.svg';
+  if (lower.includes('clickhouse')) return 'https://api.iconify.design/logos:clickhouse.svg';
+  if (lower.includes('dbt')) return 'https://api.iconify.design/logos:dbt.svg';
+  if (lower.includes('airflow')) return 'https://api.iconify.design/logos:airflow.svg';
   if (lower.includes('kafka') || lower.includes('event stream')) return 'https://api.iconify.design/logos:kafka-icon.svg';
-  if (lower.includes('kubernetes') || lower.includes('k8s')) return 'https://api.iconify.design/logos:kubernetes.svg';
-  if (lower.includes('snowflake')) return 'https://api.iconify.design/logos:snowflake.svg';
+  if (lower.includes('pubsub') || lower.includes('pub/sub')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('kinesis')) return 'https://api.iconify.design/logos:aws-kinesis.svg';
+
+  // 3. Oracle & Enterprise Infrastructure
+  if (lower.includes('oracle') || lower.includes('oci')) return 'https://api.iconify.design/logos:oracle.svg';
+  if (lower.includes('cloudflare')) return 'https://api.iconify.design/logos:cloudflare.svg';
+  if (lower.includes('vercel')) return 'https://api.iconify.design/logos:vercel-icon.svg';
+  if (lower.includes('railway')) return 'https://api.iconify.design/logos:railway.svg';
+  if (lower.includes('sap') || lower.includes('hiding')) return 'https://api.iconify.design/logos:sap.svg';
+  if (lower.includes('salesforce') || lower.includes('veeva')) return 'https://api.iconify.design/logos:salesforce.svg';
+  if (lower.includes('servicenow')) return 'https://api.iconify.design/logos:servicenow.svg';
+  if (lower.includes('stripe')) return 'https://api.iconify.design/logos:stripe.svg';
+
+  // 4. Databases & Caching
   if (lower.includes('postgresql') || lower.includes('postgres')) return 'https://api.iconify.design/logos:postgresql.svg';
   if (lower.includes('mysql')) return 'https://api.iconify.design/logos:mysql.svg';
   if (lower.includes('redis')) return 'https://api.iconify.design/logos:redis.svg';
-  if (lower.includes('grafana')) return 'https://api.iconify.design/logos:grafana.svg';
-  if (lower.includes('python')) return 'https://api.iconify.design/logos:python.svg';
+  if (lower.includes('mongodb')) return 'https://api.iconify.design/logos:mongodb-icon.svg';
+  if (lower.includes('cassandra')) return 'https://api.iconify.design/logos:cassandra.svg';
+  if (lower.includes('neo4j')) return 'https://api.iconify.design/logos:neo4j.svg';
+  if (lower.includes('supabase')) return 'https://api.iconify.design/logos:supabase-icon.svg';
+  if (lower.includes('firebase')) return 'https://api.iconify.design/logos:firebase.svg';
+  if (lower.includes('dynamodb')) return 'https://api.iconify.design/logos:aws-dynamodb.svg';
+  if (lower.includes('s3')) return 'https://api.iconify.design/logos:aws-s3.svg';
+  if (lower.includes('lambda')) return 'https://api.iconify.design/logos:aws-lambda.svg';
+
+  // 5. DevOps, Observability & Security
+  if (lower.includes('kubernetes') || lower.includes('k8s')) return 'https://api.iconify.design/logos:kubernetes.svg';
   if (lower.includes('docker')) return 'https://api.iconify.design/logos:docker.svg';
-
-  // Genomic & Bioinformatics Systems
-  if (lower.includes('illumina') || lower.includes('fastq') || lower.includes('gatk') || lower.includes('bwa') || lower.includes('genomic') || lower.includes('dna') || lower.includes('rna') || lower.includes('bioinformatics')) return 'https://api.iconify.design/logos:google-cloud.svg';
-
-  // CI/CD & DevOps Tools
+  if (lower.includes('terraform')) return 'https://api.iconify.design/logos:terraform.svg';
+  if (lower.includes('vault')) return 'https://api.iconify.design/logos:vault-icon.svg';
   if (lower.includes('argo')) return 'https://api.iconify.design/logos:argo.svg';
-  if (lower.includes('trivy') || lower.includes('sonar') || lower.includes('snyk')) return 'https://api.iconify.design/logos:sonarqube.svg';
+  if (lower.includes('datadog')) return 'https://api.iconify.design/logos:datadog.svg';
+  if (lower.includes('grafana')) return 'https://api.iconify.design/logos:grafana.svg';
+  if (lower.includes('prometheus')) return 'https://api.iconify.design/logos:prometheus.svg';
+  if (lower.includes('github')) return 'https://api.iconify.design/logos:github-icon.svg';
+  if (lower.includes('gitlab')) return 'https://api.iconify.design/logos:gitlab.svg';
+  if (lower.includes('okta') || lower.includes('ping') || lower.includes('auth0')) return 'https://api.iconify.design/logos:okta.svg';
+  if (lower.includes('sonarqube') || lower.includes('trivy')) return 'https://api.iconify.design/logos:sonarqube.svg';
+  if (lower.includes('python')) return 'https://api.iconify.design/logos:python.svg';
 
-  return 'https://api.iconify.design/logos:google-cloud.svg'; // Fallback
+  // 6. Dynamic Ecosystem Auto-Resolver Fallback
+  // Extracts the primary technical brand word and dynamically resolves its official logo
+  const words = text.replace(/[^a-zA-Z0-9\s-]/g, '').split(/\s+/).filter(w => w.length > 2);
+  for (const w of words) {
+    const slug = w.toLowerCase();
+    if (['engine', 'service', 'platform', 'tier', 'node', 'cluster', 'data', 'cloud', 'system', 'api', 'app'].includes(slug)) continue;
+    return `https://api.iconify.design/logos:${slug}.svg`;
+  }
+
+  return 'https://api.iconify.design/logos:google-cloud.svg';
 }
 
 export function restoreDetailedView(xmlInput: string, skipLayout: boolean = false): string {
