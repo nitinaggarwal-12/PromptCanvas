@@ -1932,14 +1932,18 @@ function WorkspaceContent() {
                   </div>
                   <button
                     onClick={() => {
-                      setNewDiagramName(t.name);
-                      setNewDiagramPrompt(t.prompt);
-                      setSelectedArchType(t.id);
-                      setIsCreateModalOpen(true);
+                      setCurrentTab('editor');
+                      handleArchitectureSwitch(t.id);
+                      if (typeof window !== 'undefined') {
+                        const params = new URLSearchParams(window.location.search);
+                        params.delete('tab');
+                        const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+                        window.history.replaceState({}, '', newUrl);
+                      }
                     }}
                     className="w-full py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <span>Use Blueprint</span>
+                    <span>Use Blueprint →</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
