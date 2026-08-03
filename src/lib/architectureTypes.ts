@@ -228,6 +228,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Technical Architecture",
     whenToUse: "Google's latest enterprise Agent-to-Agent (A2A) delegation protocol linking Vertex AI Agent Builder, Google Workspace extensions, and private cloud agent enclaves",
     prompt: "Google Agent-to-Agent (A2A) Autonomous Enterprise Protocol:\n- Primary Orchestrator: Master Vertex AI A2A Protocol Supervisor -> Ephemeral Context Caching Gate.\n- Federated Agent Network: Research Agent -> SQL/BigQuery Synthesis Agent -> Compliance & Safety Critic Agent via A2A Signed Protocol Tokens.\n- Execution & Audit: Private Cloud Run Execution Sandbox -> Cryptographic Cryptographic HITL Audit Trail."
+  },
+  {
+    id: "mcp_google_a2a_hybrid_platform",
+    name: "28. MCP + Google A2A Hybrid Enterprise Agentic Platform (MCP Tool Stack + A2A Federation)",
+    category: "Technical Architecture",
+    whenToUse: "Enterprise architecture uniting Google A2A (Agent-to-Agent horizontal federation) with Anthropic Model Context Protocol (MCP vertical tool/database execution layer)",
+    prompt: "MCP + Google A2A Hybrid Enterprise Agentic Platform:\n- Horizontal Agent Federation (Google A2A Protocol): Master Enterprise Supervisor Agent -> A2A Agent Capability Registry -> Autonomous Peer Delegation Network.\n- Vertical Tool Execution Layer (Model Context Protocol / MCP): Research Agent -> MCP GitHub/BigQuery Server | Code Agent -> MCP Cloud Run & Docker Server | Security Agent -> MCP HashiCorp Vault Server.\n- State, Governance & Audit: Vertex AI Ephemeral Context Caching -> Spanner Graph -> Cryptographic Human-in-the-Loop Approval Gate."
   }
 ];
 
