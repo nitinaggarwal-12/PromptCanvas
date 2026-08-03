@@ -13,12 +13,12 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        {/* Master Widescreen Frame */}
+        <!-- Master Widescreen Frame -->
         <mxCell id="frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#38BDF8;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="20" y="20" width="1880" height="1040" as="geometry" />
         </mxCell>
 
-        {/* Header Title & Subtitle */}
+        <!-- Header Title & Subtitle -->
         <mxCell id="title" value="HUMAN-IN-THE-LOOP AUTONOMOUS AI AGENT GOVERNANCE LIFECYCLE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#F8FAFC;" vertex="1" parent="1">
           <mxGeometry x="40" y="35" width="1840" height="35" as="geometry" />
         </mxCell>
@@ -26,7 +26,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
           <mxGeometry x="40" y="70" width="1840" height="25" as="geometry" />
         </mxCell>
 
-        {/* TIER 1: Agent Request & Intent Classification (x=60, width=380) */}
+        <!-- TIER 1: Agent Request & Intent Classification -->
         <mxCell id="t1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="60" y="110" width="380" height="840" as="geometry" />
         </mxCell>
@@ -44,7 +44,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
           <mxGeometry x="85" y="610" width="330" height="130" as="geometry" />
         </mxCell>
 
-        {/* TIER 2: Confidence Escalation & Routing (x=480, width=420) */}
+        <!-- TIER 2: Confidence Escalation & Routing -->
         <mxCell id="t2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="480" y="110" width="420" height="840" as="geometry" />
         </mxCell>
@@ -52,17 +52,17 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
           <mxGeometry x="500" y="125" width="380" height="45" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_high_conf" value="&lt;b&gt;High Confidence Tier (≥ 95%)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#4ADE80;'&gt;Fast-Path Autonomous Execution Approved&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#22C55E;fontColor=#F8FAFC;fontSize=13;align=left;spacingLeft=14;" vertex="1" parent="1">
+        <mxCell id="node_high_conf" value="&lt;b&gt;High Confidence Tier (&amp;ge; 95%)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#4ADE80;'&gt;Fast-Path Autonomous Execution Approved&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#22C55E;fontColor=#F8FAFC;fontSize=13;align=left;spacingLeft=14;" vertex="1" parent="1">
           <mxGeometry x="505" y="210" width="370" height="130" as="geometry" />
         </mxCell>
         <mxCell id="node_med_conf" value="&lt;b&gt;Medium Confidence Tier (75% - 94%)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#FBBF24;'&gt;Supervisor AI Cross-Verification &amp; Fact Check Required&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#78350F;strokeColor=#F59E0B;fontColor=#F8FAFC;fontSize=13;align=left;spacingLeft=14;" vertex="1" parent="1">
           <mxGeometry x="505" y="410" width="370" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="node_esc_gate" value="&lt;b&gt;Mandatory HITL Escalation Router&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#F87171;'&gt;Triggers when Confidence &lt; 75% OR Financial &gt; $10k&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#7F1D1D;strokeColor=#EF4444;fontColor=#F8FAFC;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="node_esc_gate" value="&lt;b&gt;Mandatory HITL Escalation Router&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#F87171;'&gt;Triggers when Confidence &amp;lt; 75% OR Financial &amp;gt; $10k&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#7F1D1D;strokeColor=#EF4444;fontColor=#F8FAFC;fontSize=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="540" y="600" width="300" height="160" as="geometry" />
         </mxCell>
 
-        {/* TIER 3: Human-in-the-Loop Approval Gate (x=940, width=420) */}
+        <!-- TIER 3: Human-in-the-Loop Approval Gate -->
         <mxCell id="t3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="940" y="110" width="420" height="840" as="geometry" />
         </mxCell>
@@ -80,7 +80,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
           <mxGeometry x="965" y="610" width="370" height="130" as="geometry" />
         </mxCell>
 
-        {/* TIER 4: Execution, Evidence & RLHF Feedback (x=1400, width=440) */}
+        <!-- TIER 4: Execution, Evidence & RLHF Feedback -->
         <mxCell id="t4_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1400" y="110" width="440" height="840" as="geometry" />
         </mxCell>
@@ -98,7 +98,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
           <mxGeometry x="1425" y="610" width="390" height="130" as="geometry" />
         </mxCell>
 
-        {/* Directional Connectors */}
+        <!-- Directional Connectors -->
         <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38BDF8;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="node_req" target="node_high_conf" />
         <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38BDF8;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="node_intent" target="node_med_conf" />
         <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="node_policy" target="node_esc_gate" />
@@ -126,20 +126,20 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        {/* Master Widescreen Frame */}
+        <!-- Master Widescreen Frame -->
         <mxCell id="frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#38BDF8;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="20" y="20" width="1880" height="1040" as="geometry" />
         </mxCell>
 
-        {/* Header Title & Subtitle */}
+        <!-- Header Title & Subtitle -->
         <mxCell id="title" value="MULTI-AGENT AUTONOMOUS LLM ORCHESTRATION PLATFORM (VERTEX AI / LANGGRAPH)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#F8FAFC;" vertex="1" parent="1">
           <mxGeometry x="40" y="35" width="1840" height="35" as="geometry" />
-        </geometry>
+        </mxCell>
         <mxCell id="subtitle" value="Production LangGraph &amp; Vertex AI Multi-Agent Topology: Master Supervisor Router, Worker Agents, Isolated Container Sandbox, Vector Memory Store &amp; HITL Interrupt Gate" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontColor=#94A3B8;" vertex="1" parent="1">
           <mxGeometry x="40" y="70" width="1840" height="25" as="geometry" />
         </mxCell>
 
-        {/* TIER 1: Master Agent Router & Ingress (x=60, width=380) */}
+        <!-- TIER 1: Master Agent Router & Ingress -->
         <mxCell id="t1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="60" y="110" width="380" height="840" as="geometry" />
         </mxCell>
@@ -157,7 +157,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
           <mxGeometry x="85" y="630" width="330" height="120" as="geometry" />
         </mxCell>
 
-        {/* TIER 2: Specialized Autonomous Worker Agents (x=480, width=420) */}
+        <!-- TIER 2: Specialized Autonomous Worker Agents -->
         <mxCell id="t2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="480" y="110" width="420" height="840" as="geometry" />
         </mxCell>
@@ -175,7 +175,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
           <mxGeometry x="505" y="560" width="370" height="130" as="geometry" />
         </mxCell>
 
-        {/* TIER 3: Isolated Execution Sandbox & Vector Memory (x=940, width=420) */}
+        <!-- TIER 3: Isolated Execution Sandbox & Vector Memory -->
         <mxCell id="t3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="940" y="110" width="420" height="840" as="geometry" />
         </mxCell>
@@ -193,7 +193,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
           <mxGeometry x="965" y="610" width="370" height="130" as="geometry" />
         </mxCell>
 
-        {/* TIER 4: Human-in-the-Loop Interrupt & Endpoint Output (x=1400, width=440) */}
+        <!-- TIER 4: Human-in-the-Loop Interrupt & Endpoint Output -->
         <mxCell id="t4_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1400" y="110" width="440" height="840" as="geometry" />
         </mxCell>
@@ -211,7 +211,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
           <mxGeometry x="1425" y="610" width="390" height="130" as="geometry" />
         </mxCell>
 
-        {/* Directional Connectors */}
+        <!-- Directional Connectors -->
         <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38BDF8;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="node_client" target="node_worker_research" />
         <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38BDF8;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="node_supervisor" target="node_worker_code" />
         <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38BDF8;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="node_worker_code" target="node_sandbox" />
