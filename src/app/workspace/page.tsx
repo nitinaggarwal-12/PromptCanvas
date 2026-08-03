@@ -3504,7 +3504,7 @@ function WorkspaceContent() {
 
             if (item.href) {
               return (
-                <div key={item.id} className="space-y-1">
+                <div key={item.id} className="space-y-1" onMouseEnter={() => setExpandedSubMenu(item.id)}>
                   <Link href={item.href} className="block">
                     {buttonContent}
                   </Link>
@@ -3535,6 +3535,7 @@ function WorkspaceContent() {
               <div
                 key={item.id}
                 className="space-y-1"
+                onMouseEnter={() => setExpandedSubMenu(item.id)}
               >
                 <button
                   onClick={() => {

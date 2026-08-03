@@ -305,7 +305,7 @@ export default function Dashboard() {
             const isExpanded = expandedSubMenu === item.id;
             
             return (
-              <div key={item.id} className="space-y-1">
+              <div key={item.id} className="space-y-1" onMouseEnter={() => setExpandedSubMenu(item.id)}>
                 <button
                   type="button"
                   onClick={() => setExpandedSubMenu(prev => prev === item.id ? null : item.id)}
