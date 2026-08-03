@@ -1233,6 +1233,33 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
         .replace(/Purpose &amp; Problem Statement:[^<]*/g, `Purpose &amp; Problem Statement: ${useCaseTitle} — Automated Enterprise Architecture Topology`)
         .replace(/Purpose & Problem Statement:[^<]*/g, `Purpose &amp; Problem Statement: ${useCaseTitle} — Automated Enterprise Architecture Topology`);
     }
+
+    // Dynamic Cloud Vendor Terminology Translation
+    const promptLowerFull = userPrompt.toLowerCase();
+    if (promptLowerFull.includes('azure')) {
+      updatedXml = updatedXml
+        .replace(/Google Cloud Platform \(GCP\)/g, 'Microsoft Azure Enterprise Cloud')
+        .replace(/GCP/g, 'Azure')
+        .replace(/Cloud Pub\/Sub/g, 'Azure Event Hubs &amp; IoT Hub')
+        .replace(/Cloud KMS/g, 'Azure Key Vault')
+        .replace(/Cloud Run/g, 'Azure Container Apps')
+        .replace(/BigQuery/g, 'Azure Synapse Analytics')
+        .replace(/Cloud Storage/g, 'Azure Blob Storage');
+    } else if (promptLowerFull.includes('oracle') || promptLowerFull.includes('oci')) {
+      updatedXml = updatedXml
+        .replace(/Google Cloud Platform \(GCP\)/g, 'Oracle Cloud Infrastructure (OCI)')
+        .replace(/GCP/g, 'OCI')
+        .replace(/Cloud Pub\/Sub/g, 'OCI Streaming Service')
+        .replace(/Cloud KMS/g, 'OCI Vault &amp; KMS')
+        .replace(/Cloud Run/g, 'OCI Container Instances')
+        .replace(/BigQuery/g, 'OCI Autonomous Database')
+        .replace(/Cloud Storage/g, 'OCI Object Storage');
+    } else if (promptLowerFull.includes('snowflake') || promptLowerFull.includes('databricks')) {
+      updatedXml = updatedXml
+        .replace(/Cloud Pub\/Sub/g, 'Databricks Event Stream / Kafka')
+        .replace(/BigQuery/g, 'Snowflake Iceberg Lakehouse')
+        .replace(/Cloud Storage/g, 'Databricks Unity Catalog Storage');
+    }
   }
 
   return updatedXml;

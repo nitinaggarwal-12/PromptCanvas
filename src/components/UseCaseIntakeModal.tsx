@@ -244,7 +244,12 @@ export function UseCaseIntakeModal({ isOpen, onClose, onSubmitUseCase }: UseCase
               >
                 <option value="Google Cloud Platform (GCP)">Google Cloud Platform (GCP)</option>
                 <option value="Amazon Web Services (AWS)">Amazon Web Services (AWS)</option>
+                <option value="Microsoft Azure Cloud">Microsoft Azure Cloud (Enterprise)</option>
+                <option value="Oracle Cloud Infrastructure (OCI)">Oracle Cloud Infrastructure (OCI)</option>
+                <option value="Snowflake & Databricks Enterprise AI Lakehouse">Snowflake &amp; Databricks Enterprise AI Lakehouse</option>
+                <option value="Kubernetes / Cloud Native (CNCF Open Source)">Kubernetes / Cloud Native (CNCF Open Source)</option>
                 <option value="Hybrid Multi-Cloud Architecture">Hybrid Multi-Cloud Architecture</option>
+                <option value="Air-Gapped Sovereign Cloud (On-Prem Enclave)">Air-Gapped Sovereign Cloud (On-Prem Enclave)</option>
               </select>
             </div>
           </div>
