@@ -2,7 +2,7 @@
  * 🏛️ Master Widescreen Reference Layouts for New Enterprise Blueprints:
  * JOURNAL-PUBLICATION GRADE SCIENTIFIC REFERENCE ARCHITECTURES
  * 1. Business Architecture: Human-in-the-Loop Autonomous AI Agent Governance Lifecycle (Multi-Tier Executive Workflow)
- * 2. Technical Architecture: Multi-Agent Autonomous Orchestration Platform (Compact Proportional Multi-Subnet Topology)
+ * 2. Technical Architecture: Multi-Agent Autonomous Orchestration Platform (Zero-Occlusion Geometrically Precise Network Topology)
  */
 
 export function getExactAgentGovernanceHitlReferenceXml(): string {
@@ -223,17 +223,11 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
 /**
  * 🏛️ ENTERPRISE PRIVATE CLOUD SUBNET INFRASTRUCTURE TOPOLOGY ARCHITECTURE:
  * Multi-Agent Autonomous Orchestration Platform (Stateful Directed Acyclic Graph)
- * Sleek, Compact Proportional Components matching Reference Topology 1-to-1:
- * - Top Ingress Card [1]: w=360, h=55
- * - VPC Perimeter [2]: w=1420, h=640
- * - [2b] Public Ingress Subnet: w=440, h=120 -> [2a] Safety Gateway Rhombus (w=220, h=70) & [3] NAT Gateway (w=160, h=60)
- * - [2c] Security Ops Subnet: w=380, h=120 -> [4] Bastion Workbench (w=320, h=65)
- * - [7] Internal ALB: w=140, h=85
- * - [5] Private Compute Subnet AZ1: w=330, h=120 -> [8] Supervisor & Research Pod (w=290, h=68)
- * - [6] Private Compute Subnet AZ2: w=330, h=120 -> [9] Sandboxed MicroVM Kernel Pod (w=290, h=68)
- * - [10] Isolated DB Subnet AZ1: w=330, h=140 -> [12] Managed PostgreSQL / pgvector DB (w=280, h=85)
- * - [11] Isolated DB Subnet AZ2: w=330, h=140 -> [11a] Ephemeral Prompt Cache Store (w=280, h=85)
- * - Right Control Pillar Cards ([17], [13], [14], [15], [16]): Compact w=320, h=65 cards
+ * ZERO-COLLISION GEOMETRICALLY PRECISE CONNECTOR ROUTING:
+ * - Top VPC Perimeter border pushed to y=190 so n1_ingress blue vector routes cleanly above [2b] Public Subnet without touching headers!
+ * - Blue vector enters Rhombus [2a] via LEFT TIP (entryX=0;entryY=0.5 at x=140, y=270).
+ * - Green vector Outbound Access leaves Rhombus [2a] via RIGHT TIP (exitX=1;exitY=0.5 at x=360, y=270) straight into [3] NAT Gateway (entryX=0;entryY=0.5 at x=380, y=270).
+ * - Wide 90px corridor between [7] Internal ALB (x=75..210) and [5] Private Compute Subnet AZ1 (x=300..620) so HTTPS App Traffic label never touches borders!
  */
 export function getExactMultiAgentLangGraphReferenceXml(): string {
   return `
@@ -262,157 +256,161 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
           <mxGeometry x="560" y="95" width="360" height="55" as="geometry" />
         </mxCell>
 
-        <!-- MASTER CLOUD VPC PERIMETER BOUNDARY CONTAINER: [2] Enterprise AI Private Cloud Perimeter (Dashed Blue, x=70, y=165, w=1420, h=640) -->
+        <!-- MASTER CLOUD VPC PERIMETER BOUNDARY CONTAINER: [2] Enterprise AI Private Cloud Perimeter (Dashed Blue, x=50, y=190, w=1440, h=615) -->
         <mxCell id="vpc_perimeter" value="&lt;b style='font-size:12px;color:#0284C7;'&gt;☁️ [2] Enterprise AI Private Cloud Network Perimeter (Zero-Trust VPC Boundary)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#0284C7;strokeWidth=2.5;dashed=1;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;" vertex="1" parent="1">
-          <mxGeometry x="70" y="165" width="1420" height="640" as="geometry" />
+          <mxGeometry x="50" y="190" width="1440" height="615" as="geometry" />
         </mxCell>
 
-        <!-- LAYER 1: PUBLIC & SECURITY OPERATIONS SUBNETS (y=210..330) -->
-        <!-- [2b] Public Ingress Subnet (x=100, y=210, w=440, h=120) -->
+        <!-- LAYER 1: PUBLIC & SECURITY OPERATIONS SUBNETS (y=230..345) -->
+        <!-- [2b] Public Ingress Subnet (x=110, y=230, w=440, h=115) -->
         <mxCell id="sub_public" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;🌐 [2b] Public Ingress Subnet&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="100" y="210" width="440" height="120" as="geometry" />
+          <mxGeometry x="110" y="230" width="440" height="115" as="geometry" />
         </mxCell>
 
-        <!-- [2a] Model Armor / Constitutional Safety Gateway inside Public Subnet (Rhombus/Shield, x=120, y=235, w=220, h=70) -->
-        <mxCell id="n2a_safety_gateway" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;🛡️ [2a] Safety Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#1E293B;'&gt;Constitutional Filter &amp;amp; PII&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;align=center;spacingLeft=20;spacingRight=20;" vertex="1" parent="1">
-          <mxGeometry x="120" y="235" width="220" height="70" as="geometry" />
+        <!-- [2a] Model Armor / Constitutional Safety Gateway inside Public Subnet (Rhombus/Shield, x=140, y=255, w=200, h=66) -->
+        <mxCell id="n2a_safety_gateway" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;🛡️ [2a] Safety Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#1E293B;'&gt;Constitutional Filter &amp;amp; PII&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;align=center;spacingLeft=16;spacingRight=16;" vertex="1" parent="1">
+          <mxGeometry x="140" y="255" width="200" height="66" as="geometry" />
         </mxCell>
 
-        <!-- [3] NAT & API Gateway Egress (x=365, y=240, w=160, h=60) -->
+        <!-- [3] NAT & API Gateway Egress (x=375, y=258, w=155, h=60) -->
         <mxCell id="n3_nat_gateway" value="&lt;b style='font-size:11px;color:#78350F;'&gt;⚡ [3] NAT Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Private Subnet Egress&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#D97706;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="365" y="240" width="160" height="60" as="geometry" />
+          <mxGeometry x="375" y="258" width="155" height="60" as="geometry" />
         </mxCell>
 
-        <!-- [2c] Security Operations Subnet (x=570, y=210, w=380, h=120) -->
+        <!-- [2c] Security Operations Subnet (x=580, y=230, w=440, h=115) -->
         <mxCell id="sub_secops" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;🔒 [2c] Security Operations Subnet&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="570" y="210" width="380" height="120" as="geometry" />
+          <mxGeometry x="580" y="230" width="440" height="115" as="geometry" />
         </mxCell>
 
-        <!-- [4] Bastion & Safety Workbench Host (x=600, y=240, w=320, h=65) -->
+        <!-- [4] Bastion & Safety Workbench Host (x=600, y=258, w=400, h=64) -->
         <mxCell id="n4_bastion" value="&lt;b style='font-size:11px;color:#1E3A8A;'&gt;🖥️ [4] Safety Review Workbench (submit_tool_outputs)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Cryptographic Human Compliance Review Jump Host&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="600" y="240" width="320" height="65" as="geometry" />
+          <mxGeometry x="600" y="258" width="400" height="64" as="geometry" />
         </mxCell>
 
         <!-- LAYER 2: PRIVATE AGENT APPLICATION SUBNETS (y=375..495) -->
-        <!-- [7] Internal gRPC / API Load Balancer (x=100, y=390, w=140, h=85) -->
+        <!-- [7] Internal gRPC / API Load Balancer (x=75, y=390, w=135, h=85) -->
         <mxCell id="n7_internal_lb" value="&lt;b style='font-size:11px;color:#1E3A8A;'&gt;⚖️ [7] Internal ALB&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Agent App Load Balancing&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="100" y="390" width="140" height="85" as="geometry" />
+          <mxGeometry x="75" y="390" width="135" height="85" as="geometry" />
         </mxCell>
 
-        <!-- [5] Private Agent App Subnet AZ1 (x=270, y=375, w=320, h=120) -->
+        <!-- [5] Private Agent App Subnet AZ1 (x=300, y=375, w=340, h=115) -->
         <mxCell id="sub_app_az1" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;📦 [5] Private App Subnet (AZ1)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=4;" vertex="1" parent="1">
-          <mxGeometry x="270" y="375" width="320" height="120" as="geometry" />
+          <mxGeometry x="300" y="375" width="340" height="115" as="geometry" />
         </mxCell>
 
-        <!-- [8] Master Directed Graph Supervisor & Research Worker Pods (x=290, y=405, w=280, h=68) -->
+        <!-- [8] Master Directed Graph Supervisor & Research Worker Pods (x=320, y=405, w=300, h=65) -->
         <mxCell id="n8_supervisor_az1" value="&lt;b style='font-size:11px;color:#4C1D95;'&gt;🧠 [8] Supervisor &amp;amp; Research Pod (AZ1)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;2M+ Token DAG Planning &amp;amp; RAG Worker&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="290" y="405" width="280" height="68" as="geometry" />
+          <mxGeometry x="320" y="405" width="300" height="65" as="geometry" />
         </mxCell>
 
-        <!-- [6] Private Agent App Subnet AZ2 (x=630, y=375, w=320, h=120) -->
+        <!-- [6] Private Agent App Subnet AZ2 (x=670, y=375, w=340, h=115) -->
         <mxCell id="sub_app_az2" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;📦 [6] Private App Subnet (AZ2)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=4;" vertex="1" parent="1">
-          <mxGeometry x="630" y="375" width="320" height="120" as="geometry" />
+          <mxGeometry x="670" y="375" width="340" height="115" as="geometry" />
         </mxCell>
 
-        <!-- [9] Synthesis, Verification Critic & Sandboxed MicroVM Kernel Pods (x=650, y=405, w=280, h=68) -->
+        <!-- [9] Synthesis, Verification Critic & Sandboxed MicroVM Kernel Pods (x=690, y=405, w=300, h=65) -->
         <mxCell id="n9_microvm_az2" value="&lt;b style='font-size:11px;color:#14532D;'&gt;⚡ [9] Sandboxed MicroVM Kernel (AZ2)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Python Code Sandbox &amp;amp; Safety Critic Pod&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="650" y="405" width="280" height="68" as="geometry" />
+          <mxGeometry x="690" y="405" width="300" height="65" as="geometry" />
         </mxCell>
 
         <!-- HORIZONTAL RED DASHED THREAT ALERTS & REMEDIATION CORRIDOR (y=520) -->
         <mxCell id="threat_corridor_label" value="🚨 Threat Alerts &amp;amp; Remediation Bus" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#DC2626;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="420" y="510" width="220" height="16" as="geometry" />
+          <mxGeometry x="450" y="510" width="220" height="16" as="geometry" />
         </mxCell>
         <mxCell id="threat_corridor_line" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=2;dashed=1;" edge="1" parent="1" source="n7_internal_lb" target="n15_guardduty">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="170" y="520" />
-              <mxPoint x="990" y="520" />
-              <mxPoint x="990" y="567" />
+              <mxPoint x="142" y="520" />
+              <mxPoint x="1040" y="520" />
+              <mxPoint x="1040" y="567" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- LAYER 3: ISOLATED MANAGED DATABASE SUBNETS (y=550..695) -->
-        <!-- [10] Isolated DB Subnet (x=270, y=550, w=320, h=140) -->
+        <!-- LAYER 3: ISOLATED MANAGED DATABASE SUBNETS (y=555..700) -->
+        <!-- [10] Isolated DB Subnet (x=300, y=555, w=340, h=140) -->
         <mxCell id="sub_db_az1" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;🗄️ [10] Isolated DB Subnet (AZ1)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=4;" vertex="1" parent="1">
-          <mxGeometry x="270" y="550" width="320" height="140" as="geometry" />
+          <mxGeometry x="300" y="555" width="340" height="140" as="geometry" />
         </mxCell>
 
-        <!-- [12] Managed PostgreSQL / pgvector Database (Cylinder, x=290, y=585, w=280, h=85) -->
+        <!-- [12] Managed PostgreSQL / pgvector Database (Cylinder, x=320, y=590, w=300, h=85) -->
         <mxCell id="n12_vector_db" value="&lt;b style='font-size:12px;color:#4C1D95;'&gt;🗄️ [12] Managed PostgreSQL / pgvector&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;High-Scale ANN Vector Embeddings &amp;amp; Citations&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="290" y="585" width="280" height="85" as="geometry" />
+          <mxGeometry x="320" y="590" width="300" height="85" as="geometry" />
         </mxCell>
 
-        <!-- [11] Isolated DB Subnet AZ2 for Ephemeral Prompt Cache (x=630, y=550, w=320, h=140) -->
+        <!-- [11] Isolated DB Subnet AZ2 for Ephemeral Prompt Cache (x=670, y=555, w=340, h=140) -->
         <mxCell id="sub_db_az2" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;⚡ [11] Isolated DB Subnet (AZ2)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=4;" vertex="1" parent="1">
-          <mxGeometry x="630" y="550" width="320" height="140" as="geometry" />
+          <mxGeometry x="670" y="555" width="340" height="140" as="geometry" />
         </mxCell>
 
-        <!-- Ephemeral Prompt Cache Store inside [11] (Cylinder, x=650, y=585, w=280, h=85) -->
+        <!-- Ephemeral Prompt Cache Store inside [11] (Cylinder, x=690, y=590, w=300, h=85) -->
         <mxCell id="n11_prompt_cache" value="&lt;b style='font-size:12px;color:#14532D;'&gt;⚡ [11a] Ephemeral Prompt Cache Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Ephemeral Prompt Caching (90% Cost Cut)&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="650" y="585" width="280" height="85" as="geometry" />
+          <mxGeometry x="690" y="590" width="300" height="85" as="geometry" />
         </mxCell>
 
-        <!-- RIGHT-SIDE CROSS-CUTTING CONTROL & OBSERVABILITY PILLAR (x=1010..1360, y=205..710) -->
-        <!-- [17] Role-Based IAM & Cryptographic Human Certificate Store (x=1010, y=205, w=320, h=65) -->
+        <!-- RIGHT-SIDE CROSS-CUTTING CONTROL & OBSERVABILITY PILLAR (x=1060..1440, y=205..710) -->
+        <!-- [17] Role-Based IAM & Cryptographic Human Certificate Store (x=1060, y=205, w=340, h=65) -->
         <mxCell id="n17_iam" value="&lt;b style='font-size:11px;color:#7F1D1D;'&gt;🔑 [17] Role-Based IAM &amp;amp; Certificate Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Role-Based Access Control &amp;amp; Key Management&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1010" y="205" width="320" height="65" as="geometry" />
+          <mxGeometry x="1060" y="205" width="340" height="65" as="geometry" />
         </mxCell>
 
-        <!-- [13] KMS Data Key Management (x=1010, y=315, w=320, h=65) -->
+        <!-- [13] KMS Data Key Management (x=1060, y=315, w=340, h=65) -->
         <mxCell id="n13_kms" value="&lt;b style='font-size:11px;color:#7F1D1D;'&gt;🔐 [13] Cryptographic KMS Service&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;HSM Encryption Keys &amp;amp; Envelope Encryption&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1010" y="315" width="320" height="65" as="geometry" />
+          <mxGeometry x="1060" y="315" width="340" height="65" as="geometry" />
         </mxCell>
 
-        <!-- [14] Real-Time Telemetry & VPC Flow Logs (x=1010, y=425, w=320, h=65) -->
+        <!-- [14] Real-Time Telemetry & VPC Flow Logs (x=1060, y=425, w=340, h=65) -->
         <mxCell id="n14_flow_logs" value="&lt;b style='font-size:11px;color:#7F1D1D;'&gt;📊 [14] VPC Flow Logs &amp;amp; CloudWatch Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Traffic Monitoring, API Latency &amp;amp; Audit Streams&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1010" y="425" width="320" height="65" as="geometry" />
+          <mxGeometry x="1060" y="425" width="340" height="65" as="geometry" />
         </mxCell>
 
-        <!-- [15] Intelligent Threat Detection & Red-Team Remediation (x=1010, y=535, w=320, h=65) -->
+        <!-- [15] Intelligent Threat Detection & Red-Team Remediation (x=1060, y=535, w=340, h=65) -->
         <mxCell id="n15_guardduty" value="&lt;b style='font-size:11px;color:#7F1D1D;'&gt;🛡️ [15] Intelligent Threat Detection Guard&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Real-Time Anomaly Detection &amp;amp; Remediation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1010" y="535" width="320" height="65" as="geometry" />
+          <mxGeometry x="1060" y="535" width="340" height="65" as="geometry" />
         </mxCell>
 
-        <!-- [16] VPC Private Tool Endpoints (x=1010, y=645, w=320, h=65) -->
+        <!-- [16] VPC Private Tool Endpoints (x=1060, y=645, w=340, h=65) -->
         <mxCell id="n16_vpc_endpoints" value="&lt;b style='font-size:11px;color:#1E3A8A;'&gt;🔌 [16] Private VPC Endpoints Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Private mTLS AWS / Enterprise Service Access&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1010" y="645" width="320" height="65" as="geometry" />
+          <mxGeometry x="1060" y="645" width="340" height="65" as="geometry" />
         </mxCell>
 
         <!-- FOOTER: ARCHITECTURE SPECIFICATION BOX (y=825..885) -->
-        <mxCell id="legend_box" value="&lt;b style='font-size:11px;'&gt;COMPACT PROPORTIONAL MULTI-SUBNET ENTERPRISE CLOUD SYSTEM TOPOLOGY SPECIFICATION:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;[Multi-AZ Private App Subnets] • [Isolated Vector DB Subnets] • [Constitutional Safety Gateway] • [Cross-Cutting IAM/KMS/Observability Control Pillar]&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• &lt;b&gt;Bidirectional Infrastructure Traffic Flows:&lt;/b&gt; Ingress Portal [1] &amp;rarr; Safety Gateway [2a] &amp;rarr; Internal ALB [7] &amp;rarr; Agent Compute AZ1 [8] &amp;amp; AZ2 [9] &amp;rarr; HA DB Access [12] &amp;amp; [11a]  |  Cross-Cutting Security Audit &amp;rarr; Right Pillar [13]-[17]&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;align=center;" vertex="1" parent="1">
+        <mxCell id="legend_box" value="&lt;b style='font-size:11px;'&gt;ZERO-OCCLUSION GEOMETRICALLY PRECISE MULTI-SUBNET ENTERPRISE CLOUD SYSTEM TOPOLOGY SPECIFICATION:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;[Multi-AZ Private App Subnets] • [Isolated Vector DB Subnets] • [Constitutional Safety Gateway] • [Cross-Cutting IAM/KMS/Observability Control Pillar]&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• &lt;b&gt;Bidirectional Infrastructure Traffic Flows:&lt;/b&gt; Ingress Portal [1] &amp;rarr; Left Tip Safety Gateway [2a] &amp;rarr; Internal ALB [7] &amp;rarr; Agent Compute AZ1 [8] &amp;amp; AZ2 [9] &amp;rarr; HA DB Access [12] &amp;amp; [11a]  |  Cross-Cutting Security Audit &amp;rarr; Right Pillar [13]-[17]&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;align=center;" vertex="1" parent="1">
           <mxGeometry x="60" y="825" width="1780" height="60" as="geometry" />
         </mxCell>
 
-        <!-- TECHNICAL CONNECTORS WITH WHITE LABEL BACKGROUND MASKS -->
-        <mxCell id="e_1_to_ingress" value="HTTPS / VPN Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2.5;fontColor=#0284C7;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n1_ingress" target="n2a_safety_gateway">
+        <!-- TECHNICAL CONNECTORS WITH ZERO-COLLISION GEOMETRIC ROUTING -->
+        <!-- 1. Blue Line Ingress -> Safety Gateway LEFT TIP (entryX=0;entryY=0.5 at x=140, y=288) -->
+        <mxCell id="e_1_to_ingress" value="HTTPS / VPN Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2.5;fontColor=#0284C7;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="n1_ingress" target="n2a_safety_gateway">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="740" y="180" />
-              <mxPoint x="230" y="180" />
+              <mxPoint x="80" y="122" />
+              <mxPoint x="80" y="288" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="e_safety_to_nat" value="Outbound Access" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;fontColor=#14532D;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n2a_safety_gateway" target="n3_nat_gateway">
+        <!-- 2. Green Line Outbound Access: Right Tip of [2a] (exitX=1;exitY=0.5 at x=340, y=288) straight into [3] NAT Gateway (entryX=0;entryY=0.5 at x=375, y=288) -->
+        <mxCell id="e_safety_to_nat" value="Outbound Access" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;fontColor=#14532D;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="n2a_safety_gateway" target="n3_nat_gateway">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
+        <!-- 3. NAT Gateway to Internal ALB -->
         <mxCell id="e_nat_to_alb" value="Application Outbound" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;fontColor=#0284C7;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n3_nat_gateway" target="n7_internal_lb">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="445" y="355" />
-              <mxPoint x="170" y="355" />
+              <mxPoint x="452" y="360" />
+              <mxPoint x="142" y="360" />
             </Array>
           </mxGeometry>
         </mxCell>
 
+        <!-- 4. Wide 90px Corridor between [7] Internal ALB (x=75..210) and [5] Private Compute Subnet AZ1 (x=300..640) -->
         <mxCell id="e_alb_to_az1" value="HTTPS App Traffic ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E40AF;strokeWidth=2.5;fontColor=#1E3A8A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n7_internal_lb" target="n8_supervisor_az1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="e_az1_to_az2" value="HA App Traffic ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#4C1D95;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n8_supervisor_az1" target="n9_microvm_az2">
+        <mxCell id="e_az1_to_az2" value="HA Peer Inter-Subnet IPC ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#4C1D95;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n8_supervisor_az1" target="n9_microvm_az2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
@@ -420,7 +418,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="e_az2_to_cache" value="HA DB Access" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;fontColor=#14532D;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n9_microvm_az2" target="n11_prompt_cache">
+        <mxCell id="e_az2_to_cache" value="HA Checkpoint Access" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;fontColor=#14532D;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n9_microvm_az2" target="n11_prompt_cache">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
@@ -431,8 +429,8 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="e_pillar_to_kms" value="Key Management" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=2;fontColor=#7F1D1D;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n16_vpc_endpoints" target="n13_kms">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1350" y="677" />
-              <mxPoint x="1350" y="347" />
+              <mxPoint x="1420" y="677" />
+              <mxPoint x="1420" y="347" />
             </Array>
           </mxGeometry>
         </mxCell>
