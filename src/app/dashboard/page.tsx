@@ -256,6 +256,7 @@ export default function Dashboard() {
       
       {/* Unified Sidebar Navigation */}
       <aside 
+        onMouseEnter={() => setIsSidebarOpen(true)}
         className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 shrink-0 ${
           isSidebarOpen ? 'w-64' : 'w-16'
         }`}
