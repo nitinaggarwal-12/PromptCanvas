@@ -223,11 +223,9 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
 /**
  * 🏛️ ENTERPRISE PRIVATE CLOUD SUBNET INFRASTRUCTURE TOPOLOGY ARCHITECTURE:
  * Multi-Agent Autonomous Orchestration Platform (Stateful Directed Acyclic Graph)
- * ZERO-COLLISION GEOMETRICALLY PRECISE CONNECTOR ROUTING:
- * - Top VPC Perimeter border pushed to y=190 so n1_ingress blue vector routes cleanly above [2b] Public Subnet without touching headers!
- * - Blue vector enters Rhombus [2a] via LEFT TIP (entryX=0;entryY=0.5 at x=140, y=270).
- * - Green vector Outbound Access leaves Rhombus [2a] via RIGHT TIP (exitX=1;exitY=0.5 at x=360, y=270) straight into [3] NAT Gateway (entryX=0;entryY=0.5 at x=380, y=270).
- * - Wide 90px corridor between [7] Internal ALB (x=75..210) and [5] Private Compute Subnet AZ1 (x=300..620) so HTTPS App Traffic label never touches borders!
+ * PIXEL-PERFECT ZERO-COLLISION CLEARANCE:
+ * - [2b] Public Ingress Subnet moved rightward to x=160 (w=470) -> Leaves dedicated 40px left entrance corridor (x=120) so blue line drops down in pure whitespace into [2a] Safety Gateway Left Tip (x=185, y=288).
+ * - Wide 80px horizontal gap between [2a] Safety Gateway Right Tip (x=375) and [3] NAT Gateway (x=455) so "Outbound Access" label sits in clear space with white background mask pill.
  */
 export function getExactMultiAgentLangGraphReferenceXml(): string {
   return `
@@ -262,29 +260,29 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         </mxCell>
 
         <!-- LAYER 1: PUBLIC & SECURITY OPERATIONS SUBNETS (y=230..345) -->
-        <!-- [2b] Public Ingress Subnet (x=110, y=230, w=440, h=115) -->
+        <!-- [2b] Public Ingress Subnet moved to x=160 (w=470) leaving 40px left entrance channel x=120 -->
         <mxCell id="sub_public" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;🌐 [2b] Public Ingress Subnet&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="110" y="230" width="440" height="115" as="geometry" />
+          <mxGeometry x="160" y="230" width="470" height="115" as="geometry" />
         </mxCell>
 
-        <!-- [2a] Model Armor / Constitutional Safety Gateway inside Public Subnet (Rhombus/Shield, x=140, y=255, w=200, h=66) -->
-        <mxCell id="n2a_safety_gateway" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;🛡️ [2a] Safety Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#1E293B;'&gt;Constitutional Filter &amp;amp; PII&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;align=center;spacingLeft=16;spacingRight=16;" vertex="1" parent="1">
-          <mxGeometry x="140" y="255" width="200" height="66" as="geometry" />
+        <!-- [2a] Model Armor / Constitutional Safety Gateway inside Public Subnet (Rhombus/Shield, x=185, y=255, w=190, h=66 -> Left Tip x=185, Right Tip x=375) -->
+        <mxCell id="n2a_safety_gateway" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;🛡️ [2a] Safety Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#1E293B;'&gt;Constitutional Filter &amp;amp; PII&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;align=center;spacingLeft=14;spacingRight=14;" vertex="1" parent="1">
+          <mxGeometry x="185" y="255" width="190" height="66" as="geometry" />
         </mxCell>
 
-        <!-- [3] NAT & API Gateway Egress (x=375, y=258, w=155, h=60) -->
+        <!-- [3] NAT & API Gateway Egress (x=455, y=258, w=155, h=60 -> 80px clear horizontal gap from [2a] Right Tip x=375!) -->
         <mxCell id="n3_nat_gateway" value="&lt;b style='font-size:11px;color:#78350F;'&gt;⚡ [3] NAT Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Private Subnet Egress&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#D97706;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="375" y="258" width="155" height="60" as="geometry" />
+          <mxGeometry x="455" y="258" width="155" height="60" as="geometry" />
         </mxCell>
 
-        <!-- [2c] Security Operations Subnet (x=580, y=230, w=440, h=115) -->
+        <!-- [2c] Security Operations Subnet (x=660, y=230, w=360, h=115) -->
         <mxCell id="sub_secops" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;🔒 [2c] Security Operations Subnet&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="580" y="230" width="440" height="115" as="geometry" />
+          <mxGeometry x="660" y="230" width="360" height="115" as="geometry" />
         </mxCell>
 
-        <!-- [4] Bastion & Safety Workbench Host (x=600, y=258, w=400, h=64) -->
+        <!-- [4] Bastion & Safety Workbench Host (x=680, y=258, w=320, h=64) -->
         <mxCell id="n4_bastion" value="&lt;b style='font-size:11px;color:#1E3A8A;'&gt;🖥️ [4] Safety Review Workbench (submit_tool_outputs)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E293B;'&gt;Cryptographic Human Compliance Review Jump Host&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="600" y="258" width="400" height="64" as="geometry" />
+          <mxGeometry x="680" y="258" width="320" height="64" as="geometry" />
         </mxCell>
 
         <!-- LAYER 2: PRIVATE AGENT APPLICATION SUBNETS (y=375..495) -->
@@ -380,17 +378,17 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         </mxCell>
 
         <!-- TECHNICAL CONNECTORS WITH ZERO-COLLISION GEOMETRIC ROUTING -->
-        <!-- 1. Blue Line Ingress -> Safety Gateway LEFT TIP (entryX=0;entryY=0.5 at x=140, y=288) -->
+        <!-- 1. Blue Line Ingress -> Safety Gateway LEFT TIP (entryX=0;entryY=0.5 at x=185, y=288) via dedicated 40px left entrance channel x=120 -->
         <mxCell id="e_1_to_ingress" value="HTTPS / VPN Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2.5;fontColor=#0284C7;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="n1_ingress" target="n2a_safety_gateway">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="80" y="122" />
-              <mxPoint x="80" y="288" />
+              <mxPoint x="120" y="122" />
+              <mxPoint x="120" y="288" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- 2. Green Line Outbound Access: Right Tip of [2a] (exitX=1;exitY=0.5 at x=340, y=288) straight into [3] NAT Gateway (entryX=0;entryY=0.5 at x=375, y=288) -->
+        <!-- 2. Green Line Outbound Access: Right Tip of [2a] (exitX=1;exitY=0.5 at x=375, y=288) straight into [3] NAT Gateway (entryX=0;entryY=0.5 at x=455, y=288) across 80px gap! -->
         <mxCell id="e_safety_to_nat" value="Outbound Access" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;fontColor=#14532D;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="n2a_safety_gateway" target="n3_nat_gateway">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -399,7 +397,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="e_nat_to_alb" value="Application Outbound" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;fontColor=#0284C7;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n3_nat_gateway" target="n7_internal_lb">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="452" y="360" />
+              <mxPoint x="532" y="360" />
               <mxPoint x="142" y="360" />
             </Array>
           </mxGeometry>
