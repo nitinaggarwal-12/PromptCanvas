@@ -3376,122 +3376,56 @@ function WorkspaceContent() {
           </div>
         )}
 
-        {/* Diagram List */}
-        <div className="flex-1 overflow-y-auto px-2 space-y-4">
-          {isLoadingDiagrams ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-5 h-5 animate-spin text-teal-accent" />
-            </div>
-          ) : filteredSidebarDiagrams.length === 0 ? (
-            isSidebarOpen && (
-              <p className="text-xs text-slate-500 text-center py-8">No matching diagrams found.</p>
-            )
-          ) : (
-            <div className="space-y-4">
-              {/* Recent Designs */}
-              <div className="space-y-1">
-                {isSidebarOpen && (
-                  <h4 className="px-2.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                    Recent Designs
-                  </h4>
-                )}
-                {recentDiagrams.map((d) => (
-                  <div
-                    key={d.id}
-                    onClick={() => loadDiagramDetails(d.id)}
-                    className={`group flex flex-col p-2 rounded-lg cursor-pointer transition-all border ${
-                      activeDiagram?.id === d.id 
-                        ? 'bg-teal-glow/10 text-teal-accent border-teal-accent/30 shadow-sm' 
-                        : 'hover:bg-slate-hover/40 text-slate-300 border-transparent'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between w-full gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <FileText className={`w-3.5 h-3.5 shrink-0 ${
-                          activeDiagram?.id === d.id 
-                            ? 'text-teal-accent' 
-                            : String(d.name || '').toLowerCase().includes('aws')
-                              ? 'text-amber-400'
-                              : String(d.name || '').toLowerCase().includes('gcp')
-                                ? 'text-teal-400'
-                                : 'text-slate-400'
-                        }`} />
-                        {isSidebarOpen && (
-                          <span className="text-xs font-semibold truncate leading-tight">{d.name}</span>
-                        )}
-                      </div>
-                      {isSidebarOpen && (
-                        <button
-                          onClick={(e) => handleDeleteDiagram(d.id, e)}
-                          className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-all cursor-pointer shrink-0"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      )}
-                    </div>
-                    {isSidebarOpen && (
-                      <div className="flex items-center gap-1.5 pl-[22px] mt-0.5 text-[10px] text-slate-500">
-                        <span suppressHydrationWarning>{formatRelativeTime(d.updated_at)}</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
+        {/* Group Saved Diagrams under Recent Saved Designs Dropdown */}
+        {isSidebarOpen && (
+          <div className="px-3 space-y-4 pt-2">
+            <div>
+              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5">
+                Recent Saved Designs ({diagrams.length})
+              </label>
+              <div className="relative">
+                <select
+                  value={activeDiagram?.id || ''}
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    if (id) {
+                      loadDiagramDetails(id);
+                    }
+                  }}
+                  className="w-full appearance-none bg-slate-900 hover:bg-slate-800 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-bold text-xs rounded-xl pl-3.5 pr-8 py-2.5 outline-none cursor-pointer transition-all shadow-sm"
+                >
+                  <option value="" disabled className="bg-[#0b101d] text-slate-400 font-bold">
+                    Select a Recent Design ▾
+                  </option>
+                  {diagrams.map((d) => (
+                    <option key={d.id} value={d.id} className="bg-[#0b101d] text-slate-200 py-1.5 font-bold">
+                      {d.id === activeDiagram?.id ? '✓ ' : ''}{d.name} ({formatRelativeTime(d.updated_at)})
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-4 h-4 text-teal-400 absolute right-3 top-3 pointer-events-none" />
               </div>
-
-              {/* Archive Section */}
-              {isSidebarOpen && archiveDiagrams.length > 0 && (
-                <div className="border-t border-panel-border/30 pt-2">
-                  <button
-                    onClick={() => setIsArchiveOpen(!isArchiveOpen)}
-                    className="w-full flex items-center justify-between px-2.5 py-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider hover:text-white transition-colors"
-                  >
-                    <span>Older Designs ({archiveDiagrams.length})</span>
-                    {isArchiveOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                  </button>
-                  {isArchiveOpen && (
-                    <div className="space-y-1 mt-1.5">
-                      {archiveDiagrams.map((d) => (
-                        <div
-                          key={d.id}
-                          onClick={() => loadDiagramDetails(d.id)}
-                          className={`group flex flex-col p-2 rounded-lg cursor-pointer transition-all border ${
-                            activeDiagram?.id === d.id 
-                              ? 'bg-teal-glow/10 text-teal-accent border-teal-accent/30 shadow-sm' 
-                              : 'hover:bg-slate-hover/40 text-slate-300 border-transparent'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between w-full gap-2">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <FileText className={`w-3.5 h-3.5 shrink-0 ${
-                                activeDiagram?.id === d.id 
-                                  ? 'text-teal-accent' 
-                                  : String(d.name || '').toLowerCase().includes('aws')
-                                    ? 'text-amber-400'
-                                    : String(d.name || '').toLowerCase().includes('gcp')
-                                      ? 'text-teal-400'
-                                      : 'text-slate-400'
-                              }`} />
-                              <span className="text-xs font-semibold truncate leading-tight">{d.name}</span>
-                            </div>
-                            <button
-                              onClick={(e) => handleDeleteDiagram(d.id, e)}
-                              className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-all cursor-pointer shrink-0"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          </div>
-                          <div className="flex items-center gap-1.5 pl-[22px] mt-0.5 text-[10px] text-slate-500">
-                            <span suppressHydrationWarning>{formatRelativeTime(d.updated_at)}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
-          )}
-        </div>
+
+            {/* Quick Active Diagram Summary & Delete Option */}
+            {activeDiagram && (
+              <div className="p-3 rounded-xl bg-slate-900/60 border border-panel-border/60 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">Active Design</span>
+                  <button
+                    onClick={(e) => handleDeleteDiagram(activeDiagram.id, e)}
+                    className="p-1 rounded hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-all cursor-pointer"
+                    title="Delete active diagram"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="font-extrabold text-xs text-white truncate">{activeDiagram.name}</div>
+                <div className="text-[11px] text-teal-400 font-medium">Last modified {formatRelativeTime(activeDiagram.updated_at)}</div>
+              </div>
+            )}
+          </div>
+        )}
           </>
         )}
         
