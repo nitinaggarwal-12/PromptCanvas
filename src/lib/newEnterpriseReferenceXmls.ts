@@ -2,7 +2,7 @@
  * 🏛️ Master Widescreen Reference Layouts for New Enterprise Blueprints:
  * JOURNAL-PUBLICATION GRADE SCIENTIFIC REFERENCE ARCHITECTURES
  * 1. Business Architecture: Human-in-the-Loop Autonomous AI Agent Governance Lifecycle (Multi-Tier Executive Workflow)
- * 2. Technical Architecture: Multi-Agent Autonomous Orchestration Platform (Google Cloud Official Technical Architecture Standard)
+ * 2. Technical Architecture: Multi-Agent Autonomous Orchestration Platform (Option B: Explicit Binary Decision Branching Rhombus)
  */
 
 export function getExactAgentGovernanceHitlReferenceXml(): string {
@@ -221,12 +221,12 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
 }
 
 /**
- * 🏛️ GOOGLE CLOUD TECHNICAL ARCHITECTURE STANDARD BLUEPRINT:
+ * 🛠️ OPTION B: EXPLICIT BINARY DECISION BRANCHING RHOMBUS ARCHITECTURE
  * Multi-Agent Autonomous Orchestration Platform (Stateful Directed Acyclic Graph)
- * Replacing the awkward Rhombus diamond with Google Cloud's Official Technical Infrastructure Component Card:
- * - [2] Constitutional Safety & Jailbreak Red-Teaming Gateway rendered as a crisp Google Cloud Security Infrastructure Card (rounded=1, fillColor=#FEF2F2, strokeColor=#EF4444)
- * - Zero rhombus text squeeze!
- * - Clean 5-Tier Component Flow with Google Cloud Service Card Styling
+ * - Prominent Rhombus Diamond [2] with ample width (w=640, h=115) so zero text squeeze occurs
+ * - Explicit TWO Functional Output Branches from the Rhombus:
+ *   1. Center-Down Branch (PASS: Constitutional HHH Approved) -> [3] Master Supervisor Orchestrator
+ *   2. Left-Side Branch (REJECTED: Adversarial Injection / Harm / PII Violation) -> [2B] Security Incident Quarantine & Red-Team Alert Enclave
  */
 export function getExactMultiAgentLangGraphReferenceXml(): string {
   return `
@@ -246,77 +246,82 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="header_title" value="FIGURE 2: TECHNICAL SYSTEM TOPOLOGY — STATEFUL DIRECTED ACYCLIC GRAPH MULTI-AGENT PLATFORM" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="50" y="46" width="1820" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="header_sub" value="Google Cloud Technical Architecture Standard: Native 2M+ Token Long-Context Window, Factual Grounding Citation Engine, Sandboxed MicroVM Kernel &amp;amp; Model Armor Security Shield" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
+        <mxCell id="header_sub" value="Option B Binary Decision Topology: Explicit Constitutional HHH Pass/Reject Decision Branches, Native 2M+ Token Long-Context Window &amp;amp; Sandboxed MicroVM Kernel" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
           <mxGeometry x="50" y="72" width="1820" height="20" as="geometry" />
         </mxCell>
 
-        <!-- TIER 1: MULTIMODAL INGRESS & CONSTITUTIONAL SAFETY GATE (y=100..265) -->
+        <!-- TIER 1: MULTIMODAL INGRESS & CONSTITUTIONAL RHOMBUS BINARY DECISION GATE (y=98..285) -->
         <mxCell id="n1_portal" value="&lt;b style='font-size:13px;color:#78350F;'&gt;💻 [1] Enterprise Multimodal Client Ingress Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;WebRTC Realtime Audio Streams, Video/Vision Frame Analysis &amp;amp; Structured REST/gRPC User Payload&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#D97706;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="720" y="100" width="480" height="65" as="geometry" />
+          <mxGeometry x="720" y="98" width="480" height="60" as="geometry" />
         </mxCell>
 
-        <!-- GOOGLE CLOUD STYLE INFRASTRUCTURE SECURITY COMPONENT CARD (rounded=1, NO RHOMBUS TEXT SQUEEZE!) -->
-        <mxCell id="n2_gateway" value="&lt;b style='font-size:13px;color:#991B1B;'&gt;🛡️ [2] Constitutional Safety &amp;amp; Jailbreak Red-Teaming Gateway (Model Armor Shield)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Constitutional HHH Helpful/Harmless/Honest Filter, OAuth/JWT Authentication, PII Masking &amp;amp; Adversarial Prompt Injection Sanitizer&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=2.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="690" y="195" width="540" height="75" as="geometry" />
+        <!-- PROMINENT RHOMBUS DECISION GATEWAY WITH WIDE PADDING (w=640, h=115) -->
+        <mxCell id="n2_gateway" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;🛡️ [2] Constitutional Safety &amp;amp; Jailbreak Red-Teaming Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Constitutional HHH Filter, JWT Auth, PII Detection &amp;amp; Adversarial Prompt Injection Sanitizer&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2.5;align=center;spacingLeft=65;spacingRight=65;" vertex="1" parent="1">
+          <mxGeometry x="640" y="175" width="640" height="115" as="geometry" />
         </mxCell>
 
-        <!-- TIER 2: MASTER ORCHESTRATION & STORAGE LAYER (y=305..410)
-             LEFT: [4] Ephemeral Prompt Cache & Thread State Store (Cylinder, x=380, y=315, w=290, h=85)
-             CENTER: [3] Master Directed Graph Supervisor Orchestrator (Card, x=710, y=305, w=500, h=95)
-             RIGHT: [6] Enterprise Knowledge & Whole-Repository Store (Card, x=1250, y=315, w=300, h=85)
+        <!-- OPTION B LEFT REJECTED BRANCH ENCLAVE: [2B] Security Incident Quarantine Box (x=240, y=190, w=320, h=85) -->
+        <mxCell id="n2b_quarantine" value="&lt;b style='font-size:12px;color:#7F1D1D;'&gt;🚨 [2B] Security Incident Quarantine Enclave&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Halt Harmful Execution, Immutable Red-Team Audit Log &amp;amp; Automatic Alert to SOC / AI Safety Team&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="190" width="320" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 2: MASTER ORCHESTRATION & STORAGE LAYER (y=320..425)
+             LEFT: [4] Ephemeral Prompt Cache & Thread State Store (Cylinder, x=380, y=330, w=290, h=85)
+             CENTER: [3] Master Directed Graph Supervisor Orchestrator (Card, x=710, y=320, w=500, h=95)
+             RIGHT: [6] Enterprise Knowledge & Whole-Repository Store (Card, x=1250, y=330, w=300, h=85)
         -->
         <mxCell id="n4_context_store" value="&lt;b style='font-size:12px;color:#14532D;'&gt;⚡ [4] Ephemeral Prompt Cache Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Ephemeral System Prompt Caching (90% Cost Cut) &amp;amp; Thread Checkpointer&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="380" y="315" width="290" height="85" as="geometry" />
+          <mxGeometry x="380" y="330" width="290" height="85" as="geometry" />
         </mxCell>
 
         <mxCell id="n3_orchestrator" value="&lt;b style='font-size:13px;color:#4C1D95;'&gt;🧠 [3] Master Directed Graph Supervisor Orchestrator&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Native 2M+ Token Long-Context Reasoning, Dynamic Task DAG Planning &amp;amp; Hierarchical handoff_to_agent() Peer Workflow&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=2.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="710" y="305" width="500" height="95" as="geometry" />
+          <mxGeometry x="710" y="320" width="500" height="95" as="geometry" />
         </mxCell>
 
         <mxCell id="n6_knowledge_base" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;📚 [6] Enterprise Knowledge Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Whole-Repository Source Code, Legal Constitutions &amp;amp; Technical Specs (2M+ Tokens)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#475569;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1250" y="315" width="300" height="85" as="geometry" />
+          <mxGeometry x="1250" y="330" width="300" height="85" as="geometry" />
         </mxCell>
 
-        <!-- TIER 3: SPECIALIZED AUTONOMOUS WORKER AGENT CLUSTER (y=440..530)
-             LEFT: [8] Specialized Research, RAG & Citation Specialist Worker Pod (x=450, y=440, w=480, h=85)
-             RIGHT: [9] Verification, Factual Grounding & AST Safety Critic Pod (x=990, y=440, w=480, h=85)
+        <!-- TIER 3: SPECIALIZED AUTONOMOUS WORKER AGENT CLUSTER (y=455..545)
+             LEFT: [8] Specialized Research, RAG & Citation Specialist Worker Pod (x=450, y=455, w=480, h=85)
+             RIGHT: [9] Verification, Factual Grounding & AST Safety Critic Pod (x=990, y=455, w=480, h=85)
         -->
         <mxCell id="n8_chunking_agent" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;🔍 [8] Specialized Research, RAG &amp;amp; Citation Specialist Worker Pod&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Semantic Whole-Document Ingestion, OCR Document Vision &amp;amp; Multi-Source Vector Evidence Extraction&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="450" y="440" width="480" height="85" as="geometry" />
+          <mxGeometry x="450" y="455" width="480" height="85" as="geometry" />
         </mxCell>
 
         <mxCell id="n9_critic_agent" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;⚖️ [9] Verification, Factual Grounding &amp;amp; AST Safety Critic Pod&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#14532D;'&gt;Assigns Verifiable Factual Support Citations &amp;amp; Performs Unit Test AST Validation before Execution Kernel Dispatch&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="990" y="440" width="480" height="85" as="geometry" />
+          <mxGeometry x="990" y="455" width="480" height="85" as="geometry" />
         </mxCell>
 
-        <!-- TIER 4: SANDBOXED EXECUTION & MANAGED VECTOR DATABASE (y=565..665)
-             LEFT: [5] Managed High-Scale Vector Database (pgvector) (Cylinder, x=450, y=565, w=480, h=95)
-             RIGHT: [7] Sandboxed Parallel MicroVM Kernel & gRPC Tool Call Gateway (Card, x=990, y=565, w=480, h=95)
+        <!-- TIER 4: SANDBOXED EXECUTION & MANAGED VECTOR DATABASE (y=580..680)
+             LEFT: [5] Managed High-Scale Vector Database (pgvector) (Cylinder, x=450, y=580, w=480, h=95)
+             RIGHT: [7] Sandboxed Parallel MicroVM Kernel & gRPC Tool Call Gateway (Card, x=990, y=580, w=480, h=95)
         -->
         <mxCell id="n5_vector_store" value="&lt;b style='font-size:12px;color:#4C1D95;'&gt;🗄️ [5] Managed High-Scale Vector Database (pgvector)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;High-Scale Approximate Nearest Neighbor (ANN) Vector Embeddings &amp;amp; Factual Grounding Citation Index&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="450" y="565" width="480" height="95" as="geometry" />
+          <mxGeometry x="450" y="580" width="480" height="95" as="geometry" />
         </mxCell>
 
         <mxCell id="n7_event_bus" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;🔌 [7] Sandboxed Parallel MicroVM Kernel &amp;amp; gRPC Tool Gateway&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Asynchronous Executable Python Code Kernel, Autonomous Computer Use GUI Container &amp;amp; mTLS API Fan-out&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;strokeWidth=2.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="990" y="565" width="480" height="95" as="geometry" />
+          <mxGeometry x="990" y="580" width="480" height="95" as="geometry" />
         </mxCell>
 
-        <!-- TIER 5: REQUIRES_ACTION HITL GATE & REGULATORY EVIDENCE LEDGER (y=700..785) -->
+        <!-- TIER 5: REQUIRES_ACTION HITL GATE & REGULATORY EVIDENCE LEDGER (y=715..800) -->
         <mxCell id="n10_compliance_agent" value="&lt;b style='font-size:13px;color:#7F1D1D;'&gt;🛡️ [10] Run Lifecycle requires_action HITL Gate &amp;amp; Regulatory Audit Ledger&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;Output Monitoring, Bias/PII Detection, Awaits Cryptographic submit_tool_outputs Human Signature &amp;amp; Sealed Regulatory Evidence&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="660" y="700" width="600" height="85" as="geometry" />
+          <mxGeometry x="660" y="715" width="600" height="85" as="geometry" />
         </mxCell>
 
-        <!-- FOOTER: TECHNICAL ARCHITECTURE SPEC & PROTOCOL INDEX BOX (y=820..880) -->
-        <mxCell id="legend_box" value="&lt;b style='font-size:11px;'&gt;GOOGLE CLOUD TECHNICAL REFERENCE ARCHITECTURE SPECIFICATION:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;[Native 2M+ Token Long-Context Window] • [Model Armor Constitutional Gate] • [Sandboxed Parallel MicroVM Kernel] • [Autonomous GUI Computer Use OS Container] • [Managed Vector Store pgvector]&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• &lt;b&gt;Protocol &amp;amp; IPC Vectors:&lt;/b&gt; HTTPS/WebRTC Ingress &amp;rarr; Model Armor Safety Filter &amp;rarr; Master Supervisor DAG Planner &amp;rarr; Worker Cluster Grounding Audit &amp;rarr; Sandboxed MicroVM Kernel &amp;rarr; requires_action HITL Gate&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;align=center;" vertex="1" parent="1">
-          <mxGeometry x="60" y="820" width="1780" height="60" as="geometry" />
+        <!-- FOOTER: TECHNICAL ARCHITECTURE SPEC & PROTOCOL INDEX BOX (y=830..890) -->
+        <mxCell id="legend_box" value="&lt;b style='font-size:11px;'&gt;OPTION B EXPLICIT BINARY DECISION TOPOLOGY ARCHITECTURE SPECIFICATION:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;[Constitutional HHH Binary Pass/Reject Branch] • [Native 2M+ Token Long-Context] • [Sandboxed Parallel MicroVM Kernel] • [Model Armor Quarantine Enclave]&lt;br/&gt;&lt;span style='font-size:10px;color:#1E293B;'&gt;• &lt;b&gt;Binary Routing Logic:&lt;/b&gt; Ingress Payload &amp;rarr; Rhombus Gate [2]  |  PASS (HHH Approved) &amp;rarr; Master Supervisor DAG [3]  |  REJECTED (Harm/PII Violation) &amp;rarr; Security Quarantine Enclave [2B]&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="60" y="830" width="1780" height="60" as="geometry" />
         </mxCell>
 
         <!-- FAR-LEFT RED DASHED COMPLIANCE & QC FEEDBACK LOOP (Source: [10] -> Target: [3] Orchestrator) -->
         <mxCell id="compliance_feedback_loop" value="Stateful Cyclic Observation &amp;amp; RLHF Fine-Tuning Feedback Loop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=3;dashed=1;fontColor=#7F1D1D;fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n10_compliance_agent" target="n3_orchestrator">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="180" y="742" />
-              <mxPoint x="180" y="352" />
+              <mxPoint x="140" y="757" />
+              <mxPoint x="140" y="367" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -325,7 +330,15 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="e_1" value="API Calls (HTTPS / WebRTC)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;fontColor=#0284C7;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n1_portal" target="n2_gateway">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_2" value="Authorized Requests (Constitutional Pass)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;fontColor=#0284C7;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n2_gateway" target="n3_orchestrator">
+
+        <!-- TWO EXPLICIT BINARY BRANCHES FROM RHOMBUS DECISION GATEWAY -->
+        <!-- 1. PASS BRANCH (CENTER DOWN) -->
+        <mxCell id="e_2_pass" value="PASS: Constitutional HHH Approved" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=3;fontColor=#14532D;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n2_gateway" target="n3_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. REJECTED BRANCH (LEFT HORIZONTAL) -->
+        <mxCell id="e_2_reject" value="REJECTED: Adversarial / PII Violation ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=3;fontColor=#7F1D1D;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="n2_gateway" target="n2b_quarantine">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         
@@ -341,8 +354,8 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="e_3_workers" value="Dispatch Sub-Task DAG &amp;amp; handoff_to_agent() ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=3;fontColor=#4C1D95;fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n3_orchestrator" target="n8_chunking_agent">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="960" y="415" />
-              <mxPoint x="690" y="415" />
+              <mxPoint x="960" y="430" />
+              <mxPoint x="690" y="430" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -365,8 +378,8 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
         <mxCell id="e_kernel_to_hitl" value="requires_action HITL Approval Gate ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=3;fontColor=#7F1D1D;fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n7_event_bus" target="n10_compliance_agent">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1230" y="675" />
-              <mxPoint x="960" y="675" />
+              <mxPoint x="1230" y="690" />
+              <mxPoint x="960" y="690" />
             </Array>
           </mxGeometry>
         </mxCell>
