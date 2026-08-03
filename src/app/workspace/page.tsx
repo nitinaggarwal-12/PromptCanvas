@@ -6111,7 +6111,7 @@ function WorkspaceContent() {
       <ExecutiveStrategicSummaryModal
         isOpen={isExecutiveSummaryOpen}
         onClose={() => setIsExecutiveSummaryOpen(false)}
-        diagramTitle={activeDiagram?.name || 'Enterprise Architecture'}
+        diagramTitle={activeDiagram?.name && !activeDiagram.name.match(/^\d+\./) ? activeDiagram.name : 'PromptCanvas: Universal Enterprise AI Architecture Compiler'}
         architectureType={selectedArchType}
       />
     </div>
