@@ -61,7 +61,7 @@ function exportDiagramFormat(
 
     let timeoutTimer: ReturnType<typeof setTimeout> | null = null;
     let messageListener: ((event: MessageEvent) => void) | null = null;
-    let step: 'awaiting_init' | 'awaiting_export' = 'awaiting_init';
+    let step: 'awaiting_init' | 'awaiting_load' | 'awaiting_export' = 'awaiting_init';
 
     const cleanup = () => {
       if (timeoutTimer) {
@@ -108,8 +108,7 @@ function exportDiagramFormat(
         }
 
         if (step === 'awaiting_init' && msg.event === 'init') {
-          step = 'awaiting_export';
-          // 1. Post load action
+          step = 'awaiting_load';
           contentWindow.postMessage(
             JSON.stringify({
               action: 'load',
@@ -118,17 +117,21 @@ function exportDiagramFormat(
             }),
             EMBED_ORIGIN
           );
-
-          // 2. Post export action
-          contentWindow.postMessage(
-            JSON.stringify({
-              action: 'export',
-              format,
-              spinKey: '',
-              ...extraActionProps,
-            }),
-            EMBED_ORIGIN
-          );
+        } else if (step === 'awaiting_load' && msg.event === 'load') {
+          step = 'awaiting_export';
+          // Mandate: wait 800ms for Draw.io fonts, multi-line text wrapping, and orthogonal edge waypoints to settle before rasterizing
+          setTimeout(() => {
+            if (!contentWindow) return;
+            contentWindow.postMessage(
+              JSON.stringify({
+                action: 'export',
+                format,
+                spinKey: '',
+                ...extraActionProps,
+              }),
+              EMBED_ORIGIN
+            );
+          }, 800);
         } else if (step === 'awaiting_export' && msg.event === 'export') {
           cleanup();
           const dataUrl = msg.data;
