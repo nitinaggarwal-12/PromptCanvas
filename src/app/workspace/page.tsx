@@ -1866,10 +1866,17 @@ function WorkspaceContent() {
     ];
 
     const personaRelevantIds: Record<string, string[]> = {
-      architect: ['conceptual_diagram', 'dimensional_data_model', 'cognitive_architecture', 'unified_system_view', 'aws_eks', 'gcp_serverless'],
-      devops: ['devops_pipeline', 'secure_deployment_map', 'micro_sequence_diagram', 'state_machine', 'aws_event_driven', 'gcp_serverless'],
-      security: ['safety_benchmarking', 'enterprise_security', 'pci_dss_ledger', 'devops_pipeline', 'secure_deployment_map'],
-      data: ['dimensional_data_model', 'cognitive_architecture', 'data_ai_pipeline', 'gcp_vertex_rag', 'aws_lakehouse', 'gcp_dataflow']
+      architect: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'tech_serverless_gcp', 'tech_microservices_aws', 'tech_multi_region_dr'],
+      devops: ['sequence_diagram', 'macro_sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_aws', 'tech_cicd_pipeline'],
+      security: ['secure_deployment_map', 'governance_state_machine', 'business_agent_governance_hitl', 'eval_safety_benchmarking', 'tech_vpc_infra'],
+      data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse', 'tech_rag_gcp', 'tech_iot_telemetry', 'v2_freeform']
+    };
+
+    const getPersonaBadge = (id: string) => {
+      if (personaRelevantIds.architect.includes(id)) return { label: '🏛️ Cloud Architect', color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' };
+      if (personaRelevantIds.devops.includes(id)) return { label: '⚙️ DevOps Lead', color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' };
+      if (personaRelevantIds.security.includes(id)) return { label: '🛡️ Security CISO', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' };
+      return { label: '📊 Data & AI Engineer', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' };
     };
 
     let filteredTemplates = templateCategoryFilter === 'all'
@@ -1901,10 +1908,10 @@ function WorkspaceContent() {
                   className="appearance-none bg-slate-900 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-bold text-xs rounded-xl pl-8 pr-8 py-2 outline-none cursor-pointer shadow-sm"
                 >
                   <option value="all">👤 Filter by Persona: All Roles ({allTemplates.length})</option>
-                  <option value="architect">🏛️ Enterprise Cloud Architect</option>
-                  <option value="devops">⚙️ DevOps &amp; SRE Lead</option>
-                  <option value="security">🛡️ Security &amp; CISO Governance Officer</option>
-                  <option value="data">📊 Data &amp; AI / ML Architect</option>
+                  <option value="architect">🏛️ Enterprise Cloud Architect ({personaRelevantIds.architect.length})</option>
+                  <option value="devops">⚙️ DevOps &amp; SRE Lead ({personaRelevantIds.devops.length})</option>
+                  <option value="security">🛡️ Security &amp; CISO Governance Officer ({personaRelevantIds.security.length})</option>
+                  <option value="data">📊 Data &amp; AI / ML Architect ({personaRelevantIds.data.length})</option>
                 </select>
                 <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
               </div>
@@ -1948,15 +1955,18 @@ function WorkspaceContent() {
               const badgeColor = isBusiness
                 ? 'bg-teal-500/10 text-teal-400 border-teal-500/30'
                 : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
+              const personaBadge = getPersonaBadge(t.id);
 
               return (
                 <div key={t.id} className="glass-panel border-panel-border/50 hover:border-teal-500/40 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01]">
                   <div>
-                    <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3">
                       <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badgeColor}`}>
                         {isBusiness ? '🏢 BUSINESS' : '⚙️ TECHNICAL'}
                       </span>
-                      <Sparkles className="w-3.5 h-3.5 text-teal-accent/30 group-hover:text-teal-accent transition-colors" />
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${personaBadge.color}`}>
+                        {personaBadge.label}
+                      </span>
                     </div>
                     <h3 className="font-extrabold text-sm text-white group-hover:text-teal-accent transition-colors mb-2">
                       {t.name}
