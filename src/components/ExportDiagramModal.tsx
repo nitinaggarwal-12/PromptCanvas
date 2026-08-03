@@ -32,7 +32,7 @@ export function ExportDiagramModal({
 
   const sanitizeFilename = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
-  // 1. Export Raw Draw.io XML (.drawio)
+  // 1. Export Raw Draw.io XML (.drawio) & Open in Browser Viewer
   const handleExportXml = () => {
     setLoadingType('xml');
     setErrorMessage(null);
@@ -45,6 +45,30 @@ export function ExportDiagramModal({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
+      // Open interactive XML browser viewer tab by default
+      const viewWin = window.open('', '_blank');
+      if (viewWin) {
+        viewWin.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${diagramName} - Draw.io Vector XML</title>
+              <style>
+                body { background: #0F172A; color: #F8FAFC; font-family: monospace; padding: 24px; }
+                pre { background: #1E293B; padding: 20px; border-radius: 12px; border: 1px solid #334155; overflow-x: auto; white-space: pre-wrap; }
+                h2 { color: #38BDF8; font-family: sans-serif; }
+              </style>
+            </head>
+            <body>
+              <h2>Draw.io Vector XML Source: ${diagramName}</h2>
+              <pre>${xmlContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+            </body>
+          </html>
+        `);
+        viewWin.document.close();
+      }
+
       URL.revokeObjectURL(url);
       setDownloadSuccess('xml');
       setTimeout(() => setDownloadSuccess(null), 2500);
@@ -56,12 +80,40 @@ export function ExportDiagramModal({
     }
   };
 
-  // 2. Export High-Res Real Diagram PNG Image (.png)
+  // 2. Export High-Res Real Diagram PNG Image (.png) & Open in Browser Tab by default
   const handleExportPng = async () => {
     setLoadingType('png');
     setErrorMessage(null);
     try {
       const pngDataUrl = await exportDiagramPng(xmlContent, { scale: 2, transparent: false });
+      
+      // Open PNG image directly in a new browser tab by default
+      const imgWin = window.open('', '_blank');
+      if (imgWin) {
+        imgWin.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${diagramName} - High-Res Architecture Preview</title>
+              <style>
+                body { background: #070A13; color: #F8FAFC; margin: 0; padding: 30px; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }
+                .header { width: 100%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+                h1 { color: #14B8A6; font-size: 22px; margin: 0; }
+                img { max-width: 100%; border-radius: 16px; border: 1px solid #1E293B; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>${diagramName}</h1>
+                <span style="color:#94A3B8; font-size:13px;">High-Resolution Architecture Canvas Snapshot</span>
+              </div>
+              <img src="${pngDataUrl}" alt="${diagramName}" />
+            </body>
+          </html>
+        `);
+        imgWin.document.close();
+      }
+
       const link = document.createElement('a');
       link.href = pngDataUrl;
       link.download = `${sanitizeFilename(diagramName)}.png`;
@@ -80,7 +132,7 @@ export function ExportDiagramModal({
     }
   };
 
-  // 3. Export PDF Document (.pdf) with real rasterized diagram image
+  // 3. Export PDF Document (.pdf) with real rasterized diagram image (Opens Browser Print/Report Preview)
   const handleExportPdf = async () => {
     setLoadingType('pdf');
     setErrorMessage(null);
@@ -143,12 +195,11 @@ export function ExportDiagramModal({
     }
   };
 
-  // 4. Export PowerPoint Presentation (.pptx) with real high-res diagram slide
+  // 4. Export PowerPoint Presentation (.pptx) with real high-res diagram slide & open browser slide preview
   const handleExportPptx = async () => {
     setLoadingType('pptx');
     setErrorMessage(null);
     try {
-      // Rasterize diagram for slide inclusion (structured for multi-diagram support)
       const diagramItems = [
         {
           title: diagramName,
@@ -159,7 +210,6 @@ export function ExportDiagramModal({
       const pptx = new PptxGenJS();
       pptx.layout = 'LAYOUT_16x9';
 
-      // Slide 1: Cover Slide
       const slide1 = pptx.addSlide();
       slide1.background = { color: '070A13' };
 
@@ -195,9 +245,10 @@ export function ExportDiagramModal({
         fontFace: 'Arial',
       });
 
-      // Slide 2: Real Diagram Architecture Image Slide
+      let firstPngUrl = '';
       for (const item of diagramItems) {
         const pngDataUrl = await exportDiagramPng(item.xml, { scale: 2, transparent: false });
+        firstPngUrl = pngDataUrl;
         const slide2 = pptx.addSlide();
         slide2.background = { color: '0B101D' };
 
@@ -221,52 +272,38 @@ export function ExportDiagramModal({
         });
       }
 
-      // Slide 3: Executive Summary & Technical Use-Case
-      const slide3 = pptx.addSlide();
-      slide3.background = { color: '070A13' };
-
-      slide3.addText('Executive Summary & Business Value', {
-        x: 0.8,
-        y: 0.6,
-        w: 11,
-        h: 0.6,
-        fontSize: 22,
-        color: '14B8A6',
-        bold: true,
-      });
-
-      slide3.addText(businessUsecase || 'Provides a resilient, highly available serverless and containerized architecture designed to support high concurrency, automated scaling, and strict enterprise security controls.', {
-        x: 0.8,
-        y: 1.5,
-        w: 11.5,
-        h: 2.0,
-        fontSize: 15,
-        color: 'E2E8F0',
-        fontFace: 'Arial',
-      });
-
-      slide3.addText('Technical Implementation Strategy', {
-        x: 0.8,
-        y: 3.8,
-        w: 11,
-        h: 0.5,
-        fontSize: 18,
-        color: 'A855F7',
-        bold: true,
-      });
-
-      slide3.addText(technicalUsecase || 'Utilizes Google Cloud Platform managed services including Cloud Run, Cloud SQL, Cloud Armor WAF, and VPC Service Controls. Automated deployments governed via Terraform HCL modules.', {
-        x: 0.8,
-        y: 4.5,
-        w: 11.5,
-        h: 2.0,
-        fontSize: 14,
-        color: '94A3B8',
-        fontFace: 'Arial',
-      });
-
-      // Save PPTX presentation
       await pptx.writeFile({ fileName: `${sanitizeFilename(diagramName)}_presentation.pptx` });
+
+      // Open interactive browser presentation preview tab by default
+      const pptWin = window.open('', '_blank');
+      if (pptWin && firstPngUrl) {
+        pptWin.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${diagramName} - PPTX Slide Deck Preview</title>
+              <style>
+                body { background: #070A13; color: #FFFFFF; font-family: Arial, sans-serif; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+                .slide { width: 100%; max-width: 1200px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 16px; padding: 30px; margin-bottom: 30px; }
+                h2 { color: #14B8A6; font-size: 24px; margin-top: 0; }
+                img { width: 100%; border-radius: 12px; border: 1px solid #1E293B; }
+              </style>
+            </head>
+            <body>
+              <div class="slide">
+                <span style="color:#14B8A6; font-size:12px; font-weight:bold;">PROMPTCANVAS ENTERPRISE ARCHITECTURE DECK</span>
+                <h1 style="font-size:36px; margin: 15px 0;">${diagramName}</h1>
+                <p style="color:#94A3B8;">Compliance Score: ${auditScore}% | Exported: ${new Date().toLocaleDateString()}</p>
+              </div>
+              <div class="slide">
+                <h2>Architecture Canvas Diagram</h2>
+                <img src="${firstPngUrl}" alt="${diagramName}" />
+              </div>
+            </body>
+          </html>
+        `);
+        pptWin.document.close();
+      }
 
       setDownloadSuccess('pptx');
       setTimeout(() => setDownloadSuccess(null), 2500);
@@ -279,13 +316,39 @@ export function ExportDiagramModal({
     }
   };
 
-  // 5. Export Python diagrams Script (.py)
+  // 5. Export Python diagrams Script (.py) & Open Browser Code Viewer Tab
   const handleExportPython = () => {
     setLoadingType('python');
     setErrorMessage(null);
     try {
       const { exportPythonDiagramsScript } = require('../lib/export/architectureAsCodeExporter');
       const pyScript = exportPythonDiagramsScript(xmlContent, diagramName);
+      
+      // Open in browser tab viewer by default
+      const pyWin = window.open('', '_blank');
+      if (pyWin) {
+        pyWin.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${diagramName} - Python diagrams Script (.py)</title>
+              <style>
+                body { background: #0F172A; color: #F8FAFC; font-family: monospace; padding: 24px; }
+                pre { background: #1E293B; padding: 20px; border-radius: 12px; border: 1px solid #334155; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+                h2 { color: #10B981; font-family: sans-serif; }
+                .tip { background: #064E3B; color: #A7F3D0; padding: 12px 16px; border-radius: 8px; font-family: sans-serif; font-size: 13px; margin-bottom: 16px; }
+              </style>
+            </head>
+            <body>
+              <h2>🐍 Python Mingrammer Diagrams Code: ${diagramName}</h2>
+              <div class="tip">💡 Run in terminal: <b>pip install diagrams && python ${sanitizeFilename(diagramName)}_architecture.py</b></div>
+              <pre>${pyScript.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+            </body>
+          </html>
+        `);
+        pyWin.document.close();
+      }
+
       const blob = new Blob([pyScript], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -305,13 +368,20 @@ export function ExportDiagramModal({
     }
   };
 
-  // 6. Export D2 Lang Script (.d2)
+  // 6. Export D2 Lang Script (.d2) & Open D2 Web Playground in Browser Tab
   const handleExportD2 = () => {
     setLoadingType('d2');
     setErrorMessage(null);
     try {
       const { exportD2LangScript } = require('../lib/export/architectureAsCodeExporter');
       const d2Script = exportD2LangScript(xmlContent, diagramName);
+      
+      // Open in D2 Playground / Browser Viewer by default
+      const d2Win = window.open('https://play.d2lang.com', '_blank');
+      if (!d2Win) {
+        window.open('', '_blank');
+      }
+
       const blob = new Blob([d2Script], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
