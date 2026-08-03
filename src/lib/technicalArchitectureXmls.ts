@@ -697,18 +697,6 @@ export function getTechnicalArchitectureXml(archId: string): string {
   }
 
   // Technical Topology Mappings
-  if (id === 'vertex_ai_graphrag') {
-    const { getExactVertexAiGraphRagReferenceXml } = require('./newEnterpriseReferenceXmls');
-    return getExactVertexAiGraphRagReferenceXml();
-  }
-  if (id === 'google_a2a_agentic_ecosystem') {
-    const { getExactGoogleA2AProtocolReferenceXml } = require('./newEnterpriseReferenceXmls');
-    return getExactGoogleA2AProtocolReferenceXml();
-  }
-  if (id === 'mcp_google_a2a_hybrid_platform') {
-    const { getExactMcpGoogleA2AHybridReferenceXml } = require('./newEnterpriseReferenceXmls');
-    return getExactMcpGoogleA2AHybridReferenceXml();
-  }
   if (id === 'tech_serverless_gcp' || id === 'serverless_gcp' || id === 'gcp_serverless_web_app' || id === 'gcp_project_itacs_production') return TECH_XML_SERVERLESS_GCP;
   if (id === 'tech_streaming_analytics' || id === 'streaming_pipeline' || id === 'gcp_realtime_streaming_pipeline') return TECH_XML_STREAMING_ANALYTICS;
   if (id === 'tech_microservices_aws' || id === 'k8s_mesh' || id === 'aws_eks_microservices_mesh') return TECH_XML_MICROSERVICES_AWS;
