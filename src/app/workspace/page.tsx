@@ -4618,29 +4618,9 @@ function WorkspaceContent() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Architecture Type</label>
-                <select
-                  value={selectedArchType}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSelectedArchType(val);
-                    const arch = getArchitectureTypeById(val);
-                    if (arch && !val.startsWith('slot_')) {
-                      setNewDiagramPrompt(arch.prompt);
-                      setSelectedTemplate('custom');
-                    }
-                  }}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none transition-all font-semibold cursor-pointer mb-1"
-                >
-                  {ARCHITECTURE_TYPES.map((t) => (
-                    <option key={t.id} value={t.id} className={t.id.startsWith('slot_') ? 'text-slate-500 font-normal bg-[#0b101d]' : 'text-slate-100 font-bold bg-[#0b101d]'}>
-                      {t.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Choose a Template Prompt</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Select Architecture Blueprint or Template
+                </label>
                 <select
                   value={selectedTemplate}
                   onChange={(e) => {
@@ -4648,15 +4628,42 @@ function WorkspaceContent() {
                     setSelectedTemplate(val);
                     if (val !== 'custom') {
                       const idx = parseInt(val, 10);
-                      setNewDiagramPrompt(TEMPLATE_PROMPTS[idx].prompt);
+                      const t = TEMPLATE_PROMPTS[idx];
+                      if (t) {
+                        setNewDiagramPrompt(t.prompt);
+                      }
                     }
                   }}
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3 py-2.5 text-sm text-slate-100 focus:outline-none transition-all mb-3 cursor-pointer"
+                  className="w-full bg-slate-900 border border-teal-500/40 hover:border-teal-400 focus:border-teal-accent rounded-xl px-3.5 py-3 text-xs md:text-sm text-teal-300 font-bold focus:outline-none transition-all cursor-pointer shadow-sm"
                 >
-                  {TEMPLATE_PROMPTS.map((t, idx) => (
-                    <option key={idx} value={idx.toString()}>{t.name}</option>
-                  ))}
-                  <option value="custom">Custom Prompt (Type below...)</option>
+                  <optgroup label="🤖 ENTERPRISE AI, GENAI & SAFETY SYSTEMS" className="bg-[#0b101d] text-teal-400 font-extrabold">
+                    <option value="8" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 Enterprise LLM Evaluation, Toxicity & Safety Benchmarking (7-Tier Platform)</option>
+                    <option value="9" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 Multi-Agent AI & LLM Orchestration Platform (Vertex AI / LangGraph)</option>
+                    <option value="5" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 AI Retrieval-Augmented Generation / RAG (GCP)</option>
+                  </optgroup>
+
+                  <optgroup label="☁️ CLOUD INFRASTRUCTURE & SERVERLESS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
+                    <option value="1" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Serverless Web Application (GCP)</option>
+                    <option value="3" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Microservices Kubernetes Cluster (AWS EKS)</option>
+                    <option value="7" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Multi-Region Active-Active Disaster Recovery (GCP)</option>
+                    <option value="6" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Event-Driven Microservices (AWS EventBridge)</option>
+                  </optgroup>
+
+                  <optgroup label="📊 DATA ENGINEERING, ANALYTICS & LAKEHOUSE" className="bg-[#0b101d] text-amber-400 font-extrabold">
+                    <option value="2" className="bg-[#0b101d] text-slate-100 font-bold py-1">📊 Real-time Streaming Analytics (GCP Pub/Sub + Dataflow)</option>
+                    <option value="4" className="bg-[#0b101d] text-slate-100 font-bold py-1">📊 Modern Data Lakehouse (AWS Glue + Redshift)</option>
+                  </optgroup>
+
+                  <optgroup label="🛡️ SECURITY, FINTECH & DEVSECOPS" className="bg-[#0b101d] text-emerald-400 font-extrabold">
+                    <option value="10" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ FinTech Real-Time Core Transaction Ledger (PCI-DSS Active-Active)</option>
+                    <option value="11" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ Zero-Trust Multi-Cloud Enterprise Security & SASE (GCP/AWS)</option>
+                    <option value="12" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ DevSecOps GitOps Automated Cloud Delivery (ArgoCD + Terraform)</option>
+                  </optgroup>
+
+                  <optgroup label="✏️ FREEFORM & CUSTOM" className="bg-[#0b101d] text-slate-400 font-extrabold">
+                    <option value="0" className="bg-[#0b101d] text-slate-200 font-bold py-1">✨ Clean Slate (Empty Interactive Canvas)</option>
+                    <option value="custom" className="bg-[#0b101d] text-teal-300 font-bold py-1">✍️ Custom Prompt (Write your own below...)</option>
+                  </optgroup>
                 </select>
               </div>
               <div>
