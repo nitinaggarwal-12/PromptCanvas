@@ -221,7 +221,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center gap-4 w-full pt-2">
             <Link
               id="hero-build-diagram-btn"
-              href={user ? "/dashboard" : "#"}
+              href={user ? "/dashboard" : "/workspace?guest=true"}
               onClick={handleBuildDiagramClick}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
             >
@@ -441,8 +441,16 @@ export default function LandingPage() {
             Bootstrap with Production-Grade Blueprints
           </h3>
           <p className="text-lg text-slate-400 mt-4 max-w-2xl mx-auto">
-            Choose from standard patterns across GCP and AWS. Instantly generate, customize, and audit logical system tiers.
+            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>10 complete multi-cloud reference blueprints</strong> directly in the interactive studio.
           </p>
+          <div className="mt-4">
+            <Link
+              href="/workspace?tab=templates"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4"
+            >
+              <span>View All 10 Production Blueprints in Templates Gallery →</span>
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
