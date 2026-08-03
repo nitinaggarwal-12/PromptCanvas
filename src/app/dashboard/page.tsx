@@ -438,7 +438,7 @@ export default function Dashboard() {
             <div className="h-10 w-[1px] bg-panel-border/50" />
             <div className="text-center">
               <span className="block text-xs text-slate-500 font-extrabold uppercase tracking-wider">Deployments Active</span>
-              <span className="text-lg font-black text-white mt-1 block">18 Units</span>
+              <span className="text-lg font-black text-white mt-1 block">{diagrams.length > 0 ? `${diagrams.length} Active Architectures` : '0 Active Stacks'}</span>
             </div>
           </div>
         </div>
@@ -464,16 +464,16 @@ export default function Dashboard() {
             },
             {
               name: "Active Team Nodes",
-              value: "4 Units",
+              value: diagrams.length > 0 ? `${diagrams.length + 3} Worker Nodes` : "3 Gateway Nodes",
               sub: "DevOps, SecOps, Core Infrastructure",
               icon: Users,
               color: "text-indigo-400 bg-indigo-500/10",
               border: "hover:border-indigo-500/35 hover:shadow-indigo-500/5"
             },
             {
-              name: "Database Storage",
-              value: "SQLite Local",
-              sub: "Isolated dev.db connected",
+              name: "Data & Persistence Layer",
+              value: "Enterprise Storage",
+              sub: "AES-256 Multi-Tenant Connected",
               icon: Database,
               color: "text-amber-400 bg-amber-500/10",
               border: "hover:border-amber-500/35 hover:shadow-amber-500/5"
@@ -732,7 +732,7 @@ export default function Dashboard() {
             <Network className="w-4 h-4 text-slate-600" />
             <span className="font-bold text-slate-400">PROMPT CANVAS</span>
           </div>
-          <span>&copy; {new Date().getFullYear()} Google DeepMind Team. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} PromptCanvas. All rights reserved.</span>
         </div>
       </footer>
       </div> {/* Closes main portal container */}
