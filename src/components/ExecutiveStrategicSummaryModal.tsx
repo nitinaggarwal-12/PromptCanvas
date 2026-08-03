@@ -143,8 +143,6 @@ export function ExecutiveStrategicSummaryModal({
                   <button class="btn" onclick="changeSlide(1)">Next (→) ►</button>
                   <button class="btn btn-teal" onclick="window.print()">🖨️ Export PDF / Slides</button>
                 </div>
-              </div>
-
               <div class="slide-stage">
                 <!-- SLIDE 1: STRATEGIC VISION & WHOLE PRODUCT MANDATE -->
                 <div class="slide active" id="slide-1">
@@ -156,30 +154,51 @@ export function ExecutiveStrategicSummaryModal({
                     <h1 class="slide-title">PromptCanvas: Universal Enterprise AI Architecture &amp; Publication Suite</h1>
                     <p class="slide-subtitle">The industry's first Deterministic Text-to-Architecture Compiler powered by Gemini 2.5 Flash + Ephemeral Context Caching.</p>
 
-                    <div class="grid-2" style="margin-top:16px;">
+                    <div class="grid-2" style="margin-top:14px;">
                       <div class="card" style="border-color:#14B8A6; background:#0F172A;">
                         <span class="slide-tag" style="color:#14B8A6;">WHOLE-PRODUCT CORE CAPABILITIES</span>
-                        <ul style="margin-top:14px; color:#E2E8F0; font-size:15px; line-height:1.7; padding-left:20px;">
+                        <ul style="margin-top:10px; color:#E2E8F0; font-size:14px; line-height:1.6; padding-left:20px;">
                           <li><b>Instant Natural Prompt to Draw.io &amp; Terraform:</b> Converts natural language descriptions into zero-collision publication diagrams and deployment-ready Infrastructure-as-Code.</li>
                           <li><b>100% Coverage Across 7 Enterprise Personas &amp; 12 Global Industries:</b> Dedicated toolkits for C-Suite Leadership, FinTech Risk Leads, Compliance Officers, Cloud Architects, and DevOps leads.</li>
                           <li><b>Google Cloud Native Revenue Driver:</b> Native pull-through provisioning GCP Cloud Run, Vertex AI, and VPC Service Controls (VPC-SC).</li>
                         </ul>
                       </div>
                       <div class="card">
-                        <span class="slide-tag">FLAGSHIP BUSINESS ROI</span>
-                        <div style="margin-top:16px; display:flex; flex-direction:column; gap:14px;">
+                        <span class="slide-tag">FLAGSHIP BUSINESS ROI METRICS</span>
+                        <div style="margin-top:10px; display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;">
                           <div>
-                            <div class="kpi-num" style="color:#10B981;">6 Secs vs 6 Wks</div>
-                            <div class="kpi-label">Time-to-Architecture reduction for enterprise engineering orgs</div>
+                            <div class="kpi-num" style="color:#10B981; font-size:32px;">6s vs 6w</div>
+                            <div class="kpi-label">Time-to-Architecture reduction</div>
                           </div>
                           <div>
-                            <div class="kpi-num" style="color:#38BDF8;">90% Cost Cut</div>
-                            <div class="kpi-label">Gemini Ephemeral Context Caching OPEX savings vs un-cached LLMs</div>
+                            <div class="kpi-num" style="color:#38BDF8; font-size:32px;">90% Cut</div>
+                            <div class="kpi-label">Gemini Context Caching OPEX savings</div>
                           </div>
                           <div>
-                            <div class="kpi-num" style="color:#F59E0B;">$156.6K / yr</div>
-                            <div class="kpi-label">Net annual OPEX savings returned per enterprise customer deployment</div>
+                            <div class="kpi-num" style="color:#F59E0B; font-size:32px;">$156.6K</div>
+                            <div class="kpi-label">Net annual savings per enterprise deployment</div>
                           </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Lower Stage Workflow Architecture Flowchart -->
+                    <div style="margin-top:20px; background:#070A13; border:1px solid #1E293B; border-radius:18px; padding:18px;">
+                      <span class="slide-tag" style="font-size:11px;">DETERMINISTIC TEXT-TO-ARCHITECTURE COMPILATION WORKFLOW</span>
+                      <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:12px; margin-top:12px; align-items:center; text-align:center;">
+                        <div style="background:#111827; border:1px solid #334155; padding:12px; border-radius:12px;">
+                          <div style="color:#14B8A6; font-weight:800; font-size:12px;">1. NATURAL PROMPT</div>
+                          <div style="color:#94A3B8; font-size:11px; margin-top:4px;">Natural language intent or architecture requirements</div>
+                        </div>
+                        <div style="color:#14B8A6; font-weight:900; font-size:20px;">➔</div>
+                        <div style="background:#111827; border:1px solid #14B8A6; padding:12px; border-radius:12px;">
+                          <div style="color:#14B8A6; font-weight:800; font-size:12px;">2. GEMINI 2.5 CACHING</div>
+                          <div style="color:#94A3B8; font-size:11px; margin-top:4px;">Ephemeral prompt context router (90% OPEX cut)</div>
+                        </div>
+                        <div style="color:#14B8A6; font-weight:900; font-size:20px;">➔</div>
+                        <div style="background:#111827; border:1px solid #10B981; padding:12px; border-radius:12px;">
+                          <div style="color:#10B981; font-weight:800; font-size:12px;">3. DEPLOYABLE BLUEPRINT</div>
+                          <div style="color:#94A3B8; font-size:11px; margin-top:4px;">Zero-collision Draw.io XML + Terraform HCL + GCP Shell</div>
                         </div>
                       </div>
                     </div>
@@ -191,7 +210,7 @@ export function ExecutiveStrategicSummaryModal({
                   </div>
                 </div>
 
-                <!-- SLIDE 2: ARCHITECTURAL TOPOLOGY & LIVE RENDERED ARCHITECTURE SHOWCASE -->
+                <!-- SLIDE 2: PRODUCTION SYSTEMS TOPOLOGY & LIVE RENDERED ARCHITECTURE SHOWCASE -->
                 <div class="slide" id="slide-2">
                   <div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -202,8 +221,8 @@ export function ExecutiveStrategicSummaryModal({
                     <p class="slide-subtitle">Live high-resolution visual layout compiled by PromptCanvas with zero 2D node collision.</p>
 
                     ${diagramPngUrl ? `
-                      <div style="display:flex; justify-content:center; align-items:center; background:#070A13; border:2px solid #14B8A6; border-radius:20px; padding:16px; margin: 12px 0; max-height: 420px; overflow: hidden; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
-                        <img src="${diagramPngUrl}" alt="Live Architecture Topology Snapshot" style="max-width:100%; max-height:380px; object-fit:contain; border-radius:12px;" />
+                      <div style="display:flex; justify-content:center; align-items:center; background:#070A13; border:2px solid #14B8A6; border-radius:20px; padding:14px; margin: 10px 0; height: 440px; overflow: hidden; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
+                        <img src="${diagramPngUrl}" alt="Live Architecture Topology Snapshot" style="width:100%; height:100%; object-fit:contain; border-radius:12px;" />
                       </div>
                     ` : `
                       <div class="grid-3" style="margin-top: 24px;">
@@ -221,6 +240,26 @@ export function ExecutiveStrategicSummaryModal({
                         </div>
                       </div>
                     `}
+
+                    <!-- Lower Stage Architecture Verification Strip -->
+                    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-top:8px;">
+                      <div style="background:#111827; border:1px solid #1E293B; padding:10px 14px; border-radius:12px; display:flex; align-items:center; gap:8px;">
+                        <span style="color:#10B981; font-weight:900;">✓</span>
+                        <span style="color:#CBD5E1; font-size:12px; font-weight:700;">Zero 2D Visual Line Crossing</span>
+                      </div>
+                      <div style="background:#111827; border:1px solid #1E293B; padding:10px 14px; border-radius:12px; display:flex; align-items:center; gap:8px;">
+                        <span style="color:#10B981; font-weight:900;">✓</span>
+                        <span style="color:#CBD5E1; font-size:12px; font-weight:700;">140px Line Split Clear-Zone</span>
+                      </div>
+                      <div style="background:#111827; border:1px solid #1E293B; padding:10px 14px; border-radius:12px; display:flex; align-items:center; gap:8px;">
+                        <span style="color:#10B981; font-weight:900;">✓</span>
+                        <span style="color:#CBD5E1; font-size:12px; font-weight:700;">VPC Service Control Enclaves</span>
+                      </div>
+                      <div style="background:#111827; border:1px solid #1E293B; padding:10px 14px; border-radius:12px; display:flex; align-items:center; gap:8px;">
+                        <span style="color:#10B981; font-weight:900;">✓</span>
+                        <span style="color:#CBD5E1; font-size:12px; font-weight:700;">Terraform &amp; GCP Shell Ready</span>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="footer">
@@ -239,27 +278,37 @@ export function ExecutiveStrategicSummaryModal({
                     <h1 class="slide-title">Built for C-Suite Executives &amp; Cloud Engineers Alike</h1>
                     <p class="slide-subtitle">Instant persona-filtered blueprint library and industry-tailored architectural synthesis presets.</p>
 
-                    <div class="grid-3" style="margin-top:20px;">
+                    <div class="grid-3" style="margin-top:14px;">
                       <div class="card" style="border-left:4px solid #14B8A6;">
-                        <h3 style="color:#14B8A6; font-size:18px; margin-bottom:8px;">💼 Executive &amp; C-Suite Suite</h3>
-                        <p style="color:#CBD5E1; font-size:14px; line-height:1.5;">16:9 Board Presentation Decks, Financial ROI Scorecards, and Direct Reportee Technical Implementation Directives (.md).</p>
+                        <h3 style="color:#14B8A6; font-size:17px; margin-bottom:6px;">💼 Executive &amp; C-Suite Suite</h3>
+                        <p style="color:#CBD5E1; font-size:13px; line-height:1.5;">16:9 Board Presentation Decks, Financial ROI Scorecards, and Direct Reportee Technical Directives (.md).</p>
                       </div>
                       <div class="card" style="border-left:4px solid #38BDF8;">
-                        <h3 style="color:#38BDF8; font-size:18px; margin-bottom:8px;">🏛️ Cloud &amp; Security CISOs</h3>
-                        <p style="color:#CBD5E1; font-size:14px; line-height:1.5;">Zero-Trust VPC Service Control enclaves, SOC2 Type II, HIPAA, PCI-DSS compliance tags, and NLI factual claim verification.</p>
+                        <h3 style="color:#38BDF8; font-size:17px; margin-bottom:6px;">🏛️ Cloud &amp; Security CISOs</h3>
+                        <p style="color:#CBD5E1; font-size:13px; line-height:1.5;">Zero-Trust VPC Service Control enclaves, SOC2 Type II, HIPAA, PCI-DSS compliance tags, and NLI factual claim verification.</p>
                       </div>
                       <div class="card" style="border-left:4px solid #F59E0B;">
-                        <h3 style="color:#F59E0B; font-size:18px; margin-bottom:8px;">📊 Data &amp; AI Engineers</h3>
-                        <p style="color:#CBD5E1; font-size:14px; line-height:1.5;">Multi-Agent LangGraph topologies, Stateful RAG lakehouse streaming pipelines, and automated DevOps/GitOps CI/CD tracks.</p>
+                        <h3 style="color:#F59E0B; font-size:17px; margin-bottom:6px;">📊 Data &amp; AI Engineers</h3>
+                        <p style="color:#CBD5E1; font-size:13px; line-height:1.5;">Multi-Agent LangGraph topologies, Stateful RAG lakehouse streaming pipelines, and automated DevOps/GitOps CI/CD tracks.</p>
                       </div>
                     </div>
 
-                    <div class="card" style="margin-top:20px; background:#0F172A; border-color:#334155; display:flex; justify-content:space-between; align-items:center;">
-                      <div>
-                        <span style="color:#14B8A6; font-weight:800; font-size:13px;">12 GLOBAL INDUSTRY SECTOR PRESETS</span>
-                        <div style="color:#E2E8F0; font-size:14px; font-weight:600; margin-top:4px;">FinTech &amp; Banking • Healthcare HIPAA • Defense Sovereign Cloud • Autonomous Robotics • Automotive Telematics • Energy Smart Grid • EdTech • Media CDN</div>
+                    <!-- Lower Stage 7-Persona & 12-Industry Interactive Sector Badges Grid -->
+                    <div style="margin-top:16px; background:#070A13; border:1px solid #1E293B; border-radius:18px; padding:18px;">
+                      <div style="display:flex; justify-content:space-between; align-items:center; mb-2;">
+                        <span class="slide-tag" style="font-size:11px;">12 GLOBAL INDUSTRY SECTOR ARCHITECTURE PRESETS</span>
+                        <span style="color:#14B8A6; font-weight:800; font-size:12px;">25 BLUEPRINTS READY</span>
                       </div>
-                      <span style="background:#1E293B; color:#F8FAFC; font-weight:800; padding:10px 18px; border-radius:12px; font-size:13px; border:1px solid #475569;">25 BLUEPRINTS LIVE</span>
+                      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-top:10px;">
+                        <div style="background:#111827; border:1px solid #334155; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700; color:#E2E8F0;">🏦 FinTech &amp; Banking</div>
+                        <div style="background:#111827; border:1px solid #334155; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700; color:#E2E8F0;">🧬 Healthcare HIPAA</div>
+                        <div style="background:#111827; border:1px solid #334155; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700; color:#E2E8F0;">🛡️ Defense Sovereign</div>
+                        <div style="background:#111827; border:1px solid #334155; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700; color:#E2E8F0;">🤖 Autonomous Robotics</div>
+                        <div style="background:#111827; border:1px solid #334155; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700; color:#E2E8F0;">🚗 Automotive Telematics</div>
+                        <div style="background:#111827; border:1px solid #334155; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700; color:#E2E8F0;">⚡ Energy Smart Grid</div>
+                        <div style="background:#111827; border:1px solid #334155; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700; color:#E2E8F0;">🛒 E-Commerce Scale</div>
+                        <div style="background:#111827; border:1px solid #334155; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700; color:#E2E8F0;">🎬 Media CDN Streaming</div>
+                      </div>
                     </div>
                   </div>
 
@@ -279,21 +328,42 @@ export function ExecutiveStrategicSummaryModal({
                     <h1 class="slide-title">Why PromptCanvas Makes Google Cloud the #1 Enterprise AI Platform</h1>
                     <p class="slide-subtitle">Leverages Gemini 2.5 Flash Ephemeral Context Caching to create an unassailable economic advantage over OpenAI &amp; AWS.</p>
 
-                    <div class="grid-3" style="margin-top:24px;">
+                    <div class="grid-3" style="margin-top:16px;">
                       <div class="card">
-                        <span style="color:#10B981; font-weight:900; font-size:13px;">GEMINI 2.5 CACHING MOAT</span>
-                        <h3 style="color:#FFFFFF; font-size:20px; margin:8px 0;">90% Lower LLM OPEX</h3>
-                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">PromptCanvas caches multi-tier system architectural schemas in Gemini 2.5 ephemeral context windows, reducing repeated compilation costs by 90%.</p>
+                        <span style="color:#10B981; font-weight:900; font-size:12px;">GEMINI 2.5 CACHING MOAT</span>
+                        <h3 style="color:#FFFFFF; font-size:18px; margin:6px 0;">90% Lower LLM OPEX</h3>
+                        <p style="color:#94A3B8; font-size:13px; line-height:1.5;">PromptCanvas caches multi-tier system schemas in Gemini 2.5 ephemeral context windows, reducing repeated compilation costs by 90%.</p>
                       </div>
                       <div class="card">
-                        <span style="color:#38BDF8; font-weight:900; font-size:13px;">GOOGLE CLOUD CONSUMPTION</span>
-                        <h3 style="color:#FFFFFF; font-size:20px; margin:8px 0;">Native GCP Cloud Pull-Through</h3>
-                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Every generated diagram includes a 1-click Google Cloud Shell deployment script provisioning Cloud Run, Vertex AI, BigQuery, and VPC-SC.</p>
+                        <span style="color:#38BDF8; font-weight:900; font-size:12px;">GOOGLE CLOUD CONSUMPTION</span>
+                        <h3 style="color:#FFFFFF; font-size:18px; margin:6px 0;">Native GCP Cloud Pull-Through</h3>
+                        <p style="color:#94A3B8; font-size:13px; line-height:1.5;">Every generated diagram includes a 1-click Google Cloud Shell deployment script provisioning Cloud Run, Vertex AI, BigQuery, and VPC-SC.</p>
                       </div>
                       <div class="card">
-                        <span style="color:#F59E0B; font-weight:900; font-size:13px;">COMPETITIVE DEFENSE</span>
-                        <h3 style="color:#FFFFFF; font-size:20px; margin:8px 0;">Lock-Out AWS / Azure</h3>
-                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">By offering zero-friction visual architecture design directly inside Google Cloud Console, enterprise customers standardize their stacks on GCP.</p>
+                        <span style="color:#F59E0B; font-weight:900; font-size:12px;">COMPETITIVE DEFENSE</span>
+                        <h3 style="color:#FFFFFF; font-size:18px; margin:6px 0;">Lock-Out AWS / Azure</h3>
+                        <p style="color:#94A3B8; font-size:13px; line-height:1.5;">By offering zero-friction visual architecture design directly inside Google Cloud Console, enterprise customers standardize their stacks on GCP.</p>
+                      </div>
+                    </div>
+
+                    <!-- Lower Stage Google Cloud Architecture Integration Flowchart -->
+                    <div style="margin-top:18px; background:#070A13; border:1px solid #1E293B; border-radius:18px; padding:16px;">
+                      <span class="slide-tag" style="font-size:11px;">GOOGLE CLOUD PLATFORM PRODUCT-LED INTEGRATION ARCHITECTURE</span>
+                      <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:10px; margin-top:10px; text-align:center;">
+                        <div style="background:#111827; border:1px solid #334155; padding:10px; border-radius:10px;">
+                          <div style="color:#14B8A6; font-weight:800; font-size:11px;">GCP CONSOLE WIDGET</div>
+                          <div style="color:#94A3B8; font-size:10px; margin-top:2px;">Native Home Console Card</div>
+                        </div>
+                        <div style="color:#14B8A6; font-weight:900; align-self:center; font-size:18px;">➔</div>
+                        <div style="background:#111827; border:1px solid #14B8A6; padding:10px; border-radius:10px;">
+                          <div style="color:#14B8A6; font-weight:800; font-size:11px;">GEMINI 2.5 FLASH</div>
+                          <div style="color:#94A3B8; font-size:10px; margin-top:2px;">Ephemeral Context Router</div>
+                        </div>
+                        <div style="color:#14B8A6; font-weight:900; align-self:center; font-size:18px;">➔</div>
+                        <div style="background:#111827; border:1px solid #10B981; padding:10px; border-radius:10px;">
+                          <div style="color:#10B981; font-weight:800; font-size:11px;">GCP SHELL DEPLOY</div>
+                          <div style="color:#94A3B8; font-size:10px; margin-top:2px;">1-Click Terraform &amp; VPC-SC</div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -314,9 +384,9 @@ export function ExecutiveStrategicSummaryModal({
                     <h1 class="slide-title">Comparative 12-Month Financial ROI Profile</h1>
                     <p class="slide-subtitle">Economic telemetry demonstrating why enterprise CTOs mandate PromptCanvas across their engineering organizations.</p>
 
-                    <div style="margin-top: 24px; display:flex; flex-direction:column; gap:20px;">
+                    <div style="margin-top: 14px; display:flex; flex-direction:column; gap:14px;">
                       <div>
-                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:15px; margin-bottom:6px;">
+                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:14px; margin-bottom:4px;">
                           <span style="color:#10B981;">PromptCanvas Cached Gemini Architecture Runtime Envelope</span>
                           <span style="color:#10B981;">$1,450 / mo ($17,400 / yr)</span>
                         </div>
@@ -326,7 +396,7 @@ export function ExecutiveStrategicSummaryModal({
                       </div>
 
                       <div>
-                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:15px; margin-bottom:6px;">
+                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:14px; margin-bottom:4px;">
                           <span style="color:#EF4444;">Standard Un-Cached Stateless LLM Baseline</span>
                           <span style="color:#EF4444;">$14,500 / mo ($174,000 / yr)</span>
                         </div>
@@ -334,13 +404,28 @@ export function ExecutiveStrategicSummaryModal({
                           <div class="chart-bar-fill" style="width: 100%; background: #EF4444; color:#FFFFFF;">UN-CACHED FULL CONTEXT EXECUTION</div>
                         </div>
                       </div>
+                    </div>
 
-                      <div class="card" style="background:#0F172A; border-color:#38BDF8; margin-top:6px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                          <div style="color:#38BDF8; font-weight:900; font-size:20px;">Annual Net Operational Savings: $156,600 / year per Enterprise Team</div>
-                          <div style="color:#94A3B8; font-size:13px; margin-top:4px;">Direct engineering productivity acceleration + OPEX capital returned to core product development.</div>
+                    <!-- Lower Stage Cumulative Financial Telemetry Table -->
+                    <div style="margin-top:16px; background:#070A13; border:1px solid #1E293B; border-radius:18px; padding:16px;">
+                      <span class="slide-tag" style="font-size:11px;">12-MONTH ENTERPRISE OPEX &amp; CACHING METRICS</span>
+                      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-top:10px;">
+                        <div style="background:#111827; border:1px solid #334155; padding:12px; border-radius:12px;">
+                          <div style="color:#94A3B8; font-size:11px; font-weight:700;">PROMPT CACHE HIT RATE</div>
+                          <div style="color:#10B981; font-size:24px; font-weight:900; margin-top:4px;">94.2%</div>
                         </div>
-                        <span style="background:#0284C7; color:#FFFFFF; font-weight:900; padding:10px 20px; border-radius:12px; font-size:16px;">10.8x ROI</span>
+                        <div style="background:#111827; border:1px solid #334155; padding:12px; border-radius:12px;">
+                          <div style="color:#94A3B8; font-size:11px; font-weight:700;">COMPILE LATENCY</div>
+                          <div style="color:#38BDF8; font-size:24px; font-weight:900; margin-top:4px;">0.4s vs 4.8s</div>
+                        </div>
+                        <div style="background:#111827; border:1px solid #334155; padding:12px; border-radius:12px;">
+                          <div style="color:#94A3B8; font-size:11px; font-weight:700;">1-YEAR NET SAVINGS</div>
+                          <div style="color:#10B981; font-size:24px; font-weight:900; margin-top:4px;">$156,600</div>
+                        </div>
+                        <div style="background:#111827; border:1px solid #14B8A6; padding:12px; border-radius:12px;">
+                          <div style="color:#94A3B8; font-size:11px; font-weight:700;">3-YEAR OPEX RETURN</div>
+                          <div style="color:#14B8A6; font-size:24px; font-weight:900; margin-top:4px;">$469,800</div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -361,18 +446,41 @@ export function ExecutiveStrategicSummaryModal({
                     <h1 class="slide-title">Autonomous AI Governance, NLI Claim Verification &amp; HITL Safety</h1>
                     <p class="slide-subtitle">Three-tier verification architecture ensuring 100% compliance with corporate and regulatory standards.</p>
 
-                    <div class="grid-3" style="margin-top:24px;">
+                    <div class="grid-3" style="margin-top:16px;">
                       <div class="card" style="border-left:4px solid #14B8A6;">
-                        <h3 style="color:#14B8A6; font-size:19px; margin-bottom:10px;">1. NLI Factual Claim Gate</h3>
-                        <p style="color:#CBD5E1; font-size:14px; line-height:1.6;">Natural Language Inference (NLI) claim verification checks every generated node and connection against corporate policy templates to eliminate silent hallucinated services.</p>
+                        <h3 style="color:#14B8A6; font-size:17px; margin-bottom:6px;">1. NLI Factual Claim Gate</h3>
+                        <p style="color:#CBD5E1; font-size:13px; line-height:1.5;">Natural Language Inference (NLI) claim verification checks every generated node against corporate policy templates.</p>
                       </div>
                       <div class="card" style="border-left:4px solid #38BDF8;">
-                        <h3 style="color:#38BDF8; font-size:19px; margin-bottom:10px;">2. Zero-Trust Security Enclaves</h3>
-                        <p style="color:#CBD5E1; font-size:14px; line-height:1.6;">All internal communication paths enforce VPC Service Controls (VPC-SC), mTLS encryption, customer-managed KMS keys, and strict SOC2 Type II / HIPAA audit logs.</p>
+                        <h3 style="color:#38BDF8; font-size:17px; margin-bottom:6px;">2. Zero-Trust Security Enclaves</h3>
+                        <p style="color:#CBD5E1; font-size:13px; line-height:1.5;">All internal communication paths enforce VPC Service Controls (VPC-SC), mTLS encryption, and SOC2 Type II audit logs.</p>
                       </div>
                       <div class="card" style="border-left:4px solid #F59E0B;">
-                        <h3 style="color:#F59E0B; font-size:19px; margin-bottom:10px;">3. Cryptographic HITL Router</h3>
-                        <p style="color:#CBD5E1; font-size:14px; line-height:1.6;">Requests below 75% confidence automatically route to mandatory Human-in-the-Loop executive cryptographic sign-off before cloud deployment.</p>
+                        <h3 style="color:#F59E0B; font-size:17px; margin-bottom:6px;">3. Cryptographic HITL Router</h3>
+                        <p style="color:#CBD5E1; font-size:13px; line-height:1.5;">Requests below 75% confidence automatically route to mandatory Human-in-the-Loop executive cryptographic sign-off.</p>
+                      </div>
+                    </div>
+
+                    <!-- Lower Stage 4-Stage Safety Audit Flowchart -->
+                    <div style="margin-top:18px; background:#070A13; border:1px solid #1E293B; border-radius:18px; padding:16px;">
+                      <span class="slide-tag" style="font-size:11px;">THREE-STAGE TRUST &amp; RESPONSIBLE AI PIPELINE</span>
+                      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-top:10px;">
+                        <div style="background:#111827; border:1px solid #14B8A6; padding:12px; border-radius:12px;">
+                          <div style="color:#14B8A6; font-weight:800; font-size:12px;">STAGE 1: INPUT SANITIZATION</div>
+                          <div style="color:#94A3B8; font-size:11px; margin-top:4px;">Constitutional HHH &amp; PII Scrubbing</div>
+                        </div>
+                        <div style="background:#111827; border:1px solid #38BDF8; padding:12px; border-radius:12px;">
+                          <div style="color:#38BDF8; font-weight:800; font-size:12px;">STAGE 2: NLI CLAIM AUDIT</div>
+                          <div style="color:#94A3B8; font-size:11px; margin-top:4px;">99.2% Factual Verification Score</div>
+                        </div>
+                        <div style="background:#111827; border:1px solid #F59E0B; padding:12px; border-radius:12px;">
+                          <div style="color:#F59E0B; font-weight:800; font-size:12px;">STAGE 3: HITL ESCALATION</div>
+                          <div style="color:#94A3B8; font-size:11px; margin-top:4px;">Confidence &lt;75% Cryptographic Sign-Off</div>
+                        </div>
+                        <div style="background:#111827; border:1px solid #10B981; padding:12px; border-radius:12px;">
+                          <div style="color:#10B981; font-weight:800; font-size:12px;">STAGE 4: VERIFIED COMPILATION</div>
+                          <div style="color:#94A3B8; font-size:11px; margin-top:4px;">Zero-Collision Draw.io &amp; Terraform</div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -393,21 +501,44 @@ export function ExecutiveStrategicSummaryModal({
                     <h1 class="slide-title">Google Incubation Strategic Ask &amp; Launch Milestones</h1>
                     <p class="slide-subtitle">Proposed Product-Led Growth (PLG) roadmap to embed PromptCanvas across Google Cloud Platform.</p>
 
-                    <div class="grid-3" style="margin-top:24px;">
+                    <div class="grid-3" style="margin-top:14px;">
                       <div class="card">
                         <span style="color:#14B8A6; font-weight:900; font-size:12px;">MILESTONE 1 (MONTHS 1-2)</span>
-                        <h3 style="color:#FFFFFF; font-size:19px; margin:8px 0;">Google Cloud Console Widget</h3>
-                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Embed PromptCanvas directly into Google Cloud Console home dashboard for 1-click architecture diagramming &amp; GCP Shell deployment.</p>
+                        <h3 style="color:#FFFFFF; font-size:18px; margin:6px 0;">Google Cloud Console Widget</h3>
+                        <p style="color:#94A3B8; font-size:13px; line-height:1.5;">Embed PromptCanvas directly into Google Cloud Console home dashboard for 1-click architecture diagramming &amp; GCP Shell deployment.</p>
                       </div>
                       <div class="card">
                         <span style="color:#38BDF8; font-weight:900; font-size:12px;">MILESTONE 2 (MONTHS 3-4)</span>
-                        <h3 style="color:#FFFFFF; font-size:19px; margin:8px 0;">Vertex AI Architecture Hub</h3>
-                        <p style="color:#94A3B8; font-size:14px; line-height:1.6;">Publish Gemini 2.5 fine-tuned architectural models and NLI claim verification engines on Google Enterprise Cloud Marketplace.</p>
+                        <h3 style="color:#FFFFFF; font-size:18px; margin:6px 0;">Vertex AI Architecture Hub</h3>
+                        <p style="color:#94A3B8; font-size:13px; line-height:1.5;">Publish Gemini 2.5 fine-tuned architectural models and NLI claim verification engines on Google Enterprise Cloud Marketplace.</p>
                       </div>
                       <div class="card" style="border-color:#10B981; background:#064E3B22;">
                         <span style="color:#10B981; font-weight:900; font-size:12px;">EXECUTIVE FUNDING ASK</span>
-                        <h3 style="color:#10B981; font-size:24px; margin:8px 0;">$2.5M Seed Allocation</h3>
-                        <p style="color:#E2E8F0; font-size:14px; line-height:1.6;">Dedicated Google Cloud engineering incubator headcount, GCP infrastructure credits, and enterprise sales enablement co-selling.</p>
+                        <h3 style="color:#10B981; font-size:22px; margin:6px 0;">$2.5M Seed Allocation</h3>
+                        <p style="color:#E2E8F0; font-size:13px; line-height:1.5;">Dedicated Google Cloud engineering incubator headcount, GCP infrastructure credits, and enterprise sales enablement co-selling.</p>
+                      </div>
+                    </div>
+
+                    <!-- Lower Stage 4-Quarter GANTT Timeline Diagram -->
+                    <div style="margin-top:16px; background:#070A13; border:1px solid #1E293B; border-radius:18px; padding:16px;">
+                      <span class="slide-tag" style="font-size:11px;">4-QUARTER PRODUCT-LED GROWTH (PLG) &amp; DEPLOYMENT GANTT ROADMAP</span>
+                      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-top:10px;">
+                        <div style="background:#111827; border:1px solid #14B8A6; padding:12px; border-radius:12px;">
+                          <div style="color:#14B8A6; font-weight:800; font-size:12px;">Q1 2026: INCUBATION SEED</div>
+                          <div style="color:#CBD5E1; font-size:11px; margin-top:4px;">Core Gemini 2.5 Ephemeral Caching Engine &amp; 12-Industry Presets</div>
+                        </div>
+                        <div style="background:#111827; border:1px solid #38BDF8; padding:12px; border-radius:12px;">
+                          <div style="color:#38BDF8; font-weight:800; font-size:12px;">Q2 2026: GCP CONSOLE GA</div>
+                          <div style="color:#CBD5E1; font-size:11px; margin-top:4px;">Native Google Cloud Console Card &amp; 1-Click GCP Shell Script</div>
+                        </div>
+                        <div style="background:#111827; border:1px solid #F59E0B; padding:12px; border-radius:12px;">
+                          <div style="color:#F59E0B; font-weight:800; font-size:12px;">Q3 2026: VERTEX AI MARKETPLACE</div>
+                          <div style="color:#CBD5E1; font-size:11px; margin-top:4px;">Enterprise NLI Claim Verification &amp; Red-Teaming Engine Launch</div>
+                        </div>
+                        <div style="background:#111827; border:1px solid #10B981; padding:12px; border-radius:12px;">
+                          <div style="color:#10B981; font-weight:800; font-size:12px;">Q4 2026: GLOBAL CO-SELLING</div>
+                          <div style="color:#CBD5E1; font-size:11px; margin-top:4px;">Google Cloud Enterprise Field Sales Enablement &amp; Scaling</div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -416,6 +547,7 @@ export function ExecutiveStrategicSummaryModal({
                     <span>Authorized Pitch: Sundar Pichai / Google Cloud C-Suite Investment Board</span>
                     <span>PromptCanvas Enterprise C-Suite Suite</span>
                   </div>
+                </div>          </div>
                 </div>
               </div>
 
