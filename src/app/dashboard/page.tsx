@@ -244,6 +244,7 @@ export default function Dashboard() {
   };
 
   // Filter and deduplicate diagrams based on search and unique IDs
+  const [expandedSubMenu, setExpandedSubMenu] = useState<string>('editor');
   const filteredDiagrams = React.useMemo(() => {
     const seen = new Set<string>();
     return diagrams.filter(d => {
@@ -302,7 +303,11 @@ export default function Dashboard() {
             const isActive = item.id === 'dashboard';
             
             return (
-              <div key={item.id} className="space-y-1">
+              <div
+                key={item.id}
+                className="space-y-1"
+                onMouseEnter={() => setExpandedSubMenu(item.id)}
+              >
                 <Link href={item.href} className="block">
                   <div className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
                     isActive 
@@ -315,7 +320,7 @@ export default function Dashboard() {
                 </Link>
 
                 {/* Collapsible Nested Sub-Menu under Design Canvas */}
-                {item.id === 'editor' && isSidebarOpen && (
+                {item.id === 'editor' && expandedSubMenu === 'editor' && isSidebarOpen && (
                   <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-teal-500/40 ml-4">
                     <button
                       type="button"
@@ -350,7 +355,7 @@ export default function Dashboard() {
                 )}
 
                 {/* Collapsible Nested Sub-Menu under Dashboard */}
-                {item.id === 'dashboard' && isSidebarOpen && (
+                {item.id === 'dashboard' && expandedSubMenu === 'dashboard' && isSidebarOpen && (
                   <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-cyan-500/40 ml-4">
                     <Link
                       href="/dashboard"
@@ -370,7 +375,7 @@ export default function Dashboard() {
                 )}
 
                 {/* Collapsible Nested Sub-Menu under Templates Gallery */}
-                {item.id === 'templates' && isSidebarOpen && (
+                {item.id === 'templates' && expandedSubMenu === 'templates' && isSidebarOpen && (
                   <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-indigo-500/40 ml-4">
                     <Link
                       href="/workspace?tab=templates"
@@ -388,7 +393,7 @@ export default function Dashboard() {
                 )}
 
                 {/* Collapsible Nested Sub-Menu under Visual Walkthrough */}
-                {item.id === 'walkthrough' && isSidebarOpen && (
+                {item.id === 'walkthrough' && expandedSubMenu === 'walkthrough' && isSidebarOpen && (
                   <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-purple-500/40 ml-4">
                     <Link
                       href="/workspace?tab=walkthrough"
@@ -401,7 +406,7 @@ export default function Dashboard() {
                 )}
 
                 {/* Collapsible Nested Sub-Menu under Security Audit Hub */}
-                {item.id === 'audit' && isSidebarOpen && (
+                {item.id === 'audit' && expandedSubMenu === 'audit' && isSidebarOpen && (
                   <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-rose-500/40 ml-4">
                     <Link
                       href="/workspace?tab=audit"
@@ -414,7 +419,7 @@ export default function Dashboard() {
                 )}
 
                 {/* Collapsible Nested Sub-Menu under Settings & Config */}
-                {item.id === 'settings' && isSidebarOpen && (
+                {item.id === 'settings' && expandedSubMenu === 'settings' && isSidebarOpen && (
                   <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-amber-500/40 ml-4">
                     <Link
                       href="/workspace?tab=settings"
