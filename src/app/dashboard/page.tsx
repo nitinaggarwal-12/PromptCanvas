@@ -356,13 +356,13 @@ export default function Dashboard() {
                       href="/workspace?tab=templates"
                       className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
                     >
-                      <span>🏢 Business Architectures (5)</span>
+                      <span>🏢 Business Architectures (13)</span>
                     </Link>
                     <Link
                       href="/workspace?tab=templates"
                       className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
                     >
-                      <span>⚙️ Technical Cloud Stacks (5)</span>
+                      <span>⚙️ Technical Cloud Stacks (12)</span>
                     </Link>
                   </div>
                 )}

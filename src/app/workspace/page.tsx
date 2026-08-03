@@ -1893,7 +1893,7 @@ function WorkspaceContent() {
                   templateCategoryFilter === 'business' ? 'bg-teal-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                🏢 Business Architectures (5)
+                🏢 Business Architectures ({BUSINESS_ARCHITECTURE_TYPES.length})
               </button>
               <button
                 type="button"
@@ -1902,7 +1902,7 @@ function WorkspaceContent() {
                   templateCategoryFilter === 'technical' ? 'bg-indigo-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                ⚙️ Technical Cloud Stacks (5)
+                ⚙️ Technical Cloud Stacks ({TECHNICAL_ARCHITECTURE_TYPES.length})
               </button>
             </div>
           </div>
@@ -3510,7 +3510,7 @@ function WorkspaceContent() {
                         templateCategoryFilter === 'business' ? 'text-teal-300 bg-teal-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800'
                       }`}
                     >
-                      <span>🏢 Business Architectures (5)</span>
+                      <span>🏢 Business Architectures ({BUSINESS_ARCHITECTURE_TYPES.length})</span>
                     </button>
                     <button
                       type="button"
@@ -3519,7 +3519,7 @@ function WorkspaceContent() {
                         templateCategoryFilter === 'technical' ? 'text-indigo-300 bg-indigo-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800'
                       }`}
                     >
-                      <span>⚙️ Technical Cloud Stacks (5)</span>
+                      <span>⚙️ Technical Cloud Stacks ({TECHNICAL_ARCHITECTURE_TYPES.length})</span>
                     </button>
                   </div>
                 )}
