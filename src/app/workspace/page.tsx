@@ -3762,6 +3762,17 @@ function WorkspaceContent() {
                       <span>Compose Doc</span>
                     </button>
 
+                    {/* Reverse-Engineer Terraform .tf to Architecture Diagram */}
+                    <button
+                      type="button"
+                      onClick={() => setIsImportModalOpen(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/50 bg-amber-500/15 hover:bg-amber-500/25 text-xs font-black transition-all text-amber-300 cursor-pointer shadow-sm shrink-0"
+                      title="Paste or upload Terraform (.tf) HCL code to generate a live architecture diagram"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Import .tf Code</span>
+                    </button>
+
                     {/* Live Cloud Cost Estimator Badge (Infracost Engine) */}
                     <button
                       type="button"
