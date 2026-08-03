@@ -25,7 +25,10 @@ import {
   Settings,
   Mail,
   ClipboardList,
-  BookOpen
+  BookOpen,
+  Upload,
+  FileCode,
+  ShieldCheck
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
@@ -299,16 +302,110 @@ export default function Dashboard() {
             const isActive = item.id === 'dashboard';
             
             return (
-              <Link key={item.id} href={item.href} className="block">
-                <div className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
-                  isActive 
-                    ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
-                }`}>
-                  <Icon className="w-4.5 h-4.5 shrink-0" />
-                  {isSidebarOpen && <span className="truncate">{item.name}</span>}
-                </div>
-              </Link>
+              <div key={item.id} className="space-y-1">
+                <Link href={item.href} className="block">
+                  <div className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
+                    isActive 
+                      ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
+                  }`}>
+                    <Icon className="w-4.5 h-4.5 shrink-0" />
+                    {isSidebarOpen && <span className="truncate">{item.name}</span>}
+                  </div>
+                </Link>
+
+                {/* Collapsible Nested Sub-Menu under Design Canvas */}
+                {item.id === 'editor' && isSidebarOpen && (
+                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-teal-500/40 ml-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsUseCaseModalOpen(true)}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-teal-300 hover:text-white hover:bg-teal-500/20 transition-all cursor-pointer text-left"
+                    >
+                      <ClipboardList className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                      <span>📋 Use Case Intake Form</span>
+                    </button>
+                    <Link
+                      href="/workspace?new=true"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <Plus className="w-3.5 h-3.5 text-teal-accent shrink-0" />
+                      <span>✨ New Diagram Canvas</span>
+                    </Link>
+                    <Link
+                      href="/workspace?import=true"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      <span>📥 Import (.drawio / .tf)</span>
+                    </Link>
+                    <Link
+                      href="/workspace?diff=true"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>🔍 Version &amp; Visual Diff</span>
+                    </Link>
+                  </div>
+                )}
+
+                {/* Collapsible Nested Sub-Menu under Templates Gallery */}
+                {item.id === 'templates' && isSidebarOpen && (
+                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-indigo-500/40 ml-4">
+                    <Link
+                      href="/workspace?tab=templates"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <span>🏢 Business Architectures (5)</span>
+                    </Link>
+                    <Link
+                      href="/workspace?tab=templates"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <span>⚙️ Technical Cloud Stacks (5)</span>
+                    </Link>
+                  </div>
+                )}
+
+                {/* Collapsible Nested Sub-Menu under Visual Walkthrough */}
+                {item.id === 'walkthrough' && isSidebarOpen && (
+                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-purple-500/40 ml-4">
+                    <Link
+                      href="/workspace?tab=walkthrough"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-purple-300 hover:text-white hover:bg-purple-500/20 transition-all cursor-pointer text-left"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                      <span>🎯 Launch 5-Step Tour</span>
+                    </Link>
+                  </div>
+                )}
+
+                {/* Collapsible Nested Sub-Menu under Security Audit Hub */}
+                {item.id === 'audit' && isSidebarOpen && (
+                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-rose-500/40 ml-4">
+                    <Link
+                      href="/workspace?tab=audit"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-rose-300 hover:text-white hover:bg-rose-500/20 transition-all cursor-pointer text-left"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                      <span>🔒 Zero-Trust Audit Matrix</span>
+                    </Link>
+                  </div>
+                )}
+
+                {/* Collapsible Nested Sub-Menu under Settings & Config */}
+                {item.id === 'settings' && isSidebarOpen && (
+                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-amber-500/40 ml-4">
+                    <Link
+                      href="/workspace?tab=settings"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-amber-300 hover:text-white hover:bg-amber-500/20 transition-all cursor-pointer text-left"
+                    >
+                      <Settings className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>⚙️ AI Tier &amp; Theme Config</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
             );
           })}
           <button
