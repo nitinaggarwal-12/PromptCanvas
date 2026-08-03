@@ -75,16 +75,24 @@ const TEMPLATE_PROMPTS = [
     prompt: "Act as an AWS Data Architect. Design a modern Data Lakehouse architecture. It should include: raw/processed data landing zones in Amazon S3, AWS Glue Catalog for schema registry, AWS Athena for ad-hoc querying, Amazon Redshift for data warehousing, and Amazon QuickSight for business intelligence."
   },
   {
-    name: "AI Retrieval-Augmented Generation / RAG (GCP)",
-    prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system on GCP. It should include: a Cloud Run API service, Cloud SQL with pgvector extension for storing vector embeddings, Vertex AI Search for document retrieval, Vertex AI Gemini API for LLM reasoning, and Cloud Storage for source documents."
+    name: "Enterprise LLM Evaluation, Toxicity & Safety Benchmarking (7-Tier Platform)",
+    prompt: "Act as an AI Safety Architect. Design a 7-tier widescreen Enterprise LLM Evaluation, Toxicity & Safety Benchmarking platform (eval_safety_benchmarking). Include: User Input & Query Ingestion, Automated Toxicity & Red-Teaming Screening, Model Evaluation Engine, Human & Automated Scoring Tier, Grounding & Bias Verdict Router, Security Audit & Evidence Log, and Feedback Loop."
   },
   {
-    name: "Event-Driven Microservices (AWS)",
-    prompt: "Act as an AWS Architect. Design an event-driven microservices architecture. It should use: Amazon EventBridge for event routing, AWS Lambda for processing events, Amazon SQS/SNS for messaging/decoupling, and DynamoDB as the fast key-value store for each microservice."
+    name: "Multi-Agent AI & LLM Orchestration Platform (Vertex AI / LangGraph)",
+    prompt: "Act as an AI Orchestration Architect. Design a multi-agent AI platform using Vertex AI and LangGraph. Include: Master Agent Router, Autonomous Worker Agents (Research, Code, Validation), Tool Execution Sandbox, Vector Memory Store (pgvector), and Human-in-the-Loop Approval Gate."
   },
   {
-    name: "Multi-Region Disaster Recovery (GCP)",
-    prompt: "Act as a GCP Architect. Design a highly available, multi-region disaster recovery architecture. It should include: DNS routing via Cloud DNS, HTTPS Load Balancing across two regions, active-passive Cloud Spanner database synchronization, Cloud Storage dual-region backups, and GKE multi-cluster service mesh configs."
+    name: "FinTech Real-Time Core Transaction Ledger (PCI-DSS Active-Active)",
+    prompt: "Act as a FinTech Solutions Architect. Design a PCI-DSS compliant core banking & transaction ledger platform. Include: API Gateway with Web Application Firewall, Real-time Fraud Detection ML Pipeline, Cloud Spanner Active-Active multi-region database, Immutable Audit Ledger, and KMS Hardware Security Modules."
+  },
+  {
+    name: "Zero-Trust Multi-Cloud Enterprise Security & SASE (GCP/AWS)",
+    prompt: "Act as an Enterprise Security Architect. Design a Zero-Trust Multi-Cloud architecture. Include: BeyondCorp Identity-Aware Proxy (IAP), Cloud Armor WAF, VPC Service Controls perimeter, IAM Role Federation, Security Command Center telemetry, and HSM Key Management."
+  },
+  {
+    name: "DevSecOps GitOps Automated Cloud Delivery (ArgoCD + Terraform HCL)",
+    prompt: "Act as a DevSecOps Architect. Design an enterprise GitOps deployment pipeline. Include: GitHub repository push triggering Automated SAST Security Scanning, Terraform Plan dry-run validation, ArgoCD GitOps sync to GKE/EKS Kubernetes clusters, and Automated Rollback on metric alerts."
   }
 ];
 

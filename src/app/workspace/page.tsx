@@ -209,16 +209,24 @@ const TEMPLATE_PROMPTS = [
     prompt: "Act as a GCP Resilience Engineer. Design a multi-region highly-available architecture. It should have: a Global Load Balancer, active-active services in us-east1 and us-west1 using Cloud Run, Cloud Spanner as a multi-region distributed database, and Cloud Storage with multi-region replication."
   },
   {
-    name: "Secure VPC Network Infrastructure (AWS)",
-    prompt: "Act as an AWS Network Security Engineer. Design a secure VPC network. It should include: a VPC with Public and Private Subnets across two Availability Zones, an Internet Gateway, NAT Gateways for private subnet outbound traffic, Bastion Host for secure SSH access, and an Application Load Balancer routing to an Autoscaling Group of EC2 instances in private subnets."
+    name: "Enterprise LLM Evaluation, Toxicity & Safety Benchmarking (7-Tier Platform)",
+    prompt: "Act as an AI Safety Architect. Design a 7-tier widescreen Enterprise LLM Evaluation, Toxicity & Safety Benchmarking platform (eval_safety_benchmarking). Include: User Input & Query Ingestion, Automated Toxicity & Red-Teaming Screening, Model Evaluation Engine, Human & Automated Scoring Tier, Grounding & Bias Verdict Router, Security Audit & Evidence Log, and Feedback Loop."
   },
   {
-    name: "IoT Telemetry Ingestion (GCP)",
-    prompt: "Act as an IoT Architect. Design a telemetry ingestion pipeline on GCP. It should ingest data from IoT devices via Pub/Sub, trigger Cloud Functions for validation and normalization, store raw time-series data in Cloud Bigtable, and connect to Grafana for live monitoring."
+    name: "Multi-Agent AI & LLM Orchestration Platform (Vertex AI / LangGraph)",
+    prompt: "Act as an AI Orchestration Architect. Design a multi-agent AI platform using Vertex AI and LangGraph. Include: Master Agent Router, Autonomous Worker Agents (Research, Code, Validation), Tool Execution Sandbox, Vector Memory Store (pgvector), and Human-in-the-Loop Approval Gate."
   },
   {
-    name: "CI/CD Pipeline Architecture",
-    prompt: "Act as a DevOps Architect. Design a secure CI/CD build and deploy pipeline. It should include: GitHub repository triggering a GitHub Actions Runner, compilation/testing step, containerizing with Docker, pushing images to Artifact Registry, deploying using Terraform Cloud to a target Kubernetes cluster, and monitoring with Prometheus/Grafana."
+    name: "FinTech Real-Time Core Transaction Ledger (PCI-DSS Active-Active)",
+    prompt: "Act as a FinTech Solutions Architect. Design a PCI-DSS compliant core banking & transaction ledger platform. Include: API Gateway with Web Application Firewall, Real-time Fraud Detection ML Pipeline, Cloud Spanner Active-Active multi-region database, Immutable Audit Ledger, and KMS Hardware Security Modules."
+  },
+  {
+    name: "Zero-Trust Multi-Cloud Enterprise Security & SASE (GCP/AWS)",
+    prompt: "Act as an Enterprise Security Architect. Design a Zero-Trust Multi-Cloud architecture. Include: BeyondCorp Identity-Aware Proxy (IAP), Cloud Armor WAF, VPC Service Controls perimeter, IAM Role Federation, Security Command Center telemetry, and HSM Key Management."
+  },
+  {
+    name: "DevSecOps GitOps Automated Cloud Delivery (ArgoCD + Terraform HCL)",
+    prompt: "Act as a DevSecOps Architect. Design an enterprise GitOps deployment pipeline. Include: GitHub repository push triggering Automated SAST Security Scanning, Terraform Plan dry-run validation, ArgoCD GitOps sync to GKE/EKS Kubernetes clusters, and Automated Rollback on metric alerts."
   }
 ];
 
