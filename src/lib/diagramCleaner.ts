@@ -1201,6 +1201,40 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/ITACS/gi, topic || 'Healthcare');
   }
 
+  // Universal Dynamic Entity & Workflow Step Extractor
+  // Parses explicit user prompt workflows (e.g. "Step 1 -> Step 2 -> Step 3 -> Step 4") and injects them onto canvas nodes
+  if (userPrompt && typeof userPrompt === 'string') {
+    const rawSteps = userPrompt
+      .split(/(?:->|-->|=>|•|\n|;)/)
+      .map(s => s.replace(/^(?:Act as|Chief|Enterprise|Architect|Build|Create|Design|System details:|\d+\.)/gi, '').trim())
+      .filter(s => s.length > 3);
+
+    if (rawSteps.length >= 2) {
+      const step1 = rawSteps[0] || 'Edge Field Ingress Gateway';
+      const step2 = rawSteps[1] || 'Cloud Stream Ingress Queue';
+      const step3 = rawSteps[2] || 'Real-Time Anomaly Detection';
+      const step4 = rawSteps[3] || rawSteps[rawSteps.length - 1] || 'Model Fine-Tuning & OTA Deployment';
+
+      updatedXml = updatedXml
+        .replace(/External Multimodal Client Portal/g, step1)
+        .replace(/Public Ingress Subnet/g, `${step1} Ingress Subnet`)
+        .replace(/BA Safety Workbench/g, step2)
+        .replace(/Managed PostgreSQL \/ pgvector/g, step3)
+        .replace(/Ephemeral Prompt Cache Store/g, step4)
+        .replace(/\[1\] Ingress \/ Client Portal/g, `[1] ${step1}`)
+        .replace(/\[2\] Event Streaming Gateway/g, `[2] ${step2}`)
+        .replace(/\[3\] AI Processing Cluster/g, `[3] ${step3}`)
+        .replace(/\[4\] Deployment & Lifecycle Hub/g, `[4] ${step4}`);
+    }
+
+    // Dynamic Purpose & Problem Statement card update
+    if (useCaseTitle) {
+      updatedXml = updatedXml
+        .replace(/Purpose &amp; Problem Statement:[^<]*/g, `Purpose &amp; Problem Statement: ${useCaseTitle} — Automated Enterprise Architecture Topology`)
+        .replace(/Purpose & Problem Statement:[^<]*/g, `Purpose &amp; Problem Statement: ${useCaseTitle} — Automated Enterprise Architecture Topology`);
+    }
+  }
+
   return updatedXml;
 }
 

@@ -76,6 +76,7 @@ import { ExecutiveStrategicSummaryModal } from '@/components/ExecutiveStrategicS
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { getExactMultiAgentLangGraphReferenceXml } from '@/lib/newEnterpriseReferenceXmls';
+import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
 import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
@@ -6106,6 +6107,29 @@ function WorkspaceContent() {
         onSubmitUseCase={(data) => {
           const promptText = `Act as an Enterprise Cloud Architect for ${data.domain} on ${data.cloudProvider} with ${data.complianceTier}. Build standard publication-grade architecture for: ${data.title}. System details: ${data.description}`;
           setPromptInput(promptText);
+          setIsUseCaseModalOpen(false);
+
+          // Immediately compile & apply user-specific domain workflow nodes onto the active canvas
+          try {
+            const baseXml = (activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactMultiAgentLangGraphReferenceXml();
+            const flavoredXml = injectUseCaseFlavor(baseXml, data.title, `${data.title}. ${data.description}. Domain: ${data.domain}. Cloud: ${data.cloudProvider}. Compliance: ${data.complianceTier}`);
+            setPendingXml(flavoredXml);
+            if (activeDiagram) {
+              setActiveDiagram({
+                ...activeDiagram,
+                name: data.title,
+                xml_content: flavoredXml
+              } as any);
+            }
+            if (activeVersion) {
+              setActiveVersion({
+                ...activeVersion,
+                xml_content: flavoredXml
+              });
+            }
+          } catch (e) {
+            console.warn('Real-time flavor injection fallback', e);
+          }
         }}
       />
 
