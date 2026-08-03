@@ -21,6 +21,7 @@ import {
 
 import PptxGenJS from 'pptxgenjs';
 import { exportDiagramPng } from '../lib/export/diagramRaster';
+import { preflightVerifyAndHealXmlAcrossAll6Audits } from '../lib/preflightAuditEngine';
 
 interface ExecutiveStrategicSummaryModalProps {
   isOpen: boolean;
@@ -50,13 +51,17 @@ export function ExecutiveStrategicSummaryModal({
   const handleExportBoardPptx = async () => {
     setIsGeneratingDeck(true);
     try {
-      // Rasterize actual architecture canvas diagram image
+      // Heal and rasterize actual architecture canvas diagram image with zero collision
       let diagramPngUrl = '';
       if (xmlContent) {
         try {
-          diagramPngUrl = await exportDiagramPng(xmlContent, { scale: 2, transparent: false });
+          const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(xmlContent);
+          diagramPngUrl = await exportDiagramPng(healedXml, { scale: 3, transparent: true });
         } catch(e) {
           console.warn('PNG raster preview fallback', e);
+          try {
+            diagramPngUrl = await exportDiagramPng(xmlContent, { scale: 2, transparent: false });
+          } catch(err) {}
         }
       }
 
@@ -108,34 +113,34 @@ export function ExecutiveStrategicSummaryModal({
               <style>
                 * { box-sizing: border-box; margin: 0; padding: 0; }
                 body { background: #070A13; color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
-                .topbar { height: 64px; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: #0B101D; border-bottom: 1px solid #1E293B; shrink-0; z-index: 10; }
+                .topbar { height: 60px; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: #0B101D; border-bottom: 1px solid #1E293B; shrink-0; z-index: 10; }
                 .logo { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 17px; color: #14B8A6; letter-spacing: 0.5px; }
                 .controls { display: flex; align-items: center; gap: 14px; }
                 .btn { background: #1E293B; color: #F8FAFC; border: 1px solid #334155; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
                 .btn:hover { background: #334155; border-color: #14B8A6; }
                 .btn-teal { background: #14B8A6; color: #070A13; border: none; font-weight: 900; }
-                .slide-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 32px; position: relative; }
-                .slide { display: none; width: 100%; max-width: 1440px; aspect-ratio: 16 / 9; max-height: 820px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 28px; padding: 48px 56px; flex-direction: column; justify-content: space-between; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.85); animation: fadeIn 0.3s ease; }
+                .slide-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 24px; position: relative; height: calc(100vh - 60px); }
+                .slide { display: none; width: 98vw; max-width: 1720px; height: calc(100vh - 92px); background: #0B101D; border: 2px solid #14B8A6; border-radius: 24px; padding: 32px 40px; flex-direction: column; justify-content: space-between; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.85); animation: fadeIn 0.3s ease; }
                 .slide.active { display: flex; }
                 @keyframes fadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
                 .slide-tag { color: #14B8A6; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
-                .slide-title { font-size: 42px; font-weight: 900; margin: 10px 0 8px 0; color: #FFFFFF; line-height: 1.1; }
-                .slide-subtitle { color: #94A3B8; font-size: 18px; line-height: 1.4; margin-bottom: 20px; }
-                .grid-2 { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; align-items: center; }
-                .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-                .card { background: #111827; border: 1px solid #1E293B; border-radius: 20px; padding: 24px; }
-                .kpi-num { font-size: 40px; font-weight: 900; line-height: 1.1; }
+                .slide-title { font-size: 38px; font-weight: 900; margin: 8px 0 6px 0; color: #FFFFFF; line-height: 1.1; }
+                .slide-subtitle { color: #94A3B8; font-size: 17px; line-height: 1.3; margin-bottom: 14px; }
+                .grid-2 { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; align-items: stretch; }
+                .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+                .card { background: #111827; border: 1px solid #1E293B; border-radius: 18px; padding: 22px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+                .kpi-num { font-size: 38px; font-weight: 900; line-height: 1.1; }
                 .kpi-label { font-size: 13px; font-weight: 700; color: #94A3B8; margin-top: 6px; }
-                .chart-bar-bg { width: 100%; height: 34px; background: #1E293B; border-radius: 10px; overflow: hidden; margin-top: 8px; position: relative; }
+                .chart-bar-bg { width: 100%; height: 38px; background: #1E293B; border-radius: 10px; overflow: hidden; margin-top: 8px; position: relative; }
                 .chart-bar-fill { height: 100%; display: flex; align-items: center; padding-left: 14px; font-weight: 900; font-size: 13px; border-radius: 10px; }
                 .badge { display: inline-block; background: #065F46; color: #A7F3D0; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 99px; border: 1px solid #10B981; }
-                .footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1E293B; padding-top: 16px; color: #64748B; font-size: 12px; font-weight: 600; }
+                .footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1E293B; padding-top: 14px; color: #64748B; font-size: 12px; font-weight: 600; shrink-0; }
                 @media print {
                   @page { size: landscape; margin: 0; }
                   body { overflow: visible !important; width: auto !important; height: auto !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background: #070A13 !important; }
                   .topbar { display: none !important; }
-                  .slide-stage { padding: 0 !important; display: block !important; }
-                  .slide { display: flex !important; width: 100vw !important; height: 100vh !important; max-width: none !important; max-height: none !important; border-radius: 0 !important; border: none !important; page-break-after: always !important; break-after: page !important; box-shadow: none !important; }
+                  .slide-stage { padding: 0 !important; display: block !important; height: auto !important; }
+                  .slide { display: flex !important; width: 100vw !important; height: 100vh !important; max-width: none !important; border-radius: 0 !important; border: none !important; page-break-after: always !important; break-after: page !important; box-shadow: none !important; }
                 }
               </style>
             </head>
