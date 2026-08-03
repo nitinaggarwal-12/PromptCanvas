@@ -315,6 +315,8 @@ export default function Dashboard() {
                     <div className={`w-full flex items-center justify-between p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
                       isActive 
                         ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                        : isExpanded
+                        ? 'border-l-4 border-l-teal-400 bg-teal-500/15 text-teal-200 shadow-[0_0_15px_rgba(0,245,212,0.15)]'
                         : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
                     }`}>
                       <div className="flex items-center gap-3 min-w-0">
@@ -324,7 +326,7 @@ export default function Dashboard() {
                       {isSidebarOpen && (
                         <span className="shrink-0 text-xs">
                           {isExpanded ? (
-                            <ChevronDown className="w-3.5 h-3.5 opacity-80" />
+                            <ChevronDown className="w-3.5 h-3.5 text-teal-300 opacity-90" />
                           ) : (
                             <ChevronRight className="w-3.5 h-3.5 opacity-50" />
                           )}

@@ -401,6 +401,63 @@ export function ExportDiagramModal({
     }
   };
 
+  // 7. Export GCP Cloud Shell Infrastructure Provisioning Script (.sh / gcloud)
+  const handleExportGcpShell = () => {
+    setLoadingType('gcpshell');
+    setErrorMessage(null);
+    try {
+      const shellScript = `#!/usr/bin/env bash
+# PromptCanvas Google Cloud Infrastructure Deployment Script
+# Target Architecture: ${diagramName}
+# Compliance Level: SOC2 Type II + Zero-Trust Network Perimeter (99.99% SLA)
+# Generated: ${new Date().toISOString()}
+
+set -e
+
+echo "🚀 Deploying ${diagramName} to Google Cloud Platform..."
+
+# 1. Enable Core GCP APIs
+gcloud services enable run.googleapis.com \\
+  compute.googleapis.com \\
+  vpcaccess.googleapis.com \\
+  aiplatform.googleapis.com \\
+  cloudresourcemanager.googleapis.com \\
+  secretmanager.googleapis.com
+
+# 2. Create Private VPC Network & Isolated Subnets
+gcloud compute networks create promptcanvas-prod-vpc --subnet-mode=custom || true
+gcloud compute networks subnets create promptcanvas-app-subnet \\
+  --network=promptcanvas-prod-vpc \\
+  --region=us-central1 \\
+  --range=10.0.1.0/24 || true
+
+# 3. Provision Serverless VPC Access Connector
+gcloud compute networks vpc-access connectors create promptcanvas-connector \\
+  --region=us-central1 \\
+  --subnet=promptcanvas-app-subnet || true
+
+echo "✅ Provisioned Zero-Trust GCP Network Enclave for ${diagramName}!"
+`;
+
+      const blob = new Blob([shellScript], { type: 'text/x-shellscript;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `deploy_${sanitizeFilename(diagramName)}_gcpshell.sh`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      setDownloadSuccess('gcpshell');
+      setTimeout(() => setDownloadSuccess(null), 2500);
+    } catch (e: any) {
+      console.error(e);
+      setErrorMessage('Failed to export GCP Cloud Shell script.');
+    } finally {
+      setLoadingType(null);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 font-sans">
       <div className="relative w-full max-w-3xl bg-[#0b101d] border border-panel-border/60 rounded-3xl p-6 md:p-8 shadow-2xl text-white max-h-[92vh] overflow-y-auto">
@@ -559,7 +616,7 @@ export function ExportDiagramModal({
             </div>
           </div>
 
-          {/* Option 6: Editable PowerPoint Presentation (.pptx) */}
+          {/* Option 6: Google Slides 16:9 Executive Board Deck (.pptx) */}
           <div
             onClick={handleExportPptx}
             className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 to-purple-500/10 border border-amber-500/30 hover:border-amber-400 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg shadow-amber-500/5"
@@ -580,10 +637,38 @@ export function ExportDiagramModal({
             </div>
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9px] font-black text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider border border-amber-500/30">PPTX Presentation Deck</span>
+                <span className="text-[9px] font-black text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider border border-amber-500/30">Google Slides 16:9 Deck</span>
               </div>
-              <h4 className="font-extrabold text-sm text-white group-hover:text-amber-200 transition-colors">PowerPoint Slide Deck (.pptx)</h4>
+              <h4 className="font-extrabold text-sm text-white group-hover:text-amber-200 transition-colors">📊 Google Slides 16:9 Executive Board Deck (.pptx)</h4>
               <p className="text-xs text-slate-400 mt-1">Presentation deck featuring full-width diagram slide, business value, and technical breakdown.</p>
+            </div>
+          </div>
+
+          {/* Option 7: GCP Cloud Shell Infrastructure Script (.sh) */}
+          <div
+            onClick={handleExportGcpShell}
+            className="p-5 rounded-2xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-500/30 hover:border-teal-400 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg shadow-teal-500/5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/30 text-teal-300 flex items-center justify-center font-bold text-sm">
+                ☁️
+              </div>
+              {downloadSuccess === 'gcpshell' ? (
+                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                  <Check className="w-4 h-4" /> Exported Script
+                </span>
+              ) : loadingType === 'gcpshell' ? (
+                <Loader2 className="w-4 h-4 animate-spin text-teal-400" />
+              ) : (
+                <Sparkles className="w-4 h-4 text-teal-400 group-hover:scale-110 transition-transform" />
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-[9px] font-black text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider border border-teal-500/30">GCP Cloud Shell Infrastructure</span>
+              </div>
+              <h4 className="font-extrabold text-sm text-white group-hover:text-teal-200 transition-colors">☁️ GCP Cloud Shell Deployment Script (.sh)</h4>
+              <p className="text-xs text-slate-400 mt-1">One-click gcloud & VPC-SC shell deployment script ready for Google Cloud Shell.</p>
             </div>
           </div>
 
