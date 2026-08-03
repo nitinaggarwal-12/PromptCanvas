@@ -19,9 +19,119 @@ export function UseCaseIntakeModal({ isOpen, onClose, onSubmitUseCase }: UseCase
   const [title, setTitle] = useState('');
   const [domain, setDomain] = useState('FinTech & Banking');
   const [cloudProvider, setCloudProvider] = useState('Google Cloud Platform (GCP)');
-  const [complianceTier, setComplianceTier] = useState('SOC2 Type II + Zero-Trust Network');
+  const [complianceTier, setComplianceTier] = useState('SOC2 Type II + Zero-Trust Network Perimeter');
+  const [deploymentTopology, setDeploymentTopology] = useState('Multi-AZ Active-Passive High Availability');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const DOMAIN_PRESETS: Record<string, {
+    defaultTitle: string;
+    cloud: string;
+    compliance: string;
+    topology: string;
+    desc: string;
+  }> = {
+    'FinTech & Banking': {
+      defaultTitle: 'Core Banking Ledger & Real-Time Fraud Synthesis Engine',
+      cloud: 'Google Cloud Platform (GCP)',
+      compliance: 'PCI-DSS Active-Active Financial Ledger',
+      topology: 'Multi-Region Active-Active Distributed Ledger',
+      desc: 'High-throughput core banking transaction ingestion -> PCI-DSS isolated Spanner ledger -> Real-time ML fraud detection -> Agentic customer dispute resolver.'
+    },
+    'Healthcare & Genomics': {
+      defaultTitle: 'HIPAA Genomic Variant Pipeline & Clinical Agentic RAG',
+      cloud: 'Google Cloud Platform (GCP)',
+      compliance: 'HIPAA Compliance + KMS Envelope Encryption',
+      topology: 'Multi-AZ Active-Passive High Availability',
+      desc: 'HIPAA-compliant raw genomic sequence ingestion -> BigQuery Variant Store -> Cloud KMS envelope encryption -> Vertex AI Agentic RAG clinical trial matching.'
+    },
+    'Autonomous AI & Robotics': {
+      defaultTitle: 'Fleet Telemetry Command Center & Edge Model Lifecycle',
+      cloud: 'Google Cloud Platform (GCP)',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Global Edge CDN + Serverless Container Core',
+      desc: 'MQTT Edge field gateways on autonomous fleet -> Cloud Pub/Sub stream ingress -> Real-time anomaly detection -> Model fine-tuning & Over-The-Air deployment.'
+    },
+    'E-Commerce & Retail Scale': {
+      defaultTitle: 'Global Omni-Channel Recommendation & Flash-Sale Core',
+      cloud: 'Amazon Web Services (AWS)',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Global Edge CDN + Serverless Container Core',
+      desc: 'CloudFront Edge WAF -> EKS Microservices Commerce Cluster -> Aurora Serverless multi-region catalog -> Personalization Vector Embedding engine.'
+    },
+    'Enterprise SaaS & Multi-Tenant Cloud': {
+      defaultTitle: 'Multi-Tenant B2B SaaS Isolation & Unified Observability Stack',
+      cloud: 'Google Cloud Platform (GCP)',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Multi-AZ Active-Passive High Availability',
+      desc: 'Tenant IAM RBAC ingress -> Isolated tenant database schemas -> Centralized Telemetry & Audit Log aggregator -> Master Agentic Admin Assistant.'
+    },
+    'Defense, Aerospace & Sovereign Cloud': {
+      defaultTitle: 'Air-Gapped Sovereign Defense Intelligence & Threat Synthesis Core',
+      cloud: 'Hybrid Multi-Cloud Architecture',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Air-Gapped Sovereign Enterprise Cloud',
+      desc: 'Air-gapped private sovereign enclave -> Zero-trust hardware enclave verification -> Multi-sensor satellite telemetry aggregation -> Offline LLM tactical advisory.'
+    },
+    'Energy, Smart Grid & Climate Tech': {
+      defaultTitle: 'Grid Telemetry Stream Ingestion & Renewable Load Balancing Stack',
+      cloud: 'Google Cloud Platform (GCP)',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Multi-AZ Active-Passive High Availability',
+      desc: 'Smart substation SCADA sensors -> Pub/Sub real-time ingress -> Apache Beam grid load balancing ETL -> Predictive battery storage dispatch model.'
+    },
+    'Automotive, Connected Mobility & Telematics': {
+      defaultTitle: 'Connected Vehicle Telematics & V2X Autonomous Command Bus',
+      cloud: 'Amazon Web Services (AWS)',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Global Edge CDN + Serverless Container Core',
+      desc: 'CAN bus vehicle telematics -> AWS IoT Core ingestion -> Timestream time-series storage -> Real-time driver safety alert & predictive maintenance loop.'
+    },
+    'Manufacturing, Supply Chain & Logistics 4.0': {
+      defaultTitle: 'Industry 4.0 Digital Twin Factory & Supply Chain Control Tower',
+      cloud: 'Google Cloud Platform (GCP)',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Multi-AZ Active-Passive High Availability',
+      desc: 'PLC factory floor sensors -> Edge IoT gateway -> Digital Twin 3D asset state machine -> Predictive bottleneck optimizer & ERP warehouse sync.'
+    },
+    'Media, Streaming & High-Throughput Content CDN': {
+      defaultTitle: 'Ultra-Low Latency Live Video Processing & Generative Localization CDN',
+      cloud: 'Google Cloud Platform (GCP)',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Global Edge CDN + Serverless Container Core',
+      desc: 'RTMP live camera stream -> Cloud Video Intelligence transcode -> Global Edge CDN distribution -> Automated LLM multilingual subtitle & caption generation.'
+    },
+    'EdTech, Research & Academic AI Compute': {
+      defaultTitle: 'High-Performance Research Compute Cluster & Personal AI Tutor Stack',
+      cloud: 'Google Cloud Platform (GCP)',
+      compliance: 'GDPR / PII Dynamic Data Masking',
+      topology: 'Multi-AZ Active-Passive High Availability',
+      desc: 'Student learning interaction telemetry -> Multi-agent personalized tutoring system -> Academic research knowledge graph -> Anonymized assessment store.'
+    },
+    'DevSecOps & Multi-Cloud': {
+      defaultTitle: 'Polyrepo DevSecOps GitOps CI/CD & Automated Red-Teaming Gateway',
+      cloud: 'Hybrid Multi-Cloud Architecture',
+      compliance: 'SOC2 Type II + Zero-Trust Network Perimeter',
+      topology: 'Multi-AZ Active-Passive High Availability',
+      desc: 'GitHub polyrepo PR trigger -> SonarQube SAST & Container CVE scan -> ArgoCD GitOps deployment to GKE/EKS -> Continuous AI security red-teaming.'
+    }
+  };
+
+  const handleDomainChange = (newDomain: string) => {
+    setDomain(newDomain);
+    const preset = DOMAIN_PRESETS[newDomain];
+    if (preset) {
+      if (!title || Object.values(DOMAIN_PRESETS).some(p => p.defaultTitle === title)) {
+        setTitle(preset.defaultTitle);
+      }
+      setCloudProvider(preset.cloud);
+      setComplianceTier(preset.compliance);
+      setDeploymentTopology(preset.topology);
+      if (!description || Object.values(DOMAIN_PRESETS).some(p => p.desc === description)) {
+        setDescription(preset.desc);
+      }
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -102,7 +212,7 @@ export function UseCaseIntakeModal({ isOpen, onClose, onSubmitUseCase }: UseCase
               </label>
               <select
                 value={domain}
-                onChange={(e) => setDomain(e.target.value)}
+                onChange={(e) => handleDomainChange(e.target.value)}
                 className="w-full bg-slate-950 border border-slate-700 focus:border-teal-400 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-100 outline-none cursor-pointer"
               >
                 <option value="FinTech & Banking">FinTech &amp; Banking</option>
@@ -145,7 +255,8 @@ export function UseCaseIntakeModal({ isOpen, onClose, onSubmitUseCase }: UseCase
                 <span>Deployment Topology</span>
               </label>
               <select
-                defaultValue="Multi-AZ Active-Passive High Availability"
+                value={deploymentTopology}
+                onChange={(e) => setDeploymentTopology(e.target.value)}
                 className="w-full bg-slate-950 border border-slate-700 focus:border-teal-400 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-100 outline-none cursor-pointer"
               >
                 <option value="Multi-AZ Active-Passive High Availability">Multi-AZ Active-Passive High Availability</option>
