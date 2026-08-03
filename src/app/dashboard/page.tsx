@@ -28,7 +28,8 @@ import {
   BookOpen,
   Upload,
   FileCode,
-  ShieldCheck
+  ShieldCheck,
+  ChevronDown
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
@@ -244,7 +245,7 @@ export default function Dashboard() {
   };
 
   // Filter and deduplicate diagrams based on search and unique IDs
-  const [expandedSubMenu, setExpandedSubMenu] = useState<string>('editor');
+  const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
   const filteredDiagrams = React.useMemo(() => {
     const seen = new Set<string>();
     return diagrams.filter(d => {
@@ -301,23 +302,37 @@ export default function Dashboard() {
           ].map((item) => {
             const Icon = item.icon;
             const isActive = item.id === 'dashboard';
+            const isExpanded = expandedSubMenu === item.id;
             
             return (
-              <div
-                key={item.id}
-                className="space-y-1"
-                onMouseEnter={() => setExpandedSubMenu(item.id)}
-              >
-                <Link href={item.href} className="block">
-                  <div className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
-                    isActive 
-                      ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
-                  }`}>
-                    <Icon className="w-4.5 h-4.5 shrink-0" />
-                    {isSidebarOpen && <span className="truncate">{item.name}</span>}
-                  </div>
-                </Link>
+              <div key={item.id} className="space-y-1">
+                <button
+                  type="button"
+                  onClick={() => setExpandedSubMenu(prev => prev === item.id ? null : item.id)}
+                  className="w-full block text-left"
+                >
+                  <Link href={item.href} className="block">
+                    <div className={`w-full flex items-center justify-between p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
+                      isActive 
+                        ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
+                    }`}>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Icon className="w-4.5 h-4.5 shrink-0" />
+                        {isSidebarOpen && <span className="truncate">{item.name}</span>}
+                      </div>
+                      {isSidebarOpen && (
+                        <span className="shrink-0 text-xs">
+                          {isExpanded ? (
+                            <ChevronDown className="w-3.5 h-3.5 opacity-80" />
+                          ) : (
+                            <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                </button>
 
                 {/* Collapsible Nested Sub-Menu under Design Canvas */}
                 {item.id === 'editor' && expandedSubMenu === 'editor' && isSidebarOpen && (

@@ -257,7 +257,7 @@ function WorkspaceContent() {
   const [rightVersionSelection, setRightVersionSelection] = useState<string>('v2_current');
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
   const [templateCategoryFilter, setTemplateCategoryFilter] = useState<'all' | 'business' | 'technical'>('all');
-  const [expandedSubMenu, setExpandedSubMenu] = useState<string>('editor');
+  const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
   const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
   const [isExecutiveSummaryOpen, setIsExecutiveSummaryOpen] = useState(false);
 
@@ -3477,22 +3477,55 @@ function WorkspaceContent() {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
             
+            const isExpanded = expandedSubMenu === item.id;
             const buttonContent = (
-              <div className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
+              <div className={`w-full flex items-center justify-between p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
                 isActive 
                   ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
                   : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
               }`}>
-                <Icon className="w-4.5 h-4.5 shrink-0" />
-                {isSidebarOpen && <span className="truncate">{item.name}</span>}
+                <div className="flex items-center gap-3 min-w-0">
+                  <Icon className="w-4.5 h-4.5 shrink-0" />
+                  {isSidebarOpen && <span className="truncate">{item.name}</span>}
+                </div>
+                {isSidebarOpen && (
+                  <span className="shrink-0 text-xs">
+                    {isExpanded ? (
+                      <ChevronDown className="w-3.5 h-3.5 opacity-80" />
+                    ) : (
+                      <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+                    )}
+                  </span>
+                )}
               </div>
             );
 
             if (item.href) {
               return (
-                <Link key={item.id} href={item.href} className="block">
-                  {buttonContent}
-                </Link>
+                <div key={item.id} className="space-y-1">
+                  <Link href={item.href} className="block">
+                    {buttonContent}
+                  </Link>
+                  {/* Collapsible Nested Sub-Menu under Dashboard */}
+                  {item.id === 'dashboard' && isExpanded && isSidebarOpen && (
+                    <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-cyan-500/40 ml-4">
+                      <Link
+                        href="/dashboard"
+                        className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all cursor-pointer text-left"
+                      >
+                        <BarChart3 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                        <span>📈 Operations Matrix</span>
+                      </Link>
+                      <Link
+                        href="/dashboard"
+                        className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                      >
+                        <LayoutGrid className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                        <span>📁 Active Workspaces Grid</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
               );
             }
 
@@ -3500,11 +3533,10 @@ function WorkspaceContent() {
               <div
                 key={item.id}
                 className="space-y-1"
-                onMouseEnter={() => setExpandedSubMenu(item.id)}
               >
                 <button
                   onClick={() => {
-                    setExpandedSubMenu(item.id);
+                    setExpandedSubMenu(prev => prev === item.id ? null : item.id);
                     const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
                     setCurrentTab(newTab);
                     if (newTab === 'walkthrough') {
