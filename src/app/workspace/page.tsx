@@ -49,6 +49,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import { CloudCostModal } from '@/components/workspace/CloudCostModal';
+import { ArchitectureCodeViewerModal } from '@/components/workspace/ArchitectureCodeViewerModal';
 import { estimateCloudArchitectureCost } from '@/lib/cost/cloudCostEstimator';
 import { exportPythonDiagramsScript, exportD2LangScript } from '@/lib/export/architectureAsCodeExporter';
 import { DiagramNodeItem, parseXmlNodesAndEdges, formatRelativeTime } from '@/lib/graph/xmlNodesParser';
@@ -743,6 +744,8 @@ function WorkspaceContent() {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isComposeOpen, setIsComposeOpen] = useState(false);
+  const [isCodeViewerOpen, setIsCodeViewerOpen] = useState(false);
+  const [codeViewerFormat, setCodeViewerFormat] = useState<'python' | 'd2'>('python');
   
 
   
@@ -3714,26 +3717,12 @@ function WorkspaceContent() {
                         value=""
                         onChange={(e) => {
                           const val = e.target.value;
-                          const currentXml = activeVersion?.xml_content || activeDiagram?.versions?.[0]?.xml_content || '';
-                          const cleanName = (activeDiagram?.name || 'Architecture').replace(/\s+/g, '_');
                           if (val === 'python') {
-                            const pyCode = exportPythonDiagramsScript(currentXml, activeDiagram?.name || 'Cloud Architecture');
-                            const blob = new Blob([pyCode], { type: 'text/x-python' });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${cleanName}_diagrams.py`;
-                            a.click();
-                            URL.revokeObjectURL(url);
+                            setCodeViewerFormat('python');
+                            setIsCodeViewerOpen(true);
                           } else if (val === 'd2') {
-                            const d2Code = exportD2LangScript(currentXml, activeDiagram?.name || 'Cloud Architecture');
-                            const blob = new Blob([d2Code], { type: 'text/plain' });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${cleanName}_architecture.d2`;
-                            a.click();
-                            URL.revokeObjectURL(url);
+                            setCodeViewerFormat('d2');
+                            setIsCodeViewerOpen(true);
                           } else if (val === 'terraform') {
                             setIsTerraformModalOpen(true);
                           } else if (val === 'slides') {
@@ -5117,6 +5106,14 @@ function WorkspaceContent() {
         isOpen={isCostModalOpen}
         onClose={() => setIsCostModalOpen(false)}
         costReport={costReport}
+      />
+
+      <ArchitectureCodeViewerModal
+        isOpen={isCodeViewerOpen}
+        onClose={() => setIsCodeViewerOpen(false)}
+        xmlContent={activeVersion?.xml_content || activeDiagram?.versions?.[0]?.xml_content || ''}
+        diagramName={activeDiagram?.name || 'Cloud Architecture'}
+        initialFormat={codeViewerFormat}
       />
 
       {/* 9. Password Setup & Browser Auto-Login Modal */}
