@@ -40,6 +40,10 @@ export function ExecutiveStrategicSummaryModal({
 
   if (!isOpen) return null;
 
+  const cleanTitle = (diagramTitle || 'Enterprise Architecture Platform')
+    .replace(/^\d+\.\s*/, '')
+    .trim();
+
   const handleExportBoardPptx = async () => {
     setIsGeneratingDeck(true);
     try {
@@ -53,7 +57,7 @@ export function ExecutiveStrategicSummaryModal({
         x: 0.8, y: 0.8, w: 11.5, h: 0.4,
         fontSize: 14, color: '14B8A6', bold: true
       });
-      slide1.addText(diagramTitle || 'Enterprise Architecture Platform', {
+      slide1.addText(cleanTitle, {
         x: 0.8, y: 1.5, w: 11.5, h: 1.2,
         fontSize: 32, color: 'FFFFFF', bold: true
       });
@@ -78,7 +82,7 @@ export function ExecutiveStrategicSummaryModal({
         fontSize: 15, color: 'E2E8F0'
       });
 
-      await pptx.writeFile({ fileName: `${(diagramTitle || 'Enterprise_Architecture').toLowerCase().replace(/[^a-z0-9]/g, '_')}_Board_Deck_16x9.pptx` });
+      await pptx.writeFile({ fileName: `${cleanTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}_Board_Deck_16x9.pptx` });
 
       // Open visual deck preview in browser tab
       const win = window.open('', '_blank');
@@ -87,7 +91,7 @@ export function ExecutiveStrategicSummaryModal({
           <!DOCTYPE html>
           <html>
             <head>
-              <title>${diagramTitle} - Executive Board Presentation Deck</title>
+              <title>${cleanTitle} - Executive Board Presentation Deck</title>
               <style>
                 body { background: #070A13; color: #FFFFFF; font-family: Arial, sans-serif; padding: 40px; display: flex; flex-direction: column; align-items: center; }
                 .slide { width: 100%; max-width: 1200px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 20px; padding: 40px; margin-bottom: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); }
@@ -99,7 +103,7 @@ export function ExecutiveStrategicSummaryModal({
             <body>
               <div class="slide">
                 <span class="tag">C-Suite & Board of Directors Executive Brief</span>
-                <h1>${diagramTitle}</h1>
+                <h1>${cleanTitle}</h1>
                 <p style="color:#94A3B8; font-size:16px;">Target SLA: 99.99% Multi-AZ Availability | Governance: SOC2 Type II + HIPAA</p>
                 <div class="kpi"><b style="color:#10B981; font-size:24px;">90% Cost Cut</b><br><span style="color:#94A3B8; font-size:12px;">Ephemeral Prompt Caching</span></div>
                 <div class="kpi"><b style="color:#38BDF8; font-size:24px;">$1,450 / mo</b><br><span style="color:#94A3B8; font-size:12px;">Baseline Runtime Envelope</span></div>
@@ -122,13 +126,13 @@ export function ExecutiveStrategicSummaryModal({
     const memoText = `# EXECUTIVE TECHNICAL IMPLEMENTATION DIRECTIVE
 **To:** Principal Engineers, Engineering Managers & Technical Leads
 **From:** Office of the Chief Technology Officer / Chief Architect
-**System:** ${diagramTitle}
+**System:** ${cleanTitle}
 **Date:** ${new Date().toLocaleDateString()}
 
 ---
 
 ## 1. STRATEGIC OBJECTIVE
-Deploy a multi-tier, production-grade architecture for **${diagramTitle}** adhering strictly to enterprise uptime SLAs (99.99%), zero-trust security perimeters, and automated AI cost optimization.
+Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adhering strictly to enterprise uptime SLAs (99.99%), zero-trust security perimeters, and automated AI cost optimization.
 
 ## 2. MANDATORY TECHNICAL GUARDRAILS
 - **Zero-Trust Connectivity**: All internal microservice communication must traverse private VPC subnets with mTLS and VPC Service Controls (VPC-SC).
@@ -168,7 +172,7 @@ Deploy a multi-tier, production-grade architecture for **${diagramTitle}** adher
                 </span>
               </div>
               <h2 className="text-xl md:text-2xl font-black text-white mt-0.5">
-                {diagramTitle || 'Enterprise Architecture'}
+                {cleanTitle}
               </h2>
             </div>
           </div>
