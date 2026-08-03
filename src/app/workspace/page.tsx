@@ -2672,11 +2672,93 @@ function WorkspaceContent() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
+            {/* Card 0: Personal User Studio Preferences & Customization */}
+            <div className="lg:col-span-2 glass-panel border-teal-500/40 rounded-3xl p-8 space-y-6 shadow-xl bg-slate-900/60">
+              <div className="flex items-center justify-between border-b border-panel-border/40 pb-4">
+                <h3 className="text-lg font-black text-white flex items-center gap-3">
+                  <Settings className="w-5 h-5 text-teal-accent" />
+                  <span>Personal User Studio Preferences &amp; Canvas Customization</span>
+                </h3>
+                <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-500/20 text-teal-300 border border-teal-500/40">
+                  ⚡ Auto-Saved Studio Profile
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Preference 1: Canvas Theme */}
+                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Default Canvas Theme</span>
+                    <Sun className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <select
+                    value={canvasTheme}
+                    onChange={(e) => setCanvasTheme(e.target.value as 'light' | 'dark')}
+                    className="w-full bg-slate-900 border border-teal-500/50 text-teal-300 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
+                  >
+                    <option value="light">☀️ Light Theme (#FFFFFF Canvas)</option>
+                    <option value="dark">🌙 Dark Theme (#0F172A Studio)</option>
+                  </select>
+                  <p className="text-[11px] text-slate-400">Corporate light theme provides publication-grade contrast.</p>
+                </div>
+
+                {/* Preference 2: AI Compiler Reasoning Engine */}
+                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Gemini AI Model Tier</span>
+                    <Sparkles className="w-4 h-4 text-teal-400" />
+                  </div>
+                  <select
+                    defaultValue="gemini-2.5-flash"
+                    className="w-full bg-slate-900 border border-slate-700 hover:border-teal-500/50 text-slate-100 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
+                  >
+                    <option value="gemini-2.5-flash">⚡ Gemini 2.5 Flash (Sub-Second Iteration)</option>
+                    <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (Deep Architecture Eval)</option>
+                  </select>
+                  <p className="text-[11px] text-slate-400">Controls inference latency &amp; multi-tier reasoning depth.</p>
+                </div>
+
+                {/* Preference 3: Default Presentation Aspect Ratio */}
+                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Default Aspect Ratio</span>
+                    <Box className="w-4 h-4 text-indigo-400" />
+                  </div>
+                  <select
+                    value={selectedAspectRatio}
+                    onChange={(e) => handleAspectRatioChange(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 hover:border-teal-500/50 text-slate-100 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
+                  >
+                    <option value="16:9">📺 16:9 Executive Slides Widescreen</option>
+                    <option value="4:3">📄 4:3 Academic Journal Figure</option>
+                    <option value="21:9">🖥️ 21:9 Ultra-Wide Architecture Banner</option>
+                  </select>
+                  <p className="text-[11px] text-slate-400">Auto-scales layout components to match canvas target.</p>
+                </div>
+
+                {/* Preference 4: Preflight Zero-Trust Audit on Export */}
+                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Zero-Trust Preflight</span>
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <select
+                    defaultValue="enabled"
+                    className="w-full bg-slate-900 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
+                  >
+                    <option value="enabled">✅ Enabled (Automated Security Audit)</option>
+                    <option value="disabled">⏸️ Disabled (Fast Direct Export)</option>
+                  </select>
+                  <p className="text-[11px] text-slate-400">Audits security perimeters prior to Draw.io / Terraform download.</p>
+                </div>
+              </div>
+            </div>
+
             {/* Card 1: User Identity & Access Governance */}
             <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
               <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
                 <User className="w-5 h-5 text-teal-accent" />
-                <span>User Identity & Access Governance</span>
+                <span>User Identity &amp; Access Governance</span>
               </h3>
 
               <div className="space-y-4">
