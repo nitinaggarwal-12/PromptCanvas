@@ -3508,10 +3508,15 @@ function WorkspaceContent() {
                 )}
                 
                 <div className="flex items-center gap-1.5 shrink-0 text-xs">
-                  <Link href="/dashboard" className="text-slate-400 hover:text-teal-300 font-bold transition-colors flex items-center gap-1">
-                    <LayoutGrid className="w-3.5 h-3.5 text-teal-400" />
-                    <span className="hidden lg:inline">Dashboard</span>
-                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentTab('editor')}
+                    className="text-teal-300 hover:text-teal-200 font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Network className="w-4 h-4 text-teal-400" />
+                    <span className="hidden lg:inline font-extrabold tracking-wide">Design Canvas</span>
+                  </button>
+                  <span className="text-slate-600 font-bold">/</span>
                   {/* Single Unified Saved Designs Dropdown replacing long diagram title & list */}
                   <div className="relative inline-flex items-center shrink-0">
                     <select
