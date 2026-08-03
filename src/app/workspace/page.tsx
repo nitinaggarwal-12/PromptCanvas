@@ -71,6 +71,7 @@ import { PasswordSetupModal } from '@/components/PasswordSetupModal';
 import { AspectRatioSelector } from '@/components/AspectRatioSelector';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { getExactMultiAgentLangGraphReferenceXml } from '@/lib/newEnterpriseReferenceXmls';
 import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
 import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
@@ -5601,79 +5602,47 @@ function WorkspaceContent() {
                     </select>
                   </div>
 
-                  {/* Left Selected Version Details */}
-                  {leftVersionSelection === 'v1_initial' ? (
-                    <div className="flex-1 space-y-3">
-                      <div className="bg-slate-950/90 border border-rose-500/30 rounded-xl p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-black text-sm text-rose-300">Version 1.0 (Initial Technical Topology)</span>
-                          <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold">Stretched &amp; Overlapping</span>
-                        </div>
-                        <ul className="text-xs text-slate-300 space-y-2">
-                          <li className="flex items-start gap-2">
-                            <span className="text-rose-400 font-bold shrink-0">❌ Blue Line:</span>
-                            <span>Crossed top border of <code>[2b] Public Subnet</code> title.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-rose-400 font-bold shrink-0">❌ Green Label:</span>
-                            <span><code>Outbound Access</code> overlapped left border of <code>[3] NAT Gateway</code>.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-rose-400 font-bold shrink-0">❌ Component Width:</span>
-                            <span>Stretched wide boxes (<code>480px</code>) crowding subnets.</span>
-                          </li>
-                        </ul>
-                      </div>
+                  {/* Left Selected Version Visual Preview & Details */}
+                  <div className="flex-1 flex flex-col gap-3">
+                    <div className="h-[320px] rounded-xl border border-slate-700 bg-white overflow-hidden relative">
+                      <iframe
+                        key={`left-preview-${leftVersionSelection}`}
+                        src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json"
+                        className="w-full h-full border-none"
+                        onLoad={(e) => {
+                          const target = e.currentTarget;
+                          const xmlToLoad =
+                            leftVersionSelection === 'v1_initial'
+                              ? getExactMultiAgentLangGraphReferenceXml().replace('w="280"', 'w="480"')
+                              : leftVersionSelection === 'v2_current'
+                              ? getExactMultiAgentLangGraphReferenceXml()
+                              : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === leftVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
+                          setTimeout(() => {
+                            try {
+                              target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: xmlToLoad, fit: true }), '*');
+                            } catch(err) {}
+                          }, 500);
+                        }}
+                      />
                     </div>
-                  ) : leftVersionSelection === 'v2_current' ? (
-                    <div className="flex-1 space-y-3">
-                      <div className="bg-slate-950/90 border border-emerald-500/30 rounded-xl p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-black text-sm text-emerald-300">Version 2.0 (Pixel-Perfect Zero-Collision)</span>
+                    {leftVersionSelection === 'v1_initial' ? (
+                      <div className="bg-slate-950/90 border border-rose-500/30 rounded-xl p-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="font-black text-xs text-rose-300">Version 1.0 (Initial Technical Topology)</span>
+                          <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold">Line Overlaps</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300">Stretched boxes (<code>480px</code>) &amp; connector line overlaps at <code>[2b] Public Subnet</code> header and <code>[3] NAT Gateway</code>.</p>
+                      </div>
+                    ) : (
+                      <div className="bg-slate-950/90 border border-emerald-500/30 rounded-xl p-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="font-black text-xs text-emerald-300">Version 2.0 (Pixel-Perfect Clearance)</span>
                           <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">100% Clear</span>
                         </div>
-                        <ul className="text-xs text-slate-300 space-y-2">
-                          <li className="flex items-start gap-2">
-                            <span className="text-emerald-400 font-bold shrink-0">✅ Entrance Channel:</span>
-                            <span>Dedicated <code>40px</code> left entrance channel at <code>x=120</code>.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-emerald-400 font-bold shrink-0">✅ Rhombus Corridor:</span>
-                            <span>Wide <code>80px</code> horizontal gap (<code>x=375..455</code>) with white background mask pill.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-emerald-400 font-bold shrink-0">✅ Compact Boxes:</span>
-                            <span>Proportional components (<code>280..320px</code>) with breathing space.</span>
-                          </li>
-                        </ul>
+                        <p className="text-[11px] text-slate-300">Dedicated <code>40px</code> left entrance channel at <code>x=120</code>, wide <code>80px</code> horizontal gap, and compact <code>280..320px</code> boxes.</p>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="flex-1 space-y-3">
-                      {(() => {
-                        const selVer = (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === leftVersionSelection);
-                        return selVer ? (
-                          <div className="bg-slate-950/90 border border-slate-700 rounded-xl p-4 space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="font-bold text-sm text-slate-100">Workspace Version Record</span>
-                              <span className="text-xs text-slate-400">{new Date(selVer.created_at).toLocaleString()}</span>
-                            </div>
-                            <p className="text-xs text-slate-300">Saved Diagram ID: <code className="text-teal-300">{selVer.diagram_id}</code></p>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setActiveVersion(selVer);
-                                setIsVersionDiffModalOpen(false);
-                              }}
-                              className="w-full py-2 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 font-bold text-xs transition-all cursor-pointer"
-                            >
-                              Load This Selected Left Version to Active Canvas
-                            </button>
-                          </div>
-                        ) : null;
-                      })()}
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 {/* RIGHT PANEL with Version Selection Dropdown */}
@@ -5695,79 +5664,47 @@ function WorkspaceContent() {
                     </select>
                   </div>
 
-                  {/* Right Selected Version Details */}
-                  {rightVersionSelection === 'v2_current' ? (
-                    <div className="flex-1 space-y-3">
-                      <div className="bg-slate-950/90 border border-emerald-500/40 rounded-xl p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-black text-sm text-emerald-300">Version 2.0 (Pixel-Perfect Zero-Collision)</span>
+                  {/* Right Selected Version Visual Preview & Details */}
+                  <div className="flex-1 flex flex-col gap-3">
+                    <div className="h-[320px] rounded-xl border border-teal-500/40 bg-white overflow-hidden relative">
+                      <iframe
+                        key={`right-preview-${rightVersionSelection}`}
+                        src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json"
+                        className="w-full h-full border-none"
+                        onLoad={(e) => {
+                          const target = e.currentTarget;
+                          const xmlToLoad =
+                            rightVersionSelection === 'v1_initial'
+                              ? getExactMultiAgentLangGraphReferenceXml().replace('w="280"', 'w="480"')
+                              : rightVersionSelection === 'v2_current'
+                              ? getExactMultiAgentLangGraphReferenceXml()
+                              : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === rightVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
+                          setTimeout(() => {
+                            try {
+                              target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: xmlToLoad, fit: true }), '*');
+                            } catch(err) {}
+                          }, 500);
+                        }}
+                      />
+                    </div>
+                    {rightVersionSelection === 'v2_current' ? (
+                      <div className="bg-slate-950/90 border border-emerald-500/40 rounded-xl p-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="font-black text-xs text-emerald-300">Version 2.0 (Pixel-Perfect Zero-Collision)</span>
                           <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Live Production</span>
                         </div>
-                        <ul className="text-xs text-slate-300 space-y-2">
-                          <li className="flex items-start gap-2">
-                            <span className="text-emerald-400 font-bold shrink-0">✅ Entrance Channel:</span>
-                            <span>Dedicated <code>40px</code> left entrance channel at <code>x=120</code>.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-emerald-400 font-bold shrink-0">✅ Rhombus Corridor:</span>
-                            <span>Wide <code>80px</code> horizontal gap (<code>x=375..455</code>) with white background mask pill.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-emerald-400 font-bold shrink-0">✅ Compact Boxes:</span>
-                            <span>Proportional components (<code>280..320px</code>) with breathing space.</span>
-                          </li>
-                        </ul>
+                        <p className="text-[11px] text-slate-300">Dedicated <code>40px</code> left entrance channel at <code>x=120</code>, wide <code>80px</code> horizontal gap, and compact <code>280..320px</code> boxes.</p>
                       </div>
-                    </div>
-                  ) : rightVersionSelection === 'v1_initial' ? (
-                    <div className="flex-1 space-y-3">
-                      <div className="bg-slate-950/90 border border-rose-500/30 rounded-xl p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-black text-sm text-rose-300">Version 1.0 (Initial Technical Topology)</span>
-                          <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold">Stretched &amp; Overlapping</span>
+                    ) : (
+                      <div className="bg-slate-950/90 border border-rose-500/30 rounded-xl p-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="font-black text-xs text-rose-300">Version 1.0 (Initial Technical Topology)</span>
+                          <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold">Line Overlaps</span>
                         </div>
-                        <ul className="text-xs text-slate-300 space-y-2">
-                          <li className="flex items-start gap-2">
-                            <span className="text-rose-400 font-bold shrink-0">❌ Blue Line:</span>
-                            <span>Crossed top border of <code>[2b] Public Subnet</code> title.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-rose-400 font-bold shrink-0">❌ Green Label:</span>
-                            <span><code>Outbound Access</code> overlapped left border of <code>[3] NAT Gateway</code>.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-rose-400 font-bold shrink-0">❌ Component Width:</span>
-                            <span>Stretched wide boxes (<code>480px</code>) crowding subnets.</span>
-                          </li>
-                        </ul>
+                        <p className="text-[11px] text-slate-300">Stretched boxes (<code>480px</code>) &amp; connector line overlaps at <code>[2b] Public Subnet</code> header and <code>[3] NAT Gateway</code>.</p>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="flex-1 space-y-3">
-                      {(() => {
-                        const selVer = (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === rightVersionSelection);
-                        return selVer ? (
-                          <div className="bg-slate-950/90 border border-teal-500/30 rounded-xl p-4 space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="font-bold text-sm text-teal-300">Workspace Version Record</span>
-                              <span className="text-xs text-slate-400">{new Date(selVer.created_at).toLocaleString()}</span>
-                            </div>
-                            <p className="text-xs text-slate-300">Saved Diagram ID: <code className="text-teal-300">{selVer.diagram_id}</code></p>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setActiveVersion(selVer);
-                                setIsVersionDiffModalOpen(false);
-                              }}
-                              className="w-full py-2 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 font-bold text-xs transition-all cursor-pointer"
-                            >
-                              Load This Selected Right Version to Active Canvas
-                            </button>
-                          </div>
-                        ) : null;
-                      })()}
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
 
