@@ -130,6 +130,13 @@ export function ExecutiveStrategicSummaryModal({
                 .chart-bar-fill { height: 100%; display: flex; align-items: center; padding-left: 14px; font-weight: 900; font-size: 13px; border-radius: 10px; }
                 .badge { display: inline-block; background: #065F46; color: #A7F3D0; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 99px; border: 1px solid #10B981; }
                 .footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1E293B; padding-top: 16px; color: #64748B; font-size: 12px; font-weight: 600; }
+                @media print {
+                  @page { size: landscape; margin: 0; }
+                  body { overflow: visible !important; width: auto !important; height: auto !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background: #070A13 !important; }
+                  .topbar { display: none !important; }
+                  .slide-stage { padding: 0 !important; display: block !important; }
+                  .slide { display: flex !important; width: 100vw !important; height: 100vh !important; max-width: none !important; max-height: none !important; border-radius: 0 !important; border: none !important; page-break-after: always !important; break-after: page !important; box-shadow: none !important; }
+                }
               </style>
             </head>
             <body>
