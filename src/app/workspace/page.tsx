@@ -5552,198 +5552,151 @@ function WorkspaceContent() {
         </div>
       )}
 
-      {/* Interactive Version History & Visual Diff Modal */}
+      {/* Interactive Edge-to-Edge Fullscreen Version History & Visual Diff Modal */}
       {isVersionDiffModalOpen && (
-        <div className="fixed inset-0 z-[1000] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0b101d] border border-teal-500/30 rounded-2xl w-full max-w-6xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800/80 bg-slate-900/60">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400">
-                  <FileCode className="w-5 h-5" />
+        <div className="fixed inset-0 z-[1000] bg-[#070a13] flex flex-col w-screen h-screen overflow-hidden p-2 gap-2">
+          {/* Header Bar - Reclaimed Space */}
+          <div className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-teal-500/30 bg-[#0b101d] shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400">
+                <FileCode className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-black text-slate-100 uppercase tracking-wide">🔍 FULL-SCREEN DIAGRAM VERSION DIFF &amp; GEOMETRIC INTEGRITY COMPARATOR</h3>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">Zero-Collision v2.0 Active</span>
                 </div>
-                <div>
-                  <h3 className="text-base font-black text-slate-100 flex items-center gap-2">
-                    <span>🔍 DIAGRAM VERSION HISTORY &amp; VISUAL GEOMETRIC DIFF</span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-500/30">v2.0 Active</span>
-                  </h3>
-                  <p className="text-xs text-slate-400">Compare architectural iterations, visual line-routing improvements, and restore any previous version.</p>
+                <p className="text-[11px] text-slate-400">Side-by-Side Architectural Visual Comparison • Reclaimed Edge-to-Edge Desktop Layout</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsVersionDiffModalOpen(false)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 text-xs font-bold transition-all cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+              <span>Close Diff Workspace</span>
+            </button>
+          </div>
+
+          {/* Dual Edge-to-Edge Side-by-Side Viewport Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 flex-1 min-h-0">
+            {/* LEFT PANEL with Version Selection Dropdown & Highlighted Defects */}
+            <div className="bg-[#0b101d] border border-slate-700/80 rounded-xl p-2.5 flex flex-col min-h-0">
+              <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-800 shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[11px] font-black border border-rose-500/30">LEFT VIEWPORT</span>
+                  <span className="text-xs font-bold text-slate-300">Select Version:</span>
+                </div>
+                <select
+                  value={leftVersionSelection}
+                  onChange={(e) => setLeftVersionSelection(e.target.value)}
+                  className="bg-slate-950 border border-rose-500/40 focus:border-rose-400 text-rose-200 rounded-lg px-2.5 py-1 text-xs font-bold cursor-pointer"
+                >
+                  <option value="v1_initial">🔴 Version 1.0 Benchmark (Stretched Boxes &amp; Overlaps)</option>
+                  <option value="v2_current">🟢 Version 2.0 Benchmark (Pixel-Perfect Zero-Collision)</option>
+                  {(activeDiagram?.versions || []).map((v: DiagramVersion, idx: number) => (
+                    <option key={v.id} value={v.id}>
+                      📌 Workspace Version #{v.version_number || ((activeDiagram?.versions || []).length - idx)} ({new Date(v.created_at).toLocaleTimeString()})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Bold Visual Highlight Callout Banner for LEFT PANEL */}
+              <div className="grid grid-cols-3 gap-1.5 mb-2 shrink-0">
+                <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium">
+                  <strong>🔴 Overlap 1:</strong> Ingress vector sliced across <code>[2b] Public Subnet</code> title.
+                </div>
+                <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium">
+                  <strong>🔴 Overlap 2:</strong> <code>Outbound Access</code> label sat on <code>[3] NAT</code> border.
+                </div>
+                <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium">
+                  <strong>🔴 Proportions:</strong> Stretched <code>480px</code> boxes crowded subnets.
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsVersionDiffModalOpen(false)}
-                className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 transition-all cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+
+              {/* Full-Height Edge-to-Edge Left Visual Canvas Viewport */}
+              <div className="flex-1 rounded-lg border border-slate-700 bg-white overflow-hidden relative min-h-0">
+                <iframe
+                  key={`left-preview-${leftVersionSelection}`}
+                  src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json&chrome=0"
+                  className="w-full h-full border-none"
+                  onLoad={(e) => {
+                    const target = e.currentTarget;
+                    const xmlToLoad =
+                      leftVersionSelection === 'v1_initial'
+                        ? getExactMultiAgentLangGraphReferenceXml().replace('w="280"', 'w="480"')
+                        : leftVersionSelection === 'v2_current'
+                        ? getExactMultiAgentLangGraphReferenceXml()
+                        : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === leftVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
+                    setTimeout(() => {
+                      try {
+                        target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: xmlToLoad, fit: true }), '*');
+                      } catch(err) {}
+                    }, 500);
+                  }}
+                />
+              </div>
             </div>
 
-            {/* Content: Side-by-Side Visual Diff Comparison */}
-            <div className="p-6 overflow-y-auto space-y-6 flex-1">
-              {/* Dual Version Comparison Cards with Dropdowns in BOTH Panels */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* LEFT PANEL with Version Selection Dropdown */}
-                <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 flex flex-col">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-slate-800">
-                    <span className="font-bold text-xs uppercase tracking-wider text-slate-400">LEFT PANEL VERSION:</span>
-                    <select
-                      value={leftVersionSelection}
-                      onChange={(e) => setLeftVersionSelection(e.target.value)}
-                      className="bg-slate-950 border border-slate-600 focus:border-teal-400 text-slate-100 rounded-lg px-3 py-1.5 text-xs font-bold cursor-pointer"
-                    >
-                      <option value="v1_initial">🔴 Version 1.0 Benchmark (Stretched Boxes &amp; Overlaps)</option>
-                      <option value="v2_current">🟢 Version 2.0 Benchmark (Pixel-Perfect Zero-Collision)</option>
-                      {(activeDiagram?.versions || []).map((v: DiagramVersion, idx: number) => (
-                        <option key={v.id} value={v.id}>
-                          📌 Workspace Version #{v.version_number || ((activeDiagram?.versions || []).length - idx)} ({new Date(v.created_at).toLocaleTimeString()})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Left Selected Version Visual Preview & Details */}
-                  <div className="flex-1 flex flex-col gap-3">
-                    <div className="h-[320px] rounded-xl border border-slate-700 bg-white overflow-hidden relative">
-                      <iframe
-                        key={`left-preview-${leftVersionSelection}`}
-                        src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json"
-                        className="w-full h-full border-none"
-                        onLoad={(e) => {
-                          const target = e.currentTarget;
-                          const xmlToLoad =
-                            leftVersionSelection === 'v1_initial'
-                              ? getExactMultiAgentLangGraphReferenceXml().replace('w="280"', 'w="480"')
-                              : leftVersionSelection === 'v2_current'
-                              ? getExactMultiAgentLangGraphReferenceXml()
-                              : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === leftVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
-                          setTimeout(() => {
-                            try {
-                              target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: xmlToLoad, fit: true }), '*');
-                            } catch(err) {}
-                          }, 500);
-                        }}
-                      />
-                    </div>
-                    {leftVersionSelection === 'v1_initial' ? (
-                      <div className="bg-slate-950/90 border border-rose-500/30 rounded-xl p-3">
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="font-black text-xs text-rose-300">Version 1.0 (Initial Technical Topology)</span>
-                          <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold">Line Overlaps</span>
-                        </div>
-                        <p className="text-[11px] text-slate-300">Stretched boxes (<code>480px</code>) &amp; connector line overlaps at <code>[2b] Public Subnet</code> header and <code>[3] NAT Gateway</code>.</p>
-                      </div>
-                    ) : (
-                      <div className="bg-slate-950/90 border border-emerald-500/30 rounded-xl p-3">
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="font-black text-xs text-emerald-300">Version 2.0 (Pixel-Perfect Clearance)</span>
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">100% Clear</span>
-                        </div>
-                        <p className="text-[11px] text-slate-300">Dedicated <code>40px</code> left entrance channel at <code>x=120</code>, wide <code>80px</code> horizontal gap, and compact <code>280..320px</code> boxes.</p>
-                      </div>
-                    )}
-                  </div>
+            {/* RIGHT PANEL with Version Selection Dropdown & Highlighted Resolutions */}
+            <div className="bg-[#0b101d] border border-teal-500/50 rounded-xl p-2.5 flex flex-col min-h-0">
+              <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-800 shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[11px] font-black border border-emerald-500/30">RIGHT VIEWPORT</span>
+                  <span className="text-xs font-bold text-slate-300">Select Version:</span>
                 </div>
+                <select
+                  value={rightVersionSelection}
+                  onChange={(e) => setRightVersionSelection(e.target.value)}
+                  className="bg-slate-950 border border-teal-500/60 focus:border-teal-400 text-teal-300 rounded-lg px-2.5 py-1 text-xs font-bold cursor-pointer"
+                >
+                  <option value="v2_current">🟢 Version 2.0 Benchmark (Pixel-Perfect Zero-Collision)</option>
+                  <option value="v1_initial">🔴 Version 1.0 Benchmark (Stretched Boxes &amp; Overlaps)</option>
+                  {(activeDiagram?.versions || []).map((v: DiagramVersion, idx: number) => (
+                    <option key={v.id} value={v.id}>
+                      📌 Workspace Version #{v.version_number || ((activeDiagram?.versions || []).length - idx)} ({new Date(v.created_at).toLocaleTimeString()})
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                {/* RIGHT PANEL with Version Selection Dropdown */}
-                <div className="bg-slate-900/80 border border-teal-500/50 rounded-xl p-4 flex flex-col">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-slate-800">
-                    <span className="font-bold text-xs uppercase tracking-wider text-teal-400">RIGHT PANEL VERSION:</span>
-                    <select
-                      value={rightVersionSelection}
-                      onChange={(e) => setRightVersionSelection(e.target.value)}
-                      className="bg-slate-950 border border-teal-500/60 focus:border-teal-400 text-teal-300 rounded-lg px-3 py-1.5 text-xs font-bold cursor-pointer"
-                    >
-                      <option value="v2_current">🟢 Version 2.0 Benchmark (Pixel-Perfect Zero-Collision)</option>
-                      <option value="v1_initial">🔴 Version 1.0 Benchmark (Stretched Boxes &amp; Overlaps)</option>
-                      {(activeDiagram?.versions || []).map((v: DiagramVersion, idx: number) => (
-                        <option key={v.id} value={v.id}>
-                          📌 Workspace Version #{v.version_number || ((activeDiagram?.versions || []).length - idx)} ({new Date(v.created_at).toLocaleTimeString()})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Right Selected Version Visual Preview & Details */}
-                  <div className="flex-1 flex flex-col gap-3">
-                    <div className="h-[320px] rounded-xl border border-teal-500/40 bg-white overflow-hidden relative">
-                      <iframe
-                        key={`right-preview-${rightVersionSelection}`}
-                        src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json"
-                        className="w-full h-full border-none"
-                        onLoad={(e) => {
-                          const target = e.currentTarget;
-                          const xmlToLoad =
-                            rightVersionSelection === 'v1_initial'
-                              ? getExactMultiAgentLangGraphReferenceXml().replace('w="280"', 'w="480"')
-                              : rightVersionSelection === 'v2_current'
-                              ? getExactMultiAgentLangGraphReferenceXml()
-                              : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === rightVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
-                          setTimeout(() => {
-                            try {
-                              target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: xmlToLoad, fit: true }), '*');
-                            } catch(err) {}
-                          }, 500);
-                        }}
-                      />
-                    </div>
-                    {rightVersionSelection === 'v2_current' ? (
-                      <div className="bg-slate-950/90 border border-emerald-500/40 rounded-xl p-3">
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="font-black text-xs text-emerald-300">Version 2.0 (Pixel-Perfect Zero-Collision)</span>
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Live Production</span>
-                        </div>
-                        <p className="text-[11px] text-slate-300">Dedicated <code>40px</code> left entrance channel at <code>x=120</code>, wide <code>80px</code> horizontal gap, and compact <code>280..320px</code> boxes.</p>
-                      </div>
-                    ) : (
-                      <div className="bg-slate-950/90 border border-rose-500/30 rounded-xl p-3">
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="font-black text-xs text-rose-300">Version 1.0 (Initial Technical Topology)</span>
-                          <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold">Line Overlaps</span>
-                        </div>
-                        <p className="text-[11px] text-slate-300">Stretched boxes (<code>480px</code>) &amp; connector line overlaps at <code>[2b] Public Subnet</code> header and <code>[3] NAT Gateway</code>.</p>
-                      </div>
-                    )}
-                  </div>
+              {/* Bold Visual Highlight Callout Banner for RIGHT PANEL */}
+              <div className="grid grid-cols-3 gap-1.5 mb-2 shrink-0">
+                <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium">
+                  <strong>🟢 Fix 1:</strong> Dedicated <code>40px</code> left entrance channel at <code>x=120</code>.
+                </div>
+                <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium">
+                  <strong>🟢 Fix 2:</strong> Wide <code>80px</code> gap with white mask pill on <code>Outbound Access</code>.
+                </div>
+                <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium">
+                  <strong>🟢 Proportions:</strong> Compact <code>280..320px</code> boxes with clear margins.
                 </div>
               </div>
 
-              {/* Version History List for Current Active Diagram */}
-              {activeDiagram && (
-                <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Saved Versions in Active Workspace ({(activeDiagram.versions || []).length})</h4>
-                  <div className="space-y-2">
-                    {(activeDiagram.versions || []).map((v: DiagramVersion, idx: number) => (
-                      <div
-                        key={v.id}
-                        className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
-                          activeVersion?.id === v.id
-                            ? 'bg-teal-500/10 border-teal-500/40 text-teal-200'
-                            : 'bg-slate-950/60 border-slate-800/80 text-slate-300 hover:border-slate-700'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-xs font-mono font-bold">v{(activeDiagram.versions || []).length - idx}</span>
-                          <div>
-                            <p className="text-xs font-bold text-slate-200">Version #{v.version_number || ((activeDiagram.versions || []).length - idx)}</p>
-                            <p className="text-[11px] text-slate-500">{new Date(v.created_at).toLocaleString()}</p>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveVersion(v);
-                            setIsVersionDiffModalOpen(false);
-                          }}
-                          className="px-3 py-1.5 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 text-xs font-bold transition-all cursor-pointer"
-                        >
-                          {activeVersion?.id === v.id ? 'Currently Active' : 'Switch to This Version'}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Full-Height Edge-to-Edge Right Visual Canvas Viewport */}
+              <div className="flex-1 rounded-lg border border-teal-500/40 bg-white overflow-hidden relative min-h-0">
+                <iframe
+                  key={`right-preview-${rightVersionSelection}`}
+                  src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json&chrome=0"
+                  className="w-full h-full border-none"
+                  onLoad={(e) => {
+                    const target = e.currentTarget;
+                    const xmlToLoad =
+                      rightVersionSelection === 'v1_initial'
+                        ? getExactMultiAgentLangGraphReferenceXml().replace('w="280"', 'w="480"')
+                        : rightVersionSelection === 'v2_current'
+                        ? getExactMultiAgentLangGraphReferenceXml()
+                        : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === rightVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
+                    setTimeout(() => {
+                      try {
+                        target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: xmlToLoad, fit: true }), '*');
+                      } catch(err) {}
+                    }, 500);
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
