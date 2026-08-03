@@ -47,7 +47,8 @@ import {
   Moon,
   Lock,
   Globe,
-  DollarSign
+  DollarSign,
+  ClipboardList
 } from 'lucide-react';
 import { CloudCostModal } from '@/components/workspace/CloudCostModal';
 import { ArchitectureCodeViewerModal } from '@/components/workspace/ArchitectureCodeViewerModal';
@@ -69,6 +70,7 @@ import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
 import { PasswordSetupModal } from '@/components/PasswordSetupModal';
 import { AspectRatioSelector } from '@/components/AspectRatioSelector';
+import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { getExactMultiAgentLangGraphReferenceXml } from '@/lib/newEnterpriseReferenceXmls';
@@ -251,6 +253,7 @@ function WorkspaceContent() {
   const [isVersionDiffModalOpen, setIsVersionDiffModalOpen] = useState(false);
   const [leftVersionSelection, setLeftVersionSelection] = useState<string>('v1_initial');
   const [rightVersionSelection, setRightVersionSelection] = useState<string>('v2_current');
+  const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
 
   const handleAspectRatioChange = useCallback((ratioId: string, customW?: number, customH?: number) => {
     setSelectedAspectRatio(ratioId);
@@ -3278,8 +3281,8 @@ function WorkspaceContent() {
         {/* Tab Navigation Menu */}
         <div className="p-3 space-y-1 shrink-0">
           {[
-            { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
             { id: 'editor', name: 'Design Canvas', icon: Network },
+            { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
             { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid },
             { id: 'walkthrough', name: 'Visual Walkthrough', icon: BookOpen },
             { id: 'audit', name: 'Audit Hub', icon: ShieldAlert },
@@ -3577,7 +3580,7 @@ function WorkspaceContent() {
                       <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
                     </div>
 
-                    {/* Version Dropdown & Visual Diff Button */}
+                    {/* Version Dropdown & Visual Diff Button + Use Case Intake Form */}
                     <div className="flex items-center gap-2 shrink-0">
                       {activeVersion && renderVersionDropdown("top-header-version-dropdown")}
                       <button
@@ -3588,6 +3591,15 @@ function WorkspaceContent() {
                       >
                         <FileCode className="w-3.5 h-3.5 text-teal-400" />
                         <span>🔍 Version &amp; Visual Diff</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsUseCaseModalOpen(true)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-400 bg-teal-400/20 hover:bg-teal-400/30 text-teal-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                        title="Open New Use Case Architectural Intake Form"
+                      >
+                        <ClipboardList className="w-3.5 h-3.5 text-teal-300" />
+                        <span>📋 Use Case Intake Form</span>
                       </button>
                     </div>
                   </>
@@ -5711,6 +5723,15 @@ function WorkspaceContent() {
           if (activeDiagram) {
             loadDiagramDetails(activeDiagram.id);
           }
+        }}
+      />
+
+      <UseCaseIntakeModal
+        isOpen={isUseCaseModalOpen}
+        onClose={() => setIsUseCaseModalOpen(false)}
+        onSubmitUseCase={(data) => {
+          const promptText = `Act as an Enterprise Cloud Architect for ${data.domain} on ${data.cloudProvider} with ${data.complianceTier}. Build standard publication-grade architecture for: ${data.title}. System details: ${data.description}`;
+          setPromptInput(promptText);
         }}
       />
     </div>

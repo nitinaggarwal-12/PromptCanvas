@@ -23,11 +23,13 @@ import {
   LayoutGrid,
   ShieldAlert,
   Settings,
-  Mail
+  Mail,
+  ClipboardList
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
 import { AuthModal } from '@/components/AuthModal';
+import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 
 interface Diagram {
   id: string;
@@ -118,6 +120,7 @@ export default function Dashboard() {
   const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [selectedArchType, setSelectedArchType] = useState('conceptual_diagram');
   const [isCreating, setIsCreating] = useState(false);
+  const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
 
   const checkAuth = async () => {
     try {
@@ -372,6 +375,15 @@ export default function Dashboard() {
               </button>
             </>
           )}
+
+          <button
+            type="button"
+            onClick={() => setIsUseCaseModalOpen(true)}
+            className="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700/90 text-teal-300 border border-teal-500/40 font-bold text-sm tracking-wide transition-all flex items-center gap-2 cursor-pointer"
+          >
+            <ClipboardList className="w-4.5 h-4.5 text-teal-400" />
+            <span>📋 Use Case Intake Form</span>
+          </button>
 
           <button
             id="new-diagram-btn"
@@ -893,6 +905,15 @@ export default function Dashboard() {
           fetchDiagrams();
         }}
         initialMode="signup"
+      />
+
+      <UseCaseIntakeModal
+        isOpen={isUseCaseModalOpen}
+        onClose={() => setIsUseCaseModalOpen(false)}
+        onSubmitUseCase={(data) => {
+          const promptText = `Act as an Enterprise Cloud Architect for ${data.domain} on ${data.cloudProvider} with ${data.complianceTier}. Build standard publication-grade architecture for: ${data.title}. System details: ${data.description}`;
+          router.push(`/workspace?prompt=${encodeURIComponent(promptText)}`);
+        }}
       />
     </div>
   );
