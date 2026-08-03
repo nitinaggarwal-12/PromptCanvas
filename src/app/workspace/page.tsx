@@ -27,6 +27,7 @@ import {
   User,
   Users,
   LayoutGrid,
+  BarChart3,
   Settings,
   ShieldAlert,
   Network,
@@ -3497,6 +3498,26 @@ function WorkspaceContent() {
                       <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>🔍 Version &amp; Visual Diff</span>
                     </button>
+                  </div>
+                )}
+
+                {/* Collapsible Nested Sub-Menu under Dashboard */}
+                {item.id === 'dashboard' && isSidebarOpen && (
+                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-cyan-500/40 ml-4">
+                    <Link
+                      href="/dashboard"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all cursor-pointer text-left"
+                    >
+                      <BarChart3 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                      <span>📈 Operations Matrix</span>
+                    </Link>
+                    <Link
+                      href="/dashboard"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                      <span>📁 Active Workspaces Grid</span>
+                    </Link>
                   </div>
                 )}
 
