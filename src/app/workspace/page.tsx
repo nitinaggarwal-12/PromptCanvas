@@ -800,6 +800,13 @@ function WorkspaceContent() {
           fit: false
         }), '*');
 
+        setTimeout(() => {
+          sourceWindow?.postMessage(JSON.stringify({
+            action: 'zoom',
+            value: 1
+          }), '*');
+        }, 200);
+
         // Inject PromptCanvas Enterprise Stencils into left sidebar palette!
         setTimeout(() => {
           sourceWindow?.postMessage(JSON.stringify({
@@ -810,6 +817,13 @@ function WorkspaceContent() {
             xml: getPromptCanvasEnterpriseStencilsXml()
           }), '*');
         }, 500);
+      }
+
+      if (msg.event === 'load') {
+        sourceWindow?.postMessage(JSON.stringify({
+          action: 'zoom',
+          value: 1
+        }), '*');
       }
       
       if (msg.event === 'save') {
