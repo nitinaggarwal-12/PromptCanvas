@@ -575,6 +575,9 @@ export function resolveVendorIconUrl(text: string): string {
   if (lower.includes('fabric') || lower.includes('power bi')) return 'https://api.iconify.design/logos:microsoft-power-bi.svg';
   if (lower.includes('azure') || lower.includes('event hub') || lower.includes('apim')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
 
+  // Oracle Cloud Infrastructure (OCI)
+  if (lower.includes('oracle') || lower.includes('oci') || lower.includes('autonomous db')) return 'https://api.iconify.design/logos:oracle.svg';
+
   // Enterprise SaaS & Operations
   if (lower.includes('servicenow')) return 'https://api.iconify.design/logos:servicenow.svg';
   if (lower.includes('workday')) return 'https://api.iconify.design/logos:workday.svg';
