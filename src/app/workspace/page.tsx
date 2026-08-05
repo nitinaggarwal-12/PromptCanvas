@@ -3532,8 +3532,10 @@ function WorkspaceContent() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               xml_content: refXml || '',
+              xmlContent: refXml || '',
               comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name || newArchId}`,
-              architecture_type: newArchId
+              architecture_type: newArchId,
+              architectureType: newArchId
             }),
           }).then(r => r.json()).then(newVer => {
             if (newVer && newVer.id) {

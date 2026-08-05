@@ -32,7 +32,7 @@ export default function DiagramViewer({
 }: DiagramViewerProps) {
   const sanitizedXml = React.useMemo(() => {
     if (!xml) {
-      return getTechnicalArchitectureXml('tech_cicd_pipeline');
+      return getTechnicalArchitectureXml(diagramType || 'tech_cicd_pipeline');
     }
     let rawStr = '';
     if (typeof xml === 'string') {
@@ -43,16 +43,16 @@ export default function DiagramViewer({
       rawStr = String(xml);
     }
     try {
-      const healed = validateAndHealDrawioXml(rawStr);
+      const healed = validateAndHealDrawioXml(rawStr, diagramType);
       if (!healed.xml || healed.xml.length < 100) {
-        return getTechnicalArchitectureXml('tech_cicd_pipeline');
+        return getTechnicalArchitectureXml(diagramType || 'tech_cicd_pipeline');
       }
       return healed.xml;
     } catch (err) {
       console.error('[DiagramViewer] Failed to heal XML, using fallback:', err);
-      return getTechnicalArchitectureXml('tech_cicd_pipeline');
+      return getTechnicalArchitectureXml(diagramType || 'tech_cicd_pipeline');
     }
-  }, [xml]);
+  }, [xml, diagramType]);
 
   // Derive template title (e.g., Serverless Web Application (GCP), DevOps CI/CD Pipeline, etc.)
   const templateName = React.useMemo(() => {

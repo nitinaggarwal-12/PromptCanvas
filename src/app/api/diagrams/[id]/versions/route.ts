@@ -22,7 +22,10 @@ export async function POST(request: Request, { params }: RouteParams) {
     }
 
     const body = await request.json();
-    const { xmlContent, comment, createdBy, architectureType } = body;
+    const xmlContent = body.xmlContent ?? body.xml_content;
+    const comment = body.comment;
+    const createdBy = body.createdBy ?? body.created_by;
+    const architectureType = body.architectureType ?? body.architecture_type;
 
     if (xmlContent === undefined || typeof xmlContent !== 'string') {
       return NextResponse.json(

@@ -1196,6 +1196,7 @@ export async function updateLatestDiagramVersionContent(
   businessUseCase?: string
 ): Promise<void> {
   await ensureTablesExist();
+  const { getDefaultXmlForArchitecture } = await import('./architectureTypes');
   if (isPostgres()) {
     const pool = getPgPool();
     const vers = await pool.query(
@@ -1204,9 +1205,12 @@ export async function updateLatestDiagramVersionContent(
     );
     if (vers.rows.length > 0) {
       const latest = vers.rows[0];
+      const nextArch = architectureType || latest.architecture_type;
+      const isArchChanged = architectureType && architectureType !== latest.architecture_type;
+      const nextXml = xmlContent || (isArchChanged ? getDefaultXmlForArchitecture(architectureType) : null) || latest.xml_content;
       await pool.query(
         'UPDATE diagram_versions SET xml_content = $1, architecture_type = $2, business_usecase = $3 WHERE id = $4',
-        [xmlContent || latest.xml_content, architectureType || latest.architecture_type, businessUseCase || latest.business_usecase, latest.id]
+        [nextXml, nextArch, businessUseCase || latest.business_usecase, latest.id]
       );
     }
   } else {
@@ -1214,8 +1218,11 @@ export async function updateLatestDiagramVersionContent(
     const existingVers = db.prepare('SELECT id, version_number, architecture_type, xml_content, business_usecase FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC').all(diagramId) as any[];
     if (existingVers.length > 0) {
       const latest = existingVers[0];
+      const nextArch = architectureType || latest.architecture_type;
+      const isArchChanged = architectureType && architectureType !== latest.architecture_type;
+      const nextXml = xmlContent || (isArchChanged ? getDefaultXmlForArchitecture(architectureType) : null) || latest.xml_content;
       const stmt = db.prepare('UPDATE diagram_versions SET xml_content = ?, architecture_type = ?, business_usecase = ? WHERE id = ?');
-      stmt.run(xmlContent || latest.xml_content, architectureType || latest.architecture_type, businessUseCase || latest.business_usecase, latest.id);
+      stmt.run(nextXml, nextArch, businessUseCase || latest.business_usecase, latest.id);
     }
   }
 }
