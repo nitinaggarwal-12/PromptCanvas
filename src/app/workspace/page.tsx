@@ -3294,20 +3294,16 @@ function WorkspaceContent() {
     let formattedXml = baseXml;
     const hasAspectRatio = Boolean(selectedAspectRatio);
 
-    if (layoutPreset === 'obsidian') {
-      // Linear / Vercel Next-Gen Obsidian Glass HUD styling
-      formattedXml = formattedXml
-        .replace(/fillColor=#FFE6CC;strokeColor=#D79B00;/g, "fillColor=#0F172A;strokeColor=#38BDF8;strokeWidth=2;fontColor=#F8FAFC;")
-        .replace(/fillColor=#FFF2CC;strokeColor=#D79B00;/g, "fillColor=#1E293B;strokeColor=#38BDF8;strokeWidth=2;fontColor=#F8FAFC;")
-        .replace(/fillColor=#DAE8FC;strokeColor=#6C8EBF;/g, "fillColor=#0F172A;strokeColor=#818CF8;strokeWidth=2;fontColor=#F8FAFC;")
-        .replace(/fillColor=#D5E8D4;strokeColor=#82B366;/g, "fillColor=#064E3B;strokeColor=#10B981;strokeWidth=2;fontColor=#F8FAFC;")
-        .replace(/fillColor=#F8CECC;strokeColor=#B85450;/g, "fillColor=#450A0A;strokeColor=#EF4444;strokeWidth=2;fontColor=#F8FAFC;")
-        .replace(/fillColor=#E1D5E7;strokeColor=#9673A6;/g, "fillColor=#3B0764;strokeColor=#A855F7;strokeWidth=2;fontColor=#F8FAFC;")
-        .replace(/edgeStyle=orthogonalEdgeStyle;rounded=0;/g, "edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;")
-        .replace(/strokeColor=#64748B;/g, "strokeColor=#38BDF8;")
-        .replace(/labelBackgroundColor=#FFFFFF;/g, "labelBackgroundColor=#0F172A;labelBorderColor=#38BDF8;fontColor=#F8FAFC;");
-    } else if (layoutPreset === 'lucid') {
-      // Apply Lucidchart Enterprise modern style (sleek cards, smooth rounded architectural curves, slate/emerald accent fills)
+    if (layoutPreset === 'vendor') {
+      formattedXml = createVendorIconsVariant(baseXml);
+    } else if (layoutPreset === 'clean') {
+      const { cleanedXml } = createMinimalistCleanVariant(baseXml);
+      formattedXml = cleanedXml;
+    } else {
+      formattedXml = restoreDetailedView(baseXml, hasAspectRatio);
+    }
+
+    if (layoutPreset === 'lucid') {
       formattedXml = formattedXml
         .replace(/fillColor=#FFE6CC;strokeColor=#D79B00;/g, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;shadow=1;")
         .replace(/fillColor=#FFF2CC;strokeColor=#D79B00;/g, "fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=2;")
@@ -3317,16 +3313,26 @@ function WorkspaceContent() {
         .replace(/fillColor=#E1D5E7;strokeColor=#9673A6;/g, "fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=2;")
         .replace(/edgeStyle=orthogonalEdgeStyle;rounded=0;/g, "edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;jumpStyle=arc;")
         .replace(/labelBackgroundColor=#FFFFFF;/g, "labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;");
-    } else if (layoutPreset === 'vendor') {
-      formattedXml = createVendorIconsVariant(baseXml);
-    } else if (layoutPreset === 'clean') {
-      const { cleanedXml } = createMinimalistCleanVariant(baseXml);
-      formattedXml = cleanedXml;
-    } else {
-      formattedXml = restoreDetailedView(baseXml, hasAspectRatio);
+    } else if (layoutPreset === 'obsidian') {
+      formattedXml = formattedXml
+        .replace(/fillColor=#[A-Fa-f0-9]+;/g, "fillColor=#0F172A;")
+        .replace(/strokeColor=#[A-Fa-f0-9]+;/g, "strokeColor=#38BDF8;")
+        .replace(/color:#0F172A;/g, "color:#F8FAFC;")
+        .replace(/color:#475569;/g, "color:#94A3B8;")
+        .replace(/rounded=0;/g, "rounded=1;arcSize=14;")
+        .replace(/labelBackgroundColor=#[A-Fa-f0-9]+;/g, "labelBackgroundColor=#0F172A;labelBorderColor=#38BDF8;fontColor=#F8FAFC;");
     }
 
-    // Apply Aspect Ratio Node Re-organization ON TOP of active view format!
+    if (isLiveFlowEnabled) {
+      formattedXml = formattedXml.replace(/style="edgeStyle=orthogonalEdgeStyle;([^""]*)"/g, (m, p1) => {
+        if (!p1.includes("dashed=1")) {
+          return `style="edgeStyle=orthogonalEdgeStyle;dashed=1;dashPattern=6 6;${p1}"`;
+        }
+        return m;
+      });
+    }
+
+        // Apply Aspect Ratio Node Re-organization ON TOP of active view format!
     if (selectedAspectRatio) {
       formattedXml = rearrangeDiagramForAspectRatio(
         formattedXml,
