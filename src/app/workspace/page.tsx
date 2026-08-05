@@ -754,7 +754,8 @@ function WorkspaceContent() {
   // Loading & Layout View Mode States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean' | 'lucid' | 'vendor'>('detailed');
+  const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean' | 'lucid' | 'obsidian' | 'vendor'>('detailed');
+  const [isLiveFlowEnabled, setIsLiveFlowEnabled] = useState(false);
   const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(true);
@@ -3293,6 +3294,30 @@ function WorkspaceContent() {
     let formattedXml = baseXml;
     const hasAspectRatio = Boolean(selectedAspectRatio);
 
+    if (layoutPreset === 'obsidian') {
+      // Linear / Vercel Next-Gen Obsidian Glass HUD styling
+      xml = xml
+        .replace(/fillColor=#FFE6CC;strokeColor=#D79B00;/g, "fillColor=#0F172A;strokeColor=#38BDF8;strokeWidth=2;fontColor=#F8FAFC;")
+        .replace(/fillColor=#FFF2CC;strokeColor=#D79B00;/g, "fillColor=#1E293B;strokeColor=#38BDF8;strokeWidth=2;fontColor=#F8FAFC;")
+        .replace(/fillColor=#DAE8FC;strokeColor=#6C8EBF;/g, "fillColor=#0F172A;strokeColor=#818CF8;strokeWidth=2;fontColor=#F8FAFC;")
+        .replace(/fillColor=#D5E8D4;strokeColor=#82B366;/g, "fillColor=#064E3B;strokeColor=#10B981;strokeWidth=2;fontColor=#F8FAFC;")
+        .replace(/fillColor=#F8CECC;strokeColor=#B85450;/g, "fillColor=#450A0A;strokeColor=#EF4444;strokeWidth=2;fontColor=#F8FAFC;")
+        .replace(/fillColor=#E1D5E7;strokeColor=#9673A6;/g, "fillColor=#3B0764;strokeColor=#A855F7;strokeWidth=2;fontColor=#F8FAFC;")
+        .replace(/edgeStyle=orthogonalEdgeStyle;rounded=0;/g, "edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;")
+        .replace(/strokeColor=#64748B;/g, "strokeColor=#38BDF8;")
+        .replace(/labelBackgroundColor=#FFFFFF;/g, "labelBackgroundColor=#0F172A;labelBorderColor=#38BDF8;fontColor=#F8FAFC;");
+    }
+
+    if (isLiveFlowEnabled) {
+      // Add animated SVG telemetry flow dashes to connectors
+      xml = xml.replace(/style="edgeStyle=orthogonalEdgeStyle;([^""]*)"/g, (m, p1) => {
+        if (!p1.includes("dashed=1")) {
+          return `style="edgeStyle=orthogonalEdgeStyle;dashed=1;dashPattern=6 6;${p1}"`;
+        }
+        return m;
+      });
+    }
+
     if (layoutPreset === 'lucid') {
       // Apply Lucidchart Enterprise modern style (sleek cards, smooth rounded architectural curves, slate/emerald accent fills)
       xml = xml
@@ -4985,7 +5010,7 @@ function WorkspaceContent() {
                             layoutPreset === 'detailed' ? 'bg-teal-500/20 text-teal-300 border border-teal-400/60' : 'text-slate-400 hover:text-white'
                           }`}
                         >
-                          📐 Detailed View
+                          📐 Detailed
                         </button>
                         <button
                           type="button"
@@ -4994,16 +5019,35 @@ function WorkspaceContent() {
                             layoutPreset === 'clean' ? 'bg-teal-500/20 text-teal-300 border border-teal-400/60' : 'text-slate-400 hover:text-white'
                           }`}
                         >
-                          ✨ Option 2 Clean
+                          ✨ Clean
                         </button>
                         <button
                           type="button"
                           onClick={() => setLayoutPreset('lucid')}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1 ${
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                             layoutPreset === 'lucid' ? 'bg-blue-600 text-white border border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.4)]' : 'text-slate-300 hover:text-blue-300'
                           }`}
                         >
-                          💎 Lucidchart View
+                          💎 Lucidchart
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setLayoutPreset('obsidian')}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                            layoutPreset === 'obsidian' ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400 shadow-[0_0_14px_rgba(56,189,248,0.4)]' : 'text-slate-300 hover:text-cyan-300'
+                          }`}
+                        >
+                          🌌 Obsidian HUD
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsLiveFlowEnabled(!isLiveFlowEnabled)}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                            isLiveFlowEnabled ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'text-slate-400 hover:text-emerald-300'
+                          }`}
+                          title="Toggle Live Telemetry Flow Stream Animation"
+                        >
+                          ⚡ Live Flow
                         </button>
                       </div>
 
