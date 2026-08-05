@@ -3347,26 +3347,62 @@ function WorkspaceContent() {
 
     return (
       <div className="relative inline-flex items-center">
-        <button
-          type="button"
-          id={customId || "workspace-version-dropdown"}
-          onClick={() => {
-            const next = !isVersionDropdownOpen;
-            setIsVersionDropdownOpen(next);
-            if (next) {
-              setIsArchDropdownOpen(false);
-              setIsCanvasDropdownOpen(false);
-            }
-            setVersionSearchQuery('');
-          }}
-          className="flex items-center gap-1.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-extrabold text-xs rounded-lg px-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-sm"
-          title="Search & select diagram versions"
-        >
-          <span>
-            {isLatestActive ? `Version ${currentVer.version_number} (Latest)` : `Version ${currentVer.version_number}`}
-          </span>
-          <ChevronDown className="w-3.5 h-3.5 text-teal-400" />
-        </button>
+        <div className="inline-flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              const currentIdx = versionsDesc.findIndex(v => v.id === currentVer.id);
+              if (currentIdx < versionsDesc.length - 1) {
+                const prevVer = versionsDesc[currentIdx + 1];
+                if (prevVer.id === activeLatestId) setPreviewVersion(null);
+                else setPreviewVersion(prevVer);
+              }
+            }}
+            disabled={versionsDesc.findIndex(v => v.id === currentVer.id) >= versionsDesc.length - 1}
+            className="p-1.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/40 hover:border-teal-400 text-teal-300 rounded-lg disabled:opacity-30 cursor-pointer transition-all"
+            title="Backward: Older Diagram Version (Unobstructed View)"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+
+          <button
+            type="button"
+            id={customId || "workspace-version-dropdown"}
+            onClick={() => {
+              const next = !isVersionDropdownOpen;
+              setIsVersionDropdownOpen(next);
+              if (next) {
+                setIsArchDropdownOpen(false);
+                setIsCanvasDropdownOpen(false);
+              }
+              setVersionSearchQuery('');
+            }}
+            className="flex items-center gap-1.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-extrabold text-xs rounded-lg px-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-sm"
+            title="Search & select diagram versions"
+          >
+            <span>
+              {isLatestActive ? `Version ${currentVer.version_number} (Latest)` : `Version ${currentVer.version_number}`}
+            </span>
+            <ChevronDown className="w-3.5 h-3.5 text-teal-400" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const currentIdx = versionsDesc.findIndex(v => v.id === currentVer.id);
+              if (currentIdx > 0) {
+                const nextVer = versionsDesc[currentIdx - 1];
+                if (nextVer.id === activeLatestId) setPreviewVersion(null);
+                else setPreviewVersion(nextVer);
+              }
+            }}
+            disabled={versionsDesc.findIndex(v => v.id === currentVer.id) <= 0}
+            className="p-1.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/40 hover:border-teal-400 text-teal-300 rounded-lg disabled:opacity-30 cursor-pointer transition-all"
+            title="Forward: Newer Diagram Version (Unobstructed View)"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
         {isVersionDropdownOpen && (
           <div className="header-dropdown-menu fixed sm:absolute right-0 top-14 sm:top-full mt-1.5 w-[280px] sm:w-[320px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[380px]">
@@ -4268,31 +4304,61 @@ function WorkspaceContent() {
                         Diagram:
                       </span>
                       <div className="relative">
-                        <button
-                          type="button"
-                          id="workspace-header-architecture-select"
-                          disabled={isAnyAIBusy}
-                          onClick={() => {
-                            const next = !isArchDropdownOpen;
-                            setIsArchDropdownOpen(next);
-                            if (next) {
-                              setIsCanvasDropdownOpen(false);
-                              setIsVersionDropdownOpen(false);
-                            }
-                            setArchSearchQuery('');
-                          }}
-                          className={getTourClass(
-                            tourStep,
-                            2,
-                            "flex items-center justify-between gap-2 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-extrabold text-xs rounded-lg pl-3 pr-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] md:max-w-[260px]"
-                          )}
-                          title="Search & switch Architecture Category (Business & Technical)"
-                        >
-                          <span className="truncate">
-                            {getArchitectureTypeById(selectedArchType)?.name || 'Select Architecture'}
-                          </span>
-                          <ChevronDown className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-                        </button>
+                        <div className="inline-flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
+                              const idx = allArchs.findIndex(a => a.id === selectedArchType);
+                              if (idx > 0) handleArchitectureSwitch(allArchs[idx - 1].id);
+                            }}
+                            disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) <= 0}
+                            className="p-1.5 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 rounded-lg disabled:opacity-30 cursor-pointer transition-all"
+                            title="Backward: Previous Architecture Topology (Unobstructed View)"
+                          >
+                            <ChevronLeft className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            type="button"
+                            id="workspace-header-architecture-select"
+                            disabled={isAnyAIBusy}
+                            onClick={() => {
+                              const next = !isArchDropdownOpen;
+                              setIsArchDropdownOpen(next);
+                              if (next) {
+                                setIsCanvasDropdownOpen(false);
+                                setIsVersionDropdownOpen(false);
+                              }
+                              setArchSearchQuery('');
+                            }}
+                            className={getTourClass(
+                              tourStep,
+                              2,
+                              "flex items-center justify-between gap-2 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-extrabold text-xs rounded-lg pl-3 pr-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] md:max-w-[260px]"
+                            )}
+                            title="Search & switch Architecture Category (Business & Technical)"
+                          >
+                            <span className="truncate">
+                              {getArchitectureTypeById(selectedArchType)?.name || 'Select Architecture'}
+                            </span>
+                            <ChevronDown className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
+                              const idx = allArchs.findIndex(a => a.id === selectedArchType);
+                              if (idx >= 0 && idx < allArchs.length - 1) handleArchitectureSwitch(allArchs[idx + 1].id);
+                            }}
+                            disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) >= [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].length - 1}
+                            className="p-1.5 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 rounded-lg disabled:opacity-30 cursor-pointer transition-all"
+                            title="Forward: Next Architecture Topology (Unobstructed View)"
+                          >
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
 
                         {isArchDropdownOpen && (
                           <div className="header-dropdown-menu fixed sm:absolute left-0 top-14 sm:top-full mt-1.5 w-[340px] sm:w-[380px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
