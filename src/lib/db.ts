@@ -881,18 +881,46 @@ export async function getDiagram(id: string, userId?: string): Promise<(Diagram 
   const accessLevel = await getUserDiagramAccess(id, userId);
   if (!accessLevel) return null;
 
+  let diag: Diagram | null = null;
   if (isPostgres()) {
     const pool = getPgPool();
     const res = await pool.query('SELECT * FROM diagrams WHERE id = $1', [id]);
-    const diag = (res.rows[0] as Diagram) || null;
-    return diag ? { ...diag, access_level: accessLevel } : null;
+    diag = (res.rows[0] as Diagram) || null;
   } else {
     const db = getSqliteDb();
     const stmt = db.prepare('SELECT * FROM diagrams WHERE id = ?');
     const result = stmt.get(id);
-    const diag = (result as unknown as Diagram) || null;
-    return diag ? { ...diag, access_level: accessLevel } : null;
+    diag = (result as unknown as Diagram) || null;
   }
+
+  if (diag) {
+    const versions = await getDiagramVersions(id);
+    if (!versions || versions.length === 0) {
+      const archType = diag.architecture_type || 'unified_system_view';
+      const refXml = getDefaultXmlForArchitecture(archType, diag.name, diag.name);
+      try {
+        const v1 = await saveDiagramVersion(
+          id,
+          refXml || '',
+          `Initial Architecture Backbone: ${archType}`,
+          'System',
+          null,
+          null,
+          null,
+          null,
+          archType
+        );
+        diag.versions = [v1];
+      } catch (err) {
+        console.error("Failed auto-generating initial version:", err);
+        diag.versions = [];
+      }
+    } else {
+      diag.versions = versions;
+    }
+  }
+
+  return diag ? { ...diag, access_level: accessLevel } : null;
 }
 
 // Helper: Update diagram privacy (is_private)
