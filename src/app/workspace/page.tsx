@@ -933,10 +933,25 @@ function WorkspaceContent() {
       if (data.versions && data.versions.length > 0) {
         const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
         const targetArch = data.architecture_type || sortedVersions[0].architecture_type || 'conceptual_diagram';
-        const matchingVer = sortedVersions.find(v => (v.architecture_type || data.architecture_type) === targetArch) || sortedVersions[0];
+        const matchingVer = sortedVersions.find(v => v.architecture_type === targetArch);
         
         setSelectedArchType(targetArch);
-        setActiveVersion(matchingVer);
+        if (matchingVer) {
+          setActiveVersion(matchingVer);
+        } else {
+          const refXml = getDefaultXmlForArchitecture(targetArch, data.name, data.name);
+          const dynamicVer: DiagramVersion = {
+            id: `arch_sync_${targetArch}_${Date.now()}`,
+            diagram_id: data.id,
+            version_number: sortedVersions[0].version_number + 1,
+            xml_content: refXml || sortedVersions[0].xml_content,
+            comment: `Architecture Backbone Sync: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
+            created_by: 'System',
+            created_at: new Date().toISOString(),
+            architecture_type: targetArch
+          };
+          setActiveVersion(dynamicVer);
+        }
         
         // Restore previewVersion if specified in URL query
         const params = new URLSearchParams(window.location.search);
