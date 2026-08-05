@@ -3367,18 +3367,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         .replace(/edgeStyle=orthogonalEdgeStyle;rounded=0;/g, "edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;jumpStyle=arc;")
         .replace(/labelBackgroundColor=#FFFFFF;/g, "labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;");
     } else if (layoutPreset === 'obsidian') {
-      // High-Contrast Linear/Vercel Obsidian HUD: Ultra-crisp bright white & neon cyan text contrast
-      formattedXml = formattedXml
-        .replace(/fillColor=#[A-Fa-f0-9]+;/g, "fillColor=#0F172A;")
-        .replace(/strokeColor=#[A-Fa-f0-9]+;/g, "strokeColor=#38BDF8;")
-        .replace(/fontColor=#[A-Fa-f0-9]+;/g, "fontColor=#FFFFFF;")
-        .replace(/color:#0F172A;/g, "color:#FFFFFF;")
-        .replace(/color:#000000;/g, "color:#FFFFFF;")
-        .replace(/color:#1E293B;/g, "color:#FFFFFF;")
-        .replace(/color:#475569;/g, "color:#38BDF8;")
-        .replace(/color:#64748B;/g, "color:#7DD3FC;")
-        .replace(/rounded=0;/g, "rounded=1;arcSize=14;")
-        .replace(/labelBackgroundColor=#[A-Fa-f0-9]+;/g, "labelBackgroundColor=#0F172A;labelBorderColor=#38BDF8;fontColor=#FFFFFF;");
+      // Light-HUD Obsidian View: Crisp Light Architectural Cards (#FFFFFF / #F0F9FF), Dark Slate Typography (#0F172A), & Vibrant Semantic Borders
+      formattedXml = transformXmlToExecutiveObsidianHud(formattedXml);
     }
 
     if (isLiveFlowEnabled) {
