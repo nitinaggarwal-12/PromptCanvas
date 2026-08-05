@@ -3334,7 +3334,12 @@ function WorkspaceContent() {
           type="button"
           id={customId || "workspace-version-dropdown"}
           onClick={() => {
-            setIsVersionDropdownOpen(!isVersionDropdownOpen);
+            const next = !isVersionDropdownOpen;
+            setIsVersionDropdownOpen(next);
+            if (next) {
+              setIsArchDropdownOpen(false);
+              setIsCanvasDropdownOpen(false);
+            }
             setVersionSearchQuery('');
           }}
           className="flex items-center gap-1.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-extrabold text-xs rounded-lg px-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-sm"
