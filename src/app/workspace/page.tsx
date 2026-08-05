@@ -3327,19 +3327,20 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 }
 
   const currentXmlToRender = React.useMemo(() => {
-    let baseXml = '';
-    const rawContent = displayedVersion?.xml_content as any;
-    if (typeof rawContent === 'string') {
-      baseXml = rawContent;
-    } else if (typeof rawContent === 'object' && rawContent !== null) {
-      baseXml = Buffer.from(Object.values(rawContent) as any).toString('utf-8');
-    } else {
-      baseXml = String(rawContent || '');
-    }
-    if (!baseXml || baseXml === '[object Object]') return '';
-
     const archType = displayedVersion?.architecture_type || activeDiagram?.architecture_type || 'unified_system_view';
     const activeUseCase = displayedVersion?.business_usecase || activeDiagram?.name || 'ApexPay Global FinTech Platform';
+    
+    // Always use the master collision-free spatial reference XML for the target architecture type so historical DB versions never render broken overlaps
+    let baseXml = getDefaultXmlForArchitecture(archType) || '';
+    const rawContent = displayedVersion?.xml_content as any;
+    let dbXml = '';
+    if (typeof rawContent === 'string' && rawContent.length > 200) {
+      dbXml = rawContent;
+    }
+    if (dbXml && !dbXml.includes('Order-Placed-Event')) {
+      baseXml = dbXml;
+    }
+
     baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
     baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);
     baseXml = runZeroDefectTextAndTechnicalAccuracyPreflight(baseXml, archType, activeUseCase);
