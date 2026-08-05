@@ -3276,41 +3276,50 @@ function WorkspaceContent() {
 function transformXmlToExecutiveObsidianHud(xml: string): string {
   if (!xml) return xml;
 
-  // 1. Purge ugly gradient cuts
+  // 1. Purge all gradientColor attributes
   xml = xml.replace(/gradientColor=#[A-Fa-f0-9]+;/g, "gradientColor=none;");
 
-  // 2. ERD Database Table Containers & Separator Lines (Light Architectural Slate Background + Dark Text)
+  // 2. ERD Database Table Containers & Separator Lines
   xml = xml
     .replace(/(id="[^"]+_line"[^>]*style=")[^"]*(")/g, "$1line;strokeColor=#0284C7;strokeWidth=1.5;html=1;$2")
     .replace(/(id="[^"]+_hdr"[^>]*style=")[^"]*(")/g, "$1rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=none;fontColor=#0F172A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;$2")
     .replace(/(id="[^"]+_body"[^>]*style=")[^"]*(")/g, "$1text;html=1;strokeColor=none;fillColor=#FFFFFF;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;$2");
 
-  // 3. Transform all node fill colors to crisp light architectural backgrounds with vibrant relevant borders
+  // 3. Map ALL possible diagram fill colors across Business & Technical suites to crisp light architectural cards
   xml = xml
+    .replace(/fillColor=#FFE6CC;/g, "fillColor=#FFFBEB;strokeColor=#D97706;")
+    .replace(/fillColor=#FFF2CC;/g, "fillColor=#FFFBEB;strokeColor=#D97706;")
+    .replace(/fillColor=#DAE8FC;/g, "fillColor=#F0F9FF;strokeColor=#0284C7;")
+    .replace(/fillColor=#D5E8D4;/g, "fillColor=#F0FDF4;strokeColor=#16A34A;")
+    .replace(/fillColor=#F8CECC;/g, "fillColor=#FEF2F2;strokeColor=#DC2626;")
+    .replace(/fillColor=#E1D5E7;/g, "fillColor=#FAF5FF;strokeColor=#7C3AED;")
     .replace(/fillColor=#090D16;/g, "fillColor=#F8FAFC;")
     .replace(/fillColor=#0F172A;/g, "fillColor=#F0F9FF;")
     .replace(/fillColor=#1E293B;/g, "fillColor=#FFFFFF;")
     .replace(/fillColor=#450A0A;/g, "fillColor=#FEF2F2;")
     .replace(/fillColor=#064E3B;/g, "fillColor=#F0FDF4;")
-    .replace(/fontColor=#[A-Fa-f0-9]+;/g, "fontColor=#0F172A;");
+    .replace(/fillColor=#DBEAFE;/g, "fillColor=#E0F2FE;")
+    .replace(/fillColor=#DCFCE7;/g, "fillColor=#DCFCE7;");
 
-  // 4. Transform Sub-Schema Swimlane titles to bold dark slate (#0F172A) & vibrant blue accents
+  // 4. Force ALL cell font colors to crisp dark slate (#0F172A)
+  xml = xml.replace(/fontColor=#[A-Fa-f0-9]+;/g, "fontColor=#0F172A;");
+
+  // 5. Sub-Schema Swimlane & ERD Key title formatting
   xml = xml
     .replace(/(Sub-Schema \d+:[^"]*)/gi, "<b style=\"color:#0284C7;font-size:13px;text-transform:uppercase;font-weight:900;\">$1</b>")
     .replace(/<b>PK<\/b>/g, "<b style=\"color:#0284C7;font-weight:800;\">PK</b>")
     .replace(/<b>FK<\/b>/g, "<b style=\"color:#7C3AED;font-weight:800;\">FK</b>")
     .replace(/<b>PK\/FK<\/b>/g, "<b style=\"color:#0284C7;font-weight:800;\">PK/FK</b>");
 
-  // 5. Transform inline HTML style backgrounds inside table cells, sub-boxes, and callouts to clean light shapes with dark text
+  // 6. Transform inline HTML style backgrounds & font colors inside table cells, callouts, and sub-boxes
   xml = xml
     .replace(/background:\s*#[0-9A-Fa-f]{3,6};/gi, "background:#F8FAFC;")
     .replace(/color:\s*#[0-9A-Fa-f]{3,6};/gi, "color:#0F172A;")
     .replace(/color:\s*rgba\([^\)]+\);/gi, "color:#0F172A;")
     .replace(/labelBackgroundColor=#[A-Fa-f0-9]+;/g, "labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;");
 
-  // 6. Restore vibrant relevant semantic colors for directional arrows, KPIs, and advisory badges
+  // 7. Ensure connector edges use crisp blue vector stroke with solid white text background pills
   xml = xml
-    .replace(/strokeColor=#[A-Fa-f0-9]+;/g, "strokeColor=#0284C7;")
     .replace(/Alert ID: #OPS-101/g, "<b style=\"color:#DC2626;\">Alert ID: #OPS-101</b>")
     .replace(/▲ Operational/g, "<b style=\"color:#16A34A;\">▲ Operational</b>")
     .replace(/Optimal Flow/g, "<b style=\"color:#0284C7;\">Optimal Flow</b>");
