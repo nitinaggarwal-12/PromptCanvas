@@ -727,11 +727,15 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   }
 
 
-  // Domain-Aware Technical Topology Flavoring for bespoke diagram boxes
+
+
+  const topicUpper = topic.toUpperCase();
+
+  let updatedXml = xml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
+
+  // Dynamic Domain-Aware Topology Flavoring across all technical reference diagrams
   const topicClean = topic || 'Enterprise';
   const isSupplyChain = /supply|logistics|warehouse|quantumflow|fleet|inventory|chain/i.test(topicClean + ' ' + (userPrompt || ''));
-  const isFintechDomain = /fintech|payment|fraud|ledger|banking|apexpay|sepa|swift/i.test(topicClean + ' ' + (userPrompt || ''));
-  const isHealthcareDomain = /genomic|patient|clinical|pharma|cancer|assay|lab|dna/i.test(topicClean + ' ' + (userPrompt || ''));
 
   if (isSupplyChain) {
     updatedXml = updatedXml
@@ -759,7 +763,6 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/\[7\] ArgoCD \/ Flux Controller/g, `[7] GitOps Continuous Deployment Controller`)
       .replace(/\[8\] Staging GKE Cluster/g, `[8] Live Supply Chain Production Cluster`);
   } else {
-    // Dynamic universal domain flavoring for any user topic
     updatedXml = updatedXml
       .replace(/\[1\] On-Premises Data Center/g, `[1] ${topicClean} Enterprise Core Hub`)
       .replace(/\[2\] Google Global HTTP\(S\) LB/g, `[2] ${topicClean} Global Traffic Router`)
@@ -780,10 +783,6 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/\[7\] ArgoCD \/ Flux Controller/g, `[7] ${topicClean} GitOps Controller`)
       .replace(/\[8\] Staging GKE Cluster/g, `[8] ${topicClean} Live Application Cluster`);
   }
-
-  const topicUpper = topic.toUpperCase();
-
-  let updatedXml = xml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
 
   // 1. Replace generic titles, ITACS, and Oncology headers
   updatedXml = updatedXml
