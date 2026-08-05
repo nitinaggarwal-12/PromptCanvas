@@ -4950,10 +4950,44 @@ function WorkspaceContent() {
                       TECHNICAL INTEGRATION WALKTHROUGH
                     </span>
                   ) : (
-                    <span className="px-2.5 py-1 rounded text-[10px] font-bold bg-teal-500/15 text-teal-accent border border-teal-500/30 flex items-center gap-1.5">
-                      <Eye className="w-3 h-3 text-teal-accent" />
-                      {layoutPreset === 'clean' ? '✨ 2D CANVAS (OPTION 2: CLEAN VIEW)' : '📐 2D CANVAS (DETAILED VIEW)'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
+                          const idx = allArchs.findIndex(a => a.id === selectedArchType);
+                          if (idx > 0) handleArchitectureSwitch(allArchs[idx - 1].id);
+                        }}
+                        disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) <= 0}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-teal-950 border border-teal-500/50 hover:border-teal-400 text-white font-extrabold text-xs shadow-md disabled:opacity-30 cursor-pointer transition-all"
+                        title="Backward: Switch to Previous Architecture Diagram on Canvas"
+                      >
+                        <ChevronLeft className="w-4 h-4 text-teal-400" />
+                        <span>Prev Diagram</span>
+                      </button>
+
+                      <span className="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-950 text-white border-2 border-teal-400/80 shadow-lg flex items-center gap-2">
+                        <Eye className="w-4 h-4 text-teal-400 shrink-0" />
+                        <span className="text-teal-300">
+                          {layoutPreset === 'clean' ? '✨ 2D CANVAS (OPTION 2: CLEAN VIEW)' : '📐 2D CANVAS (DETAILED VIEW)'}
+                        </span>
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
+                          const idx = allArchs.findIndex(a => a.id === selectedArchType);
+                          if (idx >= 0 && idx < allArchs.length - 1) handleArchitectureSwitch(allArchs[idx + 1].id);
+                        }}
+                        disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) >= [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].length - 1}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-teal-950 border border-teal-500/50 hover:border-teal-400 text-white font-extrabold text-xs shadow-md disabled:opacity-30 cursor-pointer transition-all"
+                        title="Forward: Switch to Next Architecture Diagram on Canvas"
+                      >
+                        <span>Next Diagram</span>
+                        <ChevronRight className="w-4 h-4 text-teal-400" />
+                      </button>
+                    </div>
                   )}
                 </div>
 
