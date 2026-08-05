@@ -617,7 +617,7 @@ ${prompt}`,
         businessUsecase,
         technicalUsecase,
         user?.id || null,
-        architectureType || 'tech_cicd_pipeline',
+        architectureType || 'unified_system_view',
         Boolean(isPrivate ?? is_private)
       );
       return NextResponse.json({ diagram, version }, { status: 201 });
