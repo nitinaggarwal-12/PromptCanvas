@@ -929,13 +929,14 @@ function WorkspaceContent() {
       setPan({ x: 0, y: 0 });
       setOutlineEdits({});
       
-      // Set the latest version as active
+      // Set the active version matching active architecture_type
       if (data.versions && data.versions.length > 0) {
         const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
-        const activeVer = sortedVersions[0];
-        const targetArch = activeVer.architecture_type || data.architecture_type || 'conceptual_diagram';
+        const targetArch = data.architecture_type || sortedVersions[0].architecture_type || 'conceptual_diagram';
+        const matchingVer = sortedVersions.find(v => (v.architecture_type || data.architecture_type) === targetArch) || sortedVersions[0];
+        
         setSelectedArchType(targetArch);
-        setActiveVersion(activeVer);
+        setActiveVersion(matchingVer);
         
         // Restore previewVersion if specified in URL query
         const params = new URLSearchParams(window.location.search);
@@ -3489,25 +3490,46 @@ function WorkspaceContent() {
         setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
       }
 
-      // Check if existing versions already have this architecture type
       const matchingVersion = activeDiagram?.versions?.find(v => v.architecture_type === newArchId);
       if (matchingVersion) {
         setActiveVersion(matchingVersion);
         setPreviewVersion(null);
       } else {
         const refXml = getDefaultXmlForArchitecture(newArchId, activeDiagram?.name, activeDiagram?.name);
+        const nextVerNum = (activeDiagram?.versions?.length || 0) + 1;
         const tempVersion: DiagramVersion = {
           id: `temp_ref_${newArchId}_${Date.now()}`,
           diagram_id: activeDiagram?.id || 'temp',
-          version_number: (activeVersion?.version_number || 1) + 1,
+          version_number: nextVerNum,
           xml_content: refXml || '',
-          comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name}`,
+          comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name || newArchId}`,
           created_by: 'System',
           created_at: new Date().toISOString(),
           architecture_type: newArchId
         };
         setActiveVersion(tempVersion);
         setPreviewVersion(null);
+
+        // Persist new architecture version to database so browser refreshes retain active diagram
+        if (activeDiagram?.id) {
+          fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              xml_content: refXml || '',
+              comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name || newArchId}`,
+              architecture_type: newArchId
+            }),
+          }).then(r => r.json()).then(newVer => {
+            if (newVer && newVer.id) {
+              setActiveVersion(newVer);
+              setActiveDiagram(prev => prev ? {
+                ...prev,
+                versions: [newVer, ...(prev.versions || []).filter(v => v.id !== newVer.id)]
+              } : prev);
+            }
+          }).catch(console.error);
+        }
       }
       setChatMessages([{
         id: `msg_ref_switch_${Date.now()}`,
