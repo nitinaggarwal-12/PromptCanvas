@@ -3276,58 +3276,44 @@ function WorkspaceContent() {
 function transformXmlToExecutiveObsidianHud(xml: string): string {
   if (!xml) return xml;
 
-  // 1. Purge all gradientColor attributes that cause ugly light gradient cuts
+  // 1. Purge ugly gradient cuts
   xml = xml.replace(/gradientColor=#[A-Fa-f0-9]+;/g, "gradientColor=none;");
 
-  // 2. ERD Database Table Base Containers & Separator Lines
+  // 2. ERD Database Table Containers & Separator Lines (Light Architectural Slate Background + Dark Text)
   xml = xml
-    .replace(/(id="[^"]+_line"[^>]*style=")[^"]*(")/g, "$1line;strokeColor=#38BDF8;strokeWidth=1.5;html=1;$2")
-    .replace(/(id="[^"]+_hdr"[^>]*style=")[^"]*(")/g, "$1rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=left;paddingLeft=10;$2")
-    .replace(/(id="[^"]+_body"[^>]*style=")[^"]*(")/g, "$1text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#E2E8F0;paddingLeft=10;lineHeight=1.4;$2");
+    .replace(/(id="[^"]+_line"[^>]*style=")[^"]*(")/g, "$1line;strokeColor=#0284C7;strokeWidth=1.5;html=1;$2")
+    .replace(/(id="[^"]+_hdr"[^>]*style=")[^"]*(")/g, "$1rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=none;fontColor=#0F172A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;$2")
+    .replace(/(id="[^"]+_body"[^>]*style=")[^"]*(")/g, "$1text;html=1;strokeColor=none;fillColor=#FFFFFF;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;$2");
 
-  // 3. Transform all node fill colors to dark obsidian glass panels (#090D16 & #0F172A)
+  // 3. Transform all node fill colors to crisp light architectural backgrounds with vibrant relevant borders
   xml = xml
-    .replace(/fillColor=#F8FAFC;/g, "fillColor=#090D16;")
-    .replace(/fillColor=#EFF6FF;/g, "fillColor=#090D16;")
-    .replace(/fillColor=#F0FDF4;/g, "fillColor=#090D16;")
-    .replace(/fillColor=#E2E8F0;/g, "fillColor=#1E293B;")
-    .replace(/fillColor=#DBEAFE;/g, "fillColor=#0F172A;")
-    .replace(/fillColor=#DCFCE7;/g, "fillColor=#064E3B;")
-    .replace(/fillColor=#FEF2F2;/g, "fillColor=#450A0A;")
-    .replace(/fillColor=#FFFFFF;/g, "fillColor=#0F172A;")
-    .replace(/fontColor=#[A-Fa-f0-9]+;/g, "fontColor=#FFFFFF;")
-    .replace(/strokeColor=#[A-Fa-f0-9]+;/g, "strokeColor=#38BDF8;");
+    .replace(/fillColor=#090D16;/g, "fillColor=#F8FAFC;")
+    .replace(/fillColor=#0F172A;/g, "fillColor=#F0F9FF;")
+    .replace(/fillColor=#1E293B;/g, "fillColor=#FFFFFF;")
+    .replace(/fillColor=#450A0A;/g, "fillColor=#FEF2F2;")
+    .replace(/fillColor=#064E3B;/g, "fillColor=#F0FDF4;")
+    .replace(/fontColor=#[A-Fa-f0-9]+;/g, "fontColor=#0F172A;");
 
-  // 4. Transform Sub-Schema Swimlane titles to crisp electric neon cyan (#38BDF8)
+  // 4. Transform Sub-Schema Swimlane titles to bold dark slate (#0F172A) & vibrant blue accents
   xml = xml
-    .replace(/(Sub-Schema \d+:[^"]*)/gi, "<b style=\"color:#38BDF8;font-size:13px;text-transform:uppercase;\">$1</b>")
-    .replace(/<b>PK<\/b>/g, "<b style=\"color:#38BDF8;\">PK</b>")
-    .replace(/<b>FK<\/b>/g, "<b style=\"color:#818CF8;\">FK</b>")
-    .replace(/<b>PK\/FK<\/b>/g, "<b style=\"color:#38BDF8;\">PK/FK</b>");
+    .replace(/(Sub-Schema \d+:[^"]*)/gi, "<b style=\"color:#0284C7;font-size:13px;text-transform:uppercase;font-weight:900;\">$1</b>")
+    .replace(/<b>PK<\/b>/g, "<b style=\"color:#0284C7;font-weight:800;\">PK</b>")
+    .replace(/<b>FK<\/b>/g, "<b style=\"color:#7C3AED;font-weight:800;\">FK</b>")
+    .replace(/<b>PK\/FK<\/b>/g, "<b style=\"color:#0284C7;font-weight:800;\">PK/FK</b>");
 
-  // 5. Transform inline HTML style backgrounds inside table cells, sub-boxes, and callouts
+  // 5. Transform inline HTML style backgrounds inside table cells, sub-boxes, and callouts to clean light shapes with dark text
   xml = xml
-    .replace(/background:\s*#F8FAFC;/gi, "background:#0F172A;")
-    .replace(/background:\s*#FEF2F2;/gi, "background:#450A0A;")
-    .replace(/background:\s*#FFFBEB;/gi, "background:#78350F;")
-    .replace(/background:\s*#ECFDF5;/gi, "background:#064E3B;")
-    .replace(/background:\s*#FEE2E2;/gi, "background:#450A0A;")
-    .replace(/background:\s*#EFF6FF;/gi, "background:#0F172A;")
-    .replace(/background:\s*#F1F5F9;/gi, "background:#1E293B;")
-    .replace(/background:\s*#D1FAE5;/gi, "background:#064E3B;")
-    .replace(/border:\s*1px\s+solid\s+#[A-Fa-f0-9]+;/gi, "border:1px solid #38BDF8;");
+    .replace(/background:\s*#[0-9A-Fa-f]{3,6};/gi, "background:#F8FAFC;")
+    .replace(/color:\s*#[0-9A-Fa-f]{3,6};/gi, "color:#0F172A;")
+    .replace(/color:\s*rgba\([^\)]+\);/gi, "color:#0F172A;")
+    .replace(/labelBackgroundColor=#[A-Fa-f0-9]+;/g, "labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;");
 
-  // 6. Force all HTML text colors inside node values to high-contrast crisp white & neon cyan
+  // 6. Restore vibrant relevant semantic colors for directional arrows, KPIs, and advisory badges
   xml = xml
-    .replace(/color:\s*#[0-9A-Fa-f]{3,6};/gi, "color:#FFFFFF;")
-    .replace(/color:\s*rgba\([^\)]+\);/gi, "color:#FFFFFF;")
-    .replace(/labelBackgroundColor=#[A-Fa-f0-9]+;/g, "labelBackgroundColor=#090D16;labelBorderColor=#38BDF8;fontColor=#FFFFFF;");
-
-  // 7. Restore specific neon accent highlights for KPIs, Footer banners, and Advisory Alerts
-  xml = xml
-    .replace(/Alert ID: #OPS-101/g, "<b style=\"color:#38BDF8;\">Alert ID: #OPS-101</b>")
-    .replace(/▲ Operational/g, "<b style=\"color:#10B981;\">▲ Operational</b>")
-    .replace(/Optimal Flow/g, "<b style=\"color:#38BDF8;\">Optimal Flow</b>");
+    .replace(/strokeColor=#[A-Fa-f0-9]+;/g, "strokeColor=#0284C7;")
+    .replace(/Alert ID: #OPS-101/g, "<b style=\"color:#DC2626;\">Alert ID: #OPS-101</b>")
+    .replace(/▲ Operational/g, "<b style=\"color:#16A34A;\">▲ Operational</b>")
+    .replace(/Optimal Flow/g, "<b style=\"color:#0284C7;\">Optimal Flow</b>");
 
   return xml;
 }
