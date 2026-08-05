@@ -1372,17 +1372,6 @@ export function getExactDataAiPipelineReferenceXml(): string {
           <mxGeometry x="20" y="40" width="1810" height="880" as="geometry" />
         </mxCell>
 
-        <mxCell id="main_title" value="&lt;font style='font-size: 22px; font-weight: bold; color: #0F172A;'&gt;Combining Data Flow (DFD), MLOps Lifecycle, and Feature Engineering&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="350" y="10" width="1150" height="35" as="geometry" />
-        </mxCell>
-
-        <mxCell id="gcp_logo_text" value="&lt;b style='color:#4285F4;font-size:18px;'&gt;G&lt;/b&gt;&lt;b style='color:#EA4335;font-size:18px;'&gt;C&lt;/b&gt;&lt;b style='color:#FBBC05;font-size:18px;'&gt;P&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="45" y="52" width="60" height="25" as="geometry" />
-        </mxCell>
-        <mxCell id="tenant_subtitle" value="&lt;b style='font-size:15px;color:#334155;'&gt;ITACS SECURE GOVERNED CLOUD TENANT (Managed Services)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="500" y="52" width="850" height="25" as="geometry" />
-        </mxCell>
-
         <!-- Phase Timeline Arrow & Labels -->
         <mxCell id="timeline_arrow" value="" style="endArrow=block;endFill=1;strokeColor=#64748B;strokeWidth=2.5;html=1;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
