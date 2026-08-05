@@ -933,7 +933,9 @@ function WorkspaceContent() {
       if (data.versions && data.versions.length > 0) {
         const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
         const targetArch = data.architecture_type || sortedVersions[0].architecture_type || 'conceptual_diagram';
-        const matchingVer = sortedVersions.find(v => v.architecture_type === targetArch);
+        const candidateVer = sortedVersions.find(v => v.architecture_type === targetArch);
+        const isLegacyDevopsMismatch = candidateVer && targetArch !== 'devops_cicd_pipeline' && (candidateVer.xml_content || '').includes('[1] GitHub / GitLab Polyrepo');
+        const matchingVer = isLegacyDevopsMismatch ? undefined : candidateVer;
         
         setSelectedArchType(targetArch);
         if (matchingVer) {
@@ -951,6 +953,17 @@ function WorkspaceContent() {
             architecture_type: targetArch
           };
           setActiveVersion(dynamicVer);
+          if (data.id && refXml) {
+            fetch(`/api/diagrams/${data.id}/versions`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                xmlContent: refXml,
+                comment: `Architecture Backbone Sync: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
+                architectureType: targetArch
+              })
+            }).catch(console.error);
+          }
         }
         
         // Restore previewVersion if specified in URL query
