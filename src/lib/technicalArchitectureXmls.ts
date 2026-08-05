@@ -442,8 +442,8 @@ const TECH_XML_VPC_INFRA = `<mxfile host="embed.diagrams.net">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-12" as="offset" />
             <Array as="points">
-              <mxPoint x="574" y="810" />
-              <mxPoint x="1300" y="810" />
+              <mxPoint x="574" y="835" />
+              <mxPoint x="1300" y="835" />
               <mxPoint x="1300" y="357" />
             </Array>
           </mxGeometry>
@@ -452,8 +452,8 @@ const TECH_XML_VPC_INFRA = `<mxfile host="embed.diagrams.net">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-12" as="offset" />
             <Array as="points">
-              <mxPoint x="574" y="790" />
-              <mxPoint x="970" y="790" />
+              <mxPoint x="574" y="765" />
+              <mxPoint x="970" y="765" />
               <mxPoint x="970" y="477" />
             </Array>
           </mxGeometry>
@@ -462,8 +462,8 @@ const TECH_XML_VPC_INFRA = `<mxfile host="embed.diagrams.net">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-12" as="offset" />
             <Array as="points">
-              <mxPoint x="490" y="790" />
-              <mxPoint x="970" y="790" />
+              <mxPoint x="490" y="800" />
+              <mxPoint x="970" y="800" />
               <mxPoint x="970" y="717" />
             </Array>
           </mxGeometry>
