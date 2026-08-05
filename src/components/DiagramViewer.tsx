@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
-import { getTechnicalArchitectureXml, getTemplateTitle } from '@/lib/architectureTypes';
+import { getDefaultXmlForArchitecture, getTemplateTitle } from '@/lib/architectureTypes';
 import { getArchitectureMeta } from '@/lib/architectureMetadata';
 
 interface DiagramViewerProps {
@@ -32,7 +32,7 @@ export default function DiagramViewer({
 }: DiagramViewerProps) {
   const sanitizedXml = React.useMemo(() => {
     if (!xml) {
-      return getTechnicalArchitectureXml(diagramType || 'tech_cicd_pipeline');
+      return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
     }
     let rawStr = '';
     if (typeof xml === 'string') {
@@ -45,12 +45,12 @@ export default function DiagramViewer({
     try {
       const healed = validateAndHealDrawioXml(rawStr, diagramType);
       if (!healed.xml || healed.xml.length < 100) {
-        return getTechnicalArchitectureXml(diagramType || 'tech_cicd_pipeline');
+        return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
       }
       return healed.xml;
     } catch (err) {
       console.error('[DiagramViewer] Failed to heal XML, using fallback:', err);
-      return getTechnicalArchitectureXml(diagramType || 'tech_cicd_pipeline');
+      return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
     }
   }, [xml, diagramType]);
 
