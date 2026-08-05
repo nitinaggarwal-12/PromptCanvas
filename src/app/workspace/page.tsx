@@ -534,6 +534,23 @@ function WorkspaceContent() {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanMode, setIsPanMode] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
+  // Auto-dismiss all header dropdown menus when clicking anywhere outside
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('#workspace-canvas-project-selector') && 
+          !target.closest('#workspace-header-architecture-select') && 
+          !target.closest('#workspace-version-dropdown') &&
+          !target.closest('.header-dropdown-menu')) {
+        setIsCanvasDropdownOpen(false);
+        setIsArchDropdownOpen(false);
+        setIsVersionDropdownOpen(false);
+      }
+    };
+    window.addEventListener('mousedown', handleOutsideClick);
+    return () => window.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
   const [canvasTheme, setCanvasTheme] = useState<'dark' | 'light'>('light');
   const [viewMode, setViewMode] = useState<'canvas' | 'outline' | 'business' | 'technical'>(() => {
     if (typeof window !== 'undefined') {
@@ -3352,7 +3369,7 @@ function WorkspaceContent() {
         </button>
 
         {isVersionDropdownOpen && (
-          <div className="fixed sm:absolute right-0 top-14 sm:top-full mt-1.5 w-[280px] sm:w-[320px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[380px]">
+          <div className="header-dropdown-menu fixed sm:absolute right-0 top-14 sm:top-full mt-1.5 w-[280px] sm:w-[320px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[380px]">
             {/* Version Search Bar */}
             <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
               <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
@@ -4096,7 +4113,7 @@ function WorkspaceContent() {
                       </button>
 
                       {isCanvasDropdownOpen && (
-                        <div className="fixed sm:absolute left-4 sm:left-0 top-14 sm:top-full mt-1.5 w-[320px] sm:w-[360px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
+                        <div className="header-dropdown-menu fixed sm:absolute left-4 sm:left-0 top-14 sm:top-full mt-1.5 w-[320px] sm:w-[360px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
                           {/* Search Input Bar */}
                           <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
                             <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
@@ -4206,7 +4223,7 @@ function WorkspaceContent() {
                         </button>
 
                         {isArchDropdownOpen && (
-                          <div className="fixed sm:absolute left-0 top-14 sm:top-full mt-1.5 w-[340px] sm:w-[380px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
+                          <div className="header-dropdown-menu fixed sm:absolute left-0 top-14 sm:top-full mt-1.5 w-[340px] sm:w-[380px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
                             {/* Search Input Bar */}
                             <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
                               <Search className="w-3.5 h-3.5 text-indigo-400 shrink-0 ml-1" />
