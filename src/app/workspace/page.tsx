@@ -3983,12 +3983,10 @@ function WorkspaceContent() {
                     type="button"
                     onClick={() => setCurrentTab('editor')}
                     className="text-teal-300 hover:text-teal-200 font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                    title="Editor Canvas"
                   >
                     <Network className="w-4 h-4 text-teal-400" />
-                    <span className="hidden lg:inline font-extrabold tracking-wide">Design Canvas</span>
                   </button>
-                  <span className="text-slate-600 font-bold">/</span>
-                  {/* Dedicated Searchable Canvas Project Selector Dropdown showing Canvas Name before Business/Technical Diagram Selector */}
                   <div className="relative inline-flex items-center shrink-0">
                     <span className="text-[10px] uppercase tracking-wider font-extrabold text-teal-400/80 mr-1.5 hidden xl:inline">
                       Canvas:
