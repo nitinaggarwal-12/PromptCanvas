@@ -3371,16 +3371,56 @@ function WorkspaceContent() {
         {isVersionDropdownOpen && (
           <div className="header-dropdown-menu fixed sm:absolute right-0 top-14 sm:top-full mt-1.5 w-[280px] sm:w-[320px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[380px]">
             {/* Version Search Bar */}
-            <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
-              <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
-              <input
-                type="text"
-                autoFocus
-                placeholder="Search version # or note..."
-                value={versionSearchQuery}
-                onChange={(e) => setVersionSearchQuery(e.target.value)}
-                className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
-              />
+            <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex flex-col gap-1.5">
+              <div className="flex items-center gap-2">
+                <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="Search version # or note..."
+                  value={versionSearchQuery}
+                  onChange={(e) => setVersionSearchQuery(e.target.value)}
+                  className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
+                />
+              </div>
+              {/* Forward / Backward Arrow Navigation Sub-Toolbar */}
+              <div className="flex items-center justify-between px-1 pt-1 border-t border-slate-800/60 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentIdx = filteredVersions.findIndex(v => v.id === currentVer.id);
+                    if (currentIdx < filteredVersions.length - 1) {
+                      const prevVer = filteredVersions[currentIdx + 1];
+                      if (prevVer.id === activeLatestId) setPreviewVersion(null);
+                      else setPreviewVersion(prevVer);
+                    }
+                  }}
+                  disabled={filteredVersions.findIndex(v => v.id === currentVer.id) >= filteredVersions.length - 1}
+                  className="flex items-center gap-1 text-slate-400 hover:text-teal-300 disabled:opacity-30 disabled:hover:text-slate-400 font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                  title="Backward (Older Version)"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Older</span>
+                </button>
+                <span className="text-[10px] text-slate-500 font-mono">v{currentVer.version_number}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentIdx = filteredVersions.findIndex(v => v.id === currentVer.id);
+                    if (currentIdx > 0) {
+                      const nextVer = filteredVersions[currentIdx - 1];
+                      if (nextVer.id === activeLatestId) setPreviewVersion(null);
+                      else setPreviewVersion(nextVer);
+                    }
+                  }}
+                  disabled={filteredVersions.findIndex(v => v.id === currentVer.id) <= 0}
+                  className="flex items-center gap-1 text-slate-400 hover:text-teal-300 disabled:opacity-30 disabled:hover:text-slate-400 font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                  title="Forward (Newer Version)"
+                >
+                  <span>Newer</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
             {/* Version List */}
             <div className="overflow-y-auto py-1 max-h-[300px] divide-y divide-slate-800/40">
@@ -4115,25 +4155,57 @@ function WorkspaceContent() {
                       {isCanvasDropdownOpen && (
                         <div className="header-dropdown-menu fixed sm:absolute left-4 sm:left-0 top-14 sm:top-full mt-1.5 w-[320px] sm:w-[360px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
                           {/* Search Input Bar */}
-                          <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
-                            <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
-                            <input
-                              type="text"
-                              autoFocus
-                              placeholder="Search ApexPay, FinTech, DevOps..."
-                              value={canvasSearchQuery}
-                              onChange={(e) => setCanvasSearchQuery(e.target.value)}
-                              className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
-                            />
-                            {canvasSearchQuery && (
+                          <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex flex-col gap-1.5">
+                            <div className="flex items-center gap-2">
+                              <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
+                              <input
+                                type="text"
+                                autoFocus
+                                placeholder="Search ApexPay, FinTech, DevOps..."
+                                value={canvasSearchQuery}
+                                onChange={(e) => setCanvasSearchQuery(e.target.value)}
+                                className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
+                              />
+                              {canvasSearchQuery && (
+                                <button
+                                  type="button"
+                                  onClick={() => setCanvasSearchQuery('')}
+                                  className="text-[10px] text-slate-400 hover:text-slate-200 font-bold px-1.5"
+                                >
+                                  Clear
+                                </button>
+                              )}
+                            </div>
+                            {/* Forward / Backward Arrow Navigation Sub-Toolbar */}
+                            <div className="flex items-center justify-between px-1 pt-1 border-t border-slate-800/60 text-[11px]">
                               <button
                                 type="button"
-                                onClick={() => setCanvasSearchQuery('')}
-                                className="text-[10px] text-slate-400 hover:text-slate-200 font-bold px-1.5"
+                                onClick={() => {
+                                  const idx = diagrams.findIndex(d => d.id === activeDiagram?.id);
+                                  if (idx > 0) loadDiagramDetails(diagrams[idx - 1].id);
+                                }}
+                                disabled={diagrams.findIndex(d => d.id === activeDiagram?.id) <= 0}
+                                className="flex items-center gap-1 text-slate-400 hover:text-teal-300 disabled:opacity-30 disabled:hover:text-slate-400 font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                                title="Backward (Previous Canvas)"
                               >
-                                Clear
+                                <ChevronLeft className="w-3.5 h-3.5" />
+                                <span>Prev Canvas</span>
                               </button>
-                            )}
+                              <span className="text-[10px] text-slate-500 font-mono">Projects ({diagrams.length})</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const idx = diagrams.findIndex(d => d.id === activeDiagram?.id);
+                                  if (idx >= 0 && idx < diagrams.length - 1) loadDiagramDetails(diagrams[idx + 1].id);
+                                }}
+                                disabled={diagrams.findIndex(d => d.id === activeDiagram?.id) >= diagrams.length - 1}
+                                className="flex items-center gap-1 text-slate-400 hover:text-teal-300 disabled:opacity-30 disabled:hover:text-slate-400 font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                                title="Forward (Next Canvas)"
+                              >
+                                <span>Next Canvas</span>
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                           </div>
 
                           {/* Filtered Canvas List */}
@@ -4225,25 +4297,59 @@ function WorkspaceContent() {
                         {isArchDropdownOpen && (
                           <div className="header-dropdown-menu fixed sm:absolute left-0 top-14 sm:top-full mt-1.5 w-[340px] sm:w-[380px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
                             {/* Search Input Bar */}
-                            <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
-                              <Search className="w-3.5 h-3.5 text-indigo-400 shrink-0 ml-1" />
-                              <input
-                                type="text"
-                                autoFocus
-                                placeholder="Search Sequence, DevOps, Serverless, ERD..."
-                                value={archSearchQuery}
-                                onChange={(e) => setArchSearchQuery(e.target.value)}
-                                className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
-                              />
-                              {archSearchQuery && (
+                            <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex flex-col gap-1.5">
+                              <div className="flex items-center gap-2">
+                                <Search className="w-3.5 h-3.5 text-indigo-400 shrink-0 ml-1" />
+                                <input
+                                  type="text"
+                                  autoFocus
+                                  placeholder="Search Sequence, DevOps, Serverless, ERD..."
+                                  value={archSearchQuery}
+                                  onChange={(e) => setArchSearchQuery(e.target.value)}
+                                  className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
+                                />
+                                {archSearchQuery && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setArchSearchQuery('')}
+                                    className="text-[10px] text-slate-400 hover:text-slate-200 font-bold px-1.5"
+                                  >
+                                    Clear
+                                  </button>
+                                )}
+                              </div>
+                              {/* Forward / Backward Arrow Navigation Sub-Toolbar */}
+                              <div className="flex items-center justify-between px-1 pt-1 border-t border-slate-800/60 text-[11px]">
                                 <button
                                   type="button"
-                                  onClick={() => setArchSearchQuery('')}
-                                  className="text-[10px] text-slate-400 hover:text-slate-200 font-bold px-1.5"
+                                  onClick={() => {
+                                    const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
+                                    const idx = allArchs.findIndex(a => a.id === selectedArchType);
+                                    if (idx > 0) handleArchitectureSwitch(allArchs[idx - 1].id);
+                                  }}
+                                  disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) <= 0}
+                                  className="flex items-center gap-1 text-slate-400 hover:text-indigo-300 disabled:opacity-30 disabled:hover:text-slate-400 font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                                  title="Backward (Previous Architecture Type)"
                                 >
-                                  Clear
+                                  <ChevronLeft className="w-3.5 h-3.5" />
+                                  <span>Prev Arch</span>
                                 </button>
-                              )}
+                                <span className="text-[10px] text-slate-500 font-mono">Template Flow</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
+                                    const idx = allArchs.findIndex(a => a.id === selectedArchType);
+                                    if (idx >= 0 && idx < allArchs.length - 1) handleArchitectureSwitch(allArchs[idx + 1].id);
+                                  }}
+                                  disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) >= [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].length - 1}
+                                  className="flex items-center gap-1 text-slate-400 hover:text-indigo-300 disabled:opacity-30 disabled:hover:text-slate-400 font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                                  title="Forward (Next Architecture Type)"
+                                >
+                                  <span>Next Arch</span>
+                                  <ChevronRight className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
                             </div>
 
                             {/* Filtered Architecture List */}
