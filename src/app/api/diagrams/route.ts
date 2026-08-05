@@ -7,7 +7,11 @@ export async function GET() {
   try {
     const user = await getAuthenticatedUser();
     const diagrams = await listDiagrams(user?.id);
-    return NextResponse.json(diagrams);
+    return NextResponse.json(diagrams, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
   } catch (error) {
     console.error('Failed to list diagrams:', error);
     return NextResponse.json(

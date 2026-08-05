@@ -34,6 +34,7 @@ export interface ArchitectureTypeOption {
   category: string;
   prompt: string;
   whenToUse: string;
+  softDeleted?: boolean;
 }
 
 export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
@@ -70,7 +71,8 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "5. Macro Dynamic Sequence Diagram",
     category: "Business Architecture",
     whenToUse: "4-phase end-to-end macro sequence diagram across data ingestion, MLOps, RAG, and delivery",
-    prompt: "Enterprise End-to-End System Flow:\n- Phase 1: Data Ingestion, Feature Engineering & Lineage Logging.\n- Phase 2: MLOps Lifecycle: Model Training, Evaluation, Approval, Deployment & Monitoring.\n- Phase 3: GenAI / Agentic RAG Orchestration & Analytics Tooling.\n- Phase 4: Prototype Delivery & System Telemetry Logging."
+    prompt: "Enterprise End-to-End System Flow:\n- Phase 1: Data Ingestion, Feature Engineering & Lineage Logging.\n- Phase 2: MLOps Lifecycle: Model Training, Evaluation, Approval, Deployment & Monitoring.\n- Phase 3: GenAI / Agentic RAG Orchestration & Analytics Tooling.\n- Phase 4: Prototype Delivery & System Telemetry Logging.",
+    softDeleted: true
   },
   {
     id: "data_ai_pipeline",
@@ -98,7 +100,8 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "9. Governance & State Machine",
     category: "Business Architecture",
     whenToUse: "Unified governance & state-machine lifecycle tracking model vetting, training, audits, and archival",
-    prompt: "Unified Governance & State-Machine Lifecycle:\n- Vetting & Modeling: Ethical data vetting, PII checks, and reference data modeling.\n- Training & Evaluation: Offline metrics, bias & fairness audits, explainability reports.\n- Governance Boundary: Compliance audit, adversarial red-teaming, societal bias & security checks.\n- Deployment & Archival: Canary deployment, drift monitoring, continuous observation, and archival."
+    prompt: "Unified Governance & State-Machine Lifecycle:\n- Vetting & Modeling: Ethical data vetting, PII checks, and reference data modeling.\n- Training & Evaluation: Offline metrics, bias & fairness audits, explainability reports.\n- Governance Boundary: Compliance audit, adversarial red-teaming, societal bias & security checks.\n- Deployment & Archival: Canary deployment, drift monitoring, continuous observation, and archival.",
+    softDeleted: true
   },
   {
     id: "unified_system_view",
@@ -109,10 +112,11 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "dark_mode_unified_system_view",
-    name: "11. Architecture",
+    name: "11. Architecture (Unified Dark View)",
     category: "Business Architecture",
     whenToUse: "Dark mode unified system view mapping data flow, orchestration, time, and governance",
-    prompt: "Total Unified System View (Dark Mode):\n- Plan & Data Foundation: Enterprise architecture planning, data vetting, and schema lineage.\n- Development & AI Lifecycle: Data engineering DFD, feature store, model development, and governance.\n- Cognitive Architecture & Deployment: Secure VPC network, agent orchestrator, tool endpoints, and observability."
+    prompt: "Total Unified System View (Dark Mode):\n- Plan & Data Foundation: Enterprise architecture planning, data vetting, and schema lineage.\n- Development & AI Lifecycle: Data engineering DFD, feature store, model development, and governance.\n- Cognitive Architecture & Deployment: Secure VPC network, agent orchestrator, tool endpoints, and observability.",
+    softDeleted: true
   },
   {
     id: "business_agent_governance_hitl",
@@ -126,17 +130,18 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "13. End-to-End Enterprise AI Safety, NLI Claim Benchmarking & Red-Teaming Flow",
     category: "Business Architecture",
     whenToUse: "Automated evaluation harnesses (Ragas / G-Eval), NLI factual claim verification, toxicity screening, and automated safety red-teaming flow",
-    prompt: "END-TO-END ENTERPRISE AI SAFETY, NLI CLAIM BENCHMARKING & RED-TEAMING FLOW:\n- Continuous Integration (CI) & Data Ingestion: Model Checkpoints, Reference & Distractor Datasets, Test Prompts & Scenarios.\n- Automated Evaluation: Performance Metrics (Context Relevance, Faithfulness, Answer Relevance) + NLI Claim Verification (Isolate Claims, Retrieve Supporting Evidence, Classify Claims as Entailed/Contradicted/Neutral) -> Evaluation Results Aggregator.\n- Safety Red-Teaming & Screening: Toxicity & Bias Screening + Safety Red-Teaming (Simulate Jailbreak Attempts, Prompt Injection/Adversarial Attacks, Check against Safety Guidelines) -> Safety Decision Gate.\n- Model Promotion & Deployment: High Quality AND Safety Passed -> Model Promotion -> Production Endpoint Deployment. Low Quality/Reliability -> Block & Remediate. Failed -> Immediate Halt -> AI Safety Team Intervention & Model Retraining."
+    prompt: "END-TO-END ENTERPRISE AI SAFETY, NLI CLAIM BENCHMARKING & RED-TEAMING FLOW:\n- Continuous Integration (CI) & Data Ingestion: Model Checkpoints, Reference & Distractor Datasets, Test Prompts & Scenarios.\n- Automated Evaluation: Performance Metrics (Context Relevance, Faithfulness, Answer Relevance) + NLI Claim Verification (Isolate Claims, Retrieve Supporting Evidence, Classify Claims as Entailed/Contradicted/Neutral) -> Evaluation Results Aggregator.\n- Safety Red-Teaming & Screening: Toxicity & Bias Screening + Safety Red-Teaming (Simulate Jailbreak Attempts, Prompt Injection/Adversarial Attacks, Check against Safety Guidelines) -> Safety Decision Gate.\n- Model Promotion & Deployment: High Quality AND Safety Passed -> Model Promotion -> Production Endpoint Deployment. Low Quality/Reliability -> Block & Remediate. Failed -> Immediate Halt -> AI Safety Team Intervention & Model Retraining.",
+    softDeleted: true
   }
 ];
 
 export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   {
     id: "tech_multi_agent_langgraph",
-    name: "0. Multi-Agent Autonomous Orchestration Platform (Stateful Directed Acyclic Graph)",
+    name: "0. Flagship Stateful Multi-Agent Orchestration Engine (LangGraph DAG)",
     category: "Technical Architecture",
-    whenToUse: "Production Stateful Directed Acyclic Graph multi-agent platform with Master Agent Router, worker agents, parallel Cloud Run code sandbox, and pgvector long-term memory store",
-    prompt: "Multi-Agent Autonomous Orchestration Platform (Stateful Directed Acyclic Graph):\n- Tier 1: Multimodal WebRTC / 2M+ Token Long-Context Ingress, Master Directed Graph Supervisor Agent & Run State Machine Checkpoint Store\n- Tier 2: Specialized Autonomous Worker Cluster (Research & Grounding Agent, Code/SQL/GUI Synthesis Agent, Verification & Safety Critic Agent) with Hierarchical Peer Hand-off Routines\n- Tier 3: Parallel Sandboxed Code Execution Kernel, Autonomous GUI OS Computer Use Container, gRPC/REST Tool Call Gateway & Long-Term Vector Memory with Ephemeral System Prompt Caching (90% Cost Cut)\n- Tier 4: Run Lifecycle Human Interrupt Approval Gate (requires_action), Final Grounded Response Synthesizer & Distributed Trace Observability"
+    whenToUse: "Flagship stateful Directed Acyclic Graph (DAG) multi-agent orchestration engine featuring Master Supervisor Router, parallel worker cluster, sandboxed code execution, human-in-the-loop gates, and pgvector long-term memory store",
+    prompt: "Flagship Stateful Directed Acyclic Graph (DAG) Multi-Agent Orchestration Platform:\n- Tier 1: Multimodal WebRTC / 2M+ Token Long-Context Ingress, Master Directed Graph Supervisor Agent & Run State Machine Checkpoint Store\n- Tier 2: Specialized Autonomous Worker Cluster (Research & Grounding Agent, Code/SQL/GUI Synthesis Agent, Verification & Safety Critic Agent) with Hierarchical Peer Hand-off Routines\n- Tier 3: Parallel Sandboxed Code Execution Kernel, Autonomous GUI OS Computer Use Container, gRPC/REST Tool Call Gateway & Long-Term Vector Memory with Ephemeral System Prompt Caching (90% Cost Cut)\n- Tier 4: Run Lifecycle Human Interrupt Approval Gate (requires_action), Final Grounded Response Synthesizer & Distributed Trace Observability"
   },
   {
     id: "tech_serverless_gcp",
@@ -147,17 +152,17 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_streaming_analytics",
-    name: "2. Real-time Streaming Analytics (GCP)",
+    name: "2. GCP Real-Time Streaming Analytics & Telemetry Pipeline",
     category: "Technical Architecture",
-    whenToUse: "Real-time streaming analytics pipeline on GCP using Pub/Sub, Dataflow, Vertex AI, and BigQuery",
-    prompt: "Act as a GCP Big Data Architect. Design a real-time streaming analytics technical architecture on Google Cloud. Include: IoT/Web event telemetry ingestion via Cloud Pub/Sub topics and subscriptions, streaming ETL processing via Cloud Dataflow (Apache Beam), real-time feature engineering into Vertex AI Feature Store, analytical warehousing in BigQuery with partitioned tables, and interactive dashboards via Looker Studio / Grafana."
+    whenToUse: "Real-time streaming analytics and IoT/Edge telemetry ingestion pipeline on GCP using MQTT field gateways, Cloud Pub/Sub, Dataflow Beam ETL, Vertex AI Feature Store, Cloud Bigtable, and BigQuery",
+    prompt: "Act as a GCP Big Data & Edge IoT Principal Architect. Design a unified GCP Real-Time Streaming Analytics & Telemetry Pipeline combining: Edge device field gateways (MQTT/HTTPS) & Web telemetry ingestion, Cloud Pub/Sub high-throughput topics and subscriptions, streaming ETL processing via Cloud Dataflow (Apache Beam), real-time feature engineering into Vertex AI Feature Store, time-series & analytical warehousing in Cloud Bigtable and BigQuery with partitioned tables, and interactive operational dashboards via Looker Studio / Grafana."
   },
   {
     id: "tech_microservices_aws",
-    name: "3. Microservices Kubernetes Cluster (AWS)",
+    name: "3. AWS Production Kubernetes & Zero-Trust VPC Infrastructure",
     category: "Technical Architecture",
-    whenToUse: "Kubernetes microservices cluster on AWS EKS with ALB Ingress, Istio Mesh, RDS Aurora, and Prometheus",
-    prompt: "Act as an AWS Cloud Native Architect. Design a production-grade microservices architecture on AWS EKS (Amazon Elastic Kubernetes Service). Include: Route 53 DNS, AWS Shield & WAF, Application Load Balancer (ALB) Ingress Controller, EKS Cluster across 3 Multi-AZ VPC subnets, Istio Service Mesh with mTLS, Amazon ECR registry, AWS App Mesh / Cloud Map, Amazon RDS Aurora PostgreSQL database, and Prometheus/Grafana CloudWatch observability."
+    whenToUse: "Production AWS EKS Kubernetes microservices cluster integrated with Zero-Trust VPC network infrastructure, AWS Transit Gateway, AWS Network Firewall, Istio mTLS, Aurora, and PrivateLink",
+    prompt: "Act as an AWS Principal Cloud Native & Security Architect. Design a production AWS Kubernetes & Zero-Trust VPC Infrastructure combining: Route 53 DNS, AWS Shield & WAF, AWS Transit Gateway connecting multi-VPC networks, AWS Network Firewall & GuardDuty inspection subnets, Application Load Balancer (ALB) Ingress Controller, AWS EKS Kubernetes Cluster across 3 Multi-AZ Private Subnets, Istio Service Mesh with mTLS, AWS PrivateLink VPC Endpoints for S3 & DynamoDB, Amazon RDS Aurora PostgreSQL database, and Prometheus/Grafana CloudWatch observability."
   },
   {
     id: "tech_data_lakehouse",
@@ -168,10 +173,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_rag_gcp",
-    name: "5. AI Retrieval-Augmented Generation / RAG (GCP)",
+    name: "5. GCP Enterprise Vertex AI Vector Search & RAG Infrastructure",
     category: "Technical Architecture",
-    whenToUse: "AI RAG system on GCP using Vertex AI Embeddings, Vector Search, Cloud Run/GKE, and Gemini 1.5",
-    prompt: "Act as a GCP AI Principal Architect. Design an advanced technical Cognitive Architecture for AI Retrieval-Augmented Generation (RAG) on Google Cloud. Include: Ingestion pipelines from Cloud Storage and BigQuery, embedding generation via Vertex AI Text Embeddings API, high-scale vector indexing in Vertex AI Vector Search (formerly Matching Engine), agent orchestration on Cloud Run / GKE with LlamaIndex/LangChain, LLM reasoning with Gemini 1.5 Pro/Flash, and VPC Service Controls private security perimeters."
+    whenToUse: "Enterprise GCP cloud infrastructure for high-scale AI Retrieval-Augmented Generation (RAG) featuring Vertex AI Text Embeddings, Vertex AI Vector Search, Cloud Run / GKE serving, BigQuery data source integration, and VPC Service Controls private security perimeters",
+    prompt: "Act as a GCP AI Principal Infrastructure Architect. Design a production enterprise GCP infrastructure for Retrieval-Augmented Generation (RAG). Include: Automated ingestion pipelines from Cloud Storage and BigQuery, continuous embedding generation via Vertex AI Text Embeddings API, ultra-low-latency vector indexing & ANN retrieval in Vertex AI Vector Search, high-availability container serving on Cloud Run & GKE, Gemini 2.5 Pro/Flash enterprise LLM inference, and air-gapped security boundaries via VPC Service Controls and Cloud KMS encryption."
   },
   {
     id: "tech_event_driven_aws",
@@ -192,14 +197,16 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "8. Secure VPC Network Infrastructure (AWS)",
     category: "Technical Architecture",
     whenToUse: "Zero-Trust secure VPC network infrastructure on AWS with Transit Gateway, Network Firewall, and PrivateLink",
-    prompt: "Act as an AWS Network & Security Architect. Design a Zero-Trust Secure VPC Network Infrastructure on AWS. Include: AWS Transit Gateway connecting Shared Services, Production, and Development VPCs, dual-stack IPv4/IPv6 routing, AWS Network Firewall and GuardDuty inspection subnets, NAT Gateways in Public subnets, isolated Private Application and Database subnets, VPC Endpoints (PrivateLink) for S3 and DynamoDB, and AWS KMS encryption with centralized IAM SCPs."
+    prompt: "Act as an AWS Network & Security Architect. Design a Zero-Trust Secure VPC Network Infrastructure on AWS. Include: AWS Transit Gateway connecting Shared Services, Production, and Development VPCs, dual-stack IPv4/IPv6 routing, AWS Network Firewall and GuardDuty inspection subnets, NAT Gateways in Public subnets, isolated Private Application and Database subnets, VPC Endpoints (PrivateLink) for S3 and DynamoDB, and AWS KMS encryption with centralized IAM SCPs.",
+    softDeleted: true
   },
   {
     id: "tech_iot_telemetry",
     name: "9. IoT Telemetry Ingestion (GCP)",
     category: "Technical Architecture",
     whenToUse: "Industrial IoT telemetry ingestion on GCP using MQTT field gateways, Pub/Sub, Dataflow, Bigtable, and BigQuery",
-    prompt: "Act as a GCP IoT & Edge Computing Architect. Design an industrial IoT Telemetry Ingestion technical architecture on Google Cloud. Include: Edge device field gateways using MQTT/HTTPS protocols, Cloud Pub/Sub high-throughput telemetry stream ingress, stream processing and anomaly detection using Cloud Dataflow, time-series data storage in Bigtable and BigQuery, device metadata in Cloud SQL, and real-time operational alerting via Vertex AI Model Monitoring and Cloud Functions."
+    prompt: "Act as a GCP IoT & Edge Computing Architect. Design an industrial IoT Telemetry Ingestion technical architecture on Google Cloud. Include: Edge device field gateways using MQTT/HTTPS protocols, Cloud Pub/Sub high-throughput telemetry stream ingress, stream processing and anomaly detection using Cloud Dataflow, time-series data storage in Bigtable and BigQuery, device metadata in Cloud SQL, and real-time operational alerting via Vertex AI Model Monitoring and Cloud Functions.",
+    softDeleted: true
   },
   {
     id: "tech_cicd_pipeline",
@@ -282,12 +289,15 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactEvalSafetyBenchmarkingReferenceXml();
   } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline' || archId === 'gcp_industrial_iot' || archId === 'enterprise_devsecops_polyrepo')) {
     xml = getTechnicalArchitectureXml(archId);
+  } else if (archId === 'v2_freeform') {
+    xml = getTechnicalArchitectureXml('tech_serverless_gcp');
   } else {
     xml = getTechnicalArchitectureXml(archId || 'tech_serverless_gcp');
   }
 
   if (archId !== 'eval_safety_benchmarking' && archId !== 'business_agent_governance_hitl' && archId !== 'tech_multi_agent_langgraph') {
-    const effectiveContext = useCaseContext || userPrompt || getTemplateTitle(archId || '');
+    const cleanUseCase = (useCaseContext && !/^\d+\.\s/.test(useCaseContext)) ? useCaseContext : undefined;
+    const effectiveContext = cleanUseCase || userPrompt || getTemplateTitle(archId || '');
     xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
   }
   xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, archId || 'unified_system_view');

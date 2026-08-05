@@ -183,6 +183,8 @@ function getSqliteDb(): DatabaseSync {
     mkdirSync(dirname(sqliteDbPath), { recursive: true });
     sqliteDbInstance = new DatabaseSync(sqliteDbPath);
     sqliteDbInstance.exec('PRAGMA foreign_keys = ON;');
+    sqliteDbInstance.exec('PRAGMA journal_mode = WAL;');
+    sqliteDbInstance.exec('PRAGMA busy_timeout = 5000;');
     return sqliteDbInstance;
   } catch (error) {
     console.error('Failed to initialize SQLite database:', error);
@@ -800,7 +802,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         ORDER BY created_at DESC, version_number DESC
         LIMIT 1
       )
-      WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1 OR d.is_private IS NULL OR d.is_private = FALSE
+      WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1 OR d.is_private IS NULL OR d.is_private = FALSE OR d.is_private = 0
       ORDER BY d.updated_at DESC
     `;
     if (isPostgres()) {
@@ -824,7 +826,7 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
         ORDER BY created_at DESC, version_number DESC
         LIMIT 1
       )
-      WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NULL OR d.is_private = FALSE
+      WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NULL OR d.is_private = FALSE OR d.is_private = 0
       ORDER BY d.updated_at DESC
     `;
     if (isPostgres()) {
@@ -1172,6 +1174,49 @@ export async function updateDiagramArchitectureType(diagramId: string, architect
     const db = getSqliteDb();
     const stmt = db.prepare('UPDATE diagrams SET architecture_type = ? WHERE id = ?');
     stmt.run(architectureType, diagramId);
+  }
+}
+
+export async function updateDiagramName(diagramId: string, name: string): Promise<void> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query('UPDATE diagrams SET name = $1 WHERE id = $2', [name, diagramId]);
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare('UPDATE diagrams SET name = ? WHERE id = ?');
+    stmt.run(name, diagramId);
+  }
+}
+
+export async function updateLatestDiagramVersionContent(
+  diagramId: string,
+  xmlContent?: string,
+  architectureType?: string,
+  businessUseCase?: string
+): Promise<void> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const vers = await pool.query(
+      'SELECT id, architecture_type, xml_content, business_usecase FROM diagram_versions WHERE diagram_id = $1 ORDER BY version_number DESC LIMIT 1',
+      [diagramId]
+    );
+    if (vers.rows.length > 0) {
+      const latest = vers.rows[0];
+      await pool.query(
+        'UPDATE diagram_versions SET xml_content = $1, architecture_type = $2, business_usecase = $3 WHERE id = $4',
+        [xmlContent || latest.xml_content, architectureType || latest.architecture_type, businessUseCase || latest.business_usecase, latest.id]
+      );
+    }
+  } else {
+    const db = getSqliteDb();
+    const existingVers = db.prepare('SELECT id, version_number, architecture_type, xml_content, business_usecase FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC').all(diagramId) as any[];
+    if (existingVers.length > 0) {
+      const latest = existingVers[0];
+      const stmt = db.prepare('UPDATE diagram_versions SET xml_content = ?, architecture_type = ?, business_usecase = ? WHERE id = ?');
+      stmt.run(xmlContent || latest.xml_content, architectureType || latest.architecture_type, businessUseCase || latest.business_usecase, latest.id);
+    }
   }
 }
 

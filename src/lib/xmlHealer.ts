@@ -1,6 +1,8 @@
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 
+import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
+
 export interface XmlHealerResult {
   isValid: boolean;
   isHealed: boolean;
@@ -9,13 +11,13 @@ export interface XmlHealerResult {
 }
 
 /**
- * 🛡️ Strict Draw.io XML AST Schema Validator & Auto-Healer
+ * 🛡️ Strict Draw.io XML AST Schema Validator & Auto-Healer + Zero-Defect Preflight Gate
  * 
  * Inspects, parses, validates, and repairs Draw.io (mxGraph) XML strings.
- * Guarantees that the resulting XML has a valid AST structure, essential root cells (id=0, id=1),
- * sanitized geometries, unique node IDs, and 100% iframe renderability.
+ * Enforces Zero-Defect text accuracy, technical stack alignment, and 100% renderability.
+ * Executed for EVERY diagram—old, new, or live generated via Gemini API.
  */
-export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
+export function validateAndHealDrawioXml(inputXml: string, archType?: string): XmlHealerResult {
   const healingLog: string[] = [];
   let isHealed = false;
 
@@ -25,7 +27,7 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
     return { isValid: false, isHealed: true, xml: fallbackXml, healingLog };
   }
 
-  let cleaned = inputXml.trim();
+  let cleaned = preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
 
   // 1. Strip Markdown Code Fences if present
   if (cleaned.includes('```')) {
@@ -61,6 +63,11 @@ export function validateAndHealDrawioXml(inputXml: string): XmlHealerResult {
       .replace(/\bITACS\b/g, 'Enterprise');
     isHealed = true;
     healingLog.push('Scrubbed legacy placeholder brand ITACS.');
+  }
+
+  // 1d. Title Consistency Preflight Gate: Auto-heal mismatched template title headers inside XML
+  if (cleaned.includes('TOTAL UNIFIED SYSTEM VIEW') || cleaned.includes('Unified System View')) {
+    cleaned = cleaned.replace(/-\s*\d+\.[^<]*TOTAL UNIFIED SYSTEM VIEW/g, '- TOTAL UNIFIED SYSTEM VIEW');
   }
 
   // 2. Ensure outer <mxfile> and <diagram> tags exist
