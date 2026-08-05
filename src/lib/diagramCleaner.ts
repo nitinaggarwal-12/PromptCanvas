@@ -1339,12 +1339,9 @@ export function createVendorIconsVariant(xmlInput: string): string {
       const tooltip = String(cell['@_tooltip'] || '');
 
       const vendorIconUrl = resolveVendorIconUrl(rawValue + ' ' + tooltip);
-      const vendorImgTag = `<img src="${vendorIconUrl}" width="30" height="30" style="float:left;margin-right:10px;vertical-align:middle;"/>`;
-
-      // Extract clean text title
       let cleanText = rawValue.replace(/<img[^>]*>/gi, '').trim();
 
-      cell['@_value'] = `${vendorImgTag}<div style="display:inline-block;vertical-align:middle;">${cleanText}</div>`;
+      cell['@_value'] = `<div style="display:flex;align-items:center;gap:10px;text-align:left;width:100%;box-sizing:border-box;"><img src="${vendorIconUrl}" width="26" height="26" style="flex-shrink:0;display:block;"/><div style="flex:1;min-width:0;word-break:break-word;line-height:1.25;">${cleanText}</div></div>`;
 
       let style = String(cell['@_style'] || '');
       const comboText = (rawValue + ' ' + tooltip).toLowerCase();

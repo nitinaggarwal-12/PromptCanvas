@@ -3899,7 +3899,7 @@ export function getExactDarkModeUnifiedSystemViewReferenceXml(): string {
 function escapeXml(str: string): string {
   if (!str) return '';
   return str
-    .replace(/&/g, '&amp;')
+    .replace(/&(?!amp;|lt;|gt;|quot;|apos;|#[0-9]+;|#x[0-9a-fA-F]+;)/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
