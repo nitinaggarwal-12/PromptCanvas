@@ -184,9 +184,9 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xml = xml.replace(/(<mxCell[^>]*\bedge="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
       let s = p2;
       if (!s.includes('labelBackgroundColor')) {
-        s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;padding=4;';
+        s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10padding=4;';
       } else {
-        if (!s.includes('verticalLabelPosition')) s += ';verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=8;';
+        if (!s.includes('verticalLabelPosition')) s += '';
         if (!s.includes('labelBorderColor')) s += ';labelBorderColor=#0284C7;';
       }
       if (!s.includes('jumpStyle')) s += ';jumpStyle=arc;jumpSize=6;';
