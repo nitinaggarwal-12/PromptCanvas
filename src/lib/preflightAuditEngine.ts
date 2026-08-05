@@ -483,12 +483,11 @@ export function runZeroDefectTextAndTechnicalAccuracyPreflight(
   const templateTitle = getTemplateTitle(archType);
   const cleanUseCase = useCaseName && useCaseName.length < 120 && !/^\d+\.\s/.test(useCaseName)
     ? useCaseName
-    : 'ApexPay Global FinTech Platform';
+    : 'Enterprise Cloud Architecture';
 
-  // 1. Title & Header Consistency Gate: Synchronize ALL internal XML canvas title nodes and frame headings to match the active architecture
+  // 1. Title & Header Consistency Gate: Synchronize canvas title nodes and frame headings
   const upperTemplateTitle = templateTitle.toUpperCase();
   cleaned = cleaned
-    .replace(/(?:&lt;b&gt;|<b>)\s*\d+\.\s*[A-Z\s/&amp;-]+(?:ENTERPRISE ECOSYSTEM|GOVERNED NETWORK|PIPELINE|ARCHITECTURE|SYSTEM VIEW|DIAGRAM)[^<]*(?:&lt;\/b&gt;|<\/b>)/gi, `<b>${upperTemplateTitle} (Governed Platform)</b>`)
     .replace(/DEVOPS\s*&\s*CI\/CD\s*PIPELINE\s*SECURE\s*MANAGED\s*GEMINI\s*ENTERPRISE\s*ECOSYSTEM/gi, `${upperTemplateTitle} PLATFORM`)
     .replace(/DEVOPS\s*&\s*CI\/CD\s*PIPELINE\s*TOTAL\s*UNIFIED\s*SYSTEM\s*VIEW/gi, upperTemplateTitle)
     .replace(/8\.\s*DEVOPS\s*&\s*CI\/CD\s*PIPELINE/gi, upperTemplateTitle)
