@@ -507,7 +507,7 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
       }
 
       const vendorIconUrl = resolveVendorIconUrl(plainText + ' ' + mainTitle);
-      const cleanImgTag = `<img src="${vendorIconUrl}" width="26" height="26" style="float:left;margin-right:8px;vertical-align:middle;"/>`;
+      const cleanImgTag = ``;
       cell['@_value'] = `${cleanImgTag}<b>${mainTitle}</b>`;
       modifiedNodesCount++;
     }
@@ -666,7 +666,7 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
 
       // Repair broken or missing image tags with official SVG vendor icons
       const vendorIconUrl = resolveVendorIconUrl(rawValue + ' ' + tooltip);
-      const newImgTag = `<img src="${vendorIconUrl}" width="26" height="26" style="float:left;margin-right:8px;vertical-align:middle;"/>`;
+      const newImgTag = ``;
 
       if (rawValue.includes('<img')) {
         rawValue = rawValue.replace(/<img[^>]*>/gi, newImgTag);
@@ -1399,7 +1399,7 @@ export function createVendorIconsVariant(xmlInput: string): string {
       const vendorIconUrl = resolveVendorIconUrl(rawValue + ' ' + tooltip);
       let cleanText = rawValue.replace(/<img[^>]*>/gi, '').trim();
 
-      cell['@_value'] = `<div style="display:flex;align-items:center;gap:10px;text-align:left;width:100%;box-sizing:border-box;"><img src="${vendorIconUrl}" width="26" height="26" style="flex-shrink:0;display:block;"/><div style="flex:1;min-width:0;word-break:break-word;line-height:1.25;">${cleanText}</div></div>`;
+      cell['@_value'] = `<div style="display:flex;align-items:center;gap:10px;text-align:left;width:100%;box-sizing:border-box;"><div style="flex:1;min-width:0;word-break:break-word;line-height:1.25;">${cleanText}</div></div>`;
 
       let style = String(cell['@_style'] || '');
       const comboText = (rawValue + ' ' + tooltip).toLowerCase();
