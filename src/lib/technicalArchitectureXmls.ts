@@ -533,10 +533,20 @@ const TECH_XML_IOT_TELEMETRY = `<mxfile host="embed.diagrams.net">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="edge_6" value="Stream Batch Archive" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_4" target="node_7">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="345" y="515" />
+              <mxPoint x="680" y="515" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="edge_7" value="Trigger Operational Alert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#EF4444;labelBackgroundColor=#FFFFFF;fontColor=#B91C1C;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_5" target="node_9">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="835" y="437" />
+              <mxPoint x="835" y="767" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="edge_8" value="Train Anomaly Models" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_7" target="node_8">
           <mxGeometry relative="1" as="geometry" />
