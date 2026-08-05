@@ -754,7 +754,7 @@ function WorkspaceContent() {
   // Loading & Layout View Mode States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean' | 'vendor'>('detailed');
+  const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean' | 'lucid' | 'vendor'>('detailed');
   const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(true);
@@ -3293,7 +3293,18 @@ function WorkspaceContent() {
     let formattedXml = baseXml;
     const hasAspectRatio = Boolean(selectedAspectRatio);
 
-    if (layoutPreset === 'vendor') {
+    if (layoutPreset === 'lucid') {
+      // Apply Lucidchart Enterprise modern style (sleek cards, smooth rounded architectural curves, slate/emerald accent fills)
+      xml = xml
+        .replace(/fillColor=#FFE6CC;strokeColor=#D79B00;/g, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;shadow=1;")
+        .replace(/fillColor=#FFF2CC;strokeColor=#D79B00;/g, "fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=2;")
+        .replace(/fillColor=#DAE8FC;strokeColor=#6C8EBF;/g, "fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=2;")
+        .replace(/fillColor=#D5E8D4;strokeColor=#82B366;/g, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;")
+        .replace(/fillColor=#F8CECC;strokeColor=#B85450;/g, "fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;")
+        .replace(/fillColor=#E1D5E7;strokeColor=#9673A6;/g, "fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=2;")
+        .replace(/edgeStyle=orthogonalEdgeStyle;rounded=0;/g, "edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;jumpStyle=arc;")
+        .replace(/labelBackgroundColor=#FFFFFF;/g, "labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;");
+    } else if (layoutPreset === 'vendor') {
       formattedXml = createVendorIconsVariant(baseXml);
     } else if (layoutPreset === 'clean') {
       const { cleanedXml } = createMinimalistCleanVariant(baseXml);
@@ -4966,12 +4977,35 @@ function WorkspaceContent() {
                         <span>Prev Diagram</span>
                       </button>
 
-                      <span className="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-950 text-white border-2 border-teal-400/80 shadow-lg flex items-center gap-2">
-                        <Eye className="w-4 h-4 text-teal-400 shrink-0" />
-                        <span className="text-teal-300">
-                          {layoutPreset === 'clean' ? '✨ 2D CANVAS (OPTION 2: CLEAN VIEW)' : '📐 2D CANVAS (DETAILED VIEW)'}
-                        </span>
-                      </span>
+                      <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-teal-500/40 shadow-lg">
+                        <button
+                          type="button"
+                          onClick={() => setLayoutPreset('detailed')}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                            layoutPreset === 'detailed' ? 'bg-teal-500/20 text-teal-300 border border-teal-400/60' : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          📐 Detailed View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setLayoutPreset('clean')}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                            layoutPreset === 'clean' ? 'bg-teal-500/20 text-teal-300 border border-teal-400/60' : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          ✨ Option 2 Clean
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setLayoutPreset('lucid')}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1 ${
+                            layoutPreset === 'lucid' ? 'bg-blue-600 text-white border border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.4)]' : 'text-slate-300 hover:text-blue-300'
+                          }`}
+                        >
+                          💎 Lucidchart View
+                        </button>
+                      </div>
 
                       <button
                         type="button"
