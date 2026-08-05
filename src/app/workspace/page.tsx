@@ -3285,21 +3285,20 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     .replace(/(id="[^"]+_hdr"[^>]*style=")[^"]*(")/g, "$1rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=none;fontColor=#0F172A;fontStyle=1;fontSize=12;align=left;paddingLeft=10;$2")
     .replace(/(id="[^"]+_body"[^>]*style=")[^"]*(")/g, "$1text;html=1;strokeColor=none;fillColor=#FFFFFF;align=left;verticalAlign=top;fontSize=11;fontColor=#1E293B;paddingLeft=10;lineHeight=1.4;$2");
 
-  // 3. Map ALL possible diagram fill colors across Business & Technical suites to crisp light architectural cards
+  // 3. Map ALL possible dark or colored fills across any saved database version to light architectural cards
   xml = xml
+    .replace(/fillColor=#0[0-9A-Fa-f]{5};/gi, "fillColor=#FFFFFF;")
+    .replace(/fillColor=#1[0-9A-Fa-f]{5};/gi, "fillColor=#F8FAFC;")
+    .replace(/fillColor=#2[0-9A-Fa-f]{5};/gi, "fillColor=#F0F9FF;")
+    .replace(/fillColor=#3[0-9A-Fa-f]{5};/gi, "fillColor=#F0FDF4;")
+    .replace(/fillColor=#4[0-9A-Fa-f]{5};/gi, "fillColor=#FEF2F2;")
     .replace(/fillColor=#FFE6CC;/g, "fillColor=#FFFBEB;strokeColor=#D97706;")
     .replace(/fillColor=#FFF2CC;/g, "fillColor=#FFFBEB;strokeColor=#D97706;")
     .replace(/fillColor=#DAE8FC;/g, "fillColor=#F0F9FF;strokeColor=#0284C7;")
     .replace(/fillColor=#D5E8D4;/g, "fillColor=#F0FDF4;strokeColor=#16A34A;")
     .replace(/fillColor=#F8CECC;/g, "fillColor=#FEF2F2;strokeColor=#DC2626;")
     .replace(/fillColor=#E1D5E7;/g, "fillColor=#FAF5FF;strokeColor=#7C3AED;")
-    .replace(/fillColor=#090D16;/g, "fillColor=#F8FAFC;")
-    .replace(/fillColor=#0F172A;/g, "fillColor=#F0F9FF;")
-    .replace(/fillColor=#1E293B;/g, "fillColor=#FFFFFF;")
-    .replace(/fillColor=#450A0A;/g, "fillColor=#FEF2F2;")
-    .replace(/fillColor=#064E3B;/g, "fillColor=#F0FDF4;")
-    .replace(/fillColor=#DBEAFE;/g, "fillColor=#E0F2FE;")
-    .replace(/fillColor=#DCFCE7;/g, "fillColor=#DCFCE7;");
+    .replace(/fillColor=#DBEAFE;/g, "fillColor=#E0F2FE;");
 
   // 4. Force ALL cell font colors to crisp dark slate (#0F172A)
   xml = xml.replace(/fontColor=#[A-Fa-f0-9]+;/g, "fontColor=#0F172A;");
