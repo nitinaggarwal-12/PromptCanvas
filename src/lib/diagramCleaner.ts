@@ -714,7 +714,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   let topic = useCaseTitle ? useCaseTitle.trim() : '';
 
   // Dynamically extract clean 2-4 word topic string from userPrompt or useCaseTitle
-  if (!topic || topic === 'Architecture' || topic === 'Clean Architecture Workspace' || topic.length > 35 || topic.toLowerCase().includes('act as')) {
+  if (!topic || topic === 'Architecture' || topic === 'Clean Architecture Workspace' || topic.toLowerCase().includes('act as')) {
     const rawText = userPrompt || topic;
     const cleanPrompt = rawText
       .replace(/\b(act as|chief|enterprise|architect|and|pharma|technology|lead|at|we|are|building|a|generative|ai|platform|to|automate|scientific|literature|mining|accelerate|therapeutic|target|discovery|for|non-small|cell|lung|cancer|design|build|create|system|architecture|diagram)\b/gi, ' ')
@@ -724,6 +724,61 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     topic = words.length > 0 
       ? words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
       : 'Enterprise Platform';
+  }
+
+
+  // Domain-Aware Technical Topology Flavoring for bespoke diagram boxes
+  const topicClean = topic || 'Enterprise';
+  const isSupplyChain = /supply|logistics|warehouse|quantumflow|fleet|inventory|chain/i.test(topicClean + ' ' + (userPrompt || ''));
+  const isFintechDomain = /fintech|payment|fraud|ledger|banking|apexpay|sepa|swift/i.test(topicClean + ' ' + (userPrompt || ''));
+  const isHealthcareDomain = /genomic|patient|clinical|pharma|cancer|assay|lab|dna/i.test(topicClean + ' ' + (userPrompt || ''));
+
+  if (isSupplyChain) {
+    updatedXml = updatedXml
+      .replace(/\[1\] On-Premises Data Center/g, `[1] Regional Logistics &amp; Warehouse Hubs`)
+      .replace(/Enterprise Hybrid Connectivity/g, `Real-Time Telemetry &amp; Fleet Connectivity`)
+      .replace(/\[2\] Google Global HTTP\(S\) LB/g, `[2] ${topicClean} Global Ingress Router`)
+      .replace(/Intelligent Traffic Routing/g, `Autonomous Supply Flow Routing`)
+      .replace(/\[3\] Cloud Interconnect/g, `[3] Dedicated 10Gbps Fleet Depot Link`)
+      .replace(/\[4\] Cloud Armor WAF/g, `[4] ${topicClean} Edge Security &amp; WAF Gate`)
+      .replace(/\[5\] Primary Shared VPC Network/g, `[5] Primary Supply Chain VPC Network`)
+      .replace(/\[7\] DR Shared VPC Network/g, `[7] DR Failover Supply Chain VPC Network`)
+      .replace(/\[8\] Primary GKE Cluster/g, `[8] Primary Supply Chain Orchestrator (GKE)`)
+      .replace(/Multi-Zone Application Deployment/g, `Autonomous Inventory &amp; Order Routing`)
+      .replace(/\[9\] DR GKE Cluster/g, `[9] DR Supply Chain Failover Engine (GKE)`)
+      .replace(/DR Region Disaster Recovery Apps/g, `Standby Regional Supply Chain Engine`)
+      .replace(/\[10\] Primary Cloud SQL/g, `[10] Primary Operational Supply Ledger (SQL)`)
+      .replace(/\[11\] DR Cloud SQL/g, `[11] Replicated DR Supply Ledger (SQL)`)
+      .replace(/\[12\] DR Failover Orchestration/g, `[12] Autonomous Logistics Failover Controller`)
+      .replace(/\[1\] GitHub \/ GitLab Polyrepo/g, `[1] ${topicClean} Supply Code Repository`)
+      .replace(/\[2\] Webhook Pipeline Trigger/g, `[2] Automated Order &amp; Logistics Dispatcher`)
+      .replace(/\[3\] Cloud Build Runner/g, `[3] ${topicClean} CI\/CD Test Runner`)
+      .replace(/\[4\] SonarQube &amp; Snyk SAST/g, `[4] Supply Chain Compliance &amp; SAST Audit`)
+      .replace(/\[5\] Docker Container Compiler/g, `[5] Multi-Arch Container Image Builder`)
+      .replace(/\[6\] Artifact Registry Scanner/g, `[6] Artifact Registry &amp; Vulnerability Scanner`)
+      .replace(/\[7\] ArgoCD \/ Flux Controller/g, `[7] GitOps Continuous Deployment Controller`)
+      .replace(/\[8\] Staging GKE Cluster/g, `[8] Live Supply Chain Production Cluster`);
+  } else {
+    // Dynamic universal domain flavoring for any user topic
+    updatedXml = updatedXml
+      .replace(/\[1\] On-Premises Data Center/g, `[1] ${topicClean} Enterprise Core Hub`)
+      .replace(/\[2\] Google Global HTTP\(S\) LB/g, `[2] ${topicClean} Global Traffic Router`)
+      .replace(/\[4\] Cloud Armor WAF/g, `[4] ${topicClean} Security &amp; WAF Gate`)
+      .replace(/\[5\] Primary Shared VPC Network/g, `[5] Primary ${topicClean} VPC Network`)
+      .replace(/\[7\] DR Shared VPC Network/g, `[7] DR ${topicClean} Failover VPC`)
+      .replace(/\[8\] Primary GKE Cluster/g, `[8] Primary ${topicClean} Processing Engine`)
+      .replace(/\[9\] DR GKE Cluster/g, `[9] DR ${topicClean} Failover Engine`)
+      .replace(/\[10\] Primary Cloud SQL/g, `[10] Primary ${topicClean} Operational DB`)
+      .replace(/\[11\] DR Cloud SQL/g, `[11] Replicated ${topicClean} DR Database`)
+      .replace(/\[12\] DR Failover Orchestration/g, `[12] ${topicClean} Failover Controller`)
+      .replace(/\[1\] GitHub \/ GitLab Polyrepo/g, `[1] ${topicClean} Polyrepo Source Code`)
+      .replace(/\[2\] Webhook Pipeline Trigger/g, `[2] ${topicClean} Event Dispatcher`)
+      .replace(/\[3\] Cloud Build Runner/g, `[3] ${topicClean} Automated Build Runner`)
+      .replace(/\[4\] SonarQube &amp; Snyk SAST/g, `[4] ${topicClean} Security Audit Gate`)
+      .replace(/\[5\] Docker Container Compiler/g, `[5] ${topicClean} Container Image Builder`)
+      .replace(/\[6\] Artifact Registry Scanner/g, `[6] ${topicClean} Image Vulnerability Scanner`)
+      .replace(/\[7\] ArgoCD \/ Flux Controller/g, `[7] ${topicClean} GitOps Controller`)
+      .replace(/\[8\] Staging GKE Cluster/g, `[8] ${topicClean} Live Application Cluster`);
   }
 
   const topicUpper = topic.toUpperCase();
