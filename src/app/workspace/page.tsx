@@ -3296,7 +3296,7 @@ function WorkspaceContent() {
 
     if (layoutPreset === 'obsidian') {
       // Linear / Vercel Next-Gen Obsidian Glass HUD styling
-      xml = xml
+      formattedXml = formattedXml
         .replace(/fillColor=#FFE6CC;strokeColor=#D79B00;/g, "fillColor=#0F172A;strokeColor=#38BDF8;strokeWidth=2;fontColor=#F8FAFC;")
         .replace(/fillColor=#FFF2CC;strokeColor=#D79B00;/g, "fillColor=#1E293B;strokeColor=#38BDF8;strokeWidth=2;fontColor=#F8FAFC;")
         .replace(/fillColor=#DAE8FC;strokeColor=#6C8EBF;/g, "fillColor=#0F172A;strokeColor=#818CF8;strokeWidth=2;fontColor=#F8FAFC;")
@@ -3306,21 +3306,9 @@ function WorkspaceContent() {
         .replace(/edgeStyle=orthogonalEdgeStyle;rounded=0;/g, "edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;")
         .replace(/strokeColor=#64748B;/g, "strokeColor=#38BDF8;")
         .replace(/labelBackgroundColor=#FFFFFF;/g, "labelBackgroundColor=#0F172A;labelBorderColor=#38BDF8;fontColor=#F8FAFC;");
-    }
-
-    if (isLiveFlowEnabled) {
-      // Add animated SVG telemetry flow dashes to connectors
-      xml = xml.replace(/style="edgeStyle=orthogonalEdgeStyle;([^""]*)"/g, (m, p1) => {
-        if (!p1.includes("dashed=1")) {
-          return `style="edgeStyle=orthogonalEdgeStyle;dashed=1;dashPattern=6 6;${p1}"`;
-        }
-        return m;
-      });
-    }
-
-    if (layoutPreset === 'lucid') {
+    } else if (layoutPreset === 'lucid') {
       // Apply Lucidchart Enterprise modern style (sleek cards, smooth rounded architectural curves, slate/emerald accent fills)
-      xml = xml
+      formattedXml = formattedXml
         .replace(/fillColor=#FFE6CC;strokeColor=#D79B00;/g, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;shadow=1;")
         .replace(/fillColor=#FFF2CC;strokeColor=#D79B00;/g, "fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=2;")
         .replace(/fillColor=#DAE8FC;strokeColor=#6C8EBF;/g, "fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=2;")
