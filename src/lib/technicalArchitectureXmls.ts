@@ -311,17 +311,17 @@ const TECH_XML_VPC_INFRA = `<mxfile host="embed.diagrams.net">
 
         <!-- Public Subnet Containers & Gateways (Y=200) -->
         <mxCell id="public_subnet_az1" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;[2b] Public Subnet&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;dashed=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="60" y="200" width="560" height="150" as="geometry" />
+          <mxGeometry x="60" y="200" width="620" height="150" as="geometry" />
         </mxCell>
         <mxCell id="internet_gateway" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🌐&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[2a] Internet Gateway (IGW)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;VPC Ingress / Egress&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="80" y="235" width="240" height="85" as="geometry" />
+          <mxGeometry x="90" y="235" width="220" height="85" as="geometry" />
         </mxCell>
         <mxCell id="nat_gateway_az1" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;⚡&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[3] NAT Gateway (AZ1)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Private Subnet Egress&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#000000;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="360" y="235" width="240" height="80" as="geometry" />
+          <mxGeometry x="380" y="235" width="260" height="80" as="geometry" />
         </mxCell>
 
         <mxCell id="public_subnet_az2" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;[2c] Public Subnet&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;dashed=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontColor=#000000;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="660" y="200" width="300" height="150" as="geometry" />
+          <mxGeometry x="720" y="200" width="260" height="150" as="geometry" />
         </mxCell>
         <mxCell id="bastion_host_az1" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;💻&lt;/span&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;[4] Bastion Host (EC2)&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Secure Jump Server&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontColor=#000000;padding=6;" vertex="1" parent="1">
           <mxGeometry x="680" y="235" width="260" height="80" as="geometry" />
