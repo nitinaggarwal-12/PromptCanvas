@@ -57,7 +57,8 @@ import { estimateCloudArchitectureCost } from '@/lib/cost/cloudCostEstimator';
 import { exportPythonDiagramsScript, exportD2LangScript } from '@/lib/export/architectureAsCodeExporter';
 import { DiagramNodeItem, parseXmlNodesAndEdges, formatRelativeTime } from '@/lib/graph/xmlNodesParser';
 import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant } from '@/lib/diagramCleaner';
-import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
+import { preflightVerifyAndHealXmlAcrossAll6Audits, runZeroDefectTextAndTechnicalAccuracyPreflight } from '@/lib/preflightAuditEngine';
+import { getTemplateTitle } from '@/lib/architectureTypes';
 import DiagramViewer from '@/components/DiagramViewer';
 import { AccessRestrictedScreen } from '@/components/AccessRestrictedScreen';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
@@ -548,7 +549,7 @@ function WorkspaceContent() {
   const [tourStep, setTourStep] = useState<number | null>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('tour') === 'true' || !localStorage.getItem('pc_user_persona')) {
+      if (params.get('tour') === 'true') {
         return 1;
       }
     }
@@ -589,6 +590,13 @@ function WorkspaceContent() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    const currentVerArch = displayedVersion?.architecture_type || activeVersion?.architecture_type;
+    if (currentVerArch && currentVerArch !== selectedArchType) {
+      setSelectedArchType(currentVerArch);
+    }
+  }, [displayedVersion?.architecture_type, activeVersion?.architecture_type, selectedArchType]);
   const [inspectVersion, setInspectVersion] = useState<DiagramVersion | null>(null);
   const [isInspectModalOpen, setIsInspectModalOpen] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -618,6 +626,12 @@ function WorkspaceContent() {
 
   const [activeAssumptions, setActiveAssumptions] = useState<string[]>([]);
   const [activeAlternativeTypes, setActiveAlternativeTypes] = useState<string[]>([]);
+  const [canvasSearchQuery, setCanvasSearchQuery] = useState('');
+  const [isCanvasDropdownOpen, setIsCanvasDropdownOpen] = useState(false);
+  const [archSearchQuery, setArchSearchQuery] = useState('');
+  const [isArchDropdownOpen, setIsArchDropdownOpen] = useState(false);
+  const [versionSearchQuery, setVersionSearchQuery] = useState('');
+  const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState(false);
 
   const handleSelectDisambiguationType = async (typeId: string) => {
     const promptToGen = disambiguationData?.prompt || newDiagramPrompt || activeDiagram?.name || 'Architecture Diagram';
@@ -924,18 +938,10 @@ function WorkspaceContent() {
       
       // Set the latest version as active
       if (data.versions && data.versions.length > 0) {
-        const targetArch = data.architecture_type || 'conceptual_diagram';
-        const archVersions = data.versions.filter(v => (v.architecture_type || 'conceptual_diagram') === targetArch);
-        const sortedVersions = (archVersions.length > 0 ? archVersions : data.versions).sort((a, b) => b.version_number - a.version_number);
-        let activeVer = sortedVersions[0];
-        if ((activeVer.architecture_type || 'conceptual_diagram') !== targetArch || targetArch === 'eval_safety_benchmarking') {
-          const refXml = getDefaultXmlForArchitecture(targetArch, data.name, data.name);
-          activeVer = {
-            ...activeVer,
-            architecture_type: targetArch,
-            xml_content: refXml || activeVer.xml_content,
-          };
-        }
+        const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
+        const activeVer = sortedVersions[0];
+        const targetArch = activeVer.architecture_type || data.architecture_type || 'conceptual_diagram';
+        setSelectedArchType(targetArch);
         setActiveVersion(activeVer);
         
         // Restore previewVersion if specified in URL query
@@ -3184,9 +3190,11 @@ function WorkspaceContent() {
     }
     if (!baseXml || baseXml === '[object Object]') return '';
 
-    // Auto-heal baseXml on-the-fly across all 6 preflight audits (fixes old saved DB versions!)
-    const archType = displayedVersion?.architecture_type || activeDiagram?.architecture_type || 'tech_cicd_pipeline';
+    const archType = displayedVersion?.architecture_type || activeDiagram?.architecture_type || 'devops_cicd_pipeline';
+    const activeUseCase = displayedVersion?.business_usecase || activeDiagram?.name || 'ApexPay Global FinTech Platform';
+    baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
     baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);
+    baseXml = runZeroDefectTextAndTechnicalAccuracyPreflight(baseXml, archType, activeUseCase);
 
     let formattedXml = baseXml;
     const hasAspectRatio = Boolean(selectedAspectRatio);
@@ -3230,34 +3238,103 @@ function WorkspaceContent() {
     if (versionsDesc.length === 0) return null;
 
     const activeLatestId = versionsDesc[0]?.id;
+    const currentVer = versionsDesc.find(v => v.id === (displayedVersion?.id || activeLatestId)) || versionsDesc[0];
+    const isLatestActive = currentVer.id === activeLatestId;
+
+    const filteredVersions = versionsDesc.filter(v => {
+      const q = versionSearchQuery.toLowerCase();
+      return (
+        String(v.version_number).includes(q) ||
+        (v.comment || '').toLowerCase().includes(q) ||
+        (v.business_usecase || '').toLowerCase().includes(q) ||
+        (v.created_at || '').toLowerCase().includes(q)
+      );
+    });
 
     return (
       <div className="relative inline-flex items-center">
-        <select
+        <button
+          type="button"
           id={customId || "workspace-version-dropdown"}
-          value={displayedVersion?.id || activeLatestId}
-          onChange={(e) => {
-            const selectedId = e.target.value;
-            if (selectedId === activeLatestId) {
-              setPreviewVersion(null);
-            } else {
-              const match = versionsDesc.find((v) => v.id === selectedId);
-              if (match) setPreviewVersion(match);
-            }
+          onClick={() => {
+            setIsVersionDropdownOpen(!isVersionDropdownOpen);
+            setVersionSearchQuery('');
           }}
-          className="appearance-none bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-extrabold text-xs rounded-lg pl-3 pr-7 py-1 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30"
+          className="flex items-center gap-1.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-extrabold text-xs rounded-lg px-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-sm"
+          title="Search & select diagram versions"
         >
-          {versionsDesc.map((v, idx) => {
-            const isLatest = idx === 0;
-            const label = isLatest ? `Version ${v.version_number} (Latest)` : `Version ${v.version_number}`;
-            return (
-              <option key={v.id} value={v.id} className="bg-[#0b101d] text-white py-1 font-semibold">
-                {label}
-              </option>
-            );
-          })}
-        </select>
-        <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+          <span>
+            {isLatestActive ? `Version ${currentVer.version_number} (Latest)` : `Version ${currentVer.version_number}`}
+          </span>
+          <ChevronDown className="w-3.5 h-3.5 text-teal-400" />
+        </button>
+
+        {isVersionDropdownOpen && (
+          <div className="fixed sm:absolute right-0 top-14 sm:top-full mt-1.5 w-[280px] sm:w-[320px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[380px]">
+            {/* Version Search Bar */}
+            <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
+              <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
+              <input
+                type="text"
+                autoFocus
+                placeholder="Search version # or note..."
+                value={versionSearchQuery}
+                onChange={(e) => setVersionSearchQuery(e.target.value)}
+                className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
+              />
+            </div>
+            {/* Version List */}
+            <div className="overflow-y-auto py-1 max-h-[300px] divide-y divide-slate-800/40">
+              {filteredVersions.map((v, idx) => {
+                const isLatest = versionsDesc.findIndex(x => x.id === v.id) === 0;
+                const isSelected = v.id === currentVer.id;
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => {
+                      setIsVersionDropdownOpen(false);
+                      if (v.id === activeLatestId) {
+                        setPreviewVersion(null);
+                      } else {
+                        setPreviewVersion(v);
+                      }
+                    }}
+                    className={`w-full text-left px-3 py-2 transition-colors flex items-start justify-between gap-2 hover:bg-teal-950/40 ${
+                      isSelected ? 'bg-teal-900/30 border-l-2 border-teal-400' : ''
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-extrabold text-xs text-teal-300">
+                          Version {v.version_number}
+                        </span>
+                        {isLatest && (
+                          <span className="text-[10px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded font-bold">
+                            Latest
+                          </span>
+                        )}
+                        {isSelected && (
+                          <span className="text-teal-400 font-bold text-[10px]">✓ ACTIVE</span>
+                        )}
+                      </div>
+                      {v.comment && (
+                        <p className="text-[11px] text-slate-300 font-medium mt-0.5 line-clamp-2">
+                          {v.comment}
+                        </p>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+              {filteredVersions.length === 0 && (
+                <div className="p-3 text-center text-xs text-slate-400">
+                  No versions matching "{versionSearchQuery}"
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -3329,8 +3406,9 @@ function WorkspaceContent() {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ architecture_type: newArchId }),
+          body: JSON.stringify({ architecture_type: newArchId, name: getTemplateTitle(newArchId) }),
         }).catch(console.error);
+        setActiveDiagram(prev => prev ? { ...prev, name: getTemplateTitle(newArchId), architecture_type: newArchId } : prev);
         fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3344,6 +3422,7 @@ function WorkspaceContent() {
             setActiveVersion(newVer);
             setActiveDiagram(prev => prev ? {
               ...prev,
+              name: getTemplateTitle(newArchId),
               architecture_type: newArchId,
               versions: [newVer, ...(prev.versions || []).filter(v => v.id !== newVer.id)]
             } : prev);
@@ -3363,8 +3442,9 @@ function WorkspaceContent() {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ architecture_type: newArchId }),
+          body: JSON.stringify({ architecture_type: newArchId, name: getTemplateTitle(newArchId) }),
         }).catch(console.error);
+        setActiveDiagram(prev => prev ? { ...prev, name: getTemplateTitle(newArchId), architecture_type: newArchId } : prev);
       }
       const sorted = [...existingVersionsForArch].sort((a, b) => b.version_number - a.version_number);
       setActiveVersion(sorted[0]);
@@ -3406,20 +3486,29 @@ function WorkspaceContent() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ architecture_type: newArchId }),
         }).catch(console.error);
+        setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
       }
-      const refXml = getDefaultXmlForArchitecture(newArchId);
-      const tempVersion: DiagramVersion = {
-        id: `temp_ref_${newArchId}_${Date.now()}`,
-        diagram_id: activeDiagram?.id || 'temp',
-        version_number: 1,
-        xml_content: refXml || '',
-        comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name}`,
-        created_by: 'System',
-        created_at: new Date().toISOString(),
-        architecture_type: newArchId
-      };
-      setActiveVersion(tempVersion);
-      setPreviewVersion(null);
+
+      // Check if existing versions already have this architecture type
+      const matchingVersion = activeDiagram?.versions?.find(v => v.architecture_type === newArchId);
+      if (matchingVersion) {
+        setActiveVersion(matchingVersion);
+        setPreviewVersion(null);
+      } else {
+        const refXml = getDefaultXmlForArchitecture(newArchId, activeDiagram?.name, activeDiagram?.name);
+        const tempVersion: DiagramVersion = {
+          id: `temp_ref_${newArchId}_${Date.now()}`,
+          diagram_id: activeDiagram?.id || 'temp',
+          version_number: (activeVersion?.version_number || 1) + 1,
+          xml_content: refXml || '',
+          comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name}`,
+          created_by: 'System',
+          created_at: new Date().toISOString(),
+          architecture_type: newArchId
+        };
+        setActiveVersion(tempVersion);
+        setPreviewVersion(null);
+      }
       setChatMessages([{
         id: `msg_ref_switch_${Date.now()}`,
         sender: 'ai',
@@ -3877,72 +3966,232 @@ function WorkspaceContent() {
                     <span className="hidden lg:inline font-extrabold tracking-wide">Design Canvas</span>
                   </button>
                   <span className="text-slate-600 font-bold">/</span>
-                  {/* Single Unified Saved Designs Dropdown replacing long diagram title & list */}
+                  {/* Dedicated Searchable Canvas Project Selector Dropdown showing Canvas Name before Business/Technical Diagram Selector */}
                   <div className="relative inline-flex items-center shrink-0">
-                    <select
-                      value={activeDiagram?.id || ''}
-                      onChange={(e) => {
-                        const id = e.target.value;
-                        if (id) {
-                          loadDiagramDetails(id);
-                        }
-                      }}
-                      className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm max-w-[170px] md:max-w-[210px] truncate"
-                      title="Switch between your saved architecture designs"
-                    >
-                      <option value="" disabled className="bg-[#0b101d] text-slate-400 font-bold">
-                        📁 Saved Designs ({diagrams.length}) ▾
-                      </option>
-                      {diagrams.map((d) => (
-                        <option key={d.id} value={d.id} className="bg-[#0b101d] text-slate-200 py-1.5 font-bold">
-                          {d.id === activeDiagram?.id ? '✓ ' : ''}{d.name} ({formatRelativeTime(d.updated_at)})
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                    <span className="text-[10px] uppercase tracking-wider font-extrabold text-teal-400/80 mr-1.5 hidden xl:inline">
+                      Canvas:
+                    </span>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        id="workspace-canvas-project-selector"
+                        onClick={() => {
+                          setIsCanvasDropdownOpen(!isCanvasDropdownOpen);
+                          setCanvasSearchQuery('');
+                        }}
+                        className="flex items-center justify-between gap-2 bg-gradient-to-r from-teal-950/90 to-slate-900 hover:from-teal-900/90 border border-teal-500/60 hover:border-teal-400 text-teal-200 font-extrabold text-xs rounded-lg pl-3 pr-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-md focus:ring-2 focus:ring-teal-400/40 max-w-[220px] sm:max-w-[280px] md:max-w-[340px]"
+                        title="Switch between your saved Canvas Projects (Historical & Current)"
+                      >
+                        <span className="truncate">
+                          ✨ {activeDiagram?.name || 'Select Canvas Project'}
+                        </span>
+                        <ChevronDown className="w-3.5 h-3.5 text-teal-300 shrink-0" />
+                      </button>
+
+                      {isCanvasDropdownOpen && (
+                        <div className="fixed sm:absolute left-4 sm:left-0 top-14 sm:top-full mt-1.5 w-[320px] sm:w-[360px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
+                          {/* Search Input Bar */}
+                          <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
+                            <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
+                            <input
+                              type="text"
+                              autoFocus
+                              placeholder="Search ApexPay, FinTech, DevOps..."
+                              value={canvasSearchQuery}
+                              onChange={(e) => setCanvasSearchQuery(e.target.value)}
+                              className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
+                            />
+                            {canvasSearchQuery && (
+                              <button
+                                type="button"
+                                onClick={() => setCanvasSearchQuery('')}
+                                className="text-[10px] text-slate-400 hover:text-slate-200 font-bold px-1.5"
+                              >
+                                Clear
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Filtered Canvas List */}
+                          <div className="overflow-y-auto py-1 max-h-[380px] divide-y divide-slate-800/40">
+                            {diagrams
+                              .filter((d) =>
+                                (d.name || '').toLowerCase().includes(canvasSearchQuery.toLowerCase())
+                              )
+                              .map((d) => {
+                                const isActive = d.id === activeDiagram?.id;
+                                return (
+                                  <button
+                                    key={d.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setIsCanvasDropdownOpen(false);
+                                      loadDiagramDetails(d.id);
+                                    }}
+                                    className={`w-full text-left px-3 py-2.5 transition-colors flex items-start justify-between gap-2 hover:bg-teal-950/40 ${
+                                      isActive ? 'bg-teal-900/30 border-l-2 border-teal-400' : ''
+                                    }`}
+                                  >
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-1.5">
+                                        {isActive ? (
+                                          <span className="text-teal-400 font-extrabold text-[11px]">✨ ACTIVE</span>
+                                        ) : (
+                                          <span className="text-slate-400 text-xs">📁</span>
+                                        )}
+                                        <p className="text-xs font-bold text-slate-100 truncate">{d.name}</p>
+                                      </div>
+                                      <p className="text-[10px] text-slate-400 mt-0.5">
+                                        Updated {formatRelativeTime(d.updated_at)}
+                                      </p>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            {diagrams.filter((d) =>
+                              (d.name || '').toLowerCase().includes(canvasSearchQuery.toLowerCase())
+                            ).length === 0 && (
+                              <div className="p-4 text-center text-xs text-slate-400 font-semibold">
+                                No canvas projects matching "{canvasSearchQuery}"
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
                 {activeDiagram && (
                   <>
-                    <div className="h-4 w-px bg-panel-border/60 mx-0.5 shrink-0" />
+                    <div className="h-4 w-px bg-panel-border/60 mx-1 shrink-0" />
                     
-                    {/* Unified Architecture Category Dropdown */}
+                    {/* Searchable Unified Architecture Category Dropdown (Business & Technical Diagram) */}
                     <div className="relative inline-flex items-center shrink-0">
-                      <select
-                        id="workspace-header-architecture-select"
-                        value={selectedArchType}
-                        disabled={isAnyAIBusy}
-                        onChange={(e) => handleArchitectureSwitch(e.target.value)}
-                        className={getTourClass(
-                          tourStep,
-                          2,
-                          "appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-bold text-xs rounded-lg pl-2.5 pr-7 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[180px] md:max-w-[220px] truncate"
+                      <span className="text-[10px] uppercase tracking-wider font-extrabold text-indigo-400/80 mr-1.5 hidden xl:inline">
+                        Diagram:
+                      </span>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          id="workspace-header-architecture-select"
+                          disabled={isAnyAIBusy}
+                          onClick={() => {
+                            setIsArchDropdownOpen(!isArchDropdownOpen);
+                            setArchSearchQuery('');
+                          }}
+                          className={getTourClass(
+                            tourStep,
+                            2,
+                            "flex items-center justify-between gap-2 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-extrabold text-xs rounded-lg pl-3 pr-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[210px] md:max-w-[260px]"
+                          )}
+                          title="Search & switch Architecture Category (Business & Technical)"
+                        >
+                          <span className="truncate">
+                            {getArchitectureTypeById(selectedArchType)?.name || 'Select Architecture'}
+                          </span>
+                          <ChevronDown className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                        </button>
+
+                        {isArchDropdownOpen && (
+                          <div className="fixed sm:absolute left-0 top-14 sm:top-full mt-1.5 w-[340px] sm:w-[380px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
+                            {/* Search Input Bar */}
+                            <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex items-center gap-2">
+                              <Search className="w-3.5 h-3.5 text-indigo-400 shrink-0 ml-1" />
+                              <input
+                                type="text"
+                                autoFocus
+                                placeholder="Search Sequence, DevOps, Serverless, ERD..."
+                                value={archSearchQuery}
+                                onChange={(e) => setArchSearchQuery(e.target.value)}
+                                className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
+                              />
+                              {archSearchQuery && (
+                                <button
+                                  type="button"
+                                  onClick={() => setArchSearchQuery('')}
+                                  className="text-[10px] text-slate-400 hover:text-slate-200 font-bold px-1.5"
+                                >
+                                  Clear
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Filtered Architecture List */}
+                            <div className="overflow-y-auto py-1.5 max-h-[380px] divide-y divide-slate-800/40">
+                              {/* Business Architectures */}
+                              {BUSINESS_ARCHITECTURE_TYPES.filter(t =>
+                                t.name.toLowerCase().includes(archSearchQuery.toLowerCase()) ||
+                                (t.whenToUse || '').toLowerCase().includes(archSearchQuery.toLowerCase())
+                              ).length > 0 && (
+                                <div className="px-2 py-1">
+                                  <p className="text-[10px] uppercase font-extrabold tracking-wider text-teal-400 px-2 py-1">
+                                    🏢 Business Architectures
+                                  </p>
+                                  {BUSINESS_ARCHITECTURE_TYPES.filter(t =>
+                                    t.name.toLowerCase().includes(archSearchQuery.toLowerCase()) ||
+                                    (t.whenToUse || '').toLowerCase().includes(archSearchQuery.toLowerCase())
+                                  ).map(t => {
+                                    const isSelected = selectedArchType === t.id;
+                                    const vBadge = getLatestVersionBadgeForArchType(t.id);
+                                    return (
+                                      <button
+                                        key={t.id}
+                                        type="button"
+                                        onClick={() => {
+                                          setIsArchDropdownOpen(false);
+                                          handleArchitectureSwitch(t.id);
+                                        }}
+                                        className={`w-full text-left px-2.5 py-2 rounded-lg transition-colors flex items-center justify-between gap-2 hover:bg-teal-950/40 ${
+                                          isSelected ? 'bg-teal-900/30 text-teal-200 font-extrabold' : 'text-slate-200 font-semibold'
+                                        }`}
+                                      >
+                                        <span className="text-xs truncate">{t.name}{vBadge}</span>
+                                        {isSelected && <span className="text-teal-400 text-[10px] font-bold shrink-0">✓ ACTIVE</span>}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              )}
+
+                              {/* Technical Architectures */}
+                              {TECHNICAL_ARCHITECTURE_TYPES.filter(t =>
+                                t.name.toLowerCase().includes(archSearchQuery.toLowerCase()) ||
+                                (t.whenToUse || '').toLowerCase().includes(archSearchQuery.toLowerCase())
+                              ).length > 0 && (
+                                <div className="px-2 py-1">
+                                  <p className="text-[10px] uppercase font-extrabold tracking-wider text-indigo-400 px-2 py-1">
+                                    ⚙️ Technical Architectures
+                                  </p>
+                                  {TECHNICAL_ARCHITECTURE_TYPES.filter(t =>
+                                    t.name.toLowerCase().includes(archSearchQuery.toLowerCase()) ||
+                                    (t.whenToUse || '').toLowerCase().includes(archSearchQuery.toLowerCase())
+                                  ).map(t => {
+                                    const isSelected = selectedArchType === t.id;
+                                    const vBadge = getLatestVersionBadgeForArchType(t.id);
+                                    return (
+                                      <button
+                                        key={t.id}
+                                        type="button"
+                                        onClick={() => {
+                                          setIsArchDropdownOpen(false);
+                                          handleArchitectureSwitch(t.id);
+                                        }}
+                                        className={`w-full text-left px-2.5 py-2 rounded-lg transition-colors flex items-center justify-between gap-2 hover:bg-indigo-950/40 ${
+                                          isSelected ? 'bg-indigo-900/30 text-indigo-200 font-extrabold' : 'text-slate-200 font-semibold'
+                                        }`}
+                                      >
+                                        <span className="text-xs truncate">{t.name}{vBadge}</span>
+                                        {isSelected && <span className="text-indigo-400 text-[10px] font-bold shrink-0">✓ ACTIVE</span>}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         )}
-                        title="Architecture Category Selector (Business & Technical)"
-                      >
-                        <optgroup label="🏢 BUSINESS ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
-                          {BUSINESS_ARCHITECTURE_TYPES.map((t) => {
-                            const vBadge = getLatestVersionBadgeForArchType(t.id);
-                            return (
-                              <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
-                                🏢 {t.name}{vBadge}
-                              </option>
-                            );
-                          })}
-                        </optgroup>
-                        <optgroup label="⚙️ TECHNICAL ARCHITECTURES" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                          {TECHNICAL_ARCHITECTURE_TYPES.map((t) => {
-                            const vBadge = getLatestVersionBadgeForArchType(t.id);
-                            return (
-                              <option key={t.id} value={t.id} className="text-slate-100 font-bold bg-[#0b101d]">
-                                ⚙️ {t.name}{vBadge}
-                              </option>
-                            );
-                          })}
-                        </optgroup>
-                      </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                      </div>
                     </div>
 
                     {/* Version Selector Dropdown */}
@@ -4901,7 +5150,12 @@ function WorkspaceContent() {
                       <DiagramViewer
                         xml={currentXmlToRender}
                         diagramId={activeDiagram?.id}
-                        useCaseName={(activeDiagram?.name || activeVersion?.business_usecase || activeVersion?.technical_usecase) ?? undefined}
+                        useCaseName={(() => {
+                          const customUseCase = activeVersion?.business_usecase || activeVersion?.technical_usecase;
+                          if (customUseCase) return customUseCase;
+                          if (activeDiagram?.name && !/^\d+\.\s/.test(activeDiagram.name)) return activeDiagram.name;
+                          return undefined;
+                        })()}
                         diagramType={(activeVersion?.architecture_type || activeDiagram?.architecture_type) ?? undefined}
                         aspectRatioId={selectedAspectRatio}
                         customW={customRatioW}

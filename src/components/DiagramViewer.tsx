@@ -59,11 +59,14 @@ export default function DiagramViewer({
     return getTemplateTitle(diagramType || diagramId);
   }, [diagramType, diagramId]);
 
-  // Derive comprehensive architecture metadata
+  // Derive comprehensive architecture metadata with Preflight Title Validation
   const meta = React.useMemo(() => {
     const defaultMeta = getArchitectureMeta(diagramId || diagramType);
+    const isNumberedTemplateTitle = useCaseName && /^\d+\.\s/.test(useCaseName);
+    const isLongPromptParagraph = useCaseName && (useCaseName.length > 50 || useCaseName.includes('Pristine ') || useCaseName.includes('Act as ') || useCaseName.includes('- Plan &'));
+    const validatedUseCase = (isNumberedTemplateTitle || isLongPromptParagraph) ? defaultMeta.useCase : (useCaseName || defaultMeta.useCase);
     return {
-      useCase: useCaseName || defaultMeta.useCase,
+      useCase: validatedUseCase,
       title: defaultMeta.title || templateName,
       category: defaultMeta.category,
       businessUseCase: defaultMeta.businessUseCase,
@@ -204,7 +207,7 @@ export default function DiagramViewer({
         }
         .canvas-container {
           position: absolute;
-          top: 108px;
+          top: 0;
           bottom: 0;
           left: 0;
           right: 0;
@@ -241,26 +244,6 @@ export default function DiagramViewer({
       </style>
     </head>
     <body>
-      <div class="header-banner">
-        <div class="header-top-row" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;">
-          <div class="header-left-title" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span class="diagram-title" style="font-size: 16px; font-weight: 800; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; text-transform: none;">${useCaseName || meta.useCase || meta.title}</span>
-          </div>
-          <div>
-            <span class="arch-type-badge" style="background: ${bgTheme === 'light' ? '#F1F5F9' : '#334155'}; color: ${bgTheme === 'light' ? '#0F172A' : '#F8FAFC'}; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 6px; border: 1px solid ${bgTheme === 'light' ? '#CBD5E1' : '#475569'}; text-transform: uppercase;">${templateName}</span>
-          </div>
-        </div>
-        <div class="business-usecase-box">
-          <div class="usecase-title-row">
-            <span style="color: #0EA5E9;">🎯 Purpose &amp; Problem Statement:</span>
-            <span class="usecase-text">${meta.businessUseCase}</span>
-          </div>
-          <div class="meta-tags-row">
-            <div class="meta-pill">👥 <strong>Primary Actors:</strong> ${meta.primaryActors}</div>
-            <div class="meta-pill">🚀 <strong>Key Outcomes:</strong> ${meta.targetOutcomes}</div>
-          </div>
-        </div>
-      </div>
       <div class="canvas-container">
         <div class="mxgraph" id="diagram-container"></div>
       </div>
