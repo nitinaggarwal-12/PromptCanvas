@@ -3331,14 +3331,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     const activeUseCase = displayedVersion?.business_usecase || activeDiagram?.name || 'ApexPay Global FinTech Platform';
     
     // Always use the master collision-free spatial reference XML for the target architecture type so historical DB versions never render broken overlaps
+    // Always enforce the master collision-free spatial reference grid for the target architecture type across all versions
     let baseXml = getDefaultXmlForArchitecture(archType) || '';
-    const rawContent = displayedVersion?.xml_content as any;
-    let dbXml = '';
-    if (typeof rawContent === 'string' && rawContent.length > 200) {
-      dbXml = rawContent;
-    }
-    if (dbXml && !dbXml.includes('Order-Placed-Event')) {
-      baseXml = dbXml;
+    if (!baseXml && displayedVersion?.xml_content) {
+      baseXml = String(displayedVersion.xml_content);
     }
 
     baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
