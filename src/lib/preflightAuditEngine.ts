@@ -226,7 +226,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   }
 
   // Remove any legacy template_type_hdr or redundant standalone title banner nodes (only top corner UI badge is required)
-  xml = xml.replace(/<mxCell\s+id="(?:template_type_hdr|hdr_title|canvas_hdr|title_banner|hdr_banner)"[\s\S]*?<\/mxCell>/gi, '');
+  xml = xml.replace(/<mxCell\s+id="(?:template_type_hdr|hdr_title|canvas_hdr|title_banner|hdr_banner|main_title|tenant_subtitle|gcp_logo_text|doc_title|header_title|title_main|diagram_header)"[\s\S]*?<\/mxCell>/gi, '');
   xml = xml.replace(/<mxCell[^>]*value="(?:&lt;b&gt;|<b>)\s*\d+\.\s*[^<]+-\s*[^<]+(?:&lt;\/b&gt;|<\/b>)"[^>]*>[\s\S]*?<\/mxCell>/gi, '');
 
   xml = runZeroDefectTextAndTechnicalAccuracyPreflight(xml, archType);
