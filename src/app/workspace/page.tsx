@@ -3273,6 +3273,48 @@ function WorkspaceContent() {
     );
   }, [displayedVersion?.xml_content, activeVersion?.xml_content, activeDiagram?.name, selectedArchType]);
 
+function transformXmlToExecutiveObsidianHud(xml: string): string {
+  if (!xml) return xml;
+
+  // 1. Transform Container / Swimlane fill & stroke colors into ultra-deep obsidian dark glass
+  xml = xml
+    .replace(/fillColor=#F8FAFC;strokeColor=#0284C7;/g, "fillColor=#090D16;strokeColor=#38BDF8;strokeWidth=2;")
+    .replace(/fillColor=#F1F5F9;strokeColor=#94A3B8;/g, "fillColor=#0F172A;strokeColor=#38BDF8;strokeWidth=2;")
+    .replace(/fillColor=#F5F5F5;strokeColor=#CCCCCC;/g, "fillColor=#1E293B;strokeColor=#38BDF8;strokeWidth=1.5;")
+    .replace(/fillColor=#FFE6CC;strokeColor=#D79B00;/g, "fillColor=#0F172A;strokeColor=#38BDF8;strokeWidth=2;")
+    .replace(/fillColor=#FFF2CC;strokeColor=#D79B00;/g, "fillColor=#1E293B;strokeColor=#38BDF8;strokeWidth=2;")
+    .replace(/fillColor=#DAE8FC;strokeColor=#6C8EBF;/g, "fillColor=#0F172A;strokeColor=#818CF8;strokeWidth=2;")
+    .replace(/fillColor=#D5E8D4;strokeColor=#82B366;/g, "fillColor=#064E3B;strokeColor=#10B981;strokeWidth=2;")
+    .replace(/fillColor=#F8CECC;strokeColor=#B85450;/g, "fillColor=#450A0A;strokeColor=#EF4444;strokeWidth=2;")
+    .replace(/fillColor=#E1D5E7;strokeColor=#9673A6;/g, "fillColor=#3B0764;strokeColor=#A855F7;strokeWidth=2;")
+    .replace(/fillColor=#FFFFFF;/g, "fillColor=#1E293B;")
+    .replace(/fillColor=#000000;/g, "fillColor=#090D16;");
+
+  // 2. Transform all text font colors to crisp pure white (#FFFFFF) and neon cyan (#38BDF8)
+  xml = xml
+    .replace(/fontColor=#[A-Fa-f0-9]+;/g, "fontColor=#FFFFFF;")
+    .replace(/color:#0F172A;/g, "color:#FFFFFF;")
+    .replace(/color:#000000;/g, "color:#FFFFFF;")
+    .replace(/color:#1E293B;/g, "color:#FFFFFF;")
+    .replace(/color:#475569;/g, "color:#38BDF8;")
+    .replace(/color:#64748B;/g, "color:#7DD3FC;")
+    .replace(/color:#94A3B8;/g, "color:#38BDF8;")
+    .replace(/color:#D79B00;/g, "color:#F59E0B;")
+    .replace(/color:#B85450;/g, "color:#F87171;");
+
+  // 3. Make stage headers and swimlane titles pop with neon cyan & white high contrast
+  xml = xml.replace(/(font-size:\s*13px;color:)[^;'"]+/g, "font-size:14px;color:#38BDF8;font-weight:900");
+  xml = xml.replace(/(font-size:\s*12px;color:)[^;'"]+/g, "font-size:12px;color:#FFFFFF;font-weight:800");
+
+  // 4. Transform edge connectors and labels into glowing neon cyan with dark obsidian pills
+  xml = xml
+    .replace(/strokeColor=#64748B;/g, "strokeColor=#38BDF8;")
+    .replace(/strokeColor=#94A3B8;/g, "strokeColor=#38BDF8;")
+    .replace(/labelBackgroundColor=#[A-Fa-f0-9]+;/g, "labelBackgroundColor=#090D16;labelBorderColor=#38BDF8;fontColor=#FFFFFF;");
+
+  return xml;
+}
+
   const currentXmlToRender = React.useMemo(() => {
     let baseXml = '';
     const rawContent = displayedVersion?.xml_content as any;
