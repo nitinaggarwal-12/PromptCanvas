@@ -590,13 +590,6 @@ function WorkspaceContent() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  useEffect(() => {
-    const currentVerArch = displayedVersion?.architecture_type || activeVersion?.architecture_type;
-    if (currentVerArch && currentVerArch !== selectedArchType) {
-      setSelectedArchType(currentVerArch);
-    }
-  }, [displayedVersion?.architecture_type, activeVersion?.architecture_type, selectedArchType]);
   const [inspectVersion, setInspectVersion] = useState<DiagramVersion | null>(null);
   const [isInspectModalOpen, setIsInspectModalOpen] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -3169,6 +3162,13 @@ function WorkspaceContent() {
   };
 
   const displayedVersion = previewVersion || activeVersion;
+
+  useEffect(() => {
+    const currentVerArch = displayedVersion?.architecture_type || activeVersion?.architecture_type;
+    if (currentVerArch && currentVerArch !== selectedArchType) {
+      setSelectedArchType(currentVerArch);
+    }
+  }, [displayedVersion?.architecture_type, activeVersion?.architecture_type, selectedArchType]);
 
   const costReport = React.useMemo(() => {
     return estimateCloudArchitectureCost(
