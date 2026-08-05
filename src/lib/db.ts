@@ -784,56 +784,89 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
   await ensureTablesExist();
   
   if (userId) {
-    const query = `
-      SELECT d.*, v.xml_content, v.prompt,
-        CASE 
-          WHEN d.user_id = $1 THEN 'Owner'
-          WHEN c.access_level IS NOT NULL THEN c.access_level
-          WHEN d.user_id IS NULL THEN 'Viewer'
-          WHEN d.user_id LIKE 'guest-%' THEN 'Editor'
-          ELSE 'Viewer'
-        END as access_level
-      FROM diagrams d
-      LEFT JOIN diagram_collaborators c ON c.diagram_id = d.id AND c.user_id = $1
-      LEFT JOIN diagram_versions v ON v.id = (
-        SELECT id 
-        FROM diagram_versions 
-        WHERE diagram_id = d.id
-        ORDER BY created_at DESC, version_number DESC
-        LIMIT 1
-      )
-      WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1 OR d.is_private IS NULL OR d.is_private = FALSE OR d.is_private = 0
-      ORDER BY d.updated_at DESC
-    `;
     if (isPostgres()) {
+      const query = `
+        SELECT d.*, v.xml_content, v.prompt,
+          CASE 
+            WHEN d.user_id = $1 THEN 'Owner'
+            WHEN c.access_level IS NOT NULL THEN c.access_level
+            WHEN d.user_id IS NULL THEN 'Viewer'
+            WHEN d.user_id LIKE 'guest-%' THEN 'Editor'
+            ELSE 'Viewer'
+          END as access_level
+        FROM diagrams d
+        LEFT JOIN diagram_collaborators c ON c.diagram_id = d.id AND c.user_id = $1
+        LEFT JOIN diagram_versions v ON v.id = (
+          SELECT id 
+          FROM diagram_versions 
+          WHERE diagram_id = d.id
+          ORDER BY created_at DESC, version_number DESC
+          LIMIT 1
+        )
+        WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1 OR d.is_private IS NOT TRUE
+        ORDER BY d.updated_at DESC
+      `;
       const pool = getPgPool();
       const res = await pool.query(query, [userId]);
       return res.rows;
     } else {
+      const query = `
+        SELECT d.*, v.xml_content, v.prompt,
+          CASE 
+            WHEN d.user_id = ? THEN 'Owner'
+            WHEN c.access_level IS NOT NULL THEN c.access_level
+            WHEN d.user_id IS NULL THEN 'Viewer'
+            WHEN d.user_id LIKE 'guest-%' THEN 'Editor'
+            ELSE 'Viewer'
+          END as access_level
+        FROM diagrams d
+        LEFT JOIN diagram_collaborators c ON c.diagram_id = d.id AND c.user_id = ?
+        LEFT JOIN diagram_versions v ON v.id = (
+          SELECT id 
+          FROM diagram_versions 
+          WHERE diagram_id = d.id
+          ORDER BY created_at DESC, version_number DESC
+          LIMIT 1
+        )
+        WHERE d.user_id = ? OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = ? OR d.is_private IS NULL OR d.is_private = 0
+        ORDER BY d.updated_at DESC
+      `;
       const db = getSqliteDb();
-      const sqliteQuery = query.replaceAll('$1', '?');
-      const stmt = db.prepare(sqliteQuery);
+      const stmt = db.prepare(query);
       return stmt.all(userId, userId, userId, userId) as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
     }
   } else {
-    const query = `
-      SELECT d.*, v.xml_content, v.prompt, 'Viewer' as access_level
-      FROM diagrams d
-      LEFT JOIN diagram_versions v ON v.id = (
-        SELECT id 
-        FROM diagram_versions 
-        WHERE diagram_id = d.id
-        ORDER BY created_at DESC, version_number DESC
-        LIMIT 1
-      )
-      WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NULL OR d.is_private = FALSE OR d.is_private = 0
-      ORDER BY d.updated_at DESC
-    `;
     if (isPostgres()) {
+      const query = `
+        SELECT d.*, v.xml_content, v.prompt, 'Viewer' as access_level
+        FROM diagrams d
+        LEFT JOIN diagram_versions v ON v.id = (
+          SELECT id 
+          FROM diagram_versions 
+          WHERE diagram_id = d.id
+          ORDER BY created_at DESC, version_number DESC
+          LIMIT 1
+        )
+        WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NOT TRUE
+        ORDER BY d.updated_at DESC
+      `;
       const pool = getPgPool();
       const res = await pool.query(query);
       return res.rows;
     } else {
+      const query = `
+        SELECT d.*, v.xml_content, v.prompt, 'Viewer' as access_level
+        FROM diagrams d
+        LEFT JOIN diagram_versions v ON v.id = (
+          SELECT id 
+          FROM diagram_versions 
+          WHERE diagram_id = d.id
+          ORDER BY created_at DESC, version_number DESC
+          LIMIT 1
+        )
+        WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NULL OR d.is_private = 0
+        ORDER BY d.updated_at DESC
+      `;
       const db = getSqliteDb();
       const stmt = db.prepare(query);
       return stmt.all() as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
