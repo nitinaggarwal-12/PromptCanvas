@@ -176,110 +176,106 @@ const TECH_XML_DATA_LAKEHOUSE = "<mxfile host=\"embed.diagrams.net\">\n  <diagra
 
 const TECH_XML_RAG_GCP = `<mxfile host="embed.diagrams.net">
   <diagram id="rag_system_diagram" name="Multi-Agent RAG System">
-    <mxGraphModel dx="1920" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1400" pageHeight="1600" math="0" shadow="0">
+    <mxGraphModel dx="2400" dy="1800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="2400" pageHeight="1800" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
         <!-- Tier 1: Ingestion & Client UI Layer (Y=80) -->
         <mxCell id="node_1" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🌐&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[1] Secure Client Web Portal&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;User Interface for Queries &amp;amp; Interactions&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=2;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="400" y="80" width="250" height="75" as="geometry" />
+          <mxGeometry x="540" y="80" width="340" height="75" as="geometry" />
         </mxCell>
 
-        <!-- Tier 2: API Gateways & Auth / IAM Security (Y=230) -->
+        <!-- Tier 2: API Gateways & Auth / IAM Security (Y=240) -->
         <mxCell id="node_2" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🛡️&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[2] Apigee API Gateway&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;JWT Auth, PII Filters, Rate Limiting&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D7B900;strokeWidth=2;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="410" y="230" width="230" height="75" as="geometry" />
+          <mxGeometry x="540" y="240" width="340" height="85" as="geometry" />
         </mxCell>
 
-        <!-- Tier 3: Core Orchestration & LLM Engines (Y=380) -->
+        <!-- Tier 3: Core Orchestration & LLM Engines (Y=400) -->
         <mxCell id="node_3" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🤖&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[3] Master Orchestrator Agent&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;LangChain / Vertex AI AgentCore Workflow&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="360" y="380" width="330" height="75" as="geometry" />
+          <mxGeometry x="540" y="400" width="340" height="75" as="geometry" />
         </mxCell>
 
-        <!-- Tier 4: Data, RAG & Context Storage Layer (Y=540) -->
+        <!-- Tier 4: Data, RAG & Context Storage Layer (Y=580) -->
         <mxCell id="node_4" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;⚡&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[4] Dynamic Context Store&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Redis Cache for Session Grounding&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;padding=8;" vertex="1" parent="1">
-          <mxGeometry x="150" y="540" width="220" height="95" as="geometry" />
+          <mxGeometry x="140" y="580" width="280" height="85" as="geometry" />
         </mxCell>
         <mxCell id="node_5" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🛢️&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[5] Vertex AI Vector Search&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;High-Scale Vector Embeddings Database&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;padding=8;" vertex="1" parent="1">
-          <mxGeometry x="415" y="540" width="240" height="95" as="geometry" />
+          <mxGeometry x="540" y="580" width="340" height="85" as="geometry" />
         </mxCell>
         <mxCell id="node_6" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;📚&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[6] Enterprise Knowledge Base&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Veeva Vault, SharePoint, Confluence&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#CCCCCC;strokeWidth=2;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="700" y="540" width="240" height="75" as="geometry" />
+          <mxGeometry x="960" y="580" width="300" height="75" as="geometry" />
         </mxCell>
 
-        <!-- Tier 5: 1:N Fan-Out & Execution Engine (Y=720) -->
+        <!-- Tier 5: 1:N Fan-Out & Execution Engine (Y=760) -->
         <mxCell id="node_7" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;📦&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[7] Pub/Sub Event Bus&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Asynchronous Processing &amp;amp; Fan-out&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="400" y="720" width="270" height="75" as="geometry" />
+          <mxGeometry x="540" y="760" width="340" height="75" as="geometry" />
         </mxCell>
 
-        <!-- Tier 6: Tactical Sub-Agents (Y=880) -->
+        <!-- Tier 6: Tactical Sub-Agents (Y=940) -->
         <mxCell id="node_8" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;✂️&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[8] Document Chunking Agent&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Text Segmentation (LlamaIndex)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#CCCCCC;strokeWidth=2;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="150" y="880" width="250" height="75" as="geometry" />
+          <mxGeometry x="140" y="940" width="280" height="75" as="geometry" />
         </mxCell>
         <mxCell id="node_9" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🔤&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[9] Embedding Agent&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Vectorization (Vertex AI Text)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#CCCCCC;strokeWidth=2;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="540" y="880" width="250" height="75" as="geometry" />
+          <mxGeometry x="540" y="940" width="340" height="75" as="geometry" />
         </mxCell>
 
-        <!-- Tier 7: Quality Control & Self-Healing Loops (Y=1040) -->
+        <!-- Tier 7: Quality Control & Self-Healing Loops (Y=1120) -->
         <mxCell id="node_10" value="&lt;span style='font-size:24px;float:left;margin-right:8px;'&gt;🛡️&lt;/span&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;[10] Compliance &amp;amp; QC Agent&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:10px;color:#475569;'&gt;Output Monitoring, Bias &amp;amp; PII Detection&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="360" y="1040" width="330" height="75" as="geometry" />
+          <mxGeometry x="540" y="1120" width="340" height="75" as="geometry" />
         </mxCell>
 
         <!-- Zero-Collision Outer-Waypoint Connectors -->
-        <mxCell id="edge_1_2" value="API Calls (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_1" target="node_2">
+        <mxCell id="edge_1_2" value="API Calls (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_1" target="node_2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_2_3" value="Authorized Requests" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_2" target="node_3">
+        <mxCell id="edge_2_3" value="Route Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_2" target="node_3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_3_4" value="Context Read/Write" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_3" target="node_4">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_3_5" value="Vector Query / RAG Retrieval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_3" target="node_5">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_3_6" value="Knowledge Retrieval (Secure)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_3" target="node_6">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- Document Processing Request routed cleanly down right corridor x=980 -->
-        <mxCell id="edge_3_7" value="Document Processing Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_3" target="node_7">
+        <mxCell id="edge_3_4" value="Context Read/Write" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_3" target="node_4">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="690" y="417" />
-              <mxPoint x="980" y="417" />
-              <mxPoint x="980" y="757" />
+              <mxPoint x="490" y="440" />
+              <mxPoint x="490" y="500" />
+              <mxPoint x="280" y="500" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_7_8" value="Document Stream for Chunking" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_7" target="node_8">
+        <mxCell id="edge_3_5" value="Vector Query / RAG Retrieval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_3" target="node_5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_7_9" value="Embedding Generation Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_7" target="node_9">
+        <mxCell id="edge_6_5" value="Knowledge Retrieval (Secure)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_6" target="node_5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_8_7" value="Processed Chunks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_8" target="node_7">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- Store Embeddings routed cleanly via right corridor x=840 -->
-        <mxCell id="edge_9_5" value="Store Embeddings" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_9" target="node_5">
+        <mxCell id="edge_6_7" value="Document Processing Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_6" target="node_7">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="790" y="917" />
-              <mxPoint x="840" y="917" />
-              <mxPoint x="840" y="587" />
+              <mxPoint x="1110" y="700" />
+              <mxPoint x="710" y="700" />
             </Array>
           </mxGeometry>
         </mxCell>
-
-        <!-- Compliance & QC Feedback routed cleanly via left corridor x=80 -->
-        <mxCell id="edge_10_3" value="Compliance &amp;amp; QC Feedback" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#EF4444;dashed=1;dashPattern=8 8;startArrow=classic;endArrow=classic;labelBackgroundColor=#FFFFFF;fontColor=#B91C1C;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_10" target="node_3">
+        <mxCell id="edge_7_8" value="Document Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_7" target="node_8">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="360" y="1077" />
-              <mxPoint x="80" y="1077" />
-              <mxPoint x="80" y="417" />
+              <mxPoint x="490" y="800" />
+              <mxPoint x="490" y="870" />
+              <mxPoint x="280" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_8_9" value="Processed Chunks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_8" target="node_9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_9_7" value="Embedding Generation Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_9" target="node_7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_9_5" value="Store Embeddings" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontColor=#0F172A;fontStyle=1;fontSize=11;padding=4;" edge="1" parent="1" source="node_9" target="node_5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="975" />
+              <mxPoint x="930" y="700" />
+              <mxPoint x="710" y="700" />
             </Array>
           </mxGeometry>
         </mxCell>
