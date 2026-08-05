@@ -3483,9 +3483,9 @@ function WorkspaceContent() {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ architecture_type: newArchId, name: getTemplateTitle(newArchId) }),
+          body: JSON.stringify({ architecture_type: newArchId }),
         }).catch(console.error);
-        setActiveDiagram(prev => prev ? { ...prev, name: getTemplateTitle(newArchId), architecture_type: newArchId } : prev);
+        setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
         fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3499,7 +3499,6 @@ function WorkspaceContent() {
             setActiveVersion(newVer);
             setActiveDiagram(prev => prev ? {
               ...prev,
-              name: getTemplateTitle(newArchId),
               architecture_type: newArchId,
               versions: [newVer, ...(prev.versions || []).filter(v => v.id !== newVer.id)]
             } : prev);
@@ -3519,9 +3518,9 @@ function WorkspaceContent() {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ architecture_type: newArchId, name: getTemplateTitle(newArchId) }),
+          body: JSON.stringify({ architecture_type: newArchId }),
         }).catch(console.error);
-        setActiveDiagram(prev => prev ? { ...prev, name: getTemplateTitle(newArchId), architecture_type: newArchId } : prev);
+        setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
       }
       const sorted = [...existingVersionsForArch].sort((a, b) => b.version_number - a.version_number);
       setActiveVersion(sorted[0]);
