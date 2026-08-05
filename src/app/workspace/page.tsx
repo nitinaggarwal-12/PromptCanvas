@@ -4078,7 +4078,12 @@ function WorkspaceContent() {
                         type="button"
                         id="workspace-canvas-project-selector"
                         onClick={() => {
-                          setIsCanvasDropdownOpen(!isCanvasDropdownOpen);
+                          const next = !isCanvasDropdownOpen;
+                          setIsCanvasDropdownOpen(next);
+                          if (next) {
+                            setIsArchDropdownOpen(false);
+                            setIsVersionDropdownOpen(false);
+                          }
                           setCanvasSearchQuery('');
                         }}
                         className="flex items-center justify-between gap-2 bg-gradient-to-r from-teal-950/90 to-slate-900 hover:from-teal-900/90 border border-teal-500/60 hover:border-teal-400 text-teal-200 font-extrabold text-xs rounded-lg pl-3 pr-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-md focus:ring-2 focus:ring-teal-400/40 max-w-[220px] sm:max-w-[280px] md:max-w-[340px]"
@@ -4179,7 +4184,12 @@ function WorkspaceContent() {
                           id="workspace-header-architecture-select"
                           disabled={isAnyAIBusy}
                           onClick={() => {
-                            setIsArchDropdownOpen(!isArchDropdownOpen);
+                            const next = !isArchDropdownOpen;
+                            setIsArchDropdownOpen(next);
+                            if (next) {
+                              setIsCanvasDropdownOpen(false);
+                              setIsVersionDropdownOpen(false);
+                            }
                             setArchSearchQuery('');
                           }}
                           className={getTourClass(
