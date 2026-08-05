@@ -568,7 +568,7 @@ function WorkspaceContent() {
   };
   
   // UI Panels
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
   // Modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(() => {
