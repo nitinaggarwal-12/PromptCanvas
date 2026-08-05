@@ -43,7 +43,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       null,
       null,
       null,
-      architectureType || diagram.architecture_type || 'tech_cicd_pipeline'
+      architectureType || diagram.architecture_type || 'unified_system_view'
     );
 
     return NextResponse.json(newVersion, { status: 201 });

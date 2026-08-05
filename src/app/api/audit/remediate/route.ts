@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     let currentXml = latestVersion.xml_content;
     if (!currentXml || currentXml.length < 300 || !currentXml.includes('<mxCell')) {
-      currentXml = getTechnicalArchitectureXml(architectureType || latestVersion.architecture_type || 'tech_cicd_pipeline');
+      currentXml = getTechnicalArchitectureXml(architectureType || latestVersion.architecture_type || 'unified_system_view');
     }
 
     let rawXml = '';
@@ -112,7 +112,7 @@ ${remediationInstructions}
       null,
       null,
       null,
-      architectureType || latestVersion.architecture_type || 'tech_cicd_pipeline'
+      architectureType || latestVersion.architecture_type || 'unified_system_view'
     );
 
     return NextResponse.json({

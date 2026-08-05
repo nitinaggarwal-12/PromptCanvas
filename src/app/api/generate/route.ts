@@ -576,7 +576,7 @@ ${prompt}`,
     // Ensure use-case flavor is injected into technical & business titles/nodes
     xml = injectUseCaseFlavor(xml, prompt, prompt);
 
-    const healed = validateAndHealDrawioXml(xml, architectureType || 'tech_cicd_pipeline');
+    const healed = validateAndHealDrawioXml(xml, architectureType || 'unified_system_view');
     xml = healed.xml;
 
     console.log('[DEBUG BEFORE SAVE]', { isRefinement, diagramId });

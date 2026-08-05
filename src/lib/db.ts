@@ -899,7 +899,7 @@ export async function createDiagram(
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private) VALUES ($1, $2, $3, $4, $5)', [diagramId, name, userId || null, architectureType || 'tech_cicd_pipeline', privateValPg]);
+      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private) VALUES ($1, $2, $3, $4, $5)', [diagramId, name, userId || null, architectureType || 'unified_system_view', privateValPg]);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -939,7 +939,7 @@ export async function createDiagram(
     db.exec('BEGIN TRANSACTION;');
     try {
       const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private) VALUES (?, ?, ?, ?, ?)');
-      insertDiagram.run(diagramId, name, userId || null, architectureType || 'tech_cicd_pipeline', privateValSqlite);
+      insertDiagram.run(diagramId, name, userId || null, architectureType || 'unified_system_view', privateValSqlite);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -998,7 +998,7 @@ export async function saveDiagramVersion(
     try {
       await client.query('BEGIN');
       
-      const maxVer = await client.query("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = $1 AND (architecture_type = $2 OR architecture_type IS NULL)", [diagramId, architectureType || 'tech_cicd_pipeline']);
+      const maxVer = await client.query("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = $1 AND (architecture_type = $2 OR architecture_type IS NULL)", [diagramId, architectureType || 'unified_system_view']);
       const nextVersionNumber = (maxVer.rows[0].max_version || 0) + 1;
 
       await client.query(`
@@ -1015,7 +1015,7 @@ export async function saveDiagramVersion(
         aiReasoning || null,
         businessUsecase || null,
         technicalUsecase || null,
-        architectureType || 'tech_cicd_pipeline',
+        architectureType || 'unified_system_view',
         graphJson || null
       ]);
 
@@ -1036,7 +1036,7 @@ export async function saveDiagramVersion(
     db.exec('BEGIN TRANSACTION;');
     try {
       const maxVersionStmt = db.prepare("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ? AND (architecture_type = ? OR architecture_type IS NULL)");
-      const versionResult = maxVersionStmt.get(diagramId, architectureType || 'tech_cicd_pipeline') as { max_version: number };
+      const versionResult = maxVersionStmt.get(diagramId, architectureType || 'unified_system_view') as { max_version: number };
       const nextVersionNumber = versionResult.max_version + 1;
 
       const insertVersion = db.prepare(`

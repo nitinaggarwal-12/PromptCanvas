@@ -9,7 +9,7 @@ import { getTemplateTitle } from './architectureTypes';
  */
 export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xmlInput: string,
-  archType: string = 'tech_cicd_pipeline'
+  archType: string = 'unified_system_view'
 ): string {
   let xml = xmlInput || '';
 

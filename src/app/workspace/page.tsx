@@ -3219,7 +3219,7 @@ function WorkspaceContent() {
     }
     if (!baseXml || baseXml === '[object Object]') return '';
 
-    const archType = displayedVersion?.architecture_type || activeDiagram?.architecture_type || 'devops_cicd_pipeline';
+    const archType = displayedVersion?.architecture_type || activeDiagram?.architecture_type || 'unified_system_view';
     const activeUseCase = displayedVersion?.business_usecase || activeDiagram?.name || 'ApexPay Global FinTech Platform';
     baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
     baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);

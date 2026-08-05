@@ -315,9 +315,9 @@ function autoRepairXmlSyntax(xml: string): string {
 function createFallbackDrawioXml(archType?: string): string {
   try {
     const { getDefaultXmlForArchitecture } = require('./architectureTypes');
-    return getDefaultXmlForArchitecture(archType || 'tech_cicd_pipeline');
+    return getDefaultXmlForArchitecture(archType || 'unified_system_view');
   } catch {
     const { getTechnicalArchitectureXml } = require('./technicalArchitectureXmls');
-    return getTechnicalArchitectureXml(archType || 'tech_cicd_pipeline');
+    return getTechnicalArchitectureXml(archType || 'unified_system_view');
   }
 }

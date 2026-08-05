@@ -92,7 +92,7 @@ resource "object_storage_bucket" "ingestion_bucket" {
           name: finalTitle || 'Imported Diagram',
           xml: xmlContent,
           comment: activeTab === 'terraform' ? 'Reverse-Engineered from Terraform HCL (.tf)' : `Imported file: ${file?.name}`,
-          architectureType: activeTab === 'terraform' ? 'tech_serverless_gcp' : 'tech_cicd_pipeline'
+          architectureType: activeTab === 'terraform' ? 'tech_serverless_gcp' : 'unified_system_view'
         }),
       });
 
