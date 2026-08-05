@@ -492,15 +492,39 @@ function WorkspaceContent() {
       };
     }
 
-    // 9. General Fallback
+    // 9. General Fallback with Architecture & Domain Context
+    const arch = activeDiagram?.architecture_type || 'unified_system_view';
+    const diagName = activeDiagram?.name || 'Architecture';
+    if (arch.includes('multi_region_dr')) {
+      return {
+        suggestions: [
+          `Simulate RPO/RTO Failover Drill for ${diagName}`,
+          'Add Multi-Region Active-Active Cloud Spanner Sync',
+          'Configure Automated DNS & Traffic Router Failover',
+          'Attach Disaster Recovery Runbook & Compliance Gate'
+        ],
+        dynamicPlaceholder: `e.g., Add Automated Regional Failover trigger for ${diagName}...`
+      };
+    }
+    if (arch.includes('cicd') || arch.includes('polyrepo')) {
+      return {
+        suggestions: [
+          'Add Automated Canary & Blue/Green Deployment Stage',
+          'Integrate Container Signing (Cosign) & SLSA Level 3 Gate',
+          'Configure Secret Scanning & Ephemeral Test Environments',
+          'Attach Automated Load & Performance Quality Gate'
+        ],
+        dynamicPlaceholder: 'e.g., Add Automated Canary Stage before GKE Production...'
+      };
+    }
     return {
       suggestions: [
-        'Add HTTPS Load Balancer with Cloud Armor WAF',
-        'Connect Private Application & Data Subnets via PSC',
-        'Integrate Redis Caching for fast query response',
-        'Attach Cloud Monitoring & Alerting Dashboards'
+        `Add High-Availability Multi-Zone Ingress for ${diagName}`,
+        'Integrate Automated Backup & Zero-Downtime Pipeline',
+        'Attach Real-Time Telemetry & Alerting Dashboards',
+        'Enforce Zero-Trust Encryption at Rest & in Transit'
       ],
-      dynamicPlaceholder: 'e.g., Add an Apigee Gateway in front of Cloud Run...'
+      dynamicPlaceholder: `e.g., Add API Gateway or Security Gate to ${diagName}...`
     };
   }, [activeDiagram, activeVersion?.xml_content, selectedPersona]);
   
