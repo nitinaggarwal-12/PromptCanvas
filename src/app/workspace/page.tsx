@@ -1010,9 +1010,33 @@ function WorkspaceContent() {
           });
         setChatMessages(messages);
       } else {
-        setActiveVersion(null);
+        const targetArch = data.architecture_type || 'unified_system_view';
+        setSelectedArchType(targetArch);
+        const refXml = getDefaultXmlForArchitecture(targetArch, data.name, data.name);
+        const dynamicVer: DiagramVersion = {
+          id: `arch_init_${targetArch}_${Date.now()}`,
+          diagram_id: data.id,
+          version_number: 1,
+          xml_content: refXml || '',
+          comment: `Initial Architecture Backbone: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
+          created_by: 'System',
+          created_at: new Date().toISOString(),
+          architecture_type: targetArch
+        };
+        setActiveVersion(dynamicVer);
         setPreviewVersion(null);
         setChatMessages([]);
+        if (data.id && refXml) {
+          fetch(`/api/diagrams/${data.id}/versions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              xmlContent: refXml,
+              comment: `Initial Architecture Backbone: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
+              architectureType: targetArch
+            })
+          }).catch(console.error);
+        }
       }
 
       // Fetch persistent audit report history
