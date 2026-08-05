@@ -5615,6 +5615,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         customW={customRatioW}
                         customH={customRatioH}
                         bgTheme={canvasTheme}
+                        isLiveFlow={isLiveFlowEnabled}
                       />
                     </div>
                   </div>

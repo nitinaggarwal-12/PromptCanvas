@@ -16,6 +16,7 @@ interface DiagramViewerProps {
   useCaseName?: string;
   diagramType?: string;
   description?: string;
+  isLiveFlow?: boolean;
 }
 
 export default function DiagramViewer({
@@ -29,6 +30,7 @@ export default function DiagramViewer({
   useCaseName,
   diagramType,
   description,
+  isLiveFlow = false,
 }: DiagramViewerProps) {
   const sanitizedXml = React.useMemo(() => {
     if (!xml) {
@@ -240,7 +242,16 @@ export default function DiagramViewer({
         ::-webkit-scrollbar-thumb {
           background: rgba(100, 116, 139, 0.4);
           border-radius: 9999px;
+        }${isLiveFlow ? `
+        @keyframes flowPulse {
+          0% { stroke-dashoffset: 40; }
+          100% { stroke-dashoffset: 0; }
         }
+        svg path[stroke-dasharray] {
+          animation: flowPulse 1.1s linear infinite !important;
+          stroke-width: 2.5px !important;
+        }
+` : ''}
       </style>
     </head>
     <body>
