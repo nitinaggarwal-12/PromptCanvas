@@ -786,10 +786,28 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   const promptLower = (userPrompt || topic || '').toLowerCase();
   const isGenomicPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('dna') || promptLower.includes('bwa');
   const isLiteratureMiningPrompt = promptLower.includes('literature') || promptLower.includes('patent') || promptLower.includes('clinical trial') || promptLower.includes('nsclc') || promptLower.includes('target discovery') || promptLower.includes('langchain') || promptLower.includes('bioinformatician');
-
   const isEarlyDiscoveryPrompt = promptLower.includes('discovery') || promptLower.includes('aiddison') || promptLower.includes('notebook') || promptLower.includes('biologist') || promptLower.includes('hypothesis');
+  const isFintechPrompt = promptLower.includes('fintech') || promptLower.includes('payment') || promptLower.includes('fraud') || promptLower.includes('ledger') || promptLower.includes('banking') || promptLower.includes('iso 20022') || promptLower.includes('pci') || promptLower.includes('apexpay');
 
-  if (isEarlyDiscoveryPrompt) {
+  if (isFintechPrompt) {
+    updatedXml = updatedXml
+      .replace(/Data Engineering/g, 'ISO 20022 Payment Ingestion (Swift/SEPA)')
+      .replace(/Application Development/g, 'Sub-50ms ML Fraud Risk &amp; Scoring Engine')
+      .replace(/MLOps/g, 'Cloud Spanner Real-Time Algorithmic Ledger Core')
+      .replace(/Project Planning/g, 'PCI-DSS &amp; SOC2 Regulatory Compliance Governance')
+      .replace(/Dimensional Data Modeling \(ERD\)/g, 'ISO 20022 Schema &amp; Ledger Lineage Modeling')
+      .replace(/TRACK 1: DATA ENGINEERING &amp; DIMENSIONAL MODELING FLOW \(DFD\/ERD Lifecycle\)/g, 'TRACK 1: REAL-TIME ISO 20022 PAYMENT CLEARING PIPELINE (Sub-50ms Ingress)')
+      .replace(/TRACK 2: APPLICATION DEVELOPMENT &amp; COGNITIVE ARCHITECTURE FLOW \(App Code Flow\)/g, 'TRACK 2: SUB-50ms ML FRAUD DETECTION &amp; ANOMALY SCORING')
+      .replace(/TRACK 3: MLOps LIFECYCLE \(ML\/AI TRAINING FLOW\)/g, 'TRACK 3: CLOUD SPANNER ALGORITHMIC LEDGER &amp; LIQUIDITY SETTLEMENT')
+      .replace(/GKE Containers/g, 'ApexPay Payment Microservices &amp; Cloud Armor WAF')
+      .replace(/API Gateway/g, 'PCI-DSS Compliant ISO 20022 API Gateway')
+      .replace(/Canary deployment on GKE/g, 'Automated Settlement Rollout &amp; PCI Compliance Gate')
+      .replace(/Human-in-the-Loop Governance/g, 'High-Risk Fraud Escalation &amp; AML Compliance Gate')
+      .replace(/Dim_Patient/g, 'Dim_Merchant_Account (PK/FK)')
+      .replace(/Fact_Patient_Encounters/g, 'Fact_ISO20022_Payment_Transactions')
+      .replace(/Dim_Physician/g, 'Dim_Payment_Rail_Metadata')
+      .replace(/Dim_Payer/g, 'Dim_Fraud_Risk_Rules');
+  } else if (isEarlyDiscoveryPrompt) {
     updatedXml = updatedXml
       .replace(/Manual Data Sources Card/g, 'Internal Assay Notes, PDFs &amp; Lab Summaries')
       .replace(/Raw Scientific Literature &amp; PPT Decks/g, 'Gemini Notebook Enterprise Ingestion')

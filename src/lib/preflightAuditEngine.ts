@@ -160,11 +160,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   }
 
   // 6. RHOMBUS SHAPE DIMENSION & TEXT OVERFLOW HEALER (Fixes Rhombus Edge Overflow):
-  // Auto-expand all rhombus/diamond shapes to width=280 and height=90 so text never spills over sloped edges
-  xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")\d+("\s+height=")\d+(")/gi, '$1280$290"');
+  // Auto-expand all rhombus/diamond shapes to width=340 and height=115 so multi-line API text never crops or spills over
+  xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")\d+("\s+height=")\d+(")/gi, '$1340$2115"');
 
   // 7. EDGE LABEL MULTI-LINE SPLITTING & TEXT OVERLAP HEALING:
-  // Compact multi-word edge labels so they fit perfectly inside 160px corridors without clipping cards
+  // Compact multi-word edge labels so they fit perfectly inside corridors without clipping cards
   xml = xml.replace(/value="Promote to Production"/gi, 'value="Promote to&lt;br&gt;Production"');
   xml = xml.replace(/value="Sync GitOps Manifest"/gi, 'value="Sync GitOps&lt;br&gt;Manifest"');
   xml = xml.replace(/value="Trigger Build"/gi, 'value="Trigger&lt;br&gt;Build"');
@@ -172,6 +172,9 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xml = xml.replace(/value="Train Anomaly Models"/gi, 'value="Train Anomaly&lt;br&gt;Models"');
   xml = xml.replace(/value="Trigger Operational Alert"/gi, 'value="Trigger Operational&lt;br&gt;Alert"');
   xml = xml.replace(/value="Canary Telemetry Fail -&amp;gt; Auto Rollback"/gi, 'value="Canary Fail -&amp;gt;&lt;br&gt;Auto Rollback"');
+  xml = xml.replace(/value="Filtered Relational VPC Access"/gi, 'value="Filtered Relational&lt;br&gt;VPC Access"');
+  xml = xml.replace(/value="Secure Internal API Access"/gi, 'value="Secure Internal&lt;br&gt;API Access"');
+  xml = xml.replace(/value="Dedicated Link \(10Gbps\)"/gi, 'value="Dedicated Link&lt;br&gt;(10Gbps)"');
   xml = xml.replace(/(&lt;br&gt;\s*|&lt;br\/&gt;\s*)+/gi, '&lt;br&gt;');
   xml = xml.replace(/(Batch Reconciliation\s*)+/gi, 'Batch Reconciliation ');
 
