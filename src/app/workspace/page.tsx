@@ -3330,7 +3330,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 }
 
   const currentXmlToRender = React.useMemo(() => {
-    const archType = displayedVersion?.architecture_type || activeDiagram?.architecture_type || 'unified_system_view';
+    const archType = activeDiagram?.architecture_type || displayedVersion?.architecture_type || 'unified_system_view';
     const activeUseCase = displayedVersion?.business_usecase || activeDiagram?.name || 'ApexPay Global FinTech Platform';
     
     // Always use the master collision-free spatial reference XML for the target architecture type so historical DB versions never render broken overlaps
