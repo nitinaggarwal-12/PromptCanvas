@@ -78,10 +78,19 @@ const TECH_XML_SERVERLESS_GCP = `<mxfile host="embed.diagrams.net">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="edge_2" value="Traffic Filtering" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_2" target="node_3">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="495" y="245" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="edge_3" value="Static Content" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_3" target="node_4">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="495" y="262" />
+              <mxPoint x="495" y="412" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="edge_4" value="Dynamic Content" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#64748B;labelBackgroundColor=#FFFFFF;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;" edge="1" parent="1" source="node_3" target="node_5">
           <mxGeometry relative="1" as="geometry" />
