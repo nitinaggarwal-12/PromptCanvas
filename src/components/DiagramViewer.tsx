@@ -23,6 +23,7 @@ interface DiagramViewerProps {
 }
 
 export default function DiagramViewer({
+  currentLanguage = 'en',
   xml,
   diagramId,
   versionId,
