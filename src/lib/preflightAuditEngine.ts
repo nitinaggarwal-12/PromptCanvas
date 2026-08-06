@@ -11,6 +11,19 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xmlInput: string,
   archType: string = 'unified_system_view'
 ): string {
+  if (
+    archType === 'tech_c4_system_context' ||
+    archType === 'tech_modern_data_stack' ||
+    archType === 'tech_event_driven_eda' ||
+    (xmlInput && (
+      xmlInput.includes('id="c4_system_context"') ||
+      xmlInput.includes('id="modern_data_stack"') ||
+      xmlInput.includes('id="event_driven_eda"')
+    ))
+  ) {
+    return xmlInput;
+  }
+
   let xml = xmlInput || '';
 
   // V2 layout-engine output (graph -> ELK -> renderer) is deterministically laid out and
