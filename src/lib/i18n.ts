@@ -44,7 +44,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: 'Version Details & Prompt Applied',
     changeDesc: 'Change Description',
     promptApplied: 'Prompt Applied',
-    languageLabel: 'Language'
+    languageLabel: 'Language',
+    refactorBar: '💬 Live Conversational Refactor (⌘K)',
+    soc2Dossier: '📜 Automated SOC2 Compliance Dossier',
+    techRadar: 'ThoughtWorks 2026 Tech Radar & Drift Guard',
+    visualDiff: '🔍 Visual Version Diff Inspector',
+    chaosSimulator: '🔥 Chaos Simulator',
+    codeAst: '💻 Live Code AST Split-Pane',
+    opexRadar: '💰 OPEX & Carbon Footprint Radar',
+    boardroomNarrator: '🎬 Boardroom Storytelling Narrator',
+    promptPlaceholder: 'Act as an Enterprise Cloud Architect. Describe system changes or refinement...',
+    sendPrompt: 'Send Prompt (Enter)'
   },
   es: {
     step1: 'Seleccionar Arquitectura',
@@ -68,7 +78,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: 'Detalles de Versión e Historial',
     changeDesc: 'Descripción del Cambio',
     promptApplied: 'Prompt Aplicado',
-    languageLabel: 'Idioma'
+    languageLabel: 'Idioma',
+    refactorBar: '💬 Refactorización Conversacional En Vivo (⌘K)',
+    soc2Dossier: '📜 Dossier Automático de Cumplimiento SOC2',
+    techRadar: 'Tech Radar 2026 y Control de Deriva',
+    visualDiff: '🔍 Inspector de Diferencias Visuales',
+    chaosSimulator: '🔥 Simulador de Caos',
+    codeAst: '💻 AST de Código en Vivo',
+    opexRadar: '💰 Radar de OPEX y Huella de Carbono',
+    boardroomNarrator: '🎬 Narrador para Junta Directiva',
+    promptPlaceholder: 'Actúa como Arquitecto Cloud Empresarial. Describe cambios...',
+    sendPrompt: 'Enviar Prompt (Enter)'
   },
   pt: {
     step1: 'Selecionar Arquitetura',
@@ -92,7 +112,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: 'Detalhes de Versão e Prompt',
     changeDesc: 'Descrição da Alteração',
     promptApplied: 'Prompt Aplicado',
-    languageLabel: 'Idioma'
+    languageLabel: 'Idioma',
+    refactorBar: '💬 Refatoração Conversacional ao Vivo (⌘K)',
+    soc2Dossier: '📜 Dossiê Automatizado SOC2',
+    techRadar: 'Tech Radar 2026 & Proteção de Deriva',
+    visualDiff: '🔍 Inspetor de Diferenças Visuais',
+    chaosSimulator: '🔥 Simulador de Caos',
+    codeAst: '💻 AST de Código ao Vivo',
+    opexRadar: '💰 Radar de OPEX & Pegada de Carbono',
+    boardroomNarrator: '🎬 Narrador da Diretoria',
+    promptPlaceholder: 'Atue como Arquiteto Cloud Empresarial. Descreva alterações...',
+    sendPrompt: 'Enviar Prompt (Enter)'
   },
   ja: {
     step1: 'アーキテクチャ選択',
@@ -116,7 +146,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: 'バージョン履歴と履歴詳細',
     changeDesc: '変更の概要',
     promptApplied: '適用プロンプト',
-    languageLabel: '言語'
+    languageLabel: '言語',
+    refactorBar: '💬 ライブ会話型リファクタリング (⌘K)',
+    soc2Dossier: '📜 自動SOC2コンプライアンス証拠資料',
+    techRadar: 'Tech Radar 2026＆ドリフト監視',
+    visualDiff: '🔍 視覚的バージョン差分インスペクター',
+    chaosSimulator: '🔥 カオスシミュレーター',
+    codeAst: '💻 ライブコードAST分割表示',
+    opexRadar: '💰 OPEX＆炭素足跡レーダー',
+    boardroomNarrator: '🎬 取締役会ナレーター',
+    promptPlaceholder: 'エンタープライズクラウド設計者としてシステム変更を入力...',
+    sendPrompt: 'プロンプト送信 (Enter)'
   },
   fr: {
     step1: "Choisir l'Architecture",
@@ -140,7 +180,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: 'Détails de Version & Prompt',
     changeDesc: 'Description du Changement',
     promptApplied: 'Prompt Appliqué',
-    languageLabel: 'Langue'
+    languageLabel: 'Langue',
+    refactorBar: '💬 Refactorisation Conversationnelle en Direct (⌘K)',
+    soc2Dossier: '📜 Dossier de Preuves SOC2 Automatisé',
+    techRadar: 'Tech Radar 2026 & Dérive de Concept',
+    visualDiff: '🔍 Inspecteur de Différences Visuelles',
+    chaosSimulator: '🔥 Simulateur de Chaos',
+    codeAst: '💻 Vue Divisée Code AST en Direct',
+    opexRadar: '💰 Radar OPEX & Empreinte Carbone',
+    boardroomNarrator: "🎬 Narrateur Conseil d'Administration",
+    promptPlaceholder: "Agissez en tant qu'Architecte Cloud d'Entreprise...",
+    sendPrompt: 'Envoyer Prompt (Entrée)'
   },
   de: {
     step1: 'Architektur Auswählen',
@@ -164,7 +214,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: 'Versions-Details & Prompt-Verlauf',
     changeDesc: 'Änderungs-Beschreibung',
     promptApplied: 'Angewendeter Prompt',
-    languageLabel: 'Sprache'
+    languageLabel: 'Sprache',
+    refactorBar: '💬 Live-Konversationelles Refaktorisieren (⌘K)',
+    soc2Dossier: '📜 Automatisiertes SOC2-Compliance-Dossier',
+    techRadar: 'Tech Radar 2026 & Konzept-Drift-Wächter',
+    visualDiff: '🔍 Visueller Versions-Differenz-Inspektor',
+    chaosSimulator: '🔥 Chaos-Simulator',
+    codeAst: '💻 Live-Code-AST-Geteilte Ansicht',
+    opexRadar: '💰 OPEX- &amp; CO2-Fußabdruck-Radar',
+    boardroomNarrator: '🎬 Vorstands-Storytelling-Erzähler',
+    promptPlaceholder: 'Handeln Sie als Enterprise Cloud Architect...',
+    sendPrompt: 'Prompt Senden (Eingabe)'
   },
   hi: {
     step1: 'आर्किटेक्चर चुनें',
@@ -188,7 +248,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: 'संस्करण विवरण और इतिहास',
     changeDesc: 'परिवर्तन विवरण',
     promptApplied: 'लागू किया गया प्रॉम्प्ट',
-    languageLabel: 'भाषा'
+    languageLabel: 'भाषा',
+    refactorBar: '💬 लाइव संवादात्मक सुधार (⌘K)',
+    soc2Dossier: '📜 स्वचालित SOC2 अनुपालन साक्ष्य फाइल',
+    techRadar: 'टेक रडार 2026 और ड्राफ्ट गॉर्ड',
+    visualDiff: '🔍 दृश्य संस्करण अंतर निरीक्षक',
+    chaosSimulator: '🔥 केओस सिम्युलेटर',
+    codeAst: '💻 लाइव कोड AST विभाजित स्क्रीन',
+    opexRadar: '💰 OPEX और कार्बन पदचिह्न रडार',
+    boardroomNarrator: '🎬 बोर्डरूम प्रस्तुति कथावाचक',
+    promptPlaceholder: 'एंटरप्राइज़ क्लाउड आर्किटेक्ट के रूप में कार्य करें...',
+    sendPrompt: 'प्रॉम्प्ट भेजें (Enter)'
   },
   id: {
     step1: 'Pilih Arsitektur',
@@ -212,7 +282,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: 'Detail Versi & Riwayat Prompt',
     changeDesc: 'Deskripsi Perubahan',
     promptApplied: 'Prompt Yang Diterapkan',
-    languageLabel: 'Bahasa'
+    languageLabel: 'Bahasa',
+    refactorBar: '💬 Refaktor Percakapan Langsung (⌘K)',
+    soc2Dossier: '📜 Berkas Bukti Kepatuhan SOC2 Otomatis',
+    techRadar: 'Tech Radar 2026 & Pelindung Drift',
+    visualDiff: '🔍 Inspektur Perbedaan Versi Visual',
+    chaosSimulator: '🔥 Simulator Chaos',
+    codeAst: '💻 Layar Terpisah Kode AST Langsung',
+    opexRadar: '💰 Radar OPEX & Jejak Karbon',
+    boardroomNarrator: '🎬 Narator Presentasi Dewan',
+    promptPlaceholder: 'Bertindak sebagai Arsitek Cloud Perusahaan...',
+    sendPrompt: 'Kirim Prompt (Enter)'
   },
   ar: {
     step1: 'اختر البنية التحتية',
@@ -233,10 +313,20 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     composeDoc: 'صياغة المستند',
     securityAudit: 'تدقيق الأمان',
     suggestedRefinements: 'تحسينات مقترحة',
-    versionHistory: 'تفاصيل والإصدار والمطالبة',
+    versionHistory: 'تفاصيل وإصدار والمطالبة',
     changeDesc: 'وصف التغيير',
     promptApplied: 'المطالبة المطبقة',
-    languageLabel: 'اللغة'
+    languageLabel: 'اللغة',
+    refactorBar: '💬 التحسين المحادثاتي المباشر (⌘K)',
+    soc2Dossier: '📜 ملف أدلة امتثال SOC2 التلقائي',
+    techRadar: 'رادار التكنولوجيا 2026 وحارس الانحراف',
+    visualDiff: '🔍 فاحص الفروق البصرية بين الإصدارات',
+    chaosSimulator: '🔥 محاكي العطل التلقائي',
+    codeAst: '💻 شجرة كود AST المباشرة',
+    opexRadar: '💰 رادار النفقات التشغيلية والبصمة الكربونية',
+    boardroomNarrator: '🎬 راوي عروض مجلس الإدارة',
+    promptPlaceholder: 'اعمل كمهندس بنية تحتية سحابية...',
+    sendPrompt: 'إرسال المطالبة (Enter)'
   },
   zh: {
     step1: '選擇架構基線',
@@ -260,6 +350,16 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     versionHistory: '版本詳細信息與歷史記錄',
     changeDesc: '變更說明',
     promptApplied: '已應用提示語',
-    languageLabel: '語言'
+    languageLabel: '語言',
+    refactorBar: '💬 實時對話式架構重構 (⌘K)',
+    soc2Dossier: '📜 自動化 SOC2 合規證據卷宗',
+    techRadar: 'ThoughtWorks 2026 技術雷達與漂移守護',
+    visualDiff: '🔍 視覺化版本對比檢視器',
+    chaosSimulator: '🔥 混沌故障模擬器',
+    codeAst: '💻 實時代碼 AST 分屏視圖',
+    opexRadar: '💰 OPEX 雲成本與碳足跡雷達',
+    boardroomNarrator: '🎬 董事會高管故事敘述者',
+    promptPlaceholder: '扮演企業雲架構師，描述系統變更需求...',
+    sendPrompt: '發送提示語 (Enter)'
   }
 };
