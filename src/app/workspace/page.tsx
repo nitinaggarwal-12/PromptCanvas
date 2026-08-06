@@ -398,7 +398,7 @@ function WorkspaceContent() {
   const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
   const [isExecutiveSummaryOpen, setIsExecutiveSummaryOpen] = useState(false);
 
-  const handleAspectRatioChange = useCallback((ratioId: string, customW?: number, customH?: number) => {
+  function handleAspectRatioChange(ratioId: string, customW?: number, customH?: number) {
     setSelectedAspectRatio(ratioId);
     if (customW) setCustomRatioW(customW);
     if (customH) setCustomRatioH(customH);
@@ -414,7 +414,7 @@ function WorkspaceContent() {
         setActiveVersion(prev => prev ? { ...prev, xml_content: reOrganizedXml } : null);
       }
     }
-  }, [previewVersion, activeVersion]);
+  }
   const [selectedPersona, setSelectedPersona] = useState<string>('architect');
   
   const { suggestions, dynamicPlaceholder } = React.useMemo(() => {
