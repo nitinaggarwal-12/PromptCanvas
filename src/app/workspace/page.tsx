@@ -4512,6 +4512,67 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
                           {/* Filtered Canvas List */}
                           <div className="overflow-y-auto py-1 max-h-[380px] divide-y divide-slate-800/40">
+                            {/* FLAGSHIP BOARDROOM BLUEPRINTS LISTING IN CANVAS DROPDOWN */}
+                            {[
+                              {
+                                id: 'tech_c4_system_context',
+                                num: '11',
+                                name: '11. C4 Enterprise System Context & Container Model (L1 & L2)',
+                                desc: 'McKinsey Boardroom Blueprint • Zero-Trust & Microservices'
+                              },
+                              {
+                                id: 'tech_modern_data_stack',
+                                num: '12',
+                                name: '12. Modern Data Stack Architecture (CDC, Medallion & Reverse ETL)',
+                                desc: 'McKinsey Boardroom Blueprint • Fivetran, dbt Core & BigQuery'
+                              },
+                              {
+                                id: 'tech_event_driven_eda',
+                                num: '13',
+                                name: '13. Enterprise Event-Driven Microservices Architecture (EDA)',
+                                desc: 'McKinsey Boardroom Blueprint • Kafka Mesh, DLQ & CEP Fraud Engine'
+                              }
+                            ]
+                              .filter((bp) => {
+                                const q = canvasSearchQuery.toLowerCase().trim();
+                                if (!q) return true;
+                                return (
+                                  bp.name.toLowerCase().includes(q) ||
+                                  bp.num === q ||
+                                  bp.id.toLowerCase().includes(q) ||
+                                  bp.desc.toLowerCase().includes(q)
+                                );
+                              })
+                              .map((bp) => {
+                                const isActive = selectedArchType === bp.id;
+                                return (
+                                  <button
+                                    key={bp.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setIsCanvasDropdownOpen(false);
+                                      handleArchitectureSwitch(bp.id);
+                                    }}
+                                    className={`w-full text-left px-3 py-2.5 transition-colors flex items-start justify-between gap-2 hover:bg-teal-950/40 ${
+                                      isActive ? 'bg-teal-900/30 border-l-2 border-teal-400' : ''
+                                    }`}
+                                  >
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="text-amber-400 font-extrabold text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30">
+                                          🏆 BOARDROOM
+                                        </span>
+                                        {isActive && (
+                                          <span className="text-teal-400 font-extrabold text-[11px]">✨ ACTIVE</span>
+                                        )}
+                                      </div>
+                                      <p className="text-xs font-bold text-slate-100 truncate mt-1">{bp.name}</p>
+                                      <p className="text-[10px] text-teal-400/90 mt-0.5 font-medium">{bp.desc}</p>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+
                             {diagrams
                               .filter((d) =>
                                 (d.name || '').toLowerCase().includes(canvasSearchQuery.toLowerCase())
@@ -4548,11 +4609,14 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                               })}
                             {diagrams.filter((d) =>
                               (d.name || '').toLowerCase().includes(canvasSearchQuery.toLowerCase())
-                            ).length === 0 && (
-                              <div className="p-4 text-center text-xs text-slate-400 font-semibold">
-                                No canvas projects matching "{canvasSearchQuery}"
-                              </div>
-                            )}
+                            ).length === 0 &&
+                              [
+                                '11', 'c4', '12', 'modern', 'data', '13', 'event', 'eda', 'kafka'
+                              ].filter(k => k.includes(canvasSearchQuery.toLowerCase())).length === 0 && (
+                                <div className="p-4 text-center text-xs text-slate-400 font-semibold">
+                                  No canvas projects matching "{canvasSearchQuery}"
+                                </div>
+                              )}
                           </div>
                         </div>
                       )}
