@@ -3834,7 +3834,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           <div className="p-3 border-b border-panel-border/30 space-y-2 shrink-0">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-400">
-                ACTIVE WORKSPACE &amp; DESIGN
+                ACTIVE WORKSPACE & DESIGN
               </span>
               {activeDiagram && (
                 <button
@@ -3880,48 +3880,73 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           </div>
         )}
 
-        {/* 2. ACTION ZONE: Prominent + New Architecture & Quick Tool Strip */}
-        <div className="p-3 border-b border-panel-border/30 space-y-2 shrink-0">
+        {/* 2. ACTION ZONE: Non-Blocking Hover/Click Expanding Creation Strip */}
+        <div 
+          className="p-3 border-b border-panel-border/30 relative shrink-0"
+          onMouseLeave={() => setExpandedSubMenu(null)}
+        >
           <button
             id="new-diagram-btn"
-            onClick={openCreateModal}
+            onClick={() => setExpandedSubMenu(expandedSubMenu === 'create_popover' ? null : 'create_popover')}
+            onMouseEnter={() => setExpandedSubMenu('create_popover')}
             className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-extrabold transition-all shadow-sm text-xs cursor-pointer ${
               !isSidebarOpen && 'p-2'
             }`}
           >
             <Plus className="w-4 h-4 stroke-[3]" />
-            {isSidebarOpen && <span>+ New Architecture</span>}
+            {isSidebarOpen && <span>+ New Architecture ▾</span>}
           </button>
 
-          {isSidebarOpen && (
-            <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+          {/* Inline Non-Blocking Expanding Creation & Tools Popover (Auto-collapses on mouse leave / click outside) */}
+          {expandedSubMenu === 'create_popover' && isSidebarOpen && (
+            <div 
+              className="mt-2 p-2.5 rounded-xl bg-slate-900/95 border border-teal-500/40 shadow-2xl space-y-2 animate-in fade-in slide-in-from-top-1 duration-150 z-50"
+            >
+              <div className="text-[10px] font-extrabold uppercase tracking-wider text-teal-400 px-1">
+                Instant Architecture Actions
+              </div>
+              
               <button
-                onClick={() => setIsUseCaseModalOpen(true)}
-                className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white text-[11px] font-bold transition-all cursor-pointer"
+                onClick={() => { openCreateModal(); setExpandedSubMenu(null); }}
+                className="w-full flex items-center justify-between p-2 rounded-lg bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 text-teal-200 text-xs font-bold transition-all text-left cursor-pointer"
               >
-                <ClipboardList className="w-3.5 h-3.5 text-teal-400" />
-                <span>Use Case Form</span>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                  <span>AI Prompt Studio</span>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 opacity-60" />
               </button>
+
               <button
-                onClick={() => setIsImportModalOpen(true)}
-                className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white text-[11px] font-bold transition-all cursor-pointer"
+                onClick={() => { setIsUseCaseModalOpen(true); setExpandedSubMenu(null); }}
+                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all text-left cursor-pointer"
+              >
+                <ClipboardList className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Use Case Intake Form</span>
+              </button>
+
+              <button
+                onClick={() => { setIsImportModalOpen(true); setExpandedSubMenu(null); }}
+                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all text-left cursor-pointer"
               >
                 <Upload className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Import (.drawio)</span>
+                <span>Import (.drawio / .tf)</span>
               </button>
+
               <button
-                onClick={() => setIsVersionDiffModalOpen(true)}
-                className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white text-[11px] font-bold transition-all cursor-pointer"
+                onClick={() => { setIsVersionDiffModalOpen(true); setExpandedSubMenu(null); }}
+                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all text-left cursor-pointer"
               >
                 <FileCode className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Version Diff</span>
+                <span>Version &amp; Visual Diff</span>
               </button>
+
               <button
-                onClick={() => setIsExecutiveSummaryOpen(true)}
-                className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white text-[11px] font-bold transition-all cursor-pointer"
+                onClick={() => { setIsExecutiveSummaryOpen(true); setExpandedSubMenu(null); }}
+                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all text-left cursor-pointer"
               >
                 <Briefcase className="w-3.5 h-3.5 text-amber-400" />
-                <span>Exec Suite</span>
+                <span>Executive Board Suite</span>
               </button>
             </div>
           )}
@@ -3933,9 +3958,9 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             { id: 'editor', name: 'Design Canvas', icon: Network },
             { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid },
             { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
-            { id: 'audit', name: 'Security &amp; Zero-Trust Audit', icon: ShieldCheck },
+            { id: 'audit', name: 'Security & Zero-Trust Audit', icon: ShieldCheck },
             { id: 'walkthrough', name: 'Interactive Visual Tour', icon: BookOpen },
-            { id: 'settings', name: 'Settings &amp; AI Tier Config', icon: Settings }
+            { id: 'settings', name: 'Settings & AI Tier Config', icon: Settings }
           ].map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
