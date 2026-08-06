@@ -307,7 +307,7 @@ function WorkspaceContent() {
     }
   }, []);
 
-  const saveProfilesToStorage = (profiles: ByokConnectionProfile[], activeId: string) => {
+  function saveProfilesToStorage(profiles: ByokConnectionProfile[], activeId: string) {
     setByokProfiles(profiles);
     setActiveByokProfileId(activeId);
     if (typeof window !== 'undefined') {
@@ -670,7 +670,7 @@ function WorkspaceContent() {
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   // Auto-dismiss all header dropdown menus when clicking anywhere outside
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
+    function handleOutsideClick(e: MouseEvent) {
       const target = e.target as HTMLElement;
       if (!target.closest('#workspace-canvas-project-selector') && 
           !target.closest('#workspace-header-architecture-select') && 
@@ -731,7 +731,7 @@ function WorkspaceContent() {
     return null;
   });
 
-  const getTourClass = (step: number | null, targetStep: number, baseClass: string) => {
+  function getTourClass(step: number | null, targetStep: number, baseClass: string) {
     if (step === targetStep) {
       const cleanedBase = baseClass.replace(/\bz-\d+\b/g, '');
       const hasPosition = /\b(relative|absolute|fixed|sticky)\b/.test(cleanedBase);
@@ -801,7 +801,7 @@ function WorkspaceContent() {
   const [versionSearchQuery, setVersionSearchQuery] = useState('');
   const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState(false);
 
-  const handleSelectDisambiguationType = async (typeId: string) => {
+  async function handleSelectDisambiguationType(typeId: string) {
     const promptToGen = disambiguationData?.prompt || newDiagramPrompt || activeDiagram?.name || 'Architecture Diagram';
     const nameToGen = disambiguationData?.name || newDiagramName || activeDiagram?.name || 'Architecture Diagram';
     setDisambiguationData(null);
@@ -832,7 +832,7 @@ function WorkspaceContent() {
     }
   };
 
-  const toggleDiagramPrivacy = async (newPrivate: boolean) => {
+  async function toggleDiagramPrivacy(newPrivate: boolean) {
     if (!activeDiagram) return;
     setIsPrivate(newPrivate);
     setActiveDiagram(prev => prev ? { ...prev, is_private: newPrivate } : null);
@@ -965,7 +965,7 @@ function WorkspaceContent() {
   };
 
   React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
         if (e.shiftKey) {
           e.preventDefault();
@@ -1003,7 +1003,7 @@ function WorkspaceContent() {
   const [isResizingAssistant, setIsResizingAssistant] = useState<boolean>(false);
   const [mobileTab, setMobileTab] = useState<'canvas' | 'assistant' | 'audit'>('canvas');
 
-  const handleMouseDownAssistantResize = (e: React.MouseEvent) => {
+  function handleMouseDownAssistantResize(e: React.MouseEvent) {
     e.preventDefault();
     setIsResizingAssistant(true);
   };
@@ -1011,7 +1011,7 @@ function WorkspaceContent() {
   React.useEffect(() => {
     if (!isResizingAssistant) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    function handleMouseMove(e: MouseEvent) {
       const sidebarWidth = isSidebarOpen ? 256 : 64;
       const newWidth = e.clientX - sidebarWidth;
       if (newWidth >= 240 && newWidth <= 650) {
@@ -1019,7 +1019,7 @@ function WorkspaceContent() {
       }
     };
 
-    const handleMouseUp = () => {
+    function handleMouseUp() {
       setIsResizingAssistant(false);
     };
 
@@ -1072,7 +1072,7 @@ function WorkspaceContent() {
 
   // Listen for messages from Draw.io editors (both iframe and popup tab)
   useEffect(() => {
-    const handleWindowMessage = (evt: MessageEvent) => {
+    function handleWindowMessage(evt: MessageEvent) {
       const iframe = iframeRef.current;
       const childWindow = childWindowRef.current;
       
@@ -1150,7 +1150,7 @@ function WorkspaceContent() {
     };
   }, []);
 
-  const openInNewTab = () => {
+  function openInNewTab() {
     if (!activeDiagram || !activeVersion) return;
     
     if (childWindowRef.current && !childWindowRef.current.closed) {
@@ -1365,7 +1365,7 @@ function WorkspaceContent() {
 
   useEffect(() => {
     let rootDiv: HTMLElement | null = null;
-    const handleScroll = () => {
+    function handleScroll() {
       if (rootDiv) {
         if (rootDiv.scrollTop !== 0 || rootDiv.scrollLeft !== 0) {
           rootDiv.scrollTop = 0;
@@ -1396,7 +1396,7 @@ function WorkspaceContent() {
   }, []);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    function handleKeyDown(e: KeyboardEvent) {
       const activeEl = document.activeElement;
       if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.getAttribute('contenteditable') === 'true')) {
         return;
@@ -1407,7 +1407,7 @@ function WorkspaceContent() {
       }
     };
 
-    const handleKeyUp = (e: KeyboardEvent) => {
+    function handleKeyUp(e: KeyboardEvent) {
       if (e.code === 'Space') {
         setIsSpacePressed(false);
       }
@@ -1555,7 +1555,7 @@ function WorkspaceContent() {
     }
   }
 
-  const handleCreateDiagram = async (e: React.FormEvent) => {
+  async function handleCreateDiagram(e: React.FormEvent) {
     e.preventDefault();
     if (!newDiagramName.trim()) return;
     
@@ -1652,7 +1652,7 @@ function WorkspaceContent() {
     }
   };
 
-  const handleDeleteDiagram = async (id: string, e: React.MouseEvent) => {
+  async function handleDeleteDiagram(id: string, e: React.MouseEvent) {
     e.stopPropagation(); // Prevent selecting the diagram
     if (!confirm('Are you sure you want to delete this diagram and all its version history?')) return;
     
@@ -1778,7 +1778,7 @@ function WorkspaceContent() {
   };
 
   // Save Version Handler for Outline Editor quick edits
-  const handleSaveOutlineEdits = async () => {
+  async function handleSaveOutlineEdits() {
     if (!activeDiagram || !activeVersion) return;
     const editedIds = Object.keys(outlineEdits);
     if (editedIds.length === 0) return;
@@ -1821,7 +1821,7 @@ function WorkspaceContent() {
   };
 
   // Generate in-place Business and Technical Use Case details with AI
-  const handleGenerateMetadata = async () => {
+  async function handleGenerateMetadata() {
     if (!displayedVersion) return;
     setIsMetadataGenerating(true);
     try {
@@ -1856,7 +1856,7 @@ function WorkspaceContent() {
       const contentLines = rows.slice(2);
       if (!separatorLine.includes('-')) return rows.join('\n');
 
-      const parseCells = (line: string) => {
+      function parseCells(line: string) {
         const parts = line.split('|');
         return parts.slice(1, parts.length - 1).map(c => c.trim());
       };
@@ -1971,7 +1971,7 @@ function WorkspaceContent() {
   };
 
   // Restore a past version
-  const handleRestoreVersion = async (version: DiagramVersion) => {
+  async function handleRestoreVersion(version: DiagramVersion) {
     if (!activeDiagram) return;
     if (!confirm(`Are you sure you want to restore version v${version.version_number} as the active working draft? This will create a new version v${(activeDiagram.versions?.length || 0) + 1}.`)) return;
     
@@ -1998,7 +1998,7 @@ function WorkspaceContent() {
   };
 
   // Instant Zero-Latency Category Audit Selector
-  const handleSelectCategoryTab = (catId: string) => {
+  function handleSelectCategoryTab(catId: string) {
     setSelectedAuditCategory(catId as any);
     const cached = categoryAuditCache[catId];
     if (cached) {
@@ -2013,7 +2013,7 @@ function WorkspaceContent() {
   };
 
   // Audit the active diagram with Multimodal Vision PNG capture
-  const handleAuditDiagram = async (category?: string) => {
+  async function handleAuditDiagram(category?: string) {
     if (!activeDiagram) return;
     if (tourStep === 5) {
       setTourStep(6);
@@ -2098,7 +2098,7 @@ function WorkspaceContent() {
     }
   };
 
-  const handleRemediateGaps = async () => {
+  async function handleRemediateGaps() {
     if (!activeDiagram || selectedGapIds.length === 0) return;
     const selectedGaps = auditGaps.filter(g => selectedGapIds.includes(g.id));
     if (selectedGaps.length === 0) return;
@@ -2163,7 +2163,7 @@ function WorkspaceContent() {
   };
 
   // Helper to render basic markdown safely in modal
-  const renderAuditMarkdown = (text: string) => {
+  function renderAuditMarkdown(text: string) {
     if (!text) return null;
     return text.split('\n').map((line, i) => {
       let rendered = line;
@@ -2196,7 +2196,7 @@ function WorkspaceContent() {
     });
   };
 
-  const renderTemplatesView = () => {
+  function renderTemplatesView() {
     const allTemplates = [
       ...BUSINESS_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'business' as const })),
       ...TECHNICAL_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'technical' as const }))
@@ -2212,7 +2212,7 @@ function WorkspaceContent() {
       data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse', 'tech_rag_gcp', 'tech_iot_telemetry', 'v2_freeform']
     };
 
-    const getPersonaBadge = (id: string) => {
+    function getPersonaBadge(id: string) {
       if (personaRelevantIds.executive.includes(id)) return { label: '💼 Executive & Product', color: 'text-teal-400 bg-teal-500/10 border-teal-500/30' };
       if (personaRelevantIds.fintech.includes(id)) return { label: '🏦 FinTech & Banking', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
       if (personaRelevantIds.legal.includes(id)) return { label: '📋 Compliance & Legal', color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30' };
@@ -2350,7 +2350,7 @@ function WorkspaceContent() {
     );
   };
 
-  const renderWalkthroughView = () => {
+  function renderWalkthroughView() {
     const scenarios = [
       {
         id: 1,
@@ -2478,7 +2478,7 @@ function WorkspaceContent() {
     );
   };
 
-  const renderAuditCenterView = () => {
+  function renderAuditCenterView() {
     const filteredDiagrams = diagrams.filter(d => {
       const matchesQuery = d.name.toLowerCase().includes(auditSearchQuery.toLowerCase());
       if (!matchesQuery) return false;
@@ -3080,7 +3080,7 @@ function WorkspaceContent() {
     );
   };
 
-  const renderSettingsView = () => {
+  function renderSettingsView() {
     const isRoot = currentUser?.email?.toLowerCase() === 'vibeandcode.ai@gmail.com' || currentUser?.email?.toLowerCase() === 'nitinaggarwal12@gmail.com' || (currentUser as any)?.is_super_admin;
 
     return (
@@ -3349,7 +3349,7 @@ function WorkspaceContent() {
   };
 
   // --- UI Helpers ---
-  const renderEmptyWorkspaceDashboard = () => {
+  function renderEmptyWorkspaceDashboard() {
     return (
       <div className="w-full h-full overflow-y-auto py-12 px-6 md:py-16 relative bg-gradient-to-b from-[#070b12] to-[#030509] select-none">
         {/* Subtle Tech Grid overlay */}
@@ -3644,7 +3644,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     }
   }, [currentXmlToRender]);
 
-  const renderVersionDropdown = (customId?: string) => {
+  function renderVersionDropdown(customId?: string) {
     const versionsDesc = activeDiagram?.versions
       ? activeDiagram.versions
           .filter(v => (v.architecture_type || 'conceptual_diagram') === selectedArchType)
@@ -3878,7 +3878,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     return ` (v${maxVer})`;
   };
 
-  const handleArchitectureSwitch = (newArchId: string) => {
+  function handleArchitectureSwitch(newArchId: string) {
     if (tourStep === 2) {
       setTourStep(3);
     }
@@ -5664,13 +5664,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     if (e.target === e.currentTarget || (e.target as HTMLElement).id === 'radial-grid-background') {
                       const startX = e.clientX - pan.x;
                       const startY = e.clientY - pan.y;
-                      const handleMouseMove = (moveEvent: MouseEvent) => {
+                      function handleMouseMove(moveEvent: MouseEvent) {
                         setPan({
                           x: moveEvent.clientX - startX,
                           y: moveEvent.clientY - startY
                         });
                       };
-                      const handleMouseUp = () => {
+                      function handleMouseUp() {
                         window.removeEventListener('mousemove', handleMouseMove);
                         window.removeEventListener('mouseup', handleMouseUp);
                       };
@@ -5698,13 +5698,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onMouseDown={(e) => {
                         const startX = e.clientX - pan.x;
                         const startY = e.clientY - pan.y;
-                        const handleMouseMove = (moveEvent: MouseEvent) => {
+                        function handleMouseMove(moveEvent: MouseEvent) {
                           setPan({
                             x: moveEvent.clientX - startX,
                             y: moveEvent.clientY - startY
                           });
                         };
-                        const handleMouseUp = () => {
+                        function handleMouseUp() {
                           window.removeEventListener('mousemove', handleMouseMove);
                           window.removeEventListener('mouseup', handleMouseUp);
                         };
