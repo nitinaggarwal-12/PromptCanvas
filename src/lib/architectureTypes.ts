@@ -316,12 +316,21 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getTechnicalArchitectureXml(archId || 'tech_serverless_gcp');
   }
 
-  if (archId !== 'eval_safety_benchmarking' && archId !== 'business_agent_governance_hitl' && archId !== 'tech_multi_agent_langgraph' && archId !== 'tech_c4_system_context' && archId !== 'tech_modern_data_stack' && archId !== 'tech_event_driven_eda') {
+  const isFlagshipBlueprint = (
+    archId === 'eval_safety_benchmarking' ||
+    archId === 'business_agent_governance_hitl' ||
+    archId === 'tech_multi_agent_langgraph' ||
+    archId === 'tech_c4_system_context' ||
+    archId === 'tech_modern_data_stack' ||
+    archId === 'tech_event_driven_eda'
+  );
+
+  if (!isFlagshipBlueprint) {
     const cleanUseCase = (useCaseContext && !/^\d+\.\s/.test(useCaseContext)) ? useCaseContext : undefined;
     const effectiveContext = cleanUseCase || userPrompt || getTemplateTitle(archId || '');
     xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
+    xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, archId || 'unified_system_view');
   }
-  xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, archId || 'unified_system_view');
 
   return xml;
 }
