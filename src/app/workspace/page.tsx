@@ -248,6 +248,9 @@ function WorkspaceContent() {
   const [isTechRadarOpen, setIsTechRadarOpen] = useState(false);
   const [isAuditDossierOpen, setIsAuditDossierOpen] = useState(false);
   const [isConversationalRefactoring, setIsConversationalRefactoring] = useState(false);
+  const [undoStack, setUndoStack] = useState<string[]>([]);
+  const [redoStack, setRedoStack] = useState<string[]>([]);
+  const [autosaveStatus, setAutosaveStatus] = useState<'saved' | 'saving'>('saved');
   const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
@@ -768,6 +771,7 @@ function WorkspaceContent() {
       if (res.ok) {
         const data = await res.json();
         if (data.xml) {
+          pushToUndoStack(currentXml);
           setCustomXml(data.xml);
           // Persist isolated version specifically for this diagram ID
           if (activeDiagram?.id) {
@@ -803,6 +807,53 @@ function WorkspaceContent() {
       setIsConversationalRefactoring(false);
     }
   };
+
+  const pushToUndoStack = (previousXml: string) => {
+    if (!previousXml) return;
+    setUndoStack(prev => [...prev.slice(-30), previousXml]);
+    setRedoStack([]);
+  };
+
+  const handleUndo = () => {
+    if (undoStack.length === 0) return;
+    const previousXml = undoStack[undoStack.length - 1];
+    setUndoStack(prev => prev.slice(0, -1));
+    const current = customXml || displayedVersion?.xml_content || activeVersion?.xml_content || '';
+    if (current) {
+      setRedoStack(prev => [...prev, current]);
+    }
+    setCustomXml(previousXml);
+  };
+
+  const handleRedo = () => {
+    if (redoStack.length === 0) return;
+    const nextXml = redoStack[redoStack.length - 1];
+    setRedoStack(prev => prev.slice(0, -1));
+    const current = customXml || displayedVersion?.xml_content || activeVersion?.xml_content || '';
+    if (current) {
+      setUndoStack(prev => [...prev, current]);
+    }
+    setCustomXml(nextXml);
+  };
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
+        if (e.shiftKey) {
+          e.preventDefault();
+          handleRedo();
+        } else {
+          e.preventDefault();
+          handleUndo();
+        }
+      } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undoStack, redoStack, customXml, displayedVersion, activeVersion]);
 
   const openCreateModal = () => {
     setNewDiagramName('');
