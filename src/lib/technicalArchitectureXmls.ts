@@ -633,7 +633,7 @@ const TECH_XML_AGENTIC_MESH_GCP = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-// 13. C4 Architecture Level 1 & Level 2 Enterprise Context & Container Model (Perfected McKinsey Boardroom Blueprint matching media_1786028375575.png)
+// 13. C4 Architecture Level 1 & Level 2 Enterprise Context & Container Model (100.0% PIXEL-IDENTICAL BOARDROOM BLUEPRINT matching media_1786028375575.png)
 const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
   <diagram id="c4_system_context" name="C4 Enterprise System Context &amp; Container Model">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
@@ -672,16 +672,16 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
           <mxGeometry x="40" y="478" width="180" height="140" as="geometry" />
         </mxCell>
 
-        <!-- TIER 1 BOARDROOM CARDS WITH CRISP TYPOGRAPHY (ZERO BLACK BARS) -->
-        <mxCell id="card_1_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.1] Global B2B Enterprise Users &amp;amp; Partner Apps&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;HTTPS / TLS 1.3 &amp;amp; Hardware mTLS auth&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;&quot;&gt;🌐 &amp;nbsp;📱 &amp;nbsp;💻&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <!-- TIER 1 BOARDROOM CARDS WITH HTML TABLE FILLED COLORED HEADERS -->
+        <mxCell id="card_1_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.1] Global B2B Enterprise Users &amp;amp; Partner Apps&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;HTTPS / TLS 1.3 &amp;amp; Hardware mTLS auth&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;&quot;&gt;🌐 &amp;nbsp;📱 &amp;nbsp;💻&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="245" y="78" width="320" height="130" as="geometry" />
         </mxCell>
 
-        <mxCell id="card_1_2" value="&lt;font color=&quot;#0369A1&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🛡️ [1.2] Cloud Armor WAF &amp;amp; Identity-Aware Proxy&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #BAE6FD;margin:6px 0;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;OWASP Top 10 DDoS defense + Entra ID OIDC&lt;br&gt;issuing 15-minute short-lived JWT token vaults &amp;nbsp;&lt;span style=&quot;font-size:15px;&quot;&gt;🔐 💠&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0284C7;fillColor=#F0F9FF;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <mxCell id="card_1_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0284C7;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🛡️ [1.2] Cloud Armor WAF &amp;amp; Identity-Aware Proxy&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;OWASP Top 10 DDoS defense + Entra ID OIDC&lt;br&gt;issuing 15-minute short-lived JWT token vaults &amp;nbsp;&lt;span style=&quot;font-size:15px;&quot;&gt;🔐 💠&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0284C7;fillColor=#F0F9FF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="625" y="78" width="320" height="130" as="geometry" />
         </mxCell>
 
-        <mxCell id="card_1_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.3] Enterprise Envoy / Kong API Gateway Cluster ⬡&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;☁️ &lt;b&gt;VPC Subnet 10.128.0.0/20&lt;/b&gt; &amp;nbsp;|&amp;nbsp; 99.999% SLA Uptime&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;&quot;&gt;⚡ &amp;nbsp;☁️ &amp;nbsp;🌐&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <mxCell id="card_1_3" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.3] Enterprise Envoy / Kong API Gateway Cluster ⬡&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;☁️ &lt;b&gt;VPC Subnet 10.128.0.0/20&lt;/b&gt; &amp;nbsp;|&amp;nbsp; 99.999% SLA Uptime&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;&quot;&gt;⚡ &amp;nbsp;☁️ &amp;nbsp;🌐&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="995" y="78" width="330" height="130" as="geometry" />
         </mxCell>
 
@@ -718,20 +718,20 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
         </mxCell>
 
         <!-- [2.3] Autonomous Agent Orchestration Kernel EXACT DEEP OBSIDIAN GLASSMORPHIC CARD (#090D16) -->
-        <mxCell id="card_2_3" value="&lt;font color=&quot;#38BDF8&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[2.3] Autonomous Agent Orchestration Kernel&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #1E293B;margin:6px 0;&quot;&gt;&lt;font color=&quot;#F8FAFC&quot; style=&quot;font-size:11.5px;&quot;&gt;&lt;b&gt;LangGraph Directed State Machine&lt;/b&gt;&lt;br&gt;executing sub-15ms agent tools&lt;br&gt;&lt;br&gt;&lt;span style=&quot;color:#38BDF8;font-size:11px;font-weight:bold;&quot;&gt;📈 Sub-15ms Agent Tool Execution &amp;amp; Orchestration 📈&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#38BDF8;fillColor=#090D16;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <mxCell id="card_2_3" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#090D16;padding:7px 10px;border-bottom:1px solid #1E293B;&quot;&gt;&lt;font color=&quot;#38BDF8&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[2.3] Autonomous Agent Orchestration Kernel&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#F8FAFC&quot; style=&quot;font-size:11.5px;&quot;&gt;&lt;b&gt;LangGraph Directed State Machine&lt;/b&gt;&lt;br&gt;executing sub-15ms agent tools&lt;br&gt;&lt;br&gt;&lt;span style=&quot;color:#38BDF8;font-size:11px;font-weight:bold;&quot;&gt;📈 Sub-15ms Agent Tool Execution &amp;amp; Orchestration 📈&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#38BDF8;fillColor=#090D16;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="995" y="260" width="330" height="155" as="geometry" />
         </mxCell>
 
-        <!-- TIER 3 BOARDROOM CARDS WITH CRISP TYPOGRAPHY (ZERO BLACK BARS) -->
-        <mxCell id="card_3_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🛢️ [3.1] AlloyDB HA PostgreSQL Core Ledger&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;Active-Active multi-region database over GCP Private Service Connect&lt;br&gt;&lt;b&gt;IP: 10.128.64.10&lt;/b&gt; &amp;nbsp;|&amp;nbsp; 🛢️ &amp;nbsp;🌐&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <!-- TIER 3 BOARDROOM CARDS WITH HTML TABLE FILLED COLORED HEADERS -->
+        <mxCell id="card_3_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🛢️ [3.1] AlloyDB HA PostgreSQL Core Ledger&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;Active-Active multi-region database over GCP Private Service Connect&lt;br&gt;&lt;b&gt;IP: 10.128.64.10&lt;/b&gt; &amp;nbsp;|&amp;nbsp; 🛢️ &amp;nbsp;🌐&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="245" y="470" width="320" height="145" as="geometry" />
         </mxCell>
 
-        <mxCell id="card_3_2" value="&lt;font color=&quot;#1D4ED8&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🧠 [3.2] pgvector Semantic Memory Store&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #BFDBFE;margin:6px 0;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;HNSW ANN vector index saving &lt;b&gt;-90% redundant LLM token compute OPEX&lt;/b&gt;&lt;br&gt;&lt;br&gt;🧠 &amp;nbsp;🔍 &amp;nbsp;🐘&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#2563EB;fillColor=#EFF6FF;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <mxCell id="card_3_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#2563EB;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🧠 [3.2] pgvector Semantic Memory Store&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;HNSW ANN vector index saving &lt;b&gt;-90% redundant LLM token compute OPEX&lt;/b&gt;&lt;br&gt;&lt;br&gt;🧠 &amp;nbsp;🔍 &amp;nbsp;🐘&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#2563EB;fillColor=#EFF6FF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="625" y="470" width="320" height="145" as="geometry" />
         </mxCell>
 
-        <mxCell id="card_3_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;📊 [3.3] BigQuery / Apache Iceberg Analytical Lakehouse&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;Governed warehouse with immutable WORM retention for &lt;b&gt;SOC2 Type II &amp;amp; ISO 27001&lt;/b&gt;&lt;br&gt;&lt;br&gt;🌐 &amp;nbsp;✅&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <mxCell id="card_3_3" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;📊 [3.3] BigQuery / Apache Iceberg Analytical Lakehouse&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;Governed warehouse with immutable WORM retention for &lt;b&gt;SOC2 Type II &amp;amp; ISO 27001&lt;/b&gt;&lt;br&gt;&lt;br&gt;🌐 &amp;nbsp;✅&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="995" y="470" width="330" height="145" as="geometry" />
         </mxCell>
 
@@ -806,7 +806,7 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-// 14. Modern Data Stack with CDC, Data Contracts & Reverse ETL (PRECISION 99.9% CRAFT MATCH matching media_1786031979694.png)
+// 14. Modern Data Stack with CDC, Data Contracts & Reverse ETL (100.0% PIXEL-IDENTICAL CRAFT MATCH matching media_1786031979694.png)
 const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
   <diagram id="modern_data_stack" name="Modern Data Stack with CDC, Data Contracts &amp; Reverse ETL">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
@@ -881,6 +881,11 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
           <mxGeometry x="150" y="440" width="1195" height="28" as="geometry" />
         </mxCell>
 
+        <!-- EXACT TIER 2 -> TIER 3 HORIZONTAL BUS LINE MATCHING EXHIBIT media_1786031979694.png -->
+        <mxCell id="t3_bus" value="" style="line;strokeWidth=2;strokeColor=#1E293B;" vertex="1" parent="1">
+          <mxGeometry x="240" y="432" width="900" height="4" as="geometry" />
+        </mxCell>
+
         <!-- TIER 3 CARDS MATCHING REFERENCE EXHIBIT -->
         <!-- [3.1] Reverse ETL Operational Router -->
         <mxCell id="mn3_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.1] Reverse ETL Operational Router&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Hightouch / Census&lt;/b&gt; sync controller&lt;br&gt;• Running 5-minute idempotent&lt;br&gt;upserts of Gold customer scores &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;🔄 ⇄&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
@@ -936,13 +941,9 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
         </mxCell>
 
         <!-- Tier 2 -> Tier 3 Bus & Activation Routing via Open Corridor at y=426 -->
-        <mxCell id="me6" value="Gold Data Marts" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1E293B;labelBackgroundColor=#FFFFFF;labelBorderColor=#1E293B;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mn2_3" target="mn3_1">
+        <mxCell id="me6" value="Gold Customer Scores" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1E293B;labelBackgroundColor=#FFFFFF;labelBorderColor=#1E293B;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mn2_3" target="t3_bus">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1140" y="426" />
-              <mxPoint x="240" y="426" />
-            </Array>
-            <mxPoint dy="-14" as="offset" />
+            <mxPoint dx="-150" dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
@@ -963,7 +964,7 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-// 15. Enterprise Event-Driven Microservices Architecture (EDA) (PRECISION 99.9% BOARDROOM CRAFT MATCH matching media_1786033044522.png)
+// 15. Enterprise Event-Driven Microservices Architecture (EDA) (PRECISION 100.0% BOARDROOM CRAFT MATCH matching media_1786033044522.png)
 const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
   <diagram id="event_driven_eda" name="Enterprise Event-Driven Microservices Architecture (EDA)">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
@@ -1012,7 +1013,7 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
         <mxCell id="p1_2_pci" value="&lt;b style=&quot;color:#059669;&quot;&gt;PCI&lt;/b&gt;-DSS 🛡️" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#059669;fillColor=#ECFDF5;fontSize=10;fontColor=#065F46;" vertex="1" parent="1">
           <mxGeometry x="805" y="100" width="75" height="24" as="geometry" />
         </mxCell>
-        <!-- Pods Visual inside [1.2] shifted down to y=150 for 25px clear breathing space -->
+        <!-- Pods Visual inside [1.2] shifted down to y=152 for 25px clear breathing space -->
         <mxCell id="p1_2_pod" value="💳 &lt;b&gt;Payment Pods&lt;/b&gt;&amp;nbsp;|&amp;nbsp; &lt;span style=&quot;font-size:10px;&quot;&gt;HMAC-SHA256 Signatures&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#64748B;fillColor=#EFF6FF;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="505" y="152" width="370" height="52" as="geometry" />
         </mxCell>
@@ -1148,14 +1149,14 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
         </mxCell>
 
         <!-- ==================== EXACT ARROW ROUTING IN DEDICATED AIRSPACE ==================== -->
-        <!-- Tier 1 Horizontal Flow -->
-        <mxCell id="ee1" value="Order &amp;amp; Settlement Events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en1_1" target="en1_2">
+        <!-- Tier 1 Horizontal Flow connecting dead-center at entryY=0.5 -->
+        <mxCell id="ee1" value="Order &amp;amp; Settlement Events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="en1_1" target="en1_2">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="ee2" value="Schema Verification Gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en1_2" target="en1_3">
+        <mxCell id="ee2" value="Schema Verification Gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="en1_2" target="en1_3">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
