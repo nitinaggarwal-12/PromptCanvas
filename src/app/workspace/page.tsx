@@ -449,13 +449,18 @@ function WorkspaceContent() {
     if (isBanking) {
       if (isErd) {
         return {
-          suggestions: [
-            'Add Dim_Customer_Account & Dim_Merchant tables',
+          suggestions: currentLanguage === 'hi' ? [
+            'Dim_Customer_Account और Dim_Merchant तालिकाओं को जोड़ें',
             'Fact_Account_Transactions को 1:N कार्डिनलिटी से जोड़ें',
-            'Enforce PCI-DSS & KYC Compliance Rules',
+            'PCI-DSS और KYC अनुपालन नियम लागू करें',
             'कार्ड नेटवर्क शुल्क टियर विशेषताएँ जोड़ें'
+          ] : [
+            'Add Dim_Customer_Account & Dim_Merchant tables',
+            'Connect Fact_Account_Transactions with 1:N cardinality',
+            'Enforce PCI-DSS & KYC Compliance Rules',
+            'Add Card Network Fee Tier Attributes'
           ],
-          dynamicPlaceholder: '{t.promptPlaceholder}'
+          dynamicPlaceholder: loc.promptPlaceholder
         };
       }
       if (isSeq) {
