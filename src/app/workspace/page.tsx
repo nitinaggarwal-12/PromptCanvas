@@ -1,5 +1,6 @@
 'use client';
 
+import { VisualVersionDiffInspectorModal } from '@/components/VisualVersionDiffInspectorModal';
 import { TechRadarAndConceptDriftGuardModal } from '@/components/TechRadarAndConceptDriftGuard';
 import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
