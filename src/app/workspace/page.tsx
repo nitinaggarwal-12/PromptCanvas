@@ -1,5 +1,6 @@
 'use client';
 
+import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
 import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
@@ -242,6 +243,8 @@ const TEMPLATE_PROMPTS = [
 function WorkspaceContent() {
   // --- State ---
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
+  const [isAuditDossierOpen, setIsAuditDossierOpen] = useState(false);
+  const [isConversationalRefactoring, setIsConversationalRefactoring] = useState(false);
   const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
@@ -745,6 +748,32 @@ function WorkspaceContent() {
       setTourStep(1);
     }
   }, [searchParams]);
+
+  const handleConversationalRefactor = async (promptText: string) => {
+    setIsConversationalRefactoring(true);
+    try {
+      const currentXml = activeDiagram?.xml_content || getDefaultXmlForArchitecture(activeDiagram?.architecture_type || 'unified_system_view');
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: `${promptText} — Refactor this enterprise architecture diagram cleanly with spacious horizontal coordinates (x=100, 560, 1020) and white text pills.`,
+          architecture_type: activeDiagram?.architecture_type || 'unified_system_view',
+          existing_xml: currentXml
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.xml) {
+          setCustomXml(data.xml);
+        }
+      }
+    } catch (e) {
+      console.error("Refactoring error:", e);
+    } finally {
+      setIsConversationalRefactoring(false);
+    }
+  };
 
   const openCreateModal = () => {
     setNewDiagramName('');
