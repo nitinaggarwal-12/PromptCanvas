@@ -14,6 +14,7 @@ import { TechRadarAndConceptDriftGuardModal } from '@/components/TechRadarAndCon
 import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
 import { SUPPORTED_LANGUAGES, translateDiagramXmlToLanguage, TRANSLATIONS, SupportedLanguage } from '@/lib/i18n';
+import { getLocalizedWorkspaceStrings, localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
 import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
