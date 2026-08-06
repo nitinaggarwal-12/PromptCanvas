@@ -2738,7 +2738,7 @@ function WorkspaceContent() {
                         <span>View Architecture Diagram ➔</span>
                       </button>
                     </div>
-                    <h2 className="text-3xl font-black text-white mt-1">{activeDiagram.name}</h2>
+                    <h2 className="text-3xl font-black text-white mt-1">{activeDiagram?.name || 'Architecture Workspace'}</h2>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -3057,10 +3057,10 @@ function WorkspaceContent() {
                             <span>Pre-Audit Architecture Scan Ready</span>
                           </div>
                           <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
-                            {selectedAuditCategory ? selectedAuditCategory.charAt(0).toUpperCase() + selectedAuditCategory.slice(1) : 'Architecture'} Inspection: {activeDiagram.name}
+                            {selectedAuditCategory ? selectedAuditCategory.charAt(0).toUpperCase() + selectedAuditCategory.slice(1) : 'Architecture'} Inspection: {activeDiagram?.name || 'Architecture Workspace'}
                           </h3>
                           <p className="text-sm text-slate-300 leading-relaxed">
-                            Run deep AI {selectedAuditCategory || 'architecture'} audit on <strong className="text-white">{activeDiagram.name}</strong> to evaluate node topology, layout precision, security controls, and enterprise compliance.
+                            Run deep AI {selectedAuditCategory || 'architecture'} audit on <strong className="text-white">{activeDiagram?.name || 'Architecture Workspace'}</strong> to evaluate node topology, layout precision, security controls, and enterprise compliance.
                           </p>
                         </div>
 
