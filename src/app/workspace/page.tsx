@@ -4144,7 +4144,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             }`}
           >
             <Plus className="w-4 h-4 stroke-[3]" />
-            {isSidebarOpen && <span>+ New Architecture ▾</span>}
+            {isSidebarOpen && <span>{t.newArchitecture} ▾</span>}
           </button>
 
           {/* Inline Non-Blocking Expanding Creation & Tools Popover (Auto-collapses on mouse leave / click outside) */}
