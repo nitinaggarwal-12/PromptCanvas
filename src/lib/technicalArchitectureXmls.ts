@@ -964,110 +964,240 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-// 15. Enterprise Event-Driven Microservices Architecture (EDA) (McKinsey Zero-Collision 1340px Boardroom Blueprint)
+// 15. Enterprise Event-Driven Microservices Architecture (EDA) (PIXEL-IDENTICAL McKinsey Boardroom Blueprint matching media_1786033044522.png)
 const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
   <diagram id="event_driven_eda" name="Enterprise Event-Driven Microservices Architecture (EDA)">
-    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="560" background="#FFFFFF">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- LEFT TIER SWIMLANE LABELS -->
-        <mxCell id="et1_lbl" value="<b>TIER 1</b>&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;TRANSACTION PRODUCERS&lt;br&gt;&amp;amp; SCHEMA REGISTRY&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#0284C7;strokeColor=#0369A1;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=center;" vertex="1" parent="1">
-          <mxGeometry x="40" y="70" width="190" height="85" as="geometry" />
+        <!-- TOP EXECUTIVE BOARDROOM TITLE BANNER & SUBTITLE -->
+        <mxCell id="title_banner" value="<b>McKinsey-Grade Enterprise Event-Driven Microservices Architecture (EDA) Blueprint</b>" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="8" width="1320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="title_sub" value="Designed for Widescreen Boardroom Presentation Layout (1340px width)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="30" y="32" width="1320" height="18" as="geometry" />
         </mxCell>
 
-        <mxCell id="et2_lbl" value="<b>TIER 2</b>&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;KAFKA EVENT MESH &amp;amp;&lt;br&gt;AUTOMATED DLQ REPLAY&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#4F46E5;strokeColor=#4338CA;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=center;" vertex="1" parent="1">
-          <mxGeometry x="40" y="235" width="190" height="85" as="geometry" />
+        <!-- ==================== TIER 1 ROW (y=55 .. 220) ==================== -->
+        <!-- TIER 1 FULL-WIDTH GREY SWIMLANE HEADER BANNER -->
+        <mxCell id="et1_hdr" value="&amp;nbsp;&amp;nbsp;<b>TIER 1</b> &amp;nbsp;&lt;span style=&quot;font-weight:normal;&quot;&gt;(Transaction Producers, PCI-DSS Ledger &amp;amp; Schema Registry Gate)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#F1F5F9;fontColor=#0F172A;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="55" width="1320" height="26" as="geometry" />
         </mxCell>
 
-        <mxCell id="et3_lbl" value="<b>TIER 3</b>&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;IMMUTABLE LEDGER &amp;amp;&lt;br&gt;CQRS READ MODELS&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;strokeWidth=2;fillColor=#059669;strokeColor=#047857;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=center;" vertex="1" parent="1">
-          <mxGeometry x="40" y="400" width="190" height="85" as="geometry" />
+        <!-- TIER 1 CARD [1.1] Order & Checkout Microservices Pods -->
+        <mxCell id="en1_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.1] Order &amp;amp; Checkout Microservices Pods&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Emitting events&lt;br&gt;into Transactional&lt;br&gt;Outbox tables&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="90" width="410" height="130" as="geometry" />
+        </mxCell>
+        <!-- Stacked Pods Icon inside [1.1] -->
+        <mxCell id="p1_1_pod1" value="🛒" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#64748B;fillColor=#EFF6FF;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="175" y="118" width="65" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="p1_1_lbl" value="&lt;b&gt;OrderPlaced&lt;br&gt;&amp;amp; FraudScreened&lt;/b&gt;" style="text;html=1;align=center;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="160" y="174" width="95" height="28" as="geometry" />
+        </mxCell>
+        <!-- AlloyDB Transactional Outbox Box inside [1.1] -->
+        <mxCell id="p1_1_db" value="&lt;b style=&quot;color:#1D4ED8;&quot;&gt;AlloyDB&lt;/b&gt;&lt;br&gt;🛢️&lt;br&gt;Transactional&lt;br&gt;Outbox" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;fontSize=10;fontColor=#0F172A;align=center;" vertex="1" parent="1">
+          <mxGeometry x="300" y="118" width="125" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p1_1_arr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#2563EB;" edge="1" parent="1" source="p1_1_pod1" target="p1_1_db">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- TIER 1 NODES -->
-        <mxCell id="en1_1" value="🛒 <b>[1.1] Order &amp;amp; Checkout Microservices Pods</b>&lt;br&gt;Emits OrderPlaced, InventoryReserved &amp;amp; FraudScreened Events&lt;br&gt;&lt;i&gt;Transactional Outbox Table in AlloyDB (Guaranteed At-Least-Once)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="265" y="70" width="310" height="85" as="geometry" />
+        <!-- TIER 1 CARD [1.2] Payment Settlement & Ledger Pods (with PCI-DSS Badge) -->
+        <mxCell id="en1_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.2] Payment Settlement &amp;amp; Ledger Pods&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Generates&lt;br&gt;&lt;b&gt;Settlement Events&lt;/b&gt;&lt;br&gt;&lt;br&gt;Protected by&lt;br&gt;cryptographic HMAC&lt;br&gt;payload signatures&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="485" y="90" width="410" height="130" as="geometry" />
+        </mxCell>
+        <!-- PCI-DSS Badge inside [1.2] -->
+        <mxCell id="p1_2_pci" value="&lt;b style=&quot;color:#059669;&quot;&gt;PCI&lt;/b&gt;-DSS 🛡️" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#059669;fillColor=#ECFDF5;fontSize=10;fontColor=#065F46;" vertex="1" parent="1">
+          <mxGeometry x="805" y="100" width="75" height="24" as="geometry" />
+        </mxCell>
+        <!-- Pods Visual inside [1.2] -->
+        <mxCell id="p1_2_pod" value="💳 &lt;b&gt;Payment Pods&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;HMAC-SHA256 Signatures&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#64748B;fillColor=#EFF6FF;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="645" y="130" width="220" height="65" as="geometry" />
         </mxCell>
 
-        <mxCell id="en1_2" value="💳 <b>[1.2] Payment Settlement &amp;amp; Ledger Pods</b>&lt;br&gt;PCI-DSS Compliant Payment Captured &amp;amp; Refund Settlement Events&lt;br&gt;&lt;i&gt;Cryptographic HMAC Signatures on Every Event Payload Header&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="625" y="70" width="310" height="85" as="geometry" />
+        <!-- TIER 1 CARD [1.3] Apache Avro / Protobuf Schema Registry -->
+        <mxCell id="en1_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.3] Apache Avro / Protobuf Schema Registry&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Backward &amp;amp; forward schema contract gate&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="935" y="90" width="415" height="130" as="geometry" />
+        </mxCell>
+        <!-- Schema decision gate visual inside [1.3] -->
+        <mxCell id="p1_3_sub1" value="Automatically&lt;br&gt;rejects malformed&lt;br&gt;payloads" style="text;html=1;align=center;fontSize=10;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="945" y="145" width="115" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p1_3_gate" value="✓" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#059669;fillColor=#ECFDF5;fontSize=16;fontColor=#059669;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="140" width="46" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="p1_3_sub2" value="Valid&lt;br&gt;payloads ✅" style="text;html=1;align=center;fontSize=11;fontColor=#065F46;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="145" width="90" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="p1_3_a1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#059669;" edge="1" parent="1" source="p1_3_gate" target="p1_3_sub2">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="en1_3" value="📜 <b>[1.3] Apache Avro / Protobuf Schema Registry</b>&lt;br&gt;Backward &amp;amp; Forward Compatible Schema Contract Verification Gate&lt;br&gt;&lt;i&gt;Automatically Rejects Malformed or Unregistered Event Payloads&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=2;fillColor=#ECFDF5;strokeColor=#059669;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="985" y="70" width="310" height="85" as="geometry" />
+        <!-- ==================== TIER 2 ROW (y=245 .. 415) ==================== -->
+        <!-- TIER 2 FULL-WIDTH GREY SWIMLANE HEADER BANNER -->
+        <mxCell id="et2_hdr" value="&amp;nbsp;&amp;nbsp;<b>TIER 2</b> &amp;nbsp;&lt;span style=&quot;font-weight:normal;&quot;&gt;(Distributed Kafka Event Mesh &amp;amp; Automated DLQ Replay Controller)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#F1F5F9;fontColor=#0F172A;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="245" width="1320" height="26" as="geometry" />
         </mxCell>
 
-        <!-- TIER 2 NODES -->
-        <mxCell id="en2_1" value="🌩️ <b>[2.1] Multi-Region Apache Kafka Broker Mesh</b>&lt;br&gt;Partitioned Core Topics (orders.v2, payments.v1, fraud.v1)&lt;br&gt;&lt;i&gt;Zstandard Compression (-75% Cross-Region Egress Bandwidth Cost)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=2;fillColor=#EEF2FF;strokeColor=#4F46E5;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="265" y="235" width="310" height="85" as="geometry" />
+        <!-- TIER 2 CARD [2.2] Automated DLQ Self-Healing Replay Controller (ON THE LEFT MATCHING EXHIBIT!) -->
+        <mxCell id="en2_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[2.2] Automated DLQ Self-Healing Replay Controller&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Isolation of Poison-pill events, keeping&lt;br&gt;unique interface&lt;br&gt;• Exponential backoff logic&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="280" width="410" height="135" as="geometry" />
+        </mxCell>
+        <!-- DLQ Hexagon Badge inside [2.2] -->
+        <mxCell id="p2_2_dlq" value="&lt;b style=&quot;color:#FFFFFF;&quot;&gt;DLQ&lt;/b&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;strokeWidth=0;fillColor=#7C3AED;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="45" y="318" width="55" height="36" as="geometry" />
+        </mxCell>
+        <!-- Operator Replay Console UI Widget inside [2.2] -->
+        <mxCell id="p2_2_ui" value="&lt;b style=&quot;color:#1E293B;font-size:10px;&quot;&gt;Operator replay console&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Console interface&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:4px 0;&quot;&gt;🔴 &amp;nbsp;⚙️ &amp;nbsp;🔄" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#94A3B8;fillColor=#FFFFFF;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="270" y="325" width="155" height="75" as="geometry" />
         </mxCell>
 
-        <mxCell id="en2_2" value="🚨 <b>[2.2] Automated DLQ Self-Healing Replay Controller</b>&lt;br&gt;Poison-Pill Event Isolation &amp;amp; Exponential Backoff Retry Circuit&lt;br&gt;&lt;i&gt;Zero Unhandled Event Loss SLA with Operator Replay Console&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=2;fillColor=#FFF7ED;strokeColor=#EA580C;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="625" y="235" width="310" height="85" as="geometry" />
+        <!-- TIER 2 CARD [2.1] Multi-Region Apache Kafka Broker Mesh (IN THE MIDDLE MATCHING EXHIBIT!) -->
+        <mxCell id="en2_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[2.1] Multi-Region Apache Kafka Broker Mesh&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="485" y="280" width="410" height="135" as="geometry" />
+        </mxCell>
+        <!-- Kafka Logo top-right inside [2.1] -->
+        <mxCell id="p2_1_logo" value="⚙️ &lt;b&gt;kafka&lt;/b&gt;" style="text;html=1;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="825" y="288" width="65" height="22" as="geometry" />
+        </mxCell>
+        <!-- Kafka Internal Mesh Flow inside [2.1] -->
+        <mxCell id="p2_1_b1" value="&lt;b&gt;Brokers&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#64748B;fillColor=#EFF6FF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="322" width="65" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="p2_1_topic" value="&lt;b&gt;Partitioned core topics&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#1D4ED8;font-size:10px;&quot;&gt;orders.v2 &amp;amp; payments.v1&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#3B82F6;fillColor=#DBEAFE;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="585" y="318" width="205" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="p2_1_b2" value="&lt;b&gt;Brokers&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#64748B;fillColor=#EFF6FF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="810" y="322" width="65" height="38" as="geometry" />
+        </mxCell>
+        <!-- Zstandard compression badge inside [2.1] -->
+        <mxCell id="p2_1_zstd" value="⚡ &lt;b&gt;Zstandard&lt;/b&gt; &amp;nbsp;|&amp;nbsp; &lt;span style=&quot;font-size:10px;&quot;&gt;-75% egress compression&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#2563EB;fillColor=#EFF6FF;fontSize=11;fontColor=#1E4ED8;" vertex="1" parent="1">
+          <mxGeometry x="565" y="372" width="250" height="30" as="geometry" />
         </mxCell>
 
-        <mxCell id="en2_3" value="⚙️ <b>[2.3] Decoupled Downstream Consumer Workers</b>&lt;br&gt;Shipping Carrier Integration, Logistics &amp;amp; Inventory Allocation Pods&lt;br&gt;&lt;i&gt;Idempotent Processing via Distributed Redis Mutex Locks&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=2;fillColor=#F5F3FF;strokeColor=#7C3AED;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="985" y="235" width="310" height="85" as="geometry" />
+        <!-- TIER 2 CARD [2.3] Decoupled Downstream Consumer Workers (ON THE RIGHT MATCHING EXHIBIT!) -->
+        <mxCell id="en2_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[2.3] Decoupled Downstream Consumer Workers&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="935" y="280" width="415" height="135" as="geometry" />
+        </mxCell>
+        <!-- Stacked Containers inside [2.3] -->
+        <mxCell id="p2_3_stack" value="🚚 &lt;b&gt;Shipping Carrier &amp;amp; Inventory Allocation&lt;/b&gt; 📦" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#3B82F6;fillColor=#EFF6FF;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="955" y="316" width="375" height="45" as="geometry" />
+        </mxCell>
+        <!-- Distributed Redis Mutex locks inside [2.3] -->
+        <mxCell id="p2_3_redis" value="🔴 &lt;b&gt;Distributed Redis mutex locks&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;ensuring events consistency across replicas&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#DC2626;fillColor=#FEF2F2;fontSize=10;fontColor=#991B1B;" vertex="1" parent="1">
+          <mxGeometry x="975" y="368" width="335" height="38" as="geometry" />
         </mxCell>
 
-        <!-- TIER 3 NODES -->
-        <mxCell id="en3_1" value="📜 <b>[3.1] Cloud Spanner Global Immutable Event Ledger</b>&lt;br&gt;TrueTime Atomic Append-Only Global Transactional Ledger&lt;br&gt;&lt;i&gt;Complete Historical Replay &amp;amp; Financial Auditability (SLA: 99.999%)&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#ECFDF5;strokeColor=#059669;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="265" y="400" width="310" height="88" as="geometry" />
+        <!-- ==================== TIER 3 ROW (y=440 .. 610) ==================== -->
+        <!-- TIER 3 FULL-WIDTH GREY SWIMLANE HEADER BANNER -->
+        <mxCell id="et3_hdr" value="&amp;nbsp;&amp;nbsp;<b>TIER 3</b> &amp;nbsp;&lt;span style=&quot;font-weight:normal;&quot;&gt;(Immutable Event Ledger, CQRS Read Models &amp;amp; Real-Time CEP Fraud Engine)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#F1F5F9;fontColor=#0F172A;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="440" width="1320" height="26" as="geometry" />
         </mxCell>
 
-        <mxCell id="en3_2" value="⚡ <b>[3.2] CQRS Elasticsearch Materialized Read Views</b>&lt;br&gt;Optimized Read Projections for Executive Dashboard &amp;amp; Search API&lt;br&gt;&lt;i&gt;Query Latency: &amp;lt;5ms P99 Sub-Second Boardroom Search Response&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=2;fillColor=#F5F3FF;strokeColor=#7C3AED;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="625" y="400" width="310" height="85" as="geometry" />
+        <!-- TIER 3 CARD [3.1] Cloud Spanner Global Immutable Event Ledger -->
+        <mxCell id="en3_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.1] Cloud Spanner Global Immutable Event Ledger&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="478" width="410" height="135" as="geometry" />
+        </mxCell>
+        <!-- Spanner TrueTime Atomic Append-Only Store inside [3.1] -->
+        <mxCell id="p3_1_spanner" value="☁️ &lt;b&gt;TrueTime atomic&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;append-only store&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;fontSize=10;fontColor=#1E4ED8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="515" width="165" height="85" as="geometry" />
+        </mxCell>
+        <!-- Audit Trail & Replay Gantt visual inside [3.1] -->
+        <mxCell id="p3_1_audit" value="📜 &lt;b&gt;Log Audit trail&lt;/b&gt;&lt;br&gt;📊 Full historical audit&lt;br&gt;&amp;amp; replay engine" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#059669;fillColor=#ECFDF5;fontSize=10;fontColor=#065F46;" vertex="1" parent="1">
+          <mxGeometry x="235" y="515" width="190" height="85" as="geometry" />
         </mxCell>
 
-        <mxCell id="en3_3" value="🛡️ <b>[3.3] Real-Time CEP Fraud &amp;amp; Risk Engine</b>&lt;br&gt;Complex Event Processing Stream Analytics &amp;amp; Automated Halt Rules&lt;br&gt;&lt;i&gt;Automated Freeze of Compromised Accounts in Under 12ms&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;fontSize=11;spacingLeft=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="985" y="400" width="310" height="85" as="geometry" />
+        <!-- TIER 3 CARD [3.2] CQRS Elasticsearch Materialized Read Views -->
+        <mxCell id="en3_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.2] CQRS Elasticsearch Materialized Read Views&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="485" y="478" width="410" height="135" as="geometry" />
+        </mxCell>
+        <!-- Read projections chart inside [3.2] -->
+        <mxCell id="p3_2_chart" value="📊 &lt;b&gt;Read projections&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;sub-5ms query latency&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#D97706;fillColor=#FFFBEB;fontSize=10;fontColor=#92400E;" vertex="1" parent="1">
+          <mxGeometry x="500" y="515" width="185" height="85" as="geometry" />
+        </mxCell>
+        <!-- Executive Dashboard Browser UI Widget inside [3.2] -->
+        <mxCell id="p3_2_dash" value="💻 &lt;b&gt;Executive dashboard&lt;/b&gt;&lt;br&gt;&amp;amp; search API&lt;br&gt;🔍 Sub-second BI" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#2563EB;fillColor=#EFF6FF;fontSize=10;fontColor=#1E4ED8;" vertex="1" parent="1">
+          <mxGeometry x="700" y="515" width="180" height="85" as="geometry" />
         </mxCell>
 
-        <!-- FLOATING CONNECTORS SPANNING ACROSS OPEN CHANNELS -->
-        <mxCell id="ee1" value="1. Transactional Outbox Dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en1_1" target="en2_1">
+        <!-- TIER 3 CARD [3.3] Real-Time CEP Fraud & Risk Engine (with Red Risk Alert Badge) -->
+        <mxCell id="en3_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.3] Real-Time CEP Fraud &amp;amp; Risk Engine&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="935" y="478" width="415" height="135" as="geometry" />
+        </mxCell>
+        <!-- Red Risk Flash Badge top-right inside [3.3] -->
+        <mxCell id="p3_3_risk" value="⚡ &lt;b style=&quot;color:#DC2626;&quot;&gt;risk&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#DC2626;fillColor=#FEF2F2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1275" y="488" width="65" height="24" as="geometry" />
+        </mxCell>
+        <!-- CEP Octagon badge & Freeze Alert inside [3.3] -->
+        <mxCell id="p3_3_cep" value="&lt;b style=&quot;color:#FFFFFF;font-size:13px;&quot;&gt;CEP&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#FFFFFF;font-size:9px;&quot;&gt;Complex Event&lt;br&gt;Processing&lt;/span&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;strokeWidth=0;fillColor=#DC2626;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="955" y="518" width="105" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="p3_3_freeze" value="⏱️ &lt;b&gt;Stream analytics in &amp;lt;12ms&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#991B1B;&quot;&gt;Automatic freeze of compromised&lt;br&gt;accounts in &amp;lt;12ms SLA&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#DC2626;fillColor=#FEF2F2;fontSize=10;fontColor=#991B1B;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="518" width="255" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== EXACT ARROW ROUTING & OPEN-SPACE LABELS MATCHING EXHIBIT ==================== -->
+        <!-- Tier 1 Horizontal Flow -->
+        <mxCell id="ee1" value="Order &amp;amp; Settlement Events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en1_1" target="en1_2">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint dx="28" as="offset" />
+            <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="ee2" value="2. Contract Verification" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#D97706;labelBackgroundColor=#FFFFFF;labelBorderColor=#D97706;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en1_2" target="en1_3">
+        <mxCell id="ee2" value="Schema Verification Gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en1_2" target="en1_3">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint dy="-18" as="offset" />
+            <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="ee3" value="3. Consumer Event Subscribe" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#4F46E5;labelBackgroundColor=#FFFFFF;labelBorderColor=#4F46E5;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en2_3">
+        <!-- Tier 1 [1.3] -> Tier 2 Kafka Brokers drop -->
+        <mxCell id="ee3" value="Ingress Verified Events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en1_3" target="en2_1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="420" y="360" />
-              <mxPoint x="1140" y="360" />
+              <mxPoint x="1140" y="232" />
+              <mxPoint x="690" y="232" />
             </Array>
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="ee4" value="4. Poison-Pill DLQ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EA580C;labelBackgroundColor=#FFFFFF;labelBorderColor=#EA580C;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en2_2">
+        <!-- Tier 2 Flow: [2.1] Brokers -> [2.2] DLQ Self-Healing & [2.1] -> [2.3] Downstream Consumers -->
+        <mxCell id="ee4" value="Poison-Pill Isolation / DLQ Replay" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en2_2">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint dy="-18" as="offset" />
+            <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="ee5" value="5. Immutable Event Ledger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#059669;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en3_1">
+        <mxCell id="ee5" value="Event Events Ingestion" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en2_3">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint dx="-28" as="offset" />
+            <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="ee6" value="6. CQRS Read Projection Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en3_1" target="en3_2">
+        <!-- Tier 2 Kafka Brokers -> Tier 3 Event Store & Read Views drop along Open Corridor y=426 -->
+        <mxCell id="ee6" value="Floating open-space labels (dy=-18)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#059669;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en3_1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint dy="-18" as="offset" />
+            <Array as="points">
+              <mxPoint x="690" y="426" />
+              <mxPoint x="235" y="426" />
+            </Array>
+            <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="ee7" value="7. Real-Time CEP Anomaly Check" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_3" target="en3_3">
+        <!-- Tier 3 Flow: [3.1] Spanner Immutable Event Ledger -> [3.2] CQRS Read Views -> [3.3] Real-Time CEP Fraud Engine -->
+        <mxCell id="ee7" value="Atomic Write Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en3_1" target="en3_2">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint dx="28" as="offset" />
+            <mxPoint dy="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="ee8" value="Real-Time Fraud Evaluation" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#DC2626;labelBackgroundColor=#FFFFFF;labelBorderColor=#DC2626;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en3_2" target="en3_3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
