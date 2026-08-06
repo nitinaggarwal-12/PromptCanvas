@@ -735,9 +735,8 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
           <mxGeometry x="995" y="470" width="330" height="145" as="geometry" />
         </mxCell>
 
-        <!-- ORTHOGONAL CONNECTORS ROUTED THROUGH DEDICATED COLLISION-FREE AIRSPACE CORRIDORS -->
-        <!-- Row 1 Horizontal Flow routed through Open Airspace above Tier 1 at y = 42 -->
-        <mxCell id="e1" value="HTTPS / Hardware mTLS B2B Request" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_1" target="card_1_2">
+        <!-- ORTHOGONAL CONNECTORS ROUTED THROUGH DEDICATED COLLISION-FREE AIRSPACE CORRIDORS WITH CONCISE LABELS -->
+        <mxCell id="e1" value="HTTPS / mTLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_1" target="card_1_2">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="405" y="45" />
@@ -747,7 +746,7 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="e2" value="OWASP-Scrubbed &amp;amp; OIDC Verified JWT (15-min)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_2" target="card_1_3">
+        <mxCell id="e2" value="OWASP &amp;amp; JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_2" target="card_1_3">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="785" y="45" />
@@ -757,52 +756,47 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
           </mxGeometry>
         </mxCell>
 
-        <!-- Tier 1 to Tier 2 Ingress Route routed through Upper Open Channel at y = 222 -->
-        <mxCell id="e3" value="gRPC / Istio mTLS (VPC 10.128.0.0/20)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_3" target="card_2_1">
+        <!-- Direct Tier 1 -> Tier 2 Ingress Route -->
+        <mxCell id="e3" value="gRPC / Istio mTLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_3" target="card_2_3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint dx="-28" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e4" value="Kafka Outbox Events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_1" target="card_2_2">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1160" y="222" />
-              <mxPoint x="405" y="222" />
+              <mxPoint x="405" y="235" />
+              <mxPoint x="785" y="235" />
             </Array>
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Row 2 Horizontal Flow routed through Lower Open Channel above Tier 2 at y = 240 -->
-        <mxCell id="e4" value="Event-Driven Microservices Communication (Transactional Outbox)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_1" target="card_2_2">
+        <mxCell id="e5" value="Sub-15ms Agent Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_2" target="card_2_3">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="405" y="240" />
-              <mxPoint x="785" y="240" />
-            </Array>
-            <mxPoint dy="-14" as="offset" />
-          </mxGeometry>
-        </mxCell>
-
-        <mxCell id="e5" value="Sub-15ms Agent Tool Execution &amp;amp; Orchestration" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_2" target="card_2_3">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="785" y="240" />
-              <mxPoint x="1160" y="240" />
+              <mxPoint x="785" y="235" />
+              <mxPoint x="1160" y="235" />
             </Array>
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
         <!-- Vertical Tier 2 to Tier 3 Flow routed through Open Channel at y = 442 -->
-        <mxCell id="e6" value="Transactional SQL State (Active-Active Multi-Region)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_1" target="card_3_1">
+        <mxCell id="e6" value="Transactional SQL State" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_1" target="card_3_1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dx="28" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="e7" value="HNSW ANN Semantic Recall / Indexing" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_2" target="card_3_2">
+        <mxCell id="e7" value="HNSW ANN Vector Recall" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_2" target="card_3_2">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dx="28" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="e8" value="Analytical Data Ingestion &amp;amp; Governance (SOC2, ISO 27001)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_3" target="card_3_3">
+        <mxCell id="e8" value="Analytical Iceberg Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_3" target="card_3_3">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dx="-28" as="offset" />
           </mxGeometry>
