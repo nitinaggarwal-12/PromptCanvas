@@ -936,13 +936,13 @@ function WorkspaceContent() {
     }
   };
 
-  const pushToUndoStack = (previousXml: string) => {
+  function pushToUndoStack(previousXml: string) {
     if (!previousXml) return;
     setUndoStack(prev => [...prev.slice(-30), previousXml]);
     setRedoStack([]);
   };
 
-  const handleUndo = () => {
+  function handleUndo() {
     if (undoStack.length === 0) return;
     const previousXml = undoStack[undoStack.length - 1];
     setUndoStack(prev => prev.slice(0, -1));
@@ -953,7 +953,7 @@ function WorkspaceContent() {
     setCustomXml(previousXml);
   };
 
-  const handleRedo = () => {
+  function handleRedo() {
     if (redoStack.length === 0) return;
     const nextXml = redoStack[redoStack.length - 1];
     setRedoStack(prev => prev.slice(0, -1));
