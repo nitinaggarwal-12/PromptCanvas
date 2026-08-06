@@ -4205,12 +4205,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         {/* 3. CLEAN PRIMARY NAVIGATION LINKS (No Auto-Hover Accordion Sprawl) */}
         <div className="p-3 space-y-1 flex-1 overflow-y-auto">
           {[
-            { id: 'editor', name: 'Design Canvas', icon: Network },
-            { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid },
-            { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
-            { id: 'audit', name: 'Security & Zero-Trust Audit', icon: ShieldCheck },
-            { id: 'walkthrough', name: 'Interactive Visual Tour', icon: BookOpen },
-            { id: 'settings', name: 'Settings & AI Tier Config', icon: Settings }
+            { id: 'editor', name: t.designCanvas, icon: Network },
+            { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
+            { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
+            { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
+            { id: 'walkthrough', name: t.interactiveTour, icon: BookOpen },
+            { id: 'settings', name: t.settingsTier, icon: Settings }
           ].map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
@@ -4273,7 +4273,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 type="text"
                 value={sidebarSearch}
                 onChange={(e) => setSidebarSearch(e.target.value)}
-                placeholder="Filter saved designs..."
+                placeholder={t.filterDesigns}
                 className="w-full bg-slate-900 border border-panel-border/80 focus:border-teal-accent rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all"
               />
               <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
