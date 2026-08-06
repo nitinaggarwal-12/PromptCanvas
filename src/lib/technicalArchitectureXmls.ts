@@ -1187,7 +1187,7 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
         </mxCell>
 
         <!-- Tier 2 Kafka Brokers -> Tier 3 Event Store & Read Views drop along Open Corridor y=426 -->
-        <mxCell id="ee6" value="Floating open-space labels (dy=-18)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#059669;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en3_1">
+        <mxCell id="ee6" value="Kafka Event Stream Ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#059669;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en3_1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="690" y="426" />
