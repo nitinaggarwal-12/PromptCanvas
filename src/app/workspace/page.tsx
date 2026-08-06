@@ -316,7 +316,7 @@ function WorkspaceContent() {
     }
   };
 
-  const handleAddAndTestConnection = async () => {
+  async function handleAddAndTestConnection() {
     if (!newProfileKey.trim()) return;
     setByokTestStatus('testing');
     const start = Date.now();
@@ -351,7 +351,7 @@ function WorkspaceContent() {
     }
   }, []);
 
-  const handleTestApiKeyConnection = async () => {
+  async function handleTestApiKeyConnection() {
     if (!userApiKey.trim()) return;
     setByokTestStatus('testing');
     setByokErrorMessage('');
@@ -878,7 +878,7 @@ function WorkspaceContent() {
     }
   }, [searchParams]);
 
-  const handleConversationalRefactor = async (promptText: string) => {
+  async function handleConversationalRefactor(promptText: string) {
     setIsConversationalRefactoring(true);
     setAiStepTelemetry("⚡ [1/4] Parsing Architectural Intent & Multi-Tier Topology...");
     try {
@@ -983,7 +983,7 @@ function WorkspaceContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [undoStack, redoStack, customXml, displayedVersion, activeVersion]);
 
-  const openCreateModal = () => {
+  function openCreateModal() {
     setNewDiagramName('');
     setNewDiagramPrompt('');
     setSelectedTemplate('0');
@@ -1680,7 +1680,7 @@ function WorkspaceContent() {
   };
 
   // Mock AI Generation Loop (Phase 2 Mock, to be replaced by Gemini in Phase 5)
-  const handleSendPrompt = async (e: React.FormEvent) => {
+  async function handleSendPrompt(e: React.FormEvent) {
     e.preventDefault();
     if (!promptInput.trim() || !activeDiagram) return;
     if (tourStep === 3) {
@@ -1737,7 +1737,7 @@ function WorkspaceContent() {
   };
 
   // Save Version Handler (for manual edits)
-  const handleSaveVersion = async (e: React.FormEvent) => {
+  async function handleSaveVersion(e: React.FormEvent) {
     e.preventDefault();
     if (!activeDiagram || !saveComment.trim()) return;
     
