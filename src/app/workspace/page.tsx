@@ -1,5 +1,6 @@
 'use client';
 
+import { TechRadarAndConceptDriftGuardModal } from '@/components/TechRadarAndConceptDriftGuard';
 import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
 import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
@@ -243,6 +244,7 @@ const TEMPLATE_PROMPTS = [
 function WorkspaceContent() {
   // --- State ---
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
+  const [isTechRadarOpen, setIsTechRadarOpen] = useState(false);
   const [isAuditDossierOpen, setIsAuditDossierOpen] = useState(false);
   const [isConversationalRefactoring, setIsConversationalRefactoring] = useState(false);
   const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
