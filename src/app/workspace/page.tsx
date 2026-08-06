@@ -13,7 +13,7 @@ import { VisualVersionDiffInspectorModal } from '@/components/VisualVersionDiffI
 import { TechRadarAndConceptDriftGuardModal } from '@/components/TechRadarAndConceptDriftGuard';
 import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
-import { SUPPORTED_LANGUAGES, TRANSLATIONS, SupportedLanguage } from '@/lib/i18n';
+import { SUPPORTED_LANGUAGES, translateDiagramXmlToLanguage, TRANSLATIONS, SupportedLanguage } from '@/lib/i18n';
 import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -2703,7 +2703,7 @@ function WorkspaceContent() {
                             const catLabel = rep.audit_category === 'visual' ? '🎨 Visual' : rep.audit_category === 'topology' ? '⚡ Topology' : rep.audit_category === 'responsive' ? '📱 Responsive' : rep.audit_category === 'accessibility' ? '♿ WCAG' : rep.audit_category === 'vendor' ? '🏷️ Vendor' : '🛡️ Security';
                             return (
                               <option key={rep.id} value={rep.id} className="bg-[#0b101d] text-slate-200">
-                                Audit v{rep.version_number} • {catLabel} ({rep.score}%) {idx === 0 ? '• (Latest)' : '• (Snapshot)'}
+                                Audit v{rep.version_number} • {catLabel} ({rep.score}%) {idx === 0 ? '• {t.versionLatest}' : '• (Snapshot)'}
                               </option>
                             );
                           })}
@@ -3591,6 +3591,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
     // Universal Zero-Defect Light-HUD Transformation: Enforce Light Architectural Cards (#FFFFFF / #F0F9FF), Dark Slate Text (#0F172A), and Pure White Label Background Pills across ALL diagram templates
     baseXml = transformXmlToExecutiveObsidianHud(baseXml);
+    baseXml = translateDiagramXmlToLanguage(baseXml, currentLanguage);
     baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);
     baseXml = runZeroDefectTextAndTechnicalAccuracyPreflight(baseXml, archType, activeUseCase);
 
@@ -3709,7 +3710,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             title="Search & select diagram versions"
           >
             <span>
-              {isLatestActive ? `Version ${currentVer.version_number} (Latest)` : `Version ${currentVer.version_number}`}
+              {isLatestActive ? `Version ${currentVer.version_number} {t.versionLatest}` : `Version ${currentVer.version_number}`}
             </span>
             <ChevronDown className="w-3.5 h-3.5 text-teal-400" />
           </button>
@@ -4723,12 +4724,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       {canvasTheme === 'dark' ? (
                         <>
                           <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                          <span>Dark</span>
+                          <span>{t.darkTheme}</span>
                         </>
                       ) : (
                         <>
                           <Sun className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Light</span>
+                          <span>{t.lightTheme}</span>
                         </>
                       )}
                     </button>
@@ -4799,12 +4800,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       {isPrivate ? (
                         <span className="flex items-center gap-1 text-amber-300">
                           <Lock className="w-3 h-3 text-amber-400" />
-                          <span>Private</span>
+                          <span>{t.privateVis}</span>
                         </span>
                       ) : (
                         <span className="flex items-center gap-1 text-teal-300">
                           <Globe className="w-3 h-3 text-teal-400" />
-                          <span>Public</span>
+                          <span>{t.publicVis}</span>
                         </span>
                       )}
                     </label>

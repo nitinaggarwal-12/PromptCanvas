@@ -23,7 +23,17 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
 
 export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
   en: {
+    canvasLabel: 'CANVAS:',
+    diagramLabel: 'DIAGRAM:',
+    versionLatest: '(Latest)',
+    versionText: 'Version',
+    lightTheme: 'Light',
+    darkTheme: 'Dark',
+    publicVis: 'Public',
+    privateVis: 'Private',
+    executiveMode: 'Executive Boardroom Mode',
     activeWorkspace: 'Active Workspace & Design',
+    updatedAgo: 'Updated 11h ago Diagram Version v28',
     newArchitecture: '+ New Architecture',
     designCanvas: 'Design Canvas',
     templatesGallery: 'Templates Gallery',
@@ -51,8 +61,57 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug3: 'Enforce PCI-DSS & KYC Compliance Rules',
     sug4: 'Add Card Network Fee Tier Attributes'
   },
+  hi: {
+    canvasLabel: 'कैनवास:',
+    diagramLabel: 'आरेख:',
+    versionLatest: '(नवीनतम)',
+    versionText: 'संस्करण',
+    lightTheme: 'लाइट थीम',
+    darkTheme: 'डार्क थीम',
+    publicVis: 'सार्वजनिक',
+    privateVis: 'निजी',
+    executiveMode: 'कार्यकारी बोर्डरूम मोड',
+    activeWorkspace: 'सक्रिय वर्कस्पेस और डिज़ाइन',
+    updatedAgo: 'अपडेट किया गया • आरेख संस्करण v28',
+    newArchitecture: '+ नई आर्किटेक्चर',
+    designCanvas: 'डिज़ाइन कैनवास',
+    templatesGallery: 'टेम्पलेट गैलरी',
+    operationsDashboard: 'ऑपरेशन्स डैशबोर्ड',
+    securityAudit: 'ज़ीरो-ट्रस्ट सुरक्षा ऑडिट',
+    interactiveTour: 'इंटरैक्टिव विजुअल टूर',
+    settingsTier: 'सेटिंग्स और AI टियर',
+    filterDesigns: 'सहेजे गए डिज़ाइन फ़िल्टर करें...',
+    architectSuite: 'आर्किटेक्ट सूट और AI',
+    exportStudio: 'एक्सपोर्ट स्टूडियो',
+    composeDoc: 'दस्तावेज़ लिखें',
+    suggestedRefinements: 'सुझाए गए सुधार',
+    prevDiagram: 'पिछला आरेख',
+    nextDiagram: 'अगला आरेख',
+    detailed: 'विस्तृत',
+    clean: 'क्लिन',
+    lucidchart: 'लूसीडचार्ट',
+    obsidianHud: 'ऑब्सीडियन HUD',
+    liveFlow: 'लाइव फ़्लो',
+    reset: 'रिसेट',
+    promptPlaceholder: 'उदा., PK/FK संबंधों के साथ Dim_Customer_Account तालिका जोड़ें...',
+    refineHint: 'भेजने के लिए Enter दबाएं। Gemini 3.6 Pro आपके आरेख को अपडेट करेगा।',
+    sug1: 'Dim_Customer_Account और Dim_Merchant तालिकाओं को जोड़ें',
+    sug2: 'Fact_Account_Transactions को 1:N कार्डिनलिटी से जोड़ें',
+    sug3: 'PCI-DSS और KYC अनुपालन नियम लागू करें',
+    sug4: 'कार्ड नेटवर्क शुल्क टियर विशेषताएँ जोड़ें'
+  },
   es: {
+    canvasLabel: 'LIENZO:',
+    diagramLabel: 'DIAGRAMA:',
+    versionLatest: '(Último)',
+    versionText: 'Versión',
+    lightTheme: 'Claro',
+    darkTheme: 'Oscuro',
+    publicVis: 'Público',
+    privateVis: 'Privado',
+    executiveMode: 'Modo Ejecutivo Boardroom',
     activeWorkspace: 'Espacio de Trabajo Activo',
+    updatedAgo: 'Actualizado • Versión del Diagrama v28',
     newArchitecture: '+ Nueva Arquitectura',
     designCanvas: 'Lienzo de Diseño',
     templatesGallery: 'Galería de Plantillas',
@@ -81,7 +140,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug4: 'Añadir Atributos de Tarifa de Red de Tarjetas'
   },
   pt: {
+    canvasLabel: 'CANVAS:',
+    diagramLabel: 'DIAGRAMA:',
+    versionLatest: '(Mais recente)',
+    versionText: 'Versão',
+    lightTheme: 'Claro',
+    darkTheme: 'Escuro',
+    publicVis: 'Público',
+    privateVis: 'Privado',
+    executiveMode: 'Modo Executivo Boardroom',
     activeWorkspace: 'Espaço de Trabalho Ativo',
+    updatedAgo: 'Atualizado • Versão do Diagrama v28',
     newArchitecture: '+ Nova Arquitetura',
     designCanvas: 'Canvas de Design',
     templatesGallery: 'Galeria de Modelos',
@@ -106,11 +175,21 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     refineHint: 'Pressione Enter para enviar. Gemini 3.6 Pro atualizará seu diagrama.',
     sug1: 'Adicionar tabelas Dim_Customer_Account & Dim_Merchant',
     sug2: 'Conectar Fact_Account_Transactions com cardinalidade 1:N',
-    sug3: 'Aplicar Regras de Conformidade PCI-DSS & KYC',
+    sug3: 'Aplicar Reglas de Conformidade PCI-DSS & KYC',
     sug4: 'Adicionar Atributos de Tarifas de Rede de Cartões'
   },
   ja: {
+    canvasLabel: 'キャンバス:',
+    diagramLabel: '図面:',
+    versionLatest: '(最新)',
+    versionText: 'バージョン',
+    lightTheme: 'ライト',
+    darkTheme: 'ダーク',
+    publicVis: '公開',
+    privateVis: '非公開',
+    executiveMode: 'エグゼクティブモード',
     activeWorkspace: 'アクティブなワークスペース',
+    updatedAgo: '更新済み • 図面バージョン v28',
     newArchitecture: '+ 新規アーキテクチャ',
     designCanvas: '設計キャンバス',
     templatesGallery: 'テンプレートギャラリー',
@@ -139,7 +218,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug4: 'カードネットワーク手数料階層属性を追加'
   },
   fr: {
+    canvasLabel: 'CANVAS:',
+    diagramLabel: 'SCHÉMA:',
+    versionLatest: '(Dernier)',
+    versionText: 'Version',
+    lightTheme: 'Clair',
+    darkTheme: 'Sombre',
+    publicVis: 'Public',
+    privateVis: 'Privé',
+    executiveMode: 'Mode Direction Boardroom',
     activeWorkspace: 'Espace de Travail Actif',
+    updatedAgo: 'Mis à jour • Version Schéma v28',
     newArchitecture: '+ Nouvelle Architecture',
     designCanvas: 'Canvas de Conception',
     templatesGallery: 'Galerie de Modèles',
@@ -168,7 +257,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug4: 'Ajouter les attributs de frais de réseau de cartes'
   },
   de: {
+    canvasLabel: 'CANVAS:',
+    diagramLabel: 'DIAGRAMM:',
+    versionLatest: '(Neueste)',
+    versionText: 'Version',
+    lightTheme: 'Hell',
+    darkTheme: 'Dunkel',
+    publicVis: 'Öffentlich',
+    privateVis: 'Privat',
+    executiveMode: 'Vorstands-Modus',
     activeWorkspace: 'Aktiver Arbeitsbereich',
+    updatedAgo: 'Aktualisiert • Diagramm-Version v28',
     newArchitecture: '+ Neue Architektur',
     designCanvas: 'Design-Canvas',
     templatesGallery: 'Vorlagen-Galerie',
@@ -196,37 +295,18 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug3: 'PCI-DSS & KYC Compliance-Regeln durchsetzen',
     sug4: 'Kartennetzwerk-Gebührenattributklassen hinzufügen'
   },
-  hi: {
-    activeWorkspace: 'सक्रिय वर्कस्पेस और डिज़ाइन',
-    newArchitecture: '+ नई आर्किटेक्चर',
-    designCanvas: 'डिज़ाइन कैनवास',
-    templatesGallery: 'टेम्पलेट गैलरी',
-    operationsDashboard: 'ऑपरेशन्स डैशबोर्ड',
-    securityAudit: 'ज़ीरो-ट्रस्ट सुरक्षा ऑडिट',
-    interactiveTour: 'इंटरैक्टिव विजुअल टूर',
-    settingsTier: 'सेटिंग्स और AI टियर',
-    filterDesigns: 'सहेजे गए डिज़ाइन फ़िल्टर करें...',
-    architectSuite: 'आर्किटेक्ट सूट और AI',
-    exportStudio: 'एक्सपोर्ट स्टूडियो',
-    composeDoc: 'दस्तावेज़ लिखें',
-    suggestedRefinements: 'सुझाए गए सुधार',
-    prevDiagram: 'पिछला आरेख',
-    nextDiagram: 'अगला आरेख',
-    detailed: 'विस्तृत',
-    clean: 'क्लिन',
-    lucidchart: 'लूसीडचार्ट',
-    obsidianHud: 'ऑब्सीडियन HUD',
-    liveFlow: 'लाइव फ़्लो',
-    reset: 'रिसेट',
-    promptPlaceholder: 'उदा., PK/FK संबंधों के साथ Dim_Customer_Account तालिका जोड़ें...',
-    refineHint: 'भेजने के लिए Enter दबाएं। Gemini 3.6 Pro आपके आरेख को अपडेट करेगा।',
-    sug1: 'Dim_Customer_Account और Dim_Merchant तालिकाओं को जोड़ें',
-    sug2: 'Fact_Account_Transactions को 1:N कार्डिनलिटी से जोड़ें',
-    sug3: 'PCI-DSS और KYC अनुपालन नियम लागू करें',
-    sug4: 'कार्ड नेटवर्क शुल्क टियर विशेषताएँ जोड़ें'
-  },
   id: {
+    canvasLabel: 'KANVAS:',
+    diagramLabel: 'DIAGRAM:',
+    versionLatest: '(Terbaru)',
+    versionText: 'Versi',
+    lightTheme: 'Terang',
+    darkTheme: 'Gelap',
+    publicVis: 'Publik',
+    privateVis: 'Pribadi',
+    executiveMode: 'Mode Eksekutif Boardroom',
     activeWorkspace: 'Ruang Kerja & Desain Aktif',
+    updatedAgo: 'Diperbarui • Versi Diagram v28',
     newArchitecture: '+ Arsitektur Baru',
     designCanvas: 'Kanvas Desain',
     templatesGallery: 'Galeri Templat',
@@ -255,7 +335,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug4: 'Tambahkan Atribut Tingkat Biaya Jaringan Kartu'
   },
   ar: {
+    canvasLabel: 'لوحة:',
+    diagramLabel: 'مخطط:',
+    versionLatest: '(الأحدث)',
+    versionText: 'الإصدار',
+    lightTheme: 'فاتح',
+    darkTheme: 'داكن',
+    publicVis: 'عام',
+    privateVis: 'خاص',
+    executiveMode: 'وضع مجلس الإدارة التنفيذي',
     activeWorkspace: 'مساحة العمل والتصميم النشطة',
+    updatedAgo: 'تم التحديث • إصدار المخطط v28',
     newArchitecture: '+ بنية تحتيّة جديدة',
     designCanvas: 'لوحة التصميم',
     templatesGallery: 'معرض القوالب',
@@ -284,7 +374,17 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug4: 'إضافة سمات فئة رسوم شبكة البطاقات'
   },
   zh: {
+    canvasLabel: '畫布:',
+    diagramLabel: '架構圖:',
+    versionLatest: '(最新)',
+    versionText: '版本',
+    lightTheme: '淺色',
+    darkTheme: '深色',
+    publicVis: '公開',
+    privateVis: '私有',
+    executiveMode: '董事會執行視圖',
     activeWorkspace: '當前工作區與設計',
+    updatedAgo: '已更新 • 架構圖版本 v28',
     newArchitecture: '+ 新增架構',
     designCanvas: '設計畫布',
     templatesGallery: '模板圖庫',
@@ -313,3 +413,41 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug4: '添加卡組織網絡手續費分級屬性'
   }
 };
+
+// MULTILINGUAL DRAW.IO DIAGRAM CANVAS SHAPE CONTENT LOCALIZER
+export function translateDiagramXmlToLanguage(xml: string, lang: SupportedLanguage): string {
+  if (lang === 'en' || !xml) return xml;
+
+  const HINDI_CANVAS_MAP: Record<string, string> = {
+    "Plan &amp; Data Foundation": "योजना एवं डेटा फ़ाउंडेशन",
+    "Project Planning": "परियोजना योजना",
+    "Data Vetting": "डेटा सत्यापन",
+    "Ethical Sourcing": "नैतिक स्रोत",
+    "Dimensional Data Model": "विमीय डेटा मॉडल",
+    "Feature Engineering": "फ़ीचर इंजीनियरिंग",
+    "Governance Boundary": "शासन एवं सुरक्षा सीमा",
+    "Key Definitions": "मुख्य परिभाषाएं",
+    "Managed Compute": "प्रबंधित कंप्यूट",
+    "Control Flow": "नियंत्रण प्रवाह",
+    "Data Boundary": "डेटा सीमा",
+    "Why It Works": "यह क्यों प्रभावी है",
+    "Unified System View": "एकीकृत सिस्टम दृश्य",
+    "Public Internet Traffic": "सार्वजनिक इंटरनेट ट्रैफिक",
+    "Core Agent Orchestrator": "कोर एजेंट ऑर्केस्ट्रेटर"
+  };
+
+  const SPANISH_CANVAS_MAP: Record<string, string> = {
+    "Plan &amp; Data Foundation": "Base de Datos y Planificación",
+    "Project Planning": "Planificación de Proyecto",
+    "Governance Boundary": "Límite de Gobernanza",
+    "Key Definitions": "Definiciones Clave",
+    "Unified System View": "Vista de Sistema Unificada"
+  };
+
+  const map = lang === 'hi' ? HINDI_CANVAS_MAP : lang === 'es' ? SPANISH_CANVAS_MAP : HINDI_CANVAS_MAP;
+  let translated = xml;
+  for (const [enTerm, localTerm] of Object.entries(map)) {
+    translated = translated.replace(new RegExp(enTerm, 'g'), localTerm);
+  }
+  return translated;
+}
