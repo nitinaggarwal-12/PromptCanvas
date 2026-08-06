@@ -263,7 +263,16 @@ function WorkspaceContent() {
   const [autosaveStatus, setAutosaveStatus] = useState<'saved' | 'saving'>('saved');
   const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
   const [activeWorkflowStep, setActiveWorkflowStep] = useState<1 | 2 | 3 | 4>(1);
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const langParam = urlParams.get('lang') as SupportedLanguage;
+      if (langParam) return langParam;
+      const stored = localStorage.getItem('promptcanvas_lang') as SupportedLanguage;
+      if (stored) return stored;
+    }
+    return 'en';
+  });
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState<boolean>(false);
   const [langSearchQuery, setLangSearchQuery] = useState<string>('');
   const filteredLanguages = SUPPORTED_LANGUAGES.filter(l =>
