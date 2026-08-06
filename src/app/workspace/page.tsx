@@ -676,7 +676,7 @@ function WorkspaceContent() {
       ],
       dynamicPlaceholder: `e.g., Add API Gateway or Security Gate to ${diagName}...`
     };
-  }, [activeDiagram, activeVersion?.xml_content, selectedPersona]);
+  }, [activeDiagram, activeVersion?.xml_content, selectedPersona, currentLanguage]);
   
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
