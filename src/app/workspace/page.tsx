@@ -378,6 +378,7 @@ function WorkspaceContent() {
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
   const [customXml, setCustomXml] = useState<string | null>(null);
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
+  const displayedVersion = previewVersion || activeVersion;
   const [selectedAspectRatio, setSelectedAspectRatio] = useState<string>('16:9');
   const [customRatioW, setCustomRatioW] = useState<number>(16);
   const [customRatioH, setCustomRatioH] = useState<number>(10);
@@ -3500,7 +3501,7 @@ function WorkspaceContent() {
     );
   };
 
-  const displayedVersion = previewVersion || activeVersion;
+
 
   useEffect(() => {
     const currentVerArch = displayedVersion?.architecture_type || activeVersion?.architecture_type;
