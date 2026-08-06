@@ -253,6 +253,42 @@ function WorkspaceContent() {
   const [autosaveStatus, setAutosaveStatus] = useState<'saved' | 'saving'>('saved');
   const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
   const [activeWorkflowStep, setActiveWorkflowStep] = useState<1 | 2 | 3 | 4>(1);
+  const [userApiKey, setUserApiKey] = useState<string>('');
+  const [isByokModalOpen, setIsByokModalOpen] = useState<boolean>(false);
+  const [byokTestStatus, setByokTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
+  const [byokLatencyMs, setByokLatencyMs] = useState<number | null>(null);
+  const [byokErrorMessage, setByokErrorMessage] = useState<string>('');
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedKey = localStorage.getItem('pc_user_gemini_api_key');
+      if (savedKey) setUserApiKey(savedKey);
+    }
+  }, []);
+
+  const handleTestApiKeyConnection = async () => {
+    if (!userApiKey.trim()) return;
+    setByokTestStatus('testing');
+    setByokErrorMessage('');
+    const start = Date.now();
+    try {
+      const res = await fetch('/api/generate/usecases', {
+        headers: { 'x-gemini-api-key': userApiKey.trim() }
+      });
+      const duration = Date.now() - start;
+      if (res.ok) {
+        setByokTestStatus('success');
+        setByokLatencyMs(duration);
+        localStorage.setItem('pc_user_gemini_api_key', userApiKey.trim());
+      } else {
+        setByokTestStatus('error');
+        setByokErrorMessage('Invalid API key or quota exceeded.');
+      }
+    } catch (e: any) {
+      setByokTestStatus('error');
+      setByokErrorMessage(e.message || 'Connection test failed.');
+    }
+  };
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
@@ -687,7 +723,7 @@ function WorkspaceContent() {
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
           name: nameToGen,
           prompt: promptToGen,
@@ -717,7 +753,7 @@ function WorkspaceContent() {
     try {
       await fetch(`/api/diagrams/${activeDiagram.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({ is_private: newPrivate }),
       });
       setDiagrams(prev => prev.map(d => d.id === activeDiagram.id ? { ...d, is_private: newPrivate } : d));
@@ -762,7 +798,7 @@ function WorkspaceContent() {
       const currentXml = activeDiagram?.xml_content || getDefaultXmlForArchitecture(activeDiagram?.architecture_type || 'unified_system_view');
       const res = await fetch('/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
           prompt: `${promptText} — Refactor this enterprise architecture diagram cleanly with spacious horizontal coordinates (x=100, 560, 1020) and white text pills.`,
           architecture_type: activeDiagram?.architecture_type || 'unified_system_view',
@@ -779,7 +815,7 @@ function WorkspaceContent() {
             const nextVerNum = (activeDiagram.versions?.length || 0) + 1;
             const saveRes = await fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
               body: JSON.stringify({
                 xmlContent: data.xml,
                 comment: `⌘K Refactor: "${promptText}"`,
@@ -1110,7 +1146,7 @@ function WorkspaceContent() {
           if (data.id && refXml) {
             fetch(`/api/diagrams/${data.id}/versions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
               body: JSON.stringify({
                 xmlContent: refXml,
                 comment: `Architecture Backbone Sync: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
@@ -1183,7 +1219,7 @@ function WorkspaceContent() {
         if (data.id && refXml) {
           fetch(`/api/diagrams/${data.id}/versions`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
             body: JSON.stringify({
               xmlContent: refXml,
               comment: `Initial Architecture Backbone: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
@@ -1441,7 +1477,7 @@ function WorkspaceContent() {
         try {
           const res = await fetch('/api/generate', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
             body: JSON.stringify({
               name: newDiagramName.trim(),
               prompt: promptToGenerate,
@@ -1473,7 +1509,7 @@ function WorkspaceContent() {
           console.warn('AI Generation endpoint failed, falling back to local benchmark synthesis:', genErr);
           const fallbackRes = await fetch('/api/diagrams', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
             body: JSON.stringify({
               name: newDiagramName.trim(),
               xml: defaultXml,
@@ -1499,7 +1535,7 @@ function WorkspaceContent() {
 
       const res = await fetch('/api/diagrams', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
           name: newDiagramName,
           xml: defaultXml,
@@ -1577,7 +1613,7 @@ function WorkspaceContent() {
       // Call the AI generate API (refinement mode)
       const res = await fetch('/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
           prompt: userPrompt,
           diagramId: activeDiagram.id,
@@ -1620,7 +1656,7 @@ function WorkspaceContent() {
     try {
       const res = await fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
           xmlContent: xmlToSave,
           comment: saveComment,
@@ -1671,7 +1707,7 @@ function WorkspaceContent() {
 
       const res = await fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
           xmlContent: updatedXml,
           comment: `Updated ${editedIds.length} node label(s) via Outline Editor`,
@@ -1699,7 +1735,7 @@ function WorkspaceContent() {
     try {
       const res = await fetch('/api/generate/usecases', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({ versionId: displayedVersion.id })
       });
       if (!res.ok) throw new Error('Failed to generate use cases');
@@ -1850,7 +1886,7 @@ function WorkspaceContent() {
     try {
       const res = await fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
           xmlContent: version.xml_content,
           comment: `Restored version v${version.version_number}`,
@@ -1929,7 +1965,7 @@ function WorkspaceContent() {
 
       const res = await fetch('/api/audit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({ 
           diagramId: activeDiagram.id, 
           versionId: displayedVersion?.id,
@@ -1980,7 +2016,7 @@ function WorkspaceContent() {
     try {
       const res = await fetch('/api/audit/remediate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
           diagramId: activeDiagram.id,
           selectedGaps,
@@ -1995,7 +2031,7 @@ function WorkspaceContent() {
       // Re-run fresh audit after remediation matching active category!
       const auditRes = await fetch('/api/audit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({ 
           diagramId: activeDiagram.id,
           auditCategory: selectedAuditCategory,
@@ -3334,7 +3370,7 @@ function WorkspaceContent() {
                         try {
                           const res = await fetch('/api/generate', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
                             body: JSON.stringify({
                               name: t.name,
                               prompt: t.prompt
@@ -3774,13 +3810,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       if (activeDiagram?.id) {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
           body: JSON.stringify({ architecture_type: newArchId }),
         }).catch(console.error);
         setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
         fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
           body: JSON.stringify({
             xml_content: refXml || '',
             comment: `Vertex AI Safety & Eval Flow Exact Spec`,
@@ -3809,7 +3845,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       if (activeDiagram?.id) {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
           body: JSON.stringify({ architecture_type: newArchId }),
         }).catch(console.error);
         setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
@@ -3851,7 +3887,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       if (activeDiagram?.id) {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
           body: JSON.stringify({ architecture_type: newArchId }),
         }).catch(console.error);
         setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
@@ -3881,7 +3917,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         if (activeDiagram?.id) {
           fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
             body: JSON.stringify({
               xml_content: refXml || '',
               xmlContent: refXml || '',
@@ -6610,7 +6646,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     try {
                       const res = await fetch('/api/generate', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
                         body: JSON.stringify({
                           diagramId: activeDiagram.id,
                           prompt: `Use Case Topic: "${activeDiagram.name}". ${archObj.prompt}`,
