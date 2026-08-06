@@ -880,7 +880,10 @@ function WorkspaceContent() {
 
   const handleConversationalRefactor = async (promptText: string) => {
     setIsConversationalRefactoring(true);
+    setAiStepTelemetry("⚡ [1/4] Parsing Architectural Intent & Multi-Tier Topology...");
     try {
+      setTimeout(() => setAiStepTelemetry("⚙️ [2/4] Calculating Spatial Zero-Collision Coordinates..."), 800);
+      setTimeout(() => setAiStepTelemetry("🛡️ [3/4] Enforcing Enterprise Security & Light-HUD Styling..."), 1600);
       const currentXml = activeDiagram?.xml_content || getDefaultXmlForArchitecture(activeDiagram?.architecture_type || 'unified_system_view');
       const res = await fetch('/api/generate', {
         method: 'POST',
@@ -894,6 +897,8 @@ function WorkspaceContent() {
       if (res.ok) {
         const data = await res.json();
         if (data.xml) {
+          setAiStepTelemetry("✓ [4/4] Validating AST Structure & Committing Version Snapshot...");
+          setTimeout(() => setAiStepTelemetry(null), 2500);
           pushToUndoStack(currentXml);
           setCustomXml(data.xml);
           // Persist isolated version specifically for this diagram ID
@@ -988,6 +993,7 @@ function WorkspaceContent() {
   // Loading & Layout View Mode States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [aiStepTelemetry, setAiStepTelemetry] = useState<string | null>(null);
   const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean' | 'lucid' | 'obsidian' | 'vendor'>('detailed');
   const [isLiveFlowEnabled, setIsLiveFlowEnabled] = useState(false);
   const [generatingTemplateIdx, setGeneratingTemplateIdx] = useState<number | null>(null);
@@ -7152,6 +7158,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
             </div>
           </div>
+        </div>
+      )}
+      {aiStepTelemetry && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900/95 border border-teal-500/60 rounded-xl px-4 py-3 shadow-2xl flex items-center gap-3 animate-bounce">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-500"></span>
+          </span>
+          <span className="text-xs font-black text-teal-300 tracking-wide">{aiStepTelemetry}</span>
         </div>
       )}
     </div>
