@@ -768,6 +768,32 @@ function WorkspaceContent() {
         const data = await res.json();
         if (data.xml) {
           setCustomXml(data.xml);
+          // Persist isolated version specifically for this diagram ID
+          if (activeDiagram?.id) {
+            const nextVerNum = (activeDiagram.versions?.length || 0) + 1;
+            const saveRes = await fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                xmlContent: data.xml,
+                comment: `⌘K Refactor: "${promptText}"`,
+                architectureType: activeDiagram.architecture_type || 'unified_system_view'
+              })
+            });
+            if (saveRes.ok) {
+              const savedVer = await saveRes.json();
+              setActiveVersion({
+                id: savedVer.id || `ver_${Date.now()}`,
+                diagram_id: activeDiagram.id,
+                version_number: nextVerNum,
+                xml_content: data.xml,
+                comment: `⌘K Refactor: "${promptText}"`,
+                created_by: 'Gemini 3.6 Ultra-Deep',
+                created_at: new Date().toISOString(),
+                architecture_type: activeDiagram.architecture_type
+              });
+            }
+          }
         }
       }
     } catch (e) {
@@ -3911,7 +3937,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             {activeDiagram && (
               <div className="flex items-center justify-between text-[11px] text-slate-400 px-1 pt-0.5">
                 <span>Updated {formatRelativeTime(activeDiagram.updated_at)}</span>
-                <span className="text-teal-400 font-bold">Version {displayedVersion?.version_number || 1}</span>
+                <span className="text-teal-400 font-bold">Diagram Version v{activeDiagram?.versions?.length || displayedVersion?.version_number || 1}</span>
               </div>
             )}
           </div>
