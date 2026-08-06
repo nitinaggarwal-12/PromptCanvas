@@ -2849,8 +2849,8 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="sw1_eth_src" value="&lt;span style='font-size:26px;'&gt;🌿&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Ethical&lt;br&gt;Sourcing&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="295" y="125" width="80" height="75" as="geometry" />
         </mxCell>
-        <!-- ERD Section (with mandated typo 'and and') -->
-        <mxCell id="sw1_erd_txt" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Dimensional Data Model (ERD)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#475569;'&gt;(Schema for all structured,&lt;br&gt;unstructured, and and derived&lt;br&gt;AI context (Image 7 definitions))&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <!-- ERD Section -->
+        <mxCell id="sw1_erd_txt" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Dimensional Data Model (ERD)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#475569;'&gt;(Schema for structured,&lt;br&gt;unstructured, &amp;amp; derived&lt;br&gt;enterprise AI context)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="385" y="125" width="220" height="80" as="geometry" />
         </mxCell>
         <!-- ERD diagram container with generous wide column pitch -->
@@ -2882,8 +2882,8 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         </mxCell>
 
         <!-- 3. Swimlane 2: DEVELOPMENT & AI LIFECYCLE -->
-        <!-- Left Tab with mandated typos: insograto4 MLOps(L)MLOps State Machine & Pipalinos -->
-        <mxCell id="sw2_tab" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;DEVELOPMENT&lt;br&gt;&amp;amp; AI LIFECYCLE&lt;br&gt;(insograto4&lt;br&gt;MLOps(L)MLOps&lt;br&gt;State Machine &amp;amp;&lt;br&gt;Pipalinos)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#475569;strokeColor=#334155;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <!-- Left Tab -->
+        <mxCell id="sw2_tab" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;DEVELOPMENT&lt;br&gt;&amp;amp; AI LIFECYCLE&lt;br&gt;(Integrating&lt;br&gt;MLOps Lifecycle,&lt;br&gt;State Machine &amp;amp;&lt;br&gt;Pipelines)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#475569;strokeColor=#334155;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="245" width="55" height="295" as="geometry" />
         </mxCell>
         <mxCell id="sw2_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
@@ -2891,7 +2891,7 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         </mxCell>
 
         <!-- Track 2a: DATA ENGINEERING & DFD -->
-        <mxCell id="t2a_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Track 2a: DATA ENGINEERING &amp;amp; DFD&lt;/b&gt; &lt;font style='font-size:10px;color:#64748B;'&gt;(References image 3)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="t2a_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Track 2a: DATA ENGINEERING &amp;amp; DFD&lt;/b&gt; &lt;font style='font-size:10px;color:#64748B;'&gt;(End-to-End Enterprise Data Flow)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="85" y="250" width="350" height="20" as="geometry" />
         </mxCell>
         <!-- Silo Stack (5 dark teal pills) -->
@@ -2919,7 +2919,7 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         </mxCell>
 
         <!-- Track 2b: FEATURE ENGINEERING FLOW -->
-        <mxCell id="t2b_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Track 2b: FEATURE ENGINEERING FLOW&lt;/b&gt; &lt;font style='font-size:10px;color:#64748B;'&gt;(References image 3)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="t2b_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Track 2b: FEATURE ENGINEERING FLOW&lt;/b&gt; &lt;font style='font-size:10px;color:#64748B;'&gt;(End-to-End Enterprise Data Flow)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="530" y="250" width="350" height="20" as="geometry" />
         </mxCell>
         <mxCell id="t2b_trans_box" value="&lt;b style='font-size:11px;color:#15803D;'&gt;Circular Transformation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;strokeWidth=1.5;verticalAlign=top;paddingTop=6;" vertex="1" parent="1">
@@ -2929,7 +2929,7 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="t2b_c2" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Normalize&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="642" y="308" width="65" height="50" as="geometry" /></mxCell>
         <mxCell id="t2b_c3" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Aggregate&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="545" y="375" width="65" height="50" as="geometry" /></mxCell>
         <mxCell id="t2b_c4" value="&lt;b style='font-size:10px;color:#15803D;'&gt;Encode&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="642" y="375" width="65" height="50" as="geometry" /></mxCell>
-        <mxCell id="t2b_dbt" value="&lt;span style='font-size:14px;'&gt;❌🛢️&lt;/span&gt; &lt;b style='font-size:10px;color:#0F172A;'&gt;dbt models&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="t2b_dbt" value="&lt;span style='font-size:14px;'&gt;⚡🛢️&lt;/span&gt; &lt;b style='font-size:10px;color:#0F172A;'&gt;dbt Transformation Models&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="555" y="472" width="145" height="34" as="geometry" />
         </mxCell>
         <!-- Connectors Track 2b -->
@@ -2940,14 +2940,14 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         </mxCell>
 
         <!-- Track 2c: AI MODEL & PROMPT DEVELOPMENT LIFECYCLE -->
-        <mxCell id="t2c_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Track 2c: AI MODEL &amp;amp; PROMPT DEVELOPMENT LIFECYCLE&lt;/b&gt; &lt;font style='font-size:10px;color:#64748B;'&gt;(References image 15 &amp;amp; 3)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="t2c_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Track 2c: AI MODEL &amp;amp; PROMPT DEVELOPMENT LIFECYCLE&lt;/b&gt; &lt;font style='font-size:10px;color:#64748B;'&gt;(Unified Governance &amp;amp; Security Audits)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="920" y="250" width="550" height="20" as="geometry" />
         </mxCell>
-        <!-- Governance Boundary Box with mandated typo incogporating -->
+        <!-- Governance Boundary Box -->
         <mxCell id="t2c_gov_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;strokeDashArray=6 6;" vertex="1" parent="1">
           <mxGeometry x="920" y="278" width="810" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="t2c_gov_title" value="&lt;b style='font-size:11px;color:#1D4ED8;'&gt;Governance Boundary incogporating the full unified audits from Image 15&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=6;" vertex="1" parent="1">
+        <mxCell id="t2c_gov_title" value="&lt;b style='font-size:11px;color:#1D4ED8;'&gt;Governance Boundary incorporating full automated security &amp;amp; ethical AI audits&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=6;" vertex="1" parent="1">
           <mxGeometry x="935" y="285" width="600" height="25" as="geometry" />
         </mxCell>
         <!-- Internal Flow inside Governance Boundary -->
@@ -2967,8 +2967,8 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="t2c_eval" value="&lt;b style='font-size:11px;color:#0369A1;'&gt;EVALUATED&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1425" y="342" width="105" height="70" as="geometry" />
         </mxCell>
-        <!-- Bias & Fairness Audit with mandated gibberish Metripls metica -->
-        <mxCell id="t2c_eval_sub" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Bias &amp;amp; Fairness Audit&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#64748B;'&gt;Metripls metica&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <!-- Bias & Fairness Audit -->
+        <mxCell id="t2c_eval_sub" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Bias &amp;amp; Fairness Audit&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#64748B;'&gt;Audit &amp;amp; Fairness Metrics&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="1410" y="420" width="135" height="35" as="geometry" />
         </mxCell>
 
@@ -3036,15 +3036,15 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
 
         <!-- 4. Swimlane 3: GOVERNANCE, FEEDBACK & RETIREMENT LIFECYCLE -->
         <!-- Left Tab -->
-        <mxCell id="sw3_tab" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;GOVERNANCE,&lt;br&gt;FEEDBACK &amp;amp;&lt;br&gt;RETIREMENT&lt;br&gt;LIFECYCLE&lt;br&gt;(References&lt;br&gt;Image 15)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#1E293B;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="sw3_tab" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;GOVERNANCE,&lt;br&gt;FEEDBACK &amp;amp;&lt;br&gt;RETIREMENT&lt;br&gt;LIFECYCLE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#1E293B;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="545" width="55" height="360" as="geometry" />
         </mxCell>
         <mxCell id="sw3_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="75" y="545" width="1830" height="360" as="geometry" />
         </mxCell>
 
-        <!-- Lane Header with mandated typo Yavates -->
-        <mxCell id="sw3_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;COGNITIVE ARCHITECTURE &amp;amp; SECURE DEPLOYMENT (Topology Integration)&lt;/b&gt; &lt;font style='font-size:10px;color:#475569;'&gt;(Yavates inside logical software inside secure cloud network bound. (References image 5 logical layout within VPC))&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <!-- Lane Header -->
+        <mxCell id="sw3_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;COGNITIVE ARCHITECTURE &amp;amp; SECURE DEPLOYMENT (Logical Software Topology within VPC Perimeter)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="85" y="550" width="1500" height="20" as="geometry" />
         </mxCell>
 
@@ -3073,11 +3073,11 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="arr_waf_t" value="" style="endArrow=none;strokeColor=#F97316;strokeWidth=1;strokeDashArray=3 3;html=1;" edge="1" parent="1" source="sw3_waf_top" target="sw3_lb_waf"><mxGeometry relative="1" as="geometry" /></mxCell>
         <mxCell id="arr_waf_b" value="" style="endArrow=none;strokeColor=#F97316;strokeWidth=1;strokeDashArray=3 3;html=1;" edge="1" parent="1" source="sw3_waf_bot" target="sw3_lb_waf"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <!-- ITACS Primary VPC Network Container with generous spacing -->
+        <!-- Primary VPC Network Container with generous spacing -->
         <mxCell id="sw3_vpc_cont" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="455" y="580" width="1055" height="310" as="geometry" />
         </mxCell>
-        <mxCell id="sw3_vpc_title" value="&lt;b style='font-size:12px;color:#1D4ED8;'&gt;ITACS Primary VPC Network (Secure Managed Environment)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=8;" vertex="1" parent="1">
+        <mxCell id="sw3_vpc_title" value="&lt;b style='font-size:12px;color:#1D4ED8;'&gt;Primary Enterprise VPC Network (Secure Managed Environment)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=8;" vertex="1" parent="1">
           <mxGeometry x="465" y="585" width="420" height="25" as="geometry" />
         </mxCell>
         <!-- Input Arrow from API Gateway -->
@@ -3090,11 +3090,11 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="sw3_app_sub_title" value="&lt;b style='font-size:11px;color:#C2410C;'&gt;Private Application Subnet (Isolated)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=6;" vertex="1" parent="1">
           <mxGeometry x="470" y="620" width="250" height="20" as="geometry" />
         </mxCell>
-        <!-- Central Card: ITACS Agent Orchestrator (GKE Pod) -->
+        <!-- Central Card: Enterprise Agent Orchestrator (GKE Pod) -->
         <mxCell id="sw3_orch_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="472" y="645" width="460" height="232" as="geometry" />
         </mxCell>
-        <mxCell id="sw3_orch_title" value="&lt;b style='font-size:11px;color:#1E3A8A;'&gt;ITACS Agent Orchestrator (GKE Pod)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=6;" vertex="1" parent="1">
+        <mxCell id="sw3_orch_title" value="&lt;b style='font-size:11px;color:#1E3A8A;'&gt;Enterprise Agent Orchestrator (GKE Pod)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=6;" vertex="1" parent="1">
           <mxGeometry x="480" y="650" width="260" height="20" as="geometry" />
         </mxCell>
         <!-- Pure 2D Smooth Tangential Circular ReAct Loop Ring with Zero Overlap -->
@@ -3166,7 +3166,7 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="p_socdrift" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;Societal Drift&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1718" y="782" width="160" height="24" as="geometry" /></mxCell>
         <mxCell id="p_safinc" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;Safety Incident&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D37324;strokeColor=#9C531A;padding=1;" vertex="1" parent="1"><mxGeometry x="1718" y="818" width="160" height="24" as="geometry" /></mxCell>
 
-        <!-- 5. Bottom Footer Region: Dense Legend (CRITICAL: Retain all gibberish & typos) -->
+        <!-- 5. Bottom Footer Region: Dense Legend -->
         <mxCell id="leg_box_uv" value="&lt;b style='font-size:14px;color:#202124;'&gt;Legend&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;fontFamily=Helvetica;verticalAlign=top;paddingTop=8;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="15" y="915" width="1890" height="215" as="geometry" />
         </mxCell>
@@ -3182,7 +3182,6 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="l_c1_4_arr" value="" style="endArrow=block;endFill=1;strokeColor=#202124;strokeWidth=1.5;html=1;" edge="1" parent="leg_box_uv"><mxGeometry relative="1" as="geometry"><mxPoint x="75" y="115" as="sourcePoint" /><mxPoint x="95" y="115" as="targetPoint" /></mxGeometry></mxCell>
         <mxCell id="l_c1_5" value="&lt;font style='font-size:10px;color:#202124;'&gt;Key: Data&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="100" y="130" width="110" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c1_5_arr" value="" style="endArrow=block;endFill=1;strokeColor=#202124;strokeWidth=1.5;strokeDashArray=3 3;html=1;" edge="1" parent="leg_box_uv"><mxGeometry relative="1" as="geometry"><mxPoint x="75" y="140" as="sourcePoint" /><mxPoint x="95" y="140" as="targetPoint" /></mxGeometry></mxCell>
-
         <mxCell id="l_c1_6" value="&lt;font style='font-size:10px;color:#202124;'&gt;Managed&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="240" y="30" width="90" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c1_6_b" value="" style="rounded=1;arcSize=50;fillColor=#3B82F6;strokeColor=#2563EB;" vertex="1" parent="leg_box_uv"><mxGeometry x="215" y="33" width="18" height="14" as="geometry" /></mxCell>
         <mxCell id="l_c1_7" value="&lt;font style='font-size:10px;color:#202124;'&gt;User Data&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="240" y="55" width="90" height="20" as="geometry" /></mxCell>
@@ -3194,40 +3193,40 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <mxCell id="l_c1_10" value="&lt;font style='font-size:10px;color:#202124;'&gt;VPC-SC&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="240" y="130" width="90" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c1_10_b" value="" style="rounded=0;fillColor=none;strokeColor=#F97316;strokeDashArray=3 3;" vertex="1" parent="leg_box_uv"><mxGeometry x="215" y="132" width="16" height="16" as="geometry" /></mxCell>
 
-        <!-- Column 1 sub 3 with mandated typos Newscomptoie, VOC-S, Reldonnics -->
-        <mxCell id="l_c1_11" value="&lt;font style='font-size:10px;color:#202124;'&gt;Newscomptoie&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="30" width="95" height="20" as="geometry" /></mxCell>
+        <!-- Column 1 sub 3 -->
+        <mxCell id="l_c1_11" value="&lt;font style='font-size:10px;color:#202124;'&gt;Network Component&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="30" width="115" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c1_11_b" value="" style="rounded=0;fillColor=none;strokeColor=#64748B;" vertex="1" parent="leg_box_uv"><mxGeometry x="340" y="32" width="16" height="16" as="geometry" /></mxCell>
-        <mxCell id="l_c1_12" value="&lt;font style='font-size:10px;color:#202124;'&gt;VOC-S&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="55" width="95" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c1_12" value="&lt;font style='font-size:10px;color:#202124;'&gt;VPC-SC Channel&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="55" width="115" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c1_12_arr" value="" style="endArrow=none;strokeColor=#64748B;strokeWidth=1.5;html=1;" edge="1" parent="leg_box_uv"><mxGeometry relative="1" as="geometry"><mxPoint x="340" y="65" as="sourcePoint" /><mxPoint x="358" y="65" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="l_c1_13" value="&lt;font style='font-size:10px;color:#202124;'&gt;Relationship&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="80" width="95" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c1_13" value="&lt;font style='font-size:10px;color:#202124;'&gt;Relationship&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="80" width="115" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c1_13_arr" value="" style="endArrow=open;endFill=0;strokeColor=#64748B;strokeWidth=1.5;html=1;" edge="1" parent="leg_box_uv"><mxGeometry relative="1" as="geometry"><mxPoint x="340" y="90" as="sourcePoint" /><mxPoint x="358" y="90" as="targetPoint" /></mxGeometry></mxCell>
-        <mxCell id="l_c1_14" value="&lt;font style='font-size:10px;color:#202124;'&gt;Reldonnics&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="105" width="95" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c1_14" value="&lt;font style='font-size:10px;color:#202124;'&gt;Relationships&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="105" width="115" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c1_14_h" value="" style="shape=hexagon;fillColor=#E0F2FE;strokeColor=#0284C7;" vertex="1" parent="leg_box_uv"><mxGeometry x="338" y="107" width="18" height="16" as="geometry" /></mxCell>
-        <mxCell id="l_c1_15" value="&lt;font style='font-size:10px;color:#202124;'&gt;Key/Default&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="130" width="95" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c1_15" value="&lt;font style='font-size:10px;color:#202124;'&gt;Key/Default&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="365" y="130" width="115" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c1_15_arr" value="" style="endArrow=none;strokeColor=#64748B;strokeWidth=1.5;strokeDashArray=2 2;html=1;" edge="1" parent="leg_box_uv"><mxGeometry relative="1" as="geometry"><mxPoint x="340" y="140" as="sourcePoint" /><mxPoint x="358" y="140" as="targetPoint" /></mxGeometry></mxCell>
 
         <!-- Column 2 (Key Definitions) -->
         <mxCell id="l_c2_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Key Definitions&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="480" y="28" width="180" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c2_r1" value="&lt;font style='font-size:10px;color:#475569;'&gt;Line Description line types&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="480" y="55" width="180" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c2_r2" value="&lt;font style='font-size:10px;color:#475569;'&gt;Key/Relationship type: types&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="480" y="80" width="180" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c2_r2" value="&lt;font style='font-size:10px;color:#475569;'&gt;Key/Relationship types&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="480" y="80" width="180" height="20" as="geometry" /></mxCell>
 
-        <!-- Column 3 (Key Definitions continued with mandated typos Data Boundan, Bermanon Internal Nine and Data, Control Flow xumonent Boundan) -->
-        <mxCell id="l_c3_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Key Definitions&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="28" width="230" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c3_r1" value="&lt;font style='font-size:10px;color:#475569;'&gt;Managed Compute&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="50" width="230" height="20" as="geometry" /></mxCell>
+        <!-- Column 3 (Key Definitions continued) -->
+        <mxCell id="l_c3_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;System Boundaries&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="28" width="230" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c3_r1" value="&lt;font style='font-size:10px;color:#475569;'&gt;Managed Compute Services&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="50" width="230" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c3_r2" value="&lt;font style='font-size:10px;color:#475569;'&gt;Control Flow Boundary&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="70" width="230" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c3_r3" value="&lt;font style='font-size:10px;color:#475569;'&gt;Data Boundan&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="90" width="230" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c3_r4" value="&lt;font style='font-size:10px;color:#475569;'&gt;Bermanon Internal Nine and Data&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="110" width="230" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c3_r3" value="&lt;font style='font-size:10px;color:#475569;'&gt;Data Perimeter Boundary&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="90" width="230" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c3_r4" value="&lt;font style='font-size:10px;color:#475569;'&gt;Internal Network &amp;amp; Data Line&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="110" width="230" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c3_r5" value="&lt;font style='font-size:10px;color:#475569;'&gt;Control Flow Management&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="130" width="230" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c3_r6" value="&lt;font style='font-size:10px;color:#475569;'&gt;Control Flow xumonent Boundan&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="150" width="230" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c3_r6" value="&lt;font style='font-size:10px;color:#475569;'&gt;Control Flow Component Boundary&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="680" y="150" width="230" height="20" as="geometry" /></mxCell>
 
-        <!-- Column 4 (Line Descriptions with mandated typos intewwships, Interaned Srandan, Data manieing, IPc edge talie, Line asnntription provboed oriens) -->
+        <!-- Column 4 (Line Descriptions) -->
         <mxCell id="l_c4_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Line Descriptions&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="28" width="370" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c4_r1" value="&lt;font style='font-size:10px;color:#475569;'&gt;Line developmenta/ intewwships and monitoring elements&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="50" width="370" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c4_r1" value="&lt;font style='font-size:10px;color:#475569;'&gt;Line development &amp;amp; monitoring elements&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="50" width="370" height="20" as="geometry" /></mxCell>
         <mxCell id="l_c4_r2" value="&lt;font style='font-size:10px;color:#475569;'&gt;Monitoring &amp;amp; Observability&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="70" width="370" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c4_r3" value="&lt;font style='font-size:10px;color:#475569;'&gt;Interaned Srandan&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="90" width="370" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c4_r4" value="&lt;font style='font-size:10px;color:#475569;'&gt;Data manieing &amp;amp; Observability&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="110" width="370" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c4_r5" value="&lt;font style='font-size:10px;color:#475569;'&gt;Private Application Container (IPc edge talie)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="130" width="370" height="20" as="geometry" /></mxCell>
-        <mxCell id="l_c4_r6" value="&lt;font style='font-size:10px;color:#475569;'&gt;Line asnntription provboed oriens&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="150" width="370" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c4_r3" value="&lt;font style='font-size:10px;color:#475569;'&gt;Inter-Agent Service Bus&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="90" width="370" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c4_r4" value="&lt;font style='font-size:10px;color:#475569;'&gt;Data Streaming &amp;amp; Observability&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="110" width="370" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c4_r5" value="&lt;font style='font-size:10px;color:#475569;'&gt;Private Application Container (IPSec Edge Table)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="130" width="370" height="20" as="geometry" /></mxCell>
+        <mxCell id="l_c4_r6" value="&lt;font style='font-size:10px;color:#475569;'&gt;Line Encryption &amp;amp; Protected Options&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="leg_box_uv"><mxGeometry x="930" y="150" width="370" height="20" as="geometry" /></mxCell>
 
         <!-- Value Proposition Box (Far Right) -->
         <mxCell id="why_works_uv" value="&lt;font style='font-size:12px;color:#0F172A;line-height:1.5;'&gt;&lt;b&gt;WHY IT WORKS:&lt;/b&gt; This unified diagram consolidation enables all data engineering, ML engineering, GenAI engineering, SRE, and security teams to instantly understand the entire logical system design, its underlying technical stack, precise security boundaries, and robust operational lifecycles without missing any critical details.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;padding=15;display=flex;align=center;" vertex="1" parent="1">
