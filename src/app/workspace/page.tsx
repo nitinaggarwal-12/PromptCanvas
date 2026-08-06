@@ -376,6 +376,7 @@ function WorkspaceContent() {
   };
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
+  const [customXml, setCustomXml] = useState<string | null>(null);
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
   const [selectedAspectRatio, setSelectedAspectRatio] = useState<string>('16:9');
   const [customRatioW, setCustomRatioW] = useState<number>(16);
@@ -4849,7 +4850,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     title="Export Diagram PNG, PDF, PPTX, Python .py, D2 .d2"
                   >
                     <Download className="w-3.5 h-3.5 text-teal-400" />
-                    <span>Export Studio</span>
+                    <span>{t.exportStudio}</span>
                   </button>
 
                   {/* Cloud Cost Estimator */}
@@ -4871,7 +4872,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     title="Compose formal System Documentation (PRD, SDD, Threat Model)"
                   >
                     <FileText className="w-3.5 h-3.5 text-sky-400" />
-                    <span>Compose Doc</span>
+                    <span>{t.composeDoc}</span>
                   </button>
 
                   {/* Audit Security */}
@@ -4922,7 +4923,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     <div className="space-y-1.5 pt-1">
                       <h5 className="text-[10px] text-teal-300 font-extrabold uppercase tracking-wider flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5 text-teal-accent" />
-                        <span>Suggested Next Refinements</span>
+                        <span>{t.suggestedRefinements}</span>
                       </h5>
                       <div className="space-y-1.5">
                         {suggestions.map((suggestion, idx) => (
