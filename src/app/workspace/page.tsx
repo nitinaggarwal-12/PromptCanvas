@@ -404,6 +404,7 @@ function WorkspaceContent() {
   const [rightVersionSelection, setRightVersionSelection] = useState<string>('v2_current');
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
   const [templateCategoryFilter, setTemplateCategoryFilter] = useState<'all' | 'business' | 'technical'>('all');
+  const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
   const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
   const [isExecutiveSummaryOpen, setIsExecutiveSummaryOpen] = useState(false);
 
@@ -2270,13 +2271,13 @@ function WorkspaceContent() {
     ];
 
     const personaRelevantIds: Record<string, string[]> = {
-      executive: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'business_agent_governance_hitl', 'eval_safety_benchmarking'],
-      fintech: ['erd', 'data_ai_pipeline', 'governance_state_machine', 'secure_deployment_map', 'tech_streaming_analytics'],
-      legal: ['business_agent_governance_hitl', 'eval_safety_benchmarking', 'governance_state_machine', 'secure_deployment_map', 'tech_vpc_infra'],
-      architect: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'tech_serverless_gcp', 'tech_microservices_aws', 'tech_multi_region_dr'],
-      devops: ['sequence_diagram', 'macro_sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_aws', 'tech_cicd_pipeline'],
-      security: ['secure_deployment_map', 'governance_state_machine', 'business_agent_governance_hitl', 'eval_safety_benchmarking', 'tech_vpc_infra'],
-      data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse', 'tech_rag_gcp', 'tech_iot_telemetry', 'v2_freeform']
+      executive: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'business_agent_governance_hitl', 'eval_safety_benchmarking', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda'],
+      fintech: ['erd', 'data_ai_pipeline', 'governance_state_machine', 'secure_deployment_map', 'tech_streaming_analytics', 'tech_c4_system_context', 'tech_event_driven_eda'],
+      legal: ['business_agent_governance_hitl', 'eval_safety_benchmarking', 'governance_state_machine', 'secure_deployment_map', 'tech_vpc_infra', 'tech_c4_system_context'],
+      architect: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'tech_serverless_gcp', 'tech_microservices_aws', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda'],
+      devops: ['sequence_diagram', 'macro_sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_aws', 'tech_cicd_pipeline', 'tech_event_driven_eda'],
+      security: ['secure_deployment_map', 'governance_state_machine', 'business_agent_governance_hitl', 'eval_safety_benchmarking', 'tech_vpc_infra', 'tech_c4_system_context'],
+      data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse', 'tech_rag_gcp', 'tech_iot_telemetry', 'v2_freeform', 'tech_modern_data_stack']
     };
 
     function getPersonaBadge(id: string) {
