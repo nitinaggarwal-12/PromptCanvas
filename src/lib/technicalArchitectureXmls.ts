@@ -625,7 +625,15 @@ const TECH_XML_AGENTIC_MESH_GCP = `<mxfile host="embed.diagrams.net">
         <mxCell id="em3" value="3. Envoy Sidecar Tracing" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="m3" target="m4">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="em4" value="4. Private Google Access Database Query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;stro// 13. C4 Architecture Level 1 & Level 2 Enterprise Context & Container Model
+        <mxCell id="em4" value="4. Private Google Access Database Query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="m3" target="m5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+
+// 13. C4 Architecture Level 1 & Level 2 Enterprise Context & Container Model
 const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
   <diagram id="c4_system_context" name="C4 Architecture Enterprise Context &amp; Container Model (10.128.0.0/16)">
     <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">

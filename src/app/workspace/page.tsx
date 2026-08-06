@@ -405,8 +405,37 @@ function WorkspaceContent() {
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
   const [templateCategoryFilter, setTemplateCategoryFilter] = useState<'all' | 'business' | 'technical'>('all');
   const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
-  const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
   const [isExecutiveSummaryOpen, setIsExecutiveSummaryOpen] = useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const bp = params.get('blueprint') || params.get('arch');
+      if (bp) {
+        const title = getTemplateTitle(bp);
+        const xml = getDefaultXmlForArchitecture(bp);
+        const tempDiagram: Diagram = {
+          id: 'bp_' + bp,
+          name: title,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          architecture_type: bp,
+        };
+        const tempVersion: DiagramVersion = {
+          id: 'bp_ver_' + bp,
+          diagram_id: 'bp_' + bp,
+          version_number: 1,
+          xml_content: xml,
+          comment: 'Loaded flagship architecture blueprint',
+          created_by: 'system',
+          created_at: new Date().toISOString(),
+          architecture_type: bp,
+        };
+        setActiveDiagram(tempDiagram);
+        setActiveVersion(tempVersion);
+      }
+    }
+  }, []);
 
   function handleAspectRatioChange(ratioId: string, customW?: number, customH?: number) {
     setSelectedAspectRatio(ratioId);

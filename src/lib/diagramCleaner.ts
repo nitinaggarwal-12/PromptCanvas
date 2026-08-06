@@ -949,9 +949,9 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/(<mxCell\s+[^>]*\bvalue=")(?:[^"]*?(?:Enterprise Architecture Platform|TOTAL UNIFIED SYSTEM VIEW|UNIFIED SYSTEM VIEW|एकीकृत सिस्टम दृश्य|Unified Logical Flow)[^"]*?)("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${dynamicEnterpriseHeaderHtml}$2`);
 
   // 2. Adapt technical nodes if generic
-  const promptLower = (userPrompt || topic || '').toLowerCase();
-  const isGenomicPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('dna') || promptLower.includes('bwa');
-  const isLiteratureMiningPrompt = promptLower.includes('literature') || promptLower.includes('patent') || promptLower.includes('clinical trial') || promptLower.includes('nsclc') || promptLower.includes('target discovery') || promptLower.includes('langchain') || promptLower.includes('bioinformatician');
+  const promptTextLower = (userPrompt || topic || '').toLowerCase();
+  const isGenomicPrompt = promptTextLower.includes('genomic') || promptTextLower.includes('fastq') || promptTextLower.includes('variant') || promptTextLower.includes('gatk') || promptTextLower.includes('dna') || promptTextLower.includes('bwa');
+  const isLiteratureMiningPrompt = promptTextLower.includes('literature') || promptTextLower.includes('patent') || promptTextLower.includes('clinical trial') || promptTextLower.includes('nsclc') || promptTextLower.includes('target discovery') || promptTextLower.includes('langchain') || promptTextLower.includes('bioinformatician');
   const isEarlyDiscoveryPrompt = promptLower.includes('discovery') || promptLower.includes('aiddison') || promptLower.includes('notebook') || promptLower.includes('biologist') || promptLower.includes('hypothesis');
   const isFintechPrompt = promptLower.includes('fintech') || promptLower.includes('payment') || promptLower.includes('fraud') || promptLower.includes('ledger') || promptLower.includes('banking') || promptLower.includes('iso 20022') || promptLower.includes('pci') || promptLower.includes('apexpay');
 
