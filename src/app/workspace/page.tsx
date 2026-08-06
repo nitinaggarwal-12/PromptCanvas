@@ -1,5 +1,14 @@
 'use client';
 
+export interface ByokConnectionProfile {
+  id: string;
+  name: string;
+  apiKey: string;
+  model: 'gemini-3.6-pro' | 'gemini-3.6-ultra' | 'gemini-3.6-flash';
+  lastTestedLatencyMs?: number;
+  status: 'verified' | 'untested';
+}
+
 import { VisualVersionDiffInspectorModal } from '@/components/VisualVersionDiffInspectorModal';
 import { TechRadarAndConceptDriftGuardModal } from '@/components/TechRadarAndConceptDriftGuard';
 import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
@@ -253,11 +262,76 @@ function WorkspaceContent() {
   const [autosaveStatus, setAutosaveStatus] = useState<'saved' | 'saving'>('saved');
   const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
   const [activeWorkflowStep, setActiveWorkflowStep] = useState<1 | 2 | 3 | 4>(1);
-  const [userApiKey, setUserApiKey] = useState<string>('');
+  const [byokProfiles, setByokProfiles] = useState<ByokConnectionProfile[]>([
+    {
+      id: 'default_prod',
+      name: 'Enterprise Production (Gemini 3.6 Pro)',
+      apiKey: '',
+      model: 'gemini-3.6-pro',
+      status: 'untested'
+    }
+  ]);
+  const [activeByokProfileId, setActiveByokProfileId] = useState<string>('default_prod');
   const [isByokModalOpen, setIsByokModalOpen] = useState<boolean>(false);
+  const [newProfileName, setNewProfileName] = useState<string>('');
+  const [newProfileKey, setNewProfileKey] = useState<string>('');
+  const [newProfileModel, setNewProfileModel] = useState<'gemini-3.6-pro' | 'gemini-3.6-ultra' | 'gemini-3.6-flash'>('gemini-3.6-pro');
   const [byokTestStatus, setByokTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
   const [byokLatencyMs, setByokLatencyMs] = useState<number | null>(null);
-  const [byokErrorMessage, setByokErrorMessage] = useState<string>('');
+
+  const activeByokProfile = byokProfiles.find(p => p.id === activeByokProfileId) || byokProfiles[0];
+  const userApiKey = activeByokProfile?.apiKey || '';
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedProfiles = localStorage.getItem('pc_multi_byok_profiles');
+      const savedActiveId = localStorage.getItem('pc_active_byok_profile_id');
+      if (savedProfiles) {
+        try {
+          const parsed = JSON.parse(savedProfiles);
+          if (Array.isArray(parsed) && parsed.length > 0) setByokProfiles(parsed);
+        } catch (e) {}
+      }
+      if (savedActiveId) setActiveByokProfileId(savedActiveId);
+    }
+  }, []);
+
+  const saveProfilesToStorage = (profiles: ByokConnectionProfile[], activeId: string) => {
+    setByokProfiles(profiles);
+    setActiveByokProfileId(activeId);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('pc_multi_byok_profiles', JSON.stringify(profiles));
+      localStorage.setItem('pc_active_byok_profile_id', activeId);
+    }
+  };
+
+  const handleAddAndTestConnection = async () => {
+    if (!newProfileKey.trim()) return;
+    setByokTestStatus('testing');
+    const start = Date.now();
+    try {
+      const res = await fetch('/api/generate/usecases', {
+        headers: { 'x-gemini-api-key': newProfileKey.trim() }
+      });
+      const duration = Date.now() - start;
+      const newProf: ByokConnectionProfile = {
+        id: 'byok_' + Date.now(),
+        name: newProfileName.trim() || 'Connection ' + (byokProfiles.length + 1),
+        apiKey: newProfileKey.trim(),
+        model: newProfileModel,
+        lastTestedLatencyMs: duration,
+        status: res.ok ? 'verified' : 'untested'
+      };
+      const updated = [...byokProfiles, newProf];
+      saveProfilesToStorage(updated, newProf.id);
+      setByokTestStatus('success');
+      setByokLatencyMs(duration);
+      setNewProfileName('');
+      setNewProfileKey('');
+    } catch (e) {
+      setByokTestStatus('error');
+    }
+  };
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
