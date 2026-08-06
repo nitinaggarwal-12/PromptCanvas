@@ -460,7 +460,7 @@ function WorkspaceContent() {
             'Enforce PCI-DSS & KYC Compliance Rules',
             'Add Card Network Fee Tier Attributes'
           ],
-          dynamicPlaceholder: loc.promptPlaceholder
+          dynamicPlaceholder: currentLanguage === 'hi' ? 'उदा., PK/FK संबंधों के साथ Dim_Customer_Account तालिका जोड़ें...' : 'e.g., Add Dim_Customer_Account table with PK/FK relationships...'
         };
       }
       if (isSeq) {
