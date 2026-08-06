@@ -1238,12 +1238,20 @@ function WorkspaceContent() {
       if (!res.ok) throw new Error('Failed to fetch diagram details');
       const data: Diagram = await res.json();
       
+      const urlBlueprint = typeof window !== 'undefined' 
+        ? (new URLSearchParams(window.location.search).get('blueprint') || new URLSearchParams(window.location.search).get('arch'))
+        : null;
+      if (urlBlueprint) {
+        data.architecture_type = urlBlueprint;
+      }
+
       setRestrictedState(null);
       setActiveDiagram(data);
       setIsPrivate(Boolean(data.is_private));
-      if (data.architecture_type) {
-        setSelectedArchType(data.architecture_type);
-        if (data.architecture_type === 'technical_diagram' || data.architecture_type === 'conceptual_diagram') {
+      if (urlBlueprint || data.architecture_type) {
+        const effectiveArch = urlBlueprint || data.architecture_type;
+        setSelectedArchType(effectiveArch);
+        if (effectiveArch === 'technical_diagram' || effectiveArch === 'conceptual_diagram') {
           setViewMode('canvas');
           setLayoutPreset('detailed');
         }
@@ -1257,7 +1265,21 @@ function WorkspaceContent() {
       setOutlineEdits({});
       
       // Set the active version matching active architecture_type
-      if (data.versions && data.versions.length > 0) {
+      if (urlBlueprint) {
+        const refXml = getDefaultXmlForArchitecture(urlBlueprint, data.name, data.name);
+        const dynamicVer: DiagramVersion = {
+          id: `arch_sync_${urlBlueprint}_${Date.now()}`,
+          diagram_id: data.id,
+          version_number: (data.versions?.length || 0) + 1,
+          xml_content: refXml,
+          comment: `Architecture Blueprint: ${getTemplateTitle(urlBlueprint)}`,
+          created_by: 'System',
+          created_at: new Date().toISOString(),
+          architecture_type: urlBlueprint
+        };
+        setSelectedArchType(urlBlueprint);
+        setActiveVersion(dynamicVer);
+      } else if (data.versions && data.versions.length > 0) {
         const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
         const targetArch = data.architecture_type || sortedVersions[0].architecture_type || 'conceptual_diagram';
         const candidateVer = sortedVersions.find(v => v.architecture_type === targetArch);
