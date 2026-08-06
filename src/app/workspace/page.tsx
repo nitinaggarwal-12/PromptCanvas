@@ -3711,7 +3711,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             title="Search & select diagram versions"
           >
             <span>
-              {isLatestActive ? `Version ${currentVer.version_number} {t.versionLatest}` : `Version ${currentVer.version_number}`}
+              {isLatestActive ? currentLanguage === 'hi' ? `संस्करण ${currentVer.version_number} (नवीनतम)` : `Version ${currentVer.version_number} (Latest)` : currentLanguage === 'hi' ? `संस्करण ${currentVer.version_number}` : `Version ${currentVer.version_number}`}
             </span>
             <ChevronDown className="w-3.5 h-3.5 text-teal-400" />
           </button>
