@@ -936,10 +936,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     dynSla = `${dynSla} &amp;nbsp;|&amp;nbsp; &lt;span style='color:#38BDF8;font-weight:bold;'&gt;🔒 VPC CIDR: ${userVpcCidr}&lt;/span&gt;`;
   }
 
-  // 1d. AI FinOps & Token Cost Optimization Engine
-  const isAiOrCloudArch = /rag|agent|langgraph|vertex|gemini|llm|streaming|serverless|microservices/i.test(promptLower);
+  // 1d. Multi-Pillar Cloud FinOps & Cost Optimization Engine (Token, Egress, Storage, DR)
+  const isAiOrCloudArch = /rag|agent|langgraph|vertex|gemini|llm|streaming|serverless|microservices|gcp|aws/i.test(promptLower);
   if (isAiOrCloudArch) {
-    dynSla = `${dynSla} &amp;nbsp;|&amp;nbsp; &lt;span style='background:rgba(245,158,11,0.2);border:1px solid #F59E0B;color:#FBBF24;font-size:10px;padding:2px 6px;border-radius:8px;'&gt;⚡ FinOps Token Optimizer: Context Cache (-90% Cost) | Flash Cascade&lt;/span&gt;`;
+    dynSla = `${dynSla} &amp;nbsp;|&amp;nbsp; &lt;span style='background:rgba(245,158,11,0.2);border:1px solid #F59E0B;color:#FBBF24;font-size:10px;padding:2px 6px;border-radius:8px;'&gt;⚡ Total FinOps: Context Cache (-90% Token) | CDN Edge Egress (-75%) | Autoclass Storage | HA Regional DR&lt;/span&gt;`;
   }
 
   const dynamicEnterpriseHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;${topicClean}&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);'&gt;${dynArchName} &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; ${dynDefinition}&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; ${dynPersonas}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; ${dynStakeholders}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;${dynSla}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
