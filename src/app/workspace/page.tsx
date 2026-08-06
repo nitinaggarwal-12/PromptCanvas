@@ -5782,6 +5782,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   >
                     <div className="pointer-events-auto w-full h-full flex items-center justify-center p-4">
                       <DiagramViewer
+              currentLanguage={currentLanguage}
                         key={`${activeDiagram?.id || 'diag'}_${displayedVersion?.version_number || 1}_${layoutPreset}_${canvasTheme}`}
                         xml={currentXmlToRender}
                         diagramId={activeDiagram?.id}

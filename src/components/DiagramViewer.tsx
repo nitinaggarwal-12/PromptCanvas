@@ -6,6 +6,7 @@ import { getDefaultXmlForArchitecture, getTemplateTitle } from '@/lib/architectu
 import { getArchitectureMeta } from '@/lib/architectureMetadata';
 
 interface DiagramViewerProps {
+  currentLanguage?: SupportedLanguage;
   xml: string;
   diagramId?: string;
   versionId?: string;
@@ -291,7 +292,7 @@ export default function DiagramViewer({
         }
 
         const configObj = ${JSON.stringify({
-          xml: sanitizedXml,
+          xml: translateDiagramXmlToLanguage(sanitizedXml, currentLanguage),
           lightbox: true,
           nav: true,
           resize: true,
