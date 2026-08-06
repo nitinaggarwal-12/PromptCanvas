@@ -538,9 +538,9 @@ export function resolveVendorIconUrl(text: string): string {
   const lower = text.toLowerCase();
 
   // 1. AI, LLM & Agentic Ecosystem (Genie, Cortex, Gemini, Claude, OpenAI, Bedrock, etc.)
-  if (lower.includes('genie') || lower.includes('databricks')) return 'https://api.iconify.design/logos:databricks.svg';
+  if (lower.includes('databricks')) return 'https://api.iconify.design/logos:databricks.svg';
   if (lower.includes('cortex') || lower.includes('snowflake')) return 'https://api.iconify.design/logos:snowflake.svg';
-  if (lower.includes('gemini') || lower.includes('vertex') || lower.includes('gcp') || lower.includes('google cloud')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('genie') || lower.includes('gemini') || lower.includes('vertex') || lower.includes('gcp') || lower.includes('google cloud') || lower.includes('deepmind')) return 'https://api.iconify.design/logos:google-cloud.svg';
   if (lower.includes('claude') || lower.includes('anthropic')) return 'https://api.iconify.design/logos:anthropic-icon.svg';
   if (lower.includes('gpt') || lower.includes('openai')) return 'https://api.iconify.design/logos:openai-icon.svg';
   if (lower.includes('copilot') || lower.includes('azure')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
