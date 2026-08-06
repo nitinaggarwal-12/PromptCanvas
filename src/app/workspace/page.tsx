@@ -4728,6 +4728,58 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       )}
                     </button>
 
+                    {/* SEARCHABLE GLOBE LANGUAGE DROPDOWN */}
+                    <div
+                      className="relative shrink-0"
+                      onMouseEnter={() => setIsLangDropdownOpen(true)}
+                      onMouseLeave={() => setIsLangDropdownOpen(false)}
+                    >
+                      <button
+                        type="button"
+                        title="Select Enterprise Workspace Language Pack"
+                        onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
+                      >
+                        <Globe className="w-3.5 h-3.5 text-teal-400" />
+                        <span>{langInfo.flag} {langInfo.code.toUpperCase()}</span>
+                      </button>
+
+                      {isLangDropdownOpen && (
+                        <div className="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2.5 z-[9999] animate-fade-in">
+                          <input
+                            type="text"
+                            value={langSearchQuery}
+                            onChange={(e) => setLangSearchQuery(e.target.value)}
+                            placeholder="🔍 Search 10+ languages..."
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 mb-2"
+                            autoFocus
+                          />
+                          <div className="max-h-60 overflow-y-auto space-y-1 scrollbar-thin">
+                            {filteredLanguages.map((lang) => (
+                              <button
+                                key={lang.code}
+                                type="button"
+                                onClick={() => {
+                                  setCurrentLanguage(lang.code);
+                                  setIsLangDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between transition-all cursor-pointer ${
+                                  lang.code === currentLanguage ? "bg-teal-500/20 text-teal-300 border border-teal-500/40 font-bold" : "hover:bg-slate-800 text-slate-300"
+                                }`}
+                              >
+                                <span className="flex items-center gap-2">
+                                  <span>{lang.flag}</span>
+                                  <span>{lang.nativeName}</span>
+                                  <span className="text-[10px] text-slate-400">({lang.name})</span>
+                                </span>
+                                {lang.code === currentLanguage && <span className="text-teal-400 font-black">✓</span>}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
                     <label
                       id="diagram-visibility-toggle"
                       title={isPrivate ? "Private: Visible only to you" : "Public: Shared & accessible across sessions"}
