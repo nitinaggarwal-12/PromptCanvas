@@ -3403,6 +3403,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     let baseXml = customXml || displayedVersion?.xml_content || activeVersion?.xml_content || getDefaultXmlForArchitecture(archType) || '';
 
     baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
+    // Universal Zero-Defect Light-HUD Transformation: Enforce Light Architectural Cards (#FFFFFF / #F0F9FF), Dark Slate Text (#0F172A), and Pure White Label Background Pills across ALL diagram templates
+    baseXml = transformXmlToExecutiveObsidianHud(baseXml);
     baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);
     baseXml = runZeroDefectTextAndTechnicalAccuracyPreflight(baseXml, archType, activeUseCase);
 

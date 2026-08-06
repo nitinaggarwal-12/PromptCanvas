@@ -340,25 +340,21 @@ const TECH_XML_DATA_LAKEHOUSE = `<mxfile host="embed.diagrams.net">
 </mxfile>`;
 
 
+
 export function getTechnicalArchitectureXml(archId: string): string | null {
-  switch (archId) {
-    case 'technical_diagram':
-    case 'conceptual_diagram':
-    case 'unified_system_view':
-      return TECH_XML_SERVERLESS_GCP;
-    case 'tech_streaming_analytics':
-    case 'gcp_streaming_pipeline':
-      return TECH_XML_STREAMING_ANALYTICS;
-    case 'tech_microservices_aws':
-    case 'aws_enterprise_arch':
-      return TECH_XML_MICROSERVICES_AWS;
-    case 'tech_data_pipeline':
-    case 'gcp_data_lakehouse':
-      return TECH_XML_DATA_LAKEHOUSE;
-    default:
-      return null;
+  const id = (archId || '').toLowerCase();
+  if (id.includes('streaming') || id.includes('event') || id.includes('iot') || id.includes('kafka')) {
+    return TECH_XML_STREAMING_ANALYTICS;
   }
+  if (id.includes('microservices') || id.includes('aws') || id.includes('k8s') || id.includes('kubernetes') || id.includes('vpc') || id.includes('zero_trust')) {
+    return TECH_XML_MICROSERVICES_AWS;
+  }
+  if (id.includes('lakehouse') || id.includes('pipeline') || id.includes('data') || id.includes('bigquery')) {
+    return TECH_XML_DATA_LAKEHOUSE;
+  }
+  return TECH_XML_SERVERLESS_GCP;
 }
+
 
 export {
   TECH_XML_SERVERLESS_GCP,
