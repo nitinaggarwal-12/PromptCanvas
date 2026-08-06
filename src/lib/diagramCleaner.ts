@@ -840,6 +840,58 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/ITACS/gi, topic || 'Enterprise')
     .replace(/&amp;amp;/g, '&amp;');
 
+  // 1b. Domain-Aware Dynamic Enterprise Governance Header Engine
+  const promptLower = ((userPrompt || '') + ' ' + (useCaseTitle || '')).toLowerCase();
+  let dynPersonas = 'Enterprise Architect, AI Systems Engineer';
+  let dynStakeholders = 'Governance Board, Platform SRE';
+  let dynDefinition = 'Unified Logical Flow, Technology Stack, Security Boundaries, & Operational Lifecycles';
+  let dynSla = 'SLA: 99.99% Uptime | Zero-Trust Perimeter';
+  let dynArchName = 'Enterprise Architecture System';
+
+  if (/payment|fintech|banking|pci|ledger|fraud/i.test(promptLower)) {
+    dynPersonas = 'Payment Operator, Risk Officer, Compliance Analyst';
+    dynStakeholders = 'Central Bank Ops, Clearing House, Security Lead';
+    dynDefinition = 'Real-Time Financial Settlement, Multi-Tier Fraud Detection, & ISO 20022 Ledger Flow';
+    dynSla = 'SLA: 99.999% Uptime | Latency <50ms';
+    dynArchName = 'FinTech Financial Settlement Architecture';
+  } else if (/supply|logistics|warehouse|fleet|inventory|chain/i.test(promptLower)) {
+    dynPersonas = 'Supply Chain Architect, Logistics Fleet SRE, Depot Ops';
+    dynStakeholders = 'Global Supply Chain Board, Carrier Partners, SRE Lead';
+    dynDefinition = 'Autonomous Multi-Node Supply Routing, Telemetry Tracking, & Fleet Orchestration';
+    dynSla = 'SLA: Real-Time Telemetry | 99.9% Uptime';
+    dynArchName = 'Autonomous Supply Chain Topology';
+  } else if (/genomic|fastq|variant|dna|gatk|literature|clinical|pharma|cancer/i.test(promptLower)) {
+    dynPersonas = 'Bioinformatician, Clinical AI Engineer, Data Modeler';
+    dynStakeholders = 'Regulatory Review Board, Chief Medical Officer, SRE Lead';
+    dynDefinition = 'HIPAA-Governed Literature Mining, Genomic Pipeline & Agentic RAG Discovery';
+    dynSla = 'SLA: HIPAA / SOC2 Governed | GKE Autopilot';
+    dynArchName = 'Clinical & Genomic Cognitive Architecture';
+  } else if (/devops|ci\/cd|pipeline|polyrepo|argocd|gitops|snyk|sonarqube/i.test(promptLower)) {
+    dynPersonas = 'DevSecOps Lead, Platform SRE, Security Auditor';
+    dynStakeholders = 'Engineering Leadership, Compliance & Audit Board';
+    dynDefinition = 'Polyrepo DevSecOps CI/CD Pipeline with Automated SAST & GitOps Canary Promotion';
+    dynSla = 'SLA: Zero-Downtime Canary | 100% Audit Trail';
+    dynArchName = 'DevSecOps Polyrepo CI/CD Architecture';
+  } else if (/erd|dimensional|fact|dimension|schema|database|table/i.test(promptLower)) {
+    dynPersonas = 'Data Architect, Database Modeler, Analytics Engineer';
+    dynStakeholders = 'Enterprise Data Governance, Business Intelligence Lead';
+    dynDefinition = 'Dimensional Enterprise Star/Snowflake Schema with PK/FK Integrity & Lineage';
+    dynSla = 'SLA: ACID Consistent | Read-Replica HA';
+    dynArchName = 'Dimensional Data Model (ERD)';
+  } else if (/rag|agent|cognitive|llm|embedding|vector|pinecone|pgvector/i.test(promptLower)) {
+    dynPersonas = 'Cognitive Systems Engineer, AI Chief Architect, Prompt Modeler';
+    dynStakeholders = 'AI Safety Board, Enterprise Product Leadership, SRE Lead';
+    dynDefinition = 'Agentic RAG Cognitive Loop with Vector Indexing, Tool Calling, & HITL Review';
+    dynSla = 'SLA: p99 < 350ms | Guarded Inference';
+    dynArchName = 'Cognitive Agentic RAG Architecture';
+  }
+
+  const dynamicEnterpriseHeaderHtml = `&lt;div style='display:flex;flex-direction:column;justify-content:center;padding:6px 18px;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.2);padding-bottom:4px;margin-bottom:4px;'&gt;&lt;div style='font-size:14px;font-weight:bold;color:#F8FAFC;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;${topicClean}&lt;/div&gt;&lt;div style='font-size:13px;font-weight:bold;color:#F1F5F9;display:flex;align-items:center;gap:10px;'&gt;&lt;span&gt;${dynArchName} &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&lt;/span&gt;&lt;span style='background:rgba(16,185,129,0.2);border:1px solid #10B981;color:#34D399;font-size:11px;padding:1px 8px;border-radius:12px;font-weight:bold;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#CBD5E1;'&gt;&lt;div style='max-width:48%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; ${dynDefinition}&lt;/div&gt;&lt;div style='display:flex;align-items:center;gap:12px;font-size:10.5px;'&gt;&lt;span&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; ${dynPersonas}&lt;/span&gt;&lt;span style='color:#64748B;'&gt;|&lt;/span&gt;&lt;span&gt;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; ${dynStakeholders}&lt;/span&gt;&lt;span style='color:#64748B;'&gt;|&lt;/span&gt;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;${dynSla}&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`;
+
+  updatedXml = updatedXml
+    .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title)"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${dynamicEnterpriseHeaderHtml}$2`)
+    .replace(/(<mxCell\s+[^>]*\bvalue=")(?:[^"]*?(?:Enterprise Architecture Platform|TOTAL UNIFIED SYSTEM VIEW|UNIFIED SYSTEM VIEW|एकीकृत सिस्टम दृश्य|Unified Logical Flow)[^"]*?)("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${dynamicEnterpriseHeaderHtml}$2`);
+
   // 2. Adapt technical nodes if generic
   const promptLower = (userPrompt || topic || '').toLowerCase();
   const isGenomicPrompt = promptLower.includes('genomic') || promptLower.includes('fastq') || promptLower.includes('variant') || promptLower.includes('gatk') || promptLower.includes('dna') || promptLower.includes('bwa');
