@@ -538,9 +538,10 @@ export function resolveVendorIconUrl(text: string): string {
   const lower = text.toLowerCase();
 
   // 1. AI, LLM & Agentic Ecosystem (Genie, Cortex, Gemini, Claude, OpenAI, Bedrock, etc.)
+  if (lower.includes('deepmind')) return 'https://api.iconify.design/simple-icons:googledeepmind.svg';
   if (lower.includes('databricks')) return 'https://api.iconify.design/logos:databricks.svg';
   if (lower.includes('cortex') || lower.includes('snowflake')) return 'https://api.iconify.design/logos:snowflake.svg';
-  if (lower.includes('genie') || lower.includes('gemini') || lower.includes('vertex') || lower.includes('gcp') || lower.includes('google cloud') || lower.includes('deepmind')) return 'https://api.iconify.design/logos:google-cloud.svg';
+  if (lower.includes('genie') || lower.includes('gemini') || lower.includes('vertex') || lower.includes('gcp') || lower.includes('google cloud')) return 'https://api.iconify.design/logos:google-cloud.svg';
   if (lower.includes('claude') || lower.includes('anthropic')) return 'https://api.iconify.design/logos:anthropic-icon.svg';
   if (lower.includes('gpt') || lower.includes('openai')) return 'https://api.iconify.design/logos:openai-icon.svg';
   if (lower.includes('copilot') || lower.includes('azure')) return 'https://api.iconify.design/logos:microsoft-azure.svg';
@@ -1011,6 +1012,11 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       // Product Vendor Model & Vendor Service Updates (Latest GCP & Enterprise LLM updates)
       .replace(/Gemini 1\.5 Pro/g, 'Gemini 2.5 Pro')
       .replace(/Vertex AI Search and Conversation/g, 'Vertex AI Agent Builder &amp; Search')
+      .replace(/Anthos Service Mesh/gi, 'Google Cloud Service Mesh (Managed Istio)')
+      .replace(/Cloud Life Sciences API/gi, 'Genomics on Google Cloud Batch &amp; GKE Spot')
+      .replace(/Cloud Source Repositories/gi, 'GitHub Enterprise &amp; Cloud Build Triggers')
+      .replace(/Cloud SQL for PostgreSQL/gi, 'AlloyDB &amp; Cloud SQL HA PostgreSQL')
+      .replace(/AWS OpenSearch/gi, 'Amazon OpenSearch Serverless Vector Engine')
       // Prompt & Callout Cleanliness (Flexible regex matching HTML entities and newlines)
       .replace(/Compare market trends[\s\S]*?across functional silos/gi, 'Explore biological targets &amp; AIDDISON virtual synthesis')
       .replace(/Oncology Trends/gi, 'Target Hypothesis &amp; Literature')
