@@ -27,7 +27,19 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     return { isValid: false, isHealed: true, xml: fallbackXml, healingLog };
   }
 
-  let cleaned = preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
+  const isFlagship = (
+    archType === 'eval_safety_benchmarking' ||
+    archType === 'business_agent_governance_hitl' ||
+    archType === 'tech_multi_agent_langgraph' ||
+    archType === 'tech_c4_system_context' ||
+    archType === 'tech_modern_data_stack' ||
+    archType === 'tech_event_driven_eda' ||
+    inputXml.includes('id="c4_system_context"') ||
+    inputXml.includes('id="modern_data_stack"') ||
+    inputXml.includes('id="event_driven_eda"')
+  );
+
+  let cleaned = isFlagship ? inputXml.trim() : preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
 
   // 1. Strip Markdown Code Fences if present
   if (cleaned.includes('```')) {
