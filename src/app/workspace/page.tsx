@@ -6957,6 +6957,191 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         architectureType={selectedArchType}
         xmlContent={(activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactMultiAgentLangGraphReferenceXml()}
       />
+
+      {/* BYOK MULTI-CONNECTION ENTERPRISE VAULT & HEALTH MONITOR MODAL */}
+      {isByokModalOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">🔑</span>
+                <div>
+                  <h3 className="text-sm font-extrabold text-white uppercase tracking-wider">BYOK Enterprise Connection Vault &amp; Health Monitor</h3>
+                  <p className="text-xs text-slate-400">Manage multiple Gemini API keys, test active health, and override default system keys.</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsByokModalOpen(false)}
+                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Profiles List */}
+            <div className="p-6 overflow-y-auto space-y-4 flex-1">
+              <div className="space-y-3">
+                <h4 className="text-xs font-extrabold text-teal-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>Saved API Connections ({byokProfiles.length})</span>
+                  <span className="text-[11px] text-slate-400 font-normal">Active key overrides system default</span>
+                </h4>
+
+                {byokProfiles.map((prof) => {
+                  const isActive = prof.id === activeByokProfileId;
+                  return (
+                    <div
+                      key={prof.id}
+                      className={`p-4 rounded-xl border transition-all ${
+                        isActive
+                          ? 'bg-teal-950/20 border-teal-500/60 ring-1 ring-teal-500/30'
+                          : 'bg-slate-800/60 border-slate-700/80 hover:border-slate-600'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-extrabold text-white truncate">{prof.name}</span>
+                            {isActive && (
+                              <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-teal-500 text-bg-dark">
+                                ACTIVE
+                              </span>
+                            )}
+                            {/* Health Badge */}
+                            {prof.status === 'verified' && (
+                              <span className="flex items-center gap-1 text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                                <span>🟢 Healthy</span>
+                                {prof.lastTestedLatencyMs && <span>({prof.lastTestedLatencyMs}ms)</span>}
+                              </span>
+                            )}
+                            {prof.status === 'error' && (
+                              <span className="flex items-center gap-1 text-[10px] font-extrabold text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/30">
+                                <span>🔴 Unhealthy / Invalid Key</span>
+                              </span>
+                            )}
+                            {prof.status === 'untested' && (
+                              <span className="text-[10px] font-bold text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded">
+                                ⚪ Untested
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-4 mt-1 text-xs text-slate-400">
+                            <span>Model: <strong className="text-slate-200">{prof.model}</strong></span>
+                            <span>Key: <code className="text-teal-300/80">{prof.apiKey ? prof.apiKey.slice(0, 8) + '... ' + prof.apiKey.slice(-4) : 'System Default Key'}</code></span>
+                          </div>
+                        </div>
+
+                        {/* Connection Controls */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            onClick={async () => {
+                              if (!prof.apiKey) return;
+                              const start = Date.now();
+                              try {
+                                const res = await fetch('/api/generate/usecases', {
+                                  headers: { 'x-gemini-api-key': prof.apiKey }
+                                });
+                                const duration = Date.now() - start;
+                                const updated = byokProfiles.map(p =>
+                                  p.id === prof.id
+                                    ? { ...p, status: (res.ok ? 'verified' : 'error') as any, lastTestedLatencyMs: duration }
+                                    : p
+                                );
+                                saveProfilesToStorage(updated, activeByokProfileId);
+                              } catch (e) {
+                                const updated = byokProfiles.map(p =>
+                                  p.id === prof.id ? { ...p, status: 'error' as any } : p
+                                );
+                                saveProfilesToStorage(updated, activeByokProfileId);
+                              }
+                            }}
+                            disabled={!prof.apiKey}
+                            className="px-2.5 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-xs font-bold text-slate-200 transition-all cursor-pointer"
+                            title="Actively validate connection health against Gemini 3.6 API"
+                          >
+                            ⚡ Validate Health
+                          </button>
+
+                          {!isActive && (
+                            <button
+                              onClick={() => saveProfilesToStorage(byokProfiles, prof.id)}
+                              className="px-2.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs font-bold text-bg-dark transition-all cursor-pointer"
+                            >
+                              Set Active
+                            </button>
+                          )}
+
+                          {prof.id !== 'default_prod' && (
+                            <button
+                              onClick={() => {
+                                const remaining = byokProfiles.filter(p => p.id !== prof.id);
+                                const nextActive = isActive ? remaining[0]?.id || 'default_prod' : activeByokProfileId;
+                                saveProfilesToStorage(remaining, nextActive);
+                              }}
+                              className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-500/40 text-red-400 hover:text-red-300 transition-all cursor-pointer"
+                              title="Delete connection profile"
+                            >
+                              🗑️
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Add New Connection Profile Form */}
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3 pt-4">
+                <h5 className="text-xs font-extrabold text-white uppercase tracking-wider">
+                  + Add &amp; Validate New BYOK Connection
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Connection Name</label>
+                    <input
+                      type="text"
+                      value={newProfileName}
+                      onChange={(e) => setNewProfileName(e.target.value)}
+                      placeholder="e.g. Prod Gemini 3.6 Ultra"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Model Tier</label>
+                    <select
+                      value={newProfileModel}
+                      onChange={(e) => setNewProfileModel(e.target.value as any)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-400"
+                    >
+                      <option value="gemini-3.6-pro">Gemini 3.6 Pro (Recommended)</option>
+                      <option value="gemini-3.6-ultra">Gemini 3.6 Ultra-Deep</option>
+                      <option value="gemini-3.6-flash">Gemini 3.6 Flash (Fast)</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Google Gemini API Key (AIzaSy...)</label>
+                  <input
+                    type="password"
+                    value={newProfileKey}
+                    onChange={(e) => setNewProfileKey(e.target.value)}
+                    placeholder="AIzaSy..."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 font-mono"
+                  />
+                </div>
+                <button
+                  onClick={handleAddAndTestConnection}
+                  disabled={!newProfileKey.trim() || byokTestStatus === 'testing'}
+                  className="w-full py-2.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-bg-dark font-extrabold text-xs transition-all cursor-pointer disabled:opacity-40"
+                >
+                  {byokTestStatus === 'testing' ? '⚡ Testing Connection Health...' : '+ Add, Test &amp; Activate Connection'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
