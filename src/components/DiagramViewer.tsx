@@ -61,17 +61,16 @@ export default function DiagramViewer({
     return getTemplateTitle(diagramType || diagramId);
   }, [diagramType, diagramId]);
 
-  // Derive comprehensive architecture metadata with Preflight Title Validation
+  // Derive comprehensive architecture metadata with User Dynamic Overrides First
   const meta = React.useMemo(() => {
     const defaultMeta = getArchitectureMeta(diagramId || diagramType);
-    const isNumberedTemplateTitle = useCaseName && /^\d+\.\s/.test(useCaseName);
-    const isLongPromptParagraph = useCaseName && (useCaseName.length > 50 || useCaseName.includes('Pristine ') || useCaseName.includes('Act as ') || useCaseName.includes('- Plan &'));
-    const validatedUseCase = (isNumberedTemplateTitle || isLongPromptParagraph) ? defaultMeta.useCase : (useCaseName || defaultMeta.useCase);
+    const userTitle = (useCaseName && !/^\d+\.\s/.test(useCaseName)) ? useCaseName : (defaultMeta.title || templateName);
+    const userUseCase = useCaseName || defaultMeta.useCase;
     return {
-      useCase: validatedUseCase,
-      title: defaultMeta.title || templateName,
+      useCase: userUseCase,
+      title: userTitle,
       category: defaultMeta.category,
-      businessUseCase: defaultMeta.businessUseCase,
+      businessUseCase: userUseCase,
       primaryActors: defaultMeta.primaryActors,
       targetOutcomes: defaultMeta.targetOutcomes,
       desc: description || defaultMeta.desc,
