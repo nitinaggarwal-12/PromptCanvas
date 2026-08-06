@@ -13,10 +13,11 @@ import { VisualVersionDiffInspectorModal } from '@/components/VisualVersionDiffI
 import { TechRadarAndConceptDriftGuardModal } from '@/components/TechRadarAndConceptDriftGuard';
 import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
+import { SUPPORTED_LANGUAGES, TRANSLATIONS, SupportedLanguage } from '@/lib/i18n';
 import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { 
+import {
   Plus, 
   Trash2, 
   Send, 
@@ -262,6 +263,16 @@ function WorkspaceContent() {
   const [autosaveStatus, setAutosaveStatus] = useState<'saved' | 'saving'>('saved');
   const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
   const [activeWorkflowStep, setActiveWorkflowStep] = useState<1 | 2 | 3 | 4>(1);
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState<boolean>(false);
+  const [langSearchQuery, setLangSearchQuery] = useState<string>('');
+  const filteredLanguages = SUPPORTED_LANGUAGES.filter(l =>
+    l.name.toLowerCase().includes(langSearchQuery.toLowerCase()) ||
+    l.nativeName.toLowerCase().includes(langSearchQuery.toLowerCase()) ||
+    l.code.toLowerCase().includes(langSearchQuery.toLowerCase())
+  );
+  const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
+  const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === currentLanguage) || SUPPORTED_LANGUAGES[0];
   const [byokProfiles, setByokProfiles] = useState<ByokConnectionProfile[]>([
     {
       id: 'default_prod',
