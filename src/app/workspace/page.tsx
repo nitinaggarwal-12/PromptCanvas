@@ -4085,7 +4085,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           <div className="p-3 border-b border-panel-border/30 space-y-2 shrink-0">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-400">
-                ACTIVE WORKSPACE & DESIGN
+                {t.activeWorkspaceHeader}
               </span>
               {activeDiagram && (
                 <button

@@ -32,7 +32,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: 'Public',
     privateVis: 'Private',
     executiveMode: 'Executive Boardroom Mode',
-    activeWorkspace: 'Active Workspace & Design',
+    activeWorkspaceHeader: 'ACTIVE WORKSPACE & DESIGN',
     updatedAgo: 'Updated 11h ago Diagram Version v28',
     newArchitecture: '+ New Architecture',
     designCanvas: 'Design Canvas',
@@ -44,7 +44,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: 'Filter saved designs...',
     architectSuite: 'ARCHITECT SUITE & AI',
     exportStudio: 'Export Studio',
+    estCost: 'Est. $14,670/mo',
     composeDoc: 'Compose Doc',
+    secAuditBtn: 'Security Audit',
     suggestedRefinements: 'SUGGESTED NEXT REFINEMENTS',
     prevDiagram: 'Prev Diagram',
     nextDiagram: 'Next Diagram',
@@ -59,7 +61,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: 'Add Dim_Customer_Account & Dim_Merchant tables',
     sug2: 'Connect Fact_Account_Transactions with 1:N cardinality',
     sug3: 'Enforce PCI-DSS & KYC Compliance Rules',
-    sug4: 'Add Card Network Fee Tier Attributes'
+    sug4: 'Add Card Network Fee Tier Attributes',
+    unifiedSystemTitle: '10. Unified System View'
   },
   hi: {
     canvasLabel: 'कैनवास:',
@@ -71,8 +74,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: 'सार्वजनिक',
     privateVis: 'निजी',
     executiveMode: 'कार्यकारी बोर्डरूम मोड',
-    activeWorkspace: 'सक्रिय वर्कस्पेस और डिज़ाइन',
-    updatedAgo: 'अपडेट किया गया • आरेख संस्करण v28',
+    activeWorkspaceHeader: 'सक्रिय वर्कस्पेस एवं डिज़ाइन',
+    updatedAgo: 'अद्यतन • आरेख संस्करण v28',
     newArchitecture: '+ नई आर्किटेक्चर',
     designCanvas: 'डिज़ाइन कैनवास',
     templatesGallery: 'टेम्पलेट गैलरी',
@@ -81,9 +84,11 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     interactiveTour: 'इंटरैक्टिव विजुअल टूर',
     settingsTier: 'सेटिंग्स और AI टियर',
     filterDesigns: 'सहेजे गए डिज़ाइन फ़िल्टर करें...',
-    architectSuite: 'आर्किटेक्ट सूट और AI',
+    architectSuite: 'आर्किटेक्ट सूट एवं AI',
     exportStudio: 'एक्सपोर्ट स्टूडियो',
+    estCost: 'अनुमानित $14,670/माह',
     composeDoc: 'दस्तावेज़ लिखें',
+    secAuditBtn: 'सुरक्षा ऑडिट',
     suggestedRefinements: 'सुझाए गए सुधार',
     prevDiagram: 'पिछला आरेख',
     nextDiagram: 'अगला आरेख',
@@ -94,11 +99,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     liveFlow: 'लाइव फ़्लो',
     reset: 'रिसेट',
     promptPlaceholder: 'उदा., PK/FK संबंधों के साथ Dim_Customer_Account तालिका जोड़ें...',
-    refineHint: 'भेजने के लिए Enter दबाएं। Gemini 3.6 Pro आपके आरेख को अपडेट करेगा।',
+    refineHint: 'भेजने के लिए Enter दबाएं। Gemini 3.6 Pro आपके आरेख को अद्यतन करेगा।',
     sug1: 'Dim_Customer_Account और Dim_Merchant तालिकाओं को जोड़ें',
     sug2: 'Fact_Account_Transactions को 1:N कार्डिनलिटी से जोड़ें',
     sug3: 'PCI-DSS और KYC अनुपालन नियम लागू करें',
-    sug4: 'कार्ड नेटवर्क शुल्क टियर विशेषताएँ जोड़ें'
+    sug4: 'कार्ड नेटवर्क शुल्क टियर विशेषताएँ जोड़ें',
+    unifiedSystemTitle: '10. एकीकृत सिस्टम दृश्य'
   },
   es: {
     canvasLabel: 'LIENZO:',
@@ -110,7 +116,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: 'Público',
     privateVis: 'Privado',
     executiveMode: 'Modo Ejecutivo Boardroom',
-    activeWorkspace: 'Espacio de Trabajo Activo',
+    activeWorkspaceHeader: 'ESPACIO DE TRABAJO ACTIVO',
     updatedAgo: 'Actualizado • Versión del Diagrama v28',
     newArchitecture: '+ Nueva Arquitectura',
     designCanvas: 'Lienzo de Diseño',
@@ -122,7 +128,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: 'Filtrar diseños guardados...',
     architectSuite: 'SUITE DE ARQUITECTURA E IA',
     exportStudio: 'Estudio Exportación',
+    estCost: 'Est. $14,670/mes',
     composeDoc: 'Redactar Doc',
+    secAuditBtn: 'Auditoría Seguridad',
     suggestedRefinements: 'SUGERENCIAS DE REFINAMIENTO',
     prevDiagram: 'Diagrama Anter.',
     nextDiagram: 'Diagrama Sig.',
@@ -137,7 +145,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: 'Añadir tablas Dim_Customer_Account y Dim_Merchant',
     sug2: 'Conectar Fact_Account_Transactions con cardinalidad 1:N',
     sug3: 'Aplicar Reglas de Cumplimiento PCI-DSS y KYC',
-    sug4: 'Añadir Atributos de Tarifa de Red de Tarjetas'
+    sug4: 'Añadir Atributos de Tarifa de Red de Tarjetas',
+    unifiedSystemTitle: '10. Vista de Sistema Unificada'
   },
   pt: {
     canvasLabel: 'CANVAS:',
@@ -149,7 +158,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: 'Público',
     privateVis: 'Privado',
     executiveMode: 'Modo Executivo Boardroom',
-    activeWorkspace: 'Espaço de Trabalho Ativo',
+    activeWorkspaceHeader: 'ESPAÇO DE TRABALHO ATIVO',
     updatedAgo: 'Atualizado • Versão do Diagrama v28',
     newArchitecture: '+ Nova Arquitetura',
     designCanvas: 'Canvas de Design',
@@ -161,7 +170,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: 'Filtrar designs salvos...',
     architectSuite: 'SUITE DE ARQUITETURA & IA',
     exportStudio: 'Estúdio Exportação',
+    estCost: 'Est. $14,670/mês',
     composeDoc: 'Compor Doc',
+    secAuditBtn: 'Auditoria Segurança',
     suggestedRefinements: 'SUGESTÕES DE REFINAMENTO',
     prevDiagram: 'Diagrama Ant.',
     nextDiagram: 'Diagrama Próx.',
@@ -176,7 +187,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: 'Adicionar tabelas Dim_Customer_Account & Dim_Merchant',
     sug2: 'Conectar Fact_Account_Transactions com cardinalidade 1:N',
     sug3: 'Aplicar Reglas de Conformidade PCI-DSS & KYC',
-    sug4: 'Adicionar Atributos de Tarifas de Rede de Cartões'
+    sug4: 'Adicionar Atributos de Tarifas de Rede de Cartões',
+    unifiedSystemTitle: '10. Visão de Sistema Unificada'
   },
   ja: {
     canvasLabel: 'キャンバス:',
@@ -188,7 +200,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: '公開',
     privateVis: '非公開',
     executiveMode: 'エグゼクティブモード',
-    activeWorkspace: 'アクティブなワークスペース',
+    activeWorkspaceHeader: 'アクティブワークスペース',
     updatedAgo: '更新済み • 図面バージョン v28',
     newArchitecture: '+ 新規アーキテクチャ',
     designCanvas: '設計キャンバス',
@@ -200,7 +212,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: '保存済み設計を検索...',
     architectSuite: '設計スイート＆AI',
     exportStudio: 'エクスポートスタジオ',
+    estCost: '推定 $14,670/月',
     composeDoc: 'ドキュメント作成',
+    secAuditBtn: 'セキュリティ監査',
     suggestedRefinements: '推奨改善プロンプト',
     prevDiagram: '前の図面',
     nextDiagram: '次の図面',
@@ -215,7 +229,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: 'Dim_Customer_AccountとDim_Merchantテーブルを追加',
     sug2: 'Fact_Account_Transactionsを1:Nカーディナリティで接続',
     sug3: 'PCI-DSSおよびKYCコンプライアンスルールを適用',
-    sug4: 'カードネットワーク手数料階層属性を追加'
+    sug4: 'カードネットワーク手数料階層属性を追加',
+    unifiedSystemTitle: '10. 統合システム図'
   },
   fr: {
     canvasLabel: 'CANVAS:',
@@ -227,7 +242,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: 'Public',
     privateVis: 'Privé',
     executiveMode: 'Mode Direction Boardroom',
-    activeWorkspace: 'Espace de Travail Actif',
+    activeWorkspaceHeader: 'ESPACE DE TRAVAIL ACTIF',
     updatedAgo: 'Mis à jour • Version Schéma v28',
     newArchitecture: '+ Nouvelle Architecture',
     designCanvas: 'Canvas de Conception',
@@ -239,7 +254,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: 'Filtrer les schémas enregistrés...',
     architectSuite: 'SUITE ARCHITECTURE & IA',
     exportStudio: 'Studio Exportation',
+    estCost: 'Est. $14,670/mois',
     composeDoc: 'Rédiger Doc',
+    secAuditBtn: 'Audit Sécurité',
     suggestedRefinements: 'SUGGESTIONS DE PERFECTIONNEMENT',
     prevDiagram: 'Schéma Préc.',
     nextDiagram: 'Schéma Suiv.',
@@ -254,7 +271,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: 'Ajouter les tables Dim_Customer_Account & Dim_Merchant',
     sug2: 'Connecter Fact_Account_Transactions avec une cardinalité 1:N',
     sug3: 'Appliquer les règles de conformité PCI-DSS & KYC',
-    sug4: 'Ajouter les attributs de frais de réseau de cartes'
+    sug4: 'Ajouter les attributs de frais de réseau de cartes',
+    unifiedSystemTitle: '10. Vue Système Unifiée'
   },
   de: {
     canvasLabel: 'CANVAS:',
@@ -266,7 +284,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: 'Öffentlich',
     privateVis: 'Privat',
     executiveMode: 'Vorstands-Modus',
-    activeWorkspace: 'Aktiver Arbeitsbereich',
+    activeWorkspaceHeader: 'AKTIVER ARBEITSBEREICH',
     updatedAgo: 'Aktualisiert • Diagramm-Version v28',
     newArchitecture: '+ Neue Architektur',
     designCanvas: 'Design-Canvas',
@@ -278,7 +296,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: 'Gespeicherte Designs filtern...',
     architectSuite: 'ARCHITEKTUR-SUITE & KI',
     exportStudio: 'Export-Studio',
+    estCost: 'Ca. $14,670/Monat',
     composeDoc: 'Doku Erstellen',
+    secAuditBtn: 'Sicherheits-Audit',
     suggestedRefinements: 'EMPFOHLENE VERFEINERUNGEN',
     prevDiagram: 'Vorheriges Diagramm',
     nextDiagram: 'Nächstes Diagramm',
@@ -293,7 +313,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: 'Dim_Customer_Account & Dim_Merchant Tabellen hinzufügen',
     sug2: 'Fact_Account_Transactions mit 1:N-Kardinalität verbinden',
     sug3: 'PCI-DSS & KYC Compliance-Regeln durchsetzen',
-    sug4: 'Kartennetzwerk-Gebührenattributklassen hinzufügen'
+    sug4: 'Kartennetzwerk-Gebührenattributklassen hinzufügen',
+    unifiedSystemTitle: '10. Einheitliche Systemansicht'
   },
   id: {
     canvasLabel: 'KANVAS:',
@@ -305,7 +326,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: 'Publik',
     privateVis: 'Pribadi',
     executiveMode: 'Mode Eksekutif Boardroom',
-    activeWorkspace: 'Ruang Kerja & Desain Aktif',
+    activeWorkspaceHeader: 'RUANG KERJA AKTIF',
     updatedAgo: 'Diperbarui • Versi Diagram v28',
     newArchitecture: '+ Arsitektur Baru',
     designCanvas: 'Kanvas Desain',
@@ -317,7 +338,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: 'Filter desain tersimpan...',
     architectSuite: 'SUITE ARSITEK & AI',
     exportStudio: 'Studio Ekspor',
+    estCost: 'Est. $14.670/bln',
     composeDoc: 'Tulis Dokumen',
+    secAuditBtn: 'Audit Keamanan',
     suggestedRefinements: 'SARAN PENYEMPURNAN',
     prevDiagram: 'Diagram Sebel.',
     nextDiagram: 'Diagram Lanjut',
@@ -332,7 +355,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: 'Tambahkan tabel Dim_Customer_Account & Dim_Merchant',
     sug2: 'Hubungkan Fact_Account_Transactions dengan kardinalitas 1:N',
     sug3: 'Terapkan Aturan Kepatuhan PCI-DSS & KYC',
-    sug4: 'Tambahkan Atribut Tingkat Biaya Jaringan Kartu'
+    sug4: 'Tambahkan Atribut Tingkat Biaya Jaringan Kartu',
+    unifiedSystemTitle: '10. Tampilan Sistem Terpadu'
   },
   ar: {
     canvasLabel: 'لوحة:',
@@ -344,7 +368,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: 'عام',
     privateVis: 'خاص',
     executiveMode: 'وضع مجلس الإدارة التنفيذي',
-    activeWorkspace: 'مساحة العمل والتصميم النشطة',
+    activeWorkspaceHeader: 'مساحة العمل والتصميم النشطة',
     updatedAgo: 'تم التحديث • إصدار المخطط v28',
     newArchitecture: '+ بنية تحتيّة جديدة',
     designCanvas: 'لوحة التصميم',
@@ -356,7 +380,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: 'تصفية التصاميم المحفوظة...',
     architectSuite: 'جناح المهندس والذكاء الاصطناعي',
     exportStudio: 'استوديو التصدير',
+    estCost: 'تقديري $14,670/شهر',
     composeDoc: 'صياغة المستند',
+    secAuditBtn: 'تدقيق الأمان',
     suggestedRefinements: 'تحسينات مقترحة',
     prevDiagram: 'المخطط السابق',
     nextDiagram: 'المخطط التالي',
@@ -371,7 +397,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: 'إضافة جدولين Dim_Customer_Account و Dim_Merchant',
     sug2: 'ربط Fact_Account_Transactions بنسبة 1:N',
     sug3: 'تطبيق قواعد الامتثال PCI-DSS و KYC',
-    sug4: 'إضافة سمات فئة رسوم شبكة البطاقات'
+    sug4: 'إضافة سمات فئة رسوم شبكة البطاقات',
+    unifiedSystemTitle: '10. عرض النظام الموحد'
   },
   zh: {
     canvasLabel: '畫布:',
@@ -383,7 +410,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     publicVis: '公開',
     privateVis: '私有',
     executiveMode: '董事會執行視圖',
-    activeWorkspace: '當前工作區與設計',
+    activeWorkspaceHeader: '當前工作區與設計',
     updatedAgo: '已更新 • 架構圖版本 v28',
     newArchitecture: '+ 新增架構',
     designCanvas: '設計畫布',
@@ -395,7 +422,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     filterDesigns: '過濾已保存設計...',
     architectSuite: '架構師套件與 AI',
     exportStudio: '導出工作台',
+    estCost: '預估 $14,670/月',
     composeDoc: '編寫系統設計文檔',
+    secAuditBtn: '安全審計',
     suggestedRefinements: '建議優化提示語',
     prevDiagram: '上一張圖',
     nextDiagram: '下一張圖',
@@ -410,7 +439,8 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
     sug1: '添加 Dim_Customer_Account 與 Dim_Merchant 表',
     sug2: '將 Fact_Account_Transactions 以 1:N 基數連接',
     sug3: '強制執行 PCI-DSS 和 KYC 合規規則',
-    sug4: '添加卡組織網絡手續費分級屬性'
+    sug4: '添加卡組織網絡手續費分級屬性',
+    unifiedSystemTitle: '10. 統一系統圖'
   }
 };
 
@@ -436,15 +466,7 @@ export function translateDiagramXmlToLanguage(xml: string, lang: SupportedLangua
     "Core Agent Orchestrator": "कोर एजेंट ऑर्केस्ट्रेटर"
   };
 
-  const SPANISH_CANVAS_MAP: Record<string, string> = {
-    "Plan &amp; Data Foundation": "Base de Datos y Planificación",
-    "Project Planning": "Planificación de Proyecto",
-    "Governance Boundary": "Límite de Gobernanza",
-    "Key Definitions": "Definiciones Clave",
-    "Unified System View": "Vista de Sistema Unificada"
-  };
-
-  const map = lang === 'hi' ? HINDI_CANVAS_MAP : lang === 'es' ? SPANISH_CANVAS_MAP : HINDI_CANVAS_MAP;
+  const map = lang === 'hi' ? HINDI_CANVAS_MAP : HINDI_CANVAS_MAP;
   let translated = xml;
   for (const [enTerm, localTerm] of Object.entries(map)) {
     translated = translated.replace(new RegExp(enTerm, 'g'), localTerm);
