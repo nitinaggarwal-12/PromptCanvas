@@ -231,6 +231,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 
   xml = runZeroDefectTextAndTechnicalAccuracyPreflight(xml, archType);
 
+  // Item 2 Artifact Clean-up: Remove "❌ dirt models" and deduplicate "Key Definitions" in legend containers
+  xml = xml.replace(/❌\s*dirt models/gi, "Derived Models");
+  xml = xml.replace(/value="Key Definitions"/g, (match, offset, full) => {
+    return full.indexOf('value="Key Definitions"') === offset ? match : 'value="Key Component Types"';
+  });
   return xml;
 }
 
@@ -320,6 +325,11 @@ export function heal2DSameTierNodeCollisions(xml: string): string {
     }
   }
 
+  // Item 2 Artifact Clean-up: Remove "❌ dirt models" and deduplicate "Key Definitions" in legend containers
+  xml = xml.replace(/❌\s*dirt models/gi, "Derived Models");
+  xml = xml.replace(/value="Key Definitions"/g, (match, offset, full) => {
+    return full.indexOf('value="Key Definitions"') === offset ? match : 'value="Key Component Types"';
+  });
   return xml;
 }
 

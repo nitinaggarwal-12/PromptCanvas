@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from '@/lib/i18n';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   Sparkles, 
@@ -32,6 +33,8 @@ interface WorkspaceHeaderProps {
   onOpenPersonaModal: () => void;
   onOpenCompose?: () => void;
   onArchitectureTypeChange: (typeId: string) => void;
+  currentLanguage?: SupportedLanguage;
+  onLanguageChange?: (lang: SupportedLanguage) => void;
 }
 
 export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
@@ -49,7 +52,13 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
   onOpenPersonaModal,
   onOpenCompose,
   onArchitectureTypeChange,
+  currentLanguage = 'en',
+  onLanguageChange,
 }) => {
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const [langSearch, setLangSearch] = useState('');
+  const filteredLangs = SUPPORTED_LANGUAGES.filter(l => l.name.toLowerCase().includes(langSearch.toLowerCase()) || l.nativeName.toLowerCase().includes(langSearch.toLowerCase()));
+  const activeLang = SUPPORTED_LANGUAGES.find(l => l.code === currentLanguage) || SUPPORTED_LANGUAGES[0];
   const currentVersion = previewVersion || activeVersion;
   const currentTypeObj = getArchitectureTypeById(activeDiagram?.architecture_type || 'conceptual_diagram');
 
@@ -120,6 +129,58 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
           >
             {bgTheme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-300" />}
           </button>
+
+          {/* Searchable Globe Language Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setIsLangOpen(true)}
+            onMouseLeave={() => setIsLangOpen(false)}
+          >
+            <button
+              type="button"
+              title="Select Enterprise Workspace Language Pack"
+              onClick={() => setIsLangOpen(!isLangOpen)}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-teal-400 text-slate-200 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+            >
+              <Globe className="w-4 h-4 text-teal-400" />
+              <span>{activeLang.flag} {activeLang.code.toUpperCase()}</span>
+            </button>
+
+            {isLangOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2.5 z-50 animate-fade-in">
+                <input
+                  type="text"
+                  value={langSearch}
+                  onChange={(e) => setLangSearch(e.target.value)}
+                  placeholder="🔍 Search 10+ languages..."
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 mb-2"
+                  autoFocus
+                />
+                <div className="max-h-60 overflow-y-auto space-y-1 scrollbar-thin">
+                  {filteredLangs.map((lang) => (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      onClick={() => {
+                        onLanguageChange?.(lang.code);
+                        setIsLangOpen(false);
+                      }}
+                      className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between transition-all cursor-pointer ${
+                        lang.code === currentLanguage ? "bg-teal-500/20 text-teal-300 border border-teal-500/40 font-bold" : "hover:bg-slate-800 text-slate-300"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{lang.flag}</span>
+                        <span>{lang.nativeName}</span>
+                        <span className="text-[10px] text-slate-400">({lang.name})</span>
+                      </span>
+                      {lang.code === currentLanguage && <span className="text-teal-400 font-black">✓</span>}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Persona Modal Trigger */}
           <button
