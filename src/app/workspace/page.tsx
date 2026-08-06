@@ -1,5 +1,6 @@
 'use client';
 
+import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
 import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -241,6 +242,7 @@ const TEMPLATE_PROMPTS = [
 function WorkspaceContent() {
   // --- State ---
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
+  const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
@@ -5068,6 +5070,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
             )}
 
+            <WorldClassFlagshipDrawer
+              activeTool={activeFlagshipTool}
+              onClose={() => setActiveFlagshipTool('none')}
+              activeDiagramName={activeDiagram?.name || 'QuantumFlow Enterprise System'}
+              architectureType={activeDiagram?.architecture_type || 'unified_system_view'}
+            />
             <div 
               id="tour-canvas-viewport"
               className={getTourClass(tourStep, 4, "flex-1 w-full h-full relative overflow-hidden")}
