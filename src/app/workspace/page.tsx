@@ -441,11 +441,11 @@ function WorkspaceContent() {
         return {
           suggestions: [
             'Add Dim_Customer_Account & Dim_Merchant tables',
-            'Connect Fact_Account_Transactions with 1:N cardinality',
+            '{t.sug2}',
             'Enforce PCI-DSS & KYC Compliance Rules',
-            'Add Card Network Fee Tier Attributes'
+            '{t.sug4}'
           ],
-          dynamicPlaceholder: 'e.g., Add Dim_Customer_Account table with PK/FK relationships...'
+          dynamicPlaceholder: '{t.promptPlaceholder}'
         };
       }
       if (isSeq) {
@@ -5007,7 +5007,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     </div>
                   )}
                   <p className="text-[10px] text-slate-500 text-center font-medium">
-                    Press Enter to send. Gemini 3.6 Pro will refine your active diagram.
+                    {t.refineHint}
                   </p>
                 </div>
 
@@ -5213,7 +5213,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         title="Backward: Switch to Previous Architecture Diagram on Canvas"
                       >
                         <ChevronLeft className="w-4 h-4 text-teal-400" />
-                        <span>Prev Diagram</span>
+                        <span>{t.prevDiagram}</span>
                       </button>
 
                       <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-teal-500/40 shadow-lg">
@@ -5224,7 +5224,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             layoutPreset === 'detailed' ? 'bg-teal-500/20 text-teal-300 border border-teal-400/60' : 'text-slate-400 hover:text-white'
                           }`}
                         >
-                          📐 Detailed
+                          📐 {t.detailed}
                         </button>
                         <button
                           type="button"
@@ -5233,7 +5233,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             layoutPreset === 'clean' ? 'bg-teal-500/20 text-teal-300 border border-teal-400/60' : 'text-slate-400 hover:text-white'
                           }`}
                         >
-                          ✨ Clean
+                          ✨ {t.clean}
                         </button>
                         <button
                           type="button"
@@ -5242,7 +5242,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             layoutPreset === 'lucid' ? 'bg-blue-600 text-white border border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.4)]' : 'text-slate-300 hover:text-blue-300'
                           }`}
                         >
-                          💎 Lucidchart
+                          💎 {t.lucidchart}
                         </button>
                         <button
                           type="button"
@@ -5251,7 +5251,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             layoutPreset === 'obsidian' ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400 shadow-[0_0_14px_rgba(56,189,248,0.4)]' : 'text-slate-300 hover:text-cyan-300'
                           }`}
                         >
-                          🌌 Obsidian HUD
+                          🌌 {t.obsidianHud}
                         </button>
                         <button
                           type="button"
@@ -5261,7 +5261,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                           }`}
                           title="Toggle Live Telemetry Flow Stream Animation"
                         >
-                          ⚡ Live Flow
+                          ⚡ {t.liveFlow}
                         </button>
                       </div>
 
@@ -5276,7 +5276,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-teal-950 border border-teal-500/50 hover:border-teal-400 text-white font-extrabold text-xs shadow-md disabled:opacity-30 cursor-pointer transition-all"
                         title="Forward: Switch to Next Architecture Diagram on Canvas"
                       >
-                        <span>Next Diagram</span>
+                        <span>{t.nextDiagram}</span>
                         <ChevronRight className="w-4 h-4 text-teal-400" />
                       </button>
                     </div>
@@ -5964,7 +5964,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   </optgroup>
 
                   <optgroup label="✏️ FREEFORM & CUSTOM" className="bg-[#0b101d] text-slate-400 font-extrabold">
-                    <option value="0" className="bg-[#0b101d] text-slate-200 font-bold py-1">✨ Clean Slate (Empty Interactive Canvas)</option>
+                    <option value="0" className="bg-[#0b101d] text-slate-200 font-bold py-1">✨ {t.clean} Slate (Empty Interactive Canvas)</option>
                     <option value="custom" className="bg-[#0b101d] text-teal-300 font-bold py-1">✍️ Custom Prompt (Write your own below...)</option>
                   </optgroup>
                 </select>

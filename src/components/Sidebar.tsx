@@ -21,6 +21,7 @@ import {
 import type { Workspace } from '@/lib/db';
 
 interface SidebarProps {
+  currentLanguage?: SupportedLanguage;
   currentUser: { id: string; email: string; name?: string | null; global_role?: string; is_super_admin?: boolean } | null;
   personalWorkspace: Workspace | null;
   sharedWorkspaces: Workspace[];
