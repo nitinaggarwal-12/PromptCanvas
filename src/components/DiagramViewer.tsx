@@ -4,6 +4,8 @@ import React from 'react';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getDefaultXmlForArchitecture, getTemplateTitle } from '@/lib/architectureTypes';
 import { getArchitectureMeta } from '@/lib/architectureMetadata';
+import { SupportedLanguage, translateDiagramXmlToLanguage } from '@/lib/i18n';
+import { localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
 
 interface DiagramViewerProps {
   currentLanguage?: SupportedLanguage;
@@ -292,7 +294,7 @@ export default function DiagramViewer({
         }
 
         const configObj = ${JSON.stringify({
-          xml: translateDiagramXmlToLanguage(sanitizedXml, currentLanguage),
+          xml: localizeDrawioXmlDeep(translateDiagramXmlToLanguage(sanitizedXml, currentLanguage || 'en'), currentLanguage || 'en'),
           lightbox: true,
           nav: true,
           resize: true,
