@@ -1043,12 +1043,16 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
         </mxCell>
 
         <!-- TIER 2 CARD [2.2] Automated DLQ Self-Healing Replay Controller (ON THE LEFT MATCHING EXHIBIT!) -->
-        <mxCell id="en2_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[2.2] Automated DLQ Self-Healing Replay Controller&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Isolation of Poison-pill events, keeping&lt;br&gt;unique interface&lt;br&gt;• Exponential backoff logic&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <mxCell id="en2_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[2.2] Automated DLQ Self-Healing Replay Controller&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
           <mxGeometry x="30" y="280" width="410" height="135" as="geometry" />
         </mxCell>
         <!-- DLQ Hexagon Badge inside [2.2] -->
         <mxCell id="p2_2_dlq" value="&lt;b style=&quot;color:#FFFFFF;&quot;&gt;DLQ&lt;/b&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;strokeWidth=0;fillColor=#7C3AED;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="45" y="318" width="55" height="36" as="geometry" />
+          <mxGeometry x="45" y="325" width="54" height="38" as="geometry" />
+        </mxCell>
+        <!-- Dedicated description text cell next to DLQ badge inside [2.2] -->
+        <mxCell id="p2_2_desc" value="&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Isolation of Poison-pill events, keeping unique interface&lt;br&gt;• Exponential backoff logic&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="108" y="320" width="155" height="85" as="geometry" />
         </mxCell>
         <!-- Operator Replay Console UI Widget inside [2.2] -->
         <mxCell id="p2_2_ui" value="&lt;b style=&quot;color:#1E293B;font-size:10px;&quot;&gt;Operator replay console&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Console interface&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:4px 0;&quot;&gt;🔴 &amp;nbsp;⚙️ &amp;nbsp;🔄" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#94A3B8;fillColor=#FFFFFF;fontSize=10;align=center;" vertex="1" parent="1">
