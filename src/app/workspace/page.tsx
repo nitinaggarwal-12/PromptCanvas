@@ -441,9 +441,9 @@ function WorkspaceContent() {
         return {
           suggestions: [
             'Add Dim_Customer_Account & Dim_Merchant tables',
-            '{t.sug2}',
+            'Fact_Account_Transactions को 1:N कार्डिनलिटी से जोड़ें',
             'Enforce PCI-DSS & KYC Compliance Rules',
-            '{t.sug4}'
+            'कार्ड नेटवर्क शुल्क टियर विशेषताएँ जोड़ें'
           ],
           dynamicPlaceholder: '{t.promptPlaceholder}'
         };
