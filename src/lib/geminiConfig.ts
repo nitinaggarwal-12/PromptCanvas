@@ -13,7 +13,7 @@ export function getGeminiModel(tier: ModelTier = 'medium'): string {
     case 'lite':
       return process.env.GEMINI_LITE_MODEL_ID || 'gemini-3.6-flash';
     case 'pro':
-      return process.env.GEMINI_PRO_MODEL_ID || 'gemini-2.5-pro';
+      return process.env.GEMINI_PRO_MODEL_ID || 'gemini-3.6-pro';
     case 'medium':
     default:
       return process.env.GEMINI_FLASH_MODEL_ID || 'gemini-3.6-flash';

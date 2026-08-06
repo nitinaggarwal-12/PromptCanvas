@@ -2910,8 +2910,12 @@ function WorkspaceContent() {
                     defaultValue="gemini-2.5-flash"
                     className="w-full bg-slate-900 border border-slate-700 hover:border-teal-500/50 text-slate-100 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
                   >
-                    <option value="gemini-2.5-flash">⚡ Gemini 2.5 Flash (Sub-Second Iteration)</option>
-                    <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (Deep Architecture Eval)</option>
+                    <option value="gemini-3.6-pro">🚀 Gemini 3.6 Pro (Flagship Architectural Synthesis &amp; Reasoning)</option>
+                    <option value="gemini-3.6-flash">⚡ Gemini 3.6 Flash (Sub-Second Low-Latency Telemetry &amp; Speed)</option>
+                    <option value="gemini-3.6-ultra">🔬 Gemini 3.6 Ultra-Deep (Stateful Graph Reasoning &amp; Terraform Verification)</option>
+                    <option value="gemini-3.6-vision">🎯 Gemini 3.6 Enterprise Vision (Diagram AST OCR &amp; Inspection)</option>
+                    <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (Legacy Deep Architecture Eval)</option>
+                    <option value="gemini-2.5-flash">⚡ Gemini 2.5 Flash (Legacy Speed Iteration)</option>
                   </select>
                   <p className="text-[11px] text-slate-400">Controls inference latency &amp; multi-tier reasoning depth.</p>
                 </div>
@@ -3076,7 +3080,7 @@ function WorkspaceContent() {
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
                   <div>
                     <span className="text-xs font-bold text-slate-400 block">Active LLM Architecture Engine</span>
-                    <span className="text-sm font-extrabold text-white mt-0.5 block">Gemini 2.5 Flash (Google AI)</span>
+                    <span className="text-sm font-extrabold text-white mt-0.5 block">Gemini 3.6 Pro / Flash (Google AI)</span>
                   </div>
                   <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
                     Connected
