@@ -757,35 +757,35 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
           </mxGeometry>
         </mxCell>
 
-        <!-- Tier 1 to Tier 2 Ingress Route routed through Open Channel at y = 230 -->
+        <!-- Tier 1 to Tier 2 Ingress Route routed through Upper Open Channel at y = 222 -->
         <mxCell id="e3" value="gRPC / Istio mTLS (VPC 10.128.0.0/20)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_3" target="card_2_1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1160" y="230" />
-              <mxPoint x="405" y="230" />
+              <mxPoint x="1160" y="222" />
+              <mxPoint x="405" y="222" />
             </Array>
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Row 2 Horizontal Flow routed through Open Channel above Tier 2 at y = 230 -->
+        <!-- Row 2 Horizontal Flow routed through Lower Open Channel above Tier 2 at y = 240 -->
         <mxCell id="e4" value="Event-Driven Microservices Communication (Transactional Outbox)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_1" target="card_2_2">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="405" y="230" />
-              <mxPoint x="785" y="230" />
+              <mxPoint x="405" y="240" />
+              <mxPoint x="785" y="240" />
             </Array>
-            <mxPoint dy="14" as="offset" />
+            <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
         <mxCell id="e5" value="Sub-15ms Agent Tool Execution &amp;amp; Orchestration" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_2" target="card_2_3">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="785" y="230" />
-              <mxPoint x="1160" y="230" />
+              <mxPoint x="785" y="240" />
+              <mxPoint x="1160" y="240" />
             </Array>
-            <mxPoint dy="14" as="offset" />
+            <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
