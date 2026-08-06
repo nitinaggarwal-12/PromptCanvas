@@ -3399,10 +3399,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     
     // Always use the master collision-free spatial reference XML for the target architecture type so historical DB versions never render broken overlaps
     // Always enforce the master collision-free spatial reference grid for the target architecture type across all versions
-    let baseXml = getDefaultXmlForArchitecture(archType) || '';
-    if (!baseXml && displayedVersion?.xml_content) {
-      baseXml = String(displayedVersion.xml_content);
-    }
+    // THE PUZZLE SOLVED: Priority 1 = customXml, Priority 2 = displayedVersion/activeVersion XML, Priority 3 = Default Arch Template
+    let baseXml = customXml || displayedVersion?.xml_content || activeVersion?.xml_content || getDefaultXmlForArchitecture(archType) || '';
 
     baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
     baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);
