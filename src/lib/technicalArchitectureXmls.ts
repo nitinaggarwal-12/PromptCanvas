@@ -633,8 +633,149 @@ const TECH_XML_AGENTIC_MESH_GCP = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
+// 13. C4 Architecture Level 1 & Level 2 Enterprise Context & Container Model
+const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
+  <diagram id="c4_system_context" name="C4 Architecture Enterprise Context &amp; Container Model (10.128.0.0/16)">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="c4_u1" value="👤 <b>[1] Enterprise B2B Customers</b><br><i>External Web &amp; Mobile Users</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="c4_u2" value="👨‍💻 <b>[2] Internal Operations &amp; SRE Staff</b><br><i>IAP Context-Aware Workforce (Zero VPN)</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="c4_gw" value="🛡️ <b>[3] API Gateway &amp; OAuth 2.0 / OIDC IdP</b><br><i>Workload Identity &amp; Token Enforcement (10.128.1.0/24)</i>" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="560" y="85" width="280" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="c4_app" value="⚡ <b>[4] Core Container: Next.js Web &amp; API Stack</b><br><i>Cloud Run Serverless Containers (10.128.10.0/24)</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="560" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="c4_db" value="🛢️ <b>[5] Core Container: AlloyDB HA Database</b><br><i>ACID Transactional Core (Private IP 10.128.20.5)</i>" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="100" width="280" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="c4_ext" value="💳 <b>[6] External Systems: Stripe &amp; Carrier SaaS</b><br><i>Third-Party Financial Settlement &amp; Logistics APIs</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FAF5FF;strokeColor=#7C3AED;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec1" value="1. HTTPS Customer Sessions" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="c4_u1" target="c4_gw">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec2" value="2. Authenticated Container Dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="c4_gw" target="c4_app">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec3" value="3. Private Subnet SQL (10.128.20.0/24)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="c4_app" target="c4_db">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ec4" value="4. Private Service Connect SaaS Call" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="c4_app" target="c4_ext">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+
+// 14. Modern Data Stack with CDC, Data Contracts, dbt Layering & Reverse ETL
+const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
+  <diagram id="modern_data_stack" name="Modern Data Stack with CDC, Data Contracts, dbt Layering &amp; Reverse ETL">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="md1" value="🛢️ <b>[1] Production OLTP Database (PostgreSQL)</b><br><i>Debezium CDC Continuous Log Ingestion</i>" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="280" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="md2" value="☁️ <b>[2] Fivetran &amp; Debezium CDC Connectors</b><br><i>Real-Time Event Replication to Bronze Tier</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="md3" value="🛡️ <b>[3] Data Contracts &amp; Quality Gate (Soda/GE)</b><br><i>Automated Schema Enforcement &amp; PII Scrubbing</i>" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="560" y="85" width="280" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="md4" value="⚙️ <b>[4] dbt Core Silver &amp; Gold Transformation Marts</b><br><i>Automated Lineage &amp; Apache Iceberg Compaction</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="560" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="md5" value="📊 <b>[5] Looker &amp; Snowflake Enterprise Lakehouse</b><br><i>Governed Executive BI &amp; Analytics Layer</i>" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="100" width="280" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="md6" value="🔄 <b>[6] Reverse ETL Engine (Hightouch / Census)</b><br><i>Push Enriched LTV &amp; Lead Scores Back to Salesforce CRM</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FAF5FF;strokeColor=#7C3AED;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="emd1" value="1. Write-Ahead Log CDC" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="md1" target="md2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="emd2" value="2. Ingestion to Data Contract Gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="md2" target="md3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="emd3" value="3. Verified Bronze -> Silver dbt Run" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="md3" target="md4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="emd4" value="4. Gold Mart Load" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="md4" target="md5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="emd5" value="5. Reverse ETL Operational Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="md5" target="md6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+
+// 15. Enterprise Event-Driven Microservices Architecture (EDA & Kafka/PubSub Mesh)
+const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
+  <diagram id="event_driven_eda" name="Enterprise Event-Driven Microservices Architecture (EDA &amp; Kafka Mesh)">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="eda1" value="🛒 <b>[1] Order &amp; Checkout Microservice Producers</b><br><i>High-Frequency Transaction Event Generators</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="eda2" value="📜 <b>[2] Schema Registry (Avro / Protobuf Gate)</b><br><i>Strict Event Contract Validation &amp; Backward Compat</i>" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="270" width="280" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="eda3" value="📡 <b>[3] Apache Kafka / Cloud Pub-Sub Multi-Topic Cluster</b><br><i>Partitioned Event Broker Mesh (10.128.5.0/24)</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="560" y="100" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="eda4" value="🚨 <b>[4] Dead-Letter Queue (DLQ) Automated Recovery</b><br><i>Poison Pill Isolation &amp; Replay Controller</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FAF5FF;strokeColor=#7C3AED;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="560" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="eda5" value="⚙️ <b>[5] Decoupled Consumer Groups (Payment &amp; Inventory)</b><br><i>GKE Autopilot Independent Consumer Microservices</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="100" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="eda6" value="🛢️ <b>[6] Cloud Spanner Immutable Event Ledger</b><br><i>Global Event Store &amp; Auditable Event Sourcing Core</i>" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="280" width="280" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="eeda1" value="1. Emit Transaction Event" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="eda1" target="eda2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eeda2" value="2. Validated Schema Publish" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="eda2" target="eda3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eeda3" value="3. Consumer Group Subscribe" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="eda3" target="eda5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eeda4" value="4. Failed Message to DLQ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="eda3" target="eda4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eeda5" value="5. Immutable Event Sourcing Log" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="eda5" target="eda6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+
 export function getTechnicalArchitectureXml(archId: string): string | null {
   const id = (archId || '').toLowerCase();
+  if (id.includes('c4') || id.includes('context_model')) {
+    return TECH_XML_C4_SYSTEM_CONTEXT;
+  }
+  if (id.includes('modern_data_stack') || id.includes('cdc') || id.includes('reverse_etl') || id.includes('fivetran')) {
+    return TECH_XML_MODERN_DATA_STACK;
+  }
+  if (id.includes('event_driven') || id.includes('eda') || id.includes('kafka_mesh')) {
+    return TECH_XML_EVENT_DRIVEN_EDA;
+  }
   if (id.includes('multi_agent') || id.includes('langgraph')) {
     return TECH_XML_MULTI_AGENT_LANGGRAPH;
   }
@@ -683,5 +824,8 @@ export {
   TECH_XML_SUPPLY_CHAIN_GCP,
   TECH_XML_MULTI_AGENT_LANGGRAPH,
   TECH_XML_EVAL_SAFETY_GCP,
-  TECH_XML_AGENTIC_MESH_GCP
+  TECH_XML_AGENTIC_MESH_GCP,
+  TECH_XML_C4_SYSTEM_CONTEXT,
+  TECH_XML_MODERN_DATA_STACK,
+  TECH_XML_EVENT_DRIVEN_EDA
 };

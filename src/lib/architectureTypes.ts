@@ -216,6 +216,27 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Act as a Principal DevSecOps Architect. Design an enterprise technical CI/CD Pipeline architecture. Include: Git polyrepo source control (GitHub/GitLab) with branch protection rules, CI pipeline triggering automated unit tests, SAST code scanning (SonarQube/Snyk), and Docker container build in Cloud Build / GitHub Actions, artifact vulnerability scanning in Artifact Registry / ECR, GitOps deployment orchestration via ArgoCD / Flux to staging and production Kubernetes clusters (GKE/EKS), and automated rollback on Canary monitoring failure."
   },
   {
+    id: "tech_c4_system_context",
+    name: "11. C4 Enterprise System Context & Container Model",
+    category: "Technical Architecture",
+    whenToUse: "C4 Model Level 1 Context & Level 2 Containers mapping external B2B actors, IAP auth gateway, core serverless containers, database core, and third-party SaaS APIs",
+    prompt: "C4 Enterprise System Context & Container Model: External B2B Customers & SRE Staff -> Identity Gateway & API Gateway -> Core Next.js SPA & Cloud Run API Microservices -> AlloyDB HA Database & Stripe/FedEx External APIs."
+  },
+  {
+    id: "tech_modern_data_stack",
+    name: "12. Modern Data Stack (CDC, Data Contracts, dbt & Reverse ETL)",
+    category: "Technical Architecture",
+    whenToUse: "Modern analytics engineering pipeline combining Debezium CDC, automated Data Contracts quality gates, dbt Silver/Gold marts, and Reverse ETL back to CRM",
+    prompt: "Modern Data Stack with CDC & Reverse ETL: Production OLTP PostgreSQL -> Debezium CDC -> Data Contracts & Quality Gate -> dbt Core Silver/Gold Marts -> Looker BI & Reverse ETL Engine (Hightouch/Census) syncing to Salesforce."
+  },
+  {
+    id: "tech_event_driven_eda",
+    name: "13. Enterprise Event-Driven Microservices Architecture (EDA & Kafka Mesh)",
+    category: "Technical Architecture",
+    whenToUse: "Decoupled enterprise event-driven architecture featuring Order producers, Schema Registry contract validation, Kafka/PubSub multi-topic broker, Dead-Letter Queue (DLQ) recovery, and decoupled GKE consumer groups",
+    prompt: "Enterprise Event-Driven Architecture (EDA): Order Microservice Producers -> Schema Registry Avro Gate -> Partitioned Kafka/PubSub Broker -> Dead-Letter Queue (DLQ) automated recovery -> GKE Decoupled Consumer Groups -> Cloud Spanner Immutable Event Ledger."
+  },
+  {
     id: "v2_freeform",
     name: "Freeform Technical (V2)",
     category: "Technical Architecture",
