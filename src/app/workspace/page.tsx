@@ -3571,6 +3571,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     .replace(/▲ Operational/g, "<b style=\"color:#16A34A;\">▲ Operational</b>")
     .replace(/Optimal Flow/g, "<b style=\"color:#0284C7;\">Optimal Flow</b>");
 
+  // Item 2 Artifact Clean-up: Remove "❌ dirt models" and deduplicate "Key Definitions" in legend containers
+  xml = xml.replace(/❌\s*dirt models/gi, "Derived Models");
+  xml = xml.replace(/value="Key Definitions"/g, (match, offset, full) => {
+    return full.indexOf('value="Key Definitions"') === offset ? match : 'value="Key Component Types"';
+  });
   return xml;
 }
 
