@@ -1561,7 +1561,7 @@ function WorkspaceContent() {
     e.preventDefault();
     if (!activeDiagram || !saveComment.trim()) return;
     
-    const xmlToSave = pendingXml !== null ? pendingXml : activeVersion?.xml_content;
+    const xmlToSave = pendingXml !== null ? pendingXml : customXml !== null ? customXml : activeVersion?.xml_content;
     if (!xmlToSave) return;
     
     setIsSaving(true);
@@ -4769,7 +4769,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     </div>
                   )}
                   <p className="text-[10px] text-slate-500 text-center font-medium">
-                    Press Enter to send. Gemini 2.0 Flash will refine your active diagram.
+                    Press Enter to send. Gemini 3.6 Pro will refine your active diagram.
                   </p>
                 </div>
 
