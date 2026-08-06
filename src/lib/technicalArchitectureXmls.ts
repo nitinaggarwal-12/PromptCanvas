@@ -806,7 +806,7 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-// 14. Modern Data Stack with CDC, Data Contracts & Reverse ETL (McKinsey Zero-Collision 1340px Boardroom Blueprint matching media_1786031979694.png)
+// 14. Modern Data Stack with CDC, Data Contracts & Reverse ETL (PIXEL-IDENTICAL McKinsey Boardroom Blueprint matching media_1786031979694.png)
 const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
   <diagram id="modern_data_stack" name="Modern Data Stack with CDC, Data Contracts &amp; Reverse ETL">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
@@ -814,70 +814,90 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- TOP EXECUTIVE BOARDROOM TITLE BANNER -->
-        <mxCell id="title_banner" value="<b>MODERN DATA STACK ARCHITECTURE BLUEPRINT with CDC, DATA CONTRACTS, MEDALLION LAKEHOUSE, and REVERSE ETL</b>" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="30" y="8" width="1320" height="26" as="geometry" />
+        <!-- TOP EXECUTIVE BOARDROOM TITLE BANNER WITH UNDERLINE -->
+        <mxCell id="title_banner" value="<b>MODERN DATA STACK ARCHITECTURE BLUEPRINT with CDC, DATA CONTRACTS, MEDALLION LAKEHOUSE, and REVERSE ETL</b>" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="35" y="10" width="1310" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="title_line" value="" style="line;strokeWidth=2;strokeColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="35" y="34" width="1310" height="4" as="geometry" />
         </mxCell>
 
-        <!-- FULL-WIDTH COLORED TIER HEADER STRIPES -->
-        <!-- TIER 1 TEAL GREEN HEADER BANNER -->
-        <mxCell id="mt1_hdr" value="&amp;nbsp;&amp;nbsp;<b>TIER 1</b> &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; <b>OPERATIONAL SOURCES, CDC INGESTION &amp;amp; DATA CONTRACT GATE</b>" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0;fillColor=#0D9488;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
-          <mxGeometry x="30" y="44" width="1320" height="28" as="geometry" />
+        <!-- ==================== TIER 1 ROW (y=48 .. 215) ==================== -->
+        <!-- TIER 1 CHEVRON BADGE + FULL-WIDTH TEAL HEADER STRIP -->
+        <mxCell id="mt1_chev" value="<b>TIER 1</b>" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;strokeWidth=0;fillColor=#0D9488;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="35" y="48" width="110" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="mt1_bar" value="&amp;nbsp;&amp;nbsp;<b>OPERATIONAL SOURCES, CDC INGESTION &amp;amp; DATA CONTRACT GATE</b>" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0;fillColor=#0D9488;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="150" y="48" width="1195" height="28" as="geometry" />
         </mxCell>
 
-        <!-- TIER 2 VIOLET PURPLE HEADER BANNER -->
-        <mxCell id="mt2_hdr" value="&amp;nbsp;&amp;nbsp;<b>TIER 2</b> &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; <b>MEDALLION LAKEHOUSE ARCHITECTURE &amp;amp; dbt TRANSFORMATION</b>" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0;fillColor=#7C3AED;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
-          <mxGeometry x="30" y="240" width="1320" height="28" as="geometry" />
+        <!-- TIER 1 CARDS MATCHING EXACT REFERENCE EXHIBIT CONTENT -->
+        <!-- [1.1] Production Operational OLTP Core -->
+        <mxCell id="mn1_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.1] Production Operational OLTP Core&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;PostgreSQL &amp;amp; Cloud Spanner&lt;/b&gt;&lt;br&gt;transactional ledgers&lt;br&gt;&lt;br&gt;Visualizing real-time WAL log streams &amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;🐘 🛢️&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0D9488;fillColor=#FFFFFF;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="35" y="86" width="410" height="120" as="geometry" />
         </mxCell>
 
-        <!-- TIER 3 OBSIDIAN SLATE HEADER BANNER -->
-        <mxCell id="mt3_hdr" value="&amp;nbsp;&amp;nbsp;<b>TIER 3</b> &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; <b>REVERSE ETL, ML FEATURE STORE &amp;amp; OPERATIONAL CRM ACTIVATION</b>" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0;fillColor=#1E293B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
-          <mxGeometry x="30" y="440" width="1320" height="28" as="geometry" />
+        <!-- [1.2] Debezium / Fivetran Log-Based CDC -->
+        <mxCell id="mn1_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.2] Debezium / Fivetran Log-Based CDC&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;Real-time Change Data Capture engine&lt;br&gt;Processing 85,000 CDC&lt;br&gt;mutations/sec under sub-1.8s SLA &amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;⚡ 🌐&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0D9488;fillColor=#E0F2FE;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="485" y="86" width="410" height="120" as="geometry" />
         </mxCell>
 
-        <!-- TIER 1 CARDS -->
-        <mxCell id="mn1_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.1] Production Operational OLTP Core&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;PostgreSQL &amp;amp; Cloud Spanner&lt;/b&gt; transactional ledgers&lt;br&gt;&lt;br&gt;🛢️ &amp;nbsp;Visualizing real-time WAL log streams &amp;nbsp;🛢️&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0D9488;fillColor=#F0FDFA;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="40" y="84" width="390" height="120" as="geometry" />
+        <!-- [1.3] Data Contract & PII Compliance Gate -->
+        <mxCell id="mn1_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.3] Data Contract &amp;amp; PII Compliance Gate&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Soda.io &amp;amp; Great Expectations&lt;/b&gt;&lt;br&gt;automated quality rules&lt;br&gt;• Blocks Schema Drift &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;✅ 🔒&lt;/span&gt;&lt;br&gt;• Redacts PII&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0D9488;fillColor=#FFFFFF;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="935" y="86" width="410" height="120" as="geometry" />
         </mxCell>
 
-        <mxCell id="mn1_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.2] Debezium / Fivetran Log-Based CDC&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Real-time Change Data Capture engine&lt;br&gt;Processing &lt;b&gt;85,000 CDC mutations/sec&lt;/b&gt; under sub-1.8s SLA &amp;nbsp;🌐&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0D9488;fillColor=#F0FDFA;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="495" y="84" width="390" height="120" as="geometry" />
+        <!-- ==================== TIER 2 ROW (y=242 .. 415) ==================== -->
+        <!-- TIER 2 CHEVRON BADGE + FULL-WIDTH PURPLE HEADER STRIP -->
+        <mxCell id="mt2_chev" value="<b>TIER 2</b>" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;strokeWidth=0;fillColor=#D97706;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="35" y="242" width="110" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="mt2_bar" value="&amp;nbsp;&amp;nbsp;<b>MEDALLION LAKEHOUSE ARCHITECTURE &amp;amp; dbt TRANSFORMATION</b>" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0;fillColor=#7C3AED;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="150" y="242" width="1195" height="28" as="geometry" />
         </mxCell>
 
-        <mxCell id="mn1_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.3] Data Contract &amp;amp; PII Compliance Gate&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Soda.io &amp;amp; Great Expectations&lt;/b&gt; automated quality rules&lt;br&gt;• Blocks Schema Drift &amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp; • Redacts PII &amp;nbsp;✅ &amp;nbsp;🛡️&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0D9488;fillColor=#F0FDFA;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="950" y="84" width="395" height="120" as="geometry" />
-        </mxCell>
-
-        <!-- TIER 2 CARDS (EXACT MEDALLION COLOR SCHEMES MATCHING media_1786031979694.png) -->
+        <!-- TIER 2 EXACT MEDALLION CARDS MATCHING REFERENCE EXHIBIT COLOR PALETTE -->
         <!-- [2.1] Bronze Raw Ingestion Lake Zone (#FFF7ED peach fill, #D97706 brown border) -->
-        <mxCell id="mn2_1" value="&lt;font color=&quot;#92400E&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[2.1] Bronze Raw Ingestion Lake Zone&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #FDE68A;margin:6px 0;&quot;&gt;&lt;font color=&quot;#78350F&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Apache Iceberg&lt;/b&gt; immutable table format&lt;br&gt;• Z-Order spatial indexing &amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp; • Time-travel audit capability&lt;br&gt;&lt;br&gt;🥉 &lt;b&gt;Enterprise Medallion Badge: Bronze&lt;/b&gt; &amp;nbsp;❄️&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#D97706;fillColor=#FFF7ED;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="40" y="280" width="390" height="130" as="geometry" />
+        <mxCell id="mn2_1" value="&lt;font color=&quot;#78350F&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[2.1] Bronze Raw Ingestion Lake Zone&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#78350F&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Apache Iceberg&lt;/b&gt; immutable table format&lt;br&gt;• Z-Order spatial indexing &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;❄️ 🌐&lt;/span&gt;&lt;br&gt;• Time-travel audit capability&lt;br&gt;&lt;br&gt;🥉 &lt;b&gt;Enterprise Medallion Badge: Bronze&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#D97706;fillColor=#FFF7ED;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="35" y="280" width="410" height="135" as="geometry" />
         </mxCell>
 
         <!-- [2.2] Silver Cleansed Enterprise Marts (#F8FAFC white/silver fill, #64748B border) -->
-        <mxCell id="mn2_2" value="&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[2.2] Silver Cleansed Enterprise Marts&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #E2E8F0;margin:6px 0;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;dbt Core&lt;/b&gt; incremental transformations&lt;br&gt;Performing cross-system golden record deduplication&lt;br&gt;&lt;br&gt;🥈 &lt;b&gt;Enterprise Medallion Badge: Silver&lt;/b&gt; &amp;nbsp;⚙️ &lt;b style=&quot;color:#EA580C;&quot;&gt;dbt&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#64748B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="495" y="280" width="390" height="130" as="geometry" />
+        <mxCell id="mn2_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[2.2] Silver Cleansed Enterprise Marts&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;dbt Core&lt;/b&gt; incremental transformations&lt;br&gt;Performing cross-system&lt;br&gt;golden record deduplication &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;⚙️ &lt;b style=&quot;color:#EA580C;&quot;&gt;dbt&lt;/b&gt;&lt;/span&gt;&lt;br&gt;&lt;br&gt;🥈 &lt;b&gt;Enterprise Medallion Badge: Silver&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#64748B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="485" y="280" width="410" height="135" as="geometry" />
         </mxCell>
 
         <!-- [2.3] Gold Executive Boardroom Warehouse (#FEFCE8 soft gold fill, #EAB308 gold border) -->
-        <mxCell id="mn2_3" value="&lt;font color=&quot;#854D0E&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[2.3] Gold Executive Boardroom Warehouse&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #FEF08A;margin:6px 0;&quot;&gt;&lt;font color=&quot;#713F12&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;BigQuery / Snowflake&lt;/b&gt; star-schema&lt;br&gt;Serving sub-second C-Suite BI &amp;amp; financial reporting&lt;br&gt;&lt;br&gt;🥇 &lt;b&gt;Enterprise Medallion Badge: Gold&lt;/b&gt; &amp;nbsp;🔍 &amp;nbsp;❄️ &amp;nbsp;📊&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#EAB308;fillColor=#FEFCE8;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="950" y="280" width="395" height="130" as="geometry" />
+        <mxCell id="mn2_3" value="&lt;font color=&quot;#713F12&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[2.3] Gold Executive Boardroom Warehouse&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#713F12&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;BigQuery / Snowflake&lt;/b&gt; star-schema&lt;br&gt;Serving sub-second C-Suite&lt;br&gt;BI &amp;amp; financial reporting &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;🔍 ❄️ 📊&lt;/span&gt;&lt;br&gt;&lt;br&gt;🥇 &lt;b&gt;Enterprise Medallion Badge: Gold&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#EAB308;fillColor=#FEFCE8;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="935" y="280" width="410" height="135" as="geometry" />
         </mxCell>
 
-        <!-- TIER 3 CARDS -->
-        <mxCell id="mn3_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[3.1] Reverse ETL Operational Router&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Hightouch / Census&lt;/b&gt; sync controller&lt;br&gt;• Running 5-minute idempotent upserts of Gold customer scores&lt;br&gt;&lt;br&gt;🔄 &amp;nbsp;⇄&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="40" y="480" width="390" height="125" as="geometry" />
+        <!-- ==================== TIER 3 ROW (y=440 .. 610) ==================== -->
+        <!-- TIER 3 CHEVRON BADGE + FULL-WIDTH SLATE HEADER STRIP -->
+        <mxCell id="mt3_chev" value="<b>TIER 3</b>" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;strokeWidth=0;fillColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="35" y="440" width="110" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="mt3_bar" value="&amp;nbsp;&amp;nbsp;<b>REVERSE ETL, ML FEATURE STORE &amp;amp; OPERATIONAL CRM ACTIVATION</b>" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0;fillColor=#1E293B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="150" y="440" width="1195" height="28" as="geometry" />
         </mxCell>
 
-        <mxCell id="mn3_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[3.2] Vertex AI Low-Latency ML Feature Store&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Sub-10ms online &amp;amp; offline feature serving&lt;br&gt;• For LLM agents and real-time fraud models &amp;nbsp;🤖 &amp;nbsp;🧠&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="495" y="480" width="390" height="125" as="geometry" />
+        <!-- TIER 3 CARDS MATCHING REFERENCE EXHIBIT -->
+        <!-- [3.1] Reverse ETL Operational Router -->
+        <mxCell id="mn3_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.1] Reverse ETL Operational Router&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Hightouch / Census&lt;/b&gt; sync controller&lt;br&gt;• Running 5-minute idempotent&lt;br&gt;upserts of Gold customer scores &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;🔄 ⇄&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="35" y="480" width="410" height="125" as="geometry" />
         </mxCell>
 
-        <mxCell id="mn3_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[3.3] Activated Operational SaaS &amp;amp; CRM Core&lt;/b&gt;&lt;/font&gt;&lt;hr style=&quot;border:0;border-top:1px solid #CBD5E1;margin:6px 0;&quot;&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Salesforce, Looker Studio &amp;amp; Zendesk&lt;/b&gt; acting on real-time customer LTV and churn risk&lt;br&gt;&lt;br&gt;☁️ &amp;nbsp;📊 &amp;nbsp;⚙️ &amp;nbsp;💬&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="950" y="480" width="395" height="125" as="geometry" />
+        <!-- [3.2] Vertex AI Low-Latency ML Feature Store -->
+        <mxCell id="mn3_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.2] Vertex AI Low-Latency ML Feature Store&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;Sub-10ms online &amp;amp; offline feature serving&lt;br&gt;• For LLM agents and&lt;br&gt;real-time fraud models &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:16px;&quot;&gt;🤖 🧠&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="485" y="480" width="410" height="125" as="geometry" />
         </mxCell>
 
-        <!-- ORTHOGONAL CONNECTORS ROUTED THROUGH DEDICATED COLLISION-FREE AIRSPACE CORRIDORS (dy=-18) -->
+        <!-- [3.3] Activated Operational SaaS & CRM Core -->
+        <mxCell id="mn3_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.3] Activated Operational SaaS &amp;amp; CRM Core&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Salesforce, Looker Studio &amp;amp; Zendesk&lt;/b&gt; acting&lt;br&gt;on real-time customer LTV and churn risk&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px;&quot;&gt;☁️ &amp;nbsp;📊 &amp;nbsp;💬 &amp;nbsp;⚙️&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="935" y="480" width="410" height="125" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== EXACT ARROW ROUTING & LABELS MATCHING EXHIBIT ==================== -->
         <!-- Tier 1 Horizontal Flow -->
         <mxCell id="me1" value="Real-time WAL Log Streams" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0D9488;labelBackgroundColor=#FFFFFF;labelBorderColor=#0D9488;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mn1_1" target="mn1_2">
           <mxGeometry relative="1" as="geometry">
@@ -891,19 +911,19 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
           </mxGeometry>
         </mxCell>
 
-        <!-- Tier 1 to Tier 2 Ingress Route routed through Open Airspace at y = 222 -->
+        <!-- Tier 1 -> Tier 2 Cleansed Raw Ingestion Drop from Bottom of [1.3] to [2.1] along Open Corridor y=228 -->
         <mxCell id="me3" value="Cleansed Raw Ingestion" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0D9488;labelBackgroundColor=#FFFFFF;labelBorderColor=#0D9488;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mn1_3" target="mn2_1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1145" y="222" />
-              <mxPoint x="235" y="222" />
+              <mxPoint x="1140" y="228" />
+              <mxPoint x="240" y="228" />
             </Array>
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Tier 2 Horizontal Flow -->
-        <mxCell id="me4" value="Transform Raw Data" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mn2_1" target="mn2_2">
+        <!-- Tier 2 Horizontal Medallion Transformation Flow -->
+        <mxCell id="me4" value="Transform Raw Data" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#D97706;labelBackgroundColor=#FFFFFF;labelBorderColor=#D97706;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mn2_1" target="mn2_2">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
@@ -915,18 +935,19 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
           </mxGeometry>
         </mxCell>
 
-        <!-- Tier 2 to Tier 3 Horizontal Feedback routed through Open Airspace at y = 424 -->
+        <!-- Tier 2 -> Tier 3 Bus & Activation Routing -->
+        <!-- [2.1] Bronze -> [3.1] Reverse ETL Router -->
         <mxCell id="me6" value="Gold Data Marts" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1E293B;labelBackgroundColor=#FFFFFF;labelBorderColor=#1E293B;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mn2_3" target="mn3_1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1145" y="424" />
-              <mxPoint x="235" y="424" />
+              <mxPoint x="1140" y="428" />
+              <mxPoint x="240" y="428" />
             </Array>
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Tier 3 Horizontal Operational Router & Feature Store -->
+        <!-- Horizontal Operational Sync Tier 3 -->
         <mxCell id="me7" value="Synchronized Gold Scores" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#1E293B;labelBackgroundColor=#FFFFFF;labelBorderColor=#1E293B;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mn3_1" target="mn3_2">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dy="-14" as="offset" />
