@@ -6426,7 +6426,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   </div>
                   <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
                     <span className="text-teal-400 font-bold">Default Blueprint:</span>
-                    <span>10. Unified System View</span>
+                    <span>currentLanguage === 'hi' ? '10. एकीकृत सिस्टम दृश्य' : '10. Unified System View'</span>
                   </div>
                 </div>
 
