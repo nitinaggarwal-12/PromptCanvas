@@ -633,9 +633,9 @@ const TECH_XML_AGENTIC_MESH_GCP = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-// 13. C4 Architecture Level 1 & Level 2 Enterprise Context & Container Model (100.0% PIXEL-IDENTICAL BOARDROOM BLUEPRINT matching media_1786028375575.png)
+// 13. C4 Architecture Level 1 & Level 2 Enterprise Context & Container Model (MULTI-PAGE BOARDROOM BLUEPRINT: Page 1 Blueprint + Page 2 Strategic Playbook)
 const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
-  <diagram id="c4_system_context" name="C4 Enterprise System Context &amp; Container Model">
+  <diagram id="c4_system_context" name="Page 1: C4 System Context Blueprint">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -804,11 +804,62 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
       </root>
     </mxGraphModel>
   </diagram>
+  <diagram id="c4_executive_guide" name="Page 2: Executive Playbook &amp; Governance Profile">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
+      <root>
+        <mxCell id="0_p2" />
+        <mxCell id="1_p2" parent="0_p2" />
+
+        <!-- PAGE 2 HEADER BANNER -->
+        <mxCell id="p2_hdr" value="<b>EXECUTIVE ARCHITECTURE PLAYBOOK &amp;amp; GOVERNANCE METADATA PROFILE — DIAGRAM 11: C4 SYSTEM CONTEXT</b>" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="10" width="1310" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p2_line" value="" style="line;strokeWidth=2;strokeColor=#0F172A;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="38" width="1310" height="4" as="geometry" />
+        </mxCell>
+
+        <!-- KPI SUMMARY BAR WITH STRATEGIC IMPORTANCE 5/5 STARS -->
+        <mxCell id="kpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE NAME&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;C4 Enterprise System Context (L1 &amp;amp; L2)&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="kpi_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;STRATEGIC IMPORTANCE SCORE&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#D97706&quot; style=&quot;font-size:16px;&quot;&gt;&lt;b&gt;★★★★★ &amp;nbsp;5.0 / 5.0&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#D97706;fillColor=#FEFCE8;align=center;" vertex="1" parent="1_p2">
+          <mxGeometry x="375" y="55" width="290" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="kpi_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;PRODUCT JOURNEY TIMING&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0D9488&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;Phase 0–1 Greenfield RFC &amp;amp; Scale Migration&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0D9488;fillColor=#F0FDFA;align=center;" vertex="1" parent="1_p2">
+          <mxGeometry x="695" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="kpi_4" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;TARGET ARTIFACT DOCUMENT&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#2563EB&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;RFC / PRD, SOC2 Audit Deck &amp;amp; Board Review&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;align=center;" vertex="1" parent="1_p2">
+          <mxGeometry x="1035" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- PERSONA MATRIX ROW -->
+        <mxCell id="per_card_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👤 PRIMARY CREATOR PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Principal Staff Cloud / Security Architect&lt;/b&gt; (&lt;i&gt;Staff Engineer L7+ at Google; Partner Enterprise Architect at Consulting&lt;/i&gt;)&lt;br&gt;&lt;br&gt;Responsible for establishing trust boundaries, mTLS encryption SLAs, and network blast-radius containment before production code authorization.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="130" width="630" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="per_card_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0284C7;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👔 PRIMARY CONSUMER PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#F0F9FF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Chief Information Security Officer (CISO), VP of Engineering &amp;amp; External SOC2/ISO Auditors&lt;/b&gt;&lt;br&gt;&lt;br&gt;Uses this visual diagram to verify Zero-Trust security governance, identity-aware ingress policies, and active-active multi-region fault tolerance.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0284C7;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
+          <mxGeometry x="695" y="130" width="650" height="115" as="geometry" />
+        </mxCell>
+
+        <!-- TWO-COLUMN DEEP STRATEGIC PERSPECTIVE COMPARISON: GOOGLE PRODUCT STANDPOINT vs MCKINSEY CONSULTING STANDPOINT -->
+        <mxCell id="lens_google" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#1D4ED8;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;🚀 BIG TECH &amp;amp; PRODUCT COMPANY STANDPOINT (e.g. Google / Stripe / Meta)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;1. Internal Lifecycle &amp;amp; RFC Enforcement:&lt;/b&gt; At Google/Stripe, a C4 System Context &amp;amp; Container blueprint is mandatory inside every Architectural RFC before design freeze. It serves as the authoritative boundary contract between product teams.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;2. Zero-Trust Perimeter Governance:&lt;/b&gt; Visualizes BeyondCorp Identity-Aware Proxy (IAP) access policies and GCP Private Service Connect boundaries so that zero production containers expose direct public internet IPs.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;3. Site Reliability Engineering (SRE) Blameless Postmortems:&lt;/b&gt; During major incidents, SRE teams overlay telemetry hotspots onto this exact C4 Container topology to trace dependency failure cascading.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#1D4ED8;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="265" width="630" height="380" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lens_mckinsey" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;💼 TIER-1 MANAGEMENT CONSULTING STANDPOINT (e.g. McKinsey / BCG / Deloitte)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#F8FAFC;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;1. Billable Client Transformation Anchor:&lt;/b&gt; In multi-million-dollar Enterprise Cloud Modernization engagements, consultants present this visual as the Executive Boardroom Baseline comparing &amp;quot;As-Is Monolith&amp;quot; vs &amp;quot;To-Be Cloud Native System Context&amp;quot;.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;2. Application Portfolio Rationalization (APM):&lt;/b&gt; Helps client C-Suite stakeholders identify duplicate business services, legacy mainframe dependencies, and compliance gaps within 60 minutes.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;3. RFP &amp;amp; Post-Merger Integration (PMI):&lt;/b&gt; Serves as the primary security architecture exhibit proving compliance with federal regulatory frameworks and enabling seamless corporate entity integration.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
+          <mxGeometry x="695" y="265" width="650" height="380" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
 </mxfile>`;
 
-// 14. Modern Data Stack with CDC, Data Contracts & Reverse ETL (100.0% PIXEL-IDENTICAL CRAFT MATCH matching media_1786031979694.png)
+// 14. Modern Data Stack with CDC, Data Contracts & Reverse ETL (MULTI-PAGE BOARDROOM BLUEPRINT: Page 1 Blueprint + Page 2 Strategic Playbook)
 const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
-  <diagram id="modern_data_stack" name="Modern Data Stack with CDC, Data Contracts &amp; Reverse ETL">
+  <diagram id="modern_data_stack" name="Page 1: Modern Data Stack Blueprint">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -962,11 +1013,62 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
       </root>
     </mxGraphModel>
   </diagram>
+  <diagram id="mds_executive_guide" name="Page 2: Executive Playbook &amp; Governance Profile">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
+      <root>
+        <mxCell id="0_mdsp2" />
+        <mxCell id="1_mdsp2" parent="0_mdsp2" />
+
+        <!-- PAGE 2 HEADER BANNER -->
+        <mxCell id="mdsp2_hdr" value="<b>EXECUTIVE ARCHITECTURE PLAYBOOK &amp;amp; GOVERNANCE METADATA PROFILE — DIAGRAM 12: MODERN DATA STACK (CDC &amp;amp; MEDALLION)</b>" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="35" y="10" width="1310" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="mdsp2_line" value="" style="line;strokeWidth=2;strokeColor=#0F172A;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="35" y="38" width="1310" height="4" as="geometry" />
+        </mxCell>
+
+        <!-- KPI SUMMARY BAR WITH STRATEGIC IMPORTANCE 5/5 STARS -->
+        <mxCell id="mdskpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE NAME&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;Modern Data Stack, Medallion &amp;amp; Reverse ETL&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="35" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mdskpi_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;STRATEGIC IMPORTANCE SCORE&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#D97706&quot; style=&quot;font-size:16px;&quot;&gt;&lt;b&gt;★★★★★ &amp;nbsp;5.0 / 5.0&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#D97706;fillColor=#FEFCE8;align=center;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="375" y="55" width="290" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mdskpi_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;PRODUCT JOURNEY TIMING&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0D9488&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;Series B+ Scale &amp;amp; AI Monetization Phase&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0D9488;fillColor=#F0FDFA;align=center;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="695" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mdskpi_4" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;TARGET ARTIFACT DOCUMENT&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#2563EB&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;Data Engineering Blueprint &amp;amp; C-Suite Deck&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;align=center;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="1035" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- PERSONA MATRIX ROW -->
+        <mxCell id="mdsper_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0D9488;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👤 PRIMARY CREATOR PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Principal Staff Data Architect / Analytics Engineer&lt;/b&gt; (&lt;i&gt;Staff Data Engineer at Google/Snowflake; Principal Data &amp;amp; AI Architect at Consulting&lt;/i&gt;)&lt;br&gt;&lt;br&gt;Responsible for CDC WAL synchronization, Medallion Lakehouse schema contracts (dbt Core), and Reverse ETL operational activation SLAs.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0D9488;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="35" y="130" width="630" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mdsper_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#7C3AED;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👔 PRIMARY CONSUMER PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#F5F3FF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Chief Data Officer (CDO), VP of Business Intelligence, VP of Revenue Operations &amp;amp; AI Leads&lt;/b&gt;&lt;br&gt;&lt;br&gt;Uses this architecture to guarantee sub-second executive reporting, eliminate data schema drift incidents, and power real-time ML feature serving.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#7C3AED;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="695" y="130" width="650" height="115" as="geometry" />
+        </mxCell>
+
+        <!-- TWO-COLUMN DEEP STRATEGIC PERSPECTIVE COMPARISON: GOOGLE PRODUCT STANDPOINT vs MCKINSEY CONSULTING STANDPOINT -->
+        <mxCell id="mdslens_google" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0D9488;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;🚀 BIG TECH &amp;amp; PRODUCT COMPANY STANDPOINT (e.g. Google / Snowflake / Stripe)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#0D9488;&quot;&gt;1. Real-Time Telemetry &amp;amp; AI Feature Activation:&lt;/b&gt; At Google/Stripe, production transactional databases (OLTP) feed continuous CDC WAL events directly into BigQuery and low-latency Vertex AI feature stores without impacting production database CPU.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#0D9488;&quot;&gt;2. Data Contracts &amp;amp; PII Automated Gates:&lt;/b&gt; Soda.io &amp;amp; Great Expectations act as automated CI/CD PR guardrails blocking non-compliant schema changes before they break downstream reporting models.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#0D9488;&quot;&gt;3. Idempotent Reverse ETL Loops:&lt;/b&gt; Gold analytical scores (LTV, Churn Risk) are operationalized back into production SaaS apps via Hightouch/Census to trigger automated product intervention workflows.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0D9488;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="35" y="265" width="630" height="380" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mdslens_mckinsey" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#7C3AED;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;💼 TIER-1 MANAGEMENT CONSULTING STANDPOINT (e.g. McKinsey / Accenture / Slalom)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#F5F3FF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;1. Enterprise Data &amp;amp; AI Billable Engagement Blueprint:&lt;/b&gt; Consultants use the 3 Medallion Lakehouse Zones (Bronze Raw, Silver Cleansed, Gold Boardroom) to structure enterprise data warehouse migrations (Teradata/Oracle to BigQuery/Snowflake).&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;2. Demonstrating Immediate Business ROI:&lt;/b&gt; By linking Reverse ETL to Salesforce/Zendesk in Tier 3, consultants prove direct top-line revenue uplift rather than presenting a silent internal data warehouse.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;3. Data Governance &amp;amp; Regulatory Assurance:&lt;/b&gt; Establishes immutable WORM audit logs and cryptographic provenance required for banking, healthcare, and insurance enterprise clients.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#7C3AED;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_mdsp2">
+          <mxGeometry x="695" y="265" width="650" height="380" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
 </mxfile>`;
 
-// 15. Enterprise Event-Driven Microservices Architecture (EDA) (PRECISION 100.0% BOARDROOM CRAFT MATCH matching media_1786033044522.png)
+// 15. Enterprise Event-Driven Microservices Architecture (EDA) (MULTI-PAGE BOARDROOM BLUEPRINT: Page 1 Blueprint + Page 2 Strategic Playbook)
 const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
-  <diagram id="event_driven_eda" name="Enterprise Event-Driven Microservices Architecture (EDA)">
+  <diagram id="event_driven_eda" name="Page 1: Event-Driven EDA Blueprint">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -1212,6 +1314,57 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dy="-14" as="offset" />
           </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="eda_executive_guide" name="Page 2: Executive Playbook &amp; Governance Profile">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
+      <root>
+        <mxCell id="0_edap2" />
+        <mxCell id="1_edap2" parent="0_edap2" />
+
+        <!-- PAGE 2 HEADER BANNER -->
+        <mxCell id="edap2_hdr" value="<b>EXECUTIVE ARCHITECTURE PLAYBOOK &amp;amp; GOVERNANCE METADATA PROFILE — DIAGRAM 13: ENTERPRISE EVENT-DRIVEN EDA</b>" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_edap2">
+          <mxGeometry x="35" y="10" width="1310" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="edap2_line" value="" style="line;strokeWidth=2;strokeColor=#0F172A;" vertex="1" parent="1_edap2">
+          <mxGeometry x="35" y="38" width="1310" height="4" as="geometry" />
+        </mxCell>
+
+        <!-- KPI SUMMARY BAR WITH STRATEGIC IMPORTANCE 4.9/5 STARS -->
+        <mxCell id="edakpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE NAME&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;Enterprise Event-Driven Microservices (EDA)&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_edap2">
+          <mxGeometry x="35" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edakpi_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;STRATEGIC IMPORTANCE SCORE&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#D97706&quot; style=&quot;font-size:16px;&quot;&gt;&lt;b&gt;★★★★★ &amp;nbsp;4.9 / 5.0&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#D97706;fillColor=#FEFCE8;align=center;" vertex="1" parent="1_edap2">
+          <mxGeometry x="375" y="55" width="290" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edakpi_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;PRODUCT JOURNEY TIMING&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0D9488&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;High-Concurrency Scale-Out &amp;amp; Resiliency Phase&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0D9488;fillColor=#F0FDFA;align=center;" vertex="1" parent="1_edap2">
+          <mxGeometry x="695" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edakpi_4" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;TARGET ARTIFACT DOCUMENT&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#2563EB&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;High-Availability RFC, SRE Runbook &amp;amp; Audit Deck&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;align=center;" vertex="1" parent="1_edap2">
+          <mxGeometry x="1035" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- PERSONA MATRIX ROW -->
+        <mxCell id="edaper_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#7C3AED;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👤 PRIMARY CREATOR PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Principal Distributed Systems Architect / Event-Driven Architect&lt;/b&gt; (&lt;i&gt;Staff Infrastructure Engineer at Google Cloud Pub/Sub; Managing Director at Consulting&lt;/i&gt;)&lt;br&gt;&lt;br&gt;Responsible for Transactional Outbox patterns, Avro schema compatibility gates, DLQ exponential backoff isolation, and Kafka cluster Zstandard compression.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#7C3AED;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_edap2">
+          <mxGeometry x="35" y="130" width="630" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edaper_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#DC2626;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👔 PRIMARY CONSUMER PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#FEF2F2;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;CTO, Head of SRE &amp;amp; Site Reliability Engineering, Chief Fraud &amp;amp; Risk Officer&lt;/b&gt;&lt;br&gt;&lt;br&gt;Uses this architecture to verify zero database lock contention under peak traffic, automated poison-pill DLQ self-healing, and sub-12ms CEP fraud mitigation.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#DC2626;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_edap2">
+          <mxGeometry x="695" y="130" width="650" height="115" as="geometry" />
+        </mxCell>
+
+        <!-- TWO-COLUMN DEEP STRATEGIC PERSPECTIVE COMPARISON: GOOGLE PRODUCT STANDPOINT vs MCKINSEY CONSULTING STANDPOINT -->
+        <mxCell id="edalens_google" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#1D4ED8;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;🚀 BIG TECH &amp;amp; PRODUCT COMPANY STANDPOINT (e.g. Google Cloud / Shopify / Uber)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;1. Non-Blocking High Concurrency &amp;amp; Peak Scale:&lt;/b&gt; Decouples core payment settlement from heavy downstream consumers (Inventory/Shipping). Prevents cascading outages during Black Friday traffic surges.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;2. Transactional Outbox Reliability Pattern:&lt;/b&gt; Guarantees At-Least-Once event emission from AlloyDB/PostgreSQL ledgers without distributed 2PC lock overhead.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;3. Automated Self-Healing DLQ Replays:&lt;/b&gt; Isolates malformed &amp;quot;poison-pill&amp;quot; events into automated dead-letter queues with exponential backoff and operator replay UI capability.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#1D4ED8;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_edap2">
+          <mxGeometry x="35" y="265" width="630" height="380" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edalens_mckinsey" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#DC2626;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;💼 TIER-1 MANAGEMENT CONSULTING STANDPOINT (e.g. McKinsey / Bain / PwC)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#FEF2F2;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#DC2626;&quot;&gt;1. Digital Core Banking &amp;amp; Fintech Modernization:&lt;/b&gt; Used by Tier-1 consultants to demonstrate compliance with PCI-DSS regulatory auditing, cryptographic HMAC payload integrity, and audit traceability.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#DC2626;&quot;&gt;2. Sub-12ms Complex Event Processing (CEP) Fraud Engine:&lt;/b&gt; Demonstrates immediate financial fraud reduction ROI to banking boardrooms by automatically freezing compromised customer accounts in &amp;lt;12ms.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#DC2626;&quot;&gt;3. Operational Risk Mitigation Dossier:&lt;/b&gt; Serves as the technical proof exhibit for regulatory authorities (FED, ECB, MAS) showing fault-tolerant ledger append persistence.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#DC2626;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_edap2">
+          <mxGeometry x="695" y="265" width="650" height="380" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
