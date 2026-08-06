@@ -290,180 +290,83 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Tab Navigation Menu */}
-        <div className="p-3 space-y-1 shrink-0">
-          {[
-            { id: 'editor', name: 'Design Canvas', icon: Network, href: '/workspace' },
-            { id: 'dashboard', name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
-            { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid, href: '/workspace?tab=templates' },
-            { id: 'walkthrough', name: 'Visual Walkthrough', icon: BookOpen, href: '/workspace?tab=walkthrough' },
-            { id: 'audit', name: 'Security Audit Hub', icon: ShieldAlert, href: '/workspace?tab=audit' },
-            { id: 'settings', name: 'Settings & Config', icon: Settings, href: '/workspace?tab=settings' }
-          ].map((item) => {
-            const Icon = item.icon;
-            const isActive = item.id === 'dashboard';
-            const isExpanded = expandedSubMenu === item.id;
-            
-            return (
-              <div key={item.id} className="space-y-1" onMouseEnter={() => setExpandedSubMenu(item.id)}>
-                <button
-                  type="button"
-                  onClick={() => setExpandedSubMenu(prev => prev === item.id ? null : item.id)}
-                  className="w-full block text-left"
-                >
-                  <Link href={item.href} className="block">
-                    <div className={`w-full flex items-center justify-between p-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${
-                      isActive 
-                        ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
-                        : isExpanded
-                        ? 'border-l-4 border-l-teal-400 bg-teal-500/15 text-teal-200 shadow-[0_0_15px_rgba(0,245,212,0.15)]'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-hover/40'
-                    }`}>
-                      <div className="flex items-center gap-3 min-w-0">
-                        <Icon className="w-4.5 h-4.5 shrink-0" />
-                        {isSidebarOpen && <span className="truncate">{item.name}</span>}
-                      </div>
-                      {isSidebarOpen && (
-                        <span className="shrink-0 text-xs">
-                          {isExpanded ? (
-                            <ChevronDown className="w-3.5 h-3.5 text-teal-300 opacity-90" />
-                          ) : (
-                            <ChevronRight className="w-3.5 h-3.5 opacity-50" />
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </Link>
-                </button>
+        {/* 1. TOP ZONE: Active Design & Project Switcher Card */}
+        {isSidebarOpen && (
+          <div className="p-3 border-b border-panel-border/30 space-y-2 shrink-0">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-400">
+                ACTIVE WORKSPACE &amp; DESIGN
+              </span>
+            </div>
 
-                {/* Collapsible Nested Sub-Menu under Design Canvas */}
-                {item.id === 'editor' && expandedSubMenu === 'editor' && isSidebarOpen && (
-                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-teal-500/40 ml-4">
-                    <button
-                      type="button"
-                      onClick={() => setIsUseCaseModalOpen(true)}
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-teal-300 hover:text-white hover:bg-teal-500/20 transition-all cursor-pointer text-left"
-                    >
-                      <ClipboardList className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-                      <span>📋 Use Case Intake Form</span>
-                    </button>
-                    <Link
-                      href="/workspace?new=true"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
-                    >
-                      <Plus className="w-3.5 h-3.5 text-teal-accent shrink-0" />
-                      <span>✨ New Diagram Canvas</span>
-                    </Link>
-                    <Link
-                      href="/workspace?import=true"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
-                    >
-                      <Upload className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                      <span>📥 Import (.drawio / .tf)</span>
-                    </Link>
-                    <Link
-                      href="/workspace?diff=true"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
-                    >
-                      <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>🔍 Version &amp; Visual Diff</span>
-                    </Link>
-                  </div>
+            <div className="relative">
+              <select
+                value={diagrams[0]?.id || ""}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  if (id) window.location.href = `/workspace?id=${id}`;
+                }}
+                className="w-full appearance-none bg-slate-900/90 hover:bg-slate-800 border border-teal-500/40 hover:border-teal-400 text-white font-extrabold text-xs rounded-xl pl-3 pr-8 py-2.5 outline-none cursor-pointer transition-all shadow-sm truncate"
+              >
+                {diagrams[0] && (
+                  <option value={diagrams[0].id} className="bg-[#0b101d] text-teal-300 font-extrabold">
+                    ✓ {diagrams[0].name}
+                  </option>
                 )}
+                {diagrams.slice(1).map((d) => (
+                  <option key={d.id} value={d.id} className="bg-[#0b101d] text-slate-200 font-bold">
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-4 h-4 text-teal-400 absolute right-2.5 top-2.5 pointer-events-none" />
+            </div>
+          </div>
+        )}
 
-                {/* Collapsible Nested Sub-Menu under Dashboard */}
-                {item.id === 'dashboard' && expandedSubMenu === 'dashboard' && isSidebarOpen && (
-                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-cyan-500/40 ml-4">
-                    <Link
-                      href="/dashboard"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all cursor-pointer text-left"
-                    >
-                      <BarChart3 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                      <span>📈 Operations Matrix</span>
-                    </Link>
-                    <Link
-                      href="/dashboard"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
-                    >
-                      <LayoutGrid className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-                      <span>📁 Active Workspaces Grid</span>
-                    </Link>
-                  </div>
-                )}
-
-                {/* Collapsible Nested Sub-Menu under Templates Gallery */}
-                {item.id === 'templates' && expandedSubMenu === 'templates' && isSidebarOpen && (
-                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-indigo-500/40 ml-4">
-                    <Link
-                      href="/workspace?tab=templates"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
-                    >
-                      <span>🏢 Business Architectures (13)</span>
-                    </Link>
-                    <Link
-                      href="/workspace?tab=templates"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer text-left"
-                    >
-                      <span>⚙️ Technical Cloud Stacks (12)</span>
-                    </Link>
-                  </div>
-                )}
-
-                {/* Collapsible Nested Sub-Menu under Visual Walkthrough */}
-                {item.id === 'walkthrough' && expandedSubMenu === 'walkthrough' && isSidebarOpen && (
-                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-purple-500/40 ml-4">
-                    <Link
-                      href="/workspace?tab=walkthrough"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-purple-300 hover:text-white hover:bg-purple-500/20 transition-all cursor-pointer text-left"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                      <span>🎯 Launch 5-Step Tour</span>
-                    </Link>
-                  </div>
-                )}
-
-                {/* Collapsible Nested Sub-Menu under Security Audit Hub */}
-                {item.id === 'audit' && expandedSubMenu === 'audit' && isSidebarOpen && (
-                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-rose-500/40 ml-4">
-                    <Link
-                      href="/workspace?tab=audit"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-rose-300 hover:text-white hover:bg-rose-500/20 transition-all cursor-pointer text-left"
-                    >
-                      <ShieldCheck className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                      <span>🔒 Zero-Trust Audit Matrix</span>
-                    </Link>
-                  </div>
-                )}
-
-                {/* Collapsible Nested Sub-Menu under Settings & Config */}
-                {item.id === 'settings' && expandedSubMenu === 'settings' && isSidebarOpen && (
-                  <div className="pl-6 pr-2 pt-1 pb-2 space-y-1 border-l-2 border-amber-500/40 ml-4">
-                    <Link
-                      href="/workspace?tab=settings"
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-amber-300 hover:text-white hover:bg-amber-500/20 transition-all cursor-pointer text-left"
-                    >
-                      <Settings className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>⚙️ AI Tier &amp; Theme Config</span>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-          <button
-            type="button"
-            id="sidebar-contact-us-btn"
-            onClick={() => setIsContactOpen(true)}
-            className="w-full flex items-center gap-3 p-3 rounded-lg text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-hover/40 transition-all cursor-pointer"
+        {/* 2. ACTION ZONE: Prominent + New Architecture Button */}
+        <div className="p-3 border-b border-panel-border/30 shrink-0">
+          <Link
+            href="/workspace?new=true"
+            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-extrabold transition-all shadow-sm text-xs cursor-pointer ${
+              !isSidebarOpen && "p-2"
+            }`}
           >
-            <Mail className="w-4.5 h-4.5 shrink-0 text-teal-accent" />
-            {isSidebarOpen && <span className="truncate">Contact Us</span>}
-          </button>
+            <Plus className="w-4 h-4 stroke-[3]" />
+            {isSidebarOpen && <span>+ New Architecture</span>}
+          </Link>
         </div>
 
-        <div className="border-t border-panel-border/30 my-1 shrink-0" />
-        
-        {/* Toggle Expand Sidebar */}
+        {/* 3. CLEAN PRIMARY NAVIGATION LINKS */}
+        <div className="p-3 space-y-1 flex-1 overflow-y-auto">
+          {[
+            { id: "editor", name: "Design Canvas", icon: Network, href: "/workspace" },
+            { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/workspace?tab=templates" },
+            { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },
+            { id: "audit", name: "Security & Zero-Trust Audit", icon: ShieldCheck, href: "/workspace?tab=audit" },
+            { id: "walkthrough", name: "Interactive Visual Tour", icon: BookOpen, href: "/workspace?tab=walkthrough" },
+            { id: "settings", name: "Settings & AI Tier Config", icon: Settings, href: "/workspace?tab=settings" }
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = item.id === "dashboard";
+            
+            return (
+              <Link key={item.id} href={item.href} className="block">
+                <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isActive 
+                    ? "bg-teal-accent text-bg-dark font-extrabold shadow-sm"
+                    : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                }`}>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-bg-dark" : "text-slate-400"}`} />
+                    {isSidebarOpen && <span className="truncate">{item.name}</span>}
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+{/* Toggle Expand Sidebar */}
         {!isSidebarOpen && (
           <div className="p-3 border-t border-panel-border flex justify-center mt-auto">
             <button 
