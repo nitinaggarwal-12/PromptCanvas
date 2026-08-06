@@ -348,7 +348,7 @@ export default function DiagramViewer({
   return (
     <div className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}>
       <iframe
-        key={`${diagramId || ''}_${versionId || ''}_${xml ? xml.length : 0}_${aspectRatioId}_${bgTheme}`}
+        key={`iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${xml ? (xml.length + '_' + xml.slice(0, 60).replace(/[^a-zA-Z0-9]/g, '')) : 'empty'}`}
         srcDoc={iframeHtml}
         className="w-full h-full border-0 bg-transparent"
         title="Draw.io Diagram Viewer with Business Use Case Panel"
