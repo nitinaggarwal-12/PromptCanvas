@@ -80,7 +80,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 
   xml = xml
     .replace(/(<mxCell\s+id="main_title_bar_uv"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${headerReplacementHtml}$2`)
-    .replace(/(<mxCell\s+id="main_title_bar_uv"[\s\S]*?<mxGeometry\b[^>]*\bheight=")50(")/gi, `$160$2`);
+    .replace(/(<mxCell\s+id="main_title_bar_uv"[\s\S]*?<mxGeometry\b[^>]*\bheight=")50(")/gi, `$160$2`)
+    .replace(/(<mxCell\s+id="top_main_lbl_uv"\s+value=")[\s\S]*?("\s+style=")/gi, `$1$2`); // Blank colliding top_main_lbl_uv so it never overlaps header bottom
 
   // Remove stray edge waypoints that drop into y > 1100 margin (Gemini-authored XML only:
   // v2/ELK diagrams are legitimately taller than 1100px and their waypoints are routed)
