@@ -755,7 +755,55 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   const brandWords = topicClean.split(' ').filter(w => w.length > 2);
   const shortBrand = brandWords.length > 0 ? brandWords[0] : 'Enterprise';
   const shortBrandUpper = shortBrand.toUpperCase();
-  const isSupplyChain = /supply|logistics|warehouse|quantumflow|fleet|inventory|chain/i.test(topicClean + ' ' + (userPrompt || ''));
+
+  // Universal Title & Use Case Header Injection across ALL diagrams
+  updatedXml = updatedXml
+    .replace(/(❖\s*USE CASE:\s*)[^<"&]+/gi, `$1${topicClean}`)
+    .replace(/(\bUSE CASE:\s*)[^<"&]+/gi, `$1${topicClean}`)
+    .replace(/(\bSYSTEM CONTEXT:\s*)[^<"&]+/gi, `$1${topicClean}`)
+    .replace(/Enterprise Governed Agentic AI Platform/gi, topicClean)
+    .replace(/Enterprise Technical System View/gi, `${topicClean} System View`)
+    .replace(/Enterprise DevSecOps Polyrepo CI\/CD Pipeline/gi, `${topicClean} DevSecOps CI/CD Pipeline`)
+    .replace(/The Operational Flow/gi, `${topicClean} Operational Flow`)
+    .replace(/Total Unified System View/gi, `${topicClean} Total Unified System View`)
+    .replace(/Enterprise Event-Driven Microservices Architecture/gi, `${topicClean} Event-Driven Architecture`)
+    .replace(/MODERN DATA STACK ARCHITECTURE BLUEPRINT/gi, `${topicClean} MODERN DATA STACK ARCHITECTURE`)
+    .replace(/C4 Enterprise System Context/gi, `${topicClean} C4 System Context`)
+    .replace(/Agent Harness Runtime Platform/gi, `${topicClean} Agent Harness Runtime Platform`)
+    .replace(/IoT Devices &amp; App Telemetry/gi, `IoT Devices &amp; ${topicClean} Telemetry`)
+    .replace(/Route 53 DNS &amp; AWS WAF/gi, `Route 53 DNS (${topicClean} Mesh Ingress)`)
+    .replace(/Batch &amp; Streaming Sources/gi, `Batch &amp; ${topicClean} Streaming Sources`)
+    .replace(/Cloud DNS &amp; Cloud CDN/gi, `Cloud DNS (${topicClean} Vector Edge)`)
+    .replace(/Polyrepo Git Commits/gi, `${topicClean} Polyrepo Git Commits`)
+    .replace(/Cloud Run UI \(Private App Subnet\)/gi, `Cloud Run UI (${topicClean} Portal)`)
+    .replace(/Cloud Run API Microservices/gi, `Cloud Run API (${topicClean} Backend)`)
+    .replace(/Cloud SQL HA PostgreSQL/gi, `Cloud SQL (${topicClean} Database)`)
+    .replace(/Static Media Lake &amp; Private Assets/gi, `${topicClean} Storage Lake &amp; Private Assets`)
+    .replace(/MQTT \/ HTTPS Edge Ingestion Gateway/gi, `[1] Field Telemetry &amp; ${topicClean} Ingestion`)
+    .replace(/Pub\/Sub High-Throughput Ingestion Topics/gi, `[2] ${topicClean} Pub/Sub Event Topics`)
+    .replace(/Frontend Envoy Mesh Pods/gi, `[1] ${topicClean} Ingress Pods`)
+    .replace(/Core API Business Logic Pods/gi, `[2] ${topicClean} Core API Pods`)
+    .replace(/Bronze Tier Raw Data Bucket/gi, `[3] Bronze Tier (${topicClean} Ingestion)`)
+    .replace(/Gold Tier Curated Delta Lake/gi, `[5] Gold Tier (${topicClean} Metrics)`)
+    .replace(/Vertex AI Matching Engine/gi, `[3] Vertex AI (${topicClean} Vector Index)`)
+    .replace(/Gemini 1\.5 Pro Reasoning Agent/gi, `[4] Gemini Enterprise (${topicClean} AI Core)`)
+    .replace(/Primary Application Cluster/gi, `[8] Primary (${topicClean}) App Cluster`)
+    .replace(/Source Code Repository/gi, `[1] ${topicClean} Git Polyrepo`)
+    .replace(/Polyrepo Git Source/gi, `[1] ${topicClean} Git Polyrepo`)
+    .replace(/PostgreSQL \/ MySQL OLTP Core/gi, `[1] ${topicClean} Operational DB`)
+    .replace(/Order &amp; Checkout Microservice/gi, `[1] ${topicClean} Core Microservice`)
+    .replace(/Multi-Modal Ingress &amp; Routing Gateway/gi, `[1] ${topicClean} Ingress Gateway`)
+    .replace(/FastAPI REST API Microservice/gi, `${topicClean} API Microservice`)
+    .replace(/Next\.js Frontend Web Application/gi, `${topicClean} Frontend Web Portal`)
+    .replace(/Cloud Run \(FastAPI Backend API\)/gi, `Cloud Run (${topicClean} Backend API)`)
+    .replace(/Cloud Run \(Frontend SSR Microservice\)/gi, `Cloud Run (${topicClean} Frontend UI)`)
+    .replace(/Cloud SQL PostgreSQL 15/gi, `Cloud SQL (${topicClean} Database)`)
+    .replace(/Amazon EKS Cluster \(us-east-1a\/b\)/gi, `Amazon EKS Cluster (${topicClean} Mesh)`)
+    .replace(/Medallion Architecture/gi, `${topicClean} Medallion Architecture`)
+    .replace(/Raw Telemetry &amp; Field Ingestion/gi, `${topicClean} Raw Telemetry &amp; Ingestion`)
+    .replace(/Vertex AI Vector Search &amp; Reasoning Core/gi, `${topicClean} Vertex AI Reasoning Core`);
+
+  const isSupplyChain = /supply|logistics|warehouse|quantumflow|fleet|inventory|chain|drone/i.test(topicClean + ' ' + (userPrompt || ''));
 
   if (isSupplyChain) {
     updatedXml = updatedXml
@@ -1566,11 +1614,14 @@ export function createVendorIconsVariant(xmlInput: string): string {
 export function sanitizeDrawioXmlAttributes(xml: string): string {
   if (!xml) return xml;
   
-  // 1. Convert non-ASCII unicode characters/emojis into safe numeric HTML entities to prevent atob Latin1 failures
-  let cleaned = xml.replace(/[^\x00-\x7F]/g, (char) => {
+  // 1. Convert non-ASCII unicode characters/emojis into safe numeric HTML entities using unicode surrogate mode to prevent invalid XML entities (e.g. &#55357;) and atob Latin1 failures
+  let cleaned = xml.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[^\x00-\x7F]/gu, (char) => {
     const code = char.codePointAt(0);
     return code ? `&#${code};` : '';
   });
+
+  // Clean any legacy invalid surrogate numeric character entities (&#55296; to &#57343;)
+  cleaned = cleaned.replace(/&#(?:5[5-6][0-9]{3}|57[0-2][0-9]{2}|573[0-3][0-9]|5734[0-3]);/g, '');
 
   // 2. Fix unescaped raw '<' and '&quot;' inside value attributes
   cleaned = cleaned.replace(/\bvalue="([\s\S]*?)"(?=\s+[a-zA-Z_:][a-zA-Z0-9_:-]*=|\s*\/?>)/g, (match, valContent) => {
