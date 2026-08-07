@@ -895,163 +895,527 @@ export function getExactServerlessGcpReferenceXml(): string {
 }
 
 /**
- * 🏛️ BLUEPRINT #5: GCP MULTI-REGION ACTIVE-PASSIVE DISASTER RECOVERY (DR TOPOLOGY)
- * Precision 1400x820 Dual-Region Split-Screen Cloud Topology with Two-Page DR Continuity Matrix
+ * 🏛️ BLUEPRINT #5: GCP MULTI-REGION ACTIVE-PASSIVE DISASTER RECOVERY (CASE B)
+ * Pixel-Perfect Replica of GCP Active-Passive Multi-Region DR Technical Infrastructure & Data Flow (Case B)
  */
 export function getExactMultiRegionDrReferenceXml(): string {
   return `
 <mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="gcp_multi_region_dr" name="1. GCP Multi-Region Active-Passive Disaster Recovery Topology">
-    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="820" background="#FFFFFF">
+  <diagram id="gcp_multi_region_dr_case_b" name="1. GCP Active-Passive Multi-Region DR (Case B)">
+    <mxGraphModel dx="1480" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1480" pageHeight="800" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- CANVAS FRAME -->
-        <mxCell id="frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="20" y="20" width="1360" height="780" as="geometry" />
+        <!-- TOP PUBLICATION HEADER -->
+        <mxCell id="header_title" value="GCP ACTIVE-PASSIVE MULTI-REGION DR: TECHNICAL INFRASTRUCTURE &amp;amp; DATA FLOW (CASE B)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#000000;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="25" y="12" width="1430" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="header_line" value="" style="line;strokeWidth=1.5;strokeColor=#000000;html=1;" vertex="1" parent="1">
+          <mxGeometry x="25" y="42" width="1430" height="4" as="geometry" />
         </mxCell>
 
-        <!-- TOP PUBLICATION BANNER -->
-        <mxCell id="header_title" value="GCP MULTI-REGION ACTIVE-PASSIVE DISASTER RECOVERY TOPOLOGY (us-central1 vs us-east4)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="40" y="32" width="1320" height="24" as="geometry" />
+        <!-- =================================================================== -->
+        <!-- LEFT VERTICAL PATH LEGEND (x: 20..115, y: 240..460) -->
+        <!-- =================================================================== -->
+        <mxCell id="leg_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="240" width="95" height="230" as="geometry" />
         </mxCell>
-        <mxCell id="header_sub" value="Global Cloud DNS Health-Checked Failover • Active Production Leader (us-central1) • Hot Standby Mirror (us-east4) • Cloud Spanner Synchronous Consensus &amp;amp; Cross-Region GCS Replication" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
-          <mxGeometry x="40" y="56" width="1320" height="20" as="geometry" />
+        
+        <!-- Active Path -->
+        <mxCell id="leg_active_bar" value="" style="line;strokeWidth=2;strokeColor=#000000;html=1;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="32" y="250" width="2" height="35" as="geometry" />
         </mxCell>
-
-        <!-- HORIZONTAL TIER 1: GLOBAL EDGE ROUTING & HEALTH-CHECK FAILOVER -->
-        <mxCell id="t1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=1.5;strokeColor=#0284C7;fillColor=#F8FAFC;" vertex="1" parent="1">
-          <mxGeometry x="35" y="85" width="1330" height="180" as="geometry" />
+        <mxCell id="leg_active_tick1" value="" style="line;strokeWidth=1.5;strokeColor=#000000;html=1;" vertex="1" parent="1">
+          <mxGeometry x="27" y="250" width="12" height="2" as="geometry" />
         </mxCell>
-        <mxCell id="t1_lbl" value="&lt;b style=&quot;font-size:12px;color:#0284C7;&quot;&gt;TIER 1&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;Global Routing &amp;amp;&lt;br/&gt;Health-Check&lt;br/&gt;Failover Perimeter&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="45" y="95" width="135" height="160" as="geometry" />
+        <mxCell id="leg_active_tick2" value="" style="line;strokeWidth=1.5;strokeColor=#000000;html=1;" vertex="1" parent="1">
+          <mxGeometry x="27" y="285" width="12" height="2" as="geometry" />
         </mxCell>
-
-        <!-- TIER 1 CARDS -->
-        <!-- [1.1] Global Cloud DNS Health-Check Failover -->
-        <mxCell id="dr_dns" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;🌐 [1.1] Global Cloud DNS Health-Check Failover&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#334155&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Health-checked failover routing policy with 30s TTL.&lt;br/&gt;Continuously evaluates regional health and swings 100% of DNS resolution to us-east4 in &amp;lt;15 seconds during major regional outages.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#0284C7;font-weight:bold;font-size:10px;&#39;&gt;⚡ Auto Failover &amp;lt;15s • TTL: 30s • Geo-Routing&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="185" y="95" width="310" height="160" as="geometry" />
-        </mxCell>
-
-        <!-- [1.2] Google Global External HTTPS LB + Cloud Armor -->
-        <mxCell id="dr_lb" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0284C7;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;🛡️ [1.2] Google Global HTTPS LB + Cloud Armor&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#F0F9FF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Single Anycast VIP frontend with Multi-Region Backend Services and Cloud Armor L7 WAF.&lt;br/&gt;Normal mode routes 100% traffic to us-central1; DR failover swings traffic to us-east4.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#0369A1;font-weight:bold;font-size:10px;&#39;&gt;🔒 Anycast VIP • DDoS Shield • Multi-Region Backends&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0284C7;fillColor=#F0F9FF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="615" y="95" width="310" height="160" as="geometry" />
+        <mxCell id="leg_active_lbl" value="&lt;b&gt;Active&lt;br/&gt;Path&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#000000;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="42" y="250" width="65" height="35" as="geometry" />
         </mxCell>
 
-        <!-- [1.3] Cloud Monitoring DR Sentry & Alert Engine -->
-        <mxCell id="dr_sentry" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;📡 [1.3] Cloud Monitoring DR Sentry &amp;amp; Alert Engine&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#334155&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Synthetic probes monitoring API health across 6 global regions.&lt;br/&gt;Dispatches automated failover orchestration signals via Pub/Sub, Cloud Functions, and PagerDuty upon 3 consecutive probe failures.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#0F172A;font-weight:bold;font-size:10px;&#39;&gt;🚨 6 Global Probe Locations • Automated Runbook Trigger&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1045" y="95" width="305" height="160" as="geometry" />
+        <!-- Standby Path -->
+        <mxCell id="leg_standby_bar" value="" style="line;strokeWidth=2;dashed=1;strokeColor=#000000;html=1;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="32" y="300" width="2" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_standby_tick1" value="" style="line;strokeWidth=1.5;strokeColor=#000000;html=1;" vertex="1" parent="1">
+          <mxGeometry x="27" y="300" width="12" height="2" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_standby_tick2" value="" style="line;strokeWidth=1.5;strokeColor=#000000;html=1;" vertex="1" parent="1">
+          <mxGeometry x="27" y="335" width="12" height="2" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_standby_lbl" value="&lt;b&gt;Standby Path&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#000000;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="42" y="300" width="75" height="35" as="geometry" />
         </mxCell>
 
-        <!-- DUAL-REGION SPLIT SCREEN -->
-        <!-- LEFT CONTAINER: PRIMARY ACTIVE REGION (us-central1) -->
-        <mxCell id="primary_region_box" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#16A34A;fillColor=#F0FDF4;" vertex="1" parent="1">
-          <mxGeometry x="35" y="280" width="640" height="495" as="geometry" />
+        <!-- Asynchronous Replication Path -->
+        <mxCell id="leg_rep_arr" value="" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#B91C1C;dashed=1;endArrow=classic;endFill=1;endSize=5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="33" y="355" as="sourcePoint"/>
+            <mxPoint x="33" y="395" as="targetPoint"/>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="primary_region_hdr" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#16A34A;padding:8px 12px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:13px;&#39;&gt;&lt;b&gt;🟢 PRIMARY ACTIVE REGION: us-central1 (Iowa - 100% Live Ingress Traffic)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="35" y="280" width="640" height="34" as="geometry" />
-        </mxCell>
-
-        <!-- [2.1A] Primary GKE Autopilot Cluster -->
-        <mxCell id="pri_gke" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#15803D;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;⚡ [2.1A] Primary GKE Cluster (Active)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Production microservices cluster (10.128.10.0/24) running 100% live traffic.&lt;br/&gt;Autoscaling 20 to 500 pods across us-central1-a/b/c with Istio mTLS.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#15803D;font-weight:bold;font-size:10px;&#39;&gt;100% Active Workload • Multi-Zone HA&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#15803D;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="55" y="330" width="270" height="175" as="geometry" />
+        <mxCell id="leg_rep_lbl" value="&lt;b&gt;Asynchronous&lt;br/&gt;Replication&lt;br/&gt;Path&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=9;fontColor=#000000;lineHeight=1.2;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="42" y="355" width="75" height="40" as="geometry" />
         </mxCell>
 
-        <!-- [2.2A] Cloud Spanner Primary Leader -->
-        <mxCell id="pri_spanner" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;🛢️ [2.2A] Cloud Spanner Primary Leader&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#334155&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Multi-Region Paxos consensus leader instance.&lt;br/&gt;Serves 100% live ACID read/write transactions with zero data loss (RPO = 0) and TrueTime atomicity.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#0F172A;font-weight:bold;font-size:10px;&#39;&gt;Paxos Consensus Leader • RPO = 0&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="385" y="330" width="270" height="175" as="geometry" />
+        <!-- Failover Process -->
+        <mxCell id="leg_fail_arr" value="" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#7F1D1D;endArrow=classic;endFill=1;endSize=5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="33" y="415" as="sourcePoint"/>
+            <mxPoint x="33" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_fail_lbl" value="&lt;b&gt;Failover&lt;br/&gt;Process&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#000000;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="42" y="415" width="65" height="35" as="geometry" />
         </mxCell>
 
-        <!-- [2.3A] Primary Regional GCS Bucket -->
-        <mxCell id="pri_gcs" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#15803D;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;🪣 [2.3A] Primary Regional GCS Bucket&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Active customer media &amp;amp; transactional payload storage.&lt;br/&gt;Continuous dual-region asynchronous replication stream to us-east4 bucket.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#15803D;font-weight:bold;font-size:10px;&#39;&gt;Live Assets • Continuous Dual-Region Sync&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#15803D;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="55" y="530" width="270" height="165" as="geometry" />
+        <!-- =================================================================== -->
+        <!-- TOP TIER: EXTERNAL CLIENTS & GLOBAL L7 LOAD BALANCER -->
+        <!-- =================================================================== -->
+        <!-- External Clients Box (x: 40, y: 65, w: 230, h: 100) -->
+        <mxCell id="box_clients" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#64748B;fillColor=#F8FAFC;" vertex="1" parent="1">
+          <mxGeometry x="40" y="65" width="230" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="clients_hdr" value="&lt;b&gt;External Clients&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="67" width="230" height="18" as="geometry" />
+        </mxCell>
+        <!-- Device 1: Web browsers -->
+        <mxCell id="dev_web" value="💻" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="52" y="90" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_web_lbl" value="Web browsers" style="text;html=1;align=center;verticalAlign=top;fontSize=8.5;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="38" y="132" width="68" height="18" as="geometry" />
+        </mxCell>
+        <!-- Device 2: Mobile apps -->
+        <mxCell id="dev_mob" value="📱" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="135" y="90" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_mob_lbl" value="Mobile apps" style="text;html=1;align=center;verticalAlign=top;fontSize=8.5;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="122" y="132" width="65" height="18" as="geometry" />
+        </mxCell>
+        <!-- Device 3: IoT devices -->
+        <mxCell id="dev_iot" value="📟" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="215" y="90" width="40" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_iot_lbl" value="IoT devices" style="text;html=1;align=center;verticalAlign=top;fontSize=8.5;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="202" y="132" width="65" height="18" as="geometry" />
         </mxCell>
 
-        <!-- [2.4A] Cloud KMS Primary Key Ring -->
-        <mxCell id="pri_kms" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;🔑 [2.4A] Cloud KMS Primary Key Ring&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#334155&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;CMEK envelope encryption keys active for primary region data storage with multi-region backup keys.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#0F172A;font-weight:bold;font-size:10px;&#39;&gt;CMEK Primary • HSM Key Protection&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="385" y="530" width="270" height="165" as="geometry" />
+        <!-- Global L7 HTTPS Load Balancer (x: 580, y: 75, w: 170, h: 55) -->
+        <mxCell id="node_glb" value="👥 &lt;b&gt;Global L7 HTTPS&lt;br/&gt;Load Balancer&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9px;color:#334155;&quot;&gt;- Global SSL Offloading&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10.5;fontColor=#000000;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="580" y="75" width="170" height="55" as="geometry" />
         </mxCell>
 
-        <!-- RIGHT CONTAINER: SECONDARY STANDBY REGION (us-east4) -->
-        <mxCell id="standby_region_box" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#D97706;fillColor=#FEF3C7;" vertex="1" parent="1">
-          <mxGeometry x="705" y="280" width="640" height="495" as="geometry" />
-        </mxCell>
-        <mxCell id="standby_region_hdr" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#D97706;padding:8px 12px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:13px;&#39;&gt;&lt;b&gt;🟡 SECONDARY REGION: us-east4 (N. Virginia - Warm Standby &amp;amp; Auto-Scale)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="705" y="280" width="640" height="34" as="geometry" />
+        <!-- GLB Speech Callout (x: 760, y: 72, w: 260, h: 48) -->
+        <mxCell id="glb_callout" value="&lt;b&gt;Traffic Routing:&lt;/b&gt; 100% to Region A (Active).&lt;br/&gt;Standby path to Region B (Passive/Standby)" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.5;size=10;position=0.15;strokeColor=#94A3B8;fillColor=#F8FAFC;fontSize=8.5;align=left;spacingLeft=6;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="760" y="72" width="260" height="48" as="geometry" />
         </mxCell>
 
-        <!-- [2.1B] Cloud Spanner Synchronous Read Replica (Left Column of Standby Region) -->
-        <mxCell id="stby_spanner" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;🛢️ [2.1B] Cloud Spanner Synchronous Mirror&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#334155&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Synchronous Paxos read replica in us-east4.&lt;br/&gt;Ready for instantaneous zero-downtime leader promotion with RPO = 0 and sub-second RTO upon failover command.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#0F172A;font-weight:bold;font-size:10px;&#39;&gt;Synchronous Mirror • Instant Leader Promotion&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="725" y="330" width="270" height="175" as="geometry" />
+        <!-- GLB Tree Dispatcher Icon -->
+        <mxCell id="glb_tree" value="⑂" style="text;html=1;align=center;verticalAlign=middle;fontSize=22;fontColor=#0284C7;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="135" width="35" height="22" as="geometry" />
         </mxCell>
 
-        <!-- [2.2B] Standby GKE Warm Cluster (Right Column of Standby Region) -->
-        <mxCell id="stby_gke" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#B45309;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;⚙️ [2.2B] Standby GKE Warm Cluster&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Warm replica cluster (10.132.10.0/24) with pre-provisioned minimum pods (20% baseline capacity).&lt;br/&gt;HPA rapidly expands to 100% capacity in &amp;lt;60 seconds upon failover signal.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#B45309;font-weight:bold;font-size:10px;&#39;&gt;Warm Baseline (20%) • HPA to 100% in 60s&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#B45309;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1055" y="330" width="270" height="175" as="geometry" />
-        </mxCell>
-
-        <!-- [2.3B] Secondary GCS Dual-Region Mirror -->
-        <mxCell id="stby_gcs" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#B45309;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;🪣 [2.3B] Secondary GCS Dual-Region Mirror&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Fully synchronized warm bucket replica with versioning and immutable object locking for DR compliance.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#B45309;font-weight:bold;font-size:10px;&#39;&gt;Warm Object Mirror • WORM Retention&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#B45309;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="725" y="530" width="270" height="165" as="geometry" />
-        </mxCell>
-
-        <!-- [2.4B] Automated DR Promotion Runbook -->
-        <mxCell id="stby_runbook" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:6px 10px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:12px;&#39;&gt;&lt;b&gt;🤖 [2.4B] Automated DR Promotion Runbook&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#334155&#39; style=&#39;font-size:11px;line-height:1.4;&#39;&gt;Cloud Functions / Terraform automated failover agent executing leader promotion and route re-pointing.&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#0F172A;font-weight:bold;font-size:10px;&#39;&gt;Automated Runbook • Split-Brain Guard&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1055" y="530" width="270" height="165" as="geometry" />
-        </mxCell>
-
-        <!-- ORTHOGONAL CONNECTORS -->
-        <mxCell id="dre1" value="1. Global DNS&lt;br/&gt;Health Routing" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;spacing=3;" edge="1" parent="1" source="dr_dns" target="dr_lb">
+        <!-- Top Connectors -->
+        <mxCell id="conn_clients_glb" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;fontColor=#000000;fontStyle=1;fontSize=10.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="box_clients" target="node_glb">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="dre2" value="2. Active Route&lt;br/&gt;(100% Traffic)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=10;spacing=3;" edge="1" parent="1" source="dr_lb" target="pri_gke">
+
+        <!-- =================================================================== -->
+        <!-- MIDDLE SECTION: REGION A vs API MGMT vs REGION B -->
+        <!-- =================================================================== -->
+
+        <!-- 1. REGION A (Active Site - US-East1) (x: 120, y: 200, w: 400, h: 300) -->
+        <mxCell id="region_a_box" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#94A3B8;fillColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="120" y="200" width="400" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="region_a_hdr" value="☁️ &lt;b&gt;REGION A (Active Site - US-East1)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=11.5;fontColor=#000000;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="120" y="202" width="340" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Region A: Compute Layer Inner Container (x: 130, y: 228, w: 380, h: 190) -->
+        <mxCell id="reg_a_compute_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#EFF6FF;" vertex="1" parent="1">
+          <mxGeometry x="130" y="228" width="380" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="reg_a_compute_hdr" value="&lt;b&gt;Compute Layer&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=10.5;fontColor=#000000;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="130" y="230" width="110" height="18" as="geometry" />
+        </mxCell>
+        
+        <!-- Scaled to handle full instances note -->
+        <mxCell id="reg_a_scale_note" value="Scaled to handle to extre full instances" style="text;html=1;align=center;verticalAlign=middle;fontSize=8;fontColor=#334155;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="200" y="244" width="190" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud Run Microservices Outer Sub-Frame (x: 138, y: 262, w: 295, h: 105) -->
+        <mxCell id="reg_a_cr_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#93C5FD;fillColor=#DBEAFE;" vertex="1" parent="1">
+          <mxGeometry x="138" y="262" width="295" height="105" as="geometry" />
+        </mxCell>
+
+        <!-- Microservice A -->
+        <mxCell id="cr_ms_a" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;&quot;&gt;(Microservice-A)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=8;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="144" y="298" width="65" height="58" as="geometry" />
+        </mxCell>
+        <!-- Microservice B (1) -->
+        <mxCell id="cr_ms_b1" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;&quot;&gt;(Microservice-B)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=8;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="218" y="298" width="65" height="58" as="geometry" />
+        </mxCell>
+        <!-- Microservice B (2) -->
+        <mxCell id="cr_ms_b2" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;&quot;&gt;(Microservice-B)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=8;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="292" y="298" width="65" height="58" as="geometry" />
+        </mxCell>
+        <!-- Microservice C -->
+        <mxCell id="cr_ms_c" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;&quot;&gt;(Microservice-C)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=8;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="364" y="298" width="62" height="58" as="geometry" />
+        </mxCell>
+
+        <!-- Scaled to 100-500 instances callout badge on right -->
+        <mxCell id="badge_100_500" value="scaled to&lt;br/&gt;&lt;b&gt;100-500&lt;/b&gt;&lt;br/&gt;instances" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="440" y="288" width="60" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- Connectors between microservices -->
+        <mxCell id="conn_ms1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;" edge="1" parent="1" source="cr_ms_a" target="cr_ms_b1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="conn_ms2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;" edge="1" parent="1" source="cr_ms_b1" target="cr_ms_b2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="conn_ms3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;" edge="1" parent="1" source="cr_ms_b2" target="cr_ms_c">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Full scale serving layer bar -->
+        <mxCell id="bar_reg_a_cap" value="&lt;b&gt;FULL-SCALE SERVING LAYER: 100% Capacity&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="138" y="390" width="365" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Region A: Data & Business Logic Layer (x: 130, y: 425, w: 380, h: 65) -->
+        <mxCell id="reg_a_data_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#EFF6FF;" vertex="1" parent="1">
+          <mxGeometry x="130" y="425" width="380" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="reg_a_data_content" value="&lt;b&gt;Data &amp;amp; Business Logic Layer&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9px;color:#334155;&quot;&gt;⚡ (e.g., Pub/Sub for internal message queues)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=10.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="130" y="430" width="380" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- 2. CENTER: API Management & ENTRY (Active-Passive) (x: 535, y: 200, w: 145, h: 95) -->
+        <mxCell id="node_apimgmt" value="&lt;b&gt;API Management &amp;amp;&lt;br/&gt;ENTRY&lt;/b&gt; (Active-Passive)&lt;br/&gt;&lt;span style=&quot;font-size:7.5px;color:#334155;&quot;&gt;Detailed action &amp;amp; Management&lt;br/&gt;&amp;amp; Load Balancer (e.g., named&lt;br/&gt;aumencent/ Active-Passive)&lt;/span&gt;" style="shape=note;whiteSpace=wrap;html=1;size=12;verticalAlign=middle;align=center;strokeColor=#94A3B8;fillColor=#F8FAFC;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="535" y="200" width="145" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- 3. CENTER: Dual-Region GCS Storage Bridge (x: 575, y: 370, w: 145, h: 155) -->
+        <mxCell id="node_gcs_bridge" value="&lt;b&gt;Google Cloud Storage&lt;br/&gt;(GCS) Multi-Region&lt;/b&gt;&lt;br/&gt;&lt;b&gt;dual-region bucket&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7.5px;color:#334155;&quot;&gt;(e.g. dual-region-static-data-us)&lt;/span&gt;" style="shape=note;whiteSpace=wrap;html=1;size=12;verticalAlign=top;align=center;strokeColor=#94A3B8;fillColor=#F8FAFC;fontSize=8.5;fontColor=#000000;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="575" y="370" width="145" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- GCS Buckets in Center Bridge -->
+        <mxCell id="bucket_left" value="🪣" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="630" y="445" width="38" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="bucket_sub_note" value="Replication tool to replication with&lt;br/&gt;data consistency with rules named&lt;br/&gt;&lt;i&gt;(e.g. dual-region-static-data-us)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;fontSize=7;align=center;verticalAlign=middle;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="575" y="485" width="145" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 4. REGION B (Passive/Standby - US-West1) (x: 700, y: 200, w: 310, h: 300) -->
+        <mxCell id="region_b_box" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#94A3B8;fillColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="700" y="200" width="310" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="region_b_hdr" value="☁️ &lt;b&gt;REGION B (Passive/Standby - US-West1)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=11.5;fontColor=#000000;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="700" y="202" width="310" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Region B: Scaled Services Container (x: 712, y: 228, w: 285, h: 190) -->
+        <mxCell id="reg_b_compute_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#EFF6FF;" vertex="1" parent="1">
+          <mxGeometry x="712" y="228" width="285" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="reg_b_compute_hdr" value="&lt;b&gt;Scaled Services&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=10.5;fontColor=#000000;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="712" y="230" width="110" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Scaled Cloud Run Card 1 -->
+        <mxCell id="cr_b_ms1" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=8.5;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="724" y="298" width="65" height="58" as="geometry" />
+        </mxCell>
+        <!-- Scaled Cloud Run Card 2 -->
+        <mxCell id="cr_b_ms2" value="&lt;b&gt;Scaled&lt;br/&gt;services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=8.5;fontColor=#000000;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="798" y="298" width="65" height="58" as="geometry" />
+        </mxCell>
+
+        <!-- Pilot Light Callout in Region B -->
+        <mxCell id="reg_b_pilot_note" value="&lt;b&gt;PILOT LIGHT STATE (B):&lt;/b&gt;&lt;br/&gt;Pre-deployed, scaled&lt;br/&gt;to zero or minimal&lt;br/&gt;(e.g., 1-2 instances)" style="text;html=1;align=left;verticalAlign=middle;fontSize=8;fontColor=#334155;lineHeight=1.2;" vertex="1" parent="1">
+          <mxGeometry x="872" y="290" width="115" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Not Serving Traffic Bar -->
+        <mxCell id="bar_reg_b_not" value="&lt;b&gt;NOT SERVING TRAFFIC&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="712" y="390" width="285" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Standby Bucket Box in Region B -->
+        <mxCell id="bucket_b" value="🪣" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="835" y="445" width="38" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="bucket_b_lbl" value="&lt;b&gt;Buckets&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fontSize=8.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="825" y="478" width="58" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="bucket_b_callout" value="Scaled-down resources&lt;br/&gt;ready for rapid&lt;br/&gt;auto-scaling on&lt;br/&gt;failover" style="shape=note;whiteSpace=wrap;html=1;size=8;strokeColor=#CBD5E1;fillColor=#FFFFFF;fontSize=7.5;align=left;spacingLeft=3;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="890" y="440" width="105" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- Routing lines from GLB dispatcher to Region A and Region B -->
+        <mxCell id="conn_glb_reg_a" value="Health Checks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;fontSize=9;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="glb_tree" target="region_a_box">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="770" y="265"/>
-              <mxPoint x="190" y="265"/>
+              <mxPoint x="657" y="175"/>
+              <mxPoint x="320" y="175"/>
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dre3" value="3. Failover Standby&lt;br/&gt;Route" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;html=1;strokeWidth=2;strokeColor=#D97706;labelBackgroundColor=#FFFFFF;labelBorderColor=#D97706;fontColor=#0F172A;fontStyle=1;fontSize=10;spacing=3;" edge="1" parent="1" source="dr_lb" target="stby_gke">
+        <mxCell id="conn_glb_reg_b" value="Health Checks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;fontSize=9;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="glb_tree" target="region_b_box">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="770" y="265"/>
-              <mxPoint x="1190" y="265"/>
+              <mxPoint x="657" y="175"/>
+              <mxPoint x="855" y="175"/>
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dre4" value="4. Read/Write ACID&lt;br/&gt;Transactions" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=10;spacing=3;" edge="1" parent="1" source="pri_gke" target="pri_spanner">
+
+        <!-- Red dashed replication from Bucket A to Bucket B -->
+        <mxCell id="conn_bucket_sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;strokeWidth=1.5;strokeColor=#B91C1C;" edge="1" parent="1" source="bucket_left" target="bucket_b">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- =================================================================== -->
+        <!-- LOWER SECTION: GCP / AWS ACTIVE & CROSS-REGION ASYNC DB REPLICATION -->
+        <!-- =================================================================== -->
+
+        <!-- Lower Sub-Container 1: GCP (region-a) ACTIVE (x: 40, y: 565, w: 250, h: 220) -->
+        <mxCell id="gcp_low_a_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#93C5FD;fillColor=#F0F9FF;" vertex="1" parent="1">
+          <mxGeometry x="40" y="565" width="250" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="gcp_low_a_hdr" value="☁️ &lt;b&gt;GCP&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b&gt;ACTIVE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=9.5;fontColor=#000000;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="567" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_badge_a" value="S3" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6B21A8;fillColor=#9333EA;fontSize=8.5;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="568" width="24" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="gcp_a_sub_lbl" value="&lt;b&gt;(region-a)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="120" y="567" width="65" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 3 Cloud Run mini cards in row -->
+        <mxCell id="low_a_cr1" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="48" y="595" width="50" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="low_a_cr2" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="106" y="595" width="50" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="low_a_cr3" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="164" y="595" width="50" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud SQL Primary & HA -->
+        <mxCell id="low_a_sql" value="🛢️ &lt;b&gt;Cloud SQL&lt;br/&gt;Primary&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="95" y="648" width="55" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="low_a_ha" value="&lt;b&gt;HA&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;&quot;&gt;High Availability&lt;br/&gt;local HA&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="158" y="648" width="60" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_low_sql_ha" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;" edge="1" parent="1" source="low_a_sql" target="low_a_ha">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom Storage GCP region-a -->
+        <mxCell id="low_a_gcs" value="🪣 Cloud Storage" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#3B82F6;fontColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="46" y="735" width="58" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="low_a_s3" value="🪣 S3" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#B91C1C;fillColor=#EF4444;fontColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="130" y="735" width="45" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_low_a_rep" value="Replicated" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#000000;fontSize=7.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="low_a_gcs" target="low_a_s3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Callout text: PRIMARY DB LAYER (A) -->
+        <mxCell id="callout_pri_db" value="&lt;b&gt;PRIMARY DB LAYER (A):&lt;/b&gt;&lt;br/&gt;Read-Write.&lt;br/&gt;Handles all data&lt;br/&gt;transactions (az-a),&lt;br/&gt;read-replica in az-b" style="text;html=1;align=left;verticalAlign=middle;fontSize=7.5;fontColor=#000000;lineHeight=1.2;" vertex="1" parent="1">
+          <mxGeometry x="225" y="640" width="85" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Center Top Hub: Global Traffic Manager (Route 53 or Global LB) (x: 275, y: 535, w: 90, h: 48) -->
+        <mxCell id="gtm_hub" value="🌐 &lt;b&gt;Global Traffic&lt;br/&gt;Manager&lt;/b&gt; (Route 53&lt;br/&gt;or Global LB)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7C3AED;fillColor=#EDE9FE;fontSize=7.5;align=center;verticalAlign=middle;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="275" y="535" width="90" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- Lower Sub-Container 2: AWS ACTIVE (x: 345, y: 565, w: 215, h: 220) -->
+        <mxCell id="aws_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#FED7AA;fillColor=#FFEDD5;" vertex="1" parent="1">
+          <mxGeometry x="345" y="565" width="215" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_hdr" value="&lt;b&gt;aws&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b&gt;ACTIVE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=9.5;fontColor=#000000;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="345" y="567" width="215" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_badge_rds" value="RDS" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#F97316;fontSize=8.5;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="568" width="26" height="17" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Components -->
+        <mxCell id="aws_eks1" value="⚙️ EKS" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#FFFFFF;fontSize=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="355" y="595" width="45" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_rds" value="🛢️ RDS" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#FFFFFF;fontSize=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="408" y="595" width="45" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_eks2" value="⚙️ EKS" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#FFFFFF;fontSize=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="462" y="595" width="45" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_rds2" value="🛢️ RDS" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#3B82F6;fontColor=#FFFFFF;fontSize=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="355" y="648" width="45" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_aurora" value="🛢️ Aurora" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#3B82F6;fontColor=#FFFFFF;fontSize=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="408" y="648" width="55" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_rds_aurora" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;" edge="1" parent="1" source="aws_rds2" target="aws_aurora">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom Storage AWS -->
+        <mxCell id="aws_gcs" value="🪣 Cloud Storage" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#3B82F6;fontColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="385" y="735" width="58" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_s3" value="🪣 S3" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#B91C1C;fillColor=#EF4444;fontColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="468" y="735" width="45" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_aws_rep" value="Replicated" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#000000;fontSize=7.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="aws_gcs" target="aws_s3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Lower Sub-Container 3: GCP (region-a / region-b) ACTIVE (x: 690, y: 565, w: 250, h: 220) -->
+        <mxCell id="gcp_low_b_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#93C5FD;fillColor=#F0F9FF;" vertex="1" parent="1">
+          <mxGeometry x="690" y="565" width="250" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="gcp_low_b_hdr" value="☁️ &lt;b&gt;GCP&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b&gt;ACTIVE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=9.5;fontColor=#000000;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="690" y="567" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_badge_b" value="S3" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6B21A8;fillColor=#9333EA;fontSize=8.5;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="568" width="24" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="gcp_b_sub_lbl" value="&lt;b&gt;(region-a)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="770" y="567" width="65" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 3 Cloud Run mini cards in row (Region B) -->
+        <mxCell id="low_b_cr1" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="698" y="595" width="50" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="low_b_cr2" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="756" y="595" width="50" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="low_b_cr3" value="&lt;b&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="814" y="595" width="50" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud SQL Replica in Region B -->
+        <mxCell id="low_b_replica" value="🛢️ &lt;b&gt;Cloud SQL&lt;br/&gt;Replica&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;fontSize=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="756" y="648" width="60" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Callout text: READ-ONLY REPLICA (B) -->
+        <mxCell id="callout_rep_db" value="&lt;b&gt;READ-ONLY&lt;br/&gt;REPLICA (B):&lt;/b&gt;&lt;br/&gt;Pre-populated.&lt;br/&gt;Low compute cost.&lt;br/&gt;Labeled: Read-Only.&lt;br/&gt;Pre-failure state." style="text;html=1;align=left;verticalAlign=middle;fontSize=7.5;fontColor=#000000;lineHeight=1.2;" vertex="1" parent="1">
+          <mxGeometry x="848" y="640" width="85" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Bottom Storage GCP region-b -->
+        <mxCell id="low_b_gcs" value="🪣 Cloud Storage" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#3B82F6;fontColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="698" y="735" width="58" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="low_b_s3" value="🪣 S3" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#B91C1C;fillColor=#EF4444;fontColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="780" y="735" width="45" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="conn_low_b_rep" value="Replicated" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#000000;fontSize=7.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="low_b_gcs" target="low_b_s3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- =================================================================== -->
+        <!-- MIDDLE-TO-LOWER CONNECTORS & REPLICATION LINES -->
+        <!-- =================================================================== -->
+        <!-- Connection from Region A Data Layer down to lower GCP region-a -->
+        <mxCell id="conn_reg_a_to_low" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;" edge="1" parent="1" source="reg_a_data_box" target="low_a_cr2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Connection from Region A Data Layer to Global Traffic Manager -->
+        <mxCell id="conn_reg_a_to_gtm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#7C3AED;" edge="1" parent="1" source="reg_a_data_box" target="gtm_hub">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Health Check line from GTM to GCP lower box -->
+        <mxCell id="conn_gtm_to_gcp" value="Health check" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#000000;fontSize=7.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="gtm_hub" target="gcp_low_a_box">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="190" y="518"/>
-              <mxPoint x="520" y="518"/>
+              <mxPoint x="290" y="525"/>
+              <mxPoint x="165" y="525"/>
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dre5" value="5. Google Fiber Paxos&lt;br/&gt;Sync (RPO = 0)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;spacing=3;" edge="1" parent="1" source="pri_spanner" target="stby_spanner">
+
+        <!-- Health Checks line from GTM to AWS lower box -->
+        <mxCell id="conn_gtm_to_aws" value="Health checks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#000000;fontSize=7.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="gtm_hub" target="aws_box">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="665" y="415"/>
-              <mxPoint x="715" y="415"/>
+              <mxPoint x="350" y="525"/>
+              <mxPoint x="450" y="525"/>
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dre6" value="6. Cross-Region&lt;br/&gt;Bucket Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;spacing=3;" edge="1" parent="1" source="pri_gcs" target="stby_gcs">
+
+        <!-- Connection from Region B Buckets down to lower GCP region-b -->
+        <mxCell id="conn_bucket_to_low_b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;" edge="1" parent="1" source="bucket_b" target="low_b_cr2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Primary DB to RDS replication connector -->
+        <mxCell id="conn_db_pri_to_rds" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#000000;" edge="1" parent="1" source="low_a_ha" target="aws_rds2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom dashed Replication line from GCP region-a across to AWS -->
+        <mxCell id="conn_bot_rep_line" value="Replication" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;strokeWidth=1;strokeColor=#000000;fontSize=7.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="710" as="sourcePoint"/>
+            <mxPoint x="385" y="710" as="targetPoint"/>
             <Array as="points">
-              <mxPoint x="190" y="715"/>
-              <mxPoint x="860" y="715"/>
+              <mxPoint x="220" y="745"/>
+              <mxPoint x="385" y="745"/>
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dre7" value="7. DR Failover Alert Trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeWidth=2;strokeColor=#DC2626;labelBackgroundColor=#FFFFFF;labelBorderColor=#DC2626;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="dr_sentry" target="stby_runbook">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1350" y="175"/>
-              <mxPoint x="1350" y="612"/>
-            </Array>
-          </mxGeometry>
+
+        <!-- =================================================================== -->
+        <!-- GIANT RED ASYNCHRONOUS DATABASE REPLICATION VECTOR (OVERLAY) -->
+        <!-- =================================================================== -->
+        <mxCell id="giant_rep_title" value="&lt;b&gt;ASYNCHRONOUS DATABASE&lt;br/&gt;REPLICATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=10.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="500" y="605" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="giant_rep_arrow" value="" style="shape=singleArrow;whiteSpace=wrap;html=1;arrowWidth=0.35;arrowSize=0.22;fillColor=#DC2626;strokeColor=#991B1B;" vertex="1" parent="1">
+          <mxGeometry x="465" y="652" width="288" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="giant_rep_callout" value="&lt;b&gt;ASYNCHRONOUS REPLICATION:&lt;/b&gt;&lt;br/&gt;Data lag ~5min (maximum data delay)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#FED7AA;fillColor=#FFFBEB;fontSize=7.5;align=center;verticalAlign=middle;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="510" y="688" width="175" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- =================================================================== -->
+        <!-- RIGHT PANELS: RTO & RPO TARGETS & FAILOVER PROCESS RUNBOOK -->
+        <!-- =================================================================== -->
+
+        <!-- PANEL 1: RTO & RPO TARGETS & TECHNICAL CONSIDERATIONS (CASE B) (x: 1040, y: 65, w: 410, h: 260) -->
+        <mxCell id="panel_rto_rpo" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:12px;background-color:#F8FAFC;&#39;&gt;&lt;font color=&#39;#000000&#39; style=&#39;font-size:10.5px;line-height:1.35;&#39;&gt;&lt;b style=&#39;font-size:11.5px;&#39;&gt;RTO &amp;amp; RPO TARGETS &amp;amp; TECHNICAL&lt;br/&gt;CONSIDERATIONS (CASE B)&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;• &lt;b&gt;Target RTO (Recovery Time Objective): 15-30m&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;- Detect failure -&amp;gt; Trigger Orchestration -&amp;gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Update DNS -&amp;gt; Promote DB -&amp;gt; Scale Services&lt;br/&gt;&lt;br/&gt;• &lt;b&gt;Target RPO (Recovery Point Objective): 1-5m&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;- Max data loss is replication delay (e.g., ~5m)&lt;br/&gt;&lt;br/&gt;• &lt;b&gt;Lower Cost:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;- B has 10% of A&#39;s compute cost&lt;br/&gt;&lt;br/&gt;• &lt;b&gt;Failover:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;- Requires service scaling to full load&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;and DNS update / GLB re-routing&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=note;whiteSpace=wrap;html=1;size=16;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="65" width="410" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- PANEL 2: FAILOVER PROCESS RUNBOOK (x: 1040, y: 340, w: 410, h: 445) -->
+        <mxCell id="panel_failover_box" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:12px;background-color:#F1F5F9;&#39;&gt;&lt;font color=&#39;#000000&#39; style=&#39;font-size:9.5px;line-height:1.35;&#39;&gt;&lt;div style=&#39;text-align:center;&#39;&gt;&lt;b style=&#39;font-size:12px;&#39;&gt;FAILOVER PROCESS&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:9px;color:#334155;&#39;&gt;(Automated or Manual Trigger)&lt;/span&gt;&lt;/div&gt;&lt;br/&gt;&lt;b&gt;❶ Target RTO (Recovery Time Objective):&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Detect failure -&amp;gt; Trigger Orchestration&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Update DNS -&amp;gt; Promote Services&lt;br/&gt;&lt;br/&gt;&lt;b&gt;❷ Target RPO (Promote Services):&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Max data loss is its replication delay&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;(e.g., ~5m)&lt;br/&gt;&lt;br/&gt;&lt;b&gt;❸ Step Cost / Pilot Light State:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;(Pre-deployed minimal scale)&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Detect condition -&amp;gt; Trigger orchestration issue&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Promote application: scale to full and DNS update&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Standby application to Cloud DNS replications&lt;br/&gt;&lt;br/&gt;&lt;b&gt;❹ Cloud SQL Cross-Region Read Replica:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Interleaved application calls&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Scale current HA&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Scaled-down warm resources ready to rapid&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;auto-scaling on failover&lt;br/&gt;&lt;br/&gt;&lt;b&gt;❺ Failover:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Requires service scaling to full load and&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;DNS update / GLB re-routing&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#94A3B8;fillColor=#F1F5F9;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="340" width="410" height="445" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
@@ -1059,30 +1423,30 @@ export function getExactMultiRegionDrReferenceXml(): string {
 
   <!-- PAGE 2: DR PLAYBOOK & ENTERPRISE CONTINUITY SLA MATRIX -->
   <diagram id="gcp_multi_region_dr_playbook" name="Page 2: DR Playbook &amp; Enterprise Continuity SLA Matrix">
-    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
+    <mxGraphModel dx="1480" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="780" background="#FFFFFF">
       <root>
         <mxCell id="0_drp2" />
         <mxCell id="1_drp2" parent="0_drp2" />
 
-        <mxCell id="drp2_title" value="&lt;b&gt;GCP Multi-Region Disaster Recovery Strategy &amp;amp; Business Continuity Governance&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_drp2">
-          <mxGeometry x="30" y="12" width="1320" height="28" as="geometry" />
+        <mxCell id="drp2_title" value="GCP Multi-Region Disaster Recovery Strategy &amp;amp; Business Continuity Governance (Case B)" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_drp2">
+          <mxGeometry x="30" y="15" width="1380" height="28" as="geometry" />
         </mxCell>
-        <mxCell id="drp2_sub" value="SRE Paxos Architecture vs Enterprise Regulatory Compliance • RTO/RPO SLA Matrix • Split-Brain Safeguards" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1_drp2">
-          <mxGeometry x="30" y="38" width="1320" height="20" as="geometry" />
+        <mxCell id="drp2_sub" value="Active-Passive Pilot Light Architecture • RTO/RPO Recovery Matrix • Asynchronous Cross-Region Database Replication • Split-Brain Safeguards" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1_drp2">
+          <mxGeometry x="30" y="42" width="1380" height="20" as="geometry" />
         </mxCell>
 
         <!-- TWO-COLUMN STRATEGIC PERSPECTIVE -->
-        <mxCell id="drlens_google" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#16A34A;padding:10px 14px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:14px;&#39;&gt;&lt;b&gt;🚀 BIG TECH SRE &amp;amp; RELIABILITY STANDPOINT (e.g. Google SRE / Stripe / Uber)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:16px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:12px;line-height:1.6;&#39;&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;1. True Multi-Region Zero Data Loss (RPO = 0):&lt;/b&gt; Cloud Spanner Multi-Region configuration uses Paxos consensus across 5 voting replicas across us-central1 and us-east4, guaranteeing 100% ACID consistency without split-brain risk.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;2. Warm-Standby Compute Efficiency:&lt;/b&gt; Pre-warmed minimal replica sets keep secondary compute infrastructure costs &amp;lt;20% of primary while guaranteeing rapid pod scale-up under 60 seconds.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;3. Chaos Engineering &amp;amp; Automated Failover Drills:&lt;/b&gt; Built-in synthetic health check simulation allows automated quarterly chaos testing without impacting production user traffic.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#16A34A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
-          <mxGeometry x="35" y="70" width="635" height="320" as="geometry" />
+        <mxCell id="drlens_google" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#16A34A;padding:10px 14px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:14px;&#39;&gt;&lt;b&gt;🚀 BIG TECH SRE &amp;amp; RELIABILITY STANDPOINT (Case B: Pilot Light)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:16px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:12px;line-height:1.6;&#39;&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;1. Cost-Optimized Pilot Light Footprint:&lt;/b&gt; Secondary standby compute is kept at 10% capacity during normal state (1-2 minimum instances), drastically lowering monthly cloud infrastructure burn while keeping services pre-warmed.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;2. Cross-Region Cloud SQL Asynchronous Replication:&lt;/b&gt; Asynchronous read replica in us-west1 maintains continuous data synchronization with an engineered RPO of 1-5 minutes.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;3. Automated Failover Orchestration:&lt;/b&gt; Health-checked Global L7 Load Balancer detects primary region failure, promotes Cloud SQL read-replica to primary read-write, and triggers Cloud Run autoscaler (100-500 instances) in &amp;lt;15-30m RTO.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#16A34A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
+          <mxGeometry x="35" y="70" width="670" height="320" as="geometry" />
         </mxCell>
 
-        <mxCell id="drlens_mckinsey" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#DC2626;padding:10px 14px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:14px;&#39;&gt;&lt;b&gt;💼 TIER-1 MANAGEMENT CONSULTING &amp;amp; REGULATORY STANDPOINT (e.g. McKinsey / SEC / FINRA)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:16px;background-color:#FEF2F2;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:12px;line-height:1.6;&#39;&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;1. Regulatory Business Continuity (SEC 4370 / MAS TRM):&lt;/b&gt; Satisfies international banking and healthcare compliance standards requiring geographic separation &amp;gt;500 miles and verified RTO &amp;lt; 5 minutes.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;2. Ransomware &amp;amp; Cyber Resilience Vault:&lt;/b&gt; Immutable dual-region WORM object storage and cross-region KMS key protection ensure recovery even in catastrophic cyber destruction scenarios.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;3. Enterprise Insurance &amp;amp; Risk Mitigation:&lt;/b&gt; Formally documented DR playbooks and automated failover telemetry directly reduce corporate cyber insurance premiums and ARB risk scores.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#DC2626;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
-          <mxGeometry x="705" y="70" width="640" height="320" as="geometry" />
+        <mxCell id="drlens_mckinsey" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#DC2626;padding:10px 14px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:14px;&#39;&gt;&lt;b&gt;💼 TIER-1 MANAGEMENT CONSULTING &amp;amp; REGULATORY STANDPOINT&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:16px;background-color:#FEF2F2;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:12px;line-height:1.6;&#39;&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;1. Regulatory Business Continuity (SEC / FINRA / ISO 22301):&lt;/b&gt; Geographic separation across US-East1 and US-West1 (&amp;gt;2,000 miles) satisfies strict disaster recovery separation mandates for financial and enterprise systems.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;2. Dual-Region GCS Object Replication:&lt;/b&gt; Multi-region dual-region buckets ensure all transactional payload objects and static assets are asynchronously replicated with 99.999999999% durability.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;3. Enterprise Insurance &amp;amp; Risk Mitigation:&lt;/b&gt; Documented 5-step failover runbook and verified automated failover simulations protect against regional cloud service provider blackouts.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#DC2626;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
+          <mxGeometry x="735" y="70" width="675" height="320" as="geometry" />
         </mxCell>
 
         <!-- DR SLA & FAILURE MODE MATRIX TABLE -->
-        <mxCell id="dr_slo_matrix" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:8px 12px;&#39; colspan=&#39;5&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:13px;&#39;&gt;&lt;b&gt;📊 ENTERPRISE DISASTER RECOVERY FAILURE MODE &amp;amp; RPO/RTO RECOVERY MATRIX&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Failure Scenario&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Detection Mechanism&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Target RTO (Recovery Time)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Target RPO (Data Loss)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Automated Failover Action&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Normal Production State&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Cloud Monitoring Synthetic Probes&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds (Live)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds (Zero Loss)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;100% Ingress to us-central1; 20% warm standby in us-east4&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Single Zone Failure (e.g., us-central1-a)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;GKE Health Check / Node Controller&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;&amp;lt; 30 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Automated intra-region pod rescheduling to us-central1-b/c&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Major Regional Outage (us-central1 Down)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Global DNS Health Probes (3x Fails)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#D97706;font-weight:bold;&#39;&gt;&amp;lt; 90 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds (Spanner Paxos)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;DNS swings to us-east4; HPA scales pods 20% -&amp;gt; 100% in &amp;lt;60s&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Regional Network Partition (Split-Brain Risk)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;TrueTime Clock &amp;amp; Quorum Witness&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;Instantaneous&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Paxos quorum fencing blocks non-majority partition writes&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
-          <mxGeometry x="35" y="405" width="1310" height="240" as="geometry" />
+        <mxCell id="dr_slo_matrix" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:8px 12px;&#39; colspan=&#39;5&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:13px;&#39;&gt;&lt;b&gt;📊 ENTERPRISE DISASTER RECOVERY FAILURE MODE &amp;amp; RPO/RTO RECOVERY MATRIX (CASE B)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Failure Scenario&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Detection Mechanism&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Target RTO (Recovery Time)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Target RPO (Data Loss)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Automated Failover Action&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Normal Production State&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Global L7 LB Health Checks&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds (Live)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds (Live)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;100% Ingress to US-East1; Pilot Light 10% standby in US-West1&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Single Zone Failure (e.g., us-east1-b)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Cloud Run / Cloud SQL HA Failover&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;&amp;lt; 30 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Intra-region failover to secondary zone HA replica in us-east1-c&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Major Regional Outage (US-East1 Down)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Global LB Health Probe Failures (3x)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#D97706;font-weight:bold;&#39;&gt;15 - 30 minutes&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#D97706;font-weight:bold;&#39;&gt;1 - 5 minutes (Async DB Lag)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Promote Cloud SQL Replica to Primary; Scale Cloud Run pods from 1 to 500 in US-West1&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Storage / Object Outage&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;GCS Dual-Region Health Sentry&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;Instantaneous&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Dual-region GCS automatically serves requests from healthy region bucket&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
+          <mxGeometry x="35" y="405" width="1375" height="240" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
@@ -1090,4 +1454,5 @@ export function getExactMultiRegionDrReferenceXml(): string {
 </mxfile>
   `.trim();
 }
+
 
