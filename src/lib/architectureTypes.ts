@@ -1,4 +1,4 @@
-import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
+import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 export { getTechnicalArchitectureXml };
 import {
   compileSpecToDrawioXml,
