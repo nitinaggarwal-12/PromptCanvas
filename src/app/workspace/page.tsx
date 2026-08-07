@@ -3606,12 +3606,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
   // 5. FORCE ALL CELL FONT COLORS TO CRISP DARK SLATE (#0F172A)
   xml = xml.replace(/fontColor=#[A-Fa-f0-9]+;/gi, "fontColor=#0F172A;");
 
-  // 6. Sub-Schema Swimlane & ERD Key title formatting
+  // 6. ERD Key title formatting
   xml = xml
-    .replace(/(Sub-Schema \d+:[^"]*)/gi, "<b style=\"color:#0284C7;font-size:13px;text-transform:uppercase;font-weight:900;\">$1</b>")
-    .replace(/<b>PK<\/b>/g, "<b style=\"color:#0284C7;font-weight:800;\">PK</b>")
-    .replace(/<b>FK<\/b>/g, "<b style=\"color:#7C3AED;font-weight:800;\">FK</b>")
-    .replace(/<b>PK\/FK<\/b>/g, "<b style=\"color:#0284C7;font-weight:800;\">PK/FK</b>");
+    .replace(/<b>PK<\/b>/g, "&lt;b style=&apos;color:#0284C7;font-weight:800;&apos;&gt;PK&lt;/b&gt;")
+    .replace(/<b>FK<\/b>/g, "&lt;b style=&apos;color:#7C3AED;font-weight:800;&apos;&gt;FK&lt;/b&gt;")
+    .replace(/<b>PK\/FK<\/b>/g, "&lt;b style=&apos;color:#0284C7;font-weight:800;&apos;&gt;PK/FK&lt;/b&gt;");
 
   // 7. Transform ALL inline HTML style backgrounds & font colors inside table cells, callouts, and sub-boxes to crisp dark slate text (#0F172A) on white/light backgrounds
   xml = xml

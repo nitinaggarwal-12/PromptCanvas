@@ -6,6 +6,7 @@ import { getDefaultXmlForArchitecture, getTemplateTitle } from '@/lib/architectu
 import { getArchitectureMeta } from '@/lib/architectureMetadata';
 import { SupportedLanguage, translateDiagramXmlToLanguage } from '@/lib/i18n';
 import { localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
+import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
 
 interface DiagramViewerProps {
   currentLanguage?: SupportedLanguage;
@@ -262,6 +263,40 @@ export default function DiagramViewer({
       </div>
       
       <script type="text/javascript">
+        // Safe Latin1 & UTF-8 btoa / atob wrappers to prevent "Failed to execute 'btoa' on 'Window'"
+        if (typeof window.btoa === 'function') {
+          const _origBtoa = window.btoa.bind(window);
+          window.btoa = function(str) {
+            try {
+              return _origBtoa(str);
+            } catch (e) {
+              try {
+                return _origBtoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+                  return String.fromCharCode(parseInt(p1, 16));
+                }));
+              } catch (e2) {
+                return _origBtoa(unescape(encodeURIComponent(str)));
+              }
+            }
+          };
+        }
+        if (typeof window.atob === 'function') {
+          const _origAtob = window.atob.bind(window);
+          window.atob = function(b64) {
+            try {
+              return _origAtob(b64);
+            } catch (e) {
+              try {
+                return decodeURIComponent(Array.prototype.map.call(_origAtob(b64), function(c) {
+                  return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+              } catch (e2) {
+                return _origAtob(b64);
+              }
+            }
+          };
+        }
+
         console.log('[Iframe Diagnostic] 🚀 Iframe document parsed with Business Use Case context.');
         window.onerror = function(message, source, lineno, colno, error) {
           console.error('[Iframe JS Error] ❌', message, 'at', source, ':', lineno);
@@ -293,8 +328,18 @@ export default function DiagramViewer({
           });
         }
 
+        function getCleanGraphXml(xmlStr) {
+          if (!xmlStr) return '';
+          var sIdx = xmlStr.indexOf('<mxGraphModel');
+          var eIdx = xmlStr.lastIndexOf('</mxGraphModel>');
+          if (sIdx !== -1 && eIdx !== -1) {
+            return xmlStr.substring(sIdx, eIdx + 15);
+          }
+          return xmlStr;
+        }
+
         const configObj = ${JSON.stringify({
-          xml: localizeDrawioXmlDeep(translateDiagramXmlToLanguage(sanitizedXml, currentLanguage || 'en'), currentLanguage || 'en'),
+          xml: sanitizeDrawioXmlAttributes(localizeDrawioXmlDeep(translateDiagramXmlToLanguage(sanitizedXml, currentLanguage || 'en'), currentLanguage || 'en')),
           lightbox: true,
           nav: true,
           resize: true,
@@ -305,6 +350,7 @@ export default function DiagramViewer({
           fit: true,
           'max-scale': 2.0
         })};
+        configObj.xml = getCleanGraphXml(configObj.xml);
 
         const container = document.getElementById('diagram-container');
         if (container) {
