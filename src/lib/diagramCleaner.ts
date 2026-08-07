@@ -663,6 +663,7 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
       cell['@_style'] = style;
     } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
       let rawValue = String(cell['@_value'] || '');
+      const tooltip = String(cell['@_tooltip'] || '');
       const newImgTag = ``;
 
       if (rawValue.includes('<img')) {
