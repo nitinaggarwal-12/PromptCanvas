@@ -30,12 +30,14 @@ import {
   FileCode,
   ShieldCheck,
   ChevronDown,
-  Compass
+  Compass,
+  RefreshCw
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
 import { AuthModal } from '@/components/AuthModal';
 import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
+import { checkDiagramStaleness } from '@/lib/diagramStaleness';
 
 interface Diagram {
   id: string;
@@ -45,6 +47,7 @@ interface Diagram {
   versions?: DiagramVersion[];
   xml_content?: string;
   prompt?: string | null;
+  architecture_type?: string | null;
 }
 
 interface DiagramVersion {
@@ -175,6 +178,9 @@ export default function Dashboard() {
     }
   };
 
+  const [refreshingDiagramIds, setRefreshingDiagramIds] = useState<Set<string>>(new Set());
+  const [refreshToast, setRefreshToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
+
   const handleDeleteDiagram = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -187,6 +193,49 @@ export default function Dashboard() {
     } catch (err) {
       console.error(err);
       alert('Error deleting diagram');
+    }
+  };
+
+  const handleForceRefreshDiagram = async (diagramId: string, diagramName: string, architectureType?: string | null, prompt?: string | null, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    setRefreshingDiagramIds(prev => new Set(prev).add(diagramId));
+    setRefreshToast({ message: `⚡ Calling Live API to force-refresh "${diagramName}" from Master Template...`, type: 'info' });
+
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          diagramId,
+          name: diagramName,
+          architectureType: architectureType || 'conceptual_diagram',
+          prompt: prompt || diagramName,
+          forceRefresh: true,
+          forceFreshMaster: true
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.details || errorData.error || 'Failed to force-refresh diagram');
+      }
+
+      await fetchDiagrams();
+      setRefreshToast({ message: `✅ Successfully Force-Refreshed "${diagramName}" from Master Template via Live API!`, type: 'success' });
+      setTimeout(() => setRefreshToast(null), 4000);
+    } catch (err: any) {
+      console.error('Force refresh error:', err);
+      setRefreshToast({ message: `❌ Error force-refreshing diagram: ${err.message}`, type: 'error' });
+      setTimeout(() => setRefreshToast(null), 5000);
+    } finally {
+      setRefreshingDiagramIds(prev => {
+        const next = new Set(prev);
+        next.delete(diagramId);
+        return next;
+      });
     }
   };
 
@@ -711,8 +760,8 @@ export default function Dashboard() {
                   <thead>
                     <tr className="bg-panel-dark/40 border-b border-panel-border/50 text-slate-400 uppercase tracking-wider font-extrabold text-[10px]">
                       <th className="px-8 py-5">Workspace Title</th>
-                      <th className="px-8 py-5">Vulnerability Score</th>
-                      <th className="px-8 py-5">Versions Saved</th>
+                      <th className="px-8 py-5">Template Status</th>
+                      <th className="px-8 py-5">Versions</th>
                       <th className="px-8 py-5">Deployment Platform</th>
                       <th className="px-8 py-5">Last Modified</th>
                       <th className="px-8 py-5 text-right">Actions</th>
@@ -724,6 +773,8 @@ export default function Dashboard() {
                       const hasGcp = diagram.name.toLowerCase().includes('gcp') || diagram.name.toLowerCase().includes('serverless');
                       const hasAws = diagram.name.toLowerCase().includes('aws') || diagram.name.toLowerCase().includes('kubernetes');
                       const platform = hasGcp ? 'GCP' : hasAws ? 'AWS' : 'Hybrid/Multi-Cloud';
+                      const staleness = checkDiagramStaleness(diagram);
+                      const isRefreshing = refreshingDiagramIds.has(diagram.id);
                       
                       return (
                         <tr 
@@ -743,10 +794,20 @@ export default function Dashboard() {
                             </div>
                           </td>
                           <td className="px-8 py-5">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                              <Shield className="w-3.5 h-3.5" />
-                              <span>Secured</span>
-                            </span>
+                            {staleness.isStale ? (
+                              <span 
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30"
+                                title={`Master Template Updated: ${staleness.reason}`}
+                              >
+                                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                                <span>Update Available</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                                <ShieldCheck className="w-3.5 h-3.5" />
+                                <span>Up-to-Date</span>
+                              </span>
+                            )}
                           </td>
                           <td className="px-8 py-5 text-slate-300 font-bold text-sm">{verCount} version{verCount > 1 ? 's' : ''}</td>
                           <td className="px-8 py-5">
@@ -762,17 +823,36 @@ export default function Dashboard() {
                             {new Date(diagram.updated_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(diagram.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </td>
                           <td className="px-8 py-5 text-right" onClick={e => e.stopPropagation()}>
-                            <div className="flex items-center justify-end gap-3">
+                            <div className="flex items-center justify-end gap-2.5">
+                              {/* Force Refresh Button Per Diagram */}
+                              <button
+                                onClick={(e) => handleForceRefreshDiagram(diagram.id, diagram.name, diagram.architecture_type, diagram.prompt, e)}
+                                disabled={isRefreshing}
+                                className={`px-2.5 py-1.5 rounded border transition-all cursor-pointer flex items-center gap-1.5 ${
+                                  staleness.isStale
+                                    ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/10 animate-pulse'
+                                    : 'bg-slate-800/80 hover:bg-teal-500/20 text-slate-300 hover:text-teal-300 border-slate-700 hover:border-teal-500/40'
+                                }`}
+                                title={
+                                  staleness.isStale
+                                    ? `⚠️ Stale Master Template: ${staleness.reason}. Click to Force Refresh via Live API!`
+                                    : `⚡ Force Refresh from Master Template via Live API (Bypasses all shortcuts & caches)`
+                                }
+                              >
+                                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-teal-400' : staleness.isStale ? 'text-amber-400' : 'text-teal-400'}`} />
+                                <span className="text-xs font-bold">{isRefreshing ? 'Refreshing...' : staleness.isStale ? 'Update' : 'Refresh'}</span>
+                              </button>
+
                               <button
                                 onClick={() => router.push(`/workspace?diagram=${diagram.id}`)}
-                                className="px-3.5 py-2 rounded hover:bg-teal-accent hover:text-bg-dark text-slate-300 text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center gap-1.5 cursor-pointer animate-duration-150"
+                                className="px-3.5 py-1.5 rounded hover:bg-teal-accent hover:text-bg-dark text-slate-300 text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center gap-1.5 cursor-pointer animate-duration-150"
                               >
-                                <span>Launch Canvas</span>
+                                <span>Launch</span>
                                 <ArrowRight className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={(e) => handleDeleteDiagram(diagram.id, e)}
-                                className="p-2 rounded hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
+                                className="p-1.5 rounded hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
                                 title="Delete Diagram Workspace"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -953,6 +1033,21 @@ export default function Dashboard() {
           router.push(`/workspace?prompt=${encodeURIComponent(promptText)}`);
         }}
       />
+
+      {/* Live Refresh Toast Notification */}
+      {refreshToast && (
+        <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-2xl border flex items-center gap-2.5 text-xs font-bold transition-all animate-bounce ${
+          refreshToast.type === 'success'
+            ? 'bg-teal-950/95 border-teal-400 text-teal-200'
+            : refreshToast.type === 'error'
+            ? 'bg-rose-950/95 border-rose-400 text-rose-200'
+            : 'bg-slate-900/95 border-teal-500/50 text-slate-100'
+        }`}>
+          {refreshToast.type === 'info' && <Loader2 className="w-4 h-4 animate-spin text-teal-400" />}
+          {refreshToast.type === 'success' && <ShieldCheck className="w-4 h-4 text-teal-400" />}
+          <span>{refreshToast.message}</span>
+        </div>
+      )}
     </div>
   );
 }

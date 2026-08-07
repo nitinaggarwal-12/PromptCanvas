@@ -228,8 +228,9 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { prompt, diagramId, name, architectureType } = body;
-    console.log('[DEBUG POST /api/generate]', { diagramId, architectureType, promptSlice: prompt?.substring(0, 80) });
+    const { prompt, diagramId, name, architectureType, forceRefresh, forceFreshMaster } = body;
+    const isForceRefresh = Boolean(forceRefresh || forceFreshMaster);
+    console.log('[DEBUG POST /api/generate]', { diagramId, architectureType, isForceRefresh, promptSlice: prompt?.substring(0, 80) });
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -243,8 +244,8 @@ export async function POST(request: Request) {
 
     const v2Enabled = isLayoutEngineV2Enabled(body, request.url, request.headers);
 
-    // Intent Router: 4-stage routing for untyped prompts
-    if (v2Enabled && !isTypedOrTemplateRequest && !diagramId) {
+    // Intent Router: 4-stage routing for untyped prompts (bypassed if force refresh)
+    if (!isForceRefresh && v2Enabled && !isTypedOrTemplateRequest && !diagramId) {
       console.log('[Intent Router] Untyped prompt detected, executing intent classifier...');
       const classification = await classifyIntent(prompt);
 
@@ -376,27 +377,36 @@ export async function POST(request: Request) {
     let resolvedArchType = architectureType || 'conceptual_diagram';
 
     if (diagramId) {
-      isRefinement = true;
       const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
-      if (!latestVersion && architectureType) {
-        console.log(`[DEBUG] Initializing first version for architecture ${architectureType} in diagram ${diagramId}`);
-        existingXml = '';
-      } else if (!latestVersion) {
-        return NextResponse.json(
-          { error: `Diagram with ID ${diagramId} has no versions to refine` },
-          { status: 404 }
-        );
-      } else {
+      if (latestVersion) {
         existingXml = latestVersion.xml_content;
-        resolvedArchType = latestVersion.architecture_type || architectureType || 'conceptual_diagram';
-        console.log(`Refining diagram ${diagramId} (v${latestVersion.version_number}, arch: ${resolvedArchType})...`);
+        resolvedArchType = architectureType || latestVersion.architecture_type || 'conceptual_diagram';
+      }
+      
+      // If forceRefresh is requested, we strictly disable incremental refinement shortcuts and force a full compilation from Master Template
+      if (isForceRefresh) {
+        isRefinement = false;
+        console.log(`[FORCE REFRESH] Bypassing refinement shortcuts for diagram ${diagramId}. Compiling fresh from Master Template (${resolvedArchType})...`);
+      } else {
+        isRefinement = true;
+        if (!latestVersion && architectureType) {
+          console.log(`[DEBUG] Initializing first version for architecture ${architectureType} in diagram ${diagramId}`);
+          existingXml = '';
+        } else if (!latestVersion) {
+          return NextResponse.json(
+            { error: `Diagram with ID ${diagramId} has no versions to refine` },
+            { status: 404 }
+          );
+        } else {
+          console.log(`Refining diagram ${diagramId} (v${latestVersion.version_number}, arch: ${resolvedArchType})...`);
+        }
       }
     }
 
     const effectiveArchType = resolvedArchType;
     let templateXmlBackbone: string | null = null;
 
-    if (!isRefinement) {
+    if (!isRefinement || isForceRefresh) {
       templateXmlBackbone = getDefaultXmlForArchitecture(effectiveArchType, prompt, prompt);
       if (templateXmlBackbone) {
         activeSystemPrompt += `
@@ -579,8 +589,8 @@ ${prompt}`,
     const healed = validateAndHealDrawioXml(xml, architectureType || 'unified_system_view');
     xml = healed.xml;
 
-    console.log('[DEBUG BEFORE SAVE]', { isRefinement, diagramId });
-    if (isRefinement && diagramId) {
+    console.log('[DEBUG BEFORE SAVE]', { isRefinement, isForceRefresh, diagramId });
+    if (diagramId) {
       // Save as a new version
       if (architectureType) {
         console.log('[DEBUG UPDATING ARCH TYPE]', { diagramId, architectureType });
@@ -588,11 +598,15 @@ ${prompt}`,
         console.log('[DEBUG ARCH TYPE UPDATED]');
       }
       console.log('[DEBUG SAVING VERSION]');
+      const comment = isForceRefresh
+        ? `Force Refreshed from Master Template via Live API`
+        : `AI Refined: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`;
+        
       const version = await saveDiagramVersion(
         diagramId,
         xml,
-        `AI Refined: "${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}"`,
-        'AI',
+        comment,
+        isForceRefresh ? 'Live API Force Refresh' : 'AI',
         prompt,
         reasoning,
         businessUsecase,
@@ -600,7 +614,7 @@ ${prompt}`,
         architectureType || 'conceptual_diagram'
       );
       console.log('[DEBUG VERSION SAVED]', version?.id);
-      return NextResponse.json({ version });
+      return NextResponse.json({ version, refreshed: true, isStale: false });
     } else {
       // Create a new diagram
       const diagramName = name || (prompt.length > 45 
@@ -620,7 +634,7 @@ ${prompt}`,
         architectureType || 'unified_system_view',
         Boolean(isPrivate ?? is_private)
       );
-      return NextResponse.json({ diagram, version }, { status: 201 });
+      return NextResponse.json({ diagram, version, isStale: false }, { status: 201 });
     }
 
   } catch (error: unknown) {

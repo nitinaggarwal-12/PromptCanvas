@@ -14,7 +14,10 @@ import {
   Download, 
   Upload, 
   MessageSquare,
-  Users
+  Users,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle2
 } from 'lucide-react';
 import { ARCHITECTURE_TYPES, getArchitectureTypeById } from '@/lib/architectureTypes';
 
@@ -35,6 +38,14 @@ interface WorkspaceHeaderProps {
   onArchitectureTypeChange: (typeId: string) => void;
   currentLanguage?: SupportedLanguage;
   onLanguageChange?: (lang: SupportedLanguage) => void;
+  onForceRefresh?: () => void;
+  isForceRefreshing?: boolean;
+  staleness?: {
+    isStale: boolean;
+    reason: string;
+    templateName?: string;
+    lastTemplateUpdate?: string;
+  };
 }
 
 export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
@@ -54,6 +65,9 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
   onArchitectureTypeChange,
   currentLanguage = 'en',
   onLanguageChange,
+  onForceRefresh,
+  isForceRefreshing = false,
+  staleness,
 }) => {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [langSearch, setLangSearch] = useState('');
@@ -83,6 +97,25 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
                 <span className="px-2 py-0.5 text-[11px] font-semibold bg-teal-500/10 text-teal-300 border border-teal-500/20 rounded-full">
                   v{currentVersion.version_number}
                 </span>
+              )}
+              {onForceRefresh && (
+                <button
+                  id="workspace-force-refresh-btn"
+                  onClick={onForceRefresh}
+                  disabled={isForceRefreshing}
+                  className={`p-1 rounded-md border transition-all cursor-pointer ${
+                    staleness?.isStale
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30 animate-pulse'
+                      : 'bg-slate-800/80 text-slate-400 hover:text-teal-300 hover:bg-slate-700 border-slate-700'
+                  }`}
+                  title={
+                    staleness?.isStale
+                      ? `⚠️ Master Template Update Available: ${staleness.reason}. Click to Force Refresh via Live API!`
+                      : `⚡ Force Refresh from Master Template via Live API (Bypasses all shortcuts & caches)`
+                  }
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isForceRefreshing ? 'animate-spin text-teal-400' : ''}`} />
+                </button>
               )}
             </div>
             <h1 className="text-lg font-bold text-white tracking-tight truncate max-w-[400px]">
@@ -220,6 +253,31 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
             <Sparkles className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Terraform</span>
           </button>
+
+          {/* Force Refresh Master Template Live API */}
+          {onForceRefresh && (
+            <button
+              id="header-force-refresh-btn"
+              onClick={onForceRefresh}
+              disabled={isForceRefreshing}
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+                staleness?.isStale
+                  ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 hover:bg-amber-500/25 shadow-sm shadow-amber-500/10'
+                  : 'bg-teal-500/10 text-teal-300 border-teal-500/30 hover:bg-teal-500/20'
+              }`}
+              title={
+                staleness?.isStale
+                  ? `⚠️ Diagram Stale: ${staleness.reason}. Click to Force Refresh via Live API!`
+                  : `⚡ Force Refresh from Master Template via Live API (Bypasses all shortcuts & caches)`
+              }
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isForceRefreshing ? 'animate-spin text-teal-400' : staleness?.isStale ? 'text-amber-400' : 'text-teal-400'}`} />
+              <span className="hidden sm:inline">{isForceRefreshing ? 'Live API...' : staleness?.isStale ? 'Update Template' : 'Live Refresh'}</span>
+              {staleness?.isStale && (
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+              )}
+            </button>
+          )}
 
           {/* Export Diagram */}
           <button

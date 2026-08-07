@@ -63,6 +63,7 @@ import {
   Moon,
   Lock,
   Globe,
+  RefreshCw,
   DollarSign,
   ClipboardList
 } from 'lucide-react';
@@ -96,6 +97,7 @@ import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
 import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
+import { checkDiagramStaleness } from '@/lib/diagramStaleness';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -4117,6 +4119,74 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     }
   };
 
+  const [isForceRefreshing, setIsForceRefreshing] = useState(false);
+  const [forceRefreshToast, setForceRefreshToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
+
+  const handleForceRefreshDiagram = async (targetArchType?: string) => {
+    if (!activeDiagram) return;
+    const archToRefresh = targetArchType || selectedArchType || activeDiagram.architecture_type || 'conceptual_diagram';
+    setIsForceRefreshing(true);
+    setForceRefreshToast({
+      message: `⚡ Calling Live API: Force-refreshing "${activeDiagram.name}" from Master Template (${archToRefresh})...`,
+      type: 'info'
+    });
+
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {})
+        },
+        body: JSON.stringify({
+          diagramId: activeDiagram.id,
+          name: activeDiagram.name,
+          architectureType: archToRefresh,
+          prompt: activeDiagram.prompt || activeDiagram.name,
+          forceRefresh: true,
+          forceFreshMaster: true
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.details || errorData.error || 'Failed to force-refresh diagram');
+      }
+
+      const data = await res.json();
+      const freshVer = data.version;
+      if (freshVer) {
+        setActiveVersion(freshVer);
+        activeXmlRef.current = freshVer.xml_content;
+        setCustomXml(freshVer.xml_content);
+        setActiveDiagram(prev => {
+          if (!prev) return prev;
+          const prevVers = (prev.versions || []).filter(v => v.id !== freshVer.id);
+          return {
+            ...prev,
+            architecture_type: archToRefresh,
+            updated_at: new Date().toISOString(),
+            versions: [freshVer, ...prevVers]
+          };
+        });
+      }
+      setForceRefreshToast({
+        message: `✅ Successfully Force-Refreshed "${activeDiagram.name}" from Master Template via Live API!`,
+        type: 'success'
+      });
+      setTimeout(() => setForceRefreshToast(null), 4000);
+    } catch (err: any) {
+      console.error('Force refresh error:', err);
+      setForceRefreshToast({
+        message: `❌ Force refresh failed: ${err.message}`,
+        type: 'error'
+      });
+      setTimeout(() => setForceRefreshToast(null), 5000);
+    } finally {
+      setIsForceRefreshing(false);
+    }
+  };
+
   return (
     <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
       
@@ -4969,6 +5039,25 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     <div className="flex items-center gap-2 shrink-0">
                       {activeVersion && renderVersionDropdown("top-header-version-dropdown")}
                     </div>
+                    {/* Quick Force Refresh Icon Button */}
+                    <button
+                      type="button"
+                      id="workspace-header-quick-refresh-btn"
+                      onClick={() => handleForceRefreshDiagram()}
+                      disabled={isForceRefreshing || isAnyAIBusy}
+                      className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                        activeDiagram && checkDiagramStaleness(activeDiagram).isStale
+                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 hover:bg-amber-500/30 animate-pulse'
+                          : 'bg-slate-900/90 hover:bg-slate-800 text-slate-400 hover:text-teal-300 border-panel-border'
+                      }`}
+                      title={
+                        activeDiagram && checkDiagramStaleness(activeDiagram).isStale
+                          ? `⚠️ Master Template Update Available: ${checkDiagramStaleness(activeDiagram).reason}. Click to Force Refresh via Live API!`
+                          : `⚡ Force Refresh from Master Template via Live API (Bypasses all shortcuts & caches)`
+                      }
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${isForceRefreshing ? 'animate-spin text-teal-400' : ''}`} />
+                    </button>
                   </>
                 )}
               </div>
@@ -5089,6 +5178,30 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 <AccessRequestsInbox user={currentUser} />
                 {activeDiagram && (
                   <>
+                    {/* Force Refresh Master Template Live API Primary Button */}
+                    <button
+                      type="button"
+                      id="workspace-force-refresh-btn-main"
+                      disabled={isForceRefreshing || isAnyAIBusy}
+                      onClick={() => handleForceRefreshDiagram()}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-black transition-all shadow-sm cursor-pointer shrink-0 ${
+                        checkDiagramStaleness(activeDiagram).isStale
+                          ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/50 animate-pulse shadow-amber-500/10'
+                          : 'bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border-teal-500/40'
+                      }`}
+                      title={
+                        checkDiagramStaleness(activeDiagram).isStale
+                          ? `⚠️ Master Template Updated: ${checkDiagramStaleness(activeDiagram).reason}. Click to Force Refresh via Live API!`
+                          : `⚡ Force Refresh from Master Template via Live API (Bypasses all shortcuts & caches)`
+                      }
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${isForceRefreshing ? 'animate-spin text-teal-400' : checkDiagramStaleness(activeDiagram).isStale ? 'text-amber-400' : 'text-teal-400'}`} />
+                      <span className="hidden sm:inline">{isForceRefreshing ? 'Refreshing Live API...' : checkDiagramStaleness(activeDiagram).isStale ? 'Update Template' : 'Force Refresh'}</span>
+                      {checkDiagramStaleness(activeDiagram).isStale && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                      )}
+                    </button>
+
                     <button
                       type="button"
                       onClick={() => setIsExecutiveSummaryOpen(true)}
@@ -7480,6 +7593,19 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-500"></span>
           </span>
           <span className="text-xs font-black text-teal-300 tracking-wide">{aiStepTelemetry}</span>
+        </div>
+      )}
+      {forceRefreshToast && (
+        <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-2xl border flex items-center gap-2.5 text-xs font-bold transition-all animate-bounce ${
+          forceRefreshToast.type === 'success'
+            ? 'bg-teal-950/95 border-teal-400 text-teal-200'
+            : forceRefreshToast.type === 'error'
+            ? 'bg-rose-950/95 border-rose-400 text-rose-200'
+            : 'bg-slate-900/95 border-teal-500/50 text-slate-100'
+        }`}>
+          {forceRefreshToast.type === 'info' && <Loader2 className="w-4 h-4 animate-spin text-teal-400" />}
+          {forceRefreshToast.type === 'success' && <ShieldCheck className="w-4 h-4 text-teal-400" />}
+          <span>{forceRefreshToast.message}</span>
         </div>
       )}
     </div>
