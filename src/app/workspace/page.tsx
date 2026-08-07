@@ -923,6 +923,14 @@ function WorkspaceContent() {
     if (searchParams.get('tour') === 'true') {
       setTourStep(1);
     }
+    const archParam = searchParams.get('arch') || searchParams.get('template');
+    if (archParam) {
+      setSelectedArchType(archParam);
+      const defaultXml = getDefaultXmlForArchitecture(archParam);
+      if (defaultXml) {
+        setXmlContent(defaultXml);
+      }
+    }
   }, [searchParams]);
 
   async function handleConversationalRefactor(promptText: string) {

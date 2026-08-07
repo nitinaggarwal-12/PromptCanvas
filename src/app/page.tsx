@@ -132,7 +132,10 @@ export default function LandingPage() {
           <nav className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
             <a href="#features" className="hover:text-teal-400 transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
-            <a href="#templates" className="hover:text-teal-400 transition-colors">Templates</a>
+            <Link href="/templates" className="hover:text-teal-300 transition-colors text-teal-400 font-semibold flex items-center gap-1">
+              <span>Templates Matrix</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-black">22</span>
+            </Link>
             <a href="#value" className="hover:text-teal-400 transition-colors">Why PromptCanvas</a>
           </nav>
 

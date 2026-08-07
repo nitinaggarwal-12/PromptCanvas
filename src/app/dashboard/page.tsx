@@ -29,7 +29,8 @@ import {
   Upload,
   FileCode,
   ShieldCheck,
-  ChevronDown
+  ChevronDown,
+  Compass
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
@@ -420,6 +421,14 @@ export default function Dashboard() {
               </button>
             </>
           )}
+
+          <Link
+            href="/templates"
+            className="px-4 py-2.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-teal-300 border border-teal-500/30 hover:border-teal-400 font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm"
+          >
+            <Compass className="w-4 h-4 text-teal-400" />
+            <span>Templates Matrix (22)</span>
+          </Link>
 
           <button
             type="button"
