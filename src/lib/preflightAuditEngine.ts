@@ -258,7 +258,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // If a diagram has Stage 1 (x=50..370), Stage 2 (x=430..810), Stage 3 (x=870..1230), ensure cards never escape:
   if (xml.includes('col_ingestion') || xml.includes('col_processing') || xml.includes('col_delivery')) {
     // Stage 1 cards -> x="70", width="280"
-    xml = xml.replace(/(<mxCell\s+id="(?:src_card|func_areas|user_node)"[\s\S]*?<mxGeometry\s+[^>]*?\bx=")\d+("\s+[^>]*?\bwidth=")\d+(")/gi, '$170$2280"');
+    xml = xml.replace(/(<mxCell\s+id="(?:src_card|func_areas|user_node|sec_gateway)"[\s\S]*?<mxGeometry\s+[^>]*?\bx=")\d+("\s+[^>]*?\bwidth=")\d+(")/gi, '$170$2280"');
     // Stage 2 cards -> x="470", width="300"
     xml = xml.replace(/(<mxCell\s+id="(?:synth|content|chatbot|sim|gov_gate|vector_store|model_core)"[\s\S]*?<mxGeometry\s+[^>]*?\bx=")\d+("\s+[^>]*?\bwidth=")\d+(")/gi, '$1470$2300"');
     // Stage 3 cards -> x="900", width="300"

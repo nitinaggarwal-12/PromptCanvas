@@ -73,43 +73,48 @@ export function getExactItacsReferenceXml(): string {
 
         <!-- Card 1: Multi-Channel Data Ingestion Card -->
         <mxCell id="src_card" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[1a] Multi-Channel Data Ingestion&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#64748B;'&gt;Real-Time Telemetry &amp;amp; Batch Stream Ingress&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;verticalAlign=top;padding=8;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="145" width="280" height="120" as="geometry" />
+          <mxGeometry x="70" y="140" width="280" height="105" as="geometry" />
         </mxCell>
         <!-- Blue Stream Badge -->
         <mxCell id="pdf_badge" value="&lt;b style='color:#FFFFFF;font-size:11px;'&gt;IOT&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="95" y="193" width="36" height="42" as="geometry" />
+          <mxGeometry x="95" y="182" width="36" height="38" as="geometry" />
         </mxCell>
-        <mxCell id="pdf_lbl" value="Streams" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="88" y="237" width="50" height="20" as="geometry" />
+        <mxCell id="pdf_lbl" value="Streams" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10.5;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="88" y="220" width="50" height="18" as="geometry" />
         </mxCell>
         <!-- Teal API Badge -->
         <mxCell id="ppt_badge" value="&lt;b style='color:#FFFFFF;font-size:11px;'&gt;API&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0D9488;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="160" y="193" width="36" height="42" as="geometry" />
+          <mxGeometry x="160" y="182" width="36" height="38" as="geometry" />
         </mxCell>
-        <mxCell id="ppt_lbl" value="Feeds" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="153" y="237" width="50" height="20" as="geometry" />
+        <mxCell id="ppt_lbl" value="Feeds" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10.5;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="153" y="220" width="50" height="18" as="geometry" />
         </mxCell>
         <!-- Document Badge -->
-        <mxCell id="doc_badge" value="⚡" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;fontSize=20;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="235" y="193" width="36" height="42" as="geometry" />
+        <mxCell id="doc_badge" value="⚡" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;fontSize=18;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="235" y="182" width="36" height="38" as="geometry" />
         </mxCell>
-        <mxCell id="doc_lbl" value="Real-Time&lt;br&gt;Events" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#1E293B;" vertex="1" parent="1">
-          <mxGeometry x="215" y="237" width="76" height="25" as="geometry" />
+        <mxCell id="doc_lbl" value="Events" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10.5;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="215" y="220" width="76" height="18" as="geometry" />
         </mxCell>
 
         <!-- SHIFT Label -->
-        <mxCell id="shift_label" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;SHIFT: Manual gathering -&gt; Automated real-time processing.&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;fontColor=#15803D;fontStyle=1;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="275" width="280" height="28" as="geometry" />
+        <mxCell id="shift_label" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;SHIFT: Manual Silos -&gt; Automated Real-Time Stream&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;fontColor=#15803D;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="253" width="280" height="26" as="geometry" />
         </mxCell>
 
         <!-- Card 2: 5 Functional Areas Card -->
-        <mxCell id="func_areas" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[1b] Operational Gateways &amp;amp; Silos&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;table style='width:100%;text-align:center;font-size:11px;border-collapse:separate;border-spacing:6px;margin-top:2px;'&gt;&lt;tr&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;📡&lt;br&gt;&lt;b&gt;Sensor Ingest&lt;/b&gt;&lt;/td&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;🛢️&lt;br&gt;&lt;b&gt;Supply Chain&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;💳&lt;br&gt;&lt;b&gt;Transactions&lt;/b&gt;&lt;/td&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;⚙&amp;nbsp;&lt;br&gt;&lt;b&gt;Operations&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='2' style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;🧠&lt;br&gt;&lt;b&gt;Enterprise Analytics Stream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;fontColor=#1E293B;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="313" width="280" height="210" as="geometry" />
+        <mxCell id="func_areas" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[1b] Operational Gateways &amp;amp; Silos&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;table style='width:100%;text-align:center;font-size:10.5px;border-collapse:separate;border-spacing:5px;margin-top:0px;'&gt;&lt;tr&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:4px;'&gt;📡&lt;br&gt;&lt;b&gt;Sensor Ingest&lt;/b&gt;&lt;/td&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:4px;'&gt;🛢️&lt;br&gt;&lt;b&gt;Supply Chain&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:4px;'&gt;💳&lt;br&gt;&lt;b&gt;Transactions&lt;/b&gt;&lt;/td&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:4px;'&gt;⚙&amp;nbsp;&lt;br&gt;&lt;b&gt;Operations&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='2' style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:4px;'&gt;🧠&lt;br&gt;&lt;b&gt;Enterprise Analytics Stream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;fontColor=#1E293B;verticalAlign=top;padding=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="286" width="280" height="175" as="geometry" />
         </mxCell>
 
         <!-- Card 3: User Node with Analyst Workspace -->
-        <mxCell id="user_node" value="&lt;table style='width:100%;border:none;text-align:left;margin-top:2px;'&gt;&lt;tr&gt;&lt;td style='width:55px;font-size:38px;text-align:center;vertical-align:middle;'&gt;👩‍💻&lt;/td&gt;&lt;td style='vertical-align:middle;'&gt;&lt;b style='font-size:13px;color:#1E293B;'&gt;[1c] Operator Portal Gateway&lt;/b&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#334155;'&gt;Operations Control Interface&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#64748B;'&gt;Real-Time Monitoring &amp;amp; Command Portal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="533" width="280" height="110" as="geometry" />
+        <mxCell id="user_node" value="&lt;table style='width:100%;border:none;text-align:left;margin-top:0px;'&gt;&lt;tr&gt;&lt;td style='width:45px;font-size:32px;text-align:center;vertical-align:middle;'&gt;👩‍💻&lt;/td&gt;&lt;td style='vertical-align:middle;'&gt;&lt;b style='font-size:12px;color:#1E293B;'&gt;[1c] Operator Portal Gateway&lt;/b&gt;&lt;br&gt;&lt;b style='font-size:10.5px;color:#334155;'&gt;Operations Control Interface&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9.5px;color:#64748B;'&gt;Real-Time Monitoring &amp;amp; Command Portal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;padding=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="468" width="280" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Card 4: Zero-Trust Security & Ingress WAF Gateway -->
+        <mxCell id="sec_gateway" value="&lt;table style='width:100%;border:none;text-align:left;margin-top:0px;'&gt;&lt;tr&gt;&lt;td style='width:45px;font-size:28px;text-align:center;vertical-align:middle;'&gt;🛡️&lt;/td&gt;&lt;td style='vertical-align:middle;'&gt;&lt;b style='font-size:12px;color:#1E293B;'&gt;[1d] Zero-Trust Edge Security&lt;/b&gt;&lt;br&gt;&lt;b style='font-size:10.5px;color:#0284C7;'&gt;mTLS 1.3 &amp;amp; WAF Ingress Gate&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9.5px;color:#64748B;'&gt;Token Authentication &amp;amp; Rate-Limiting&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;padding=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="565" width="280" height="90" as="geometry" />
         </mxCell>
 
         <!-- COLUMN 2: INTEGRATED INSIGHTS HUB (X: 430, Y: 85, W: 380, H: 640) -->
