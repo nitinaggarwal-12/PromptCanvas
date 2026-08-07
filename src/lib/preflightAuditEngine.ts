@@ -537,6 +537,8 @@ export function runZeroDefectTextAndTechnicalAccuracyPreflight(
   // 1. Title & Header Consistency Gate: Synchronize canvas title nodes and frame headings
   const upperTemplateTitle = templateTitle.toUpperCase();
   cleaned = cleaned
+    .replace(/(❖\s*USE CASE:\s*)[^<"&]+/gi, `$1${cleanUseCase}`)
+    .replace(/(\bUSE CASE:\s*)[^<"&]+/gi, `$1${cleanUseCase}`)
     .replace(/DEVOPS\s*&\s*CI\/CD\s*PIPELINE\s*SECURE\s*MANAGED\s*GEMINI\s*ENTERPRISE\s*ECOSYSTEM/gi, `${upperTemplateTitle} PLATFORM`)
     .replace(/DEVOPS\s*&\s*CI\/CD\s*PIPELINE\s*TOTAL\s*UNIFIED\s*SYSTEM\s*VIEW/gi, upperTemplateTitle)
     .replace(/8\.\s*DEVOPS\s*&\s*CI\/CD\s*PIPELINE/gi, upperTemplateTitle)

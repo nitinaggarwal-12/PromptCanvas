@@ -461,8 +461,8 @@ export function createMinimalistCleanVariant(xmlInput: string): CleanVariantResu
     return { success: false, cleanedXml: xmlInput, modifiedNodesCount: 0 };
   }
 
-  let root = ast.mxfile.diagram.mxGraphModel.root;
-  let cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
+  const root = ast.mxfile.diagram.mxGraphModel.root;
+  const cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
   let modifiedNodesCount = 0;
 
   for (const cell of cells) {
@@ -638,8 +638,8 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
     return xmlInput;
   }
 
-  let root = ast.mxfile.diagram.mxGraphModel.root;
-  let cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
+  const root = ast.mxfile.diagram.mxGraphModel.root;
+  const cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
 
   for (const cell of cells) {
     const cellId = String(cell['@_id'] || '');
@@ -663,10 +663,6 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
       cell['@_style'] = style;
     } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
       let rawValue = String(cell['@_value'] || '');
-      const tooltip = String(cell['@_tooltip'] || '');
-
-      // Repair broken or missing image tags with official SVG vendor icons
-      const vendorIconUrl = resolveVendorIconUrl(rawValue + ' ' + tooltip);
       const newImgTag = ``;
 
       if (rawValue.includes('<img')) {
@@ -1563,8 +1559,8 @@ export function createVendorIconsVariant(xmlInput: string): string {
     return xmlInput;
   }
 
-  let root = ast.mxfile.diagram.mxGraphModel.root;
-  let cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
+  const root = ast.mxfile.diagram.mxGraphModel.root;
+  const cells: any[] = root.mxCell ? (Array.isArray(root.mxCell) ? root.mxCell : [root.mxCell]) : [];
 
   for (const cell of cells) {
     const cellId = String(cell['@_id'] || '');
@@ -1575,11 +1571,10 @@ export function createVendorIconsVariant(xmlInput: string): string {
         cell['@_value'] = formatEdgeLabelToMax2Lines(String(cell['@_value']));
       }
     } else if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
-      let rawValue = String(cell['@_value'] || '');
+      const rawValue = String(cell['@_value'] || '');
       const tooltip = String(cell['@_tooltip'] || '');
 
-      const vendorIconUrl = resolveVendorIconUrl(rawValue + ' ' + tooltip);
-      let cleanText = rawValue.replace(/<img[^>]*>/gi, '').trim();
+      const cleanText = rawValue.replace(/<img[^>]*>/gi, '').trim();
 
       cell['@_value'] = `<div style="display:flex;align-items:center;gap:10px;text-align:left;width:100%;box-sizing:border-box;"><div style="flex:1;min-width:0;word-break:break-word;line-height:1.25;">${cleanText}</div></div>`;
 
@@ -1631,7 +1626,7 @@ export function sanitizeDrawioXmlAttributes(xml: string): string {
 
   // 2. Fix unescaped raw '<' and '&quot;' inside value attributes
   cleaned = cleaned.replace(/\bvalue="([\s\S]*?)"(?=\s+[a-zA-Z_:][a-zA-Z0-9_:-]*=|\s*\/?>)/g, (match, valContent) => {
-    let sanitized = valContent
+    const sanitized = valContent
       // Convert &quot; and inner double quotes to single quotes to prevent breaking out of attribute
       .replace(/&quot;/g, "'")
       .replace(/"/g, "'")
