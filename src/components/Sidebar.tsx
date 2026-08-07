@@ -19,6 +19,7 @@ import {
   FolderGit2
 } from 'lucide-react';
 import type { Workspace } from '@/lib/db';
+import type { SupportedLanguage } from '@/lib/i18n';
 
 interface SidebarProps {
   currentLanguage?: SupportedLanguage;

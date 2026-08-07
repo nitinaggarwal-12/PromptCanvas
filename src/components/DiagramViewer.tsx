@@ -229,7 +229,6 @@ export default function DiagramViewer({
         }
         .mxgraph > svg, .mxgraph > div {
           max-width: 100% !important;
-          height: auto !important;
           margin: 0 auto !important;
         }
         .geEditor {

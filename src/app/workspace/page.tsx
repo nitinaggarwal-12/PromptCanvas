@@ -6,7 +6,7 @@ export interface ByokConnectionProfile {
   apiKey: string;
   model: 'gemini-3.6-pro' | 'gemini-3.6-ultra' | 'gemini-3.6-flash';
   lastTestedLatencyMs?: number;
-  status: 'verified' | 'untested';
+  status: 'verified' | 'untested' | 'error';
 }
 
 import { VisualVersionDiffInspectorModal } from '@/components/VisualVersionDiffInspectorModal';
@@ -71,7 +71,7 @@ import { ArchitectureCodeViewerModal } from '@/components/workspace/Architecture
 import { estimateCloudArchitectureCost } from '@/lib/cost/cloudCostEstimator';
 import { exportPythonDiagramsScript, exportD2LangScript } from '@/lib/export/architectureAsCodeExporter';
 import { DiagramNodeItem, parseXmlNodesAndEdges, formatRelativeTime } from '@/lib/graph/xmlNodesParser';
-import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant } from '@/lib/diagramCleaner';
+import { createMinimalistCleanVariant, restoreDetailedView, createVendorIconsVariant, sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
 import { preflightVerifyAndHealXmlAcrossAll6Audits, runZeroDefectTextAndTechnicalAccuracyPreflight } from '@/lib/preflightAuditEngine';
 import { getTemplateTitle } from '@/lib/architectureTypes';
 import DiagramViewer from '@/components/DiagramViewer';
@@ -108,6 +108,7 @@ interface Diagram {
   architecture_type?: string | null;
   is_private?: boolean | number | null;
   prompt?: string | null;
+  xml_content?: string;
 }
 
 interface DiagramVersion {
@@ -354,36 +355,6 @@ function WorkspaceContent() {
     }
   };
 
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedKey = localStorage.getItem('pc_user_gemini_api_key');
-      if (savedKey) setUserApiKey(savedKey);
-    }
-  }, []);
-
-  async function handleTestApiKeyConnection() {
-    if (!userApiKey.trim()) return;
-    setByokTestStatus('testing');
-    setByokErrorMessage('');
-    const start = Date.now();
-    try {
-      const res = await fetch('/api/generate/usecases', {
-        headers: { 'x-gemini-api-key': userApiKey.trim() }
-      });
-      const duration = Date.now() - start;
-      if (res.ok) {
-        setByokTestStatus('success');
-        setByokLatencyMs(duration);
-        localStorage.setItem('pc_user_gemini_api_key', userApiKey.trim());
-      } else {
-        setByokTestStatus('error');
-        setByokErrorMessage('Invalid API key or quota exceeded.');
-      }
-    } catch (e: any) {
-      setByokTestStatus('error');
-      setByokErrorMessage(e.message || 'Connection test failed.');
-    }
-  };
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
   const [customXml, setCustomXml] = useState<string | null>(null);
@@ -427,7 +398,7 @@ function WorkspaceContent() {
           id: 'bp_ver_' + bp,
           diagram_id: 'bp_' + bp,
           version_number: 1,
-          xml_content: xml,
+          xml_content: xml || '',
           comment: 'Loaded flagship architecture blueprint',
           created_by: 'system',
           created_at: new Date().toISOString(),
@@ -928,10 +899,15 @@ function WorkspaceContent() {
       setSelectedArchType(archParam);
       const defaultXml = getDefaultXmlForArchitecture(archParam);
       if (defaultXml) {
-        setXmlContent(defaultXml);
+        activeXmlRef.current = defaultXml;
+        setCustomXml(defaultXml);
+      }
+      if (activeDiagram && activeDiagram.architecture_type !== archParam) {
+        setActiveDiagram(null);
+        setActiveVersion(null);
       }
     }
-  }, [searchParams]);
+  }, [searchParams, activeDiagram]);
 
   async function handleConversationalRefactor(promptText: string) {
     setIsConversationalRefactoring(true);
@@ -939,7 +915,7 @@ function WorkspaceContent() {
     try {
       setTimeout(() => setAiStepTelemetry("⚙️ [2/4] Calculating Spatial Zero-Collision Coordinates..."), 800);
       setTimeout(() => setAiStepTelemetry("🛡️ [3/4] Enforcing Enterprise Security & Light-HUD Styling..."), 1600);
-      const currentXml = activeDiagram?.xml_content || getDefaultXmlForArchitecture(activeDiagram?.architecture_type || 'unified_system_view');
+      const currentXml = activeDiagram?.versions?.[0]?.xml_content || activeDiagram?.xml_content || getDefaultXmlForArchitecture(activeDiagram?.architecture_type || 'unified_system_view') || '';
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
@@ -1155,7 +1131,7 @@ function WorkspaceContent() {
         console.log('[Draw.io Embed] ✉️ Received: init. Sending: load and custom enterprise stencils...');
         sourceWindow?.postMessage(JSON.stringify({
           action: 'load',
-          xml: activeXmlRef.current,
+          xml: sanitizeDrawioXmlAttributes(activeXmlRef.current),
           fit: false
         }), '*');
 
@@ -1249,7 +1225,7 @@ function WorkspaceContent() {
       const data: Diagram = await res.json();
       
       const urlBlueprint = typeof window !== 'undefined' 
-        ? (new URLSearchParams(window.location.search).get('blueprint') || new URLSearchParams(window.location.search).get('arch'))
+        ? (new URLSearchParams(window.location.search).get('blueprint') || new URLSearchParams(window.location.search).get('arch') || new URLSearchParams(window.location.search).get('template'))
         : null;
       if (urlBlueprint) {
         data.architecture_type = urlBlueprint;
@@ -1259,7 +1235,7 @@ function WorkspaceContent() {
       setActiveDiagram(data);
       setIsPrivate(Boolean(data.is_private));
       if (urlBlueprint || data.architecture_type) {
-        const effectiveArch = urlBlueprint || data.architecture_type;
+        const effectiveArch = urlBlueprint || data.architecture_type || 'conceptual_diagram';
         setSelectedArchType(effectiveArch);
         if (effectiveArch === 'technical_diagram' || effectiveArch === 'conceptual_diagram') {
           setViewMode('canvas');
@@ -1281,7 +1257,7 @@ function WorkspaceContent() {
           id: `arch_sync_${urlBlueprint}_${Date.now()}`,
           diagram_id: data.id,
           version_number: (data.versions?.length || 0) + 1,
-          xml_content: refXml,
+          xml_content: refXml || '',
           comment: `Architecture Blueprint: ${getTemplateTitle(urlBlueprint)}`,
           created_by: 'System',
           created_at: new Date().toISOString(),
@@ -1289,6 +1265,8 @@ function WorkspaceContent() {
         };
         setSelectedArchType(urlBlueprint);
         setActiveVersion(dynamicVer);
+        activeXmlRef.current = refXml || '';
+        setCustomXml(refXml || '');
       } else if (data.versions && data.versions.length > 0) {
         const sortedVersions = [...data.versions].sort((a, b) => b.version_number - a.version_number);
         const targetArch = data.architecture_type || sortedVersions[0].architecture_type || 'conceptual_diagram';
@@ -1620,7 +1598,8 @@ function WorkspaceContent() {
       if (Array.isArray(data) && data.length > 0) {
         if (typeof window !== 'undefined') {
           const params = new URLSearchParams(window.location.search);
-          if (!params.get('diagram') && !activeDiagram) {
+          const hasBlueprintParam = params.get('arch') || params.get('blueprint') || params.get('template');
+          if (!params.get('diagram') && !hasBlueprintParam && !activeDiagram) {
             loadDiagramDetails(data[0].id);
           }
         }
@@ -2280,13 +2259,13 @@ function WorkspaceContent() {
     ];
 
     const personaRelevantIds: Record<string, string[]> = {
-      executive: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'business_agent_governance_hitl', 'eval_safety_benchmarking', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda'],
-      fintech: ['erd', 'data_ai_pipeline', 'governance_state_machine', 'secure_deployment_map', 'tech_streaming_analytics', 'tech_c4_system_context', 'tech_event_driven_eda'],
-      legal: ['business_agent_governance_hitl', 'eval_safety_benchmarking', 'governance_state_machine', 'secure_deployment_map', 'tech_vpc_infra', 'tech_c4_system_context'],
-      architect: ['conceptual_diagram', 'unified_system_view', 'dark_mode_unified_system_view', 'tech_serverless_gcp', 'tech_microservices_aws', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda'],
-      devops: ['sequence_diagram', 'macro_sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_aws', 'tech_cicd_pipeline', 'tech_event_driven_eda'],
-      security: ['secure_deployment_map', 'governance_state_machine', 'business_agent_governance_hitl', 'eval_safety_benchmarking', 'tech_vpc_infra', 'tech_c4_system_context'],
-      data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse', 'tech_rag_gcp', 'tech_iot_telemetry', 'v2_freeform', 'tech_modern_data_stack']
+      executive: ['conceptual_diagram', 'unified_system_view', 'business_agent_governance_hitl', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
+      fintech: ['erd', 'data_ai_pipeline', 'secure_deployment_map', 'tech_streaming_analytics', 'tech_c4_system_context', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
+      legal: ['business_agent_governance_hitl', 'secure_deployment_map', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
+      architect: ['conceptual_diagram', 'unified_system_view', 'tech_serverless_gcp', 'tech_microservices_aws', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
+      devops: ['sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_aws', 'tech_cicd_pipeline', 'tech_event_driven_eda'],
+      security: ['secure_deployment_map', 'business_agent_governance_hitl', 'tech_microservices_aws', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
+      data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse', 'tech_rag_gcp', 'tech_modern_data_stack', 'tech_agent_harness_runtime']
     };
 
     function getPersonaBadge(id: string) {
@@ -3656,13 +3635,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 }
 
   const currentXmlToRender = React.useMemo(() => {
-    const archType = activeDiagram?.architecture_type || displayedVersion?.architecture_type || 'unified_system_view';
+    const archType = selectedArchType || activeDiagram?.architecture_type || displayedVersion?.architecture_type || 'unified_system_view';
     const activeUseCase = displayedVersion?.business_usecase || activeDiagram?.name || 'ApexPay Global FinTech Platform';
     
     // Always use the master collision-free spatial reference XML for the target architecture type so historical DB versions never render broken overlaps
-    // Always enforce the master collision-free spatial reference grid for the target architecture type across all versions
-    // THE PUZZLE SOLVED: Priority 1 = customXml, Priority 2 = displayedVersion/activeVersion XML, Priority 3 = Default Arch Template
-    let baseXml = customXml || displayedVersion?.xml_content || activeVersion?.xml_content || getDefaultXmlForArchitecture(archType) || '';
+    // Priority 1 = customXml, Priority 2 = selectedArchType default XML (if switching templates), Priority 3 = displayedVersion XML, Priority 4 = Default Arch Template
+    let baseXml = customXml || (selectedArchType && selectedArchType !== activeDiagram?.architecture_type ? getDefaultXmlForArchitecture(selectedArchType) : null) || displayedVersion?.xml_content || activeVersion?.xml_content || getDefaultXmlForArchitecture(archType) || '';
 
     baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
     // Universal Zero-Defect Light-HUD Transformation: Enforce Light Architectural Cards (#FFFFFF / #F0F9FF), Dark Slate Text (#0F172A), and Pure White Label Background Pills across ALL diagram templates
@@ -6065,8 +6043,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     }}
                   >
                     <div className="pointer-events-auto w-full h-full flex items-center justify-center p-4">
-                      <DiagramViewer currentLanguage={currentLanguage}
-              currentLanguage={currentLanguage}
+                      <DiagramViewer
+                        currentLanguage={currentLanguage}
                         key={`${activeDiagram?.id || 'diag'}_${displayedVersion?.version_number || 1}_${layoutPreset}_${canvasTheme}`}
                         xml={currentXmlToRender}
                         diagramId={activeDiagram?.id}
@@ -6225,28 +6203,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     ))}
                   </optgroup>
 
-                  <optgroup label="🤖 ENTERPRISE AI, GENAI & SAFETY SYSTEMS" className="bg-[#0b101d] text-cyan-400 font-extrabold">
-                    <option value="8" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 Enterprise LLM Evaluation, Toxicity & Safety Benchmarking (7-Tier Platform)</option>
-                    <option value="9" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 Multi-Agent AI & LLM Orchestration Platform (Vertex AI / LangGraph)</option>
-                    <option value="5" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 AI Retrieval-Augmented Generation / RAG (GCP)</option>
-                  </optgroup>
-
-                  <optgroup label="☁️ CLOUD INFRASTRUCTURE & SERVERLESS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                    <option value="1" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Serverless Web Application (GCP)</option>
-                    <option value="3" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Microservices Kubernetes Cluster (AWS EKS)</option>
-                    <option value="7" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Multi-Region Active-Active Disaster Recovery (GCP)</option>
-                    <option value="6" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Event-Driven Microservices (AWS EventBridge)</option>
-                  </optgroup>
-
-                  <optgroup label="📊 DATA ENGINEERING, ANALYTICS & LAKEHOUSE" className="bg-[#0b101d] text-amber-400 font-extrabold">
-                    <option value="2" className="bg-[#0b101d] text-slate-100 font-bold py-1">📊 Real-time Streaming Analytics (GCP Pub/Sub + Dataflow)</option>
-                    <option value="4" className="bg-[#0b101d] text-slate-100 font-bold py-1">📊 Modern Data Lakehouse (AWS Glue + Redshift)</option>
-                  </optgroup>
-
-                  <optgroup label="🛡️ SECURITY, FINTECH & DEVSECOPS" className="bg-[#0b101d] text-emerald-400 font-extrabold">
-                    <option value="10" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ FinTech Real-Time Core Transaction Ledger (PCI-DSS Active-Active)</option>
-                    <option value="11" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ Zero-Trust Multi-Cloud Enterprise Security & SASE (GCP/AWS)</option>
-                    <option value="12" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ DevSecOps GitOps Automated Cloud Delivery (ArgoCD + Terraform)</option>
+                  <optgroup label="⚙️ TECHNICAL & CLOUD ARCHITECTURES" className="bg-[#0b101d] text-indigo-400 font-extrabold">
+                    {TECHNICAL_ARCHITECTURE_TYPES.map((tech) => (
+                      <option key={tech.id} value={`arch_${tech.id}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
+                        ⚙️ {tech.name}
+                      </option>
+                    ))}
                   </optgroup>
 
                   <optgroup label="✏️ FREEFORM & CUSTOM" className="bg-[#0b101d] text-slate-400 font-extrabold">
@@ -6262,17 +6224,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 <textarea
                   rows={3}
                   value={newDiagramPrompt}
-                  onChange={(e) => {
-                    const promptVal = e.target.value;
-                    setNewDiagramPrompt(promptVal);
-                    // Match with predefined template or set to custom
-                    const matchedIdx = TEMPLATE_PROMPTS.findIndex(t => t.prompt === promptVal);
-                    if (matchedIdx !== -1) {
-                      setSelectedTemplate(matchedIdx.toString());
-                    } else {
-                      setSelectedTemplate('custom');
-                    }
-                  }}
+                  onChange={(e) => setNewDiagramPrompt(e.target.value)}
                   placeholder="e.g., Act as a GCP Data Architect. Design a simple 5-node streaming data pipeline with Cloud Storage, Pub/Sub, Dataflow, BigQuery, and Looker..."
                   className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg p-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
                 />
@@ -7194,7 +7146,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === leftVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
                     setTimeout(() => {
                       try {
-                        target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: xmlToLoad, fit: true }), '*');
+                        target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: sanitizeDrawioXmlAttributes(xmlToLoad), fit: true }), '*');
                       } catch(err) {}
                     }, 500);
                   }}
@@ -7253,7 +7205,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === rightVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
                     setTimeout(() => {
                       try {
-                        target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: xmlToLoad, fit: true }), '*');
+                        target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: sanitizeDrawioXmlAttributes(xmlToLoad), fit: true }), '*');
                       } catch(err) {}
                     }, 500);
                   }}

@@ -1,6 +1,6 @@
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
-import { validateAndHealDrawioXml } from './xmlHealer';
 import { getTemplateTitle } from './architectureTypes';
+import { sanitizeDrawioXmlAttributes } from './diagramCleaner';
 
 /**
  * 🎯 PRE-FLIGHT 6-AUDIT PRE-COMPILER ENGINE
@@ -89,7 +89,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     .replace(/Priocla call/gi, 'Private call');
 
   // 1e. Enforce clean 2-line Enterprise Governance Header across ALL diagram templates (content-based & ID-based matching)
-  const defaultHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;Enterprise Governed Agentic AI Platform&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);'&gt;Unified Architecture System View &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; Unified Logical Flow, Technology Stack, Security Boundaries, &amp;amp; Operational Lifecycles&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; Enterprise Architect, AI Engineer&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; Governance Board, SRE&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;SLA: 99.99% Uptime&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
+  const defaultHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;Enterprise Governed Agentic AI Platform&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;Unified Architecture System View &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; Unified Logical Flow, Technology Stack, Security Boundaries, &amp;amp; Operational Lifecycles&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; Enterprise Architect, AI Engineer&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; Governance Board, SRE&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;SLA: 99.99% Uptime&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
 
   if (!xml.includes('❖ USE CASE:')) {
     const hasHeaderCell = /(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title|Enterprise Architecture Platform|UNIFIED SYSTEM VIEW)/i.test(xml);
@@ -104,7 +104,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
         /(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title)"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi,
         `$1${defaultHeaderHtml}$2`
       );
-    } else {
+    } else if (archType === 'unified_system_view' || (archType && archType.startsWith('tech_') && !xml.includes('id="col_top"'))) {
       // 3) Inject clean 2-line Enterprise Governance Header for technical blueprints lacking a header cell
       const injectedHeaderCell = `\n        <mxCell id="main_title_bar_uv" value="${defaultHeaderHtml}" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">\n          <mxGeometry x="15" y="15" width="1570" height="60" as="geometry" />\n        </mxCell>`;
       xml = xml.replace(/(<mxCell\s+id="1"\s+parent="0"\s*\/>)/i, `$1${injectedHeaderCell}`);
@@ -560,5 +560,5 @@ export function runZeroDefectTextAndTechnicalAccuracyPreflight(
   // 3. Ampersand & Special Entity Auto-Escaping Verification
   cleaned = cleaned.replace(/&(?!amp;|lt;|gt;|quot;|apos;|#[0-9]+;|#x[0-9a-fA-F]+;)/g, '&amp;');
 
-  return cleaned;
+  return sanitizeDrawioXmlAttributes(cleaned);
 }

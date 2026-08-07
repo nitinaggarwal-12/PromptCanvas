@@ -123,6 +123,8 @@ export interface Diagram {
   access_level?: 'Viewer' | 'Editor' | 'Owner' | null;
   architecture_type?: string | null;
   is_private?: boolean | number | null;
+  versions?: DiagramVersion[];
+  xml_content?: string;
 }
 
 export interface DiagramVersion {

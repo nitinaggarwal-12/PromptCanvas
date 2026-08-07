@@ -65,7 +65,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
-            <span>🏛️ All 25 Publication Architecture Blueprints ({ARCHITECTURE_TYPES.length})</span>
+            <span>🏛️ All Architecture Blueprints ({ARCHITECTURE_TYPES.length})</span>
           </button>
 
           <button

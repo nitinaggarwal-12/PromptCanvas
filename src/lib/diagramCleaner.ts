@@ -744,7 +744,14 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
 
   // Dynamic Domain-Aware Topology Flavoring across all technical reference diagrams
   // Extract clean short brand name (1-2 words) for subtle branding without repeating full 50-char diagram title everywhere
-  const topicClean = topic || 'Enterprise';
+  let topicClean = (topic || 'Enterprise').trim();
+  if (topicClean.includes('\n') || topicClean.includes('**') || topicClean.startsWith('-')) {
+    const firstLine = topicClean.split('\n')[0].replace(/^[-*#\s]+/, '').replace(/[*_]/g, '').replace(/:\s*$/, '').trim();
+    topicClean = firstLine.length > 3 && firstLine.length < 50 ? firstLine : 'Enterprise System';
+  }
+  if (topicClean.length > 55) {
+    topicClean = topicClean.slice(0, 52) + '...';
+  }
   const brandWords = topicClean.split(' ').filter(w => w.length > 2);
   const shortBrand = brandWords.length > 0 ? brandWords[0] : 'Enterprise';
   const shortBrandUpper = shortBrand.toUpperCase();
@@ -861,7 +868,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     dynPersonas = 'Payment Operator, Risk Officer, Compliance Analyst';
     dynStakeholders = 'Central Bank Ops, Clearing House, Security Lead';
     dynDefinition = 'Real-Time Financial Settlement, Multi-Tier Fraud Detection, & ISO 20022 Ledger Flow';
-    dynSla = 'SLA: 99.999% Uptime | Latency <50ms';
+    dynSla = 'SLA: 99.999% Uptime | Latency &lt;50ms';
     dynArchName = 'FinTech Financial Settlement Architecture';
   } else if (/supply|logistics|warehouse|fleet|inventory|chain/i.test(promptLower)) {
     dynPersonas = 'Supply Chain Architect, Logistics Fleet SRE, Depot Ops';
@@ -950,7 +957,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     dynSla = `${dynSla} &amp;nbsp;|&amp;nbsp; &lt;span style='background:rgba(245,158,11,0.2);border:1px solid #F59E0B;color:#FBBF24;font-size:10px;padding:2px 6px;border-radius:8px;'&gt;⚡ Total FinOps: Context Cache (-90% Token) | CDN Edge Egress (-75%) | Autoclass Storage | HA Regional DR&lt;/span&gt;`;
   }
 
-  const dynamicEnterpriseHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;${topicClean}&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);'&gt;${dynArchName} &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; ${dynDefinition}&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; ${dynPersonas}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; ${dynStakeholders}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;${dynSla}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
+  const dynamicEnterpriseHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;${topicClean}&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;${dynArchName} &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; ${dynDefinition}&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; ${dynPersonas}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; ${dynStakeholders}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;${dynSla}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
 
   updatedXml = updatedXml
     .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title)"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${dynamicEnterpriseHeaderHtml}$2`)
@@ -1047,7 +1054,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Rly Identific Ion Person Platform - RLY IDENTIFIC ION PERSON RLY IDENTIFIC ION PERSON COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
       .replace(/ITACS Integrated Insights Platform - COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
       .replace(/Early Discovery &amp; Target Identification Platform - Early Discovery &amp; Target Identification Early Discovery &amp; Target Identification COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
-      .replace(/Sends single Oncology prompt:[\s\S]*?recent sales figures'/gi, "Sends biological target prompt:<br><span style='font-size:10px;font-weight:normal;'>'Define NSCLC hypothesis &amp; explore target dossiers'</span>")
+      .replace(/Sends single Oncology prompt:[\s\S]*?recent sales figures'/gi, "Sends biological target prompt:&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;'Define NSCLC hypothesis &amp; explore target dossiers'&lt;/span&gt;")
       .replace(/THOUGHT: 'I need multi-silo context.'/gi, "THOUGHT: 'Need PubMed, patents &amp; assay notes.'")
       .replace(/ACTION: Call RAG Tool/gi, 'ACTION: Call Deep Research &amp; Notebook Enterprise')
       .replace(/Send call with 'Automatic Embedding &amp; Ret Tool'[\s\S]*?centientext\)\)/gi, 'Executes Landscape Search &amp; Ingest (Scan millions of papers/patents &amp; synthesize assay notes)')
@@ -1069,10 +1076,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       // Data & AI Pipeline Specific Replacements for Early Discovery
       .replace(/Rly Identific Ion Person - Data &amp; AI Pipeline/g, 'Early Discovery &amp; Target Identification — Data &amp; AI Pipeline')
       .replace(/RLY IDENTIFIC ION PERSON SECURE GOVERNED CLOUD TENANT/g, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION SECURE GOVERNED CLOUD TENANT')
-      .replace(/Customer\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Churn\s*Features/gi, 'Target Dossier &amp;<br>Binding Affinity Features')
-      .replace(/Sales\s*Prediction\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Features/gi, 'AIDDISON Chemical<br>Screening Features')
+      .replace(/Customer\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Churn\s*Features/gi, 'Target Dossier &amp;&lt;br&gt;Binding Affinity Features')
+      .replace(/Sales\s*Prediction\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Features/gi, 'AIDDISON Chemical&lt;br&gt;Screening Features')
       .replace(/Funcriogy/g, 'Functional Research Areas')
-      .replace(/Salesforce\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*cloud\s*App/gi, 'PubMed REST API &amp;<br>Patent Ingest')
+      .replace(/Salesforce\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*cloud\s*App/gi, 'PubMed REST API &amp;&lt;br&gt;Patent Ingest')
       // Catch-all Generic Sales / Lead Scoring DFD Replacements for Early Discovery
       .replace(/Lead Scoring &amp; Prioritization/gi, 'Target Prioritization &amp; Binding Affinity Engine')
       .replace(/Business Rules Engine, Financial Impact Rating/gi, 'AIDDISON Virtual Screening &amp; Target Validation')
@@ -1087,10 +1094,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Google Cloud Project \(ITACS Platform Production\)/g, 'Google Cloud Project (Early Discovery &amp; Target Identification)')
       .replace(/Rly Identific Ion Person Production Cloud Architecture/g, 'Google Cloud Project (Early Discovery &amp; Target Identification)')
       .replace(/Rly Identific Ion Person Primary/gi, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION Primary')
-      .replace(/Rly Identific Ion Person Agent\s*<br\s*\/?>\s*Orchestrator\s*<br\s*\/?>\s*\(GKE Pod\)/gi, 'Scientific Discovery Orchestrator &amp;<br>Agent Designer<br>(GKE Cluster)')
+      .replace(/Rly Identific Ion Person Agent\s*<br\s*\/?>\s*Orchestrator\s*<br\s*\/?>\s*\(GKE Pod\)/gi, 'Scientific Discovery Orchestrator &amp;&lt;br&gt;Agent Designer&lt;br&gt;(GKE Cluster)')
       .replace(/Rly Identific Ion Person/g, 'Early Discovery &amp; Target Identification')
       .replace(/Zone 1: The Edge \(External Traffic\)/g, 'Zone 1: Scientific Web Edge &amp; Ingress (External)')
-      .replace(/Public Internet\s*<br\s*\/?>\s*Traffic/gi, 'Research Scientist &amp;<br>Bioinformatician Traffic')
+      .replace(/Public Internet\s*<br\s*\/?>\s*Traffic/gi, 'Research Scientist &amp;&lt;br&gt;Bioinformatician Traffic')
       .replace(/ITACS Primary VPC Network/g, 'Early Discovery Primary VPC Network')
       .replace(/ITACS Agent Orchestrator \(GKE Pod\)/g, 'Scientific Discovery Orchestrator (GKE Cluster)')
       .replace(/Vertex AI Vector Search Index/g, 'Vertex AI Vector Search (pgvector Target Embeddings)')
@@ -1100,8 +1107,8 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/ITACS Governing Cloud Tenant \(Managed Services\)/g, 'Early Discovery &amp; Target Identification Cloud Tenant')
       .replace(/Rly Identific Ion Person Governing Cloud Tenant/gi, 'Early Discovery &amp; Target Identification Cloud Tenant')
       .replace(/ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM BOUNDARY/g, 'EARLY DISCOVERY SECURE MANAGED GEMINI ECOSYSTEM BOUNDARY')
-      .replace(/Project\s*<br\s*\/?>\s*Planning/gi, 'Hypothesis Framing &amp;<br>Target Goal Setting')
-      .replace(/Dimensional\s*<br\s*\/?>\s*Data Modeling\s*<br\s*\/?>\s*\(ERD\)/gi, 'Assay Data Model &amp;<br>Target Schema (ERD)')
+      .replace(/Project\s*<br\s*\/?>\s*Planning/gi, 'Hypothesis Framing &amp;&lt;br&gt;Target Goal Setting')
+      .replace(/Dimensional\s*<br\s*\/?>\s*Data Modeling\s*<br\s*\/?>\s*\(ERD\)/gi, 'Assay Data Model &amp;&lt;br&gt;Target Schema (ERD)')
       .replace(/Data Engineering/g, 'Assay Data Ingestion Engine')
       .replace(/Application\s*(?:<br\s*\/?>)?\s*Development/gi, 'AIDDISON Screening &amp;&lt;br&gt;Agent Designer')
       .replace(/MLOps/g, 'MLOps Target &amp; Binding Affinity')
@@ -1299,7 +1306,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Raw Scientific Literature &amp; PPT Decks/g, 'Mobile Apps, Web Banking &amp; ATM API Feeds')
       .replace(/>PDFs</g, '>Mobile App<')
       .replace(/>PPTs</g, '>Web Banking<')
-      .replace(/Unstructured<br>Documents/g, 'ATM &amp; Branch<br>API Feeds')
+      .replace(/Unstructured\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Documents/gi, 'ATM &amp; Branch&lt;br&gt;API Feeds')
       .replace(/5 Functional Silos Ingestion/g, '5 Core Banking Functional Silos')
       .replace(/Market Research/g, 'Accounts &amp; Deposits')
       .replace(/Medical Affairs/g, 'Payments &amp; Transfers')
@@ -1552,5 +1559,25 @@ export function createVendorIconsVariant(xmlInput: string): string {
     suppressEmptyNode: true,
   });
 
-  return builder.build(ast);
+  const builtXml = builder.build(ast);
+  return sanitizeDrawioXmlAttributes(builtXml);
+}
+
+export function sanitizeDrawioXmlAttributes(xml: string): string {
+  if (!xml) return xml;
+  // Fix unescaped raw '<' inside value attributes
+  let cleaned = xml.replace(/\bvalue="([\s\S]*?)"(?=\s+[a-zA-Z_:][a-zA-Z0-9_:-]*=|\s*\/?>)/g, (match, valContent) => {
+    let sanitized = valContent
+      // Replace raw HTML tags inside value attribute: <b>, </b>, <br>, <i>, </i>, <span>, </span>, <table>, etc.
+      .replace(/<(\/?[a-zA-Z0-9]+(?:\s+[^>]*)?)>/g, '&lt;$1&gt;')
+      // Fix unescaped < followed by numbers like <50ms, <75%
+      .replace(/<([0-9]+)/g, '&lt;$1')
+      // Replace any other raw '<'
+      .replace(/<(?![a-zA-Z0-9/])/g, '&lt;');
+    return `value="${sanitized}"`;
+  });
+
+  // Ensure &amp; entities are valid
+  cleaned = cleaned.replace(/&amp;amp;/g, '&amp;');
+  return cleaned;
 }

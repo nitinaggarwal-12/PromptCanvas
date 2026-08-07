@@ -1,7 +1,7 @@
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
-
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
+import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
 
 export interface XmlHealerResult {
   isValid: boolean;
@@ -286,7 +286,12 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
   return {
     isValid: true,
     isHealed,
-    xml: finalXml.replace(/^<\?xml[^>]*\?>\s*/i, '').replace(/&(?!amp;|lt;|gt;|quot;|apos;|#[0-9]+;|#x[0-9a-fA-F]+;)/g, '&amp;').trim(),
+    xml: sanitizeDrawioXmlAttributes(
+      finalXml
+        .replace(/^<\?xml[^>]*\?>\s*/i, '')
+        .replace(/&(?!amp;|lt;|gt;|quot;|apos;|#[0-9]+;|#x[0-9a-fA-F]+;)/g, '&amp;')
+        .trim()
+    ),
     healingLog
   };
 }

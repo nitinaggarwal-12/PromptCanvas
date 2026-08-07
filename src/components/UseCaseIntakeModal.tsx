@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, ClipboardList, Sparkles, ShieldCheck, Server, ArrowRight, Layers } from 'lucide-react';
+import { BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES } from '@/lib/architectureTypes';
 
 interface UseCaseIntakeModalProps {
   isOpen: boolean;
@@ -318,33 +319,18 @@ export function UseCaseIntakeModal({ isOpen, onClose, onSubmitUseCase }: UseCase
             >
               <option value="auto">⚡ Auto-Select Optimal Blueprint for Domain ({domain})</option>
               <optgroup label="Business Architecture Blueprints">
-                <option value="conceptual_diagram">1. Conceptual Diagram</option>
-                <option value="erd">2. Dimensional Data Model (ERD)</option>
-                <option value="agentic_rag">3. Cognitive Architecture (Agentic RAG)</option>
-                <option value="sequence_diagram">4. Micro Dynamic Sequence Diagram</option>
-                <option value="macro_sequence_diagram">5. Macro Dynamic Sequence Diagram</option>
-                <option value="data_ai_pipeline">6. Data &amp; AI Pipeline</option>
-                <option value="secure_deployment_map">7. Secure Deployment Map</option>
-                <option value="devops_cicd_pipeline">8. DevOps &amp; CI/CD Pipeline</option>
-                <option value="governance_state_machine">9. Governance &amp; State Machine</option>
-                <option value="unified_system_view">10. Unified System View</option>
-                <option value="dark_mode_unified_system_view">11. Dark Mode Architecture</option>
-                <option value="business_agent_governance_hitl">12. HITL Autonomous AI Agent Governance Lifecycle</option>
+                {BUSINESS_ARCHITECTURE_TYPES.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
+                ))}
               </optgroup>
               <optgroup label="Technical &amp; Cloud Reference Architectures">
-                <option value="aws_modern_data_lakehouse">13. AWS Modern Data Lakehouse Architecture</option>
-                <option value="gcp_serverless_web_app">14. GCP Serverless Web Application Architecture</option>
-                <option value="aws_eks_microservices_mesh">15. AWS EKS Microservices Service Mesh Architecture</option>
-                <option value="gcp_realtime_streaming_pipeline">16. GCP Real-Time Streaming Analytics Pipeline</option>
-                <option value="gcp_project_itacs_production">17. Google Cloud Project Production Cloud Architecture</option>
-                <option value="aws_serverless_event_driven">18. AWS Serverless Event-Driven Microservices</option>
-                <option value="gcp_multiregion_disaster_recovery">19. GCP Multi-Region Active-Passive Disaster Recovery</option>
-                <option value="gcp_ai_cognitive_rag">20. GCP AI Cognitive Architecture (Agentic RAG)</option>
-                <option value="aws_zerotrust_vpc_network">21. AWS Zero-Trust Secure VPC Network Infrastructure</option>
-                <option value="gcp_industrial_iot">22. GCP Industrial IoT Telemetry Ingestion &amp; Analytics</option>
-                <option value="enterprise_devsecops_polyrepo">23. Enterprise DevSecOps Polyrepo CI/CD Pipeline Architecture</option>
-                <option value="eval_safety_benchmarking">24. AI Model Eval, Red-Teaming &amp; Responsible AI Safety Benchmarking</option>
-                <option value="multi_agent_autonomous_orchestration">25. Multi-Agent Autonomous Orchestration Platform</option>
+                {TECHNICAL_ARCHITECTURE_TYPES.filter(t => t.id !== 'v2_freeform').map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
               </optgroup>
             </select>
           </div>

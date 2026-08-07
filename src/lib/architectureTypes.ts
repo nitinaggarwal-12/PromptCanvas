@@ -4,25 +4,18 @@ import {
   compileSpecToDrawioXml,
   getExactItacsReferenceXml,
   getExactSequenceDiagramReferenceXml,
-  getExactMacroSequenceDiagramReferenceXml,
   getExactDataAiPipelineReferenceXml,
   getExactSecureDeploymentMapReferenceXml,
   getExactDevopsCicdPipelineReferenceXml,
-  getExactGovernanceStateMachineReferenceXml,
   getExactUnifiedSystemViewReferenceXml,
-  getExactDarkModeUnifiedSystemViewReferenceXml,
-  getExactEvalSafetyBenchmarkingReferenceXml,
   getBenchmarkItacsSpec,
   getBenchmarkErdSpec,
   getBenchmarkAgenticRagSpec,
   getBenchmarkSequenceDiagramSpec,
-  getBenchmarkMacroSequenceDiagramSpec,
   getBenchmarkDataAiPipelineSpec,
   getBenchmarkSecureDeploymentMapSpec,
   getBenchmarkDevopsCicdPipelineSpec,
-  getBenchmarkGovernanceStateMachineSpec,
   getBenchmarkUnifiedSystemViewSpec,
-  getBenchmarkDarkModeUnifiedSystemViewSpec,
   getBenchmarkTechnicalArchitectureSpec
 } from './diagramCompiler';
 import { injectUseCaseFlavor } from './diagramCleaner';
@@ -35,7 +28,6 @@ export interface ArchitectureTypeOption {
   prompt: string;
   whenToUse: string;
   previewImage?: string;
-  softDeleted?: boolean;
 }
 
 export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
@@ -68,71 +60,39 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Act as an API Chief Architect and Backend Systems Engineer. Design a chronologically exact, step-by-step Micro Dynamic Sequence Diagram (Execution Loop) for an Agentic RAG ecosystem. It should include: standard UML Sequence lifelines (rectangles on dashed lines), light cream background theme, synchronous solid arrows for API calls, dashed return arrows for context observations, and callout badges for PII/Ethical sourcing checks, ReAct Thought/Action loops, and IAM private access VPC-SC enforcement."
   },
   {
-    id: "macro_sequence_diagram",
-    name: "5. Macro Dynamic Sequence Diagram",
-    category: "Business Architecture",
-    whenToUse: "4-phase end-to-end macro sequence diagram across data ingestion, MLOps, RAG, and delivery",
-    prompt: "Enterprise End-to-End System Flow:\n- Phase 1: Data Ingestion, Feature Engineering & Lineage Logging.\n- Phase 2: MLOps Lifecycle: Model Training, Evaluation, Approval, Deployment & Monitoring.\n- Phase 3: GenAI / Agentic RAG Orchestration & Analytics Tooling.\n- Phase 4: Prototype Delivery & System Telemetry Logging.",
-    softDeleted: true
-  },
-  {
     id: "data_ai_pipeline",
-    name: "6. Data & AI Pipeline",
+    name: "5. Data & AI Pipeline",
     category: "Business Architecture",
     whenToUse: "Data & AI Pipeline combining DFD data ingestion, feature engineering, MLOps lifecycle, and serving",
     prompt: "Enterprise Data & AI Pipeline:\n- Data Ingestion (DFD): Multi-channel raw data ingestion and Cloud Lakehouse storage.\n- Feature Engineering: Automated pipeline transformations and Model-Ready Feature Store.\n- MLOps Lifecycle: Continuous model training, registry, inference API endpoints, and monitoring.\n- Serving & Analytics: Dashboards, Mobile/Web API serving, and telemetry analytics."
   },
   {
     id: "secure_deployment_map",
-    name: "7. Secure Deployment Map",
+    name: "6. Secure Deployment Map",
     category: "Business Architecture",
     whenToUse: "Secure deployment topology map with edge load balancing, private VPC subnets, and security boundaries",
     prompt: "Enterprise Secure Deployment Map:\n- Zone 1: Edge & Ingress filtering (Cloud Armor WAF, External Load Balancer, API Gateway).\n- Zone 2: Private Network & Subnets (Application Subnets, Data/AI Subnets, Isolated Pods).\n- Security Perimeters: VPC Service Controls, IAM RBAC, Private Service Connect (PSC) endpoints."
   },
   {
     id: "devops_cicd_pipeline",
-    name: "8. DevOps & CI/CD Pipeline",
+    name: "7. DevOps & CI/CD Pipeline",
     category: "Business Architecture",
     whenToUse: "Enterprise DevSecOps polyrepo CI/CD pipeline spanning Plan, Git Source, 3-track CI/CD, and promotion",
     prompt: "Enterprise DevSecOps Polyrepo CI/CD Pipeline:\n- Plan & Govern: Data modeling and architectural governance.\n- Git Source & IaC: Polyrepo source control with automated PR protection rules.\n- 3-Track CI/CD: Data Engineering, Application Code, and MLOps build & test tracks.\n- Evaluation & Promotion: Automated quality gates, human-in-the-loop approval, and canary deployment."
   },
   {
-    id: "governance_state_machine",
-    name: "9. Governance & State Machine",
-    category: "Business Architecture",
-    whenToUse: "Unified governance & state-machine lifecycle tracking model vetting, training, audits, and archival",
-    prompt: "Unified Governance & State-Machine Lifecycle:\n- Vetting & Modeling: Ethical data vetting, PII checks, and reference data modeling.\n- Training & Evaluation: Offline metrics, bias & fairness audits, explainability reports.\n- Governance Boundary: Compliance audit, adversarial red-teaming, societal bias & security checks.\n- Deployment & Archival: Canary deployment, drift monitoring, continuous observation, and archival.",
-    softDeleted: true
-  },
-  {
     id: "unified_system_view",
-    name: "10. Unified System View",
+    name: "8. Unified System View",
     category: "Business Architecture",
     whenToUse: "Total unified system view combining data flow, MLOps, cognitive architecture, and deployment",
     prompt: "Total Unified System View:\n- Plan & Data Foundation: Enterprise architecture planning, data vetting, and schema lineage.\n- Development & AI Lifecycle: Data engineering DFD, feature store, model development, and governance.\n- Cognitive Architecture & Deployment: Secure VPC network, agent orchestrator, tool endpoints, and observability."
   },
   {
-    id: "dark_mode_unified_system_view",
-    name: "11. Architecture (Unified Dark View)",
-    category: "Business Architecture",
-    whenToUse: "Dark mode unified system view mapping data flow, orchestration, time, and governance",
-    prompt: "Total Unified System View (Dark Mode):\n- Plan & Data Foundation: Enterprise architecture planning, data vetting, and schema lineage.\n- Development & AI Lifecycle: Data engineering DFD, feature store, model development, and governance.\n- Cognitive Architecture & Deployment: Secure VPC network, agent orchestrator, tool endpoints, and observability.",
-    softDeleted: true
-  },
-  {
     id: "business_agent_governance_hitl",
-    name: "12. Human-in-the-Loop Autonomous AI Agent Governance Lifecycle",
+    name: "9. Human-in-the-Loop Autonomous AI Agent Governance Lifecycle",
     category: "Business Architecture",
     whenToUse: "Executive workflow showing autonomous agent decision tiers, multi-dimensional risk matrix, confidence escalation rules (>=95%, 75-94%, <75%), and mandatory human sign-off gates",
     prompt: "Human-in-the-Loop Autonomous AI Agent Governance Lifecycle:\n- Tier 1: Multimodal Ingress & Constitutional HHH Safety Gate\n- Tier 2: Run State Machine & Confidence Escalation (>=95% Fast Path, 75-94% Supervisor AI Cross-Verification, <75% Mandatory HITL Escalation Router)\n- Tier 3: Human-in-the-Loop (HITL) Review Workbench & Cryptographic Sign-Off Certificate\n- Tier 4: Autonomous GUI Computer Use OS, Immutable Regulatory Audit Ledger & RLHF Fine-Tuning Feedback Loop"
-  },
-  {
-    id: "eval_safety_benchmarking",
-    name: "13. End-to-End Enterprise AI Safety, NLI Claim Benchmarking & Red-Teaming Flow",
-    category: "Business Architecture",
-    whenToUse: "Automated evaluation harnesses (Ragas / G-Eval), NLI factual claim verification, toxicity screening, and automated safety red-teaming flow",
-    prompt: "END-TO-END ENTERPRISE AI SAFETY, NLI CLAIM BENCHMARKING & RED-TEAMING FLOW:\n- Continuous Integration (CI) & Data Ingestion: Model Checkpoints, Reference & Distractor Datasets, Test Prompts & Scenarios.\n- Automated Evaluation: Performance Metrics (Context Relevance, Faithfulness, Answer Relevance) + NLI Claim Verification (Isolate Claims, Retrieve Supporting Evidence, Classify Claims as Entailed/Contradicted/Neutral) -> Evaluation Results Aggregator.\n- Safety Red-Teaming & Screening: Toxicity & Bias Screening + Safety Red-Teaming (Simulate Jailbreak Attempts, Prompt Injection/Adversarial Attacks, Check against Safety Guidelines) -> Safety Decision Gate.\n- Model Promotion & Deployment: High Quality AND Safety Passed -> Model Promotion -> Production Endpoint Deployment. Low Quality/Reliability -> Block & Remediate. Failed -> Immediate Halt -> AI Safety Team Intervention & Model Retraining.",
-    softDeleted: true
   }
 ];
 
@@ -194,52 +154,36 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Act as a GCP Reliability Engineer. Design a multi-region active-passive Disaster Recovery (DR) technical architecture on Google Cloud. Include: Global Cloud DNS with failover routing policies, External Global Load Balancers across Primary (us-central1) and Secondary (us-east4) regions, multi-region GKE / Cloud Run compute clusters, synchronous replication, and automated failover monitoring."
   },
   {
-    id: "tech_vpc_infra",
-    name: "8. Secure VPC Network Infrastructure (AWS)",
-    category: "Technical Architecture",
-    whenToUse: "Zero-Trust secure VPC network infrastructure on AWS with Transit Gateway, Network Firewall, and PrivateLink",
-    prompt: "Act as an AWS Network & Security Architect. Design a Zero-Trust Secure VPC Network Infrastructure on AWS. Include: AWS Transit Gateway connecting Shared Services, Production, and Development VPCs, dual-stack IPv4/IPv6 routing, AWS Network Firewall and GuardDuty inspection subnets, NAT Gateways in Public subnets, isolated Private Application and Database subnets, VPC Endpoints (PrivateLink) for S3 and DynamoDB, and AWS KMS encryption with centralized IAM SCPs.",
-    softDeleted: true
-  },
-  {
-    id: "tech_iot_telemetry",
-    name: "9. IoT Telemetry Ingestion (GCP)",
-    category: "Technical Architecture",
-    whenToUse: "Industrial IoT telemetry ingestion on GCP using MQTT field gateways, Pub/Sub, Dataflow, Bigtable, and BigQuery",
-    prompt: "Act as a GCP IoT & Edge Computing Architect. Design an industrial IoT Telemetry Ingestion technical architecture on Google Cloud. Include: Edge device field gateways using MQTT/HTTPS protocols, Cloud Pub/Sub high-throughput telemetry stream ingress, stream processing and anomaly detection using Cloud Dataflow, time-series data storage in Bigtable and BigQuery, device metadata in Cloud SQL, and real-time operational alerting via Vertex AI Model Monitoring and Cloud Functions.",
-    softDeleted: true
-  },
-  {
     id: "tech_cicd_pipeline",
-    name: "10. CI/CD Pipeline Architecture",
+    name: "8. CI/CD Pipeline Architecture",
     category: "Technical Architecture",
     whenToUse: "Enterprise DevSecOps CI/CD pipeline with Git polyrepo, SonarQube SAST, Cloud Build, ArgoCD, and Kubernetes",
     prompt: "Act as a Principal DevSecOps Architect. Design an enterprise technical CI/CD Pipeline architecture. Include: Git polyrepo source control (GitHub/GitLab) with branch protection rules, CI pipeline triggering automated unit tests, SAST code scanning (SonarQube/Snyk), and Docker container build in Cloud Build / GitHub Actions, artifact vulnerability scanning in Artifact Registry / ECR, GitOps deployment orchestration via ArgoCD / Flux to staging and production Kubernetes clusters (GKE/EKS), and automated rollback on Canary monitoring failure."
   },
   {
     id: "tech_c4_system_context",
-    name: "11. C4 Enterprise System Context & Container Model",
+    name: "9. C4 Enterprise System Context & Container Model",
     category: "Technical Architecture",
     whenToUse: "C4 Model Level 1 Context & Level 2 Containers mapping external B2B actors, IAP auth gateway, core serverless containers, database core, and third-party SaaS APIs",
     prompt: "C4 Enterprise System Context & Container Model: External B2B Customers & SRE Staff -> Identity Gateway & API Gateway -> Core Next.js SPA & Cloud Run API Microservices -> AlloyDB HA Database & Stripe/FedEx External APIs."
   },
   {
     id: "tech_modern_data_stack",
-    name: "12. Modern Data Stack (CDC, Data Contracts, dbt & Reverse ETL)",
+    name: "10. Modern Data Stack (CDC, Data Contracts, dbt & Reverse ETL)",
     category: "Technical Architecture",
     whenToUse: "Modern analytics engineering pipeline combining Debezium CDC, automated Data Contracts quality gates, dbt Silver/Gold marts, and Reverse ETL back to CRM",
     prompt: "Modern Data Stack with CDC & Reverse ETL: Production OLTP PostgreSQL -> Debezium CDC -> Data Contracts & Quality Gate -> dbt Core Silver/Gold Marts -> Looker BI & Reverse ETL Engine (Hightouch/Census) syncing to Salesforce."
   },
   {
     id: "tech_event_driven_eda",
-    name: "13. Enterprise Event-Driven Microservices Architecture (EDA & Kafka Mesh)",
+    name: "11. Enterprise Event-Driven Microservices Architecture (EDA & Kafka Mesh)",
     category: "Technical Architecture",
     whenToUse: "Decoupled enterprise event-driven architecture featuring Order producers, Schema Registry contract validation, Kafka/PubSub multi-topic broker, Dead-Letter Queue (DLQ) recovery, and decoupled GKE consumer groups",
     prompt: "Enterprise Event-Driven Architecture (EDA): Order Microservice Producers -> Schema Registry Avro Gate -> Partitioned Kafka/PubSub Broker -> Dead-Letter Queue (DLQ) automated recovery -> GKE Decoupled Consumer Groups -> Cloud Spanner Immutable Event Ledger."
   },
   {
     id: "tech_agent_harness_runtime",
-    name: "14. Enterprise Agent Harness Runtime Platform (AI Operating System Kernel)",
+    name: "12. Enterprise Agent Harness Runtime Platform (AI Operating System Kernel)",
     category: "AI & Agentic Systems Architecture",
     whenToUse: "Production enterprise AI agent harness platform featuring LiteLLM routing, MCP protocol, hierarchical memory, context compactor, zero-trust IAM, 6-step sandboxed graph engine (gVisor/E2B), and continuous evaluation",
     previewImage: "/templates/agent_harness_runtime_enhanced.png",
@@ -305,17 +249,6 @@ export function getTemplateTitle(archId?: string | null): string {
   if (!archId) return 'Architecture Diagram';
   const opt = ARCHITECTURE_TYPES.find(t => t.id === archId);
   if (opt) return opt.name;
-  // Handle version number or technical ID matching
-  if (archId.includes('serverless')) return '1. Serverless Web Application (GCP)';
-  if (archId.includes('streaming')) return '2. Real-time Streaming Analytics (GCP)';
-  if (archId.includes('microservices') || archId.includes('k8s')) return '3. Microservices Kubernetes Cluster (AWS)';
-  if (archId.includes('lakehouse')) return '4. Data Lakehouse (AWS)';
-  if (archId.includes('rag')) return '5. AI Retrieval-Augmented Generation / RAG (GCP)';
-  if (archId.includes('event_driven')) return '6. Event-Driven Microservices (AWS)';
-  if (archId.includes('multi_region')) return '7. Multi-Region Disaster Recovery (GCP)';
-  if (archId.includes('vpc')) return '8. Secure VPC Network Infrastructure (AWS)';
-  if (archId.includes('iot')) return '9. IoT Telemetry Ingestion (GCP)';
-  if (archId.includes('cicd')) return '10. CI/CD Pipeline Architecture';
   return archId;
 }
 
@@ -333,29 +266,21 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = compileSpecToDrawioXml(getBenchmarkAgenticRagSpec());
   } else if (archId === 'sequence_diagram') {
     xml = getExactSequenceDiagramReferenceXml();
-  } else if (archId === 'macro_sequence_diagram') {
-    xml = getExactMacroSequenceDiagramReferenceXml();
   } else if (archId === 'data_ai_pipeline') {
     xml = getExactDataAiPipelineReferenceXml();
   } else if (archId === 'secure_deployment_map') {
     xml = getExactSecureDeploymentMapReferenceXml();
   } else if (archId === 'devops_cicd_pipeline') {
     xml = getExactDevopsCicdPipelineReferenceXml();
-  } else if (archId === 'governance_state_machine') {
-    xml = getExactGovernanceStateMachineReferenceXml();
   } else if (archId === 'unified_system_view') {
     xml = getExactUnifiedSystemViewReferenceXml();
-  } else if (archId === 'dark_mode_unified_system_view') {
-    xml = getExactDarkModeUnifiedSystemViewReferenceXml();
   } else if (archId === 'business_agent_governance_hitl' || archId?.includes('agent_governance')) {
     const { getExactAgentGovernanceHitlReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAgentGovernanceHitlReferenceXml();
   } else if (archId === 'tech_multi_agent_langgraph' || archId?.includes('langgraph')) {
     const { getExactMultiAgentLangGraphReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactMultiAgentLangGraphReferenceXml();
-  } else if (archId === 'eval_safety_benchmarking' || archId?.includes('monitex') || archId?.includes('safety_benchmarking')) {
-    xml = getExactEvalSafetyBenchmarkingReferenceXml();
-  } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline' || archId === 'gcp_industrial_iot' || archId === 'enterprise_devsecops_polyrepo')) {
+  } else if (archId && (archId.startsWith('tech_') || archId === 'serverless_gcp' || archId === 'streaming_pipeline' || archId === 'k8s_mesh' || archId === 'data_lakehouse' || archId === 'rag_gcp' || archId === 'event_driven_aws' || archId === 'multi_region_dr' || archId === 'zero_trust' || archId === 'hybrid_interconnect' || archId === 'cicd_pipeline' || archId === 'enterprise_devsecops_polyrepo')) {
     xml = getTechnicalArchitectureXml(archId);
   } else if (archId === 'v2_freeform') {
     xml = getTechnicalArchitectureXml('tech_serverless_gcp');
@@ -364,7 +289,6 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   }
 
   const isFlagshipBlueprint = (
-    archId === 'eval_safety_benchmarking' ||
     archId === 'business_agent_governance_hitl' ||
     archId === 'tech_multi_agent_langgraph' ||
     archId === 'tech_c4_system_context' ||

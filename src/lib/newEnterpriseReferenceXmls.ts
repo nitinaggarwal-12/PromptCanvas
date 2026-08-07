@@ -136,7 +136,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         <mxCell id="header_title" value="12. HUMAN-IN-THE-LOOP AUTONOMOUS AI AGENT GOVERNANCE &amp;amp; RISK ESCALATION LIFECYCLE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="40" y="35" width="1320" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="header_sub" value="Multimodal Ingress • Constitutional HHH Safety Gate • Confidence Escalation Router (≥95% Fast Path, 75-94% Supervisor Audit, <75% HITL Gate)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
+        <mxCell id="header_sub" value="Multimodal Ingress • Constitutional HHH Safety Gate • Confidence Escalation Router (≥95% Fast Path, 75-94% Supervisor Audit, &amp;lt;75% HITL Gate)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
           <mxGeometry x="40" y="60" width="1320" height="20" as="geometry" />
         </mxCell>
 

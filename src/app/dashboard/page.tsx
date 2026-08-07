@@ -864,28 +864,12 @@ export default function Dashboard() {
                     ))}
                   </optgroup>
 
-                  <optgroup label="🤖 ENTERPRISE AI, GENAI & SAFETY SYSTEMS" className="bg-[#0b101d] text-cyan-400 font-extrabold">
-                    <option value="8" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 Enterprise LLM Evaluation, Toxicity & Safety Benchmarking (7-Tier Platform)</option>
-                    <option value="9" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 Multi-Agent AI & LLM Orchestration Platform (Vertex AI / LangGraph)</option>
-                    <option value="5" className="bg-[#0b101d] text-slate-100 font-bold py-1">🤖 AI Retrieval-Augmented Generation / RAG (GCP)</option>
-                  </optgroup>
-
-                  <optgroup label="☁️ CLOUD INFRASTRUCTURE & SERVERLESS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                    <option value="1" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Serverless Web Application (GCP)</option>
-                    <option value="3" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Microservices Kubernetes Cluster (AWS EKS)</option>
-                    <option value="7" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Multi-Region Active-Active Disaster Recovery (GCP)</option>
-                    <option value="6" className="bg-[#0b101d] text-slate-100 font-bold py-1">☁️ Event-Driven Microservices (AWS EventBridge)</option>
-                  </optgroup>
-
-                  <optgroup label="📊 DATA ENGINEERING, ANALYTICS & LAKEHOUSE" className="bg-[#0b101d] text-amber-400 font-extrabold">
-                    <option value="2" className="bg-[#0b101d] text-slate-100 font-bold py-1">📊 Real-time Streaming Analytics (GCP Pub/Sub + Dataflow)</option>
-                    <option value="4" className="bg-[#0b101d] text-slate-100 font-bold py-1">📊 Modern Data Lakehouse (AWS Glue + Redshift)</option>
-                  </optgroup>
-
-                  <optgroup label="🛡️ SECURITY, FINTECH & DEVSECOPS" className="bg-[#0b101d] text-emerald-400 font-extrabold">
-                    <option value="10" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ FinTech Real-Time Core Transaction Ledger (PCI-DSS Active-Active)</option>
-                    <option value="11" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ Zero-Trust Multi-Cloud Enterprise Security & SASE (GCP/AWS)</option>
-                    <option value="12" className="bg-[#0b101d] text-slate-100 font-bold py-1">🛡️ DevSecOps GitOps Automated Cloud Delivery (ArgoCD + Terraform)</option>
+                  <optgroup label="⚙️ TECHNICAL & CLOUD ARCHITECTURES" className="bg-[#0b101d] text-indigo-400 font-extrabold">
+                    {TECHNICAL_ARCHITECTURE_TYPES.map((tech) => (
+                      <option key={tech.id} value={`arch_${tech.id}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
+                        ⚙️ {tech.name}
+                      </option>
+                    ))}
                   </optgroup>
 
                   <optgroup label="✏️ FREEFORM & CUSTOM" className="bg-[#0b101d] text-slate-400 font-extrabold">

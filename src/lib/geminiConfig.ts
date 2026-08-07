@@ -22,15 +22,13 @@ export function getGeminiModel(tier: ModelTier = 'medium'): string {
 
 export function getGeminiModelForArchitecture(archId?: string): string {
   const PRO_ARCHITECTURES = [
+    'agentic_rag',
     'unified_system_view',
-    'dark_mode_unified_system_view',
     'tech_multi_agent_langgraph',
     'tech_rag_gcp',
     'tech_microservices_aws',
     'tech_multi_region_dr',
-    'macro_sequence_diagram',
-    'governance_state_machine',
-    'eval_safety_benchmarking',
+    'tech_agent_harness_runtime',
     'business_agent_governance_hitl'
   ];
 
