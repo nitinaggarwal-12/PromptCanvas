@@ -245,10 +245,10 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     title: "Serverless Web Application - GCP",
     category: "Cloud Infrastructure & Networking",
     useCase: "GCP CLOUD PLATFORM",
-    businessUseCase: "Serverless web architecture on Google Cloud providing scalable API access to microservices for global users.",
-    primaryActors: "Cloud Technical Architects, Web App Developers, SREs",
+    businessUseCase: "Production serverless web application on Google Cloud providing elastic API entry, asynchronous event ingestion, multi-step orchestration, and sub-millisecond in-memory caching.",
+    primaryActors: "Cloud Technical Architects, Web App Developers, DevOps & SREs",
     targetOutcomes: "99.99% Availability, Auto-Scaling from 0 to 1000 Requests, Zero Infrastructure Management Overhead",
-    desc: "GCP cloud-native architecture using Cloud Run microservices, Cloud SQL private IP, Cloud CDN, and Secret Manager."
+    desc: "Official GCP serverless reference architecture featuring Global Cloud Load Balancing, API Gateway, IAP, Cloud Run, Cloud Functions, Pub/Sub, Cloud Workflows, Firestore, Memorystore for Redis, and Cloud Operations Suite."
   },
   tech_multi_region_dr: {
     id: "tech_multi_region_dr",

@@ -172,8 +172,8 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     id: "tech_serverless_gcp",
     name: "Serverless Web Application - GCP",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "Serverless web application on GCP using Cloud Run, Cloud CDN, Load Balancing, and Cloud SQL",
-    prompt: "Act as a GCP Cloud Technical Architect. Design a detailed technical architecture for a serverless web application on Google Cloud. Include: Cloud DNS, Cloud CDN, External HTTP(S) Load Balancing with Cloud Armor WAF rules, Cloud Run microservices for frontend and APIs, Serverless VPC Access connectors, Cloud SQL for PostgreSQL with private IP, Cloud Storage buckets for static assets, and Cloud IAM / Secret Manager for security."
+    whenToUse: "Official GCP serverless web application architecture using Cloud Run, Cloud Functions, API Gateway, Pub/Sub, Workflows, Firestore, and Memorystore",
+    prompt: "Act as a GCP Principal Cloud Architect. Design a production-grade serverless web application architecture on Google Cloud. Include: Global Cloud Load Balancing with SSL & Cloud CDN, API Gateway with Identity-Aware Proxy (IAP) auth, Cloud Run microservices with zero-cold-start tuning, Cloud Functions for event-driven image processing, Cloud Pub/Sub with dead-letter queue, Cloud Workflows multi-step orchestration, Cloud Firestore auto-sharded document DB, Memorystore for Redis sub-millisecond cache, Cloud Storage (GCS), and Google Cloud Operations Suite with complete Terraform IaC and IAM least-privilege matrix."
   },
   {
     id: "tech_multi_region_dr",
