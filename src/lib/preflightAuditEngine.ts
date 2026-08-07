@@ -1,4 +1,3 @@
-import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { getTemplateTitle } from './architectureTypes';
 import { sanitizeDrawioXmlAttributes } from './diagramCleaner';
 

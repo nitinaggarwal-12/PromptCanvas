@@ -1,5 +1,4 @@
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
-import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
 
@@ -279,7 +278,7 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       suppressEmptyNode: true,
     });
     finalXml = builder.build(ast);
-  } catch (e) {
+  } catch {
     healingLog.push('AST serialization skipped, returning sanitized string XML.');
     finalXml = cleaned;
   }
