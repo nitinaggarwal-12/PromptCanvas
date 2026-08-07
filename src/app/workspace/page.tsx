@@ -3622,9 +3622,9 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
   // 8. Restore specific semantic accent highlights for KPIs, Footer banners, and Advisory Alerts
   xml = xml
-    .replace(/Alert ID: #OPS-101/g, "<b style=\"color:#DC2626;\">Alert ID: #OPS-101</b>")
-    .replace(/▲ Operational/g, "<b style=\"color:#16A34A;\">▲ Operational</b>")
-    .replace(/Optimal Flow/g, "<b style=\"color:#0284C7;\">Optimal Flow</b>");
+    .replace(/Alert ID: #OPS-101/g, "<b style='color:#DC2626;'>Alert ID: #OPS-101</b>")
+    .replace(/▲ Operational/g, "<b style='color:#16A34A;'>&#9650; Operational</b>")
+    .replace(/Optimal Flow/g, "<b style='color:#0284C7;'>Optimal Flow</b>");
 
   // Item 2 Artifact Clean-up: Remove "❌ dirt models" and deduplicate "Key Definitions" in legend containers
   xml = xml.replace(/❌\s*dirt models/gi, "Derived Models");

@@ -1565,9 +1565,19 @@ export function createVendorIconsVariant(xmlInput: string): string {
 
 export function sanitizeDrawioXmlAttributes(xml: string): string {
   if (!xml) return xml;
-  // Fix unescaped raw '<' inside value attributes
-  let cleaned = xml.replace(/\bvalue="([\s\S]*?)"(?=\s+[a-zA-Z_:][a-zA-Z0-9_:-]*=|\s*\/?>)/g, (match, valContent) => {
+  
+  // 1. Convert non-ASCII unicode characters/emojis into safe numeric HTML entities to prevent atob Latin1 failures
+  let cleaned = xml.replace(/[^\x00-\x7F]/g, (char) => {
+    const code = char.codePointAt(0);
+    return code ? `&#${code};` : '';
+  });
+
+  // 2. Fix unescaped raw '<' and '&quot;' inside value attributes
+  cleaned = cleaned.replace(/\bvalue="([\s\S]*?)"(?=\s+[a-zA-Z_:][a-zA-Z0-9_:-]*=|\s*\/?>)/g, (match, valContent) => {
     let sanitized = valContent
+      // Convert &quot; and inner double quotes to single quotes to prevent breaking out of attribute
+      .replace(/&quot;/g, "'")
+      .replace(/"/g, "'")
       // Replace raw HTML tags inside value attribute: <b>, </b>, <br>, <i>, </i>, <span>, </span>, <table>, etc.
       .replace(/<(\/?[a-zA-Z0-9]+(?:\s+[^>]*)?)>/g, '&lt;$1&gt;')
       // Fix unescaped < followed by numbers like <50ms, <75%

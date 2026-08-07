@@ -61,82 +61,87 @@ export function getExactItacsReferenceXml(): string {
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- COLUMN 1: INGESTION PORTAL (X: 50, Y: 80, W: 320, H: 640) -->
-        <mxCell id="col_ingestion" value="&lt;b style=&quot;font-size:13px;&quot;&gt;[STAGE 1] ENTERPRISE INGESTION PORTAL&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:12px;font-weight:normal;color:#475569;&quot;&gt;(The Ingestion Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#CBD5E1;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="50" y="80" width="320" height="640" as="geometry" />
+        <!-- TOP PUBLICATION HEADER BANNER -->
+        <mxCell id="main_title_bar_uv" value="&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;Enterprise Conceptual Architecture Platform&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;Conceptual 3-Stage Platform &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; End-to-End Operational Ingestion, Core AI Processing Hub &amp;amp; Strategic KPI Delivery&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; Enterprise Architect, Lead Strategist&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; Executive Board, SRE&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;SLA: 99.99% Uptime&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="50" y="15" width="1180" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- COLUMN 1: INGESTION PORTAL (X: 50, Y: 85, W: 320, H: 640) -->
+        <mxCell id="col_ingestion" value="&lt;b style='font-size:13px;'&gt;[STAGE 1] ENTERPRISE INGESTION PORTAL&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:12px;font-weight:normal;color:#475569;'&gt;(The Ingestion Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#CBD5E1;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="85" width="320" height="640" as="geometry" />
         </mxCell>
 
         <!-- Card 1: Multi-Channel Data Ingestion Card -->
-        <mxCell id="src_card" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[1a] Multi-Channel Data Ingestion&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#64748B;&quot;&gt;Real-Time Telemetry &amp; Batch Stream Ingress&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;verticalAlign=top;padding=8;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="140" width="280" height="120" as="geometry" />
+        <mxCell id="src_card" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[1a] Multi-Channel Data Ingestion&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#64748B;'&gt;Real-Time Telemetry &amp;amp; Batch Stream Ingress&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;verticalAlign=top;padding=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="145" width="280" height="120" as="geometry" />
         </mxCell>
         <!-- Blue Stream Badge -->
-        <mxCell id="pdf_badge" value="&lt;b style=&quot;color:#FFFFFF;font-size:11px;&quot;&gt;IOT&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="95" y="188" width="36" height="42" as="geometry" />
+        <mxCell id="pdf_badge" value="&lt;b style='color:#FFFFFF;font-size:11px;'&gt;IOT&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="193" width="36" height="42" as="geometry" />
         </mxCell>
         <mxCell id="pdf_lbl" value="Streams" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="88" y="232" width="50" height="20" as="geometry" />
+          <mxGeometry x="88" y="237" width="50" height="20" as="geometry" />
         </mxCell>
         <!-- Teal API Badge -->
-        <mxCell id="ppt_badge" value="&lt;b style=&quot;color:#FFFFFF;font-size:11px;&quot;&gt;API&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0D9488;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="160" y="188" width="36" height="42" as="geometry" />
+        <mxCell id="ppt_badge" value="&lt;b style='color:#FFFFFF;font-size:11px;'&gt;API&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0D9488;strokeColor=none;fontColor=#FFFFFF;arcSize=20;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="193" width="36" height="42" as="geometry" />
         </mxCell>
         <mxCell id="ppt_lbl" value="Feeds" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#1E293B;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="153" y="232" width="50" height="20" as="geometry" />
+          <mxGeometry x="153" y="237" width="50" height="20" as="geometry" />
         </mxCell>
         <!-- Document Badge -->
         <mxCell id="doc_badge" value="⚡" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;fontSize=20;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="235" y="188" width="36" height="42" as="geometry" />
+          <mxGeometry x="235" y="193" width="36" height="42" as="geometry" />
         </mxCell>
         <mxCell id="doc_lbl" value="Real-Time&lt;br&gt;Events" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#1E293B;" vertex="1" parent="1">
-          <mxGeometry x="215" y="232" width="76" height="25" as="geometry" />
+          <mxGeometry x="215" y="237" width="76" height="25" as="geometry" />
         </mxCell>
 
         <!-- SHIFT Label -->
-        <mxCell id="shift_label" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;SHIFT: Manual gathering -&gt; Automated real-time processing.&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;fontColor=#15803D;fontStyle=1;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="270" width="280" height="28" as="geometry" />
+        <mxCell id="shift_label" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;SHIFT: Manual gathering -&gt; Automated real-time processing.&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;fontColor=#15803D;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="275" width="280" height="28" as="geometry" />
         </mxCell>
 
         <!-- Card 2: 5 Functional Areas Card -->
-        <mxCell id="func_areas" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[1b] Operational Gateways &amp;amp; Silos&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;table style=&quot;width:100%;text-align:center;font-size:11px;border-collapse:separate;border-spacing:6px;margin-top:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;📡&lt;br&gt;&lt;b&gt;Sensor Ingest&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;🛢️&lt;br&gt;&lt;b&gt;Supply Chain&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;💳&lt;br&gt;&lt;b&gt;Transactions&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;⚙️&lt;br&gt;&lt;b&gt;Operations&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;&quot;&gt;🧠&lt;br&gt;&lt;b&gt;Enterprise Analytics Stream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;fontColor=#1E293B;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="308" width="280" height="210" as="geometry" />
+        <mxCell id="func_areas" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[1b] Operational Gateways &amp;amp; Silos&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;table style='width:100%;text-align:center;font-size:11px;border-collapse:separate;border-spacing:6px;margin-top:2px;'&gt;&lt;tr&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;📡&lt;br&gt;&lt;b&gt;Sensor Ingest&lt;/b&gt;&lt;/td&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;🛢️&lt;br&gt;&lt;b&gt;Supply Chain&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;💳&lt;br&gt;&lt;b&gt;Transactions&lt;/b&gt;&lt;/td&gt;&lt;td style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;⚙&amp;nbsp;&lt;br&gt;&lt;b&gt;Operations&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='2' style='background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;'&gt;🧠&lt;br&gt;&lt;b&gt;Enterprise Analytics Stream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;fontColor=#1E293B;verticalAlign=top;padding=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="313" width="280" height="210" as="geometry" />
         </mxCell>
 
         <!-- Card 3: User Node with Analyst Workspace -->
-        <mxCell id="user_node" value="&lt;table style=&quot;width:100%;border:none;text-align:left;margin-top:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:55px;font-size:38px;text-align:center;vertical-align:middle;&quot;&gt;👩‍💻&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;b style=&quot;font-size:13px;color:#1E293B;&quot;&gt;[1c] Operator Portal Gateway&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#334155;&quot;&gt;Operations Control Interface&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;Real-Time Monitoring &amp; Command Portal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;padding=10;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="528" width="280" height="110" as="geometry" />
+        <mxCell id="user_node" value="&lt;table style='width:100%;border:none;text-align:left;margin-top:2px;'&gt;&lt;tr&gt;&lt;td style='width:55px;font-size:38px;text-align:center;vertical-align:middle;'&gt;👩‍💻&lt;/td&gt;&lt;td style='vertical-align:middle;'&gt;&lt;b style='font-size:13px;color:#1E293B;'&gt;[1c] Operator Portal Gateway&lt;/b&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#334155;'&gt;Operations Control Interface&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#64748B;'&gt;Real-Time Monitoring &amp;amp; Command Portal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1.5;padding=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="533" width="280" height="110" as="geometry" />
         </mxCell>
 
-        <!-- COLUMN 2: INTEGRATED INSIGHTS HUB (X: 430, Y: 80, W: 380, H: 640) -->
-        <mxCell id="col_processing" value="&lt;b style=&quot;font-size:13px;&quot;&gt;[STAGE 2] INTEGRATED PROCESSING HUB&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:12px;font-weight:normal;color:#1E3A8A;&quot;&gt;(The Core AI &amp;amp; Data Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#60A5FA;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#1E3A8A;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="430" y="80" width="380" height="640" as="geometry" />
+        <!-- COLUMN 2: INTEGRATED INSIGHTS HUB (X: 430, Y: 85, W: 380, H: 640) -->
+        <mxCell id="col_processing" value="&lt;b style='font-size:13px;'&gt;[STAGE 2] INTEGRATED PROCESSING HUB&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:12px;font-weight:normal;color:#1E3A8A;'&gt;(The Core AI &amp;amp; Data Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#60A5FA;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#1E3A8A;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="85" width="380" height="640" as="geometry" />
         </mxCell>
 
         <!-- 3D Isometric Cube Container (Core Synthesis Engine) -->
-        <mxCell id="core_platform" value="&lt;b style=&quot;font-size:14px;color:#1E3A8A;&quot;&gt;[2] Core AI &amp;amp; Domain Processing Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;font-weight:normal;color:#3B82F6;&quot;&gt;(Powered by Enterprise AI &amp;amp; Cloud Compute)&lt;/span&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;fillColor=#DBEAFE;gradientColor=#EFF6FF;gradientDirection=south;strokeColor=#2563EB;strokeWidth=3;size=20;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1E3A8A;padding=15;shadow=1;" vertex="1" parent="1">
+        <mxCell id="core_platform" value="&lt;b style='font-size:14px;color:#1E3A8A;'&gt;[2] Core AI &amp;amp; Domain Processing Engine&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;font-weight:normal;color:#3B82F6;'&gt;(Powered by Enterprise AI &amp;amp; Cloud Compute)&lt;/span&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;fillColor=#DBEAFE;gradientColor=#EFF6FF;gradientDirection=south;strokeColor=#2563EB;strokeWidth=3;size=20;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1E3A8A;padding=15;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="450" y="145" width="340" height="480" as="geometry" />
         </mxCell>
         <!-- 4 Floating White Processing Cards Inside Cube -->
-        <mxCell id="synth" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[2a] Multi-Functional Data Synthesis&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#64748B;font-size:11px;&quot;&gt;(Real-Time Stream Correlation &amp;amp; ETL Engine)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+        <mxCell id="synth" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2a] Multi-Functional Data Synthesis&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:11px;'&gt;(Real-Time Stream Correlation &amp;amp; ETL Engine)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="470" y="215" width="300" height="55" as="geometry" />
         </mxCell>
-        <mxCell id="content" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[2b] Event &amp;amp; Telemetry Analytics&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#64748B;font-size:11px;&quot;&gt;(High-Concurrency Stream Processing)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+        <mxCell id="content" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2b] Event &amp;amp; Telemetry Analytics&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:11px;'&gt;(High-Concurrency Stream Processing)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="470" y="290" width="300" height="55" as="geometry" />
         </mxCell>
-        <mxCell id="chatbot" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[2c] Strategic AI Agent Router&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#64748B;font-size:11px;&quot;&gt;(Autonomous Reasoning &amp;amp; Workflow Agent)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+        <mxCell id="chatbot" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2c] Strategic AI Agent Router&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:11px;'&gt;(Autonomous Reasoning &amp;amp; Workflow Agent)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="470" y="365" width="300" height="55" as="geometry" />
         </mxCell>
-        <mxCell id="sim" value="&lt;b style=&quot;font-size:12px;color:#1E293B;&quot;&gt;[2d] Predictive Scenario Simulation&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#64748B;font-size:11px;&quot;&gt;(Resource &amp;amp; Operations Capacity Modeling)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+        <mxCell id="sim" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2d] Predictive Scenario Simulation&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:11px;'&gt;(Resource &amp;amp; Operations Capacity Modeling)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="470" y="440" width="300" height="55" as="geometry" />
         </mxCell>
         <!-- Parallel Path Label at bottom of Column 2 -->
-        <mxCell id="processing_footer" value="PARALLEL EXECUTION PATH:&lt;br&gt;&lt;b style=&quot;color:#1E3A8A;&quot;&gt;No-Code MVP (immediate)&lt;/b&gt; -&gt; &lt;b style=&quot;color:#1E3A8A;&quot;&gt;Custom High-Code Agent&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;(production/approval)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#64748B;" vertex="1" parent="1">
+        <mxCell id="processing_footer" value="PARALLEL EXECUTION PATH:&lt;br&gt;&lt;b style='color:#1E3A8A;'&gt;No-Code MVP (immediate)&lt;/b&gt; -&gt; &lt;b style='color:#1E3A8A;'&gt;Custom High-Code Agent&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#64748B;'&gt;(production/approval)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#64748B;" vertex="1" parent="1">
           <mxGeometry x="440" y="650" width="360" height="40" as="geometry" />
         </mxCell>
 
-        <!-- COLUMN 3: STRATEGIC DELIVERY & INSIGHTS (X: 870, Y: 80, W: 360, H: 640) -->
-        <mxCell id="col_delivery" value="&lt;b style=&quot;font-size:13px;&quot;&gt;[STAGE 3] STRATEGIC DELIVERY &amp;amp; INSIGHTS&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:12px;font-weight:normal;color:#14532D;&quot;&gt;(The Output Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#4ADE80;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#14532D;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="870" y="80" width="360" height="640" as="geometry" />
+        <!-- COLUMN 3: STRATEGIC DELIVERY & INSIGHTS (X: 870, Y: 85, W: 360, H: 640) -->
+        <mxCell id="col_delivery" value="&lt;b style='font-size:13px;'&gt;[STAGE 3] STRATEGIC DELIVERY &amp;amp; INSIGHTS&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:12px;font-weight:normal;color:#14532D;'&gt;(The Output Stage)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;gradientColor=#FFFFFF;gradientDirection=north;strokeColor=#4ADE80;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#14532D;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="85" width="360" height="640" as="geometry" />
         </mxCell>
 
         <!-- 3 Green Status Pills -->
@@ -150,62 +155,62 @@ export function getExactItacsReferenceXml(): string {
           <mxGeometry x="900" y="229" width="300" height="34" as="geometry" />
         </mxCell>
 
-        <!-- Crisp Clean Executive Strategy Dashboard Card (NO DARK BLACK BEZELS) -->
-        <mxCell id="exec_dash" value="&lt;div style=&quot;background:#0F172A;color:#FFFFFF;padding:4px 8px;font-size:11px;font-weight:bold;text-align:left;border-top-left-radius:6px;border-top-right-radius:6px;&quot;&gt;[3d] Executive Operational Dashboard&lt;/div&gt;&lt;table style=&quot;width:100%;text-align:center;border:none;margin-top:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:50%;border-right:1px solid #E2E8F0;padding:4px;&quot;&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;Real-time KPIs&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-size:16px;color:#3B82F6;&quot;&gt;99.4%&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#10B981;background:#D1FAE5;padding:1px 4px;border-radius:3px;&quot;&gt;▲ Operational&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;System Readiness&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-size:16px;color:#10B981;&quot;&gt;Active&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;background:#F1F5F9;padding:1px 4px;border-radius:3px;&quot;&gt;Optimal Flow&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;fontColor=#1E293B;verticalAlign=top;shadow=1;" vertex="1" parent="1">
+        <!-- Crisp Clean Executive Strategy Dashboard Card -->
+        <mxCell id="exec_dash" value="&lt;div style='background:#0F172A;color:#FFFFFF;padding:4px 8px;font-size:11px;font-weight:bold;text-align:left;border-top-left-radius:6px;border-top-right-radius:6px;'&gt;[3d] Executive Operational Dashboard&lt;/div&gt;&lt;table style='width:100%;text-align:center;border:none;margin-top:6px;'&gt;&lt;tr&gt;&lt;td style='width:50%;border-right:1px solid #E2E8F0;padding:4px;'&gt;&lt;span style='font-size:10px;color:#64748B;'&gt;Real-time KPIs&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:16px;color:#3B82F6;'&gt;99.4%&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#10B981;background:#D1FAE5;padding:1px 4px;border-radius:3px;'&gt;▲ Operational&lt;/span&gt;&lt;/td&gt;&lt;td style='padding:4px;'&gt;&lt;span style='font-size:10px;color:#64748B;'&gt;System Readiness&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:16px;color:#10B981;'&gt;Active&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#64748B;background:#F1F5F9;padding:1px 4px;border-radius:3px;'&gt;Optimal Flow&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;fontColor=#1E293B;verticalAlign=top;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="900" y="275" width="300" height="135" as="geometry" />
         </mxCell>
 
-        <!-- Crisp Clean System Performance Comparison View Card (NO DARK SLATE BEZELS) -->
-        <mxCell id="comp_view" value="&lt;div style=&quot;font-size:11px;font-weight:bold;color:#1E293B;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:4px 6px;text-align:left;border-top-left-radius:6px;border-top-right-radius:6px;&quot;&gt;[3e] System Performance View &lt;span style=&quot;float:right;font-size:10px;color:#64748B;font-weight:normal;&quot;&gt;Target Timelines&lt;/span&gt;&lt;/div&gt;&lt;table style=&quot;width:100%;text-align:center;font-size:10px;margin-top:6px;border-collapse:separate;border-spacing:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:4px;padding:4px;&quot;&gt;&lt;b style=&quot;color:#DC2231;&quot;&gt;Latency&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#991B1B;&quot;&gt;&amp;lt; 15ms&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;background:#FFFBEB;border:1px solid #FDE68A;border-radius:4px;padding:4px;&quot;&gt;&lt;b style=&quot;color:#D97706;&quot;&gt;Throughput&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#92400E;&quot;&gt;Peak Flow&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;background:#ECFDF5;border:1px solid #6EE7B7;border-radius:4px;padding:4px;&quot;&gt;&lt;b style=&quot;color:#10B981;&quot;&gt;Target Status&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#065F46;&quot;&gt;100% Market Lead&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=2;fontColor=#1E293B;padding=4;arcSize=6;verticalAlign=top;shadow=1;" vertex="1" parent="1">
+        <!-- Crisp Clean System Performance Comparison View Card -->
+        <mxCell id="comp_view" value="&lt;div style='font-size:11px;font-weight:bold;color:#1E293B;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:4px 6px;text-align:left;border-top-left-radius:6px;border-top-right-radius:6px;'&gt;[3e] System Performance View &lt;span style='float:right;font-size:10px;color:#64748B;font-weight:normal;'&gt;Target Timelines&lt;/span&gt;&lt;/div&gt;&lt;table style='width:100%;text-align:center;font-size:10px;margin-top:6px;border-collapse:separate;border-spacing:4px;'&gt;&lt;tr&gt;&lt;td style='background:#FEF2F2;border:1px solid #FCA5A5;border-radius:4px;padding:4px;'&gt;&lt;b style='color:#DC2231;'&gt;Latency&lt;/b&gt;&lt;br&gt;&lt;span style='color:#991B1B;'&gt;&amp;lt; 15ms&lt;/span&gt;&lt;/td&gt;&lt;td style='background:#FFFBEB;border:1px solid #FDE68A;border-radius:4px;padding:4px;'&gt;&lt;b style='color:#D97706;'&gt;Throughput&lt;/b&gt;&lt;br&gt;&lt;span style='color:#92400E;'&gt;Peak Flow&lt;/span&gt;&lt;/td&gt;&lt;td style='background:#ECFDF5;border:1px solid #6EE7B7;border-radius:4px;padding:4px;'&gt;&lt;b style='color:#10B981;'&gt;Target Status&lt;/b&gt;&lt;br&gt;&lt;b style='color:#065F46;'&gt;100% Market Lead&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=2;fontColor=#1E293B;padding=4;arcSize=6;verticalAlign=top;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="900" y="430" width="300" height="115" as="geometry" />
         </mxCell>
 
         <!-- Crisp Clean Strategic Advisory Alert Card -->
-        <mxCell id="advisory" value="&lt;div style=&quot;color:#DC2231;font-size:13px;line-height:1.4;text-align:center;&quot;&gt;&lt;div style=&quot;background:#FEE2E2;color:#991B1B;font-size:11px;font-weight:bold;padding:2px 6px;border-radius:4px;margin-bottom:6px;display:inline-block;&quot;&gt;🚨 STRATEGIC ADVISORY ALERT&lt;/div&gt;&lt;br&gt;&lt;b style=&quot;font-size:14px;color:#7F1D1D;&quot;&gt;Review Operations &amp;amp; Flow Strategy&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#991B1B;background:#FEF2F2;padding:2px 8px;border-radius:999px;border:1px solid #F87171;display:inline-block;margin-top:4px;&quot;&gt;Alert ID: #OPS-101&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=2;fontColor=#7F1D1D;padding=8;arcSize=8;shadow=1;" vertex="1" parent="1">
+        <mxCell id="advisory" value="&lt;div style='color:#DC2231;font-size:13px;line-height:1.4;text-align:center;'&gt;&lt;div style='background:#FEE2E2;color:#991B1B;font-size:11px;font-weight:bold;padding:2px 6px;border-radius:4px;margin-bottom:6px;display:inline-block;'&gt;🚨 STRATEGIC ADVISORY ALERT&lt;/div&gt;&lt;br&gt;&lt;b style='font-size:14px;color:#7F1D1D;'&gt;Review Operations &amp;amp; Flow Strategy&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#991B1B;background:#FEF2F2;padding:2px 8px;border-radius:999px;border:1px solid #F87171;display:inline-block;margin-top:4px;'&gt;Alert ID: #OPS-101&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FCA5A5;strokeWidth=2;fontColor=#7F1D1D;padding=8;arcSize=8;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="900" y="565" width="300" height="135" as="geometry" />
         </mxCell>
 
         <!-- 5. BRANCHING CONNECTORS (Exact routing from cards to cube, and branching from cube to outputs) -->
         <!-- Arrow 1: Manual Data Sources -> Cube -->
-        <mxCell id="e_in_1" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;1. Raw Literature&lt;br&gt;PDF Stream&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="src_card" target="core_platform">
+        <mxCell id="e_in_1" value="&lt;b style='color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;'&gt;1. Raw Data Stream&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="src_card" target="core_platform">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-10" as="offset" />
             <Array as="points">
-              <mxPoint x="390" y="195" />
+              <mxPoint x="390" y="205" />
               <mxPoint x="390" y="300" />
             </Array>
           </mxGeometry>
         </mxCell>
         <!-- Arrow 2: 5 Functional Areas -> Cube (with DATA INGESTION label) -->
-        <mxCell id="e_in_2" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;2. DATA INGESTION&lt;br&gt;&amp;amp; EXTRACTION&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="func_areas" target="core_platform">
+        <mxCell id="e_in_2" value="&lt;b style='color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;'&gt;2. DATA INGESTION &amp;amp; EXTRACTION&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="func_areas" target="core_platform">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-10" as="offset" />
             <Array as="points">
-              <mxPoint x="400" y="413" />
+              <mxPoint x="400" y="418" />
               <mxPoint x="400" y="385" />
             </Array>
           </mxGeometry>
         </mxCell>
         <!-- Arrow 3: User Node -> Cube -->
-        <mxCell id="e_in_3" value="&lt;b style=&quot;color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;&quot;&gt;3. Researcher Query&lt;br&gt;Request&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="user_node" target="core_platform">
+        <mxCell id="e_in_3" value="&lt;b style='color:#1E3A8A;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #93C5FD;'&gt;3. Strategic User Query&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#3B82F6;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1" source="user_node" target="core_platform">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-10" as="offset" />
             <Array as="points">
-              <mxPoint x="390" y="583" />
+              <mxPoint x="390" y="588" />
               <mxPoint x="390" y="480" />
             </Array>
           </mxGeometry>
         </mxCell>
 
         <!-- Main Exit Arrow: Cube -> Branch Point (with INSIGHTS FEED label) -->
-        <mxCell id="e_out_main" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;TARGET INSIGHTS FEED&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#10B981;endArrow=none;endFill=0;labelBackgroundColor=none;fontStyle=1;fontSize=11;" edge="1" parent="1" source="core_platform">
+        <mxCell id="e_out_main" value="&lt;b style='color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;'&gt;TARGET INSIGHTS FEED&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2.5;strokeColor=#10B981;endArrow=none;endFill=0;labelBackgroundColor=none;fontStyle=1;fontSize=11;" edge="1" parent="1" source="core_platform">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="835" y="385" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
         <!-- Branch 1: Branch Point -> Executive Strategy Dashboard -->
-        <mxCell id="e_out_1" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;4. Synthesize Dashboard<br>KPIs &amp;amp; Metrics&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+        <mxCell id="e_out_1" value="&lt;b style='color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;'&gt;4. Synthesize KPIs &amp;amp; Metrics&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-10" as="offset" />
             <mxPoint x="835" y="385" as="sourcePoint" />
@@ -215,8 +220,8 @@ export function getExactItacsReferenceXml(): string {
             </Array>
           </mxGeometry>
         </mxCell>
-        <!-- Branch 2: Branch Point -> Competitor Comparison View -->
-        <mxCell id="e_out_2" value="&lt;b style=&quot;color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;&quot;&gt;5. Rank Target Discovery<br>Timelines&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+        <!-- Branch 2: Branch Point -> Performance Comparison View -->
+        <mxCell id="e_out_2" value="&lt;b style='color:#14532D;background:#F0FDF4;padding:2px 6px;border-radius:4px;border:1px solid #86EFAC;'&gt;5. Rank Operations Timelines&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#10B981;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-10" as="offset" />
             <mxPoint x="835" y="385" as="sourcePoint" />
@@ -227,7 +232,7 @@ export function getExactItacsReferenceXml(): string {
           </mxGeometry>
         </mxCell>
         <!-- Branch 3: Branch Point -> Strategic Priority Advisory -->
-        <mxCell id="e_out_3" value="&lt;b style=&quot;color:#991B1B;background:#FEF2F2;padding:2px 6px;border-radius:4px;border:1px solid #FCA5A5;&quot;&gt;6. Strategic Advisory<br>Priority Alert&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EF4444;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
+        <mxCell id="e_out_3" value="&lt;b style='color:#991B1B;background:#FEF2F2;padding:2px 6px;border-radius:4px;border:1px solid #FCA5A5;'&gt;6. Strategic Advisory Alert&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#EF4444;endArrow=block;endFill=1;labelBackgroundColor=none;fontStyle=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="-10" as="offset" />
             <mxPoint x="835" y="385" as="sourcePoint" />
@@ -236,6 +241,11 @@ export function getExactItacsReferenceXml(): string {
               <mxPoint x="835" y="632" />
             </Array>
           </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM PUBLICATION FOOTER LEGEND -->
+        <mxCell id="main_footer_uv" value="&lt;table style='width:100%;border-collapse:collapse;color:#64748B;font-family:Helvetica,Arial,sans-serif;font-size:10.5px;padding:2px 6px;'&gt;&lt;tr&gt;&lt;td style='text-align:left;width:35%;'&gt;&lt;b style='color:#0F172A;'&gt;Stage Flow:&lt;/b&gt; Ingestion Portal (Silos) &amp;rarr; Processing Hub (AI Engine) &amp;rarr; Strategic Delivery &amp;amp; Advisory&lt;/td&gt;&lt;td style='text-align:center;width:35%;'&gt;&lt;span style='color:#2563EB;'&gt;&amp;#9632; Ingestion Streams&lt;/span&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#10B981;'&gt;&amp;#9632; Target Insights&lt;/span&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#EF4444;'&gt;&amp;#9632; Priority Alert&lt;/span&gt;&lt;/td&gt;&lt;td style='text-align:right;width:30%;'&gt;&lt;b style='color:#0F172A;'&gt;Governance:&lt;/b&gt; STIG &amp;amp; Zero-Trust Compliant Architecture&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="740" width="1180" height="35" as="geometry" />
         </mxCell>
 
       </root>
