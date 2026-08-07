@@ -121,22 +121,31 @@ export function getExactItacsReferenceXml(): string {
         <mxCell id="core_platform" value="&lt;b style='font-size:14px;color:#1E3A8A;'&gt;[2] Core AI &amp;amp; Domain Processing Engine&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;font-weight:normal;color:#3B82F6;'&gt;(Powered by Enterprise AI &amp;amp; Cloud Compute)&lt;/span&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;fillColor=#DBEAFE;gradientColor=#EFF6FF;gradientDirection=south;strokeColor=#2563EB;strokeWidth=3;size=20;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1E3A8A;padding=15;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="450" y="145" width="340" height="480" as="geometry" />
         </mxCell>
-        <!-- 4 Floating White Processing Cards Inside Cube -->
-        <mxCell id="synth" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2a] Multi-Functional Data Synthesis&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:11px;'&gt;(Real-Time Stream Correlation &amp;amp; ETL Engine)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="470" y="215" width="300" height="55" as="geometry" />
+        <!-- 6 Floating White Processing Cards Inside Cube -->
+        <mxCell id="synth" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2a] Multi-Functional Data Synthesis&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:10.5px;'&gt;(Real-Time Stream Correlation &amp;amp; ETL Engine)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="195" width="300" height="52" as="geometry" />
         </mxCell>
-        <mxCell id="content" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2b] Event &amp;amp; Telemetry Analytics&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:11px;'&gt;(High-Concurrency Stream Processing)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="470" y="290" width="300" height="55" as="geometry" />
+        <mxCell id="content" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2b] Event &amp;amp; Telemetry Stream Analytics&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:10.5px;'&gt;(High-Concurrency Stream Processing)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="257" width="300" height="52" as="geometry" />
         </mxCell>
-        <mxCell id="chatbot" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2c] Strategic AI Agent Router&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:11px;'&gt;(Autonomous Reasoning &amp;amp; Workflow Agent)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="470" y="365" width="300" height="55" as="geometry" />
+        <mxCell id="chatbot" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2c] Strategic AI Agent &amp;amp; Reasoning Router&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:10.5px;'&gt;(Autonomous Reasoning &amp;amp; Workflow Orchestration)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="319" width="300" height="52" as="geometry" />
         </mxCell>
-        <mxCell id="sim" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2d] Predictive Scenario Simulation&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:11px;'&gt;(Resource &amp;amp; Operations Capacity Modeling)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="470" y="440" width="300" height="55" as="geometry" />
+        <mxCell id="sim" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2d] Predictive Scenario &amp;amp; Capacity Simulation&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:10.5px;'&gt;(Resource &amp;amp; Operations Capacity Modeling)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="381" width="300" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="gov_gate" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2e] Zero-Trust Governance &amp;amp; STIG Gate&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:10.5px;'&gt;(Automated Security Policies &amp;amp; Guardrails)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="443" width="300" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="vector_store" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2f] Multi-Modal Vector &amp;amp; Semantic Index&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:10.5px;'&gt;(Sub-Second Retrieval &amp;amp; Memory Store)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="505" width="300" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="model_core" value="&lt;b style='font-size:12px;color:#1E293B;'&gt;[2g] Gemini Enterprise Inference Core&lt;/b&gt;&lt;br&gt;&lt;span style='color:#64748B;font-size:10.5px;'&gt;(Multi-Turn Reasoning &amp;amp; Context Grounding)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="567" width="300" height="52" as="geometry" />
         </mxCell>
         <!-- Parallel Path Label at bottom of Column 2 -->
         <mxCell id="processing_footer" value="PARALLEL EXECUTION PATH:&lt;br&gt;&lt;b style='color:#1E3A8A;'&gt;No-Code MVP (immediate)&lt;/b&gt; -&gt; &lt;b style='color:#1E3A8A;'&gt;Custom High-Code Agent&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#64748B;'&gt;(production/approval)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#64748B;" vertex="1" parent="1">
-          <mxGeometry x="440" y="650" width="360" height="40" as="geometry" />
+          <mxGeometry x="440" y="660" width="360" height="40" as="geometry" />
         </mxCell>
 
         <!-- COLUMN 3: STRATEGIC DELIVERY & INSIGHTS (X: 870, Y: 85, W: 360, H: 640) -->
