@@ -252,13 +252,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_multi_region_dr: {
     id: "tech_multi_region_dr",
-    title: "Multi-Region Active-Passive DR",
+    title: "Multi-Region DR GCP Active-Passive",
     category: "Cloud Infrastructure & Networking",
-    useCase: "BUSINESS CONTINUITY TOPOLOGY",
-    businessUseCase: "Active-passive multi-region disaster recovery topology across GCP us-central1 and us-east4 ensuring RPO < 1 min and RTO < 5 mins.",
-    primaryActors: "Site Reliability Engineers (SRE), Disaster Recovery Leads, Infrastructure Engineers",
-    targetOutcomes: "Business Continuity Assurance, Zero Data Loss on Outages, Automated Global DNS Failover",
-    desc: "Active-passive high availability topology with Global DNS failover, cross-region replication, and automated health checks."
+    useCase: "BUSINESS CONTINUITY & DISASTER RECOVERY",
+    businessUseCase: "SRE-grade Active-Passive Multi-Region Disaster Recovery architecture across GCP US-East1 (Active) and US-West1 (Pilot Light Standby) with Global L7 HTTPS Load Balancing, Cloud Run microservices, Cloud SQL HA with cross-region asynchronous replication (<5min data lag), Dual-Region GCS Object Storage, and automated failover/failback orchestration.",
+    primaryActors: "Site Reliability Engineers (SRE), Disaster Recovery Leads, Cloud Architects, Infrastructure Engineers",
+    targetOutcomes: "Target RTO 15-30m, Target RPO 1-5m, Pilot Light 10% Standby Cost, Zero-DNS-Lag Global Anycast Failover",
+    desc: "SRE-grade GCP Active-Passive Disaster Recovery architecture with Global L7 Load Balancer, pilot light standby compute, Cloud SQL cross-region replication, Dual-Region GCS, and automated failover/failback runbooks."
   }
 };
 

@@ -213,20 +213,21 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_multi_region_dr",
-    name: "Multi-Region Active-Passive DR",
+    name: "Multi-Region DR GCP Active-Passive",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
-    badge: "Reliability Topology",
-    whenToUse: "Use when designing multi-region business continuity and failover architectures with health-checked global DNS routing and cross-region database replication.",
+    badge: "Master SRE Template",
+    whenToUse: "Use when designing SRE-grade multi-region business continuity and failover architectures with Global L7 Load Balancing, pilot light standby compute, and cross-region database replication.",
     bestFor: [
-      "Active-Passive multi-region failover",
-      "Cloud DNS health-check failover policies",
-      "Primary (us-central1) & Secondary (us-east4) clusters",
-      "Cross-region database asynchronous replication"
+      "GCP Active-Passive Multi-Region Pilot Light DR (US-East1 -> US-West1)",
+      "Global L7 HTTPS Load Balancer with Anycast IP & 0s DNS Failover",
+      "Cloud Run Microservices (100% Active vs 10% Warm Pilot Light)",
+      "Cloud SQL HA with Cross-Region Asynchronous Replication (<5min RPO)",
+      "Dual-Region GCS Object Storage & Automated Failover Runbooks"
     ],
-    keyTech: ["Cloud DNS Failover", "Global HTTPS LB", "Cloud Spanner / Cloud SQL", "Multi-Region GKE", "Cloud Monitoring"],
+    keyTech: ["Global HTTPS LB", "Cloud Run Microservices", "Cloud SQL HA & Cross-Region Replica", "Dual-Region GCS", "Cloud Monitoring Quorum Sentry"],
     thumbnail: "/templates/tech_multi_region_dr.png",
-    promptSummary: "GCP Disaster Recovery: Global DNS Routing -> Primary & Standby LB -> Regional Compute Clusters -> Cross-Region Data Sync."
+    promptSummary: "GCP Active-Passive DR: Global L7 Load Balancer -> Active Region A (US-East1) & Pilot Light Region B (US-West1) -> Cross-Region Async DB Replication -> Failover SRE Runbook."
   },
   {
     id: "secure_deployment_map",

@@ -177,10 +177,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_multi_region_dr",
-    name: "Multi-Region Active-Passive DR",
+    name: "Multi-Region DR GCP Active-Passive",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "Multi-region active-passive disaster recovery on GCP with global DNS failover and Spanner/Cloud SQL replication",
-    prompt: "Act as a GCP Reliability Engineer. Design a multi-region active-passive Disaster Recovery (DR) technical architecture on Google Cloud. Include: Global Cloud DNS with failover routing policies, External Global Load Balancers across Primary (us-central1) and Secondary (us-east4) regions, multi-region GKE / Cloud Run compute clusters, synchronous replication, and automated failover monitoring."
+    whenToUse: "SRE-grade GCP active-passive disaster recovery architecture with Global L7 HTTPS Load Balancing, Cloud Run pilot light compute, Cloud SQL HA with cross-region asynchronous replication (<5min lag), Dual-Region GCS, and automated failover runbooks.",
+    prompt: "Act as a GCP Principal Reliability Engineer & SRE. Design a production-grade GCP Active-Passive Multi-Region Disaster Recovery architecture across Region A (US-East1 Active) and Region B (US-West1 Pilot Light Standby). Include: Global L7 HTTPS Load Balancer with Anycast IP & SSL Offloading, Cloud Run microservices (100% active load vs 10% warm pilot light), Cloud SQL HA with cross-region asynchronous replication (<5min data lag), Dual-Region GCS bucket with Turbo Replication, and a documented 5-step automated failover and zero-data-loss failback runbook with full SLA recovery matrix."
   }
 ];
 
