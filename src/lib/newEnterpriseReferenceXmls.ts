@@ -483,12 +483,12 @@ export function getExactServerlessGcpReferenceXml(): string {
         </mxCell>
 
         <!-- [SEC 1] Cloud IAM -->
-        <mxCell id="sec_iam" value="&lt;center&gt;&lt;div style=&quot;font-size:26px;margin-bottom:4px;&quot;&gt;🛡️&lt;/div&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud IAM&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9px;color:#64748B;line-height:1.3;&quot;&gt;Identity and Access Management policies&lt;/span&gt;&lt;/center&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#38BDF8;strokeWidth=1.5;fillColor=#FFFFFF;verticalAlign=middle;align=center;padding=6;" vertex="1" parent="1">
+        <mxCell id="sec_iam" value="&lt;center&gt;&lt;div style=&quot;font-size:24px;margin-bottom:4px;&quot;&gt;🛡️&lt;/div&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud IAM&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9px;color:#64748B;line-height:1.3;&quot;&gt;Identity and Access Management policies&lt;/span&gt;&lt;/center&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;strokeWidth=1.5;fillColor=#FFFFFF;verticalAlign=middle;align=center;padding=6;" vertex="1" parent="1">
           <mxGeometry x="45" y="235" width="85" height="135" as="geometry" />
         </mxCell>
 
         <!-- [SEC 2] Secret Manager -->
-        <mxCell id="sec_secret" value="&lt;center&gt;&lt;div style=&quot;font-size:26px;margin-bottom:4px;&quot;&gt;🔑&lt;/div&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Secret Manager&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9px;color:#64748B;line-height:1.3;&quot;&gt;API Keys and credentials&lt;/span&gt;&lt;/center&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#38BDF8;strokeWidth=1.5;fillColor=#FFFFFF;verticalAlign=middle;align=center;padding=6;" vertex="1" parent="1">
+        <mxCell id="sec_secret" value="&lt;center&gt;&lt;div style=&quot;font-size:24px;margin-bottom:4px;&quot;&gt;🔑&lt;/div&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Secret Manager&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9px;color:#64748B;line-height:1.3;&quot;&gt;API Keys and credentials&lt;/span&gt;&lt;/center&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;strokeWidth=1.5;fillColor=#FFFFFF;verticalAlign=middle;align=center;padding=6;" vertex="1" parent="1">
           <mxGeometry x="45" y="405" width="85" height="135" as="geometry" />
         </mxCell>
 
@@ -512,7 +512,7 @@ export function getExactServerlessGcpReferenceXml(): string {
         </mxCell>
 
         <!-- TOP RIGHT LEGEND -->
-        <mxCell id="legend_top" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:11px;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:3px;&#39;&gt;➔ &lt;b&gt;Request flow&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:3px;color:#DC2626;&#39;&gt;⇢ &lt;b&gt;Event triggers / HTTP-triggered&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:3px;color:#64748B;&#39;&gt;⇢ &lt;b&gt;SSL termination&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+        <mxCell id="legend_top" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:11px;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:3px;&#39;&gt;➔ &lt;b&gt;Request flow&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:3px;color:#DC2626;&#39;&gt;⇢ &lt;b&gt;Event triggers / HTTP-triggered&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:3px;color:#64748B;&#39;&gt;⋯ &lt;b&gt;SSL termination&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1050" y="20" width="360" height="65" as="geometry" />
         </mxCell>
 
@@ -544,22 +544,22 @@ export function getExactServerlessGcpReferenceXml(): string {
         </mxCell>
 
         <!-- SUB-CONTAINER 1: Event-Driven & Microservices (Synchronous) -->
-        <mxCell id="sub_sync_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#E2E8F0;" vertex="1" parent="1">
+        <mxCell id="sub_sync_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#F1F5F9;" vertex="1" parent="1">
           <mxGeometry x="170" y="248" width="410" height="232" as="geometry" />
         </mxCell>
-        <mxCell id="sub_sync_lbl" value="Event-Driven &amp;amp; Microservices (Synchronous)" style="text;html=1;align=right;spacingRight=16;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="170" y="250" width="400" height="20" as="geometry" />
+        <mxCell id="sub_sync_hdr" value="Event-Driven &amp;amp; Microservices (Synchronous)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeColor=#CBD5E1;fillColor=#E2E8F0;fontStyle=1;fontSize=11;fontColor=#0F172A;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="170" y="248" width="410" height="24" as="geometry" />
         </mxCell>
 
         <!-- Cloud Run services inner box -->
         <mxCell id="box_cloudrun" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#93C5FD;fillColor=#DBEAFE;" vertex="1" parent="1">
-          <mxGeometry x="180" y="275" width="210" height="195" as="geometry" />
+          <mxGeometry x="180" y="280" width="210" height="190" as="geometry" />
         </mxCell>
         <mxCell id="box_cloudrun_lbl" value="Cloud Run services" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#1D4ED8;" vertex="1" parent="1">
-          <mxGeometry x="180" y="278" width="210" height="18" as="geometry" />
+          <mxGeometry x="180" y="282" width="210" height="18" as="geometry" />
         </mxCell>
         <mxCell id="cr_ms_a" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;⚡ Cloud Run - Microservice A&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9px;color:#1D4ED8;&quot;&gt;Automatically scale from zero&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="190" y="302" width="190" height="52" as="geometry" />
+          <mxGeometry x="190" y="305" width="190" height="52" as="geometry" />
         </mxCell>
         <mxCell id="cr_ms_b" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;⚡ Cloud Run - Microservice B&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="190" y="395" width="190" height="52" as="geometry" />
@@ -567,25 +567,25 @@ export function getExactServerlessGcpReferenceXml(): string {
 
         <!-- Cloud Functions - Image Processor -->
         <mxCell id="cf_image" value="&lt;center&gt;&lt;b style=&quot;font-size:18px;color:#0284C7;&quot;&gt;{...}&lt;/b&gt;&lt;br/&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Cloud Functions -&lt;br/&gt;Image Processor&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Lightweight, HTTP-triggered tasks&lt;/span&gt;&lt;/center&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="415" y="320" width="155" height="85" as="geometry" />
+          <mxGeometry x="415" y="315" width="155" height="95" as="geometry" />
         </mxCell>
 
         <!-- SUB-CONTAINER 2: Asynchronous & Event Processing -->
-        <mxCell id="sub_async_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#BAE6FD;fillColor=#E0F2FE;" vertex="1" parent="1">
+        <mxCell id="sub_async_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#BAE6FD;fillColor=#F0F9FF;" vertex="1" parent="1">
           <mxGeometry x="590" y="248" width="435" height="232" as="geometry" />
         </mxCell>
-        <mxCell id="sub_async_lbl" value="Asynchronous &amp;amp; Event Processing" style="text;html=1;align=left;spacingLeft=8;verticalAlign=middle;fontStyle=1;fontSize=10;fontColor=#0369A1;" vertex="1" parent="1">
-          <mxGeometry x="590" y="250" width="150" height="20" as="geometry" />
+        <mxCell id="sub_async_hdr" value="Asynchronous &amp;amp; Event Processing" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeColor=#BAE6FD;fillColor=#D0E3F0;fontStyle=1;fontSize=11;fontColor=#0369A1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="590" y="248" width="435" height="24" as="geometry" />
         </mxCell>
 
         <!-- Cloud Pub/Sub top badge -->
         <mxCell id="node_pubsub" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;📬 Cloud Pub/Sub&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="745" y="260" width="150" height="34" as="geometry" />
+          <mxGeometry x="745" y="280" width="150" height="34" as="geometry" />
         </mxCell>
 
         <!-- Event Sources Box -->
         <mxCell id="box_events" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:10px;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#F1F5F9;padding:4px;border-bottom:1px solid #CBD5E1;&#39;&gt;&lt;b style=&#39;color:#0F172A;&#39;&gt;Event Sources&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:4px;&#39;&gt;🪣 &lt;b&gt;Cloud Storage&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;color:#64748B;font-size:9px;&#39;&gt;e.g. object creation&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:4px;&#39;&gt;⏰ &lt;b&gt;Cloud Scheduler&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;color:#64748B;font-size:9px;&#39;&gt;cron jobs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:4px;&#39;&gt;🔥 &lt;b&gt;Firebase events&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#94A3B8;fillColor=#FFFFFF;align=left;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="605" y="315" width="135" height="155" as="geometry" />
+          <mxGeometry x="605" y="325" width="135" height="145" as="geometry" />
         </mxCell>
 
         <!-- Queue Box -->
@@ -697,7 +697,7 @@ export function getExactServerlessGcpReferenceXml(): string {
           <mxGeometry x="1050" y="615" width="360" height="115" as="geometry" />
         </mxCell>
 
-        <!-- CONNECTORS MATCHING EXACT FLOW -->
+        <!-- CONNECTORS MATCHING EXACT OFFICIAL GCP ROUTING -->
         <!-- 1. HTTPS Ingress: 3 Client lines merging into HTTPS stem to LB -->
         <mxCell id="conn_web_stem" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;endArrow=none;" edge="1" parent="1" source="cli_web" target="node_lb">
           <mxGeometry relative="1" as="geometry">
@@ -732,20 +732,35 @@ export function getExactServerlessGcpReferenceXml(): string {
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- 4. API Gateway down to Serverless Compute (Split to Cloud Run and Async) -->
-        <mxCell id="conn_gw_cr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;" edge="1" parent="1" source="node_apigw" target="cr_ms_a">
+        <!-- 4. OFFICIAL 3-WAY DISTRIBUTION FORK FROM API GATEWAY -->
+        <!-- Fork Branch 1: Synchronous HTTP to Cloud Functions Image Processor -->
+        <mxCell id="conn_gw_cf_image" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;" edge="1" parent="1" source="node_apigw" target="cf_image">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="557" y="215"/>
-              <mxPoint x="285" y="215"/>
+              <mxPoint x="557" y="235"/>
+              <mxPoint x="492" y="235"/>
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="conn_gw_async" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;" edge="1" parent="1" source="node_apigw" target="node_pubsub">
+
+        <!-- Fork Branch 2: Ingestion to Cloud Pub/Sub -->
+        <mxCell id="conn_gw_pubsub" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;" edge="1" parent="1" source="node_apigw" target="node_pubsub">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="557" y="215"/>
-              <mxPoint x="820" y="215"/>
+              <mxPoint x="557" y="235"/>
+              <mxPoint x="820" y="235"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Fork Branch 3: Managed Route to Cloud Run Microservice A (Tier 3) -->
+        <mxCell id="conn_gw_tier3_cr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;" edge="1" parent="1" source="node_apigw" target="wf_cr_a">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="557" y="235"/>
+              <mxPoint x="585" y="235"/>
+              <mxPoint x="585" y="520"/>
+              <mxPoint x="542" y="520"/>
             </Array>
           </mxGeometry>
         </mxCell>
@@ -759,8 +774,8 @@ export function getExactServerlessGcpReferenceXml(): string {
         <mxCell id="conn_cr_db" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;" edge="1" parent="1" source="cf_image" target="card_firestore">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="492" y="495"/>
-              <mxPoint x="1040" y="495"/>
+              <mxPoint x="492" y="238"/>
+              <mxPoint x="1040" y="238"/>
               <mxPoint x="1040" y="154"/>
             </Array>
           </mxGeometry>
@@ -789,7 +804,7 @@ export function getExactServerlessGcpReferenceXml(): string {
         <mxCell id="conn_pubsub_cf" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;html=1;strokeWidth=1.5;strokeColor=#0284C7;" edge="1" parent="1" source="node_pubsub" target="cf_async">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="932" y="277"/>
+              <mxPoint x="932" y="297"/>
               <mxPoint x="932" y="355"/>
             </Array>
           </mxGeometry>
@@ -818,7 +833,7 @@ export function getExactServerlessGcpReferenceXml(): string {
         <mxCell id="conn_sec_t1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;html=1;strokeWidth=1;strokeColor=#94A3B8;" edge="1" parent="1" source="sec_iam" target="node_apigw">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="140" y="240"/>
+              <mxPoint x="140" y="260"/>
               <mxPoint x="140" y="176"/>
             </Array>
           </mxGeometry>
@@ -833,6 +848,44 @@ export function getExactServerlessGcpReferenceXml(): string {
               <mxPoint x="87" y="615"/>
             </Array>
           </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- PAGE 2: SRE ENTERPRISE PLAYBOOK & TERRAFORM DEVOPS MATRIX -->
+  <diagram id="gcp_serverless_sre_playbook" name="Page 2: SRE Playbook &amp; Terraform DevOps Matrix">
+    <mxGraphModel dx="1440" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="780" background="#FFFFFF">
+      <root>
+        <mxCell id="p2_0" />
+        <mxCell id="p2_1" parent="p2_0" />
+
+        <!-- HEADER BANNER -->
+        <mxCell id="p2_hdr_title" value="GCP SERVERLESS ARCHITECTURE: SRE PRODUCTION PLAYBOOK &amp;amp; TERRAFORM DEVOPS SPECIFICATION" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#0F172A;" vertex="1" parent="p2_1">
+          <mxGeometry x="30" y="25" width="1380" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="p2_hdr_sub" value="Production Concurrency Tuning • Zero-Cold-Start Strategies • Serverless VPC Access Connector • IAM Least Privilege Governance" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#0284C7;" vertex="1" parent="p2_1">
+          <mxGeometry x="30" y="50" width="1380" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- COLUMN 1: ARCHITECTURAL SRE PILLARS (WIDTH: 440) -->
+        <mxCell id="p2_col1_box" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0284C7;padding:8px 12px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39;&gt;&lt;b&gt;⚡ 1. Production SRE &amp;amp; Concurrency Pillars&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:12px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:11px;line-height:1.5;&#39;&gt;&lt;b style=&#39;color:#0284C7;&#39;&gt;A. Zero-Cold-Start Optimization (Cloud Run Gen2)&lt;/b&gt;&lt;br/&gt;• Set &lt;code&gt;min_instance_count = 1&lt;/code&gt; for tier-1 user-facing endpoints to eliminate cold starts (&amp;lt;15ms p99 response).&lt;br/&gt;• Enable CPU Boost during container startup for instant JIT initialization.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#0284C7;&#39;&gt;B. Serverless VPC Access Connector&lt;/b&gt;&lt;br/&gt;• Dedicated VPC Connector subnet (&lt;code&gt;10.8.0.0/28&lt;/code&gt;) routing internal egress to Memorystore for Redis and Cloud SQL over Private IP.&lt;br/&gt;• Enforces Direct VPC Egress with zero NAT gateway bottlenecks.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#0284C7;&#39;&gt;C. Event-Driven Dead-Letter Queues (DLQ)&lt;/b&gt;&lt;br/&gt;• All Pub/Sub subscriptions enforce exponential backoff (1s to 600s) and route poisoned messages to a dedicated DLQ topic after 5 failed deliveries.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#0284C7;&#39;&gt;D. Identity-Aware Proxy (IAP) &amp;amp; Zero Trust&lt;/b&gt;&lt;br/&gt;• API Gateway authenticates incoming OAuth2/OIDC JWT tokens via IAP before dispatching to Cloud Run services.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=1.5;strokeColor=#0284C7;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="p2_1">
+          <mxGeometry x="30" y="80" width="440" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- COLUMN 2: TERRAFORM IAC MODULE SPECIFICATION (WIDTH: 450) -->
+        <mxCell id="p2_col2_box" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:8px 12px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39;&gt;&lt;b&gt;🛠️ 2. Production Terraform IaC Blueprint&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:10px;background-color:#0F172A;&#39;&gt;&lt;font color=&#39;#38BDF8&#39; style=&#39;font-family:monospace;font-size:9.5px;line-height:1.4;&#39;&gt;&lt;span style=&#39;color:#A855F7;&#39;&gt;resource&lt;/span&gt; &quot;google_cloud_run_v2_service&quot; &quot;api&quot; {&lt;br/&gt;  name     = &quot;order-microservice-a&quot;&lt;br/&gt;  location = &quot;us-central1&quot;&lt;br/&gt;  template {&lt;br/&gt;    scaling {&lt;br/&gt;      min_instance_count = 1&lt;br/&gt;      max_instance_count = 100&lt;br/&gt;    }&lt;br/&gt;    vpc_access {&lt;br/&gt;      connector = google_vpc_access_connector.conn.id&lt;br/&gt;      egress    = &quot;PRIVATE_RANGES_ONLY&quot;&lt;br/&gt;    }&lt;br/&gt;    containers {&lt;br/&gt;      image = &quot;gcr.io/prj/service-a:v2.4&quot;&lt;br/&gt;      resources { limits = { cpu = &quot;2&quot;, memory = &quot;2Gi&quot; } }&lt;br/&gt;    }&lt;br/&gt;  }&lt;br/&gt;}&lt;br/&gt;&lt;br/&gt;&lt;span style=&#39;color:#A855F7;&#39;&gt;resource&lt;/span&gt; &quot;google_pubsub_subscription&quot; &quot;sub&quot; {&lt;br/&gt;  name  = &quot;async-processing-sub&quot;&lt;br/&gt;  topic = google_pubsub_topic.events.id&lt;br/&gt;  dead_letter_policy {&lt;br/&gt;    dead_letter_topic     = google_pubsub_topic.dlq.id&lt;br/&gt;    max_delivery_attempts = 5&lt;br/&gt;  }&lt;br/&gt;}&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=1.5;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="p2_1">
+          <mxGeometry x="490" y="80" width="450" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- COLUMN 3: LEAST-PRIVILEGE IAM MATRIX (WIDTH: 440) -->
+        <mxCell id="p2_col3_box" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#15803D;padding:8px 12px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39;&gt;&lt;b&gt;🔒 3. Least-Privilege Cloud IAM Matrix&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:12px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:11px;line-height:1.5;&#39;&gt;&lt;b style=&#39;color:#15803D;&#39;&gt;• API Gateway Service Account&lt;/b&gt;&lt;br/&gt;↳ &lt;code&gt;roles/run.invoker&lt;/code&gt; on Microservice A &amp;amp; B&lt;br/&gt;↳ &lt;code&gt;roles/pubsub.publisher&lt;/code&gt; on Event Topic&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#15803D;&#39;&gt;• Cloud Run Compute Workload Identity&lt;/b&gt;&lt;br/&gt;↳ &lt;code&gt;roles/datastore.user&lt;/code&gt; on Firestore DB&lt;br/&gt;↳ &lt;code&gt;roles/redis.editor&lt;/code&gt; on Memorystore instance&lt;br/&gt;↳ &lt;code&gt;roles/secretmanager.secretAccessor&lt;/code&gt; (read-only)&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#15803D;&#39;&gt;• Cloud Functions Async Worker&lt;/b&gt;&lt;br/&gt;↳ &lt;code&gt;roles/pubsub.subscriber&lt;/code&gt; on Event Queue&lt;br/&gt;↳ &lt;code&gt;roles/storage.objectAdmin&lt;/code&gt; on Media Bucket&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#15803D;&#39;&gt;• Cloud Workflows Orchestrator&lt;/b&gt;&lt;br/&gt;↳ &lt;code&gt;roles/workflows.invoker&lt;/code&gt; &amp;amp; &lt;code&gt;roles/run.invoker&lt;/code&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=1.5;strokeColor=#15803D;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="p2_1">
+          <mxGeometry x="960" y="80" width="450" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- FULL-WIDTH BOTTOM TABLE: ENTERPRISE SLA & AUTOSCALING BENCHMARKS -->
+        <mxCell id="p2_sla_table" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:10px;&#39;&gt;&lt;tr style=&#39;background-color:#0F172A;color:#FFFFFF;&#39;&gt;&lt;th style=&#39;padding:7px;border:1px solid #CBD5E1;text-align:left;&#39;&gt;Tier / Component&lt;/th&gt;&lt;th style=&#39;padding:7px;border:1px solid #CBD5E1;text-align:left;&#39;&gt;GCP Service&lt;/th&gt;&lt;th style=&#39;padding:7px;border:1px solid #CBD5E1;text-align:left;&#39;&gt;Autoscaling Trigger&lt;/th&gt;&lt;th style=&#39;padding:7px;border:1px solid #CBD5E1;text-align:left;&#39;&gt;Latency Target (p99)&lt;/th&gt;&lt;th style=&#39;padding:7px;border:1px solid #CBD5E1;text-align:left;&#39;&gt;SLA Availability&lt;/th&gt;&lt;th style=&#39;padding:7px;border:1px solid #CBD5E1;text-align:left;&#39;&gt;FinOps Cost Optimization&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;&lt;b&gt;API Ingress&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Global HTTPS LB + API Gateway&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Global Anycast Managed&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;&amp;lt; 15 ms&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;99.99%&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Cloud Armor edge caching &amp;amp; rate-limiting&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#FFFFFF;&#39;&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;&lt;b&gt;Sync Compute&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Cloud Run (Microservices A &amp;amp; B)&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Concurrency &amp;gt; 80 req / instance&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;&amp;lt; 35 ms&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;99.95%&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Min-instances = 1 (active hours only)&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;&lt;b&gt;Async Compute&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Cloud Functions (Gen2) + Pub/Sub&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Queue backlog &amp;gt; 500 msgs&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;&amp;lt; 120 ms&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;99.95%&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Batch pull processing (10 msgs / invocation)&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#FFFFFF;&#39;&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;&lt;b&gt;Database &amp;amp; State&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Cloud Firestore + Memorystore Redis&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Automatic Document Sharding&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;&amp;lt; 5 ms (Redis) / &amp;lt; 20 ms (DB)&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;99.999%&lt;/td&gt;&lt;td style=&#39;padding:6px;border:1px solid #CBD5E1;&#39;&gt;Memorystore write-through cache invalidation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="p2_1">
+          <mxGeometry x="30" y="440" width="1380" height="240" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
