@@ -257,6 +257,10 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'tech_modern_data_stack' ||
     id === 'tech_event_driven_eda' ||
     id === 'tech_agent_harness_runtime' ||
+    id === 'tech_serverless_gcp' ||
+    id === 'serverless_gcp' ||
+    id === 'tech_multi_region_dr' ||
+    id === 'multi_region_dr' ||
     id.includes('agent_harness')
   );
 

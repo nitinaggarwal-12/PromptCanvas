@@ -6,74 +6,15 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
-const TECH_XML_SERVERLESS_GCP = `<mxfile host="embed.diagrams.net">
-  <diagram id="gcp_serverless_app" name="GCP Serverless Web Application (Production VPC 10.128.0.0/16)">
-    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="node_dns" value="🌐 <b>[1] Cloud DNS &amp; Cloud CDN</b><br><i>Global Edge Anycast &amp; Anycast Caching</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="100" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_lb" value="🛡️ <b>[2] External HTTPS LB + Cloud Armor</b><br><i>WAF Rules (SQLi/XSS Block + 1000 req/m Rate Limit)</i>" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="270" width="280" height="95" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_iam" value="🔑 <b>[7] Cloud IAM &amp; Secret Manager</b><br><i>KMEK Encryption Keys &amp; Least-Privilege SA</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FAF5FF;strokeColor=#7C3AED;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="460" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_frontend" value="⚡ <b>[3] Cloud Run UI (Private App Subnet)</b><br><i>Serverless Next.js Web App (10.128.10.0/24)</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="100" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_backend" value="⚙️ <b>[4] Cloud Run API Microservices</b><br><i>Autoscaling Go/Node API (10.128.10.0/24)</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="280" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_vpc" value="🔌 <b>[5] Serverless VPC Access Connector</b><br><i>Dedicated Egress Range (10.8.0.0/28)</i>" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="460" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_gcs" value="🪣 <b>[8] Cloud Storage Buckets (CMEK)</b><br><i>Static Media Lake &amp; Private Assets</i>" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="100" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_sql" value="🛢️ <b>[6] Cloud SQL HA PostgreSQL (10.128.20.5)</b><br><i>Private IP Only + Regional Multi-AZ Replica</i>" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="460" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="e1" value="1. HTTPS Ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_dns" target="node_lb">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e2" value="2. WAF Filtered Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_lb" target="node_frontend">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="240" y="225"/>
-              <mxPoint x="480" y="225"/>
-              <mxPoint x="480" y="135"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e3" value="3. gRPC/HTTP API Requests" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_frontend" target="node_backend">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e4" value="4. Private Google Access Asset Load" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_frontend" target="node_gcs">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e5" value="5. Private VPC Egress (10.8.0.0/28)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_backend" target="node_vpc">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e6" value="6. Private IP SQL Query (10.128.20.5)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_vpc" target="node_sql">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e7" value="7. IAM Secret Access &amp; CMEK" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_backend" target="node_iam">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="480" y="315"/>
-              <mxPoint x="480" y="495"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
+
+// 1.1 GCP Multi-Region Active-Passive Disaster Recovery Topology
+const TECH_XML_MULTI_REGION_DR = getExactMultiRegionDrReferenceXml();
+
+
 
 // 2. GCP Real-Time Streaming Analytics & Telemetry Pipeline (Authentic Streaming Architecture)
 const TECH_XML_STREAMING_ANALYTICS = `<mxfile host="embed.diagrams.net">
@@ -1373,6 +1314,12 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
 
 export function getTechnicalArchitectureXml(archId: string): string {
   const id = (archId || '').toLowerCase();
+  if (id.includes('multi_region_dr') || id.includes('active_passive') || id.includes('disaster_recovery') || id === 'dr' || id.includes('multi_region')) {
+    return TECH_XML_MULTI_REGION_DR;
+  }
+  if (id.includes('serverless') || id.includes('cloud_run') || id === 'tech_serverless_gcp' || id === 'serverless_gcp') {
+    return TECH_XML_SERVERLESS_GCP;
+  }
   if (id.includes('c4') || id.includes('context_model')) {
     return TECH_XML_C4_SYSTEM_CONTEXT;
   }
@@ -1426,6 +1373,7 @@ export const TECH_XML_AGENT_HARNESS_RUNTIME = '';
 
 export {
   TECH_XML_SERVERLESS_GCP,
+  TECH_XML_MULTI_REGION_DR,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,
