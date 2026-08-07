@@ -113,7 +113,7 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_agent_harness_runtime",
-    name: "Enterprise Agent Runtime Platform",
+    name: "Enterprise Agent Harness Runtime Platform",
     category: "AI & Cognitive Systems",
     whenToUse: "Production enterprise AI agent harness platform featuring LiteLLM routing, MCP protocol, hierarchical memory, context compactor, zero-trust IAM, 6-step sandboxed graph engine (gVisor/E2B), and continuous evaluation",
     previewImage: "/templates/agent_harness_runtime_enhanced.png",
@@ -241,6 +241,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'tech_multi_agent_langgraph' || id.includes('langgraph')) {
     const { getExactMultiAgentLangGraphReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactMultiAgentLangGraphReferenceXml();
+  } else if (id === 'tech_agent_harness_runtime' || id.includes('agent_harness') || id.includes('agent_runtime')) {
+    const { getExactAgentHarnessRuntimeReferenceXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactAgentHarnessRuntimeReferenceXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {

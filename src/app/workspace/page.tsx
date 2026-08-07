@@ -3638,22 +3638,39 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     const archType = selectedArchType || activeDiagram?.architecture_type || displayedVersion?.architecture_type || 'unified_system_view';
     const activeUseCase = displayedVersion?.business_usecase || activeDiagram?.name || 'ApexPay Global FinTech Platform';
     
-    // Always use the master collision-free spatial reference XML for the target architecture type so historical DB versions never render broken overlaps
-    // Priority 1 = customXml, Priority 2 = selectedArchType default XML (if switching templates), Priority 3 = displayedVersion XML, Priority 4 = Default Arch Template
-    let baseXml = customXml || (selectedArchType && selectedArchType !== activeDiagram?.architecture_type ? getDefaultXmlForArchitecture(selectedArchType) : null) || displayedVersion?.xml_content || activeVersion?.xml_content || getDefaultXmlForArchitecture(archType) || '';
+    const isFlagship = (
+      archType === 'business_agent_gov_hitl' ||
+      archType === 'tech_multi_agent_langgraph' ||
+      archType === 'tech_c4_system_context' ||
+      archType === 'tech_modern_data_stack' ||
+      archType === 'tech_event_driven_eda' ||
+      archType === 'tech_agent_harness_runtime' ||
+      archType.includes('agent_harness') ||
+      archType.includes('langgraph') ||
+      archType.includes('gov_hitl')
+    );
 
-    baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
-    // Universal Zero-Defect Light-HUD Transformation: Enforce Light Architectural Cards (#FFFFFF / #F0F9FF), Dark Slate Text (#0F172A), and Pure White Label Background Pills across ALL diagram templates
-    baseXml = transformXmlToExecutiveObsidianHud(baseXml);
+    let baseXml = customXml || (isFlagship ? getDefaultXmlForArchitecture(archType) : null) || (selectedArchType && selectedArchType !== activeDiagram?.architecture_type ? getDefaultXmlForArchitecture(selectedArchType) : null) || displayedVersion?.xml_content || activeVersion?.xml_content || getDefaultXmlForArchitecture(archType) || '';
+
+
+    if (!isFlagship) {
+      baseXml = injectUseCaseFlavor(baseXml, activeUseCase, displayedVersion?.prompt || undefined);
+      // Universal Zero-Defect Light-HUD Transformation: Enforce Light Architectural Cards (#FFFFFF / #F0F9FF), Dark Slate Text (#0F172A), and Pure White Label Background Pills across standard diagram templates
+      baseXml = transformXmlToExecutiveObsidianHud(baseXml);
+    }
     baseXml = localizeDrawioXmlDeep(baseXml, currentLanguage);
     baseXml = translateDiagramXmlToLanguage(baseXml, currentLanguage);
-    baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);
-    baseXml = runZeroDefectTextAndTechnicalAccuracyPreflight(baseXml, archType, activeUseCase);
+    if (!isFlagship) {
+      baseXml = preflightVerifyAndHealXmlAcrossAll6Audits(baseXml, archType);
+      baseXml = runZeroDefectTextAndTechnicalAccuracyPreflight(baseXml, archType, activeUseCase);
+    }
 
     let formattedXml = baseXml;
     const hasAspectRatio = Boolean(selectedAspectRatio);
 
-    if (layoutPreset === 'vendor') {
+    if (isFlagship) {
+      formattedXml = baseXml;
+    } else if (layoutPreset === 'vendor') {
       formattedXml = createVendorIconsVariant(baseXml);
     } else if (layoutPreset === 'clean') {
       const { cleanedXml } = createMinimalistCleanVariant(baseXml);

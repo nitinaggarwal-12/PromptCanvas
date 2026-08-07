@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { listDiagrams, createDiagram } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
+import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 
 // GET /api/diagrams - List diagrams (user-scoped or public seed)
 export async function GET() {
@@ -26,7 +27,15 @@ export async function POST(request: Request) {
   try {
     const user = await getAuthenticatedUser();
     const body = await request.json();
-    const { name, xml, comment, prompt, aiReasoning, businessUsecase, technicalUsecase, architectureType, isPrivate, is_private } = body;
+    const name = body.name;
+    const xml = body.xml;
+    const comment = body.comment;
+    const prompt = body.prompt;
+    const aiReasoning = body.aiReasoning || body.ai_reasoning;
+    const businessUsecase = body.businessUsecase || body.business_usecase;
+    const technicalUsecase = body.technicalUsecase || body.technical_usecase;
+    const architectureType = body.architectureType || body.architecture_type;
+    const isPrivate = body.isPrivate ?? body.is_private;
 
     if (!name || typeof name !== 'string') {
       return NextResponse.json(
@@ -36,18 +45,19 @@ export async function POST(request: Request) {
     }
 
     const effectiveArchType = architectureType || 'unified_system_view';
+    const effectiveXml = xml !== undefined ? xml : (getDefaultXmlForArchitecture(effectiveArchType, businessUsecase || prompt || name, prompt || name) || undefined);
 
     const { diagram, version } = await createDiagram(
       name,
-      xml,
-      comment,
+      effectiveXml,
+      comment || 'Initial version',
       prompt,
       aiReasoning,
       businessUsecase,
       technicalUsecase,
       user?.id || null,
       effectiveArchType,
-      Boolean(isPrivate ?? is_private)
+      Boolean(isPrivate)
     );
 
     return NextResponse.json({ diagram, version }, { status: 201 });
