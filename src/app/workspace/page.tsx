@@ -404,6 +404,7 @@ function WorkspaceContent() {
           created_at: new Date().toISOString(),
           architecture_type: bp,
         };
+        setSelectedArchType(bp);
         setActiveDiagram(tempDiagram);
         setActiveVersion(tempVersion);
       }
