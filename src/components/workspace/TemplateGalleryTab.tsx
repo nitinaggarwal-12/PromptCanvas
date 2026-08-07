@@ -36,7 +36,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
               Complete Catalog for Everything: Blueprints, Native AI &amp; Multi-Cloud
             </h1>
             <p className="text-sm text-slate-400 mt-1">
-              Browse all 25 publication-grade architecture blueprints, native AI engines (Databricks Genie, Snowflake Cortex, Gemini 2.5), and cloud infrastructure providers.
+              Browse all 21 publication-grade architecture blueprints across 6 enterprise personas, native AI engines, and cloud infrastructure providers.
             </p>
           </div>
 
@@ -45,7 +45,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search 25 blueprints, AI tools..."
+              placeholder="Search 21 blueprints, AI tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-900 border border-slate-700 focus:border-teal-400 rounded-xl pl-10 pr-4 py-2.5 text-xs font-semibold text-white placeholder-slate-500 outline-none transition-all"
@@ -95,7 +95,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
           </button>
         </div>
 
-        {/* CATEGORY 1: ALL 25 ARCHITECTURE BLUEPRINTS */}
+        {/* CATEGORY 1: ALL 21 ARCHITECTURE BLUEPRINTS */}
         {activeCategory === 'blueprints' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredBlueprints.map((template) => (

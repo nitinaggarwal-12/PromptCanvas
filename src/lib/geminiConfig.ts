@@ -26,9 +26,11 @@ export function getGeminiModelForArchitecture(archId?: string): string {
     'unified_system_view',
     'tech_multi_agent_langgraph',
     'tech_rag_gcp',
+    'tech_microservices_gcp',
     'tech_microservices_aws',
     'tech_multi_region_dr',
     'tech_agent_harness_runtime',
+    'business_agent_gov_hitl',
     'business_agent_governance_hitl'
   ];
 

@@ -29,6 +29,7 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
 
   const isFlagship = (
     archType === 'eval_safety_benchmarking' ||
+    archType === 'business_agent_gov_hitl' ||
     archType === 'business_agent_governance_hitl' ||
     archType === 'tech_multi_agent_langgraph' ||
     archType === 'tech_c4_system_context' ||

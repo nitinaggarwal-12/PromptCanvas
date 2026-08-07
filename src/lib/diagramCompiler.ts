@@ -4010,7 +4010,7 @@ export function getBenchmarkTechnicalArchitectureSpec(archId: string): CompiledD
     };
   }
 
-  if (archId === 'tech_microservices_aws' || archId === 'k8s_mesh') {
+  if (archId === 'tech_microservices_gcp' || archId === 'tech_microservices_aws' || archId === 'k8s_mesh') {
     return {
       diagramId: archId,
       title: "AWS EKS Microservices Service Mesh Architecture",

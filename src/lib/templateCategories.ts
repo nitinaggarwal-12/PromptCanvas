@@ -86,7 +86,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // =========================================================================
   {
     id: "tech_agent_harness_runtime",
-    name: "Enterprise Agent Harness Runtime Platform",
+    name: "Enterprise Agent Runtime Platform",
     categoryId: "ai_agentic",
     categoryName: "AI & Agentic Systems",
     badge: "Production Blueprint",
@@ -105,7 +105,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_multi_agent_langgraph",
-    name: "Stateful Multi-Agent Orchestration Engine (LangGraph DAG)",
+    name: "LangGraph Stateful Multi-Agent DAG",
     categoryId: "ai_agentic",
     categoryName: "AI & Agentic Systems",
     badge: "Flagship Blueprint",
@@ -123,7 +123,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "agentic_rag",
-    name: "Cognitive Architecture (Agentic RAG)",
+    name: "Cognitive Architecture / Agentic RAG",
     categoryId: "ai_agentic",
     categoryName: "AI & Agentic Systems",
     badge: "Reference Architecture",
@@ -139,13 +139,30 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Cognitive RAG Architecture: Document Chunking -> Embeddings DB -> Hybrid Retrieval -> LLM Synthesis -> Guardrails."
   },
   {
-    id: "business_agent_governance_hitl",
-    name: "Human-in-the-Loop Autonomous AI Agent Governance Lifecycle",
+    id: "tech_rag_gcp",
+    name: "Enterprise Vertex AI Vector Search",
+    categoryId: "ai_agentic",
+    categoryName: "AI & Agentic Systems",
+    badge: "Cloud Reference",
+    whenToUse: "Use when implementing enterprise-scale vector search and RAG natively on Google Cloud Platform with Vertex AI, Cloud Storage, and VPC-SC perimeters.",
+    bestFor: [
+      "Vertex AI Vector Search (ScaNN index)",
+      "BigQuery & Cloud Storage automated embeddings",
+      "Air-gapped VPC Service Controls security",
+      "Gemini 2.5 Pro enterprise inference endpoints"
+    ],
+    keyTech: ["Vertex AI Vector Search", "Text Embeddings API", "BigQuery", "Cloud Storage", "GKE / Cloud Run", "VPC-SC"],
+    thumbnail: "/templates/tech_rag_gcp.png",
+    promptSummary: "GCP Vertex AI RAG Infrastructure: BigQuery Ingestion -> Text Embeddings API -> Vertex Vector Search -> GKE -> Gemini Pro."
+  },
+  {
+    id: "business_agent_gov_hitl",
+    name: "Human-in-the-Loop AI Governance",
     categoryId: "ai_agentic",
     categoryName: "AI & Agentic Systems",
     badge: "Governance Standard",
     isFlagship: true,
-    whenToUse: "Use when establishing enterprise AI risk management, confidence-based escalation thresholds (≥95% fast path, 75-94% supervisor check, <75% human approval), and regulatory sign-off.",
+    whenToUse: "Use when establishing enterprise AI risk management, confidence-based escalation thresholds (>=95% fast path, 75-94% supervisor check, <75% human approval), and regulatory sign-off.",
     bestFor: [
       "Regulated enterprise AI compliance",
       "Confidence-tiered decision escalation",
@@ -161,25 +178,25 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // 2. CLOUD & ZERO-TRUST INFRASTRUCTURE
   // =========================================================================
   {
-    id: "tech_microservices_aws",
-    name: "AWS Production Kubernetes & Zero-Trust VPC Infrastructure",
+    id: "tech_microservices_gcp",
+    name: "GCP Kubernetes & Zero-Trust VPC",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
     badge: "2D Network Topology",
-    whenToUse: "Use when architecting enterprise AWS production Kubernetes (EKS) across Multi-AZ private subnets with Transit Gateway, Network Firewall, and Istio mTLS.",
+    whenToUse: "Use when architecting enterprise production GKE Kubernetes across Multi-Zone private subnets with Cloud Armor WAF, Istio mTLS, and Private Service Connect.",
     bestFor: [
-      "Multi-AZ AWS EKS Kubernetes clusters",
+      "Multi-Zone GKE Autopilot Kubernetes clusters",
       "Zero-Trust VPC network segmentation",
       "Istio Service Mesh with mutual TLS (mTLS)",
-      "AWS PrivateLink VPC Endpoints for S3/DynamoDB"
+      "Private Service Connect (PSC) Endpoints for BigQuery & Cloud Storage"
     ],
-    keyTech: ["AWS EKS", "Transit Gateway", "Network Firewall", "Istio mTLS", "Aurora Postgres", "Route 53", "CloudWatch"],
+    keyTech: ["Google GKE", "Cloud Armor WAF", "Istio mTLS", "Cloud SQL HA", "Cloud DNS", "Cloud Monitoring"],
     thumbnail: "/templates/tech_microservices_aws.png",
-    promptSummary: "AWS Kubernetes Zero-Trust VPC: Route 53 -> ALB Ingress -> 3-AZ Private Subnets -> Istio Mesh -> Aurora DB & PrivateLink."
+    promptSummary: "GCP Kubernetes Zero-Trust VPC: Cloud DNS -> Cloud Armor WAF -> Multi-Zone Private Subnets -> Istio Mesh -> Cloud SQL HA."
   },
   {
     id: "tech_serverless_gcp",
-    name: "GCP Serverless Web Application (Cloud Run & Cloud SQL)",
+    name: "Serverless Web Application - GCP",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
     badge: "Cloud Reference",
@@ -195,25 +212,8 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "GCP Serverless Architecture: Cloud DNS -> Cloud Armor WAF -> Cloud Run UI/API -> VPC Connector -> Cloud SQL HA."
   },
   {
-    id: "tech_rag_gcp",
-    name: "GCP Enterprise Vertex AI Vector Search & RAG Infrastructure",
-    categoryId: "cloud_infra",
-    categoryName: "Cloud & Infrastructure",
-    badge: "Cloud Reference",
-    whenToUse: "Use when implementing enterprise-scale vector search and RAG natively on Google Cloud Platform with Vertex AI, Cloud Storage, and VPC-SC perimeters.",
-    bestFor: [
-      "Vertex AI Vector Search (ScaNN index)",
-      "BigQuery & Cloud Storage automated embeddings",
-      "Air-gapped VPC Service Controls security",
-      "Gemini 2.5 Pro enterprise inference endpoints"
-    ],
-    keyTech: ["Vertex AI Vector Search", "Text Embeddings API", "BigQuery", "Cloud Storage", "GKE / Cloud Run", "VPC-SC"],
-    thumbnail: "/templates/tech_rag_gcp.png",
-    promptSummary: "GCP Vertex AI RAG Infrastructure: BigQuery Ingestion -> Text Embeddings API -> Vertex Vector Search -> GKE -> Gemini Pro."
-  },
-  {
     id: "tech_multi_region_dr",
-    name: "GCP Multi-Region Active-Passive Disaster Recovery",
+    name: "Multi-Region Active-Passive DR",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
     badge: "Reliability Topology",
@@ -230,7 +230,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "secure_deployment_map",
-    name: "Enterprise Secure Network Deployment Map",
+    name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
     badge: "Security Standard",
@@ -251,7 +251,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // =========================================================================
   {
     id: "tech_modern_data_stack",
-    name: "Modern Data Stack (CDC, Data Contracts, dbt & Reverse ETL)",
+    name: "Modern Data Stack Architecture",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
     badge: "Analytics Engineering",
@@ -261,7 +261,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Debezium real-time CDC from PostgreSQL",
       "Automated Data Contracts schema enforcement",
       "dbt Core Silver/Gold dimensional modeling",
-      "Reverse ETL syncing insights back to Salesforce/CRM"
+      "Reverse ETL syncing insights back to operational systems"
     ],
     keyTech: ["Debezium CDC", "Data Contracts", "dbt Core", "Snowflake / BigQuery", "Hightouch / Census", "Looker BI"],
     thumbnail: "/templates/tech_modern_data_stack.png",
@@ -269,7 +269,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_streaming_analytics",
-    name: "GCP Real-Time Streaming Analytics & Telemetry Pipeline",
+    name: "Real-Time Streaming Analytics",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
     badge: "Big Data & IoT",
@@ -285,25 +285,25 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "GCP Streaming Pipeline: Edge Field Gateways -> Cloud Pub/Sub -> Dataflow Stream ETL -> Bigtable Time-Series -> BigQuery."
   },
   {
-    id: "tech_data_lakehouse",
-    name: "AWS Enterprise Data Lakehouse (S3, Glue & Redshift)",
+    id: "tech_data_lakehouse_gcp",
+    name: "GCP Enterprise Data Lakehouse",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
     badge: "Data Lakehouse",
-    whenToUse: "Use for multi-tiered cloud lakehouse architectures with S3 Raw/Clean/Curated landing zones, Glue Data Catalog, Athena serverless querying, and Redshift Spectrum.",
+    whenToUse: "Use for multi-tiered cloud lakehouse architectures with Cloud Storage BigLake Raw/Clean/Curated landing zones, Dataproc Spark ETL, and BigQuery partitioned analytics.",
     bestFor: [
-      "Multi-tier S3 Data Lake (Raw, Bronze, Silver, Gold)",
-      "Automated schema discovery with AWS Glue Crawlers",
-      "Serverless SQL analytics using Amazon Athena",
-      "Centralized governance via AWS Lake Formation"
+      "Multi-tier Cloud Storage BigLake (Raw, Bronze, Silver, Gold)",
+      "Automated schema discovery with Dataplex Data Catalog",
+      "Serverless SQL analytics using BigQuery",
+      "Centralized governance via Cloud IAM and CMEK"
     ],
-    keyTech: ["Amazon S3", "AWS Glue Data Catalog", "Amazon Athena", "Amazon Redshift Spectrum", "AWS Lake Formation"],
+    keyTech: ["Cloud Storage", "BigLake", "BigQuery", "Dataplex", "Dataproc Spark"],
     thumbnail: "/templates/tech_data_lakehouse.png",
-    promptSummary: "AWS Data Lakehouse: Multi-source Ingestion -> S3 Multi-Tier Lake -> AWS Glue Catalog -> Athena SQL -> Redshift Spectrum."
+    promptSummary: "GCP Data Lakehouse: Multi-source Ingestion -> Cloud Storage Multi-Tier Lake -> Dataplex Catalog -> BigQuery SQL."
   },
   {
     id: "erd",
-    name: "Dimensional Data Model (ERD)",
+    name: "Dimensional Data Model - ERD",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
     badge: "Data Modeling",
@@ -320,7 +320,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "data_ai_pipeline",
-    name: "End-to-End Data & AI Pipeline",
+    name: "Data & AI Pipeline",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
     badge: "MLOps Lifecycle",
@@ -341,7 +341,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // =========================================================================
   {
     id: "tech_event_driven_eda",
-    name: "Enterprise Event-Driven Microservices Architecture (EDA & Kafka Mesh)",
+    name: "Enterprise Event-Driven EDA Mesh",
     categoryId: "microservices_flow",
     categoryName: "Microservices",
     badge: "EDA Standard",
@@ -359,7 +359,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_c4_system_context",
-    name: "C4 Enterprise System Context & Container Model",
+    name: "C4 System Context & Container Model",
     categoryId: "microservices_flow",
     categoryName: "Microservices",
     badge: "C4 Standard",
@@ -377,7 +377,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "sequence_diagram",
-    name: "Micro Dynamic Sequence Diagram (API Lifelines & ReAct Loops)",
+    name: "Micro Dynamic UML Sequence Diagram",
     categoryId: "microservices_flow",
     categoryName: "Microservices",
     badge: "Execution Protocol",
@@ -392,30 +392,13 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     thumbnail: "/templates/sequence_diagram.png",
     promptSummary: "Micro Dynamic Sequence Diagram: User Lifeline -> API Gateway -> Agent Orchestrator -> ReAct Loop -> Vector DB -> Response."
   },
-  {
-    id: "tech_event_driven_aws",
-    name: "AWS Serverless Event-Driven Microservices (EventBridge & Lambda)",
-    categoryId: "microservices_flow",
-    categoryName: "Microservices",
-    badge: "AWS Serverless",
-    whenToUse: "Use for serverless AWS event-driven architectures with Amazon EventBridge central bus, AWS Step Functions orchestration, SQS queues, and DynamoDB NoSQL storage.",
-    bestFor: [
-      "Amazon EventBridge schema-based routing",
-      "AWS Step Functions multi-step orchestration",
-      "SNS/SQS fan-out message queues",
-      "Ultra-low-latency DynamoDB state storage"
-    ],
-    keyTech: ["Amazon EventBridge", "AWS Step Functions", "AWS Lambda", "Amazon SQS/SNS", "Amazon DynamoDB", "AWS X-Ray"],
-    thumbnail: "/templates/tech_event_driven_aws.png",
-    promptSummary: "AWS Event-Driven Architecture: API Gateway -> EventBridge Bus -> Step Functions -> SQS Fan-out -> Lambda & DynamoDB."
-  },
 
   // =========================================================================
   // 5. DEVSECOPS & PLATFORM ENGINEERING
   // =========================================================================
   {
     id: "devops_cicd_pipeline",
-    name: "Enterprise DevSecOps Polyrepo CI/CD & GitOps Pipeline",
+    name: "DevSecOps Polyrepo CI/CD Pipeline",
     categoryId: "devsecops",
     categoryName: "DevSecOps",
     badge: "DevSecOps Standard",
@@ -432,7 +415,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_cicd_pipeline",
-    name: "Cloud Native CI/CD & Container Build Infrastructure",
+    name: "Cloud-Native CI/CD Pipeline",
     categoryId: "devsecops",
     categoryName: "DevSecOps",
     badge: "Platform CI/CD",
@@ -453,7 +436,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // =========================================================================
   {
     id: "conceptual_diagram",
-    name: "Enterprise Conceptual Platform Diagram (3-Stage Business Model)",
+    name: "Conceptual Diagram",
     categoryId: "business_strategy",
     categoryName: "Business Strategy",
     badge: "Executive Platform",
@@ -470,7 +453,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "unified_system_view",
-    name: "Unified System View (Plan, Data, MLOps & Deployment)",
+    name: "Total Unified System View",
     categoryId: "business_strategy",
     categoryName: "Business Strategy",
     badge: "Holistic Overview",
