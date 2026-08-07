@@ -237,6 +237,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Enterprise Event-Driven Architecture (EDA): Order Microservice Producers -> Schema Registry Avro Gate -> Partitioned Kafka/PubSub Broker -> Dead-Letter Queue (DLQ) automated recovery -> GKE Decoupled Consumer Groups -> Cloud Spanner Immutable Event Ledger."
   },
   {
+    id: "tech_agent_harness_runtime",
+    name: "14. Enterprise Agent Harness Runtime Platform",
+    category: "Technical Architecture",
+    whenToUse: "Production enterprise AI agent harness platform featuring LiteLLM routing, MCP protocol, hierarchical memory, context compactor, zero-trust IAM, 6-step sandboxed graph engine (gVisor/E2B), and continuous evaluation",
+    prompt: "Enterprise Agent Harness Runtime Architecture: Multi-channel Ingress (Web, Slack, SDK) -> Enterprise Agent Harness Core (LiteLLM Router, MCP Protocol, Memory, Guardrails, Zero-Trust IAM, OTel Tracing, HITL) -> Graph Execution Engine & Sandboxed MicroVM Kernel (Classify -> Swarm -> Sandbox -> Critic -> Self-Heal -> Checkpoint) -> External Systems & Model Mesh."
+  },
+  {
     id: "v2_freeform",
     name: "Freeform Technical (V2)",
     category: "Technical Architecture",
@@ -322,7 +329,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     archId === 'tech_multi_agent_langgraph' ||
     archId === 'tech_c4_system_context' ||
     archId === 'tech_modern_data_stack' ||
-    archId === 'tech_event_driven_eda'
+    archId === 'tech_event_driven_eda' ||
+    archId === 'tech_agent_harness_runtime' ||
+    archId?.includes('agent_harness')
   );
 
   if (!isFlagshipBlueprint) {

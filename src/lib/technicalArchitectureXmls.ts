@@ -1371,7 +1371,7 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-export function getTechnicalArchitectureXml(archId: string): string | null {
+export function getTechnicalArchitectureXml(archId: string): string {
   const id = (archId || '').toLowerCase();
   if (id.includes('c4') || id.includes('context_model')) {
     return TECH_XML_C4_SYSTEM_CONTEXT;
@@ -1415,8 +1415,254 @@ export function getTechnicalArchitectureXml(archId: string): string | null {
   if (id.includes('agentic_mesh') || id.includes('mesh')) {
     return TECH_XML_AGENTIC_MESH_GCP;
   }
+  if (id.includes('harness') || id.includes('agent_runtime') || id.includes('agent_harness')) {
+    return TECH_XML_AGENT_HARNESS_RUNTIME;
+  }
   return TECH_XML_SERVERLESS_GCP;
 }
+
+export const TECH_XML_AGENT_HARNESS_RUNTIME = `<mxfile host="app.diagrams.net" version="21.0.0" type="device">
+  <diagram id="agent_harness_runtime" name="Production Enterprise Agent Harness Runtime Architecture">
+    <mxGraphModel dx="1740" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1740" pageHeight="1100" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ZONE 1: LEFT SIDEBAR (INGRESS & ACTORS) -->
+        <mxCell id="box_ingress" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="25" y="25" width="180" height="435" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_ingress_title" value="&lt;b style='font-size:13.5px;color:#0F172A;letter-spacing:-0.2px;'&gt;Ingress &amp;amp; Perimeter&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="35" y="36" width="160" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="item_web" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:26px;height:26px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:globe.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;color:#0F172A;font-weight:700;'&gt;Web Portals&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="37" y="75" width="156" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="item_chat" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:26px;height:26px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:message-square.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;color:#0F172A;font-weight:700;'&gt;Slack &amp;amp; Teams&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="37" y="140" width="156" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="item_mobile" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:26px;height:26px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:smartphone.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;color:#0F172A;font-weight:700;'&gt;Mobile &amp;amp; Voice SDK&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="37" y="205" width="156" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="item_api" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:26px;height:26px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:terminal.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;color:#0F172A;font-weight:700;'&gt;APIs &amp;amp; Webhooks&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="37" y="270" width="156" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="item_waf" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:26px;height:26px;border-radius:6px;background:#FEE2E2;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield.svg?color=%23DC2626' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#991B1B;font-weight:700;'&gt;WAF &amp;amp; Rate Limiter&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#FCA5A5;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="37" y="350" width="156" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="box_actors" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="25" y="480" width="180" height="285" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_actors_title" value="&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Actors &amp;amp; Roles&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="35" y="492" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="icon_user" value="" style="image;html=1;image=https://api.iconify.design/lucide:users.svg?color=%230284C7;" vertex="1" parent="1">
+          <mxGeometry x="87" y="535" width="56" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_user_sub" value="&lt;b style='font-size:12.5px;color:#0F172A;'&gt;Enterprise Users&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#64748B;line-height:1.4;'&gt;Requesters • Reviewers&lt;br/&gt;Security &amp;amp; SRE Teams&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="35" y="612" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ZONE 2: CENTER MAIN BOX (AGENT HARNESS CORE) -->
+        <mxCell id="box_agent_harness" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2.5;" vertex="1" parent="1">
+          <mxGeometry x="230" y="20" width="1170" height="745" as="geometry" />
+        </mxCell>
+        <mxCell id="harness_title" value="&lt;table style='margin:0 auto;'&gt;&lt;tr&gt;&lt;td style='vertical-align:middle;padding-right:10px;'&gt;&lt;div style='width:36px;height:36px;border-radius:8px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield-check.svg?color=%23EA580C' width='24' height='24'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:22px;font-weight:900;color:#0F172A;letter-spacing:-0.4px;'&gt;Enterprise Agent Harness Core&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="28" width="1130" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- 3x4 MODULAR MIDDLEWARE MATRIX -->
+        <!-- Row 1 -->
+        <mxCell id="card_litellm" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:sparkles.svg?color=%2316A34A' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;LiteLLM Router&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;Multi-Model Load Balancing, Failover &amp;amp; Quota Budgeting&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="250" y="74" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_mcp" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:puzzle.svg?color=%230284C7' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;MCP Tool Protocol&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;Standardized Tool Invocations, Resources &amp;amp; Prompts&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="540" y="74" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_memory" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#F3E8FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:database.svg?color=%237C3AED' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Hierarchical Memory&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;Short-Term Working Context &amp;amp; Semantic Long-Term Store&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="830" y="74" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_caching" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:zap.svg?color=%23D97706' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Semantic &amp;amp; KV Cache&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;Ephemeral Prompt Prefix Caching &amp;amp; Redis Vector Cache&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FCD34D;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="74" width="260" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Row 2 -->
+        <mxCell id="card_guardrails" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield.svg?color=%23CA8A04' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Safety Guardrails&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;NeMo Guardrails, PII/PCI Redaction &amp;amp; Policy Checks&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FDE047;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="250" y="186" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_auth" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#CCFBF1;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:lock.svg?color=%230D9488' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Zero-Trust IAM&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;OAuth2/OIDC, Granular Tool RBAC &amp;amp; Short-Lived JWTs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F0FDFA;strokeColor=#5EEAD4;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="540" y="186" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_vectordb" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#FFE4E6;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:layers.svg?color=%23E11D48' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Vector &amp;amp; Graph DB&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;Hybrid Dense/Sparse Search (pgvector, Neo4j Graph)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FDA4AF;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="830" y="186" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_compactor" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:scissors.svg?color=%237C3AED' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Context Compactor&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;Sliding Window Pruning &amp;amp; Hierarchical Token Reducer&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="186" width="260" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Row 3 -->
+        <mxCell id="card_observability" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:bar-chart-3.svg?color=%230284C7' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Distributed Tracing&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;OpenTelemetry Spans, Step Latency &amp;amp; Cost Auditing&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="250" y="298" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_evaluation" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:crosshair.svg?color=%23EA580C' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Continuous Evaluation&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;LLM-as-a-Judge, Hallucination Scorer &amp;amp; Red-Teaming&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FDBA74;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="540" y="298" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_hitl" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-check.svg?color=%23CA8A04' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;HITL Approval Gate&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;Async requires_action Approvals &amp;amp; Escalations&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FEF08A;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="830" y="298" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="card_audit_ledger" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:top;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#D1FAE5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:file-check-2.svg?color=%23059669' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Compliance Audit Vault&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#334155;line-height:1.3;'&gt;Immutable Hash Ledger (SOC2, HIPAA, EU AI Act)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.5;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="298" width="260" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Vertical Connectors R1 <-> R2 -->
+        <mxCell id="arr_v1" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;" edge="1" parent="1" source="card_litellm" target="card_guardrails"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v2" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;" edge="1" parent="1" source="card_mcp" target="card_auth"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v3" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;" edge="1" parent="1" source="card_memory" target="card_vectordb"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v4" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;" edge="1" parent="1" source="card_caching" target="card_compactor"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Vertical Connectors R2 <-> R3 -->
+        <mxCell id="arr_v5" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;" edge="1" parent="1" source="card_guardrails" target="card_observability"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v6" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;" edge="1" parent="1" source="card_auth" target="card_evaluation"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v7" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;" edge="1" parent="1" source="card_vectordb" target="card_hitl"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v8" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;" edge="1" parent="1" source="card_compactor" target="card_audit_ledger"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- GRAPH EXECUTION & CODE SANDBOX ENGINE (6-STEP DIRECTED GRAPH) -->
+        <mxCell id="box_graph_engine" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#BAE6FD;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="245" y="415" width="1140" height="315" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_engine_title" value="&lt;b style='font-size:15.5px;color:#0369A1;'&gt;Graph Execution Engine &amp;amp; Sandboxed Kernel&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#475569;font-weight:600;'&gt;Stateful Directed Graph • Isolated MicroVM Runtime • Closed-Loop Self-Healing&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="260" y="423" width="1110" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- 6 Steps -->
+        <mxCell id="step_classify" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:git-fork.svg?color=%2316A34A' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12.5px;font-weight:bold;color:#0F172A;'&gt;1. Classify&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10.5px;color:#475569;line-height:1.35;'&gt;Intent routing &amp;amp;&lt;br/&gt;task graph plan&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.5;align=center;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="260" y="465" width="172" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="step_swarm" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:bot.svg?color=%230284C7' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12.5px;font-weight:bold;color:#0F172A;'&gt;2. Agent Swarm&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10.5px;color:#475569;line-height:1.35;'&gt;Parallel Workers&lt;br/&gt;(Coder, Critic, R&amp;amp;D)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="448" y="465" width="172" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="step_sandbox" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:30px;height:30px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#F3E8FF;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:terminal-square.svg?color=%237C3AED' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12.5px;font-weight:bold;color:#0F172A;'&gt;3. Code Sandbox&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10.5px;color:#475569;line-height:1.35;'&gt;gVisor/E2B Isolated&lt;br/&gt;Python/Bash Run&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;align=center;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="636" y="465" width="172" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="step_check" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:30px;height:30px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:shield-alert.svg?color=%23CA8A04' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12.5px;font-weight:bold;color:#0F172A;'&gt;4. Critic Gate&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10.5px;color:#475569;line-height:1.35;'&gt;Hallucination check&lt;br/&gt;&amp;amp; schema audit&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FDE047;strokeWidth=1.5;align=center;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="824" y="465" width="172" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="step_retry" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:30px;height:30px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:refresh-cw.svg?color=%23EA580C' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12.5px;font-weight:bold;color:#0F172A;'&gt;5. Self-Heal&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10.5px;color:#475569;line-height:1.35;'&gt;Error reflection &amp;amp;&lt;br/&gt;dynamic patch run&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FDBA74;strokeWidth=1.5;align=center;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1012" y="465" width="172" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="step_end" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:30px;height:30px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:check-circle-2.svg?color=%2316A34A' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12.5px;font-weight:bold;color:#0F172A;'&gt;6. Checkpoint&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10.5px;color:#475569;line-height:1.35;'&gt;State persistence &amp;amp;&lt;br/&gt;result synthesis&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;align=center;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="465" width="170" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Step Connectors -->
+        <mxCell id="arr_step1" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="step_classify" target="step_swarm"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_step2" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="step_swarm" target="step_sandbox"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_step3" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="step_sandbox" target="step_check"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_step4" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="step_check" target="step_retry"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_step5" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="step_retry" target="step_end"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Autonomous Self-Heal Reflection Arc -->
+        <mxCell id="arr_self_heal" value="⟲ Failure Trace &amp;amp; Auto-Fix Arc" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=1;strokeColor=#DC2626;strokeWidth=2;dashed=1;fontColor=#B91C1C;fontStyle=1;fontSize=10;labelBackgroundColor=#FEF2F2;labelBorderColor=#EF4444;" edge="1" parent="1" source="step_retry" target="step_sandbox">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1098" y="650" />
+              <mxPoint x="722" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Vertical Connectors Row 3 <-> Graph Engine (100% Vertical) -->
+        <mxCell id="arr_v9" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;exitX=0.5;exitY=1;entryX=0.123;entryY=0;" edge="1" parent="1" source="card_observability" target="box_graph_engine"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v10" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;exitX=0.5;exitY=1;entryX=0.377;entryY=0;" edge="1" parent="1" source="card_evaluation" target="box_graph_engine"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v11" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;exitX=0.5;exitY=1;entryX=0.632;entryY=0;" edge="1" parent="1" source="card_hitl" target="box_graph_engine"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="arr_v12" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;strokeColor=#94A3B8;strokeWidth=1.2;exitX=0.5;exitY=1;entryX=0.882;entryY=0;" edge="1" parent="1" source="card_audit_ledger" target="box_graph_engine"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ZONE 3: RIGHT SIDEBAR (SYSTEMS & MODELS) -->
+        <mxCell id="box_ext_systems" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1425" y="25" width="270" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_ext_title" value="&lt;b style='font-size:13.5px;color:#0F172A;letter-spacing:-0.2px;'&gt;Enterprise Systems &amp;amp; Data&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1435" y="36" width="250" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_api" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:cloud.svg?color=%23475569' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;SaaS APIs (Salesforce, Stripe)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="74" width="244" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_db" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:database.svg?color=%23475569' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Databases (BigQuery, Postgres)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="132" width="244" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_files" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:folder-tree.svg?color=%23475569' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Cloud Object Stores (S3, GCS)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="190" width="244" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_apps" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:layout-grid.svg?color=%23475569' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Internal ERP &amp;amp; Microservices&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="248" width="244" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_tools" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:cpu.svg?color=%23475569' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;DevOps &amp;amp; Git Infrastructure&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="306" width="244" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- Model Providers -->
+        <mxCell id="box_model_providers" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1425" y="425" width="270" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_models_title" value="&lt;b style='font-size:13.5px;color:#0F172A;letter-spacing:-0.2px;'&gt;Model Provider Mesh&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1435" y="437" width="250" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="prov_openai" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/simple-icons:openai.svg?color=%230F172A' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;color:#0F172A;font-weight:700;'&gt;OpenAI (GPT-4o / o1 / o3)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="475" width="244" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="prov_anthropic" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#FDF4E7;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/simple-icons:anthropic.svg?color=%23D97706' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;color:#0F172A;font-weight:700;'&gt;Anthropic (Claude 3.5 Sonnet)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="533" width="244" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="prov_google" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/logos:google-icon.svg' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;color:#0F172A;font-weight:700;'&gt;Google (Gemini 2.5 Pro)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="591" width="244" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="prov_local_slm" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:server.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;color:#0284C7;font-weight:700;'&gt;On-Prem SLMs (Llama 3 / vLLM)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="649" width="244" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- Horizontal Connectors -->
+        <mxCell id="arr_h_left" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=5;startSize=5;strokeColor=#64748B;strokeWidth=2;" edge="1" parent="1" source="box_ingress" target="box_agent_harness">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="215" y="235" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arr_h_right" value="" style="edgeStyle=none;html=1;endArrow=classic;startArrow=classic;endSize=5;startSize=5;strokeColor=#64748B;strokeWidth=2;" edge="1" parent="1" source="box_agent_harness" target="box_ext_systems">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="1410" y="215" /></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ZONE 4: BOTTOM PLATFORM FOUNDATION (6 BALANCED PILLARS) -->
+        <mxCell id="box_platform" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="25" y="790" width="1670" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_platform_title" value="&lt;b style='font-size:15px;color:#0F172A;letter-spacing:-0.2px;'&gt;Enterprise Platform &amp;amp; Durable Infrastructure Foundation&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="45" y="800" width="1630" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="infra_k8s" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:middle;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/logos:kubernetes.svg' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;font-weight:700;color:#0F172A;'&gt;Kubernetes &amp;amp; Containers&lt;br/&gt;&lt;span style='font-size:10.5px;color:#475569;font-weight:normal;'&gt;GKE / EKS Compute Clusters&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="835" width="258" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="infra_temporal" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:middle;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:workflow.svg?color=%230284C7' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;font-weight:700;color:#0F172A;'&gt;Temporal Workflows&lt;br/&gt;&lt;span style='font-size:10.5px;color:#475569;font-weight:normal;'&gt;Durable Async State Engine&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="321" y="835" width="258" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="infra_kafka" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:middle;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#FFF7ED;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:git-branch.svg?color=%23EA580C' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;font-weight:700;color:#0F172A;'&gt;Event Mesh &amp;amp; Streaming&lt;br/&gt;&lt;span style='font-size:10.5px;color:#475569;font-weight:normal;'&gt;Kafka &amp;amp; SQS Pub/Sub Topics&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="597" y="835" width="258" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="infra_checkpoints" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:middle;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/logos:postgresql.svg' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;font-weight:700;color:#0F172A;'&gt;State &amp;amp; Checkpoint DB&lt;br/&gt;&lt;span style='font-size:10.5px;color:#475569;font-weight:normal;'&gt;PostgreSQL Time-Travel Store&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="873" y="835" width="258" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="infra_secrets" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:middle;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#CCFBF1;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:key.svg?color=%230D9488' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;font-weight:700;color:#0F172A;'&gt;KMS &amp;amp; Secrets Vault&lt;br/&gt;&lt;span style='font-size:10.5px;color:#475569;font-weight:normal;'&gt;HashiCorp Vault &amp;amp; Envelope Keys&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1149" y="835" width="258" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="infra_rlhf" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:middle;'&gt;&lt;div style='width:30px;height:30px;border-radius:6px;background:#D1FAE5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:trending-up.svg?color=%23059669' width='18' height='18'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:12px;font-weight:700;color:#0F172A;'&gt;Continuous Optimizer&lt;br/&gt;&lt;span style='font-size:10.5px;color:#475569;font-weight:normal;'&gt;DSPy Auto-Prompt &amp;amp; RLHF Loop&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1425" y="835" width="258" height="85" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
 
 export {
   TECH_XML_SERVERLESS_GCP,
@@ -1435,3 +1681,4 @@ export {
   TECH_XML_MODERN_DATA_STACK,
   TECH_XML_EVENT_DRIVEN_EDA
 };
+
