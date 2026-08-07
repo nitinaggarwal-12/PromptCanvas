@@ -34,6 +34,7 @@ export interface ArchitectureTypeOption {
   category: string;
   prompt: string;
   whenToUse: string;
+  previewImage?: string;
   softDeleted?: boolean;
 }
 
@@ -238,10 +239,42 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_agent_harness_runtime",
-    name: "14. Enterprise Agent Harness Runtime Platform",
-    category: "Technical Architecture",
+    name: "14. Enterprise Agent Harness Runtime Platform (Graph & Harness Engineering)",
+    category: "AI & Agentic Systems Architecture",
     whenToUse: "Production enterprise AI agent harness platform featuring LiteLLM routing, MCP protocol, hierarchical memory, context compactor, zero-trust IAM, 6-step sandboxed graph engine (gVisor/E2B), and continuous evaluation",
-    prompt: "Enterprise Agent Harness Runtime Architecture: Multi-channel Ingress (Web, Slack, SDK) -> Enterprise Agent Harness Core (LiteLLM Router, MCP Protocol, Memory, Guardrails, Zero-Trust IAM, OTel Tracing, HITL) -> Graph Execution Engine & Sandboxed MicroVM Kernel (Classify -> Swarm -> Sandbox -> Critic -> Self-Heal -> Checkpoint) -> External Systems & Model Mesh."
+    previewImage: "/templates/agent_harness_runtime_enhanced.png",
+    prompt: `Graph Engineering & Enterprise Agent Harness Runtime:
+
+For the past two years, we've focused on:
+- Prompt Engineering → Optimizing instructions
+- Context Engineering → Optimizing what the model knows
+- Agent Engineering → Orchestrating tools, memory, and workflows
+
+The next evolution is Graph Engineering & Harness Runtime Architecture.
+Instead of thinking in linear workflows or endless agent loops, we start thinking in graphs and execution harnesses.
+
+A graph captures two critical dimensions:
+1. Knowledge Graph – What the agent knows:
+   - Entities, Relationships, Provenance, Temporal information & Context evolution
+   - Enables GraphRAG and relationship-aware reasoning beyond traditional vector search.
+
+2. Task Graph – How the agent works:
+   - Planning & Intent Classification
+   - Parallel Multi-Agent Swarm Execution
+   - Sandboxed Code Execution Kernel (gVisor/E2B isolated microVM)
+   - Critic & Verification nodes
+   - Closed-Loop Self-Healing & Recovery paths (Auto-Fix Trace Arc)
+   - Human approval gates (HITL) & Checkpointing
+
+Enterprise AI platforms converge around an Agent Harness Runtime that brings together:
+• Knowledge Graphs & Vector DB → Rich enterprise context & hybrid search
+• GraphRAG → Relationship-aware retrieval
+• Graph Execution Engine → Stateful directed graphs & multi-agent swarm
+• MCP → Standardized tool, resource & prompt access
+• Temporal → Durable long-running workflows & async state machines
+• LiteLLM / Model Router → Intelligent model selection, failover & quota routing
+• Guardrails & Continuous Evaluation → NeMo guardrails, LLM-as-a-judge, and SOC2/HIPAA compliance ledger
+• Infrastructure Foundation → Kubernetes compute clusters, Kafka streaming, and KMS secret vaults`
   },
   {
     id: "v2_freeform",
