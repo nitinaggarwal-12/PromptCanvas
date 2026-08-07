@@ -239,42 +239,49 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_agent_harness_runtime",
-    name: "14. Enterprise Agent Harness Runtime Platform (Graph & Harness Engineering)",
+    name: "14. Enterprise Agent Harness Runtime Platform (AI Operating System Kernel)",
     category: "AI & Agentic Systems Architecture",
     whenToUse: "Production enterprise AI agent harness platform featuring LiteLLM routing, MCP protocol, hierarchical memory, context compactor, zero-trust IAM, 6-step sandboxed graph engine (gVisor/E2B), and continuous evaluation",
     previewImage: "/templates/agent_harness_runtime_enhanced.png",
-    prompt: `Graph Engineering & Enterprise Agent Harness Runtime:
+    prompt: `Why most enterprise AI agents fail after deployment: We treated them like scripts instead of operating systems.
 
-For the past two years, we've focused on:
-- Prompt Engineering → Optimizing instructions
-- Context Engineering → Optimizing what the model knows
-- Agent Engineering → Orchestrating tools, memory, and workflows
+For the past year, the industry has been obsessed with orchestrating agent workflows—drawing state graphs, chaining tools, and defining dynamic decision trees.
 
-The next evolution is Graph Engineering & Harness Runtime Architecture.
-Instead of thinking in linear workflows or endless agent loops, we start thinking in graphs and execution harnesses.
+But here is the reality engineering teams face the moment an agent touches live enterprise infrastructure:
 
-A graph captures two critical dimensions:
-1. Knowledge Graph – What the agent knows:
-   - Entities, Relationships, Provenance, Temporal information & Context evolution
-   - Enables GraphRAG and relationship-aware reasoning beyond traditional vector search.
+A workflow graph is only as reliable as the runtime boundary encapsulating it.
 
-2. Task Graph – How the agent works:
-   - Planning & Intent Classification
-   - Parallel Multi-Agent Swarm Execution
-   - Sandboxed Code Execution Kernel (gVisor/E2B isolated microVM)
-   - Critic & Verification nodes
-   - Closed-Loop Self-Healing & Recovery paths (Auto-Fix Trace Arc)
-   - Human approval gates (HITL) & Checkpointing
+If an agent writes Python to aggregate customer data, where does that code actually execute?
+If an API call times out mid-transaction, how does state rollback work?
+If a prompt injection attempts to exfiltrate database records, what kernel intercepts the system call?
 
-Enterprise AI platforms converge around an Agent Harness Runtime that brings together:
-• Knowledge Graphs & Vector DB → Rich enterprise context & hybrid search
-• GraphRAG → Relationship-aware retrieval
-• Graph Execution Engine → Stateful directed graphs & multi-agent swarm
-• MCP → Standardized tool, resource & prompt access
-• Temporal → Durable long-running workflows & async state machines
-• LiteLLM / Model Router → Intelligent model selection, failover & quota routing
-• Guardrails & Continuous Evaluation → NeMo guardrails, LLM-as-a-judge, and SOC2/HIPAA compliance ledger
-• Infrastructure Foundation → Kubernetes compute clusters, Kafka streaming, and KMS secret vaults`
+To move from fragile AI prototypes to mission-critical infrastructure, we have to borrow the architectural playbook of Modern Operating Systems:
+
+1. The LLM is the CPU — Not the Application
+An LLM performs probabilistic computation and reasoning. Just as an OS never allows an unprivileged CPU instruction to read raw kernel memory directly, an enterprise agent runtime must enforce strict syscall isolation:
+- Tools are accessed through standardized, capability-based protocols (like MCP).
+- Permissions are ephemeral, scoped down to individual parameters via short-lived cryptographic tokens.
+
+2. The Context Window is L1/L2 Cache
+Treating the context window as an unbounded document dump causes prompt drift, attention dilution, and staggering latency.
+- KV Prefix Caching provides instant memory lookups for invariant system state.
+- Hierarchical Token Compaction acts as active garbage collection—pruning transient conversational noise while persisting core execution checkpoints to cold storage.
+
+3. MicroVM Isolation is the Hypervisor Boundary
+Allowing an autonomous model to run interpreter scripts in your application container is a catastrophic security risk. Modern runtime harnesses execute all generated code inside isolated MicroVMs (e.g., gVisor, E2B, Firecracker) with strict zero-network egress defaults.
+
+4. The Self-Healing Kernel: Automatic Trace Reflection
+In classical software, an uncaught exception triggers a kernel panic. In an agent runtime, exceptions are feedforward inputs. The harness intercepts standard error output, packages the trace into an isolated evaluation sub-node, and triggers a deterministic self-healing patch loop before failing out to human operators.
+
+💡 The Big Takeaway
+State machines and graph orchestrators define what the agent intends to do.
+The Harness Runtime guarantees how safely, durably, and deterministically it survives in production.
+
+If you are building AI agents for the enterprise today, you aren't just writing prompts—you are building an AI Operating System.
+
+💬 For teams deploying autonomous agents to production: What has been your biggest runtime challenge—sandboxing untrusted code, context window garbage collection, or state checkpoint recovery?
+
+#SystemsEngineering #AgentHarness #InfrastructureArchitecture #PlatformEngineering #LLMOps #CyberSecurity #EnterpriseAI #DistributedSystems`
   },
   {
     id: "v2_freeform",
