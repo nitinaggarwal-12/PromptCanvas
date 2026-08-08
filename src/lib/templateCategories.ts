@@ -393,6 +393,32 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Logical AI Config Tenant Architecture: App Owners / Devs -> IAM -> Dev/Test/Prod Environments -> Agent Designer Topologies -> SOC 2 / GxP Guardrails & KMS Encryption."
   },
   {
+    id: "hub_and_spoke_agent_config",
+    name: "Hub-and-Spoke Agent Configuration Map (WBS 2.2.2)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 2.2.2)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to configure and orchestrate enterprise multi-agent hub-and-spoke topologies with Gemini Enterprise, specialized sub-agent spokes (Support, Fulfillment, Knowledge), Logical UI configuration matrices, HITL gates, and 21 CFR Part 11 compliance audit trails.",
+    bestFor: [
+      "WBS 2.2.2 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)",
+      "Orchestrator (Parent Agent) Hub with General Configuration (Gemini 1.5 Pro, Global System Instructions, Shared Context Window, Memory TTL)",
+      "Multi-Agent Router / Dispatcher Logic with intent-based dispatch routing rules",
+      "Shared Memory & State and Vertex AI Agent Runtime invocation patterns",
+      "Sub-Agent 1: Customer Support with Zendesk API tool proxy and BigQuery / Vector Search Grounding",
+      "Sub-Agent 2: Fulfillment SA with SAP ERP API and BigQuery / Cloud Storage Grounding",
+      "Sub-Agent 3: Knowledge Base SA with GCS PDF/Doc Document Grounding",
+      "Logical UI Configuration Matrix (Prompt editors, Rule editors, Knowledge Source selectors, API Config panels)",
+      "Human-in-the-Loop (HITL) Gate with signed compliance updates",
+      "21 CFR Part 11 Compliance Gate & Immutable Audit Trail E-Signature Ledger",
+      "Persona Dashboards (AI Architect, Workplace & Talent Architect, Agent Economic & Runtime Metrics)"
+    ],
+    keyTech: ["Gemini 1.5 Pro", "Vertex AI Agent Runtime", "Multi-Agent Router", "BigQuery Grounding", "Vector Search", "Zendesk API", "SAP ERP API", "GCS Storage", "21 CFR Part 11 Ledger", "HITL Gate", "Looker Metrics"],
+    thumbnail: "/templates/hub_and_spoke_agent_config.png",
+    promptSummary: "Hub-and-Spoke Agent Config Map: Orchestrator Hub -> Intent Router -> 3 Domain Spokes (Support, Fulfillment, Knowledge) -> Logical UI Matrix -> HITL Gate -> 21 CFR Part 11 Audit Ledger."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

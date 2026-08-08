@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -34,6 +34,10 @@ const TECH_XML_MCP_CONTEXT_GATEWAY = getExactMcpContextGatewayXml();
 
 // 1.8 Product Plan - Logical AI Config (Tenant Architecture) (Logical AI Config | To-Be)
 const TECH_XML_LOGICAL_AI_CONFIG_TENANT = getExactLogicalAiConfigTenantXml();
+
+// 1.9 WBS 2.2.2 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)
+const TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG = getExactHubAndSpokeAgentConfigXml();
+
 
 
 
@@ -1402,6 +1406,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') {
     return TECH_XML_LOGICAL_AI_CONFIG_TENANT;
   }
+  if (id.includes('hub_and_spoke') || id.includes('hub_spoke') || id === 'hub_and_spoke_agent_config') {
+    return TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG;
+  }
   if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
@@ -1424,6 +1431,7 @@ export {
   TECH_XML_AI_COE_OPERATING_MODEL,
   TECH_XML_MCP_CONTEXT_GATEWAY,
   TECH_XML_LOGICAL_AI_CONFIG_TENANT,
+  TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,

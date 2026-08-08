@@ -389,6 +389,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "App Owners, Devs, Platform Architects, Compliance Officers",
     targetOutcomes: "Multi-Tenant Isolation, SOC 2 & GxP Compliance, Automated Config APIs",
     desc: "Logical AI Config blueprint mapping tenant boundaries, Agent Designer topologies, and compliance guardrails."
+  },
+  hub_and_spoke_agent_config: {
+    id: "hub_and_spoke_agent_config",
+    title: "WBS 2.2.2 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)",
+    category: "Operational Excellence",
+    useCase: "HUB-AND-SPOKE AGENT CONFIGURATION MAP (WBS 2.2.2)",
+    businessUseCase: "WBS 2.2.2: Enterprise Hub-and-Spoke Multi-Agent Configuration Map within Gemini Enterprise and Agent Designer. Orchestrator Parent Agent Hub manages General Configuration (Gemini 1.5 Pro, Global System Instructions, Shared Context Window, Memory TTL), Multi-Agent Router / Dispatcher Logic with intent-based rule routing, Shared Memory & State, Vertex AI Agent Runtime, and 21 CFR Part 11 Compliance Gate. Dispatches to 3 specialized Sub-Agents (Customer Support with Zendesk API & BigQuery/Vector Grounding, Fulfillment SA with SAP ERP API & Cloud Storage, and Knowledge SA with GCS PDF/Doc Grounding). Features Logical UI Configuration Matrix (Prompt editors, Rule editors, Knowledge Source selectors, API Config panels), Human-in-the-Loop (HITL) Gate, 21 CFR Part 11 Immutable Audit Trail & E-Signature Ledger, and Persona Dashboards (AI Architect, W&T Arch, Agent Economic & Runtime Metrics).",
+    primaryActors: "AI Architects, Workplace & Talent (W&T) Architects, Agent Developers, 21 CFR Part 11 Compliance Officers, Support Engineers",
+    targetOutcomes: "Deterministic Intent-Based Agent Dispatching, 100% 21 CFR Part 11 E-Signature Compliance, Sub-100ms Spoke Invocation, Unified UI Config Propagation, Real-Time Economic & Runtime Monitoring",
+    desc: "WBS 2.2.2 Hub-and-Spoke agent configuration blueprint mapping Orchestrator parent agent, specialized domain sub-agents, Logical UI config matrix, HITL gate, and 21 CFR Part 11 audit ledger."
+  },
+  tech_hub_spoke_agent: {
+    id: "hub_and_spoke_agent_config",
+    title: "Hub-and-Spoke Agent Configuration Map (WBS 2.2.2)",
+    category: "Operational Excellence",
+    useCase: "HUB-AND-SPOKE AGENT CONFIGURATION MAP (WBS 2.2.2)",
+    businessUseCase: "Hub-and-spoke agent orchestration topology connecting parent router hub to specialized sub-agents with UI configuration matrix, HITL validation gate, and 21 CFR Part 11 e-signature ledger.",
+    primaryActors: "AI Architects, Agent Engineers, Compliance Officers",
+    targetOutcomes: "Multi-Agent Routing, 21 CFR Part 11 Compliance, Dedicated Grounding",
+    desc: "Hub-and-Spoke agent configuration map illustrating parent dispatcher hub, 3 domain spokes, UI matrix, and audit ledger."
   }
 };
 
