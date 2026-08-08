@@ -482,6 +482,27 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Go-Live War Room Runbook: CI/CD & Go/No-Go Gates -> War Room & Opsgenie -> 5-Step Minute-by-Minute Execution Script -> Automated Rollback Logic -> Post-Launch Operations."
   },
   {
+    id: "enterprise_sre_observability",
+    name: "Enterprise SRE & Observability Architecture (WBS 6.1.1)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 6.1.1)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to design Day-2 enterprise operations, unified observability pipelines (distributed tracing, Cloud Logging, Cloud Monitoring), Datadog SIEM integration, Looker Studio dynamic dashboards, automated drift detection & runbooks, and incident management with RED alerts.",
+    bestFor: [
+      "WBS 6.1.1 Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)",
+      "Prerequisite Flow: Cloud-Native CI/CD (Git Repository, Jenkins, GitLab -> Deployment Triggers & Manifests)",
+      "Observed Workloads (GCP Workload Ingress): Client Applications, Microservices (Cloud Run / GKE), AI Agents (Gemini Pro), Data Tier (Cloud SQL, BigQuery) emitting logs, metrics, traces",
+      "Unified Observability & Telemetry Pipeline (The Core): distributed tracing (cross-service correlation), Cloud Logging (log sinks, SOC 2 compliance auditing), Cloud Monitoring (metrics aggregation policies)",
+      "Operational Excellence Control Plane: SREs, SLO/SLA Definition, Capacity Planning, Budget Alerts with SOC 2 policies ingress",
+      "Actionable Operations & Reporting: Datadog Observability & SIEM Integration, Looker Studio dashboards (SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn), personas (SRE, Ops Team, DevSecOps), Day-2 Ops Drift Detection & Automated Remediation, Automated Runbooks, and Incident Management (Cloud Monitoring Alerts, PagerDuty, RED alerts)"
+    ],
+    keyTech: ["Cloud Monitoring", "Cloud Logging", "Distributed Tracing", "Datadog SIEM", "Looker Studio", "PagerDuty", "Google Kubernetes Engine (GKE)", "Cloud Run", "Gemini Pro AI Agents", "SOC 2 Type II"],
+    thumbnail: "/templates/enterprise_sre_observability.png",
+    promptSummary: "Enterprise SRE & Observability: CI/CD Prereq -> Observed Workloads (Client, Microservices, AI Agents, Data Tier) -> Unified Telemetry Pipeline (Tracing, Logging, Monitoring) -> Datadog SIEM & Looker Studio Dashboards -> Automated Drift Remediation & PagerDuty Incident Management."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

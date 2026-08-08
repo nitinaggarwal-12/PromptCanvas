@@ -469,6 +469,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Release Managers, SREs, DevSecOps, App Owners",
     targetOutcomes: "Minute-by-Minute Cutover, Automated Rollback, Dynamic Telemetry Verification",
     desc: "Go-live cutover runbook blueprint illustrating preparation gates, war room execution, and automated rollback scripts."
+  },
+  enterprise_sre_observability: {
+    id: "enterprise_sre_observability",
+    title: "WBS 6.1.1: Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)",
+    category: "Operational Excellence",
+    useCase: "ENTERPRISE SRE & OBSERVABILITY ARCHITECTURE (WBS 6.1.1)",
+    businessUseCase: "WBS 6.1.1: Enterprise SRE & Observability Architecture illustrating the complete Day-2 operations ecosystem: Prerequisite Flow (Cloud-Native CI/CD with Git Repository, Jenkins, GitLab); Observed Workloads (GCP Workload Ingress with Client Applications, Microservices on Cloud Run/GKE, AI Agents Gemini Pro, and Data Tier Cloud SQL/BigQuery emitting logs, metrics, traces); Unified Observability & Telemetry Pipeline (The Core with distributed tracing, Cloud Logging with SOC 2 log sinks, Cloud Monitoring metrics aggregation, and Operational Excellence Control Plane for SRE SLO/SLA definitions and budget alerts); Actionable Operations & Reporting (Datadog Observability & SIEM Integration, Looker Studio dynamic dashboards with SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn, personas SRE, Ops Team, DevSecOps, Day-2 Ops Drift Detection & Automated Remediation with Automated Runbooks, and Incident Management with Cloud Monitoring Alerts and PagerDuty receiving RED alerts).",
+    primaryActors: "Site Reliability Engineers (SREs), Operations Leads, DevSecOps Engineers, Cloud Architects",
+    targetOutcomes: "Sub-Second Distributed Tracing, Zero-Lag SIEM & Datadog Observability, Automated Drift Detection & Runbook Remediation, SOC 2 Compliant Telemetry Audit",
+    desc: "WBS 6.1.1 Enterprise SRE & Observability blueprint mapping observed workloads, unified telemetry core, Datadog SIEM, Looker Studio dashboards, and incident management."
+  },
+  tech_enterprise_sre: {
+    id: "enterprise_sre_observability",
+    title: "Enterprise SRE & Observability (WBS 6.1.1)",
+    category: "Operational Excellence",
+    useCase: "ENTERPRISE SRE & OBSERVABILITY ARCHITECTURE (WBS 6.1.1)",
+    businessUseCase: "Enterprise SRE and Observability architecture connecting observed GCP workloads, unified telemetry pipelines, Datadog SIEM, and Looker Studio dashboards.",
+    primaryActors: "SREs, Ops Teams, DevSecOps Engineers, Cloud Architects",
+    targetOutcomes: "Distributed Tracing, Automated Drift Remediation, High-Precision Alerting",
+    desc: "Enterprise SRE and observability blueprint illustrating unified telemetry pipelines, Datadog SIEM integration, and Looker Studio reporting."
   }
 };
 

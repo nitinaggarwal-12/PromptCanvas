@@ -258,6 +258,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 6.2.1 Go-Live Cutover & War Room Runbook across 3 horizontal layers: Preparation & Approval Gates, War Room & Opsgenie Execution with 5-Step Minute-by-Minute Cutover & Automated Rollback Script, and Post-Launch Day-2 Operations.",
     prompt: "Act as a Lead DevSecOps & SRE Solutions Architect. Design a production-grade WBS 6.2.1 Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State) blueprint. Include: 3 Horizontal Layers (Layer 1 Top Preparation & Approval Phase with CI/CD Pipeline, WORM storage Go-Live Prep Checklist, Release Manager & App Owner Go/No-Go Decision Gate, Confluence Runbook Draft, Jira Cutover Ticket; Layer 2 Center The War Room & Live Execution with SRE, Live Communication Channel, Enterprise War Room banner, Opsgenie Integration Engine, 5-Step Minute-by-Minute Execution Script, Automated Rollback Script with DNS fallback/MFE rollback/Disable AI Agent/Restore Data snapshots and Red Alert; Layer 3 Bottom Post-Launch Day-2 Operations & Support with SRE, Release Manager, Dynamic Dashboards, Active Data Control Plane, Go-Live Verification Scorecard) -> Legend."
+  },
+  {
+    id: "enterprise_sre_observability",
+    name: "Enterprise SRE & Observability (WBS 6.1.1)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 6.1.1 Enterprise SRE & Observability Architecture spanning Prerequisite CI/CD flow, Observed Workloads (Client, Microservices, AI Agents, Data Tier), Unified Telemetry Pipeline Core, Datadog SIEM, Looker Studio dynamic dashboards, automated drift remediation, and PagerDuty incident management.",
+    prompt: "Act as a Principal SRE & Observability Solutions Architect. Design a production-grade WBS 6.1.1 Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State) blueprint. Include: Left Prerequisite Flow (Cloud-Native CI/CD with Git Repository, Jenkins, GitLab); Container 1 Observed Workloads (GCP Workload Ingress with Client Applications, Microservices on Cloud Run/GKE, AI Agents Gemini Pro, and Data Tier Cloud SQL/BigQuery emitting logs, metrics, traces); Container 2 Unified Observability & Telemetry Pipeline (The Core with distributed tracing, Cloud Logging with SOC 2 log sinks, Cloud Monitoring metrics aggregation, and Operational Excellence Control Plane for SRE SLO/SLA definitions and budget alerts); Container 3 Actionable Operations & Reporting (Datadog Observability & SIEM Integration, Looker Studio dynamic dashboards with SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn, personas SRE, Ops Team, DevSecOps, Day-2 Ops Drift Detection & Automated Remediation with Automated Runbooks, and Incident Management with Cloud Monitoring Alerts and PagerDuty receiving RED alerts) -> Legend."
   }
 ];
 
@@ -282,6 +289,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('unified_data_governance') || id.includes('data_governance') || id === 'unified_data_governance') return 'unified_data_governance';
   if (id.includes('dataops_anomaly') || id.includes('dataops') || id === 'dataops_anomaly_detection') return 'dataops_anomaly_detection';
   if (id.includes('golive') || id.includes('war_room') || id.includes('cutover') || id === 'golive_warroom_runbook') return 'golive_warroom_runbook';
+  if (id.includes('sre') || id.includes('observability') || id === 'enterprise_sre_observability') return 'enterprise_sre_observability';
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
@@ -365,6 +373,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'golive_warroom_runbook') {
     const { getExactGoLiveWarRoomRunbookXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactGoLiveWarRoomRunbookXml();
+  } else if (id === 'enterprise_sre_observability') {
+    const { getExactEnterpriseSreObservabilityXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactEnterpriseSreObservabilityXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -393,6 +404,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'unified_data_governance' ||
     id === 'dataops_anomaly_detection' ||
     id === 'golive_warroom_runbook' ||
+    id === 'enterprise_sre_observability' ||
     id.includes('agent_harness')
   );
 
