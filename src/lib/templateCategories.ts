@@ -233,6 +233,27 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Master Multi-Region Active-Passive DR: Global L7 LB -> Zero-Trust Active Region A (US-East1) & Pilot Light Region B (US-West1) -> Redis Cache -> Cross-Region Async DB Replication -> 6-Step SRE Failover Runbook & FMEA Matrix."
   },
   {
+    id: "legacy_dependency_map",
+    name: "Legacy Data & System Dependency Map (Strangler Fig)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 0.1.1 / 0.2.1)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for enterprise legacy discovery, data gravity assessment, technical debt cataloging, and orchestrating progressive Strangler Fig zero-downtime migrations from on-prem monoliths into Google Cloud Platform.",
+    bestFor: [
+      "WBS 0.1.1 Legacy Assessment & As-Is System Discovery",
+      "WBS 0.2.1 Migration Strangler Fig Transition Architecture",
+      "On-Premises Datacenter mapping (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2)",
+      "Technical Debt & Data Gravity Anchor identification",
+      "Reverse proxy traffic interception & selective microservice routing",
+      "Informatica PowerCenter ETL grid ingestion into GCP Target Data Platform (Cloud Run, Cloud SQL, BigQuery, Bigtable)"
+    ],
+    keyTech: ["Oracle 11g", "SAP ECC R/3", "Mainframe z/OS", "IBM DB2", "Informatica PowerCenter", "Google Cloud Run", "Cloud SQL", "BigQuery", "Bigtable", "Eventarc", "Cloud Workflows", "StratoZone"],
+    thumbnail: "/templates/legacy_dependency_map.png",
+    promptSummary: "Legacy Data & Dependency Map: As-Is On-Prem Datacenter (ERP Monolith, Mainframe, Oracle/DB2) -> Strangler Reverse Proxy -> Microservice Decoupling -> Informatica ETL Grid -> Optimized GCP To-Be Target Tier."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

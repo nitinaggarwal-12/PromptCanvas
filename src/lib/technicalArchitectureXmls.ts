@@ -6,13 +6,16 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
 
 // 1.1 GCP Multi-Region Active-Passive Disaster Recovery Topology
 const TECH_XML_MULTI_REGION_DR = getExactMultiRegionDrReferenceXml();
+
+// 1.2 Legacy Data & System Dependency Map (Strangler Fig Transition Architecture)
+const TECH_XML_LEGACY_DEPENDENCY_MAP = getExactLegacyDependencyMapXml();
 
 
 
@@ -1362,6 +1365,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('agentic_mesh') || id.includes('mesh')) {
     return TECH_XML_AGENTIC_MESH_GCP;
   }
+  if (id.includes('legacy') || id.includes('dependency_map') || id.includes('strangler') || id === 'legacy_dependency_map') {
+    return TECH_XML_LEGACY_DEPENDENCY_MAP;
+  }
   if (id.includes('harness') || id.includes('agent_runtime') || id.includes('agent_harness')) {
     const { getExactAgentHarnessRuntimeReferenceXml } = require('./newEnterpriseReferenceXmls');
     return getExactAgentHarnessRuntimeReferenceXml();
@@ -1374,6 +1380,7 @@ export const TECH_XML_AGENT_HARNESS_RUNTIME = '';
 export {
   TECH_XML_SERVERLESS_GCP,
   TECH_XML_MULTI_REGION_DR,
+  TECH_XML_LEGACY_DEPENDENCY_MAP,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,

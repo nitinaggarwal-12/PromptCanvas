@@ -259,6 +259,16 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Principal Cloud Architects, Site Reliability Engineering (SRE) Leads, CISO / Security Architects, Infrastructure Leads",
     targetOutcomes: "Target RTO 15-30m, Target RPO 1-5m, Pilot Light 10% Standby Cost (~90% Compute Savings), Zero-Trust VPC-SC Compliance, 1:1 Terraform State Parity, FMEA Failure Mode Certification",
     desc: "Production-grade GCP Active-Passive Disaster Recovery master template with Global L7 Load Balancer, Zero-Trust perimeter, Cloud KMS CMEK, Memorystore Redis HA, Cloud SQL cross-region async replication, Dual-Region GCS, and executive SRE failover runbooks."
+  },
+  legacy_dependency_map: {
+    id: "legacy_dependency_map",
+    title: "Legacy Data & System Dependency Map (Strangler Fig Transition)",
+    category: "Legacy Discovery",
+    useCase: "LEGACY DISCOVERY & STRANGLER FIG MIGRATION (PHASE 0: ASSESSMENT)",
+    businessUseCase: "WBS 0.1.1 / 0.2.1: Comprehensive Legacy Data & System Dependency Map depicting the As-Is on-premise monolith datacenter (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2, Message Queue, File Shares), Strangler Fig reverse proxy interception, and progressive strangler migration into Google Cloud Platform (Cloud Run, Cloud SQL, BigQuery, Bigtable, Eventarc, Workflows).",
+    primaryActors: "Data Architects, Enterprise Architects, Application Owners, Migration Leads, EA Boards",
+    targetOutcomes: "Identification of Technical Debt & Data Gravity Anchors, Zero-Downtime Strangler Fig Decoupling, Full Serverless Scale, Reduced TCO, Data Residency Sovereignty Compliance",
+    desc: "WBS 0.1.1 / 0.2.1 Legacy discovery and strangler fig transition architecture mapping on-prem monoliths, databases, file shares, and progressive decoupling into GCP target state."
   }
 };
 

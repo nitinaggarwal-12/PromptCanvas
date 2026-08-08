@@ -1385,3 +1385,429 @@ export function getExactMultiRegionDrReferenceXml(): string {
 </mxfile>
 `.trim();
 }
+
+/**
+ * 🏛️ BLUEPRINT: WBS 0.1.1 / 0.2.1: LEGACY DATA & SYSTEM DEPENDENCY MAP (MIGRATION STRANGLER FIG TRANSITION ARCHITECTURE)
+ * Pixel-Perfect Replica of Legacy Discovery & Strangler Fig Migration Blueprint
+ */
+export function getExactLegacyDependencyMapXml(): string {
+  return `
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="legacy_dependency_map" name="WBS 0.2.1: Migration Strangler Fig Transition Architecture">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ================= MAIN HEADER BANNER ================= -->
+        <mxCell id="hdr_main_title" value="&lt;b style=&quot;font-size:17px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 0.2.1: Migration Strangler Fig Transition Architecture vs: Strangler Fig&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="250" y="10" width="1100" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= TOP-LEFT METADATA DOCUMENT CARD ================= -->
+        <mxCell id="doc_meta_card" value="&lt;div style=&quot;line-height:14px;font-size:9.5px;color:#334155;text-align:left;font-family:sans-serif;&quot;&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Diagram Name:&lt;/b&gt; Migration Strangler Fig Transition Architecture&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Architecture State:&lt;/b&gt; As-Is&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;GCAF Pillar:&lt;/b&gt; Operational Excellence&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Persona (Creator):&lt;/b&gt; 3. Data Architect (ADDITION)&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Formal Phase Name:&lt;/b&gt; Phase 0: Assessment (ADDITION)&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Target Audience:&lt;/b&gt; Enterprise Architects, Application Owners&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;size=14;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="44" width="310" height="96" as="geometry"/>
+        </mxCell>
+
+        <!-- STAGE 2 HEADER -->
+        <mxCell id="hdr_stage2" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;STAGE 2: STRANGLER PATTERN APPLICATION&lt;br&gt;(INITIAL MIGRATION)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="310" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- STAGE 3 HEADER -->
+        <mxCell id="hdr_stage3" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;STAGE 3: ADVANCED STRANGLER&lt;br&gt;&amp;amp; LEGACY DEPRECATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="780" y="100" width="280" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- STAGE 4 HEADER & CLIENTS -->
+        <mxCell id="hdr_stage4" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;STAGE 4: OPTIMIZED TO-BE&lt;br&gt;ARCHITECTURE&lt;br&gt;(WBS 0.2.1)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="40" width="280" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_top_laptop" value="" style="sketch=0;outlineConnect=0;fontColor=#3C4043;fontSize=9;fontStyle=1;gradientColor=none;strokeColor=none;fillColor=#475569;align=center;verticalAlign=top;shape=mxgraph.gcp2.laptop;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="106" width="32" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_top_phone" value="" style="sketch=0;outlineConnect=0;fontColor=#3C4043;fontSize=9;fontStyle=1;gradientColor=none;strokeColor=none;fillColor=#475569;align=center;verticalAlign=top;shape=mxgraph.gcp2.smartphone;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="106" width="30" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Top Clients downward arrows to GCP Ingress -->
+        <mxCell id="edge_client_laptop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="c_top_laptop">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1336" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_client_phone" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="c_top_phone">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1415" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================= STAGE 1: ASSESSMENT & AS-IS DISCOVERY CONTAINER ================= -->
+        <mxCell id="box_stage1_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#475569;strokeWidth=1.5;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="148" width="1160" height="602" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_stage1_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;STAGE 1: ASSESSMENT &amp;amp; AS-IS DISCOVERY (WBS 0.1.1) findings&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="154" width="480" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- External Systems Box (Far Left) -->
+        <mxCell id="box_external_sys" value="&lt;b style=&quot;color:#0F172A;font-size:11px;&quot;&gt;External&lt;br&gt;Systems&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="44" y="190" width="88" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= ON-PREMISE DATACENTER CONTAINER ================= -->
+        <mxCell id="box_onprem_dc" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="154" y="190" width="270" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_onprem_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;On-Premise Datacenter&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="154" y="194" width="270" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Legacy Custom ERP Monolith Card -->
+        <mxCell id="card_erp_monolith" value="&lt;b style=&quot;font-size:10.5px;color:#991B1B;&quot;&gt;Legacy Custom ERP Monolith&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#4B5563&quot; style=&quot;font-size:9px;&quot;&gt;(Tightly Coupled/Tangled)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="166" y="218" width="246" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- SAP ECC R/3 Card -->
+        <mxCell id="card_sap_ecc" value="&lt;b style=&quot;font-size:11px;color:#1E293B;&quot;&gt;SAP ECC R/3&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="166" y="282" width="118" height="82" as="geometry"/>
+        </mxCell>
+
+        <!-- Mainframe z/OS Card -->
+        <mxCell id="card_mainframe" value="&lt;b style=&quot;font-size:11px;color:#581C87;&quot;&gt;Mainframe&lt;br&gt;z/OS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#8B5CF6;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=6;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="294" y="282" width="118" height="82" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_mainframe" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#6B21A8;align=center;verticalAlign=top;shape=mxgraph.gcp2.compute_engine;" vertex="1" parent="1">
+          <mxGeometry x="343" y="288" width="20" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Oracle 11g Database Cylinder -->
+        <mxCell id="cyl_oracle_legacy" value="&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;Oracle 11g&lt;br&gt;Database&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#4B5563&quot; style=&quot;font-size:8.5px;&quot;&gt;(Customer Data)&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="166" y="376" width="118" height="132" as="geometry"/>
+        </mxCell>
+
+        <!-- IBM DB2 Database Cylinder -->
+        <mxCell id="cyl_db2_legacy" value="&lt;b style=&quot;font-size:10px;color:#0369A1;&quot;&gt;IBM DB2&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#4B5563&quot; style=&quot;font-size:8.5px;&quot;&gt;(Transactional&lt;br&gt;Data)&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="294" y="376" width="118" height="132" as="geometry"/>
+        </mxCell>
+
+        <!-- External Systems -> On-Premise Monolith Arrow -->
+        <mxCell id="edge_ext_to_monolith" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="box_external_sys" target="card_erp_monolith">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= ON-PREM AS-IS MESSAGING & FILE SHARES ================= -->
+        <!-- Message Queue Cylinder Shape (Horizontal) -->
+        <mxCell id="cyl_mq" value="&lt;b style=&quot;font-size:11px;color:#1E293B;&quot;&gt;Message&lt;br&gt;Queue&lt;/b&gt;" style="shape=cylinder3;direction=north;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#E2E8F0;strokeColor=#64748B;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="210" y="640" width="160" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_mq_warn" value="⚠️" style="text;html=1;align=center;verticalAlign=middle;fontColor=#DC2626;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="360" y="670" width="20" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="txt_msg_messaging" value="Message&lt;br&gt;Messaging" style="text;html=1;align=center;verticalAlign=middle;fontColor=#475569;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="144" y="650" width="60" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Synchronous & Asynchronous ETL connectors from On-Prem DC to MQ -->
+        <mxCell id="edge_dc_to_mq_sync" value="&lt;font style=&quot;font-size:8.5px;color:#1E293B;&quot;&gt;Synchronous&lt;br&gt;Call&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;labelBackgroundColor=#FAFAFA;spacingTop=1;spacingBottom=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="520" as="sourcePoint"/>
+            <mxPoint x="250" y="640" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_dc_to_mq_async" value="&lt;font style=&quot;font-size:8.5px;color:#1E293B;&quot;&gt;Async-&lt;br&gt;ronous&lt;br&gt;Batch&lt;br&gt;ETL&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;dashed=1;endArrow=block;endFill=1;labelBackgroundColor=#FAFAFA;spacingTop=1;spacingBottom=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="520" as="sourcePoint"/>
+            <mxPoint x="290" y="640" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_dc_to_mq_batch" value="&lt;font style=&quot;font-size:8.5px;color:#1E293B;&quot;&gt;Asynchronous&lt;br&gt;Batch&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;dashed=1;endArrow=block;endFill=1;labelBackgroundColor=#FAFAFA;spacingTop=1;spacingBottom=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="520" as="sourcePoint"/>
+            <mxPoint x="340" y="640" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Tightly Coupled Codebase Callout (Bottom Left) -->
+        <mxCell id="badge_coupled_codebase" value="⚠️ &lt;b style=&quot;font-size:9.5px;color:#991B1B;&quot;&gt;Tightly Coupled&lt;br&gt;Codebase&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="226" y="710" width="128" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_mq_to_codebase" value="&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Flat-file&lt;br&gt;transfers&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1;endArrow=block;endFill=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="cyl_mq" target="badge_coupled_codebase">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Left Technical Debt Callout Bubble -->
+        <mxCell id="bubble_tech_debt" value="&lt;div style=&quot;line-height:13px;font-size:9.5px;color:#991B1B;text-align:center;&quot;&gt;&lt;b&gt;Operational Complexity,&lt;br&gt;Data Gravity Anchors,&lt;br&gt;High Maintenance Costs,&lt;br&gt;Technical Debt identified&lt;/b&gt;&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position=0.15;base=16;size=16;position2=0.5;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="38" y="556" width="112" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Windows/Unix File Shares Box (Bottom Center) -->
+        <mxCell id="box_file_shares" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Windows/Unix&lt;br&gt;File Shares&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size:8.5px;&quot;&gt;(NFS/CIFS)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#64748B;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="510" y="640" width="100" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_fs_warn" value="⚠️" style="text;html=1;align=center;verticalAlign=middle;fontColor=#DC2626;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="596" y="670" width="20" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- File Shares Callouts -->
+        <mxCell id="badge_first_domain" value="&lt;div style=&quot;line-height:11px;font-size:8.5px;color:#991B1B;text-align:center;&quot;&gt;&lt;b&gt;First domain decoupled.&lt;br&gt;Primary writes still to legacy&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="424" y="710" width="144" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_manual_batch" value="&lt;b style=&quot;font-size:8.5px;color:#991B1B;&quot;&gt;Manual&lt;br&gt;Batch&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="580" y="710" width="56" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_shrinking_monolith" value="&lt;div style=&quot;line-height:12px;font-size:8.5px;color:#0F172A;text-align:left;&quot;&gt;&lt;b style=&quot;color:#0369A1;&quot;&gt;Most workloads migrated.&lt;/b&gt;&lt;br&gt;Data replicated for read-only.&lt;br&gt;Monolith shrinking to pilot light.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="644" y="704" width="180" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Dashed connectors to File Shares -->
+        <mxCell id="edge_dc_to_fs" value="&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Flat-File transfers&lt;br&gt;Transfers&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1;dashed=1;endArrow=block;endFill=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="424" y="470" as="sourcePoint"/>
+            <mxPoint x="510" y="667" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="444" y="470"/>
+              <mxPoint x="444" y="667"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================= STAGE 2: STRANGLER PROXY ================= -->
+        <mxCell id="capsule_proxy" value="&lt;b style=&quot;font-size:10px;color:#1E293B;&quot;&gt;Legacy&lt;br&gt;Entry/Reverse&lt;br&gt;Proxy&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size:8.5px;&quot;&gt;(e.g., NGINX/Apigee)&lt;/font&gt;" style="shape=ext;double=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E7FF;strokeColor=#6366F1;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="436" y="210" width="104" height="66" as="geometry"/>
+        </mxCell>
+
+        <!-- Monolith -> Proxy Vector -->
+        <mxCell id="edge_monolith_to_proxy" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" parent="1" source="card_erp_monolith" target="capsule_proxy">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= STAGE 3: ADVANCED STRANGLER & LEGACY DEPRECATION ================= -->
+        <!-- Microservice A + Cloud SQL Container -->
+        <mxCell id="box_stage3_microservice" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0F172A;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="576" y="174" width="184" height="124" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_selective_badge" value="Selective" style="text;html=1;align=right;verticalAlign=top;fontColor=#475569;fontSize=8.5;" vertex="1" parent="1">
+          <mxGeometry x="696" y="178" width="56" height="14" as="geometry"/>
+        </mxCell>
+
+        <!-- Microservice A Card -->
+        <mxCell id="card_ms_a" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:22px;&quot;&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Microservice A&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size:8px;&quot;&gt;(e.g., Cloud Run)&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="586" y="214" width="108" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_ms_a" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#0284C7;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_run;" vertex="1" parent="1">
+          <mxGeometry x="590" y="224" width="18" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud SQL (PostgreSQL) Database Symbol -->
+        <mxCell id="cyl_cloud_sql_ms" value="&lt;b style=&quot;font-size:9px;color:#0369A1;&quot;&gt;Cloud SQL&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size:8px;&quot;&gt;(PostgreSQL)&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="702" y="206" width="50" height="56" as="geometry"/>
+        </mxCell>
+
+        <!-- Proxy -> Microservice A Edge -->
+        <mxCell id="edge_proxy_to_msa" value="&lt;font style=&quot;font-size:8.5px;color:#1E293B;&quot;&gt;Selective&lt;br&gt;requests&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="capsule_proxy" target="box_stage3_microservice">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Legacy Databases Container (Center Stage 3) -->
+        <mxCell id="box_legacy_dbs_stage3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="466" y="342" width="276" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_legacy_dbs" value="&lt;b style=&quot;font-size:10px;color:#475569;&quot;&gt;Legacy Databases&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="466" y="346" width="276" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- Oracle 11g (Stage 3) with Anchor Icon ⚓ -->
+        <mxCell id="cyl_oracle_stage3" value="&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;Oracle 11g&lt;br&gt;Database&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size:8.5px;&quot;&gt;(Customer Data)&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="478" y="366" width="116" height="124" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_anchor_oracle" value="⚓" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#0F172A;strokeColor=none;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="562" y="458" width="22" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- IBM DB2 (Stage 3) with Anchor Icon ⚓ -->
+        <mxCell id="cyl_db2_stage3" value="&lt;b style=&quot;font-size:10px;color:#0369A1;&quot;&gt;IBM DB2&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size:8.5px;&quot;&gt;(Transactional&lt;br&gt;Data)&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="612" y="366" width="116" height="124" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_anchor_db2" value="⚓" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#0F172A;strokeColor=none;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="696" y="458" width="22" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Informatica PowerCenter (ETL Grid) Card -->
+        <mxCell id="box_informatica" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Informatica&lt;br&gt;PowerCenter&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#475569&quot; style=&quot;font-size:9px;&quot;&gt;(ETL Grid)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="794" y="380" width="120" height="96" as="geometry"/>
+        </mxCell>
+
+        <!-- Point to Point Integrations Vector (Microservice -> DB) -->
+        <mxCell id="edge_ms_to_legacydb" value="&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Point-to-Point&lt;br&gt;Integrations&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="box_stage3_microservice" target="cyl_db2_stage3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Legacy DB -> Informatica Fat Blue Arrows -->
+        <mxCell id="edge_fat_dbs_to_informatica" value="&lt;font style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Ingestible&lt;br&gt;transfers&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;endArrow=block;endFill=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="cyl_db2_stage3" target="box_informatica">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_fat_oracle_to_informatica" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;endArrow=block;endFill=1;" edge="1" parent="1" source="cyl_oracle_stage3" target="box_informatica">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="536" y="526"/>
+              <mxPoint x="760" y="526"/>
+              <mxPoint x="760" y="440"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fat_fileshare_to_informatica" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;endArrow=block;endFill=1;" edge="1" parent="1" source="box_file_shares" target="box_informatica">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="667"/>
+              <mxPoint x="770" y="460"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================= STAGE 4: OPTIMIZED TO-BE ARCHITECTURE (GCP PRODUCTION) ================= -->
+        <!-- Big GCP Stage 4 Outer Container -->
+        <mxCell id="box_gcp_stage4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="1204" y="148" width="366" height="602" as="geometry"/>
+        </mxCell>
+
+        <!-- GCP Logo Header Box -->
+        <mxCell id="box_gcp_hdr" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:11px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:24px;&quot;&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;GCP&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1214" y="156" width="346" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_gcp_logo" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_platform;" vertex="1" parent="1">
+          <mxGeometry x="1218" y="160" width="20" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Top GCP Ingress Container -->
+        <mxCell id="box_gcp_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1214" y="190" width="346" height="86" as="geometry"/>
+        </mxCell>
+
+        <!-- Global Load Balancing -->
+        <mxCell id="card_gcp_glb" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Global Load&lt;br&gt;Balancing&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;align=center;verticalAlign=bottom;spacingBottom=3;" vertex="1" parent="1">
+          <mxGeometry x="1228" y="200" width="96" height="66" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_gcp_glb" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#0284C7;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_load_balancing;" vertex="1" parent="1">
+          <mxGeometry x="1264" y="205" width="24" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Identity-Aware Proxy -->
+        <mxCell id="card_gcp_iap" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Identity-Aware&lt;br&gt;Proxy&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;align=center;verticalAlign=bottom;spacingBottom=3;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="200" width="96" height="66" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_gcp_iap" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#0284C7;align=center;verticalAlign=top;shape=mxgraph.gcp2.identity_aware_proxy;" vertex="1" parent="1">
+          <mxGeometry x="1476" y="205" width="24" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Ingress Flow Label -->
+        <mxCell id="lbl_iap_flow" value="&lt;font style=&quot;font-size:9px;color:#1E293B;&quot;&gt;Identity-Aware Proxy&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1274" y="280" width="220" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- Microservice A -> GCP Ingress Arrow -->
+        <mxCell id="edge_msa_to_gcplb" value="&lt;font style=&quot;font-size:8px;color:#1E293B;&quot;&gt;Simple, request,&lt;br&gt;simple, non-critical&lt;br&gt;reads / writes&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2.5;endArrow=block;endFill=1;labelBackgroundColor=#FAFAFA;" edge="1" parent="1" source="box_stage3_microservice" target="box_gcp_ingress">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= GCP CORE WORKLOADS CONTAINER ================= -->
+        <mxCell id="box_gcp_core" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1;dashed=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1214" y="300" width="346" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_gcp_core_title" value="&lt;b style=&quot;font-size:10px;color:#B45309;&quot;&gt;GCP&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="304" width="40" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Run / GKE -->
+        <mxCell id="card_gcp_run" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Cloud&lt;br&gt;Run/GKE&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;align=center;verticalAlign=bottom;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="1228" y="326" width="80" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_gcp_run" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#0284C7;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_run;" vertex="1" parent="1">
+          <mxGeometry x="1257" y="330" width="22" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Google Cloud Workflows -->
+        <mxCell id="card_gcp_workflows" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Google Cloud&lt;br&gt;Workflows&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;align=center;verticalAlign=bottom;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="1334" y="326" width="94" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_gcp_workflows" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#0284C7;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_dataflow;" vertex="1" parent="1">
+          <mxGeometry x="1371" y="330" width="22" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Eventarc Box -->
+        <mxCell id="card_gcp_eventarc" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Eventarc&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=bottom;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1464" y="326" width="80" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_gcp_eventarc" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#0284C7;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_pubsub;" vertex="1" parent="1">
+          <mxGeometry x="1493" y="338" width="22" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud SQL in Core Box -->
+        <mxCell id="cyl_core_cloud_sql" value="&lt;b style=&quot;font-size:9.5px;color:#0369A1;&quot;&gt;Cloud SQL&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1348" y="420" width="70" height="52" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Bigtable in Core Box -->
+        <mxCell id="cyl_core_bigtable" value="&lt;b style=&quot;font-size:9.5px;color:#0369A1;&quot;&gt;Cloud&lt;br&gt;Bigtable&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1468" y="450" width="72" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Informatica -> GCP Workloads Fat Blue Arrow -->
+        <mxCell id="edge_informatica_to_gcprun" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=3;endArrow=block;endFill=1;" edge="1" parent="1" source="box_informatica" target="card_gcp_run">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1060" y="410"/>
+              <mxPoint x="1060" y="356"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Bottom Data Tier Storage Nodes (Stage 4) -->
+        <mxCell id="cyl_s4_cloudsql" value="&lt;b style=&quot;font-size:9.5px;color:#0369A1;&quot;&gt;Cloud SQL&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1228" y="610" width="80" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="cyl_s4_bigquery" value="&lt;b style=&quot;font-size:9.5px;color:#0369A1;&quot;&gt;BigQuery&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1344" y="610" width="80" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="cyl_s4_bigtable" value="&lt;b style=&quot;font-size:9.5px;color:#0369A1;&quot;&gt;Bigtable&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="610" width="80" height="56" as="geometry"/>
+        </mxCell>
+
+        <!-- Workflows / DB down arrows -->
+        <mxCell id="edge_wf_to_cloudsql" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="card_gcp_workflows" target="cyl_core_cloud_sql">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_cloudsql_to_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="cyl_core_cloud_sql" target="cyl_s4_bigquery">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_core_bt_to_s4_bt" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="cyl_core_bigtable" target="cyl_s4_bigtable">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_inf_to_s4_sql" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="box_informatica" target="cyl_s4_cloudsql">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1080" y="440"/>
+              <mxPoint x="1080" y="638"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================= BOTTOM LEGEND & OUTCOME CALLOUT ================= -->
+        <!-- Legend Box (Bottom Right) -->
+        <mxCell id="box_legend" value="&lt;div style=&quot;line-height:16px;font-size:9.5px;color:#334155;text-align:left;font-family:sans-serif;&quot;&gt;&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Legend&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#1E293B;&quot;&gt;────────►&lt;/span&gt; &lt;b&gt;Synchronous Call&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#1E293B;&quot;&gt;╌╌╌╌╌╌╌╌►&lt;/span&gt; &lt;b&gt;Asynchronous Batch&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#1E293B;&quot;&gt;────────►&lt;/span&gt; &lt;b&gt;File Transfer&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#0284C7;&quot;&gt;════════►&lt;/span&gt; &lt;b&gt;MQ Message&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;align=left;verticalAlign=middle;spacingLeft=10;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="960" y="760" width="260" height="106" as="geometry"/>
+        </mxCell>
+
+        <!-- Outcome Callout Box -->
+        <mxCell id="box_outcomes" value="&lt;div style=&quot;line-height:15px;font-size:10px;color:#0F172A;text-align:center;font-family:sans-serif;&quot;&gt;&lt;b style=&quot;color:#137333;&quot;&gt;Full serverless scale. Automated operations.&lt;br&gt;Reduced TCO.&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#334155&quot;&gt;Data resides entirely in GCP&lt;br&gt;(Data Sovereign compliant).&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="760" width="330" height="106" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}
+

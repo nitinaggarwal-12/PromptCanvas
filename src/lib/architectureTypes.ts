@@ -181,6 +181,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "SRE-grade GCP active-passive disaster recovery architecture with Global L7 HTTPS Load Balancing, Cloud Run pilot light compute, Cloud SQL HA with cross-region asynchronous replication (<5min lag), Dual-Region GCS, and automated failover runbooks.",
     prompt: "Act as a GCP Principal Reliability Engineer & SRE. Design a production-grade GCP Active-Passive Multi-Region Disaster Recovery architecture across Region A (US-East1 Active) and Region B (US-West1 Pilot Light Standby). Include: Global L7 HTTPS Load Balancer with Anycast IP & SSL Offloading, Cloud Run microservices (100% active load vs 10% warm pilot light), Cloud SQL HA with cross-region asynchronous replication (<5min data lag), Dual-Region GCS bucket with Turbo Replication, and a documented 5-step automated failover and zero-data-loss failback runbook with full SLA recovery matrix."
+  },
+  {
+    id: "legacy_dependency_map",
+    name: "Legacy Data & System Dependency Map (Strangler Fig)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 0.1.1 / 0.2.1 Legacy discovery and Strangler Fig transition architecture mapping on-prem monoliths (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2), data gravity anchors, and progressive strangler migration into GCP serverless production.",
+    prompt: "Act as an Enterprise Data & Migration Architect. Design a production-grade WBS 0.1.1 / 0.2.1 Legacy Data & System Dependency Map and Strangler Fig Transition Architecture. Include: Stage 1 As-Is Discovery On-Premises Datacenter (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2, Message Queue, File Shares), Stage 2 Strangler reverse proxy, Stage 3 Microservice decoupling & Informatica ETL grid, and Stage 4 Optimized GCP To-Be Production Architecture (Cloud Run, Cloud SQL, BigQuery, Bigtable, Eventarc, Workflows)."
   }
 ];
 
@@ -196,6 +203,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id === 'tech_data_lakehouse' || id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse') return 'tech_data_lakehouse_gcp';
   if (id === 'tech_microservices_aws' || id === 'tech_microservices_gcp' || id === 'k8s_mesh') return 'tech_microservices_gcp';
   if (id === 'tech_event_driven_aws' || id === 'tech_event_driven_eda' || id === 'event_driven_aws') return 'tech_event_driven_eda';
+  if (id.includes('legacy') || id.includes('dependency_map') || id.includes('strangler')) return 'legacy_dependency_map';
   return id;
 }
 
@@ -244,6 +252,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'tech_agent_harness_runtime' || id.includes('agent_harness') || id.includes('agent_runtime')) {
     const { getExactAgentHarnessRuntimeReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAgentHarnessRuntimeReferenceXml();
+  } else if (id === 'legacy_dependency_map') {
+    const { getExactLegacyDependencyMapXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactLegacyDependencyMapXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -261,6 +272,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'serverless_gcp' ||
     id === 'tech_multi_region_dr' ||
     id === 'multi_region_dr' ||
+    id === 'legacy_dependency_map' ||
     id.includes('agent_harness')
   );
 
