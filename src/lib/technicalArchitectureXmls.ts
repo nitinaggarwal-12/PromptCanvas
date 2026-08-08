@@ -7,6 +7,7 @@
  * - Pure White Label Background Text Pills for 100% legibility
  */
 import { 
+  getExactMultiAgentLangGraphReferenceXml,
   getExactServerlessGcpReferenceXml, 
   getExactMultiRegionDrReferenceXml, 
   getExactLegacyDependencyMapXml, 
@@ -27,6 +28,7 @@ import {
   getExactMicroFrontendsXml,
   getExactStreamingAnalyticsXml,
   getExactDataLakehouseXml,
+  getExactZeroTrustMeshXml,
   getExactFintechPaymentsXml,
   getExactGenomicsClinicalXml,
   getExactSupplyChainXml,
@@ -1066,10 +1068,10 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
 export function getTechnicalArchitectureXml(archId: string): string {
   const id = (archId || '').toLowerCase();
   if (id.includes('multi_region_dr') || id.includes('active_passive') || id.includes('disaster_recovery') || id === 'dr' || id.includes('multi_region')) {
-    return TECH_XML_MULTI_REGION_DR;
+    return getExactMultiRegionDrReferenceXml();
   }
   if (id.includes('serverless') || id.includes('cloud_run') || id === 'tech_serverless_gcp' || id === 'serverless_gcp') {
-    return TECH_XML_SERVERLESS_GCP;
+    return getExactServerlessGcpReferenceXml();
   }
   if (id.includes('c4') || id.includes('context_model')) {
     return TECH_XML_C4_SYSTEM_CONTEXT;
@@ -1081,95 +1083,91 @@ export function getTechnicalArchitectureXml(archId: string): string {
     return TECH_XML_EVENT_DRIVEN_EDA;
   }
   if (id.includes('multi_agent') || id.includes('langgraph')) {
-    return TECH_XML_MULTI_AGENT_LANGGRAPH;
+    return getExactMultiAgentLangGraphReferenceXml();
   }
   if (id.includes('streaming') || id.includes('telemetry') || id.includes('iot')) {
-    return TECH_XML_STREAMING_ANALYTICS;
+    return getExactStreamingAnalyticsXml();
   }
-  if (id.includes('microservices') || id.includes('kubernetes') || id.includes('eks') || id.includes('aws')) {
-    return TECH_XML_MICROSERVICES_AWS;
-  }
-  if (id.includes('zero_trust') || id.includes('mesh') || id === 'zero_trust_mesh') {
-    const { getExactZeroTrustMeshXml } = require('./newEnterpriseReferenceXmls');
+  if (id.includes('zero_trust') || id.includes('mesh') || id === 'zero_trust_mesh' || id.includes('microservices') || id.includes('kubernetes')) {
     return getExactZeroTrustMeshXml();
   }
-  if (id.includes('lakehouse')) {
-    return TECH_XML_DATA_LAKEHOUSE;
+  if (id.includes('lakehouse') || id.includes('data_lakehouse')) {
+    return getExactDataLakehouseXml();
   }
-  if (id.includes('rag_gcp') || id.includes('vector_search')) {
-    return TECH_XML_RAG_GCP;
+  if (id.includes('rag_gcp') || id.includes('vector_search') || id.includes('rag')) {
+    return getExactAgenticMeshXml();
   }
   if (id.includes('devsecops') || id.includes('cicd')) {
-    return TECH_XML_DEVSECOPS_GCP;
+    return getExactEvalSafetyXml();
   }
   if (id.includes('fintech') || id.includes('payments')) {
-    return TECH_XML_FINTECH_PAYMENTS_GCP;
+    return getExactFintechPaymentsXml();
   }
   if (id.includes('genomics') || id.includes('clinical')) {
-    return TECH_XML_GENOMICS_CLINICAL_GCP;
+    return getExactGenomicsClinicalXml();
   }
   if (id.includes('supply_chain') || id.includes('logistics')) {
-    return TECH_XML_SUPPLY_CHAIN_GCP;
+    return getExactSupplyChainXml();
   }
   if (id.includes('eval_safety') || id.includes('benchmarking')) {
-    return TECH_XML_EVAL_SAFETY_GCP;
+    return getExactEvalSafetyXml();
   }
   if (id.includes('agentic_mesh') || id.includes('mesh')) {
-    return TECH_XML_AGENTIC_MESH_GCP;
+    return getExactAgenticMeshXml();
   }
   if (id.includes('6rs') || id.includes('six_rs') || id.includes('disposition') || id === 'six_rs_migration_matrix') {
-    return TECH_XML_SIX_RS_MIGRATION_MATRIX;
+    return getExactSixRsMigrationMatrixXml();
   }
   if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id === 'hybrid_strangler_transition') {
-    return TECH_XML_HYBRID_STRANGLER_TRANSITION;
+    return getExactHybridStranglerTransitionXml();
   }
   if (id.includes('finops') || id.includes('chargeback') || id === 'cloud_finops_chargeback') {
-    return TECH_XML_CLOUD_FINOPS_CHARGEBACK;
+    return getExactCloudFinopsChargebackXml();
   }
   if (id.includes('ai_coe') || id.includes('operating_model') || id === 'ai_coe_operating_model') {
-    return TECH_XML_AI_COE_OPERATING_MODEL;
+    return getExactAiCoeOperatingModelXml();
   }
   if (id.includes('mcp') || id.includes('context_gateway') || id === 'mcp_context_gateway') {
-    return TECH_XML_MCP_CONTEXT_GATEWAY;
+    return getExactMcpContextGatewayXml();
   }
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') {
-    return TECH_XML_LOGICAL_AI_CONFIG_TENANT;
+    return getExactLogicalAiConfigTenantXml();
   }
   if (id.includes('hub_and_spoke') || id.includes('hub_spoke') || id === 'hub_and_spoke_agent_config') {
-    return TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG;
+    return getExactHubAndSpokeAgentConfigXml();
   }
   if (id.includes('unified_data_governance') || id.includes('data_governance') || id === 'unified_data_governance') {
-    return TECH_XML_UNIFIED_DATA_GOVERNANCE;
+    return getExactUnifiedDataGovernanceXml();
   }
   if (id.includes('dataops_anomaly') || id.includes('dataops') || id === 'dataops_anomaly_detection') {
-    return TECH_XML_DATAOPS_ANOMALY_DETECTION;
+    return getExactDataOpsAnomalyDetectionXml();
   }
   if (id.includes('golive') || id.includes('war_room') || id.includes('cutover') || id === 'golive_warroom_runbook') {
-    return TECH_XML_GOLIVE_WARROOM_RUNBOOK;
+    return getExactGoLiveWarRoomRunbookXml();
   }
   if (id.includes('sre') || id.includes('observability') || id === 'enterprise_sre_observability') {
-    return TECH_XML_ENTERPRISE_SRE_OBSERVABILITY;
+    return getExactEnterpriseSreObservabilityXml();
   }
   if (id.includes('data_residency') || id.includes('sovereign_map') || id.includes('sovereign') || id === 'data_residency_sovereign_map' || id === 'tech_data_residency') {
-    return TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP;
+    return getExactDataResidencySovereignMapXml();
   }
   if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('federated') || id === 'federated_iam_sso' || id === 'tech_federated_iam') {
-    return TECH_XML_FEDERATED_IAM_SSO;
+    return getExactFederatedIamSsoXml();
   }
   if (id.includes('trism') || id.includes('guardrail') || id === 'tech_ai_trism_guardrails' || id === 'ai_trism_guardrails') {
-    return TECH_XML_AI_TRISM_GUARDRAILS;
+    return getExactAiTrismGuardrailsXml();
   }
   if (id.includes('micro_frontend') || id.includes('mfe') || id === 'tech_micro_frontends' || id === 'micro_frontends_ui') {
-    return TECH_XML_MICRO_FRONTENDS;
+    return getExactMicroFrontendsXml();
   }
   if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
-    return TECH_XML_LEGACY_DEPENDENCY_MAP;
+    return getExactLegacyDependencyMapXml();
   }
   if (id.includes('harness') || id.includes('agent_runtime') || id.includes('agent_harness')) {
     const { getExactAgentHarnessRuntimeReferenceXml } = require('./newEnterpriseReferenceXmls');
     return getExactAgentHarnessRuntimeReferenceXml();
   }
-  return TECH_XML_SERVERLESS_GCP;
+  return getExactServerlessGcpReferenceXml();
 }
 
 export const TECH_XML_AGENT_HARNESS_RUNTIME = '';
