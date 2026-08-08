@@ -502,41 +502,20 @@ You are incrementally updating an existing architecture diagram (${effectiveArch
     let businessUsecase: string | null = 'Unified database schema consolidation and clean visual semantic layer.';
     let technicalUsecase: string | null = 'Zero-collision corridor routing with strict 2D bounding box compliance.';
 
-      const isConceptualDiagram = effectiveArchType === 'conceptual_diagram';
-      const isExistingXmlConceptual = existingXml && existingXml.includes('col_ingestion');
-
-      if (isRefinement) {
-        const isSimpleUpdatePrompt = /^(updte|update|update it|can u pdate it|can you update it|refresh|rebuild|sync)$/i.test(prompt.trim());
-        if ((isConceptualDiagram || isSimpleUpdatePrompt) && (!isExistingXmlConceptual || isSimpleUpdatePrompt) && templateXmlBackbone) {
-          console.log(`[Conceptual / Template Guard] Enforcing pristine 3-Stage layout for ${effectiveArchType} on refinement prompt: "${prompt}"`);
-          xml = injectUseCaseFlavor(templateXmlBackbone, prompt, prompt);
-          reasoning = `Preserved exact 3-Stage ${effectiveArchType} layout structure while refreshing domain labeling for "${prompt}".`;
-          businessUsecase = `Refined enterprise visual architecture for ${effectiveArchType}.`;
-          technicalUsecase = `Layout structure and component coordinates locked and preserved across versions.`;
-        } else {
-          const contents = `
-### Existing XML:
-\`\`\`xml
-${existingXml}
-\`\`\`
-
-### Refinement Prompt:
-${prompt}
-          `.trim();
-
-          const response = await ai.models.generateContent({
-            model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
-            contents: contents,
-            config: {
-              systemInstruction: activeSystemPrompt,
-            },
-          });
-          responseText = response.text || '';
-          const parsed = parseAiResponse(responseText);
-          xml = parsed.xml || existingXml;
-          reasoning = parsed.reasoning;
-          businessUsecase = parsed.businessUsecase;
-          technicalUsecase = parsed.technicalUsecase;
+      if (isRefinement && templateXmlBackbone) {
+        console.log(`[Gemini Template Refinement] Live refining pristine layout for (${effectiveArchType}) and refinement prompt: "${prompt.slice(0, 60)}"...`);
+        try {
+          const customized = await customizeDiagramTemplateWithGemini(existingXml || templateXmlBackbone, prompt, effectiveArchType);
+          xml = customized.xml;
+          reasoning = customized.reasoning;
+          businessUsecase = customized.businessUsecase;
+          technicalUsecase = customized.technicalUsecase;
+        } catch (customErr) {
+          console.warn('[Gemini Refinement Fallback] Falling back to algorithmic flavor injection:', customErr);
+          xml = injectUseCaseFlavor(existingXml || templateXmlBackbone, prompt, prompt);
+          reasoning = `Refined using decided ${effectiveArchType} structural layout backbone tailored to "${prompt}".`;
+          businessUsecase = `Pristine ${effectiveArchType} architecture refined for "${prompt}".`;
+          technicalUsecase = `Zero-collision 2D corridor layout preserved across versions.`;
         }
       } else if (templateXmlBackbone) {
         console.log(`[Gemini Template Customization] Live customizing pristine layout for (${effectiveArchType}) and prompt: "${prompt.slice(0, 60)}"...`);
