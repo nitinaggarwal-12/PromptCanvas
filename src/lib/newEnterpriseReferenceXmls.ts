@@ -900,7 +900,7 @@ export function getExactServerlessGcpReferenceXml(): string {
  */
 export function getExactMultiRegionDrReferenceXml(): string {
   return `
-<mxfile host="app.diagrams.net" modified="2026-08-08T05:58:08.988Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T06:45:59.852Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="gcp_multi_region_dr_case_b" name="1. GCP Active-Passive Multi-Region DR (Case B)">
     <mxGraphModel dx="1560" dy="980" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="980" background="#FFFFFF">
       <root>
@@ -962,7 +962,7 @@ export function getExactMultiRegionDrReferenceXml(): string {
         </mxCell>
 
         <!-- HTTPS Connector Arrow (x: 250 -> 310) -->
-        <mxCell id="edge_https" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;HTTPS&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#202124;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#DADCE0;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
+        <mxCell id="edge_https" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;HTTPS&lt;br/&gt;TLS 1.3&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.5;strokeColor=#1A73E8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#1A73E8;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="250" y="104" as="sourcePoint" />
             <mxPoint x="310" y="104" as="targetPoint" />
@@ -992,44 +992,46 @@ export function getExactMultiRegionDrReferenceXml(): string {
         </mxCell>
 
         <!-- 4. Legend Key (x: 1110, w: 410) -->
-        <mxCell id="node_top_legend" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:8px;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#1A73E8;font-weight:bold;&#39;&gt;━━ Active Serving Path (100% Traffic)&lt;/span&gt;&lt;/td&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#5F6368;font-weight:bold;&#39;&gt;╌╌ Standby / Dormant Route&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#EA4335;font-weight:bold;&#39;&gt;╍╍ Async DB Replication Path&lt;/span&gt;&lt;/td&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#D93025;font-weight:bold;&#39;&gt;━━ Emergency SRE Failover Signal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;strokeColor=#DADCE0;strokeWidth=1;fillColor=#F8F9FA;html=1;whiteSpace=wrap;overflow=hidden;verticalAlign=middle;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="node_top_legend" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:8px;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#1A73E8;font-weight:bold;&#39;&gt;━━ Active Ingress &amp;amp; gRPC RPC&lt;/span&gt;&lt;/td&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#5F6368;font-weight:bold;&#39;&gt;╌╌ Standby / Dormant Route&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#EA4335;font-weight:bold;&#39;&gt;━━ Async DB WAL Replication&lt;/span&gt;&lt;/td&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#D93025;font-weight:bold;&#39;&gt;━━ Emergency SRE Control Signal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;strokeColor=#DADCE0;strokeWidth=1;fillColor=#F8F9FA;html=1;whiteSpace=wrap;overflow=hidden;verticalAlign=middle;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1110" y="58" width="410" height="92" as="geometry" />
         </mxCell>
 
-        <!-- Ingress Dispatcher Horizontal Bus & Centered Downward Arrows -->
-        <mxCell id="edge_glb_bus_a" value="" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#1A73E8;endArrow=none;" edge="1" parent="1">
+        <!-- =================================================================== -->
+        <!-- INGRESS DISPATCHER ARROWS (PENETRATING DIRECTLY INTO MICROSERVICES) -->
+        <!-- =================================================================== -->
+        <mxCell id="edge_glb_bus_a" value="" style="edgeStyle=none;html=1;strokeWidth=2.5;strokeColor=#1A73E8;endArrow=none;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="475" y="150" as="sourcePoint" />
             <mxPoint x="475" y="170" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_glb_hbus" value="" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#1A73E8;endArrow=none;" edge="1" parent="1">
+        <mxCell id="edge_glb_hbus" value="" style="edgeStyle=none;html=1;strokeWidth=2.5;strokeColor=#1A73E8;endArrow=none;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="350" y="170" as="sourcePoint" />
-            <mxPoint x="1210" y="170" as="targetPoint" />
+            <mxPoint x="106" y="170" as="sourcePoint" />
+            <mxPoint x="968" y="170" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Down to Region A (Active Ingress - Centered at x=350) -->
-        <mxCell id="edge_to_rega" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.5;strokeColor=#1A73E8;endArrow=block;endFill=1;" edge="1" parent="1">
+        <!-- Direct Active Ingress into Region A Microservice-A (x=106) -->
+        <mxCell id="edge_to_rega_srv" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.5;strokeColor=#1A73E8;endArrow=block;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="350" y="170" as="sourcePoint" />
-            <mxPoint x="350" y="195" as="targetPoint" />
+            <mxPoint x="106" y="170" as="sourcePoint" />
+            <mxPoint x="106" y="254" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="pill_hc_rega" value="&lt;b style=&#39;font-size:8px;color:#1A73E8;&#39;&gt;100% Active Ingress (Health Checked)&lt;/b&gt;" style="rounded=1;fillColor=#E8F0FE;strokeColor=#1A73E8;strokeWidth=1;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="250" y="161" width="200" height="18" as="geometry" />
+          <mxGeometry x="150" y="161" width="200" height="18" as="geometry" />
         </mxCell>
 
-        <!-- Down to Region B (Standby Ingress - Centered at x=1210) -->
-        <mxCell id="edge_to_regb" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#5F6368;dashed=1;dashPattern=3 3;endArrow=block;endFill=1;" edge="1" parent="1">
+        <!-- Direct Standby Route into Region B Standby Microservice-A (x=968) -->
+        <mxCell id="edge_to_regb_srv" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#5F6368;dashed=1;dashPattern=3 3;endArrow=block;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1210" y="170" as="sourcePoint" />
-            <mxPoint x="1210" y="195" as="targetPoint" />
+            <mxPoint x="968" y="170" as="sourcePoint" />
+            <mxPoint x="968" y="254" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="pill_hc_regb" value="&lt;b style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Dormant Standby Route (Zero Live Traffic)&lt;/b&gt;" style="rounded=1;fillColor=#F8F9FA;strokeColor=#5F6368;strokeWidth=1;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="161" width="240" height="18" as="geometry" />
+          <mxGeometry x="720" y="161" width="220" height="18" as="geometry" />
         </mxCell>
 
         <!-- =================================================================== -->
@@ -1069,6 +1071,14 @@ export function getExactMultiRegionDrReferenceXml(): string {
           <mxGeometry x="58" y="286" width="96" height="62" as="geometry" />
         </mxCell>
 
+        <!-- Arrow Svc-A -> Svc-B (Internal gRPC) -->
+        <mxCell id="edge_srv_a_to_b" value="&lt;b style=&#39;font-size:7px;color:#1A73E8;&#39;&gt;gRPC&lt;/b&gt;" style="edgeStyle=none;html=1;strokeWidth=1.5;strokeColor=#1A73E8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#1A73E8;spacingTop=1;spacingBottom=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="156" y="303" as="sourcePoint" />
+            <mxPoint x="166" y="303" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
         <mxCell id="cr_srv_b_box" value="" style="rounded=1;strokeColor=#4285F4;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="166" y="254" width="100" height="98" as="geometry" />
         </mxCell>
@@ -1079,6 +1089,14 @@ export function getExactMultiRegionDrReferenceXml(): string {
           <mxGeometry x="168" y="286" width="96" height="62" as="geometry" />
         </mxCell>
 
+        <!-- Arrow Svc-B -> Svc-C (Tasks Pipeline) -->
+        <mxCell id="edge_srv_b_to_c" value="&lt;b style=&#39;font-size:7px;color:#1A73E8;&#39;&gt;RPC&lt;/b&gt;" style="edgeStyle=none;html=1;strokeWidth=1.5;strokeColor=#1A73E8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#1A73E8;spacingTop=1;spacingBottom=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="266" y="303" as="sourcePoint" />
+            <mxPoint x="276" y="303" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
         <mxCell id="cr_srv_c_box" value="" style="rounded=1;strokeColor=#4285F4;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="276" y="254" width="100" height="98" as="geometry" />
         </mxCell>
@@ -1087,6 +1105,14 @@ export function getExactMultiRegionDrReferenceXml(): string {
         </mxCell>
         <mxCell id="cr_srv_c_lbl" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;Cloud Run Svc&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#202124;&#39;&gt;&lt;b&gt;Microservice-C&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7px;color:#5F6368;&#39;&gt;Data Pipeline &amp;amp;&lt;br/&gt;Worker Services&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="278" y="286" width="96" height="62" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow Svc-C -> Svc-D (Event Notification) -->
+        <mxCell id="edge_srv_c_to_d" value="&lt;b style=&#39;font-size:7px;color:#1A73E8;&#39;&gt;Async&lt;/b&gt;" style="edgeStyle=none;html=1;strokeWidth=1.5;strokeColor=#1A73E8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#1A73E8;spacingTop=1;spacingBottom=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="376" y="303" as="sourcePoint" />
+            <mxPoint x="386" y="303" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
 
         <mxCell id="cr_srv_d_box" value="" style="rounded=1;strokeColor=#4285F4;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
@@ -1109,15 +1135,39 @@ export function getExactMultiRegionDrReferenceXml(): string {
           <mxGeometry x="56" y="360" width="588" height="24" as="geometry" />
         </mxCell>
 
+        <!-- Arrow Compute Layer Down to PubSub Bus (x: 216) -->
+        <mxCell id="edge_compute_to_pubsub" value="&lt;b style=&#39;font-size:7.5px;color:#1A73E8;&#39;&gt;Publish Async Events / Topics&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1A73E8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#1A73E8;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="216" y="384" as="sourcePoint" />
+            <mxPoint x="216" y="421" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
         <!-- Data & Logic Layer (Cloud Pub/Sub) -->
         <mxCell id="grp_rega_pubsub" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1A73E8;strokeWidth=1.2;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
-          <mxGeometry x="48" y="421" width="604" height="50" as="geometry" />
+          <mxGeometry x="48" y="421" width="604" height="46" as="geometry" />
         </mxCell>
         <mxCell id="rega_ps_ico" value="&lt;svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;11&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;6&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;6&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;18&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;2.5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;6&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;18&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;11&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;6&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;6&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;18&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;2.5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;6&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;18&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
-          <mxGeometry x="58" y="434" width="24" height="24" as="geometry" />
+          <mxGeometry x="58" y="432" width="24" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="lbl_rega_ps_txt" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Event Bus &amp;amp; Messaging Hub (Google Cloud Pub/Sub)&lt;/b&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Event buffering &amp;amp; VPC Connector&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="86" y="423" width="558" height="46" as="geometry" />
+        <mxCell id="lbl_rega_ps_txt" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Event Bus &amp;amp; Messaging Hub (Google Cloud Pub/Sub)&lt;/b&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Event buffering &amp;amp; Serverless VPC Connector&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="86" y="421" width="558" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow PubSub to GCS Center Hub (Object Storage Stream) -->
+        <mxCell id="edge_pubsub_to_gcs" value="&lt;b style=&#39;font-size:7px;color:#1A73E8;&#39;&gt;Storage Sync&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1A73E8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#1A73E8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="652" y="444" as="sourcePoint" />
+            <mxPoint x="680" y="444" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Arrow Compute Layer Down to Primary Database (x: 140) -->
+        <mxCell id="edge_compute_to_sqldb" value="&lt;b style=&#39;font-size:7.5px;color:#137333;&#39;&gt;ACID Transaction Writes (SQL Port 5432)&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#137333;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#34A853;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="467" as="sourcePoint" />
+            <mxPoint x="140" y="505" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
 
         <!-- Primary Database Tier (Cloud SQL HA) -->
@@ -1156,8 +1206,8 @@ export function getExactMultiRegionDrReferenceXml(): string {
         <!-- Intra-Region Sync HA Connector Arrow -->
         <mxCell id="edge_intra_ha" value="&lt;b style=&#39;font-size:8px;color:#137333;&#39;&gt;Sync HA&lt;br/&gt;(RPO=0)&lt;/b&gt;" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#34A853;endArrow=block;endFill=1;startArrow=block;startFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#34A853;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="295" y="557" as="sourcePoint" />
-            <mxPoint x="405" y="557" as="targetPoint" />
+            <mxPoint x="291" y="557" as="sourcePoint" />
+            <mxPoint x="409" y="557" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
@@ -1180,6 +1230,14 @@ export function getExactMultiRegionDrReferenceXml(): string {
           <mxGeometry x="684" y="266" width="192" height="195" as="geometry" />
         </mxCell>
 
+        <!-- Arrow GCS Center Hub to Region B Storage Mirror -->
+        <mxCell id="edge_gcs_to_regb_mirror" value="&lt;b style=&#39;font-size:7px;color:#1A73E8;&#39;&gt;Turbo Sync&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1A73E8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#1A73E8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="444" as="sourcePoint" />
+            <mxPoint x="908" y="444" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
         <!-- Cross-Region Asynchronous Database Replication Arrow & Card (w: 200) -->
         <mxCell id="box_async_rep_hub" value="" style="rounded=1;strokeColor=#EA4335;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="680" y="479" width="200" height="178" as="geometry" />
@@ -1188,11 +1246,25 @@ export function getExactMultiRegionDrReferenceXml(): string {
           <mxGeometry x="684" y="484" width="192" height="34" as="geometry" />
         </mxCell>
 
-        <!-- Red Flex Arrow (Centered in 200px box) -->
+        <!-- Continuous Replication WAL Stream Arrow from Cloud SQL Primary to Replica -->
         <mxCell id="arr_async_db" value="" style="shape=flexArrow;endArrow=classic;startArrow=none;html=1;strokeColor=#D93025;fillColor=#EA4335;width=14;endSize=7;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="695" y="557" as="sourcePoint" />
             <mxPoint x="865" y="557" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Cross-Region Direct DB Connector (Explicit Line linking DBs) -->
+        <mxCell id="edge_direct_db_wal" value="&lt;b style=&#39;font-size:7.5px;color:#D93025;&#39;&gt;WAL Async Stream&lt;/b&gt;" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#EA4335;dashed=1;dashPattern=3 3;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#EA4335;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="644" y="557" as="sourcePoint" />
+            <mxPoint x="680" y="557" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_direct_db_wal_in" value="" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#EA4335;dashed=1;dashPattern=3 3;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="557" as="sourcePoint" />
+            <mxPoint x="916" y="557" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
@@ -1236,6 +1308,14 @@ export function getExactMultiRegionDrReferenceXml(): string {
           <mxGeometry x="918" y="286" width="101" height="62" as="geometry" />
         </mxCell>
 
+        <!-- Arrow Standby Svc-A -> Svc-B -->
+        <mxCell id="edge_stby_a_to_b" value="&lt;b style=&#39;font-size:7px;color:#5F6368;&#39;&gt;Warm Sync&lt;/b&gt;" style="edgeStyle=none;html=1;strokeWidth=1.2;strokeColor=#BDC1C6;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1021" y="303" as="sourcePoint" />
+            <mxPoint x="1031" y="303" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
         <mxCell id="cr_stby_b_box" value="" style="rounded=1;strokeColor=#BDC1C6;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
           <mxGeometry x="1031" y="254" width="105" height="98" as="geometry" />
         </mxCell>
@@ -1258,13 +1338,21 @@ export function getExactMultiRegionDrReferenceXml(): string {
 
         <!-- Secondary Storage Mirror Note -->
         <mxCell id="grp_regb_storage" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#BDC1C6;strokeWidth=1.2;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
-          <mxGeometry x="908" y="421" width="604" height="50" as="geometry" />
+          <mxGeometry x="908" y="421" width="604" height="46" as="geometry" />
         </mxCell>
         <mxCell id="regb_gcs_ico" value="&lt;svg width=&quot;26&quot; height=&quot;22&quot; viewBox=&quot;0 0 30 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M4 8L6.5 23C6.7 24.1 7.7 25 8.8 25H21.2C22.3 25 23.3 24.1 23.5 23L26 8H4Z&quot; fill=&quot;#4285F4&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;15&quot; cy=&quot;8&quot; rx=&quot;11&quot; ry=&quot;4&quot; fill=&quot;#6BA4F8&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M8 15H22&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;26&quot; height=&quot;22&quot; viewBox=&quot;0 0 30 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M4 8L6.5 23C6.7 24.1 7.7 25 8.8 25H21.2C22.3 25 23.3 24.1 23.5 23L26 8H4Z&quot; fill=&quot;#4285F4&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;15&quot; cy=&quot;8&quot; rx=&quot;11&quot; ry=&quot;4&quot; fill=&quot;#6BA4F8&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M8 15H22&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
-          <mxGeometry x="918" y="434" width="26" height="22" as="geometry" />
+          <mxGeometry x="918" y="432" width="26" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="lbl_regb_gcs_txt" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Secondary Storage Mirror &amp;amp; Standby VPC Subnet (US-West1)&lt;/b&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Dual-region GCS replica &amp;amp; VPC Connector&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="946" y="423" width="558" height="46" as="geometry" />
+        <mxCell id="lbl_regb_gcs_txt" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Secondary Storage Mirror &amp;amp; Standby VPC Subnet (US-West1)&lt;/b&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Dual-region GCS replica &amp;amp; Serverless Connector&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="946" y="421" width="558" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow Standby Compute down to Replica DB (Pre-configured connection pool) -->
+        <mxCell id="edge_stby_compute_to_db" value="&lt;b style=&#39;font-size:7.5px;color:#B06000;&#39;&gt;Pre-connected DB Pool (Read-Only until Promoted)&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#FBBC04;dashed=1;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FBBC04;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1000" y="467" as="sourcePoint" />
+            <mxPoint x="1000" y="505" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
 
         <!-- Standby Database Tier (Cloud SQL Replica) -->
@@ -1287,6 +1375,14 @@ export function getExactMultiRegionDrReferenceXml(): string {
         </mxCell>
         <mxCell id="csql_rep_lbl" value="&lt;b style=&#39;font-size:11px;color:#B06000;&#39;&gt;Cloud SQL Read Replica&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px;color:#B06000;&#39;&gt;&lt;b&gt;Zone: us-west1-a (Standby)&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#5F6368;line-height:1.35;&#39;&gt;• Continuous WAL async replication&lt;br/&gt;• Read-Only mode in steady state&lt;br/&gt;• Promoted to Primary on failover&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
           <mxGeometry x="952" y="508" width="190" height="98" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow Replica Promotion Trigger to Replica DB Box -->
+        <mxCell id="edge_promotion_trigger" value="&lt;b style=&#39;font-size:7.5px;color:#D93025;&#39;&gt;Promote to Primary (R/W)&lt;/b&gt;" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#D93025;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#D93025;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1156" y="557" as="sourcePoint" />
+            <mxPoint x="1146" y="557" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
 
         <!-- Replica Promotion & Failover Controller Card (x: 1156, w: 348) -->
