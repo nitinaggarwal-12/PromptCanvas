@@ -46,7 +46,7 @@ export function getExactMultiAgentLangGraphReferenceXml(): string {
           <mxGeometry x="65" y="345" width="360" height="140" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_ephemeral" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:38px;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='28' height='28'/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Gemini 2.5 Ephemeral Prompt Cache Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#16A34A;font-weight:bold;'&gt;⚡ 90% Token OPEX Cut • Shared System Prompt Context&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2.5;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_ephemeral" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:38px;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='28' height='28'/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Gemini 3.6 Ephemeral Prompt Cache Store&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#16A34A;font-weight:bold;'&gt;⚡ 90% Token OPEX Cut • Shared System Prompt Context&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2.5;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="65" y="535" width="360" height="140" as="geometry" />
         </mxCell>
 
@@ -324,7 +324,7 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
         <mxCell id="prov_anthropic" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#FDF4E7;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/simple-icons:anthropic.svg?color=%23D97706' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Anthropic (Claude 3.5 Sonnet)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="540" width="264" height="46" as="geometry" />
         </mxCell>
-        <mxCell id="prov_google" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/logos:google-icon.svg' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Google (Gemini 2.5 Pro / Flash)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="prov_google" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/logos:google-icon.svg' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Google (Gemini 3.6 Pro / Flash)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="595" width="264" height="46" as="geometry" />
         </mxCell>
         <mxCell id="prov_local_slm" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:server.svg?color=%230284C7' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0284C7;font-weight:700;'&gt;On-Prem SLMs (Llama 3 / vLLM)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
@@ -4052,7 +4052,7 @@ export function getExactLogicalAiConfigTenantXml(): string {
         </mxCell>
 
         <!-- Stack of Config Components -->
-        <mxCell id="cfg_model" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Model Selection&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;(e.g., Gemini 1.5 Pro)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=8;arcSize=3;" vertex="1" parent="1">
+        <mxCell id="cfg_model" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Model Selection&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;(e.g., Gemini 3.6 Pro)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=8;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="852" y="178" width="180" height="32" as="geometry"/>
         </mxCell>
         <mxCell id="cfg_sys" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;System Instructions&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=8;arcSize=3;" vertex="1" parent="1">
@@ -4117,7 +4117,7 @@ export function getExactLogicalAiConfigTenantXml(): string {
         <mxCell id="lbl_prod_config_title" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Logical AI Config&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="280" y="470" width="120" height="14" as="geometry"/>
         </mxCell>
-        <mxCell id="pcfg_model" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Model Selection (e.g., Gemini 1.5 Pro)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
+        <mxCell id="pcfg_model" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Model Selection (e.g., Gemini 3.6 Pro)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
           <mxGeometry x="280" y="488" width="182" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="pcfg_sys" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;System Instructions&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
@@ -4449,7 +4449,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         <mxCell id="gen_form_ui" value="&lt;font style=&quot;font-size:7px;color:#94A3B8;&quot;&gt;General Form&lt;br&gt;[______]&lt;br&gt;[______]&lt;br&gt;[______]&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="476" y="196" width="90" height="76" as="geometry"/>
         </mxCell>
-        <mxCell id="gen_item_model" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Gemini 1.5 Pro&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="gen_item_model" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Gemini 3.6 Pro&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="572" y="196" width="180" height="17" as="geometry"/>
         </mxCell>
         <mxCell id="gen_item_sys" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Global System Instructions&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
@@ -9265,7 +9265,7 @@ export function getExactEvalSafetyXml(): string {
         </mxCell>
 
         <!-- Node 5: Vertex AI Constitutional Judge Models -->
-        <mxCell id="node_constitutional_judge" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Constitutional Judge Models&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Gemini 1.5 Pro multi-agent constitutional alignment judges&lt;br&gt;• Automated critique &amp;amp; revision scoring across 50 ethical principles&lt;br&gt;• Sub-second latency rubric-based evaluation scores&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="node_constitutional_judge" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Constitutional Judge Models&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Gemini 3.6 Pro multi-agent constitutional alignment judges&lt;br&gt;• Automated critique &amp;amp; revision scoring across 50 ethical principles&lt;br&gt;• Sub-second latency rubric-based evaluation scores&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="395" y="175" width="360" height="110" as="geometry"/>
         </mxCell>
 

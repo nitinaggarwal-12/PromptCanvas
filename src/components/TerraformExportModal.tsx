@@ -211,7 +211,7 @@ export function TerraformExportModal({
           {loading ? (
             <div className="h-64 flex flex-col items-center justify-center space-y-3 text-slate-400">
               <Loader2 className="w-8 h-8 animate-spin text-teal-accent" />
-              <p className="text-xs font-bold text-slate-300">Synthesizing GCP Terraform HCL code via Gemini 2.5 Flash...</p>
+              <p className="text-xs font-bold text-slate-300">Synthesizing GCP Terraform HCL code via Gemini 3.6 Flash...</p>
               <p className="text-[11px] text-slate-500">Mapping visual architecture nodes into executable GCP infrastructure modules</p>
             </div>
           ) : (

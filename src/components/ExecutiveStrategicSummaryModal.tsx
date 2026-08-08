@@ -192,7 +192,7 @@ export function ExecutiveStrategicSummaryModal({
                       <span class="badge">FLAGSHIP GOOGLE CLOUD ENTERPRISE SUITE</span>
                     </div>
                     <h1 class="slide-title">PromptCanvas: Universal Enterprise AI Architecture &amp; Publication Suite</h1>
-                    <p class="slide-subtitle">The industry's first Deterministic Text-to-Architecture Compiler powered by Gemini 2.5 Flash + Ephemeral Context Caching.</p>
+                    <p class="slide-subtitle">The industry's first Deterministic Text-to-Architecture Compiler powered by Gemini 3.6 Flash + Ephemeral Context Caching.</p>
                   </div>
 
                   <div class="slide-content">
@@ -247,7 +247,7 @@ export function ExecutiveStrategicSummaryModal({
                         </div>
                         <div style="color:#14B8A6; font-weight:900; font-size:24px;">➔</div>
                         <div style="background:#111827; border:1px solid #14B8A6; padding:16px; border-radius:14px;">
-                          <div style="color:#14B8A6; font-weight:900; font-size:14px;">2. GEMINI 2.5 CACHING</div>
+                          <div style="color:#14B8A6; font-weight:900; font-size:14px;">2. GEMINI 3.6 CACHING</div>
                           <div style="color:#94A3B8; font-size:13px; margin-top:6px;">Ephemeral prompt context router (90% OPEX cut)</div>
                         </div>
                         <div style="color:#14B8A6; font-weight:900; font-size:24px;">➔</div>
@@ -318,13 +318,13 @@ export function ExecutiveStrategicSummaryModal({
                         <rect x="275" y="186" width="80" height="22" rx="4" fill="#070A13" stroke="#14B8A6"/>
                         <text x="285" y="201" fill="#14B8A6" font-size="11" font-weight="800">mTLS 1.3</text>
 
-                        <!-- TIER 2: GEMINI 2.5 AI COMPILER & CONTEXT CACHING ROUTER -->
+                        <!-- TIER 2: GEMINI 3.6 AI COMPILER & CONTEXT CACHING ROUTER -->
                         <g transform="translate(370, 40)">
                           <rect width="320" height="340" rx="16" fill="#0F172A" stroke="#14B8A6" stroke-width="2.5"/>
-                          <text x="24" y="34" fill="#14B8A6" font-size="14" font-weight="900">TIER 2: GEMINI 2.5 CACHING ENGINE</text>
+                          <text x="24" y="34" fill="#14B8A6" font-size="14" font-weight="900">TIER 2: GEMINI 3.6 CACHING ENGINE</text>
 
                           <rect x="20" y="55" width="280" height="70" rx="12" fill="#111827" stroke="#14B8A6"/>
-                          <text x="36" y="84" fill="#14B8A6" font-size="14" font-weight="900">Gemini 2.5 Flash / Pro Router</text>
+                          <text x="36" y="84" fill="#14B8A6" font-size="14" font-weight="900">Gemini 3.6 Flash / Pro Router</text>
                           <text x="36" y="104" fill="#E2E8F0" font-size="12">Ephemeral System Prompt Context Caching</text>
 
                           <rect x="20" y="145" width="280" height="70" rx="12" fill="#111827" stroke="#10B981"/>
@@ -500,24 +500,24 @@ export function ExecutiveStrategicSummaryModal({
                   </div>
                 </div>
 
-                <!-- SLIDE 4: WHY GOOGLE CLOUD WINS (GEMINI 2.5 CONTEXT CACHING MOAT) -->
+                <!-- SLIDE 4: WHY GOOGLE CLOUD WINS (GEMINI 3.6 CONTEXT CACHING MOAT) -->
                 <div class="slide" id="slide-4">
                   <div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                      <span class="slide-tag">04 // GOOGLE CLOUD ECOSYSTEM SYNERGY • GEMINI 2.5 CACHING MOAT</span>
+                      <span class="slide-tag">04 // GOOGLE CLOUD ECOSYSTEM SYNERGY • GEMINI 3.6 CACHING MOAT</span>
                       <span class="badge" style="background:#065F46; color:#A7F3D0; border-color:#10B981;">DEEP GCP INFRASTRUCTURE PULL-THROUGH</span>
                     </div>
                     <h1 class="slide-title">Why PromptCanvas Makes Google Cloud the #1 Enterprise AI Platform</h1>
-                    <p class="slide-subtitle">Leverages Gemini 2.5 Flash Ephemeral Context Caching to create an unassailable economic advantage over OpenAI &amp; AWS.</p>
+                    <p class="slide-subtitle">Leverages Gemini 3.6 Flash Ephemeral Context Caching to create an unassailable economic advantage over OpenAI &amp; AWS.</p>
                   </div>
 
                   <div class="slide-content">
                     <div class="grid-3">
                       <div class="card">
                         <div>
-                          <span style="color:#10B981; font-weight:900; font-size:13px;">GEMINI 2.5 CACHING MOAT</span>
+                          <span style="color:#10B981; font-weight:900; font-size:13px;">GEMINI 3.6 CACHING MOAT</span>
                           <h3 style="color:#FFFFFF; font-size:22px; margin:10px 0;">90% Lower LLM OPEX</h3>
-                          <p style="color:#94A3B8; font-size:15px; line-height:1.6;">PromptCanvas caches multi-tier system schemas in Gemini 2.5 ephemeral context windows, reducing repeated compilation costs by 90%.</p>
+                          <p style="color:#94A3B8; font-size:15px; line-height:1.6;">PromptCanvas caches multi-tier system schemas in Gemini 3.6 ephemeral context windows, reducing repeated compilation costs by 90%.</p>
                         </div>
                         <div style="margin-top:16px; border-top:1px solid #1E293B; padding-top:12px; color:#10B981; font-weight:800; font-size:13px;">Moat: Lock-In on Vertex AI</div>
                       </div>
@@ -549,7 +549,7 @@ export function ExecutiveStrategicSummaryModal({
                         </div>
                         <div style="color:#14B8A6; font-weight:900; font-size:24px;">➔</div>
                         <div style="background:#111827; border:1px solid #14B8A6; padding:16px; border-radius:14px;">
-                          <div style="color:#14B8A6; font-weight:900; font-size:14px;">GEMINI 2.5 FLASH</div>
+                          <div style="color:#14B8A6; font-weight:900; font-size:14px;">GEMINI 3.6 FLASH</div>
                           <div style="color:#94A3B8; font-size:13px; margin-top:6px;">Ephemeral Context Router</div>
                         </div>
                         <div style="color:#14B8A6; font-weight:900; font-size:24px;">➔</div>
@@ -567,7 +567,7 @@ export function ExecutiveStrategicSummaryModal({
                   </div>
 
                   <div class="footer">
-                    <span>Technical Integration: Gemini 2.5 Flash / Pro Router + Google Cloud Shell API</span>
+                    <span>Technical Integration: Gemini 3.6 Flash / Pro Router + Google Cloud Shell API</span>
                     <span>Use Left/Right Arrow Keys to Navigate Slides</span>
                   </div>
                 </div>
@@ -613,7 +613,7 @@ export function ExecutiveStrategicSummaryModal({
                         <div style="background:#111827; border:1px solid #334155; padding:20px; border-radius:16px;">
                           <div style="color:#94A3B8; font-size:12px; font-weight:700;">PROMPT CACHE HIT RATE</div>
                           <div style="color:#10B981; font-size:36px; font-weight:900; margin-top:8px;">94.2%</div>
-                          <div style="color:#94A3B8; font-size:12px; margin-top:4px;">Gemini 2.5 Ephemeral Windows</div>
+                          <div style="color:#94A3B8; font-size:12px; margin-top:4px;">Gemini 3.6 Ephemeral Windows</div>
                         </div>
                         <div style="background:#111827; border:1px solid #334155; padding:20px; border-radius:16px;">
                           <div style="color:#94A3B8; font-size:12px; font-weight:700;">COMPILE LATENCY</div>
@@ -731,7 +731,7 @@ export function ExecutiveStrategicSummaryModal({
                         <div>
                           <span style="color:#38BDF8; font-weight:900; font-size:13px;">MILESTONE 2 (MONTHS 3-4)</span>
                           <h3 style="color:#FFFFFF; font-size:22px; margin:10px 0;">Vertex AI Architecture Hub</h3>
-                          <p style="color:#94A3B8; font-size:15px; line-height:1.6;">Publish Gemini 2.5 fine-tuned architectural models and NLI claim verification engines on Google Enterprise Cloud Marketplace.</p>
+                          <p style="color:#94A3B8; font-size:15px; line-height:1.6;">Publish Gemini 3.6 fine-tuned architectural models and NLI claim verification engines on Google Enterprise Cloud Marketplace.</p>
                         </div>
                         <div style="margin-top:16px; border-top:1px solid #1E293B; padding-top:12px; color:#38BDF8; font-weight:800; font-size:13px;">Distribution: Vertex AI Marketplace</div>
                       </div>
@@ -751,7 +751,7 @@ export function ExecutiveStrategicSummaryModal({
                       <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; margin-top:16px;">
                         <div style="background:#111827; border:1px solid #14B8A6; padding:18px; border-radius:14px;">
                           <div style="color:#14B8A6; font-weight:900; font-size:14px;">Q1 2026: INCUBATION SEED</div>
-                          <div style="color:#CBD5E1; font-size:13px; margin-top:6px;">Core Gemini 2.5 Ephemeral Caching Engine &amp; 12-Industry Presets</div>
+                          <div style="color:#CBD5E1; font-size:13px; margin-top:6px;">Core Gemini 3.6 Ephemeral Caching Engine &amp; 12-Industry Presets</div>
                         </div>
                         <div style="background:#111827; border:1px solid #38BDF8; padding:18px; border-radius:14px;">
                           <div style="color:#38BDF8; font-weight:900; font-size:14px;">Q2 2026: GCP CONSOLE GA</div>
@@ -973,7 +973,7 @@ Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adherin
                         <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">FLAGSHIP GOOGLE CLOUD ENTERPRISE SUITE</span>
                       </div>
                       <h1 className="text-3xl md:text-4xl font-black text-white mt-2">PromptCanvas: Universal Enterprise AI Architecture &amp; Publication Suite</h1>
-                      <p className="text-slate-400 text-base mt-1">The industry&apos;s first Deterministic Text-to-Architecture Compiler powered by Gemini 2.5 Flash + Ephemeral Context Caching.</p>
+                      <p className="text-slate-400 text-base mt-1">The industry&apos;s first Deterministic Text-to-Architecture Compiler powered by Gemini 3.6 Flash + Ephemeral Context Caching.</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
@@ -1022,7 +1022,7 @@ Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adherin
                           <div className="text-[11px] text-slate-400 mt-1">Enterprise Cloud Architecture intent</div>
                         </div>
                         <div className="p-3 rounded-xl bg-slate-950 border border-teal-500/40">
-                          <div className="text-xs font-black text-teal-400">2. GEMINI 2.5 CACHING</div>
+                          <div className="text-xs font-black text-teal-400">2. GEMINI 3.6 CACHING</div>
                           <div className="text-[11px] text-slate-400 mt-1">Ephemeral prompt context router (90% OPEX cut)</div>
                         </div>
                         <div className="p-3 rounded-xl bg-slate-950 border border-cyan-500/40">
@@ -1070,7 +1070,7 @@ Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adherin
                             <div className="text-[11px] text-slate-500">OAuth 2.0 + VPC-SC Private Link</div>
                           </div>
                           <div className="p-4 rounded-xl bg-slate-950 border border-cyan-500/40">
-                            <div className="text-xs font-black text-cyan-300">TIER 2: GEMINI 2.5 CACHING</div>
+                            <div className="text-xs font-black text-cyan-300">TIER 2: GEMINI 3.6 CACHING</div>
                             <div className="text-xs text-slate-300 font-bold mt-1">Ephemeral Context Router</div>
                             <div className="text-[11px] text-slate-500">Zero-Collision 2D AST Engine</div>
                           </div>
@@ -1155,18 +1155,18 @@ Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adherin
                   <div className="space-y-6 flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase tracking-widest text-teal-400">04 // GOOGLE CLOUD ECOSYSTEM SYNERGY • GEMINI 2.5 CACHING MOAT</span>
+                        <span className="text-xs font-black uppercase tracking-widest text-teal-400">04 // GOOGLE CLOUD ECOSYSTEM SYNERGY • GEMINI 3.6 CACHING MOAT</span>
                         <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">DEEP GCP INFRASTRUCTURE PULL-THROUGH</span>
                       </div>
                       <h1 className="text-2xl md:text-3xl font-black text-white mt-1">Why PromptCanvas Makes Google Cloud the #1 Enterprise AI Platform</h1>
-                      <p className="text-slate-400 text-sm">Leverages Gemini 2.5 Flash Ephemeral Context Caching to create an unassailable economic advantage over OpenAI &amp; AWS.</p>
+                      <p className="text-slate-400 text-sm">Leverages Gemini 3.6 Flash Ephemeral Context Caching to create an unassailable economic advantage over OpenAI &amp; AWS.</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-                        <span className="text-xs font-black text-emerald-400">GEMINI 2.5 CACHING MOAT</span>
+                        <span className="text-xs font-black text-emerald-400">GEMINI 3.6 CACHING MOAT</span>
                         <h3 className="text-lg font-black text-white">90% Lower LLM OPEX</h3>
-                        <p className="text-xs text-slate-300 leading-relaxed">PromptCanvas caches multi-tier system schemas in Gemini 2.5 ephemeral context windows, reducing repeated compilation costs by 90%.</p>
+                        <p className="text-xs text-slate-300 leading-relaxed">PromptCanvas caches multi-tier system schemas in Gemini 3.6 ephemeral context windows, reducing repeated compilation costs by 90%.</p>
                       </div>
                       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
                         <span className="text-xs font-black text-cyan-400">GOOGLE CLOUD CONSUMPTION</span>
@@ -1188,7 +1188,7 @@ Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adherin
                           <div className="text-[11px] text-slate-400 mt-1">Native Console Home Card</div>
                         </div>
                         <div className="p-3.5 rounded-xl bg-slate-950 border border-teal-500/40">
-                          <div className="text-xs font-black text-teal-400">GEMINI 2.5 FLASH</div>
+                          <div className="text-xs font-black text-teal-400">GEMINI 3.6 FLASH</div>
                           <div className="text-[11px] text-slate-400 mt-1">Ephemeral Context Router</div>
                         </div>
                         <div className="p-3.5 rounded-xl bg-slate-950 border border-cyan-500/40">
@@ -1245,7 +1245,7 @@ Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adherin
                       <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800">
                         <div className="text-[11px] font-bold text-slate-400">PROMPT CACHE HIT RATE</div>
                         <div className="text-3xl font-black text-emerald-400 mt-1">94.2%</div>
-                        <div className="text-xs text-slate-500 mt-1">Gemini 2.5 Ephemeral Windows</div>
+                        <div className="text-xs text-slate-500 mt-1">Gemini 3.6 Ephemeral Windows</div>
                       </div>
                       <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800">
                         <div className="text-[11px] font-bold text-slate-400">COMPILE LATENCY</div>
@@ -1339,7 +1339,7 @@ Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adherin
                       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
                         <span className="text-xs font-black text-cyan-400">MILESTONE 2 (MONTHS 3-4)</span>
                         <h3 className="text-lg font-black text-white">Vertex AI Architecture Hub</h3>
-                        <p className="text-xs text-slate-300 leading-relaxed">Publish Gemini 2.5 fine-tuned architectural models and NLI claim verification engines on Google Enterprise Cloud Marketplace.</p>
+                        <p className="text-xs text-slate-300 leading-relaxed">Publish Gemini 3.6 fine-tuned architectural models and NLI claim verification engines on Google Enterprise Cloud Marketplace.</p>
                       </div>
                       <div className="p-5 rounded-2xl bg-emerald-950/40 border-2 border-emerald-500/60 space-y-2">
                         <span className="text-xs font-black text-emerald-400">EXECUTIVE FUNDING ASK</span>
@@ -1353,7 +1353,7 @@ Deploy a multi-tier, production-grade architecture for **${cleanTitle}** adherin
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="p-3.5 rounded-xl bg-slate-950 border border-teal-500/40">
                           <div className="text-xs font-black text-teal-400">Q1 2026: INCUBATION SEED</div>
-                          <div className="text-[11px] text-slate-300 mt-1">Core Gemini 2.5 Ephemeral Caching Engine</div>
+                          <div className="text-[11px] text-slate-300 mt-1">Core Gemini 3.6 Ephemeral Caching Engine</div>
                         </div>
                         <div className="p-3.5 rounded-xl bg-slate-950 border border-cyan-500/40">
                           <div className="text-xs font-black text-cyan-400">Q2 2026: GCP CONSOLE GA</div>

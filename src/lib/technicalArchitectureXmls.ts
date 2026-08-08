@@ -191,7 +191,7 @@ const TECH_XML_RAG_GCP = `<mxfile host="embed.diagrams.net">
         <mxCell id="node5" value="🔍 &lt;b&gt;[5] Vertex AI Vector Search (PSC Endpoint)&lt;/b&gt;&lt;br&gt;&lt;i&gt;ScaNN Ultra-Low-Latency ANN Index&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="1020" y="100" width="280" height="75" as="geometry"/>
         </mxCell>
-        <mxCell id="node6" value="🤖 &lt;b&gt;[6] Gemini 2.5 Pro Reasoner LLM&lt;/b&gt;&lt;br&gt;&lt;i&gt;Grounded RAG Generation &amp; Hallucination Audit&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxCell id="node6" value="🤖 &lt;b&gt;[6] Gemini 3.6 Pro Reasoner LLM&lt;/b&gt;&lt;br&gt;&lt;i&gt;Grounded RAG Generation &amp; Hallucination Audit&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="1020" y="280" width="280" height="75" as="geometry"/>
         </mxCell>
         <mxCell id="e1" value="1. Document Ingestion" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node1" target="node2">

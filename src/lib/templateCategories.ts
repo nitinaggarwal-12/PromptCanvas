@@ -134,7 +134,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Hybrid dense/sparse search & re-ranking",
       "Dynamic tool invocation guardrails"
     ],
-    keyTech: ["Gemini 2.5 Pro", "pgvector", "Pinecone", "RAG Pipeline", "Vector Embeddings", "Re-ranking Engine"],
+    keyTech: ["Gemini 3.6 Pro", "pgvector", "Pinecone", "RAG Pipeline", "Vector Embeddings", "Re-ranking Engine"],
     thumbnail: "/templates/agentic_rag.png",
     promptSummary: "Cognitive RAG Architecture: Document Chunking -> Embeddings DB -> Hybrid Retrieval -> LLM Synthesis -> Guardrails."
   },
@@ -149,7 +149,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Vertex AI Vector Search (ScaNN index)",
       "BigQuery & Cloud Storage automated embeddings",
       "Air-gapped VPC Service Controls security",
-      "Gemini 2.5 Pro enterprise inference endpoints"
+      "Gemini 3.6 Pro enterprise inference endpoints"
     ],
     keyTech: ["Vertex AI Vector Search", "Text Embeddings API", "BigQuery", "Cloud Storage", "GKE / Cloud Run", "VPC-SC"],
     thumbnail: "/templates/tech_rag_gcp.png",
@@ -382,7 +382,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Multi-tenant environment segregation across Development, Testing, and Production environments",
       "Logical AI Config Management Console and automated Config Updates APIs with Enterprise IAM",
       "Platform Orchestrator routing configurations to Gemini Enterprise Engine instances",
-      "Production Workspace encapsulation with Logical AI Config (Model Selection Gemini 1.5 Pro, System Instructions, Memory, Tool Invocation)",
+      "Production Workspace encapsulation with Logical AI Config (Model Selection Gemini 3.6 Pro, System Instructions, Memory, Tool Invocation)",
       "Agent Designer topologies (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents)",
       "Application Logic execution with agent endpoint invocation",
       "Strict SOC 2 & GxP Compliance Guardrails and compliance markers",
@@ -403,7 +403,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     whenToUse: "Use to configure and orchestrate enterprise multi-agent hub-and-spoke topologies with Gemini Enterprise, specialized sub-agent spokes (Support, Fulfillment, Knowledge), Logical UI configuration matrices, HITL gates, and 21 CFR Part 11 compliance audit trails.",
     bestFor: [
       "WBS 2.2.2 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)",
-      "Orchestrator (Parent Agent) Hub with General Configuration (Gemini 1.5 Pro, Global System Instructions, Shared Context Window, Memory TTL)",
+      "Orchestrator (Parent Agent) Hub with General Configuration (Gemini 3.6 Pro, Global System Instructions, Shared Context Window, Memory TTL)",
       "Multi-Agent Router / Dispatcher Logic with intent-based dispatch routing rules",
       "Shared Memory & State and Vertex AI Agent Runtime invocation patterns",
       "Sub-Agent 1: Customer Support with Zendesk API tool proxy and BigQuery / Vector Search Grounding",
@@ -414,7 +414,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "21 CFR Part 11 Compliance Gate & Immutable Audit Trail E-Signature Ledger",
       "Persona Dashboards (AI Architect, Workplace & Talent Architect, Agent Economic & Runtime Metrics)"
     ],
-    keyTech: ["Gemini 1.5 Pro", "Vertex AI Agent Runtime", "Multi-Agent Router", "BigQuery Grounding", "Vector Search", "Zendesk API", "SAP ERP API", "GCS Storage", "21 CFR Part 11 Ledger", "HITL Gate", "Looker Metrics"],
+    keyTech: ["Gemini 3.6 Pro", "Vertex AI Agent Runtime", "Multi-Agent Router", "BigQuery Grounding", "Vector Search", "Zendesk API", "SAP ERP API", "GCS Storage", "21 CFR Part 11 Ledger", "HITL Gate", "Looker Metrics"],
     thumbnail: "/templates/hub_and_spoke_agent_config.png",
     promptSummary: "Hub-and-Spoke Agent Config Map: Orchestrator Hub -> Intent Router -> 3 Domain Spokes (Support, Fulfillment, Knowledge) -> Logical UI Matrix -> HITL Gate -> 21 CFR Part 11 Audit Ledger."
   },

@@ -574,8 +574,8 @@ export function getExactAgenticRagReferenceXml(): string {
           <mxGeometry x="710" y="210" width="210" height="110" as="geometry" />
         </mxCell>
 
-        <!-- THE REASONER: GEMINI 1.5 PRO AND REACT LOOP -->
-        <mxCell id="reasoner_box" value="The Reasoner: Gemini 1.5 Pro (LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
+        <!-- THE REASONER: GEMINI 3.6 PRO AND REACT LOOP -->
+        <mxCell id="reasoner_box" value="The Reasoner: Gemini 3.6 Pro (LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="460" y="360" width="460" height="320" as="geometry" />
         </mxCell>
 
@@ -800,7 +800,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         <mxCell id="orch_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;⚙️ Orchestrator:&lt;br&gt;Agent Orchestrator (GKE Pod)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="240" y="70" width="200" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="llm_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;🧠 Reasoner:&lt;br&gt;Gemini 1.5 Pro (LLM)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+        <mxCell id="llm_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;🧠 Reasoner:&lt;br&gt;Gemini 3.6 Pro (LLM)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="470" y="70" width="180" height="65" as="geometry" />
         </mxCell>
         <mxCell id="mem_col" value="&lt;b style='font-size:12px;color:#1E3A8A;'&gt;💬 Memory:&lt;br&gt;Conversation Memory&lt;br&gt;(Short-term context)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
@@ -3337,7 +3337,7 @@ export function getExactEvalSafetyBenchmarkingReferenceXml(): string {
         <mxCell id="trackB_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#475569;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="500" y="415" width="380" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="trackB_title" value="B. NLI Claim Verification (Powered by Gemini 1.5)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#A855F7;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="trackB_title" value="B. NLI Claim Verification (Powered by Gemini 3.6)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#A855F7;fontStyle=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="505" y="422" width="370" height="25" as="geometry" />
         </mxCell>
         <mxCell id="nli1" value="&lt;b&gt;1. Isolate Claims&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#94A3B8;'&gt;Decompose output&lt;br/&gt;into atomic&lt;br/&gt;factual statements&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#A855F7;fontColor=#F8FAFC;fontSize=11;spacingTop=6;" vertex="1" parent="1">

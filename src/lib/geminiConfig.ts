@@ -1,22 +1,22 @@
-export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash';
+export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash';
 
 export type ModelTier = 'lite' | 'medium' | 'pro';
 
 /**
- * 🧠 Smart 3-Tier Model Allocation Engine (Official Google Gen AI Models)
- * - Lite: Fast, low-latency Gemini 2.5 Flash model for quick edits & UI transforms
- * - Medium (Flash): Balanced Gemini 2.5 Flash model for standard technical architectures & sequence flows
- * - Pro: High-reasoning Gemini 2.5 Pro model for complex multi-tier enterprise systems & stateful agent graphs
+ * 🧠 Smart 3-Tier Model Allocation Engine (Gemini 3.x Enforced)
+ * - Lite: Fast, low-latency Gemini 3.6 Flash model for quick edits & UI transforms
+ * - Medium (Flash): Balanced Gemini 3.6 Flash model for standard technical architectures & sequence flows
+ * - Pro: High-reasoning Gemini 3.6 Pro model for complex multi-tier enterprise systems & stateful agent graphs
  */
 export function getGeminiModel(tier: ModelTier = 'medium'): string {
   switch (tier) {
     case 'lite':
-      return process.env.GEMINI_LITE_MODEL_ID || 'gemini-2.5-flash';
+      return process.env.GEMINI_LITE_MODEL_ID || 'gemini-3.6-flash';
     case 'pro':
-      return process.env.GEMINI_PRO_MODEL_ID || 'gemini-2.5-pro';
+      return process.env.GEMINI_PRO_MODEL_ID || 'gemini-3.6-pro';
     case 'medium':
     default:
-      return process.env.GEMINI_FLASH_MODEL_ID || 'gemini-2.5-flash';
+      return process.env.GEMINI_FLASH_MODEL_ID || 'gemini-3.6-flash';
   }
 }
 

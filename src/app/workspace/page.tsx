@@ -2867,7 +2867,7 @@ function WorkspaceContent() {
                         Auditing {selectedAuditCategory === 'visual' ? 'Visual Collision & Geometry' : selectedAuditCategory === 'topology' ? 'Cloud Architecture Topology' : selectedAuditCategory === 'responsive' ? 'Responsive & Aspect Ratio' : selectedAuditCategory === 'accessibility' ? 'WCAG Accessibility' : selectedAuditCategory === 'vendor' ? 'Vendor Icon Coverage' : 'Security & Compliance'}...
                       </h3>
                       <p className="text-base md:text-lg font-medium text-slate-300 leading-relaxed max-w-2xl mx-auto">
-                        Gemini 2.5 is parsing 2D bounding boxes, checking topology rules, and evaluating {selectedAuditCategory} posture against domain benchmarks...
+                        Gemini 3.6 is parsing 2D bounding boxes, checking topology rules, and evaluating {selectedAuditCategory} posture against domain benchmarks...
                       </p>
                     </div>
                     
@@ -3206,15 +3206,15 @@ function WorkspaceContent() {
                     <Sparkles className="w-4 h-4 text-teal-400" />
                   </div>
                   <select
-                    defaultValue="gemini-2.5-flash"
+                    defaultValue="gemini-3.6-flash"
                     className="w-full bg-slate-900 border border-slate-700 hover:border-teal-500/50 text-slate-100 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
                   >
                     <option value="gemini-3.6-pro">🚀 Gemini 3.6 Pro (Flagship Architectural Synthesis &amp; Reasoning)</option>
                     <option value="gemini-3.6-flash">⚡ Gemini 3.6 Flash (Sub-Second Low-Latency Telemetry &amp; Speed)</option>
                     <option value="gemini-3.6-ultra">🔬 Gemini 3.6 Ultra-Deep (Stateful Graph Reasoning &amp; Terraform Verification)</option>
                     <option value="gemini-3.6-vision">🎯 Gemini 3.6 Enterprise Vision (Diagram AST OCR &amp; Inspection)</option>
-                    <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (Legacy Deep Architecture Eval)</option>
-                    <option value="gemini-2.5-flash">⚡ Gemini 2.5 Flash (Legacy Speed Iteration)</option>
+                    <option value="gemini-3.6-pro">🧠 Gemini 3.6 Pro (Legacy Deep Architecture Eval)</option>
+                    <option value="gemini-3.6-flash">⚡ Gemini 3.6 Flash (Legacy Speed Iteration)</option>
                   </select>
                   <p className="text-[11px] text-slate-400">Controls inference latency &amp; multi-tier reasoning depth.</p>
                 </div>
@@ -7135,7 +7135,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             </div>
 
             <p className="text-sm text-slate-300 leading-relaxed bg-slate-900/60 p-4 rounded-xl border border-slate-800/80">
-              Do you consent to generating a brand new architectural diagram version for <strong>{activeDiagram?.name || 'this workspace'}</strong> using Gemini 2.5 Flash? This will create a new version in your version history.
+              Do you consent to generating a brand new architectural diagram version for <strong>{activeDiagram?.name || 'this workspace'}</strong> using Gemini 3.6 Flash? This will create a new version in your version history.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">

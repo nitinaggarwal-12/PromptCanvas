@@ -27,7 +27,7 @@ export async function customizeDiagramTemplateWithGemini(
   userPrompt: string,
   architectureType: string = 'conceptual_diagram'
 ): Promise<CustomizationResult> {
-  const modelName = process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash';
+  const modelName = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash';
 
   const systemInstruction = `You are a Principal Cloud Enterprise Architect and Draw.io Graph Compiler.
 
