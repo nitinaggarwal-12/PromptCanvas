@@ -213,21 +213,24 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_multi_region_dr",
-    name: "Multi-Region DR GCP Active-Passive",
+    name: "Master Multi-Region Active-Passive DR (Case B)",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
-    badge: "Master SRE Template",
-    whenToUse: "Use when designing SRE-grade multi-region business continuity and failover architectures with Global L7 Load Balancing, pilot light standby compute, and cross-region database replication.",
+    badge: "Master Certified SRE Template",
+    whenToUse: "Use when designing enterprise-grade multi-region active-passive disaster recovery (Pilot Light Case B) with Zero-Trust VPC-SC perimeters, Private Service Connect, 1:1 Terraform IaC parity, and comprehensive FMEA failure mode analysis.",
     bestFor: [
-      "GCP Active-Passive Multi-Region Pilot Light DR (US-East1 -> US-West1)",
-      "Global L7 HTTPS Load Balancer with Anycast IP & 0s DNS Failover",
-      "Cloud Run Microservices (100% Active vs 10% Warm Pilot Light)",
-      "Cloud SQL HA with Cross-Region Asynchronous Replication (<5min RPO)",
-      "Dual-Region GCS Object Storage & Automated Failover Runbooks"
+      "Google Cloud Well-Architected Certified (6 Pillars Assessment)",
+      "Zero-Trust Perimeter (VPC-SC, PSC 10.10.1.5, KMS CMEK Dual Key Rings, Secret Manager)",
+      "Global L7 HTTPS Load Balancer + Cloud Armor WAF with Zero-DNS-Lag Failover",
+      "Cloud Run Microservices A-D with Direct VPC Access (10.8.0.0/28) & 10% Warm Pilot Light",
+      "Cloud SQL HA (us-east1-b/c) with Cross-Region Async WAL Streaming (<5min RPO)",
+      "Memorystore for Redis (HA & Standby) with Graceful Circuit Breaker Fallback",
+      "Dual-Region GCS Object Storage (Turbo Replication) & Secondary Storage Mirror",
+      "Page 2 Executive SRE Playbook, 1:1 Terraform State Sync & FMEA Governance Matrix"
     ],
-    keyTech: ["Global HTTPS LB", "Cloud Run Microservices", "Cloud SQL HA & Cross-Region Replica", "Dual-Region GCS", "Cloud Monitoring Quorum Sentry"],
+    keyTech: ["Global HTTPS LB", "Cloud Armor WAF", "Cloud Run Gen2", "Memorystore Redis HA", "Cloud SQL HA & Cross-Region Replica", "Dual-Region GCS", "Cloud KMS CMEK", "VPC-SC & PSC", "Terraform IaC"],
     thumbnail: "/templates/tech_multi_region_dr.png",
-    promptSummary: "GCP Active-Passive DR: Global L7 Load Balancer -> Active Region A (US-East1) & Pilot Light Region B (US-West1) -> Cross-Region Async DB Replication -> Failover SRE Runbook."
+    promptSummary: "Master Multi-Region Active-Passive DR: Global L7 LB -> Zero-Trust Active Region A (US-East1) & Pilot Light Region B (US-West1) -> Redis Cache -> Cross-Region Async DB Replication -> 6-Step SRE Failover Runbook & FMEA Matrix."
   },
   {
     id: "secure_deployment_map",

@@ -252,13 +252,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_multi_region_dr: {
     id: "tech_multi_region_dr",
-    title: "Multi-Region DR GCP Active-Passive",
+    title: "Master Multi-Region Active-Passive Disaster Recovery (Pilot Light Case B)",
     category: "Cloud Infrastructure & Networking",
-    useCase: "BUSINESS CONTINUITY & DISASTER RECOVERY",
-    businessUseCase: "SRE-grade Active-Passive Multi-Region Disaster Recovery architecture across GCP US-East1 (Active) and US-West1 (Pilot Light Standby) with Global L7 HTTPS Load Balancing, Cloud Run microservices, Cloud SQL HA with cross-region asynchronous replication (<5min data lag), Dual-Region GCS Object Storage, and automated failover/failback orchestration.",
-    primaryActors: "Site Reliability Engineers (SRE), Disaster Recovery Leads, Cloud Architects, Infrastructure Engineers",
-    targetOutcomes: "Target RTO 15-30m, Target RPO 1-5m, Pilot Light 10% Standby Cost, Zero-DNS-Lag Global Anycast Failover",
-    desc: "SRE-grade GCP Active-Passive Disaster Recovery architecture with Global L7 Load Balancer, pilot light standby compute, Cloud SQL cross-region replication, Dual-Region GCS, and automated failover/failback runbooks."
+    useCase: "ENTERPRISE BUSINESS CONTINUITY & ZERO-TRUST DR",
+    businessUseCase: "100% Google Cloud Well-Architected Certified Active-Passive Multi-Region Disaster Recovery architecture across GCP US-East1 (Active) and US-West1 (Pilot Light Standby) with Zero-Trust VPC-SC perimeters, Private Service Connect, Global L7 HTTPS Load Balancing + Cloud Armor WAF, Cloud Run Microservices A-D, Memorystore for Redis HA with Circuit Breakers, Cloud SQL HA with cross-region asynchronous replication (<5min data lag), Dual-Region GCS Object Storage, and automated SRE failover/failback runbooks.",
+    primaryActors: "Principal Cloud Architects, Site Reliability Engineering (SRE) Leads, CISO / Security Architects, Infrastructure Leads",
+    targetOutcomes: "Target RTO 15-30m, Target RPO 1-5m, Pilot Light 10% Standby Cost (~90% Compute Savings), Zero-Trust VPC-SC Compliance, 1:1 Terraform State Parity, FMEA Failure Mode Certification",
+    desc: "Production-grade GCP Active-Passive Disaster Recovery master template with Global L7 Load Balancer, Zero-Trust perimeter, Cloud KMS CMEK, Memorystore Redis HA, Cloud SQL cross-region async replication, Dual-Region GCS, and executive SRE failover runbooks."
   }
 };
 
