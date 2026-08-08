@@ -440,6 +440,27 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Unified Data Governance Architecture: CDO & Stewards -> Collibra Strategy -> Dataplex ABAC Engine -> Modern Data Stack (BigQuery, GCS, Dataflow, Dataproc, Vertex AI) -> Executive Compliance Dashboards (GDPR, HIPAA, GxP)."
   },
   {
+    id: "dataops_anomaly_detection",
+    name: "DataOps & Anomaly Detection (WBS 3.1.7)",
+    categoryId: "modern_data",
+    categoryName: "Modern Data & Analytics",
+    badge: "Master Blueprint (WBS 3.1.7)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to design automated DataOps pipelines, real-time data quality testing (SODA), continuous data observability (Monte Carlo CARLO), active schema drift monitoring, and AI hallucination prevention across Google Cloud & the Modern Data Stack.",
+    bestFor: [
+      "WBS 3.1.7 DataOps & Anomaly Detection Architecture (To-Be State)",
+      "Top Zone Strategy & Observability Dashboard (CDO, Data Architect, SRE Ops Lead, Looker Studio 8-metric reporting with Hallucination Prevention Score 105)",
+      "Second Zone Incident Management & SRE View (SRE persona, Cloud Monitoring Alerts, PagerDuty Incident Integration, RCA Feedback Loop)",
+      "Third Zone The Core Dataplex Integrated DataOps Control Plane (SODA quality checks, Active Schema Drift Monitoring, Anomaly Detection Engine, Monte Carlo CARLO observability, CSV Checkpoints, Reliability Guardrails)",
+      "Fourth Zone Enforced Pipeline & Consumption (Cloud Storage Validated GCS Lakes with SOC 2 / CSV badge, Vertex AI Model Grounding with Vector Search and Prevention of AI/LLM Hallucination)",
+      "Bottom Zone Unified Modern Data Stack (Enterprise Data Lakehouse prerequisites: BigQuery, GCS, Cloud SQL, Dataflow, Dataproc, External SaaS)"
+    ],
+    keyTech: ["Google Cloud Dataplex", "SODA (SQL-based Quality)", "Monte Carlo (CARLO Observability)", "Looker Studio", "PagerDuty", "Cloud Monitoring", "BigQuery", "Cloud Storage", "Dataflow", "Dataproc", "Cloud SQL", "Vertex AI Vector Search", "SOC 2 & CSV"],
+    thumbnail: "/templates/dataops_anomaly_detection.png",
+    promptSummary: "DataOps Architecture: Looker Observability -> SRE PagerDuty -> Dataplex SODA & CARLO Anomaly Engine -> Validated GCS Lakes & Hallucination-Free Vertex AI Grounding."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

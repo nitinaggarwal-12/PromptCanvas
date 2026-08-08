@@ -429,6 +429,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "CDO, Data Stewards, Data Architects, Compliance Officers",
     targetOutcomes: "ABAC Enforcement, Metadata Sync, GDPR/GxP/HIPAA Compliance",
     desc: "Data governance and ABAC access control blueprint mapping Collibra, Dataplex, Modern Data Stack, and compliance dashboards."
+  },
+  dataops_anomaly_detection: {
+    id: "dataops_anomaly_detection",
+    title: "WBS 3.1.7: DataOps & Anomaly Detection Architecture (To-Be State)",
+    category: "Modern Data Stack",
+    useCase: "DATAOPS & ANOMALY DETECTION ARCHITECTURE (WBS 3.1.7)",
+    businessUseCase: "WBS 3.1.7: Enterprise DataOps and Continuous Anomaly Detection Architecture spanning 5 horizontal zones: Top Zone Strategy & Observability Dashboard (CDO, Data Architect, SRE Ops Lead, Looker Studio Visualization & Reporting with Freshness, Schema Drift, Volume, Distribution Shift, and Hallucination Prevention Score 105 metrics); Second Zone Incident Management & SRE View (SRE persona, Cloud Monitoring Alerts, PagerDuty Integration, Root Cause Analysis feedback loop); Third Zone The Core Dataplex Integrated DataOps Control Plane (Partner observability metrics, SODA Quality testing and active checks, Active Schema Drift Monitoring, Anomaly Detection Engine preventing hallucination from bad data, Monte Carlo CARLO data observability, Computer System Validation CSV checkpoints, Reliability Guardrails); Fourth Zone Enforced Pipeline & Consumption (Cloud Storage Validated GCS Lakes with SOC 2 / CSV badge, Vertex AI Model Grounding with Vector Search and Prevention of AI/LLM Hallucination); and Bottom Zone Unified Modern Data Stack (BigQuery, Cloud Storage, Cloud SQL, Dataflow, Dataproc, External SaaS enterprise data lakehouse prerequisites).",
+    primaryActors: "Lead Data Architects, Site Reliability Engineers (SREs), Data Engineers, AI/ML Engineers",
+    targetOutcomes: "Zero Hallucination AI Grounding from Bad Data, Automated Schema Drift & Freshness Anomaly Detection, Sub-Minute PagerDuty Incident Alerting, SOC 2 / CSV Validated Data Lakes",
+    desc: "WBS 3.1.7 DataOps blueprint mapping Looker observability, SRE incident integration, Dataplex SODA/CARLO anomaly detection, and hallucination-free Vertex AI grounding."
+  },
+  tech_dataops_anomaly: {
+    id: "dataops_anomaly_detection",
+    title: "DataOps & Anomaly Detection (WBS 3.1.7)",
+    category: "Modern Data Stack",
+    useCase: "DATAOPS & ANOMALY DETECTION ARCHITECTURE (WBS 3.1.7)",
+    businessUseCase: "Enterprise DataOps and Anomaly Detection architecture connecting Looker Studio, PagerDuty, Dataplex SODA/CARLO, and Vertex AI Grounding.",
+    primaryActors: "Data Architects, SREs, Data Engineers, AI Engineers",
+    targetOutcomes: "Anomaly Detection, Schema Drift Prevention, Hallucination-Free Grounding",
+    desc: "DataOps architecture blueprint illustrating Looker Studio observability, Dataplex anomaly detection, and validated data lakehouses."
   }
 };
 
