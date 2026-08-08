@@ -906,7 +906,7 @@ export function getExactMultiRegionDrReferenceXml(): string {
     <mxCell id="1" parent="0"/>
 
     <!-- ================= HEADER & STATUS BADGE ================= -->
-    <mxCell id="hdr_title" value="&lt;b style=&quot;font-size:17px;color:#202124;&quot;&gt;GCP ACTIVE-PASSIVE MULTI-REGION DISASTER RECOVERY: INFRASTRUCTURE &amp;amp; DATA FLOW (CASE B)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+    <mxCell id="hdr_title" value="&lt;b style=&quot;font-size:16px;color:#202124;&quot;&gt;GCP ACTIVE-PASSIVE MULTI-REGION DISASTER RECOVERY: INFRASTRUCTURE &amp;amp; DATA FLOW (CASE B)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;" vertex="1" parent="1">
       <mxGeometry x="40" y="24" width="860" height="26" as="geometry"/>
     </mxCell>
     
@@ -919,13 +919,13 @@ export function getExactMultiRegionDrReferenceXml(): string {
     <mxCell id="box_clients" value="&lt;b style=&quot;color:#202124;font-size:11px;&quot;&gt;External Global Clients&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#BDC1C6;strokeWidth=1;arcSize=4;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
       <mxGeometry x="40" y="66" width="180" height="86" as="geometry"/>
     </mxCell>
-    <mxCell id="c_web" value="&lt;font style=&quot;font-size:10px;color:#3C4043;&quot;&gt;Web&lt;/font&gt;" style="sketch=0;outlineConnect=0;fontColor=#202124;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.laptop;spacingTop=4;" vertex="1" parent="1">
+    <mxCell id="c_web" value="Web" style="sketch=0;outlineConnect=0;fontColor=#3C4043;fontSize=10;fontStyle=1;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.laptop;spacingTop=4;html=1;" vertex="1" parent="1">
       <mxGeometry x="54" y="94" width="36" height="42" as="geometry"/>
     </mxCell>
-    <mxCell id="c_mob" value="&lt;font style=&quot;font-size:10px;color:#3C4043;&quot;&gt;Mobile&lt;/font&gt;" style="sketch=0;outlineConnect=0;fontColor=#202124;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.smartphone;spacingTop=4;" vertex="1" parent="1">
+    <mxCell id="c_mob" value="Mobile" style="sketch=0;outlineConnect=0;fontColor=#3C4043;fontSize=10;fontStyle=1;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.smartphone;spacingTop=4;html=1;" vertex="1" parent="1">
       <mxGeometry x="108" y="94" width="36" height="42" as="geometry"/>
     </mxCell>
-    <mxCell id="c_iot" value="&lt;font style=&quot;font-size:10px;color:#3C4043;&quot;&gt;IoT / API&lt;/font&gt;" style="sketch=0;outlineConnect=0;fontColor=#202124;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.sensor;spacingTop=4;" vertex="1" parent="1">
+    <mxCell id="c_iot" value="IoT / API" style="sketch=0;outlineConnect=0;fontColor=#3C4043;fontSize=10;fontStyle=1;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.sensor;spacingTop=4;html=1;" vertex="1" parent="1">
       <mxGeometry x="162" y="94" width="38" height="42" as="geometry"/>
     </mxCell>
 
@@ -1130,7 +1130,7 @@ export function getExactMultiRegionDrReferenceXml(): string {
     </mxCell>
 
     <!-- Region B: Warm Pilot Light Compute Container -->
-    <mxCell id="box_compute_b" value="&lt;b style=&quot;color:#3C4043;font-size:11px;&quot;&gt;Warm Pilot Light Compute Layer (Cloud Run)&lt;/b&gt; — &lt;font color=&quot;#B06000;&quot; style=&quot;font-size:10px;&quot;&gt;&lt;b&gt;Pre-deployed warm instances&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#FBBC04;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;arcSize=3;" vertex="1" parent="1">
+    <mxCell id="box_compute_b" value="&lt;b style=&quot;color:#3C4043;font-size:11px;&quot;&gt;Warm Pilot Light Compute Layer (Cloud Run)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#FBBC04;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;arcSize=3;" vertex="1" parent="1">
       <mxGeometry x="952" y="214" width="556" height="152" as="geometry"/>
     </mxCell>
 
@@ -1223,11 +1223,11 @@ export function getExactMultiRegionDrReferenceXml(): string {
     </mxCell>
 
     <!-- Failover Promotion Action Edge -->
-    <mxCell id="edge_promotion_trigger" value="&lt;b style=&quot;font-size:9px;color:#D93025;&quot;&gt;Failover Promotion&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA4335;strokeWidth=1.5;dashed=1;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#EA4335;spacingTop=1;spacingBottom=1;" edge="1" parent="1" source="card_replica_promote" target="db_replica">
+    <mxCell id="edge_promotion_trigger" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA4335;strokeWidth=2;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1" source="card_replica_promote" target="db_replica">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
-    <!-- ================= BOTTOM SRE RUNBOOK & SLA METRICS (y = 612, h = 100) ================= -->
+    <!-- ================= BOTTOM SRE RUNBOOK & SLA METRICS (y = 612, h = 108) ================= -->
     <!-- SRE Disaster Recovery & Failover Runbook -->
     <mxCell id="box_sre_runbook" value="&lt;div style=&quot;line-height:16px;font-size:10.5px;&quot;&gt;&lt;b style=&quot;font-size:12px;color:#D93025;&quot;&gt;⚡ SRE DISASTER RECOVERY &amp;amp; FAILOVER RUNBOOK (PILOT LIGHT CASE B)&lt;/b&gt; &amp;nbsp;&lt;font color=&quot;#5F6368&quot;&gt;— Ordered failover sequence ensuring zero split-brain and minimal data loss&lt;/font&gt;&lt;br&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;4&quot; style=&quot;width:100%;margin-top:6px;font-size:10px;color:#3C4043;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:33%;vertical-align:top;&quot;&gt;&lt;b style=&quot;color:#D93025;&quot;&gt;❶ Step 1: Detect &amp;amp; Verify Failure&lt;/b&gt;&lt;br&gt;• Probes report 3 consecutive failures&lt;br&gt;• Automated P1 Escalation triggered&lt;/td&gt;&lt;td style=&quot;width:33%;vertical-align:top;&quot;&gt;&lt;b style=&quot;color:#D93025;&quot;&gt;❷ Step 2: Ingress Fencing (STONITH)&lt;/b&gt;&lt;br&gt;• Sever ingress to Region A at Global LB&lt;br&gt;• Prevent dual-primary split-brain writes&lt;/td&gt;&lt;td style=&quot;width:34%;vertical-align:top;&quot;&gt;&lt;b style=&quot;color:#D93025;&quot;&gt;❸ Step 3: Promote Cloud SQL Replica&lt;/b&gt;&lt;br&gt;• Run &lt;font face=&quot;monospace&quot;&gt;gcloud sql instances promote-replica&lt;/font&gt;&lt;br&gt;• Converts replica to Primary in 2-5m&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;❹ Step 4: Scale Pilot Light Compute&lt;/b&gt;&lt;br&gt;• Autoscale Cloud Run to 100-500 instances&lt;br&gt;• Warm instances eliminate cold starts (&amp;lt;45s)&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;❺ Step 5: Traffic Shift &amp;amp; Ingress Cutover&lt;/b&gt;&lt;br&gt;• Point Global LB 100% to Region B&lt;br&gt;• Verify zero-downtime serving &amp;amp; low errors&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;color:#137333;&quot;&gt;❻ Step 6: Fallback Protocol (Recovery)&lt;/b&gt;&lt;br&gt;• Configure reverse async replication&lt;br&gt;• Drain WAL lag before restoring traffic&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BDC1C6;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=12;spacingTop=10;arcSize=3;" vertex="1" parent="1">
       <mxGeometry x="40" y="612" width="884" height="108" as="geometry"/>
