@@ -55,7 +55,7 @@ export interface CompiledDiagramSpec {
 export function getExactItacsReferenceXml(): string {
   return `
 <mxfile host="embed.diagrams.net">
-  <diagram id="itacs_conceptual_compiled" name="ITACS Oncology Platform Conceptual Diagram">
+  <diagram id="itacs_conceptual_compiled" name="Enterprise Architecture Platform Conceptual Diagram">
     <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -778,7 +778,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         <mxCell id="1" parent="0" />
 
         <!-- GOVERNED NETWORK CONTAINER (CREAM BACKGROUND THEME WITH BLUE BORDER EXACTLY MATCHING IMAGE 1) -->
-        <mxCell id="gov_network" value="ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM (Governed Network)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#0284C7;strokeWidth=2.5;verticalAlign=top;align=center;spacingTop=12;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
+        <mxCell id="gov_network" value="ENTERPRISE SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM (Governed Network)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#0284C7;strokeWidth=2.5;verticalAlign=top;align=center;spacingTop=12;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="210" y="25" width="1490" height="1330" as="geometry" />
         </mxCell>
 
@@ -1113,7 +1113,7 @@ export function getExactMacroSequenceDiagramReferenceXml(): string {
         <mxCell id="1" parent="0" />
 
         <!-- 1. Global Header Bar -->
-        <mxCell id="macro_hdr_title" value="&lt;div style='text-align:center;color:#0F172A;'&gt;&lt;b style='font-size:16px;'&gt;ITACS Integrated Insights Platform - COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM.&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:12px;font-weight:normal;color:#475569;'&gt;Mapping Data Flow, Orchestration, Time, and Governance across Data/AI Solutions.&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="macro_hdr_title" value="&lt;div style='text-align:center;color:#0F172A;'&gt;&lt;b style='font-size:16px;'&gt;Enterprise Architecture Platform - Complete End-to-End Macro Sequence Diagram&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:12px;font-weight:normal;color:#475569;'&gt;Mapping Data Flow, Orchestration, Time, and Governance across Data/AI Solutions.&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="15" y="15" width="1890" height="55" as="geometry" />
         </mxCell>
         <mxCell id="macro_gcp_logo" value="&lt;b style='color:#4285F4;font-size:18px;'&gt;G&lt;/b&gt;&lt;b style='color:#EA4335;font-size:18px;'&gt;C&lt;/b&gt;&lt;b style='color:#FBBC05;font-size:18px;'&gt;P&lt;/b&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -1766,7 +1766,7 @@ export function getExactDataAiPipelineReferenceXml(): string {
 export function getExactSecureDeploymentMapReferenceXml(): string {
   return `
 <mxfile host="embed.diagrams.net">
-  <diagram id="secure_deployment_map_compiled" name="Google Cloud Project (ITACS Platform Production)">
+  <diagram id="secure_deployment_map_compiled" name="Google Cloud Project (Enterprise Production Architecture)">
     <mxGraphModel dx="1800" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1000" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -1778,7 +1778,7 @@ export function getExactSecureDeploymentMapReferenceXml(): string {
         </mxCell>
 
         <!-- Top Header Left inside Master Container -->
-        <mxCell id="top_header" value="&lt;span style='font-size:22px;'&gt;🔷&lt;/span&gt; &lt;font style='font-size:18px;font-weight:bold;color:#202124;'&gt;Google Cloud Project (ITACS Platform Production)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="top_header" value="&lt;span style='font-size:22px;'&gt;🔷&lt;/span&gt; &lt;font style='font-size:18px;font-weight:bold;color:#202124;'&gt;Google Cloud Project (Enterprise Production Architecture)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="175" y="45" width="500" height="30" as="geometry" />
         </mxCell>
 
@@ -1829,11 +1829,11 @@ export function getExactSecureDeploymentMapReferenceXml(): string {
           <mxGeometry x="555" y="335" width="90" height="60" as="geometry" />
         </mxCell>
 
-        <!-- ITACS Primary VPC Network -->
+        <!-- Enterprise Primary VPC Network -->
         <mxCell id="vpc_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4285F4;strokeWidth=2;arcSize=3;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="615" y="170" width="875" height="560" as="geometry" />
         </mxCell>
-        <mxCell id="vpc_header" value="&lt;b style='font-size:16px;color:#202124;'&gt;ITACS Primary VPC Network&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="vpc_header" value="&lt;b style='font-size:16px;color:#202124;'&gt;Enterprise Primary VPC Network&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="635" y="185" width="300" height="25" as="geometry" />
         </mxCell>
 
@@ -1841,8 +1841,8 @@ export function getExactSecureDeploymentMapReferenceXml(): string {
         <mxCell id="app_subnet" value="&lt;font style='font-size:14px;color:#202124;'&gt;Private Application Subnet (Isolated)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#4285F4;strokeWidth=1.5;arcSize=3;fontFamily=Helvetica;verticalAlign=top;paddingTop=12;" vertex="1" parent="1">
           <mxGeometry x="640" y="225" width="320" height="480" as="geometry" />
         </mxCell>
-        <!-- Central Card: ITACS Agent Orchestrator -->
-        <mxCell id="agent_orchestrator" value="&lt;b style='font-size:15px;color:#202124;'&gt;ITACS Agent&lt;br&gt;Orchestrator&lt;br&gt;(GKE Pod)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style='font-size:32px;'&gt;🔷 🖧&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:12px;color:#5F6368;'&gt;&lt;b&gt;Logic&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4285F4;strokeWidth=1.5;arcSize=8;shadow=1;fontFamily=Helvetica;" vertex="1" parent="1">
+        <!-- Central Card: Enterprise Agent Orchestrator -->
+        <mxCell id="agent_orchestrator" value="&lt;b style='font-size:15px;color:#202124;'&gt;Enterprise Agent&lt;br&gt;Orchestrator&lt;br&gt;(GKE Pod)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style='font-size:32px;'&gt;🔷 🖧&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:12px;color:#5F6368;'&gt;&lt;b&gt;Logic&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4285F4;strokeWidth=1.5;arcSize=8;shadow=1;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="690" y="325" width="220" height="160" as="geometry" />
         </mxCell>
 
@@ -2045,7 +2045,7 @@ export function getExactDevopsCicdPipelineReferenceXml(): string {
         </mxCell>
 
         <!-- Top-Left Header inside Master Container -->
-        <mxCell id="top_header" value="&lt;span style='font-size:20px;'&gt;🔷&lt;/span&gt; &lt;b style='font-size:16px;color:#202124;'&gt;ITACS Governing Cloud Tenant (Managed Services)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+        <mxCell id="top_header" value="&lt;span style='font-size:20px;'&gt;🔷&lt;/span&gt; &lt;b style='font-size:16px;color:#202124;'&gt;Enterprise Governing Cloud Tenant (Managed Services)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="40" y="50" width="500" height="30" as="geometry" />
         </mxCell>
 
@@ -3734,12 +3734,12 @@ export function tryCompileJsonOrFallback(aiResponseText: string, fallbackXml: st
 }
 
 /**
- * Returns the benchmark ITACS Oncology Platform specification for instant compilation
+ * Returns the benchmark Enterprise AI Platform specification for instant compilation
  */
 export function getBenchmarkItacsSpec(): CompiledDiagramSpec {
   return {
     diagramId: "itacs_conceptual_compiled",
-    title: "ITACS Oncology Platform Conceptual Diagram",
+    title: "Enterprise Architecture Platform Conceptual Diagram",
     columns: [],
     connections: []
   };
@@ -3811,7 +3811,7 @@ export function getBenchmarkDataAiPipelineSpec(): CompiledDiagramSpec {
 export function getBenchmarkSecureDeploymentMapSpec(): CompiledDiagramSpec {
   return {
     diagramId: "secure_deployment_map_compiled",
-    title: "Google Cloud Project (ITACS Platform Production)",
+    title: "Google Cloud Project (Enterprise Production Architecture)",
     columns: [],
     connections: []
   };
@@ -3844,7 +3844,7 @@ export function getBenchmarkGovernanceStateMachineSpec(): CompiledDiagramSpec {
 export function getBenchmarkUnifiedSystemViewSpec(): CompiledDiagramSpec {
   return {
     diagramId: "unified_system_view_compiled",
-    title: "ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW",
+    title: "Enterprise Architecture Platform - TOTAL UNIFIED SYSTEM VIEW",
     columns: [],
     connections: []
   };
@@ -3853,7 +3853,7 @@ export function getBenchmarkUnifiedSystemViewSpec(): CompiledDiagramSpec {
 export function getBenchmarkDarkModeUnifiedSystemViewSpec(): CompiledDiagramSpec {
   return {
     diagramId: "dark_mode_unified_system_view_compiled",
-    title: "ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW (Dark Mode)",
+    title: "Enterprise Architecture Platform - TOTAL UNIFIED SYSTEM VIEW (Dark Mode)",
     columns: [],
     connections: []
   };
