@@ -27,13 +27,16 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
   }
 
   const isFlagship = (
-    archType === 'eval_safety_benchmarking' ||
+    archType === 'data_ai_pipeline' ||
+    archType === 'tech_data_lakehouse_gcp' ||
+    archType === 'tech_modern_data_stack' ||
     archType === 'business_agent_gov_hitl' ||
     archType === 'business_agent_governance_hitl' ||
+    archType === 'golive_warroom_runbook' ||
+    archType === 'eval_safety_benchmarking' ||
     archType === 'tech_multi_agent_langgraph' ||
     archType === 'tech_agent_harness_runtime' ||
     archType === 'tech_c4_system_context' ||
-    archType === 'tech_modern_data_stack' ||
     archType === 'tech_event_driven_eda' ||
     archType === 'six_rs_migration_matrix' ||
     archType === 'hybrid_strangler_transition' ||
@@ -44,12 +47,16 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     archType === 'hub_and_spoke_agent_config' ||
     archType === 'unified_data_governance' ||
     archType === 'dataops_anomaly_detection' ||
-    archType === 'golive_warroom_runbook' ||
     archType === 'enterprise_sre_observability' ||
     archType === 'data_residency_sovereign_map' ||
     archType === 'federated_iam_sso' ||
     archType === 'tech_ai_trism_guardrails' ||
     archType === 'tech_micro_frontends' ||
+    inputXml.includes('id="data-ai-pipeline-wbs"') ||
+    inputXml.includes('id="gcp-lakehouse-wbs"') ||
+    inputXml.includes('id="modern-data-stack-wbs"') ||
+    inputXml.includes('id="agent-gov-hitl-wbs"') ||
+    inputXml.includes('id="golive-warroom-wbs"') ||
     inputXml.includes('pageWidth="1400"') ||
     inputXml.includes('pageHeight="800"') ||
     inputXml.includes('id="frame_') ||

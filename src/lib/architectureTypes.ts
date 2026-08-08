@@ -20,6 +20,30 @@ import {
 } from './diagramCompiler';
 import { injectUseCaseFlavor } from './diagramCleaner';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
+import {
+  getExactMultiAgentLangGraphReferenceXml,
+  getExactAgentHarnessRuntimeReferenceXml,
+  getExactAgentGovernanceHitlReferenceXml,
+  getExactSixRsMigrationMatrixXml,
+  getExactHybridStranglerTransitionXml,
+  getExactCloudFinopsChargebackXml,
+  getExactAiCoeOperatingModelXml,
+  getExactMcpContextGatewayXml,
+  getExactLogicalAiConfigTenantXml,
+  getExactHubAndSpokeAgentConfigXml,
+  getExactUnifiedDataGovernanceXml,
+  getExactDataOpsAnomalyDetectionXml,
+  getExactGoLiveWarRoomRunbookXml,
+  getExactEnterpriseSreObservabilityXml,
+  getExactDataResidencySovereignMapXml,
+  getExactFederatedIamSsoXml,
+  getExactAiTrismGuardrailsXml,
+  getExactSecureDeploymentMapWidescreenXml,
+  getExactAgenticRagWidescreenXml,
+  getExactModernDataStackWbsXml,
+  getExactDataAiPipelineWbsXml,
+  getExactGcpDataLakehouseWbsXml
+} from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
   id: string;
@@ -310,76 +334,54 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'erd') {
     xml = compileSpecToDrawioXml(getBenchmarkErdSpec());
   } else if (id === 'agentic_rag' || id.includes('rag')) {
-    const { getExactAgenticRagWidescreenXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAgenticRagWidescreenXml();
   } else if (id === 'sequence_diagram') {
     xml = getExactSequenceDiagramReferenceXml();
   } else if (id === 'data_ai_pipeline' || id.includes('data_ai')) {
-    const { getExactDataAiPipelineWbsXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactDataAiPipelineWbsXml();
   } else if (id === 'secure_deployment_map' || id.includes('secure_deployment') || id.includes('zero_trust')) {
-    const { getExactSecureDeploymentMapWidescreenXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactSecureDeploymentMapWidescreenXml();
   } else if (id === 'devops_cicd_pipeline') {
     xml = getExactDevopsCicdPipelineReferenceXml();
   } else if (id === 'unified_system_view') {
     xml = getExactUnifiedSystemViewReferenceXml();
   } else if (id === 'business_agent_gov_hitl' || id.includes('agent_governance') || id.includes('gov_hitl')) {
-    const { getExactAgentGovernanceHitlReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAgentGovernanceHitlReferenceXml();
   } else if (id === 'tech_multi_agent_langgraph' || id.includes('langgraph')) {
-    const { getExactMultiAgentLangGraphReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactMultiAgentLangGraphReferenceXml();
   } else if (id === 'tech_agent_harness_runtime' || id.includes('agent_harness') || id.includes('agent_runtime')) {
-    const { getExactAgentHarnessRuntimeReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAgentHarnessRuntimeReferenceXml();
   } else if (id === 'six_rs_migration_matrix') {
-    const { getExactSixRsMigrationMatrixXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactSixRsMigrationMatrixXml();
   } else if (id === 'hybrid_strangler_transition') {
-    const { getExactHybridStranglerTransitionXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactHybridStranglerTransitionXml();
   } else if (id === 'cloud_finops_chargeback') {
-    const { getExactCloudFinopsChargebackXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactCloudFinopsChargebackXml();
   } else if (id === 'ai_coe_operating_model') {
-    const { getExactAiCoeOperatingModelXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAiCoeOperatingModelXml();
   } else if (id === 'mcp_context_gateway') {
-    const { getExactMcpContextGatewayXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactMcpContextGatewayXml();
   } else if (id === 'logical_ai_config_tenant') {
-    const { getExactLogicalAiConfigTenantXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactLogicalAiConfigTenantXml();
   } else if (id === 'hub_and_spoke_agent_config') {
-    const { getExactHubAndSpokeAgentConfigXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactHubAndSpokeAgentConfigXml();
   } else if (id === 'unified_data_governance') {
-    const { getExactUnifiedDataGovernanceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactUnifiedDataGovernanceXml();
   } else if (id === 'dataops_anomaly_detection') {
-    const { getExactDataOpsAnomalyDetectionXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactDataOpsAnomalyDetectionXml();
   } else if (id === 'golive_warroom_runbook') {
-    const { getExactGoLiveWarRoomRunbookXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactGoLiveWarRoomRunbookXml();
   } else if (id === 'enterprise_sre_observability') {
-    const { getExactEnterpriseSreObservabilityXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactEnterpriseSreObservabilityXml();
   } else if (id === 'data_residency_sovereign_map') {
-    const { getExactDataResidencySovereignMapXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactDataResidencySovereignMapXml();
   } else if (id === 'federated_iam_sso') {
-    const { getExactFederatedIamSsoXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactFederatedIamSsoXml();
   } else if (id === 'tech_ai_trism_guardrails' || id === 'ai_trism_guardrails') {
-    const { getExactAiTrismGuardrailsXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAiTrismGuardrailsXml();
   } else if (id === 'tech_modern_data_stack' || id.includes('modern_data_stack')) {
-    const { getExactModernDataStackWbsXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactModernDataStackWbsXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
-    const { getExactGcpDataLakehouseWbsXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactGcpDataLakehouseWbsXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);

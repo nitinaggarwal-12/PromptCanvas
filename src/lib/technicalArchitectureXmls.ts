@@ -26,7 +26,7 @@ import {
   getExactAiTrismGuardrailsXml, 
   getExactMicroFrontendsXml,
   getExactStreamingAnalyticsXml,
-  getExactDataLakehouseXml,
+  getExactGcpDataLakehouseWbsXml,
   getExactZeroTrustMeshXml,
   getExactFintechPaymentsXml,
   getExactGenomicsClinicalXml,
@@ -166,7 +166,7 @@ const TECH_XML_MICROSERVICES_AWS = `<mxfile host="embed.diagrams.net">
 </mxfile>`;
 
 // 4. AWS Data Lakehouse Architecture (Authentic Master Architecture)
-const TECH_XML_DATA_LAKEHOUSE = getExactDataLakehouseXml();
+const TECH_XML_DATA_LAKEHOUSE = getExactGcpDataLakehouseWbsXml();
 
 // 5. Enterprise Agentic RAG Platform Architecture
 const TECH_XML_RAG_GCP = getExactAgenticRagWidescreenXml();

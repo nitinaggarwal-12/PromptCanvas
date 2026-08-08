@@ -58,26 +58,47 @@ export async function executeUnifiedDiagramPipeline(
     }
   }
 
-  // 3. Prompt Gemini with Structured AST Schema to customize domain entities & text
-  const compositePrompt = diagramId && prompt !== existingPrompt 
-    ? `Target Domain: ${existingPrompt} | Specific Refinement Request: ${prompt}` 
-    : prompt;
-
-  console.log(`[Unified Diagram Engine] Processing ${effectiveArchType} for prompt: "${compositePrompt.slice(0, 60)}"...`);
+  const isFlagshipBlueprint = effectiveArchType.includes('agent_harness') || 
+    effectiveArchType.includes('modern_data_stack') || 
+    effectiveArchType.includes('data_ai') || 
+    effectiveArchType.includes('lakehouse') || 
+    effectiveArchType.includes('hitl') || 
+    effectiveArchType.includes('golive') || 
+    effectiveArchType === 'tech_modern_data_stack' || 
+    effectiveArchType === 'data_ai_pipeline' || 
+    effectiveArchType === 'tech_data_lakehouse_gcp' || 
+    effectiveArchType === 'business_agent_gov_hitl' || 
+    effectiveArchType === 'golive_warroom_runbook';
 
   let customResult: CustomizationResult;
-  try {
-    customResult = await customizeDiagramTemplateWithGemini(targetXml || baseTemplateXml || '', compositePrompt, effectiveArchType);
-  } catch (err) {
-    console.warn('[Unified Diagram Engine Fallback] Gemini customizer failed, applying algorithmic injection:', err);
-    const flavoredXml = injectUseCaseFlavor(targetXml || baseTemplateXml || '', prompt, prompt);
-    const healed = preflightVerifyAndHealXmlAcrossAll6Audits(flavoredXml, effectiveArchType);
+  if (isFlagshipBlueprint && (!prompt || prompt === effectiveArchType || prompt.includes('Blueprint ID') || prompt.includes('WBS') || prompt.includes('Human-in-the-Loop'))) {
     customResult = {
-      xml: healed,
-      reasoning: `Tailored ${effectiveArchType} architecture for "${prompt}".`,
-      businessUsecase: `Consolidated enterprise architecture model for ${effectiveArchType}.`,
-      technicalUsecase: `Zero-collision 2D layout with domain entity alignment.`
+      xml: baseTemplateXml || '',
+      reasoning: `High-craft reference architecture blueprint for ${effectiveArchType}.`,
+      businessUsecase: `Exact reference blueprint specification.`,
+      technicalUsecase: `Zero-collision calibrated widescreen 2D layout.`
     };
+  } else {
+    // 3. Prompt Gemini with Structured AST Schema to customize domain entities & text
+    const compositePrompt = diagramId && prompt !== existingPrompt 
+      ? `Target Domain: ${existingPrompt} | Specific Refinement Request: ${prompt}` 
+      : prompt;
+
+    console.log(`[Unified Diagram Engine] Processing ${effectiveArchType} for prompt: "${compositePrompt.slice(0, 60)}"...`);
+
+    try {
+      customResult = await customizeDiagramTemplateWithGemini(targetXml || baseTemplateXml || '', compositePrompt, effectiveArchType);
+    } catch (err) {
+      console.warn('[Unified Diagram Engine Fallback] Gemini customizer failed, applying algorithmic injection:', err);
+      const flavoredXml = injectUseCaseFlavor(targetXml || baseTemplateXml || '', prompt, prompt);
+      const healed = preflightVerifyAndHealXmlAcrossAll6Audits(flavoredXml, effectiveArchType);
+      customResult = {
+        xml: healed,
+        reasoning: `Tailored ${effectiveArchType} architecture for "${prompt}".`,
+        businessUsecase: `Consolidated enterprise architecture model for ${effectiveArchType}.`,
+        technicalUsecase: `Zero-collision 2D layout with domain entity alignment.`
+      };
+    }
   }
 
   // 4. Validate & Heal AST

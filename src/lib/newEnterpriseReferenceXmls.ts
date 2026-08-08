@@ -1,3 +1,19 @@
+
+const SVG_GCP_LOGO = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E";
+const SVG_CYLINDER_3D_RED = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2070%22%20width%3D%2238%22%20height%3D%2244%22%3E%3Cpath%20d%3D%22M5%2C15%20L5%2C50%20C5%2C60%2055%2C60%2055%2C50%20L55%2C15%20Z%22%20fill%3D%22%23EF4444%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%222%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2250%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%23DC2626%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2215%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%23F87171%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E";
+const SVG_CYLINDER_3D_BLUE = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2070%22%20width%3D%2238%22%20height%3D%2244%22%3E%3Cpath%20d%3D%22M5%2C15%20L5%2C50%20C5%2C60%2055%2C60%2055%2C50%20L55%2C15%20Z%22%20fill%3D%22%233B82F6%22%20stroke%3D%22%231D4ED8%22%20stroke-width%3D%222%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2250%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%232563EB%22%20stroke%3D%22%231D4ED8%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2215%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%2360A5FA%22%20stroke%3D%22%231D4ED8%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E";
+const SVG_CYLINDER_3D_GREEN = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2070%22%20width%3D%2238%22%20height%3D%2244%22%3E%3Cpath%20d%3D%22M5%2C15%20L5%2C50%20C5%2C60%2055%2C60%2055%2C50%20L55%2C15%20Z%22%20fill%3D%22%2310B981%22%20stroke%3D%22%23047857%22%20stroke-width%3D%222%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2250%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%23059669%22%20stroke%3D%22%23047857%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2215%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%2334D399%22%20stroke%3D%22%23047857%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E";
+const SVG_HOPPER_RED = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Cpath%20d%3D%22M12%2C18%20L68%2C18%20L56%2C66%20L24%2C66%20Z%22%20fill%3D%22%23EF4444%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%222%22%2F%3E%3Cellipse%20cx%3D%2240%22%20cy%3D%2218%22%20rx%3D%2228%22%20ry%3D%227%22%20fill%3D%22%23F87171%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%221.5%22%2F%3E%3Cpolygon%20points%3D%2230%2C36%2036%2C26%2042%2C36%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2252%22%20cy%3D%2246%22%20r%3D%224.5%22%20fill%3D%22white%22%2F%3E%3Crect%20x%3D%2224%22%20y%3D%2244%22%20width%3D%228.5%22%20height%3D%228.5%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E";
+const SVG_HOPPER_BLUE = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Cpath%20d%3D%22M12%2C18%20L68%2C18%20L56%2C66%20L24%2C66%20Z%22%20fill%3D%22%233B82F6%22%20stroke%3D%22%231D4ED8%22%20stroke-width%3D%222%22%2F%3E%3Cellipse%20cx%3D%2240%22%20cy%3D%2218%22%20rx%3D%2228%22%20ry%3D%227%22%20fill%3D%22%2360A5FA%22%20stroke%3D%22%231D4ED8%22%20stroke-width%3D%221.5%22%2F%3E%3Cpolygon%20points%3D%2230%2C36%2036%2C26%2042%2C36%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2252%22%20cy%3D%2246%22%20r%3D%224.5%22%20fill%3D%22white%22%2F%3E%3Crect%20x%3D%2224%22%20y%3D%2244%22%20width%3D%228.5%22%20height%3D%228.5%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E";
+const SVG_HOPPER_GREEN = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Cpath%20d%3D%22M12%2C18%20L68%2C18%20L56%2C66%20L24%2C66%20Z%22%20fill%3D%22%2310B981%22%20stroke%3D%22%23047857%22%20stroke-width%3D%222%22%2F%3E%3Cellipse%20cx%3D%2240%22%20cy%3D%2218%22%20rx%3D%2228%22%20ry%3D%227%22%20fill%3D%22%2334D399%22%20stroke%3D%22%23047857%22%20stroke-width%3D%221.5%22%2F%3E%3Cpolygon%20points%3D%2230%2C36%2036%2C26%2042%2C36%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2252%22%20cy%3D%2246%22%20r%3D%224.5%22%20fill%3D%22white%22%2F%3E%3Crect%20x%3D%2224%22%20y%3D%2244%22%20width%3D%228.5%22%20height%3D%228.5%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E";
+const SVG_STACKED_TABLES = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20120%22%20width%3D%2250%22%20height%3D%2260%22%3E%3Cg%20fill%3D%22%233B82F6%22%20stroke%3D%22%231D4ED8%22%20stroke-width%3D%221.5%22%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%2260%22%20height%3D%2240%22%20rx%3D%223%22%20fill%3D%22%2393C5FD%22%2F%3E%3Cline%20x1%3D%2210%22%20y1%3D%2222%22%20x2%3D%2270%22%20y2%3D%2222%22%20stroke%3D%22white%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2225%22%20width%3D%2260%22%20height%3D%2240%22%20rx%3D%223%22%20fill%3D%22%2360A5FA%22%2F%3E%3Cline%20x1%3D%2220%22%20y1%3D%2237%22%20x2%3D%2280%22%20y2%3D%2237%22%20stroke%3D%22white%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2240%22%20width%3D%2260%22%20height%3D%2240%22%20rx%3D%223%22%20fill%3D%22%233B82F6%22%2F%3E%3Cline%20x1%3D%2230%22%20y1%3D%2252%22%20x2%3D%2290%22%20y2%3D%2252%22%20stroke%3D%22white%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%2255%22%20width%3D%2255%22%20height%3D%2245%22%20rx%3D%223%22%20fill%3D%22%232563EB%22%2F%3E%3Cline%20x1%3D%2240%22%20y1%3D%2268%22%20x2%3D%2295%22%20y2%3D%2268%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%2F%3E%3Cline%20x1%3D%2255%22%20y1%3D%2268%22%20x2%3D%2255%22%20y2%3D%22100%22%20stroke%3D%22white%22%20stroke-width%3D%221.5%22%2F%3E%3Cline%20x1%3D%2275%22%20y1%3D%2268%22%20x2%3D%2275%22%20y2%3D%22100%22%20stroke%3D%22white%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E";
+const SVG_SOC2_MEDAL = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20120%22%20width%3D%2246%22%20height%3D%2256%22%3E%3Cpolygon%20points%3D%2235%2C68%2018%2C115%2045%2C95%22%20fill%3D%22%231E40AF%22%2F%3E%3Cpolygon%20points%3D%2265%2C68%2082%2C115%2055%2C95%22%20fill%3D%22%231E40AF%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2248%22%20r%3D%2238%22%20fill%3D%22%232563EB%22%20stroke%3D%22%231D4ED8%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2240%22%20fill%3D%22white%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2216%22%20text-anchor%3D%22middle%22%3ESOC%3C%2Ftext%3E%3Ctext%20x%3D%2250%22%20y%3D%2262%22%20fill%3D%22white%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2220%22%20text-anchor%3D%22middle%22%3E2%3C%2Ftext%3E%3Ctext%20x%3D%2250%22%20y%3D%2274%22%20fill%3D%22%23BFDBFE%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%227.5%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%3ECOMPLIANCE%3C%2Ftext%3E%3C%2Fsvg%3E";
+const SVG_21CFR_MEDAL = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20120%22%20width%3D%2246%22%20height%3D%2256%22%3E%3Cpolygon%20points%3D%2235%2C68%2018%2C115%2045%2C95%22%20fill%3D%22%23B91C1C%22%2F%3E%3Cpolygon%20points%3D%2265%2C68%2082%2C115%2055%2C95%22%20fill%3D%22%23B91C1C%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2248%22%20r%3D%2238%22%20fill%3D%22%23FEE2E2%22%20stroke%3D%22%23DC2626%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2242%22%20fill%3D%22%23991B1B%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%3E21%20CFR%3C%2Ftext%3E%3Ctext%20x%3D%2250%22%20y%3D%2260%22%20fill%3D%22%23991B1B%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2211.5%22%20text-anchor%3D%22middle%22%3EPart%2011%3C%2Ftext%3E%3C%2Fsvg%3E";
+const SVG_GXP_MEDAL = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20120%22%20width%3D%2246%22%20height%3D%2256%22%3E%3Cpolygon%20points%3D%2235%2C68%2018%2C115%2045%2C95%22%20fill%3D%22%231D4ED8%22%2F%3E%3Cpolygon%20points%3D%2265%2C68%2082%2C115%2055%2C95%22%20fill%3D%22%231D4ED8%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2248%22%20r%3D%2238%22%20fill%3D%22%23FEF3C7%22%20stroke%3D%22%23D97706%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2248%22%20r%3D%2232%22%20fill%3D%22%23FDE68A%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20fill%3D%22%2378350F%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2218%22%20text-anchor%3D%22middle%22%3EGxP%3C%2Ftext%3E%3C%2Fsvg%3E";
+const SVG_NIST_MEDAL = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20120%22%20width%3D%2246%22%20height%3D%2256%22%3E%3Cpolygon%20points%3D%2235%2C68%2018%2C115%2045%2C95%22%20fill%3D%22%231E40AF%22%2F%3E%3Cpolygon%20points%3D%2265%2C68%2082%2C115%2055%2C95%22%20fill%3D%22%231E40AF%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2248%22%20r%3D%2238%22%20fill%3D%22%232563EB%22%20stroke%3D%22%231D4ED8%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2242%22%20fill%3D%22white%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2215%22%20text-anchor%3D%22middle%22%3ENIST%3C%2Ftext%3E%3Ctext%20x%3D%2250%22%20y%3D%2262%22%20fill%3D%22%23BFDBFE%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22bold%22%20font-size%3D%2210.5%22%20text-anchor%3D%22middle%22%3EAI%20RMF%3C%2Ftext%3E%3C%2Fsvg%3E";
+const SVG_ANALYTICAL_CHART = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20140%2070%22%20width%3D%22110%22%20height%3D%2250%22%3E%3Cpath%20d%3D%22M5%2C55%20Q35%2C15%2070%2C35%20T135%2C10%20L135%2C65%20L5%2C65%20Z%22%20fill%3D%22%23DBEAFE%22%20stroke%3D%22%233B82F6%22%20stroke-width%3D%222%22%2F%3E%3Cline%20x1%3D%225%22%20y1%3D%2265%22%20x2%3D%22135%22%20y2%3D%2265%22%20stroke%3D%22%2394A3B8%22%20stroke-width%3D%221.5%22%2F%3E%3Cline%20x1%3D%225%22%20y1%3D%225%22%20x2%3D%225%22%20y2%3D%2265%22%20stroke%3D%22%2394A3B8%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E";
+const SVG_GOLD_STAR = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2050%2050%22%20width%3D%2232%22%20height%3D%2232%22%3E%3Cpolygon%20points%3D%2225%2C2%2032%2C18%2049%2C18%2035%2C29%2040%2C46%2025%2C35%2010%2C46%2015%2C29%201%2C18%2018%2C18%22%20fill%3D%22%23FBBF24%22%20stroke%3D%22%23D97706%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E";
+
 /**
  * 🏛️ Master Widescreen Reference Layouts for New Enterprise Blueprints:
  * JOURNAL-PUBLICATION GRADE SCIENTIFIC REFERENCE ARCHITECTURES
@@ -147,22 +163,22 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
         <mxCell id="lbl_ingress_title" value="&lt;b style='font-size:13.5px;color:#0F172A;letter-spacing:-0.2px;'&gt;Ingress Channels&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="35" y="104" width="160" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="item_web" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:globe.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Web &amp;amp; Portals&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="item_web" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/globe.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Web &amp;amp; Portals&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="37" y="135" width="156" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="item_chat" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:message-square.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Chat (Slack/Teams)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="item_chat" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/message-square.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Chat (Slack/Teams)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="37" y="195" width="156" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="item_mobile" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:smartphone.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Mobile &amp;amp; Voice SDK&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="item_mobile" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/smartphone.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Mobile &amp;amp; Voice SDK&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="37" y="255" width="156" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="item_api" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:terminal.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;REST &amp;amp; gRPC APIs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="item_api" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/terminal.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;REST &amp;amp; gRPC APIs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="37" y="315" width="156" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="item_webhook" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:webhook.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Async Webhooks&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="item_webhook" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/webhook.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Async Webhooks&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="37" y="375" width="156" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="item_waf" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:26px;vertical-align:middle;'&gt;&lt;img src='https://api.iconify.design/lucide:shield-alert.svg?color=%23DC2626' width='16' height='16'/&gt;&lt;/td&gt;&lt;td style='font-size:11px;color:#991B1B;font-weight:700;'&gt;WAF &amp;amp; Spend Limit Cap&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#FCA5A5;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="item_waf" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:26px;vertical-align:middle;'&gt;&lt;img src='https://api.iconify.design/lucide/shield-alert.svg?color=%23DC2626' width='16' height='16'/&gt;&lt;/td&gt;&lt;td style='font-size:11px;color:#991B1B;font-weight:700;'&gt;WAF &amp;amp; Spend Limit Cap&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#FCA5A5;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="37" y="445" width="156" height="44" as="geometry" />
         </mxCell>
 
@@ -173,7 +189,7 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
         <mxCell id="lbl_actors_title" value="&lt;b style='font-size:13.5px;color:#0F172A;'&gt;Enterprise Actors&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="35" y="530" width="160" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="icon_user" value="" style="image;html=1;image=https://api.iconify.design/lucide:users.svg?color=%230284C7;" vertex="1" parent="1">
+        <mxCell id="icon_user" value="" style="image;html=1;image=https://api.iconify.design/lucide/users.svg?color=%230284C7;" vertex="1" parent="1">
           <mxGeometry x="87" y="562" width="56" height="56" as="geometry" />
         </mxCell>
         <mxCell id="lbl_user_sub" value="&lt;b style='font-size:12.5px;color:#0F172A;'&gt;Business Users &amp;amp; SRE&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#64748B;line-height:1.45;'&gt;• End User Requesters&lt;br/&gt;• Human Reviewers&lt;br/&gt;• Security &amp;amp; Audit Officers&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -184,50 +200,50 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
         <mxCell id="box_agent_harness" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="225" y="95" width="1180" height="690" as="geometry" />
         </mxCell>
-        <mxCell id="harness_title" value="&lt;table style='margin:0 auto;'&gt;&lt;tr&gt;&lt;td style='vertical-align:middle;padding-right:8px;'&gt;&lt;div style='width:32px;height:32px;border-radius:6px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield-check.svg?color=%23EA580C' width='20' height='20'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:18px;font-weight:900;color:#0F172A;letter-spacing:-0.3px;'&gt;Enterprise Agent Harness &amp;amp; Execution Platform&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="harness_title" value="&lt;table style='margin:0 auto;'&gt;&lt;tr&gt;&lt;td style='vertical-align:middle;padding-right:8px;'&gt;&lt;div style='width:32px;height:32px;border-radius:6px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/shield-check.svg?color=%23EA580C' width='20' height='20'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:18px;font-weight:900;color:#0F172A;letter-spacing:-0.3px;'&gt;Enterprise Agent Harness &amp;amp; Execution Platform&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="245" y="104" width="1140" height="34" as="geometry" />
         </mxCell>
 
         <!-- 3x4 MIDDLEWARE GRID -->
         <!-- Row 1 -->
-        <mxCell id="card_litellm" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:sparkles.svg?color=%2316A34A' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;LiteLLM Router&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Multi-Model Load Balancing, Failover &amp;amp; Rate-Limit Budgeting&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_litellm" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/sparkles.svg?color=%2316A34A' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;LiteLLM Router&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Multi-Model Load Balancing, Failover &amp;amp; Rate-Limit Budgeting&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="245" y="145" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_mcp" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:puzzle.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;MCP Tool Protocol&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Model Context Protocol: Dynamic Tools, Prompts &amp;amp; Resources&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_mcp" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/puzzle.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;MCP Tool Protocol&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Model Context Protocol: Dynamic Tools, Prompts &amp;amp; Resources&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="535" y="145" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_memory" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#F3E8FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:database.svg?color=%237C3AED' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Hierarchical Memory&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Working Scratchpad, Episodic History &amp;amp; Semantic Long-Term Store&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_memory" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#F3E8FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/database.svg?color=%237C3AED' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Hierarchical Memory&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Working Scratchpad, Episodic History &amp;amp; Semantic Long-Term Store&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="825" y="145" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_caching" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:zap.svg?color=%23D97706' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Prompt &amp;amp; Semantic Cache&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;&lt;b style='color:#D97706;'&gt;⚡ 90% Cost Cut&lt;/b&gt; • Ephemeral Context &amp;amp; Vector Cache (Redis)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FCD34D;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_caching" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/zap.svg?color=%23D97706' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Prompt &amp;amp; Semantic Cache&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;&lt;b style='color:#D97706;'&gt;⚡ 90% Cost Cut&lt;/b&gt; • Ephemeral Context &amp;amp; Vector Cache (Redis)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FCD34D;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="1115" y="145" width="270" height="95" as="geometry" />
         </mxCell>
 
         <!-- Row 2 -->
-        <mxCell id="card_guardrails" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield.svg?color=%23CA8A04' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Safety Guardrails&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;NeMo Guardrails, PII/PCI Redaction &amp;amp; Constitutional Safety&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FDE047;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_guardrails" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/shield.svg?color=%23CA8A04' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Safety Guardrails&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;NeMo Guardrails, PII/PCI Redaction &amp;amp; Constitutional Safety&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FDE047;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="245" y="255" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_auth" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#CCFBF1;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:lock.svg?color=%230D9488' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Auth &amp;amp; Access (IAM)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;OAuth2/OIDC, Granular Tool-Level RBAC &amp;amp; Ephemeral JWTs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F0FDFA;strokeColor=#5EEAD4;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_auth" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#CCFBF1;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/lock.svg?color=%230D9488' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Auth &amp;amp; Access (IAM)&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;OAuth2/OIDC, Granular Tool-Level RBAC &amp;amp; Ephemeral JWTs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F0FDFA;strokeColor=#5EEAD4;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="535" y="255" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_vectordb" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FFE4E6;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:layers.svg?color=%23E11D48' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Vector &amp;amp; Graph DB&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Hybrid Dense/Sparse Search (pgvector, Pinecone, Neo4j Graph)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FDA4AF;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_vectordb" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FFE4E6;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/layers.svg?color=%23E11D48' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Vector &amp;amp; Graph DB&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Hybrid Dense/Sparse Search (pgvector, Pinecone, Neo4j Graph)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FDA4AF;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="825" y="255" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_compactor" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:scissors.svg?color=%237C3AED' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Context Compactor&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Sliding Window Pruner &amp;amp; Hierarchical Summarizer (No Overflow)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_compactor" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/scissors.svg?color=%237C3AED' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Context Compactor&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Sliding Window Pruner &amp;amp; Hierarchical Summarizer (No Overflow)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="1115" y="255" width="270" height="95" as="geometry" />
         </mxCell>
 
         <!-- Row 3 -->
-        <mxCell id="card_observability" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:bar-chart-3.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Distributed Tracing&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;OpenTelemetry Spans, Step Latency &amp;amp; Real-time Token Cost Auditing&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_observability" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/bar-chart-3.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Distributed Tracing&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;OpenTelemetry Spans, Step Latency &amp;amp; Real-time Token Cost Auditing&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="245" y="365" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_evaluation" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:crosshair.svg?color=%23EA580C' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Evaluation &amp;amp; Red-Team&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;LLM-as-a-Judge, Hallucination Scorer &amp;amp; Adversarial Injection Tests&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FDBA74;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_evaluation" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/crosshair.svg?color=%23EA580C' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Evaluation &amp;amp; Red-Team&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;LLM-as-a-Judge, Hallucination Scorer &amp;amp; Adversarial Injection Tests&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FDBA74;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="535" y="365" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_hitl" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-check.svg?color=%23CA8A04' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;HITL Approval Gate&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Async requires_action Approvals, Escalation Router &amp;amp; Sign-off&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FEF08A;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_hitl" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/user-check.svg?color=%23CA8A04' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;HITL Approval Gate&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;Async requires_action Approvals, Escalation Router &amp;amp; Sign-off&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FEF08A;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="825" y="365" width="270" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="card_audit_ledger" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#D1FAE5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:file-check-2.svg?color=%23059669' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Compliance Audit Vault&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;&lt;b style='color:#059669;'&gt;SOC2, HIPAA &amp;amp; EU AI Act&lt;/b&gt; Immutable Provenance Hash Ledger&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="card_audit_ledger" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:34px;vertical-align:top;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#D1FAE5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/file-check-2.svg?color=%23059669' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='vertical-align:top;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;Compliance Audit Vault&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;color:#334155;line-height:1.25;'&gt;&lt;b style='color:#059669;'&gt;SOC2, HIPAA &amp;amp; EU AI Act&lt;/b&gt; Immutable Provenance Hash Ledger&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.5;align=left;spacingLeft=6;spacingRight=6;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="1115" y="365" width="270" height="95" as="geometry" />
         </mxCell>
 
@@ -252,22 +268,22 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
         </mxCell>
 
         <!-- 6 Steps -->
-        <mxCell id="step_classify" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:git-fork.svg?color=%2316A34A' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;1. Classify &amp;amp; Plan&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Intent parsing, task graph &amp;amp; budget allocation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+        <mxCell id="step_classify" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide/git-fork.svg?color=%2316A34A' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;1. Classify &amp;amp; Plan&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Intent parsing, task graph &amp;amp; budget allocation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="255" y="535" width="175" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="step_swarm" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:bot.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;2. Agent Swarm&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Parallel Workers (Research, Coder, Critic)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+        <mxCell id="step_swarm" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide/bot.svg?color=%230284C7' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;2. Agent Swarm&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Parallel Workers (Research, Coder, Critic)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="445" y="535" width="175" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="step_sandbox" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:28px;height:28px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#F3E8FF;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:terminal-square.svg?color=%237C3AED' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;3. Code Sandbox&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;gVisor / E2B Isolated Python &amp;amp; Bash Runtime&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+        <mxCell id="step_sandbox" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:28px;height:28px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#F3E8FF;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide/terminal-square.svg?color=%237C3AED' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;3. Code Sandbox&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;gVisor / E2B Isolated Python &amp;amp; Bash Runtime&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="635" y="535" width="175" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="step_check" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:28px;height:28px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:shield-alert.svg?color=%23CA8A04' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;4. Critic Gate&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Hallucination check &amp;amp; unit constraint validation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FDE047;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+        <mxCell id="step_check" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:28px;height:28px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide/shield-alert.svg?color=%23CA8A04' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;4. Critic Gate&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Hallucination check &amp;amp; unit constraint validation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#FDE047;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="825" y="535" width="175" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="step_retry" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:28px;height:28px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:refresh-cw.svg?color=%23EA580C' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;5. Self-Heal Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Error reflection, dynamic patch &amp;amp; re-execution&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FDBA74;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+        <mxCell id="step_retry" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:28px;height:28px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#FFEDD5;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide/refresh-cw.svg?color=%23EA580C' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;5. Self-Heal Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Error reflection, dynamic patch &amp;amp; re-execution&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FDBA74;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="1015" y="535" width="175" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="step_end" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:28px;height:28px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:check-circle-2.svg?color=%2316A34A' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;6. State Checkpoint&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Final synthesis, memory sync &amp;amp; time-travel save&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+        <mxCell id="step_end" value="&lt;table style='width:100%;text-align:center;'&gt;&lt;tr&gt;&lt;td style='width:28px;height:28px;text-align:center;padding-bottom:4px;'&gt;&lt;div style='width:28px;height:28px;border-radius:6px;background:#DCFCE7;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide/check-circle-2.svg?color=%2316A34A' width='16' height='16'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:12px;font-weight:bold;color:#0F172A;'&gt;6. State Checkpoint&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-size:10px;color:#475569;line-height:1.3;'&gt;Final synthesis, memory sync &amp;amp; time-travel save&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;align=center;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="1205" y="535" width="175" height="110" as="geometry" />
         </mxCell>
 
@@ -295,19 +311,19 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
         <mxCell id="lbl_ext_title" value="&lt;b style='font-size:13.5px;color:#0F172A;letter-spacing:-0.2px;'&gt;Enterprise Systems &amp;amp; Data&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="1435" y="104" width="270" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="ext_api" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:cloud.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;SaaS APIs (Salesforce, Jira, Stripe)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="ext_api" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/cloud.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;SaaS APIs (Salesforce, Jira, Stripe)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="135" width="264" height="46" as="geometry" />
         </mxCell>
-        <mxCell id="ext_db" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:database.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Databases &amp;amp; BigQuery / Snowflake&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="ext_db" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/database.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Databases &amp;amp; BigQuery / Snowflake&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="190" width="264" height="46" as="geometry" />
         </mxCell>
-        <mxCell id="ext_files" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:folder-tree.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Cloud Object Stores (S3 / GCS)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="ext_files" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/folder-tree.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Cloud Object Stores (S3 / GCS)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="245" width="264" height="46" as="geometry" />
         </mxCell>
-        <mxCell id="ext_apps" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:layout-grid.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Internal ERP &amp;amp; Microservices&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="ext_apps" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/layout-grid.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;Internal ERP &amp;amp; Microservices&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="300" width="264" height="46" as="geometry" />
         </mxCell>
-        <mxCell id="ext_tools" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:cpu.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;DevOps &amp;amp; Compute Infrastructure&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="ext_tools" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/cpu.svg?color=%23475569' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#1E293B;font-weight:700;'&gt;DevOps &amp;amp; Compute Infrastructure&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="355" width="264" height="46" as="geometry" />
         </mxCell>
 
@@ -327,7 +343,7 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
         <mxCell id="prov_google" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/logos:google-icon.svg' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0F172A;font-weight:700;'&gt;Google (Gemini 3.6 Pro / Flash)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="595" width="264" height="46" as="geometry" />
         </mxCell>
-        <mxCell id="prov_local_slm" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:server.svg?color=%230284C7' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0284C7;font-weight:700;'&gt;On-Prem SLMs (Llama 3 / vLLM)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="prov_local_slm" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/server.svg?color=%230284C7' width='14' height='14'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;color:#0284C7;font-weight:700;'&gt;On-Prem SLMs (Llama 3 / vLLM)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1438" y="650" width="264" height="46" as="geometry" />
         </mxCell>
 
@@ -346,22 +362,22 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
         <mxCell id="infra_k8s" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/logos:kubernetes.svg' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;Kubernetes / GKE Clusters&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="45" y="845" width="225" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="infra_temporal" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:workflow.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;Temporal / Durable State Workflows&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="infra_temporal" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/workflow.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;Temporal / Durable State Workflows&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="285" y="845" width="225" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="infra_kafka" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#FFF7ED;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:git-branch.svg?color=%23EA580C' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;Event Mesh &amp;amp; Kafka / SQS Topics&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="infra_kafka" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#FFF7ED;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/git-branch.svg?color=%23EA580C' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;Event Mesh &amp;amp; Kafka / SQS Topics&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="525" y="845" width="225" height="75" as="geometry" />
         </mxCell>
         <mxCell id="infra_checkpoints" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/logos:postgresql.svg' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;State Checkpoint Store (Time-Travel DB)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="765" y="845" width="225" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="infra_secrets" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#CCFBF1;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:key.svg?color=%230D9488' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;KMS &amp;amp; HashiCorp Secrets Vault&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="infra_secrets" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#CCFBF1;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/key.svg?color=%230D9488' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;KMS &amp;amp; HashiCorp Secrets Vault&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1005" y="845" width="225" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="infra_rlhf" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#D1FAE5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:trending-up.svg?color=%23059669' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;RLHF &amp;amp; Continuous Prompt Optimizer&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="infra_rlhf" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#D1FAE5;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/trending-up.svg?color=%23059669' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;RLHF &amp;amp; Continuous Prompt Optimizer&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1245" y="845" width="225" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="infra_dr" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;Multi-Region DR &amp;amp; Cold Backup S3&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="infra_dr" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:30px;vertical-align:middle;'&gt;&lt;div style='width:24px;height:24px;border-radius:6px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;'&gt;&lt;img src='https://api.iconify.design/lucide/shield.svg?color=%230284C7' width='15' height='15'/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='font-size:11.5px;font-weight:700;color:#0F172A;'&gt;Multi-Region DR &amp;amp; Cold Backup S3&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="1485" y="845" width="225" height="75" as="geometry" />
         </mxCell>
 
@@ -380,224 +396,8 @@ export function getExactAgentHarnessRuntimeReferenceXml(): string {
  * 🏛️ BLUEPRINT: Human-in-the-Loop (HITL) AI Governance, Governingautonomous AI Agents (WBS 1.1.2)
  * Exact Replica of Reference Artifact media_1786215864633.png
  */
-export function getExactAgentGovernanceHitlReferenceXml(): string {
-  return `
-<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="hitl_gov_wbs" name="Human-in-the-Loop (HITL) AI Governance, Governingautonomous AI Agents">
-    <mxGraphModel dx="1200" dy="640" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="640" background="#FFFFFF">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
+// HITL function defined at bottom
 
-        <!-- TOP TITLE & SUBTITLE -->
-        <mxCell id="main_title" value="Human-in-the-Loop (HITL) AI Governance, Governingautonomous AI Agents" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="15" y="10" width="850" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="sub_title" value="*Total Unified System View (WBS 1.1.2)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="15" y="42" width="350" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- TOP RIGHT METADATA CALLOUT -->
-        <mxCell id="box_top_meta" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Metadata:&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;color:#334155;'&gt;prerequisites prereqs prepreqs prerequisites&lt;br/&gt;for strategic presentation&lt;br/&gt;conorosn-yasuree legibility and no crowding&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;spacingLeft=6;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
-          <mxGeometry x="960" y="8" width="225" height="58" as="geometry" />
-        </mxCell>
-
-        <!-- LAYER 1: AI AGENT OPERATIONS (Dashed Container, Top Left) -->
-        <mxCell id="box_layer1" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="15" y="75" width="580" height="175" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_layer1_title" value="&lt;b style='font-size:12px;color:#000000;'&gt;LAYER 1: AI Agent Operations&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="78" width="220" height="20" as="geometry" />
-        </mxCell>
-
-        <mxCell id="persona_client" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23475569' width='32' height='32'/&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;External Client&lt;br/&gt;Request&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="115" width="85" height="65" as="geometry" />
-        </mxCell>
-
-        <mxCell id="card_ent_apps" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;div style='width:32px;height:24px;background:#93C5FD;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:settings.svg?color=%231E3A8A' width='16' height='16'/&gt;&lt;/div&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Enterprise&lt;br/&gt;Applications&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="175" y="120" width="90" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_client_to_apps" value="External Client&lt;br/&gt;Request" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=8.5;fontStyle=1;align=center;" edge="1" parent="1" source="persona_client" target="card_ent_apps"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <mxCell id="card_ai_agent" value="&lt;div style='text-align:center;padding:6px;'&gt;&lt;img src='https://api.iconify.design/lucide:sparkles.svg?color=%230284C7' width='36' height='36' style='margin:0 auto;'/&gt;&lt;br/&gt;&lt;b style='font-size:11.5px;color:#0F172A;'&gt;AI Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9.5px;color:#475569;'&gt;(Powered by Gemini Pro)&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#64748B;'&gt;prerequisites context prereqs prepreqs&lt;br/&gt;prerequisites prerequisites prequiss context&lt;br/&gt;prereqs prerequisite prerequisitee context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=1.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="340" y="98" width="195" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_apps_to_agent" value="WBS 4.2.1&lt;br/&gt;prerequisites" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=8.5;fontStyle=1;align=center;" edge="1" parent="1" source="card_ent_apps" target="card_ai_agent"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- LAYER 2: HITL GOVERNANCE & COMPLIANCE CONTROL PLANE (Dashed Container, Bottom Left) -->
-        <mxCell id="box_layer2" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="15" y="265" width="580" height="235" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_layer2_title" value="&lt;b style='font-size:12px;color:#000000;'&gt;LAYER 2: HITL Governance &amp;amp; Compliance Control Plane&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="268" width="370" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_wbs_412" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;WBS 4.1.2&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#64748B;'&gt;prerequisites prereqs prereqs prerequisites pattern prerequisites context prerequisites&lt;br/&gt;prereqs prereqs prereqs prerequisites&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="240" y="270" width="345" height="30" as="geometry" />
-        </mxCell>
-
-        <!-- Connector from Layer 1 Agent down to Layer 2 -->
-        <mxCell id="arr_agent_to_layer2" value="generate proposed&lt;br/&gt;Action / Decision" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9;fontStyle=1;align=center;" edge="1" parent="1" source="card_ai_agent">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points"><mxPoint x="440" y="315" /></Array>
-            <mxPoint x="440" y="220" />
-            <mxPoint x="390" y="315" />
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Proposed Decision Node -->
-        <mxCell id="node_proposed_decision" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;img src='https://api.iconify.design/lucide:line-chart.svg?color=%230284C7' width='26' height='26'/&gt;&lt;br/&gt;&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Proposed Decision&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;proposes prereqs prereqs prereqs prereqs prereqs&lt;br/&gt;prerequisites context, prereqs prerequisites prereqs&lt;br/&gt;prereqs prerequisites prereqs prereqs context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="75" y="340" width="165" height="85" as="geometry" />
-        </mxCell>
-
-        <!-- Diamond Decision -->
-        <mxCell id="diamond_confidence" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="270" y="360" width="45" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_prop_to_diamond" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="node_proposed_decision" target="diamond_confidence"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- High Confidence Path (YES) -->
-        <mxCell id="arr_high_conf" value="HIGH CONFIDENCE / ROUTINE ACTION" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#16A34A;strokeWidth=2.5;endArrow=classic;endSize=6;fontColor=#15803D;fontStyle=1;fontSize=9.5;align=center;" edge="1" parent="1" source="diamond_confidence" target="card_action">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="292" y="325" /><mxPoint x="450" y="325" /></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="lbl_yes" value="&lt;b style='font-size:12px;color:#16A34A;'&gt;YES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="425" y="305" width="40" height="20" as="geometry" />
-        </mxCell>
-
-        <mxCell id="card_action" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;img src='https://api.iconify.design/lucide:monitor.svg?color=%23475569' width='24' height='24'/&gt;&lt;br/&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Action&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;propose prereqs prerequisites prereqs&lt;br/&gt;prereqs prerequisites context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="435" y="340" width="135" height="75" as="geometry" />
-        </mxCell>
-
-        <!-- Low Confidence Path (NO) -->
-        <mxCell id="arr_low_conf" value="LOW CONFIDENCE / HIGH RISK ACTION" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#DC2626;strokeWidth=2.5;endArrow=classic;endSize=6;fontColor=#DC2626;fontStyle=1;fontSize=9.5;align=center;" edge="1" parent="1" source="diamond_confidence" target="icon_alert_triangle">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="292" y="440" /><mxPoint x="430" y="440" /></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="lbl_no" value="&lt;b style='font-size:12px;color:#DC2626;'&gt;NO&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="385" y="420" width="35" height="20" as="geometry" />
-        </mxCell>
-
-        <mxCell id="icon_alert_triangle" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:triangle-alert.svg?color=%23DC2626' width='32' height='32'/&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#DC2626;'&gt;Alert&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="435" y="425" width="55" height="55" as="geometry" />
-        </mxCell>
-
-        <!-- Red connector from Alert up into Layer 3 -->
-        <mxCell id="arr_alert_to_layer3" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=classic;endSize=6;" edge="1" parent="1" source="icon_alert_triangle">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="595" y="450" />
-              <mxPoint x="595" y="150" />
-            </Array>
-            <mxPoint x="610" y="150" />
-          </mxGeometry>
-        </mxCell>
-
-        <!-- LAYER 3: HUMAN INTERVENTION & REGULATORY OVERRIDE (Dashed Container, Right Side) -->
-        <mxCell id="box_layer3" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="615" y="75" width="570" height="425" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_layer3_title" value="&lt;b style='font-size:12px;color:#000000;'&gt;LAYER 3: Human Intervention &amp;amp; Regulatory Override&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="625" y="78" width="400" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- Ingress HITL Review Portal -->
-        <mxCell id="card_hitl_portal" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:triangle-alert.svg?color=%23DC2626' width='24' height='24'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;HITL Review Portal&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;prerequisites purpose&lt;br/&gt;prerequisites context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="625" y="120" width="95" height="55" as="geometry" />
-        </mxCell>
-
-        <!-- 4 Personas -->
-        <mxCell id="p_risk" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2316A34A' width='26' height='26'/&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Risk Officer&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="740" y="115" width="60" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="p_ciso" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23475569' width='26' height='26'/&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;CISO&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="815" y="115" width="55" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="p_legal" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23B45309' width='26' height='26'/&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Legal Counsel&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="885" y="115" width="70" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="p_sme" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%230284C7' width='26' height='26'/&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Domain SME&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="965" y="115" width="65" height="48" as="geometry" />
-        </mxCell>
-
-        <!-- 3 COMPLIANCE PILLARS -->
-        <!-- Pillar 1: EU AI Act -->
-        <mxCell id="pill_eu_ai" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="625" y="195" width="115" height="280" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_eu_hdr" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;EU AI Act&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#475569;'&gt;prerequisites purpose&lt;br/&gt;prerequisites context&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="628" y="200" width="109" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_eu_title_bot" value="&lt;b style='font-size:12px;color:#000000;'&gt;EU AI Act&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="635" y="375" width="95" height="24" as="geometry" />
-        </mxCell>
-
-        <!-- Pillar 2: 21 CFR Part 11 -->
-        <mxCell id="pill_21cfr" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="750" y="195" width="145" height="280" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_21cfr_hdr" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;21 CFR Part 11&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;font-weight:bold;'&gt;prerequisites EMA/GxP context&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="752" y="200" width="141" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="box_auth" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Authentication&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequins prereqs prerequisities&lt;br/&gt;prerequisiles prerequicitee&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="760" y="270" width="125" height="55" as="geometry" />
-        </mxCell>
-
-        <!-- Override Signature Node -->
-        <mxCell id="node_kms_override" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;KMS&lt;br/&gt;Encrypted&lt;br/&gt;Override&lt;br/&gt;Signature&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;WBS purpose prerequisites&lt;br/&gt;purpose prerequisites&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="898" y="270" width="82" height="95" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_auth_to_kms" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_auth" target="node_kms_override"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Pillar 3: GAMP 5 -->
-        <mxCell id="pill_gamp5" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="985" y="195" width="115" height="280" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_gamp_hdr" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;GAMP 5&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#475569;'&gt;prerequisites purpose&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="988" y="200" width="109" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_gamp_title_bot" value="&lt;b style='font-size:12px;color:#000000;'&gt;GAMP 5&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="995" y="375" width="95" height="24" as="geometry" />
-        </mxCell>
-
-        <!-- Feedback arrow from KMS Override back to Action in Layer 2 -->
-        <mxCell id="arr_kms_to_action" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#3B82F6;strokeWidth=2;endArrow=classic;endSize=6;" edge="1" parent="1" source="node_kms_override">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="939" y="525" />
-              <mxPoint x="502" y="525" />
-            </Array>
-            <mxPoint x="939" y="365" />
-            <mxPoint x="502" y="415" />
-          </mxGeometry>
-        </mxCell>
-
-        <!-- BOTTOM: TARGET AUDIENCE & LEGEND -->
-        <mxCell id="avatars_personas" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='padding:0 2px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2316A34A' width='24' height='24'/&gt;&lt;/td&gt;&lt;td style='padding:0 2px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23475569' width='24' height='24'/&gt;&lt;/td&gt;&lt;td style='padding:0 2px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23B45309' width='24' height='24'/&gt;&lt;/td&gt;&lt;td style='padding:0 2px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%230284C7' width='24' height='24'/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Risk, CISO, and Legal&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="500" y="540" width="165" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="box_target_aud" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Target Audience&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;prerequisites definitions definitions&lt;br/&gt;definitions context prereqs prerequisites&lt;br/&gt;prereqs prereqs prereqs definitions&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="670" y="535" width="200" height="55" as="geometry" />
-        </mxCell>
-
-        <!-- Feedback arrow to Target Audience -->
-        <mxCell id="arr_prop_to_aud" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#3B82F6;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="node_proposed_decision" target="avatars_personas">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="157" y="565" /></Array></mxGeometry>
-        </mxCell>
-
-        <!-- Bottom Right Legend -->
-        <mxCell id="box_legend_hitl" value="&lt;table style='width:100%;font-size:9px;color:#0F172A;'&gt;&lt;tr&gt;&lt;td colspan='2' style='text-align:center;font-weight:bold;padding-bottom:2px;'&gt;Legend&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='2' style='font-weight:bold;font-size:8px;'&gt;Darrow types&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='width:15px;'&gt;→&lt;/td&gt;&lt;td&gt;Solid Synch Flow&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='width:15px;'&gt;→&lt;/td&gt;&lt;td&gt;Async Auditing&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='width:15px;'&gt;⟷&lt;/td&gt;&lt;td&gt;Throttling&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='width:15px;'&gt;&lt;img src='https://api.iconify.design/lucide:triangle-alert.svg?color=%23DC2626' width='12' height='12'/&gt;&lt;/td&gt;&lt;td&gt;&lt;span style='font-size:8px;'&gt;Icon prerequisites definitions&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=4;" vertex="1" parent="1">
-          <mxGeometry x="880" y="525" width="220" height="95" as="geometry" />
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-  `.trim();
-}
-
-/**
- * 🏛️ BLUEPRINT #4: GCP SERVERLESS PRODUCTION WEB APPLICATION (ZERO-TRUST VPC)
- */
 export function getExactServerlessGcpReferenceXml(): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
@@ -1682,7 +1482,7 @@ export function getExactHybridStranglerTransitionXml(): string {
         </mxCell>
 
         <!-- SRE ACTOR AT TOP OF APIGEE -->
-        <mxCell id="actor_sre" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user-check.svg?color=%230284C7&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#1E293B;font-weight:bold;&quot;&gt;SRE&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:6px;&quot;&gt;&lt;span style=&quot;font-size:11px;color:#334155;&quot;&gt;Monitoring&lt;br&gt;monitoring&lt;br&gt;apigee metrics&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="actor_sre" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user-check.svg?color=%230284C7&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#1E293B;font-weight:bold;&quot;&gt;SRE&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:6px;&quot;&gt;&lt;span style=&quot;font-size:11px;color:#334155;&quot;&gt;Monitoring&lt;br&gt;monitoring&lt;br&gt;apigee metrics&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="890" y="120" width="180" height="65" as="geometry" />
         </mxCell>
         <mxCell id="edge_sre_pointer" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1;dashed=1;endArrow=open;endFill=0;" edge="1" parent="1">
@@ -1743,7 +1543,7 @@ export function getExactHybridStranglerTransitionXml(): string {
         </mxCell>
 
         <!-- NETWORK ENG ACTOR (Center Corridor) -->
-        <mxCell id="actor_net_eng" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:wrench.svg?color=%230284C7&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#1E293B;font-weight:bold;&quot;&gt;Network Eng&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:6px;&quot;&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;Monitoring on&lt;br&gt;secure Interconnect&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="actor_net_eng" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/wrench.svg?color=%230284C7&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#1E293B;font-weight:bold;&quot;&gt;Network Eng&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:6px;&quot;&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;Monitoring on&lt;br&gt;secure Interconnect&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="440" y="235" width="180" height="50" as="geometry" />
         </mxCell>
 
@@ -1904,7 +1704,7 @@ export function getExactHybridStranglerTransitionXml(): string {
         </mxCell>
 
         <!-- BACKEND ENG ACTOR (Bottom Right) -->
-        <mxCell id="actor_backend_eng" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:code.svg?color=%230284C7&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#1E293B;font-weight:bold;&quot;&gt;Backend Eng&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="actor_backend_eng" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/code.svg?color=%230284C7&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#1E293B;font-weight:bold;&quot;&gt;Backend Eng&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="1275" y="460" width="80" height="60" as="geometry" />
         </mxCell>
         <mxCell id="edge_backend_pointer" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1;endArrow=open;endFill=0;" edge="1" parent="1">
@@ -2405,15 +2205,15 @@ export function getExactCloudFinopsChargebackXml(): string {
         </mxCell>
 
         <!-- Target Business Units (Right of Layer 3) -->
-        <mxCell id="bu_engineering" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:users.svg?color=%230284C7&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Business Unit 1&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Engineering)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="bu_engineering" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/users.svg?color=%230284C7&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Business Unit 1&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Engineering)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="875" y="555" width="165" height="50" as="geometry" />
         </mxCell>
 
-        <mxCell id="bu_product" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:users.svg?color=%230284C7&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Business Unit 2&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Product)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="bu_product" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/users.svg?color=%230284C7&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Business Unit 2&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Product)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="875" y="632" width="165" height="50" as="geometry" />
         </mxCell>
 
-        <mxCell id="bu_genai" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:users.svg?color=%230284C7&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Data Science &amp;amp;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;GenAI Teams&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="bu_genai" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/users.svg?color=%230284C7&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Data Science &amp;amp;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;GenAI Teams&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="875" y="710" width="165" height="50" as="geometry" />
         </mxCell>
 
@@ -2508,7 +2308,7 @@ export function getExactCloudFinopsChargebackXml(): string {
         </mxCell>
 
         <!-- Secret Manager Security Box -->
-        <mxCell id="box_secret_mgr" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg?color=%230284C7&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-left:4px;&quot;&gt;Secret Manager&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;font-size:9.5px;color:#475569;padding-top:4px;&quot;&gt;Secure storage of&lt;br&gt;Kubecost API keys&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+        <mxCell id="box_secret_mgr" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/lock.svg?color=%230284C7&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-left:4px;&quot;&gt;Secret Manager&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;font-size:9.5px;color:#475569;padding-top:4px;&quot;&gt;Secure storage of&lt;br&gt;Kubecost API keys&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1260" y="520" width="180" height="75" as="geometry" />
         </mxCell>
 
@@ -2656,7 +2456,7 @@ export function getExactAiCoeOperatingModelXml(): string {
           <mxGeometry x="25" y="210" width="105" height="50" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_gamp5" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg?color=%232563EB&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;br/&gt;&lt;span style=&quot;font-size:8px;background:#DBEAFE;color:#1D4ED8;padding:1px 4px;border-radius:3px;font-weight:bold;&quot;&gt;Validated&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:6px;&quot;&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;line-height:1.2;&quot;&gt;GAMP 5&lt;br/&gt;Compliance&lt;br/&gt;Framework&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="node_gamp5" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/shield-check.svg?color=%232563EB&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;br/&gt;&lt;span style=&quot;font-size:8px;background:#DBEAFE;color:#1D4ED8;padding:1px 4px;border-radius:3px;font-weight:bold;&quot;&gt;Validated&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:6px;&quot;&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;line-height:1.2;&quot;&gt;GAMP 5&lt;br/&gt;Compliance&lt;br/&gt;Framework&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="95" y="325" width="175" height="70" as="geometry" />
         </mxCell>
 
@@ -2708,7 +2508,7 @@ export function getExactAiCoeOperatingModelXml(): string {
           <mxGeometry x="740" y="124" width="50" height="20" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_adoption_model" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:bar-chart-2.svg?color=%230284C7&quot; width=&quot;22&quot; height=&quot;22&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-left:4px;&quot;&gt;Adoption&lt;br/&gt;Modeling&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=left;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="node_adoption_model" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/bar-chart-2.svg?color=%230284C7&quot; width=&quot;22&quot; height=&quot;22&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-left:4px;&quot;&gt;Adoption&lt;br/&gt;Modeling&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=left;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="480" y="152" width="165" height="48" as="geometry" />
         </mxCell>
         <mxCell id="edge_coe_to_adoption" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
@@ -2777,7 +2577,7 @@ export function getExactAiCoeOperatingModelXml(): string {
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="node_csv_export" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-spreadsheet.svg?color=%2316A34A&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#15803D;font-weight:bold;line-height:1.1;&quot;&gt;CSV&lt;br/&gt;&lt;span style=&quot;color:#475569;font-weight:normal;&quot;&gt;Data&lt;br/&gt;export/&lt;br/&gt;import&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="node_csv_export" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/file-spreadsheet.svg?color=%2316A34A&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#15803D;font-weight:bold;line-height:1.1;&quot;&gt;CSV&lt;br/&gt;&lt;span style=&quot;color:#475569;font-weight:normal;&quot;&gt;Data&lt;br/&gt;export/&lt;br/&gt;import&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="835" y="420" width="55" height="65" as="geometry" />
         </mxCell>
         <mxCell id="edge_util_to_csv" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
@@ -2879,7 +2679,7 @@ export function getExactAiCoeOperatingModelXml(): string {
           <mxGeometry x="990" y="568" width="80" height="20" as="geometry" />
         </mxCell>
 
-        <mxCell id="leg_item_symbols" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg?color=%232563EB&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt; &lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Symbol&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="leg_item_symbols" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/shield-check.svg?color=%232563EB&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt; &lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Symbol&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="990" y="590" width="200" height="20" as="geometry" />
         </mxCell>
 
@@ -3027,27 +2827,27 @@ export function getExactMcpContextGatewayXml(): string {
 
         <!-- ==================== LEFT COLUMN: 5 INGESTION SOURCES ==================== -->
         <!-- Source 1: Database Source (Cloud SQL) -->
-        <mxCell id="src_db" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg?color=%23FFFFFF&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Database Source&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8.5px;&quot;&gt;(Cloud SQL)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
+        <mxCell id="src_db" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/database.svg?color=%23FFFFFF&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Database Source&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8.5px;&quot;&gt;(Cloud SQL)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
           <mxGeometry x="25" y="80" width="145" height="36" as="geometry" />
         </mxCell>
 
         <!-- Source 2: Object Storage Source (Cloud Storage) -->
-        <mxCell id="src_storage" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:equal.svg?color=%23FFFFFF&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Object Storage Source&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8.5px;&quot;&gt;(Cloud Storage)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
+        <mxCell id="src_storage" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/equal.svg?color=%23FFFFFF&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Object Storage Source&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8.5px;&quot;&gt;(Cloud Storage)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
           <mxGeometry x="25" y="124" width="145" height="36" as="geometry" />
         </mxCell>
 
         <!-- Source 3: Vector DB Source (Vertex AI Vector Search) -->
-        <mxCell id="src_vector" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:network.svg?color=%232563EB&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Vector DB Source&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8px;&quot;&gt;(Vertex AI Vector Search)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
+        <mxCell id="src_vector" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/network.svg?color=%232563EB&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Vector DB Source&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8px;&quot;&gt;(Vertex AI Vector Search)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
           <mxGeometry x="25" y="168" width="145" height="36" as="geometry" />
         </mxCell>
 
         <!-- Source 4: Logs (Cloud Logging) -->
-        <mxCell id="src_logs" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:sliders-horizontal.svg?color=%23FFFFFF&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Logs&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8.5px;&quot;&gt;(Cloud Logging)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
+        <mxCell id="src_logs" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/sliders-horizontal.svg?color=%23FFFFFF&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Logs&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8.5px;&quot;&gt;(Cloud Logging)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
           <mxGeometry x="25" y="212" width="145" height="36" as="geometry" />
         </mxCell>
 
         <!-- Source 5: Legacy Systems (External API/Database) -->
-        <mxCell id="src_legacy" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#E2E8F0;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg?color=%23475569&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Legacy Systems&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8px;&quot;&gt;(External API/Database)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
+        <mxCell id="src_legacy" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#E2E8F0;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/database.svg?color=%23475569&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Legacy Systems&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8px;&quot;&gt;(External API/Database)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
           <mxGeometry x="25" y="256" width="145" height="36" as="geometry" />
         </mxCell>
 
@@ -3100,7 +2900,7 @@ export function getExactMcpContextGatewayXml(): string {
         </mxCell>
 
         <!-- Apigee and Looker Studio (SRE Ops) -->
-        <mxCell id="node_apigee_looker" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:34px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%230284C7&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;br/&gt;&lt;b style=&quot;color:#EA580C;font-size:9px;&quot;&gt;Apigee&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Looker Studio&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8px;&quot;&gt;(Visualization &amp;amp; Reporting)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
+        <mxCell id="node_apigee_looker" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:34px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%230284C7&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;br/&gt;&lt;b style=&quot;color:#EA580C;font-size:9px;&quot;&gt;Apigee&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;font-size:9.5px;color:#0F172A;padding-left:4px;&quot;&gt;&lt;b&gt;Looker Studio&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:8px;&quot;&gt;(Visualization &amp;amp; Reporting)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;spacingLeft=3;" vertex="1" parent="1">
           <mxGeometry x="25" y="308" width="155" height="42" as="geometry" />
         </mxCell>
 
@@ -3127,13 +2927,13 @@ export function getExactMcpContextGatewayXml(): string {
           <mxGeometry x="25" y="370" width="205" height="16" as="geometry" />
         </mxCell>
 
-        <mxCell id="card_iam" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;line-height:1.1;padding-top:2px;&quot;&gt;&lt;b&gt;Workload&lt;br/&gt;Identity&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;&quot;&gt;(IAM)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
+        <mxCell id="card_iam" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/shield-check.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;line-height:1.1;padding-top:2px;&quot;&gt;&lt;b&gt;Workload&lt;br/&gt;Identity&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;&quot;&gt;(IAM)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="28" y="392" width="60" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="card_vpc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:box.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;line-height:1.1;padding-top:2px;&quot;&gt;&lt;b&gt;VPC-SC&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;&quot;&gt;(Perimeter&lt;br/&gt;Security)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
+        <mxCell id="card_vpc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/box.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;line-height:1.1;padding-top:2px;&quot;&gt;&lt;b&gt;VPC-SC&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;&quot;&gt;(Perimeter&lt;br/&gt;Security)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="96" y="392" width="62" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="card_secrets" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;line-height:1.1;padding-top:2px;&quot;&gt;&lt;b&gt;Secret&lt;br/&gt;Manager&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;&quot;&gt;(MCP Secrets)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
+        <mxCell id="card_secrets" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/lock.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;line-height:1.1;padding-top:2px;&quot;&gt;&lt;b&gt;Secret&lt;br/&gt;Manager&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;&quot;&gt;(MCP Secrets)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="164" y="392" width="62" height="75" as="geometry" />
         </mxCell>
 
@@ -3266,7 +3066,7 @@ export function getExactMcpContextGatewayXml(): string {
         </mxCell>
 
         <!-- Left: Cognitive Arch / Agentic RAG (WBS Prerequisite) -->
-        <mxCell id="box_cognitive_arch" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:4px;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:brain.svg?color=%232563EB&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;➔&lt;/span&gt;&lt;div style=&quot;width:20px;height:20px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-search.svg?color=%232563EB&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:8.5px;color:#0F172A;font-weight:bold;&quot;&gt;Vector&lt;br/&gt;Search&lt;/span&gt;&lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Cognitive Arch / Agentic RAG&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;(WBS Prerequisite)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+        <mxCell id="box_cognitive_arch" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:4px;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/brain.svg?color=%232563EB&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;➔&lt;/span&gt;&lt;div style=&quot;width:20px;height:20px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/file-search.svg?color=%232563EB&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:8.5px;color:#0F172A;font-weight:bold;&quot;&gt;Vector&lt;br/&gt;Search&lt;/span&gt;&lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Cognitive Arch / Agentic RAG&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;(WBS Prerequisite)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
           <mxGeometry x="290" y="392" width="145" height="146" as="geometry" />
         </mxCell>
 
@@ -3329,7 +3129,7 @@ export function getExactMcpContextGatewayXml(): string {
 
         <!-- ==================== CENTER-RIGHT INTERMEDIARY LAYER ==================== -->
         <!-- AI Integration Engineers (2 Dark Grey Silhouette Bubbles) -->
-        <mxCell id="node_ai_engs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;display:flex;justify-content:center;gap:4px;&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#334155;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;div style=&quot;width:24px;height:24px;background:#475569;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;AI Integration&lt;br/&gt;Engs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="node_ai_engs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;display:flex;justify-content:center;gap:4px;&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#334155;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;div style=&quot;width:24px;height:24px;background:#475569;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;AI Integration&lt;br/&gt;Engs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="715" y="80" width="75" height="48" as="geometry" />
         </mxCell>
 
@@ -3429,7 +3229,7 @@ export function getExactMcpContextGatewayXml(): string {
           <mxGeometry x="832" y="407" width="50" height="14" as="geometry" />
         </mxCell>
 
-        <mxCell id="leg_item_symbols" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg?color=%232563EB&quot; width=&quot;11&quot; height=&quot;11&quot;/&gt; &lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;11&quot; height=&quot;11&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Symbol&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="leg_item_symbols" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/shield-check.svg?color=%232563EB&quot; width=&quot;11&quot; height=&quot;11&quot;/&gt; &lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;11&quot; height=&quot;11&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Symbol&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="830" y="423" width="115" height="14" as="geometry" />
         </mxCell>
 
@@ -3697,7 +3497,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
 
         <!-- ==================== LEFT COLUMN: 3 SUB-AGENTS (SPOKES) ==================== -->
         <!-- Persona Bubble: Sub-Agent 1 (Support Tickets) -->
-        <mxCell id="per_subagent_1" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#3B82F6;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Sub-Agent 1&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(Support&lt;br/&gt;Tickets)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="per_subagent_1" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#3B82F6;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Sub-Agent 1&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(Support&lt;br/&gt;Tickets)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="145" width="65" height="50" as="geometry" />
         </mxCell>
 
@@ -3715,10 +3515,10 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         <mxCell id="lbl_grounding_1_title" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Dedicated Knowledge Section (Grounding)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="96" y="127" width="213" height="12" as="geometry" />
         </mxCell>
-        <mxCell id="g1_bq" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="g1_bq" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/database.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="100" y="142" width="38" height="38" as="geometry" />
         </mxCell>
-        <mxCell id="g1_vector" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:search.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Vector Search&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="g1_vector" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/search.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Vector Search&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="142" y="142" width="48" height="38" as="geometry" />
         </mxCell>
         <mxCell id="g1_target" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Support SA to&lt;br/&gt;(Support Tickets)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -3742,7 +3542,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         </mxCell>
 
         <!-- Persona Bubble: Fulfillment SA (BigQuery) -->
-        <mxCell id="per_subagent_2" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#475569;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Fulfillment SA&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(BigQuery)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="per_subagent_2" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#475569;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Fulfillment SA&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(BigQuery)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="300" width="65" height="50" as="geometry" />
         </mxCell>
 
@@ -3763,10 +3563,10 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         <mxCell id="lbl_grounding_2_title" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Dedicated Knowledge Section (Grounding)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="96" y="279" width="213" height="12" as="geometry" />
         </mxCell>
-        <mxCell id="g2_bq" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="g2_bq" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/database.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="102" y="294" width="38" height="36" as="geometry" />
         </mxCell>
-        <mxCell id="g2_storage" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:equal.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Cloud Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="g2_storage" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/equal.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Cloud Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="144" y="294" width="48" height="36" as="geometry" />
         </mxCell>
         <mxCell id="g2_target" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Fulfillment SA using&lt;br/&gt;SAP ERP API&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -3778,7 +3578,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         </mxCell>
 
         <!-- Persona Bubble: Knowledge SA to GCS (PDF/Doc) -->
-        <mxCell id="per_subagent_3" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-text.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Knowledge SA&lt;br/&gt;to GCS&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(PDF/Doc)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="per_subagent_3" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/file-text.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Knowledge SA&lt;br/&gt;to GCS&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(PDF/Doc)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="460" width="65" height="55" as="geometry" />
         </mxCell>
 
@@ -3799,10 +3599,10 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         <mxCell id="lbl_grounding_3_title" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Dedicated Knowledge Section (Grounding)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="96" y="419" width="213" height="12" as="geometry" />
         </mxCell>
-        <mxCell id="g3_gcs" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:cloud.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;GCS Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="g3_gcs" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/cloud.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;GCS Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="100" y="434" width="46" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="g3_vector" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:search.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Vector Search&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="g3_vector" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/search.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Vector Search&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="148" y="434" width="55" height="34" as="geometry" />
         </mxCell>
         <mxCell id="g3_target" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Logs from&lt;br/&gt;PDF/Doc&lt;br/&gt;documents&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -3886,7 +3686,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         <mxCell id="lbl_orchestrator_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Orchestrator (Parent Agent)&lt;br/&gt;&lt;span style=&quot;font-size:8.5px;&quot;&gt;Hub - Logical UI Config Matrix&lt;br/&gt;- Logical UI Config Matrix&lt;/span&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="375" y="100" width="200" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="icon_orch_hub" value="&lt;img src=&quot;https://api.iconify.design/lucide:network.svg?color=%232563EB&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="icon_orch_hub" value="&lt;img src=&quot;https://api.iconify.design/lucide/network.svg?color=%232563EB&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="580" y="108" width="22" height="18" as="geometry" />
         </mxCell>
 
@@ -3916,7 +3716,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         <mxCell id="box_router_logic" value="&lt;b style=&quot;font-size:8px;color:#0F172A;line-height:16px;&quot;&gt;Multi-Agent Router / Dispatcher Logic&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;" vertex="1" parent="1">
           <mxGeometry x="378" y="238" width="224" height="96" as="geometry" />
         </mxCell>
-        <mxCell id="icon_router" value="&lt;img src=&quot;https://api.iconify.design/lucide:git-fork.svg?color=%2316A34A&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="icon_router" value="&lt;img src=&quot;https://api.iconify.design/lucide/git-fork.svg?color=%2316A34A&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="575" y="240" width="20" height="12" as="geometry" />
         </mxCell>
         <!-- Router Rule 1 -->
@@ -3963,7 +3763,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         <mxCell id="box_shared_memory" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="378" y="342" width="224" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="mem_left" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg?color=%23475569&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Shared Memory &amp;amp; State&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;Shared external&lt;br/&gt;state storgs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="mem_left" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/database.svg?color=%23475569&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Shared Memory &amp;amp; State&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;Shared external&lt;br/&gt;state storgs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="380" y="344" width="115" height="44" as="geometry" />
         </mxCell>
         <mxCell id="edge_mem_to_runtime" value="" style="edgeStyle=none;html=1;strokeColor=#475569;strokeWidth=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
@@ -3977,12 +3777,12 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         </mxCell>
 
         <!-- Section 4: 21 CFR Part 11 Compliance Gate -->
-        <mxCell id="box_cfr_gate" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:26px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-alert.svg?color=%2316A34A&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;21 CFR Part 11 Compliance Gate&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#334155;&quot;&gt;&lt;i style=&quot;color:#16A34A;&quot;&gt;Signed&lt;/i&gt; &amp;nbsp; All configuration updates are validated and signed.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+        <mxCell id="box_cfr_gate" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:26px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/shield-alert.svg?color=%2316A34A&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;21 CFR Part 11 Compliance Gate&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#334155;&quot;&gt;&lt;i style=&quot;color:#16A34A;&quot;&gt;Signed&lt;/i&gt; &amp;nbsp; All configuration updates are validated and signed.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
           <mxGeometry x="378" y="398" width="224" height="40" as="geometry" />
         </mxCell>
 
         <!-- Bottom Audit Trail & E-Signature Ledger -->
-        <mxCell id="box_audit_ledger" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Immutable Audit Trail&lt;br/&gt;&amp;amp; E-Signature Ledger&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding-top:4px;&quot;&gt;&lt;div style=&quot;width:24px;height:28px;background:#FFFFFF;border:1px solid #16A34A;border-radius:2px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-check.svg?color=%2316A34A&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;font-size:7.5px;color:#16A34A;padding-top:2px;&quot;&gt;&lt;b&gt;21 CFR Part 11&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+        <mxCell id="box_audit_ledger" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Immutable Audit Trail&lt;br/&gt;&amp;amp; E-Signature Ledger&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding-top:4px;&quot;&gt;&lt;div style=&quot;width:24px;height:28px;background:#FFFFFF;border:1px solid #16A34A;border-radius:2px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/file-check.svg?color=%2316A34A&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;font-size:7.5px;color:#16A34A;padding-top:2px;&quot;&gt;&lt;b&gt;21 CFR Part 11&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
           <mxGeometry x="430" y="488" width="130" height="85" as="geometry" />
         </mxCell>
 
@@ -4098,7 +3898,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         </mxCell>
 
         <!-- Human-in-the-Loop (HITL) Gate -->
-        <mxCell id="box_hitl_gate" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;display:flex;justify-content:center;gap:3px;align-items:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;img src=&quot;https://api.iconify.design/lucide:smartphone.svg?color=%23EA580C&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Human-in-the-Loop&lt;br/&gt;(HITL) Gate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+        <mxCell id="box_hitl_gate" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;display:flex;justify-content:center;gap:3px;align-items:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;img src=&quot;https://api.iconify.design/lucide/smartphone.svg?color=%23EA580C&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Human-in-the-Loop&lt;br/&gt;(HITL) Gate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
           <mxGeometry x="715" y="420" width="95" height="55" as="geometry" />
         </mxCell>
         <!-- Connector from Console to HITL Gate -->
@@ -4128,17 +3928,17 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
           <mxGeometry x="815" y="335" width="145" height="135" as="geometry" />
         </mxCell>
         <!-- Top Persona Row inside Dashboard -->
-        <mxCell id="per_ai_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#334155;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;AI&lt;br/&gt;Architect&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="per_ai_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#334155;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;AI&lt;br/&gt;Architect&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="820" y="342" width="45" height="40" as="geometry" />
         </mxCell>
         <mxCell id="dash_runtime_looker" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:looker-icon.svg&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;color:#0F172A;line-height:1;&quot;&gt;Runtime performance&lt;br/&gt;&amp;amp; compliance&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="870" y="342" width="85" height="38" as="geometry" />
         </mxCell>
         <!-- Bottom Persona Row inside Dashboard -->
-        <mxCell id="per_wt_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#475569;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;W&amp;amp;T&lt;br/&gt;Arch&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="per_wt_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#475569;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;W&amp;amp;T&lt;br/&gt;Arch&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="820" y="392" width="45" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="dash_economic" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:bar-chart-3.svg?color=%232563EB&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;color:#0F172A;line-height:1;&quot;&gt;&lt;b&gt;Agent Economic&lt;br/&gt;dashboards&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="dash_economic" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/bar-chart-3.svg?color=%232563EB&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;color:#0F172A;line-height:1;&quot;&gt;&lt;b&gt;Agent Economic&lt;br/&gt;dashboards&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="870" y="392" width="85" height="38" as="geometry" />
         </mxCell>
 
@@ -4157,10 +3957,10 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
         <mxCell id="lbl_callouts_title" value="&lt;b style=&quot;font-size:7.5px;color:#16A34A;&quot;&gt;Persona Callouts&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Runtime Performance &amp;amp; compliance&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;padding=2;" vertex="1" parent="1">
           <mxGeometry x="642" y="497" width="160" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="callout_wt_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#475569;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;W&amp;amp;T Arch&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="callout_wt_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#475569;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;W&amp;amp;T Arch&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="645" y="534" width="45" height="38" as="geometry" />
         </mxCell>
-        <mxCell id="callout_charts" value="&lt;div style=&quot;display:flex;gap:3px;align-items:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:bar-chart-2.svg?color=%232563EB&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;img src=&quot;https://api.iconify.design/lucide:line-chart.svg?color=%230284C7&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/div&gt;&lt;div style=&quot;font-size:6.5px;color:#0F172A;font-weight:bold;margin-top:2px;&quot;&gt;Agent Runtime Metrics&lt;br/&gt;dashboards&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="callout_charts" value="&lt;div style=&quot;display:flex;gap:3px;align-items:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/bar-chart-2.svg?color=%232563EB&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;img src=&quot;https://api.iconify.design/lucide/line-chart.svg?color=%230284C7&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/div&gt;&lt;div style=&quot;font-size:6.5px;color:#0F172A;font-weight:bold;margin-top:2px;&quot;&gt;Agent Runtime Metrics&lt;br/&gt;dashboards&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="692" y="532" width="105" height="42" as="geometry" />
         </mxCell>
 
@@ -4172,7 +3972,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
           <mxGeometry x="830" y="487" width="50" height="12" as="geometry" />
         </mxCell>
 
-        <mxCell id="leg_item_sym" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt; &lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Symbol&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="leg_item_sym" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide/shield-check.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt; &lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Symbol&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="828" y="500" width="125" height="12" as="geometry" />
         </mxCell>
 
@@ -4488,219 +4288,8 @@ export function getExactDataOpsAnomalyDetectionXml(): string {
  * 🏛️ MASTER BLUEPRINT: WBS 6.2.1 GO-LIVE CUTOVER & WAR ROOM RUNBOOK (Day-1 Cutover Phase / To-Be State)
  * Exact Replica of Reference Artifact media_1786215869298.png
  */
-export function getExactGoLiveWarRoomRunbookXml(): string {
-  return `
-<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="golive_runbook_wbs" name="WBS 6.2.1: Go-Live Cutover &amp; War Room Runbook (Day-1 Cutover Phase / To-Be State)">
-    <mxGraphModel dx="1200" dy="640" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="640" background="#FFFFFF">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
+// Go-Live function defined at bottom
 
-        <!-- TOP MAIN TITLE -->
-        <mxCell id="main_title" value="WBS 6.2.1: Go-Live Cutover &amp;amp; War Room Runbook (Day-1 Cutover Phase / To-Be State)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="15" y="8" width="850" height="30" as="geometry" />
-        </mxCell>
-
-        <!-- TOP DIVIDER -->
-        <mxCell id="top_divider" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;" edge="1" parent="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="15" y="42" />
-            <mxPoint x="1185" y="42" />
-          </mxGeometry>
-        </mxCell>
-
-        <!-- LAYER 1 (TOP): PREPARATION & APPROVAL PHASE -->
-        <mxCell id="lbl_l1_banner" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;LAYER 1 (TOP):&lt;br/&gt;PREPARATION &amp;amp;&lt;br/&gt;APPROVAL PHASE&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="15" y="50" width="140" height="105" as="geometry" />
-        </mxCell>
-
-        <!-- CI/CD Pipeline Container -->
-        <mxCell id="box_cicd" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="170" y="50" width="135" height="105" as="geometry" />
-        </mxCell>
-        <mxCell id="icons_cicd" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:git-icon.svg' width='18' height='18'/&gt;&lt;/td&gt;&lt;td style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:jenkins.svg' width='18' height='18'/&gt;&lt;/td&gt;&lt;td style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:gitlab.svg' width='18' height='18'/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;CI/CD Pipeline&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:6.5px;color:#64748B;'&gt;(Git, Jenkins/GitLab icons - prerequisites prereqs context)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="172" y="52" width="131" height="98" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_triggering" value="&lt;span style='font-size:8.5px;color:#475569;'&gt;Triggering&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1">
-          <mxGeometry x="155" y="40" width="60" height="12" as="geometry" />
-        </mxCell>
-
-        <!-- Go-Live Prep Checklist Container -->
-        <mxCell id="box_checklist" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="340" y="50" width="135" height="105" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_checklist_text" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Go-Live Prep Checklist&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;(WORM storage callout prereqs prereqs,&lt;br/&gt;prerequisites from &amp;lt;IMAGE 35&amp;gt; context)&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23475569' width='14' height='14' style='margin:1px auto;'/&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#0F172A;'&gt;WORM storage callout&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="342" y="52" width="131" height="100" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_cicd_to_check" value="Deploy Manifests&lt;br/&gt;&amp;amp; Verified&lt;br/&gt;Artefacts" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;fontSize=7.5;fontStyle=1;align=center;" edge="1" parent="1" source="box_cicd" target="box_checklist"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Decision Personas & Meeting -->
-        <mxCell id="personas_l1" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:7.5px;color:#475569;'&gt;Release&lt;br/&gt;Manager&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23475569' width='18' height='18'/&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#475569;'&gt;App&lt;br/&gt;Owner&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8.5px;color:#0F172A;'&gt;Go/No-Go&lt;br/&gt;Decision&lt;br/&gt;Meeting&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="510" y="50" width="70" height="105" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_check_to_decision" value="Validation&lt;br/&gt;Gates" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;fontSize=7.5;fontStyle=1;align=center;" edge="1" parent="1" source="box_checklist" target="personas_l1"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Outputs: Confluence Draft & Jira Ticket -->
-        <mxCell id="card_confluence" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:confluence.svg' width='16' height='16'/&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Confluence&lt;br/&gt;Runbook Draft&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:6px;color:#64748B;'&gt;Per Release update freq callout&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="605" y="50" width="115" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="card_jira" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Jira Cutover&lt;br/&gt;Ticket &lt;span style='color:#16A34A;'&gt;(Approved)&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="605" y="105" width="115" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_dec_to_conf" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.2;endArrow=classic;endSize=4;" edge="1" parent="1" source="personas_l1" target="card_confluence"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="arr_dec_to_jira" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.2;endArrow=classic;endSize=4;" edge="1" parent="1" source="personas_l1" target="card_jira"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- TOP RIGHT METADATA TABLE -->
-        <mxCell id="meta_table_golive" value="&lt;table style='width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;line-height:0.95;' border='1'&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:1px 2px;font-weight:bold;width:30%;'&gt;Diagram Name&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Go-Live Cutover &amp;amp; War Room Runbook&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;GCAF Pillar&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Operational Excellence&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Phase&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Operations (Go-Live &amp;amp; Cutover)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Creator&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;6. DevSecOps&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Target Audience&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Release Mgrs, SREs, App Owners&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Effort&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;High&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Tech Stack&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Jira, Confluence, Opsgenie, Cloud-Native CI/CD&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Creation Tool&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Confluence / Excel (Lucidchart-style clarity)&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Compliance&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;SOC 2, CSV &lt;span style='background:#1D4ED8;color:#FFF;border-radius:3px;padding:0 2px;font-size:5.5px;'&gt;SOC2&lt;/span&gt; &lt;span style='background:#0284C7;color:#FFF;border-radius:3px;padding:0 2px;font-size:5.5px;'&gt;CSV&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Update Freq&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Per Release&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Usage&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;High&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Purpose&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Minute-by-minute execution script for launch&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Representation&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;Orchestrates the physical cutover &amp;amp; rollback logic&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:1px 2px;font-weight:bold;'&gt;Blueprint ID&lt;/td&gt;&lt;td style='padding:1px 2px;'&gt;N/A&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="740" y="44" width="445" height="115" as="geometry" />
-        </mxCell>
-
-        <!-- LAYER 2 (CENTER): THE WAR ROOM & LIVE EXECUTION (opsgenie Integration) -->
-        <mxCell id="lbl_l2_banner" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;LAYER 2 (Center):&lt;br/&gt;THE WAR ROOM &amp;amp;&lt;br/&gt;LIVE EXECUTION&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;color:#475569;'&gt;(opsgenie Integration)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="15" y="190" width="140" height="180" as="geometry" />
-        </mxCell>
-
-        <!-- Personas and Communications -->
-        <mxCell id="persona_sre_l2" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:headset.svg?color=%23475569' width='20' height='20'/&gt;&lt;br/&gt;&lt;b style='font-size:8.5px;color:#0F172A;'&gt;SRE&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="170" y="240" width="45" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="personas_devops_l2" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:users.svg?color=%23475569' width='22' height='22'/&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;DevSecOps App Owner&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="155" y="325" width="95" height="40" as="geometry" />
-        </mxCell>
-
-        <!-- Opsgenie Integration Engine -->
-        <mxCell id="card_opsgenie" value="&lt;div style='text-align:center;padding:3px;'&gt;&lt;div style='width:26px;height:26px;background:#0284C7;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:radio.svg?color=%23FFFFFF' width='14' height='14'/&gt;&lt;/div&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Opsgenie&lt;br/&gt;Integration&lt;br/&gt;Engine&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="220" y="245" width="75" height="75" as="geometry" />
-        </mxCell>
-
-        <!-- Live Communication Channel & Enterprise War Room -->
-        <mxCell id="box_live_channel" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Live Communi-&lt;br/&gt;cation Channel&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;(e.g., Slack/Teams)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="275" y="190" width="95" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="box_war_room" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;Enterprise War Room&lt;br/&gt;(Day-1 Cutover)&lt;/b&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="395" y="190" width="165" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="personas_war_room_right" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:users.svg?color=%23475569' width='22' height='22'/&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;DevSecOps App Owner&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="580" y="190" width="95" height="40" as="geometry" />
-        </mxCell>
-
-        <!-- MINUTE-BY-MINUTE EXECUTION SCRIPT (Center Container) -->
-        <mxCell id="box_execution_script" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="315" y="245" width="380" height="125" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_script_hdr" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;MINUTE-BY-MINUTE EXECUTION SCRIPT&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:6.5px;color:#64748B;'&gt;(WORM storage callout prereqs prepreqs prereqs prerequisites context from &amp;lt;IMAGE 35&amp;gt; context)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="320" y="247" width="370" height="22" as="geometry" />
-        </mxCell>
-
-        <!-- 5 Steps -->
-        <!-- Step 1 -->
-        <mxCell id="step1" value="&lt;div style='text-align:center;padding:1px;'&gt;&lt;img src='https://api.iconify.design/lucide:file-search.svg?color=%232563EB' width='16' height='16'/&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;1. Data&lt;br/&gt;Migration/&lt;br/&gt;ETL Verified&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:5.5px;color:#64748B;'&gt;prereqs from &amp;lt;IMAGE 11&amp;gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="325" y="272" width="66" height="90" as="geometry" />
-        </mxCell>
-        <!-- Step 2 -->
-        <mxCell id="step2" value="&lt;div style='text-align:center;padding:1px;'&gt;&lt;img src='https://api.iconify.design/lucide:globe.svg?color=%232563EB' width='16' height='16'/&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;2. Cloud DNS&lt;br/&gt;Update&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:5.5px;color:#64748B;'&gt;(Global Load Balancer)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="398" y="272" width="66" height="90" as="geometry" />
-        </mxCell>
-        <!-- Step 3 -->
-        <mxCell id="step3" value="&lt;div style='text-align:center;padding:1px;'&gt;&lt;img src='https://api.iconify.design/logos:react.svg' width='16' height='16'/&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;3. MFE&lt;br/&gt;Orchestration&lt;br/&gt;&amp;amp; Live Mount&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="471" y="272" width="66" height="90" as="geometry" />
-        </mxCell>
-        <!-- Step 4 -->
-        <mxCell id="step4" value="&lt;div style='text-align:center;padding:1px;'&gt;&lt;img src='https://api.iconify.design/lucide:sparkles.svg?color=%232563EB' width='16' height='16'/&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;4. Vertex AI&lt;br/&gt;Agent Online&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="544" y="272" width="66" height="90" as="geometry" />
-        </mxCell>
-        <!-- Step 5 -->
-        <mxCell id="step5" value="&lt;div style='text-align:center;padding:1px;'&gt;&lt;img src='https://api.iconify.design/lucide:line-chart.svg?color=%232563EB' width='16' height='16'/&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;5. Real-Time&lt;br/&gt;Observability&lt;br/&gt;Check&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="617" y="272" width="66" height="90" as="geometry" />
-        </mxCell>
-
-        <!-- Sequential Arrows between steps -->
-        <mxCell id="arr_s1_s2" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.2;endArrow=classic;endSize=4;" edge="1" parent="1" source="step1" target="step2"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="arr_s2_s3" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.2;endArrow=classic;endSize=4;" edge="1" parent="1" source="step2" target="step3"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="arr_s3_s4" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.2;endArrow=classic;endSize=4;" edge="1" parent="1" source="step3" target="step4"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="arr_s4_s5" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.2;endArrow=classic;endSize=4;" edge="1" parent="1" source="step4" target="step5"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Output from Step 5 to Diamond Decision -->
-        <mxCell id="arr_s5_to_diamond" value="YES" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=10;fontStyle=1;align=center;" edge="1" parent="1" source="step5" target="diamond_cutover_success"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Cutover Success Diamond -->
-        <mxCell id="diamond_cutover_success" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:8.5px;color:#0F172A;'&gt;Cutover&lt;br/&gt;Success&lt;br/&gt;Verified?&lt;/b&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="715" y="285" width="65" height="65" as="geometry" />
-        </mxCell>
-
-        <!-- Rollback Logic Branch (Right of Diamond) -->
-        <mxCell id="lbl_rollback_hdr" value="&lt;b style='font-size:11px;color:#000000;'&gt;ROLLBACK LOGIC&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
-          <mxGeometry x="825" y="228" width="150" height="18" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_failure_top" value="&lt;b style='font-size:9.5px;color:#DC2626;'&gt;Cutover Failure detected!&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
-          <mxGeometry x="825" y="248" width="160" height="18" as="geometry" />
-        </mxCell>
-
-        <!-- Arrow from Diamond to Rollback Script -->
-        <mxCell id="arr_diamond_to_rollback" value="NO" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=classic;endSize=5;fontColor=#DC2626;fontStyle=1;fontSize=10;align=center;" edge="1" parent="1" source="diamond_cutover_success" target="box_rollback_script">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="748" y="260" /><mxPoint x="825" y="260" /></Array></mxGeometry>
-        </mxCell>
-
-        <mxCell id="box_rollback_script" value="&lt;div style='text-align:left;padding:4px;'&gt;&lt;b style='font-size:9.5px;color:#DC2626;'&gt;EXECUTE AUTOMATED ROLLBACK SCRIPT&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;color:#0F172A;'&gt;&lt;b&gt;- DNS fallback&lt;br/&gt;- MFE rollback&lt;br/&gt;- Disable AI Agent&lt;br/&gt;- Restore Data snapshots&lt;/b&gt;&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites context from &amp;lt;IMAGE 11&amp;gt;&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="825" y="270" width="220" height="85" as="geometry" />
-        </mxCell>
-
-        <mxCell id="lbl_failure_bot" value="&lt;b style='font-size:9px;color:#0F172A;'&gt;Cutover Failure&lt;br/&gt;detected!&lt;br/&gt;&lt;span style='color:#DC2626;'&gt;Red Alert&lt;/span&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;" vertex="1" parent="1">
-          <mxGeometry x="700" y="360" width="95" height="35" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_diamond_to_red_alert" value="NO" style="edgeStyle=none;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=classic;endSize=5;fontColor=#DC2626;fontStyle=1;fontSize=10;align=center;" edge="1" parent="1" source="diamond_cutover_success" target="lbl_failure_bot"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- LAYER 3 (BOTTOM): POST-LAUNCH Day-2 OPERATIONS & SUPPORT -->
-        <mxCell id="lbl_l3_banner" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;POST-LAUNCH&lt;br/&gt;Day-2 OPERATIONS&lt;br/&gt;&amp;amp; SUPPORT&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="15" y="390" width="140" height="110" as="geometry" />
-        </mxCell>
-
-        <!-- SRE to Release Manager & App Owner -->
-        <mxCell id="persona_sre_l3" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-cog.svg?color=%23475569' width='24' height='24'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;SRE&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="175" y="420" width="45" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="personas_l3_mgr" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:users.svg?color=%23475569' width='26' height='26'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Release Manager&lt;br/&gt;App Owner&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="240" y="420" width="105" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_sre_to_mgr" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="persona_sre_l3" target="personas_l3_mgr"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Dynamic Dashboards Preview Card -->
-        <mxCell id="card_dyn_dashboards" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;table style='width:100%;font-size:6.5px;margin-bottom:2px;'&gt;&lt;tr&gt;&lt;td style='text-align:center;'&gt;&lt;span style='color:#16A34A;'&gt;Daily Freshness&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:bar-chart.svg?color=%2316A34A' width='16' height='16'/&gt;&lt;/td&gt;&lt;td style='text-align:center;'&gt;&lt;span style='color:#2563EB;'&gt;Schema Evolution&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:git-commit.svg?color=%232563EB' width='16' height='16'/&gt;&lt;/td&gt;&lt;td style='text-align:center;'&gt;&lt;span style='color:#7C3AED;'&gt;Distribution Shifts&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:line-chart.svg?color=%237C3AED' width='16' height='16'/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:center;'&gt;&lt;span style='color:#0284C7;'&gt;Volume Analysis&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:area-chart.svg?color=%230284C7' width='20' height='12'/&gt;&lt;/td&gt;&lt;td style='text-align:center;'&gt;&lt;span style='color:#EA580C;'&gt;Data Evolution&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:trending-up.svg?color=%23EA580C' width='16' height='12'/&gt;&lt;/td&gt;&lt;td style='text-align:center;'&gt;&lt;span style='color:#16A34A;font-weight:bold;font-size:9px;'&gt;105&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Dynamic Dashboards&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="370" y="395" width="185" height="100" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_mgr_to_dash" value="SRE pattern&lt;br/&gt;prerequisites&lt;br/&gt;from &amp;lt;IMAGE 6.1.1&amp;gt;" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=7.5;align=center;" edge="1" parent="1" source="personas_l3_mgr" target="card_dyn_dashboards"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Active Data Control Plane & SRE Right -->
-        <mxCell id="lbl_adcp_l3" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Active Data&lt;br/&gt;Control Plane&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;monitoring&lt;br/&gt;technical &amp;amp;&lt;br/&gt;logical readiness&lt;br/&gt;from &amp;lt;IMAGE 6.1.1&amp;gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="610" y="395" width="95" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="persona_sre_l3_right" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:headset.svg?color=%23475569' width='22' height='22'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;SRE&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="575" y="420" width="40" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_adcp_to_dash" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="lbl_adcp_l3" target="card_dyn_dashboards"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Go-Live Verification Scorecard Callout -->
-        <mxCell id="lbl_scorecard" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Go-Live Verification&lt;br/&gt;Scorecard&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;'&gt;= Orchestrated Minute-by-Minute Cutover&lt;br/&gt;&amp;amp; Rollback logic verifying technical&lt;br/&gt;&amp;amp; logical readiness for launch&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="715" y="405" width="180" height="60" as="geometry" />
-        </mxCell>
-
-        <!-- Legend Box (Bottom Right) -->
-        <mxCell id="box_legend_golive" value="&lt;table style='width:100%;font-size:8.5px;color:#0F172A;'&gt;&lt;tr&gt;&lt;td colspan='2' style='text-align:center;font-weight:bold;padding-bottom:2px;'&gt;Legend&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='width:35px;'&gt;&lt;span style='background:#EFF6FF;border:1px solid #3B82F6;padding:1px 4px;font-size:7.5px;font-weight:bold;'&gt;Box&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;div style='width:24px;height:12px;border:1.2px solid #94A3B8;border-radius:2px;display:inline-block;vertical-align:middle;'&gt;&lt;/div&gt; Box type&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23475569' width='14' height='14'/&gt;&lt;/td&gt;&lt;td&gt;Personas&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dersonas&lt;/td&gt;&lt;td&gt;→ Line styles&lt;br/&gt;⟷ Line styles&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=4;" vertex="1" parent="1">
-          <mxGeometry x="910" y="395" width="185" height="100" as="geometry" />
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-  `.trim();
-}
-
-/**
- * 🏛️ MASTER BLUEPRINT: WBS 6.1.1 ENTERPRISE SRE & OBSERVABILITY ARCHITECTURE
- * Pixel-Perfect Replica of WBS 6.1.1 Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)
- */
 export function getExactEnterpriseSreObservabilityXml(): string {
   return `
 
@@ -6715,890 +6304,1020 @@ export function getExactAgenticRagWidescreenXml(): string {
  * Exact Replica of Reference Artifact media_1786215782575.png
  */
 export function getExactModernDataStackWbsXml(): string {
+  return `<mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1050" pageHeight="560">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- TOP HEADER -->
+    <mxCell id="hdr_tag" value="Medallion architecture mapping" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#475569;" vertex="1" parent="1">
+      <mxGeometry x="15" y="6" width="300" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="hdr_title" value="WBS 3.1.3: Modern Data Stack Architecture (To-Be State)" style="text;html=1;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+      <mxGeometry x="15" y="22" width="600" height="26" as="geometry"/>
+    </mxCell>
+    <mxCell id="hdr_divider" value="" style="endArrow=none;dashed=1;strokeColor=#CBD5E1;strokeWidth=1.5;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="15" y="52" as="sourcePoint"/><mxPoint x="1030" y="52" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <mxCell id="hdr_gcp_logo" value="" style="image;html=1;image=${SVG_GCP_LOGO};" vertex="1" parent="1">
+      <mxGeometry x="735" y="10" width="36" height="36" as="geometry"/>
+    </mxCell>
+    <mxCell id="hdr_brand" value="&lt;b style='font-size:18px;color:#0F172A;'&gt;GCP&lt;/b&gt; &lt;span style='font-size:18px;color:#94A3B8;'&gt;|&lt;/span&gt; &lt;b style='font-size:13px;color:#0F172A;'&gt;Project Plan Foundation&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="778" y="15" width="250" height="26" as="geometry"/>
+    </mxCell>
+
+    <!-- METADATA TABLE (TOP RIGHT) -->
+    <mxCell id="tbl_meta_stack" value="&lt;table style='width:100%;border-collapse:collapse;font-size:8px;color:#1E293B;'&gt;&lt;tr style='border-bottom:1px solid #E2E8F0;'&gt;&lt;td style='padding:2px 3px;font-weight:bold;background:#F8FAFC;'&gt;GCAF Pillar&lt;/td&gt;&lt;td style='padding:2px 3px;'&gt;Data Lifecycle &amp;amp; Pipeline&lt;/td&gt;&lt;/tr&gt;&lt;tr style='border-bottom:1px solid #E2E8F0;'&gt;&lt;td style='padding:2px 3px;font-weight:bold;background:#F8FAFC;'&gt;Phase&lt;/td&gt;&lt;td style='padding:2px 3px;'&gt;Project Plan Foundation&lt;/td&gt;&lt;/tr&gt;&lt;tr style='border-bottom:1px solid #E2E8F0;'&gt;&lt;td style='padding:2px 3px;font-weight:bold;background:#F8FAFC;'&gt;Creator (Persona)&lt;/td&gt;&lt;td style='padding:2px 3px;'&gt;3. Data Architect&lt;/td&gt;&lt;/tr&gt;&lt;tr style='border-bottom:1px solid #E2E8F0;'&gt;&lt;td style='padding:2px 3px;font-weight:bold;background:#F8FAFC;'&gt;Target Audience&lt;/td&gt;&lt;td style='padding:2px 3px;'&gt;Data Engineers&lt;/td&gt;&lt;/tr&gt;&lt;tr style='border-bottom:1px solid #E2E8F0;'&gt;&lt;td style='padding:2px 3px;font-weight:bold;background:#F8FAFC;'&gt;Tech Stack&lt;/td&gt;&lt;td style='padding:2px 3px;'&gt;Dataflow, BigQuery&lt;/td&gt;&lt;/tr&gt;&lt;tr style='border-bottom:1px solid #E2E8F0;'&gt;&lt;td style='padding:2px 3px;font-weight:bold;background:#F8FAFC;'&gt;Compliance&lt;/td&gt;&lt;td style='padding:2px 3px;'&gt;SOC 2&lt;/td&gt;&lt;/tr&gt;&lt;tr style='border-bottom:1px solid #E2E8F0;'&gt;&lt;td style='padding:2px 3px;font-weight:bold;background:#F8FAFC;'&gt;Update Freq&lt;/td&gt;&lt;td style='padding:2px 3px;'&gt;Quarterly&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:2px 3px;font-weight:bold;background:#F8FAFC;'&gt;Usage&lt;/td&gt;&lt;td style='padding:2px 3px;'&gt;High&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=2;" vertex="1" parent="1">
+      <mxGeometry x="715" y="60" width="255" height="135" as="geometry"/>
+    </mxCell>
+
+    <!-- PERSONAS ROW & TOP INFO BOX -->
+    <mxCell id="persona_row" value="&lt;span style='font-size:20px;'&gt;🧑‍💼&lt;/span&gt; &lt;span style='font-size:18px;'&gt;📄🔍&lt;/span&gt; &lt;span style='font-size:20px;'&gt;👩‍💻&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="220" y="80" width="90" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="box_top_cdc" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;CDC, Bronze/Silver/Gold Lakehouse&lt;/b&gt; &lt;span style='font-size:8px;color:#475569;'&gt;- Change Data Capture (CDC) based medallion architecture mapping from prerequisites tech stack like prerequisites tech context prereqs, prerequisites prerequisites prereqs patreqs prequirements context&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+      <mxGeometry x="325" y="60" width="235" height="75" as="geometry"/>
+    </mxCell>
+
+    <!-- CREATOR & TARGET AUDIENCE -->
+    <mxCell id="persona_creator" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:8px;color:#475569;'&gt;Creator&lt;br/&gt;(Persona)&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:24px;'&gt;👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Target Audience&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="585" y="60" width="95" height="75" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_creator_pillar" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="632" y="140" as="sourcePoint"/><mxPoint x="632" y="165" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- LEFT: SOURCES -->
+    <mxCell id="box_sources" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Sources&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:24px;'&gt;🗄️&lt;br/&gt;📄&lt;br/&gt;🗄️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+      <mxGeometry x="15" y="200" width="55" height="155" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="box_prereq_dim" value="&lt;b style='font-size:11px;color:#B45309;'&gt;Prerequisite:&lt;br/&gt;Dimensional Data&lt;br/&gt;Model&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;color:#92400E;'&gt;(from user)&lt;/span&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+      <mxGeometry x="90" y="240" width="110" height="75" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_src_prereq" value="&lt;b style='font-size:8px;color:#0F172A;'&gt;ELT/&lt;br/&gt;Streaming&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="70" y="278" as="sourcePoint"/><mxPoint x="90" y="278" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- VERTICAL PILLAR -->
+    <mxCell id="pillar_data_lifecycle" value="&lt;div style='transform: rotate(-90deg); white-space: nowrap; font-size:11px; font-weight:bold; color:#1E40AF;'&gt;Pillar: Data Lifecycle &amp;amp; Pipeline (Reliability)&lt;/div&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="215" y="165" width="30" height="350" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_prereq_pillar" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="200" y="278" as="sourcePoint"/><mxPoint x="215" y="278" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- MEDALLION ARCHITECTURE CONTAINER -->
+    <mxCell id="box_medallion_outer" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Medallion architecture mapping&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;dashed=1;dashPattern=6 4;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+      <mxGeometry x="258" y="155" width="350" height="370" as="geometry"/>
+    </mxCell>
+
+    <!-- TIER 1: BRONZE LAKEHOUSE (RAW) -->
+    <mxCell id="box_bronze" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#F87171;strokeWidth=1.5;" vertex="1" parent="1">
+      <mxGeometry x="268" y="180" width="330" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="pill_bronze" value="&lt;b style='color:#DC2626;font-size:11px;'&gt;🔴 Bronze Lakehouse (Raw)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="276" y="182" width="200" height="20" as="geometry"/>
+    </mxCell>
+    <mxCell id="icon_bronze_cyl" value="" style="image;html=1;image=${SVG_CYLINDER_3D_RED};" vertex="1" parent="1">
+      <mxGeometry x="278" y="205" width="34" height="40" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl_bronze_raw_zone" value="&lt;span style='font-size:8px;color:#DC2626;'&gt;Raw Zone&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="270" y="242" width="50" height="15" as="geometry"/>
+    </mxCell>
+    <mxCell id="txt_bronze_cdc" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:8.5px;color:#DC2626;'&gt;Change Data Capture&lt;br/&gt;(CDC) - Raw&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;Inbound raw data (CDC / Streaming)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="318" y="200" width="130" height="35" as="geometry"/>
+    </mxCell>
+    <mxCell id="icon_bronze_hopper" value="" style="image;html=1;image=${SVG_HOPPER_RED};" vertex="1" parent="1">
+      <mxGeometry x="450" y="205" width="36" height="36" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_bronze_flow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="312" y="225" as="sourcePoint"/><mxPoint x="445" y="225" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="hex_bronze_bq" value="&lt;b style='font-size:8px;color:white;'&gt;BigQuery&lt;/b&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=6;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="505" y="205" width="38" height="32" as="geometry"/>
+    </mxCell>
+    <mxCell id="hex_bronze_gcs" value="&lt;b style='font-size:8px;color:white;'&gt;GCS&lt;/b&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=6;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="550" y="205" width="38" height="32" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl_bronze_bq_gcs" value="&lt;b style='font-size:8px;color:#1D4ED8;'&gt;BigQuery&lt;/b&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp; &lt;b style='font-size:8px;color:#1D4ED8;'&gt;GCS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="500" y="240" width="95" height="15" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_bronze_to_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="486" y="221" as="sourcePoint"/><mxPoint x="505" y="221" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- INTER-TIER 1->2 ARROW -->
+    <mxCell id="edge_bronze_to_silver" value="&lt;span style='font-size:7px;color:#475569;background-color:#FFFFFF;'&gt;CDC-based de-duplication, cleansing, schema standardization and logical validation&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="495" y="260" as="sourcePoint"/><mxPoint x="495" y="278" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- TIER 2: SILVER LAKEHOUSE (CLEANSED) -->
+    <mxCell id="box_silver" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
+      <mxGeometry x="268" y="278" width="330" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="pill_silver" value="&lt;b style='color:#1D4ED8;font-size:11px;'&gt;🔵 Silver Lakehouse (Cleansed)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="276" y="280" width="200" height="20" as="geometry"/>
+    </mxCell>
+    <mxCell id="icon_silver_cyl" value="" style="image;html=1;image=${SVG_CYLINDER_3D_BLUE};" vertex="1" parent="1">
+      <mxGeometry x="278" y="303" width="34" height="40" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl_silver_staged" value="&lt;span style='font-size:8px;color:#1E40AF;'&gt;Staged&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="270" y="340" width="50" height="15" as="geometry"/>
+    </mxCell>
+    <mxCell id="txt_silver_dataflow" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:8.5px;color:#1E40AF;'&gt;Dataflow&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;Data transformation, cleansing, alignment&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="318" y="298" width="130" height="35" as="geometry"/>
+    </mxCell>
+    <mxCell id="icon_silver_hopper" value="" style="image;html=1;image=${SVG_HOPPER_BLUE};" vertex="1" parent="1">
+      <mxGeometry x="450" y="303" width="36" height="36" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_silver_flow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="312" y="323" as="sourcePoint"/><mxPoint x="445" y="323" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="hex_silver_bq" value="&lt;b style='font-size:8px;color:white;'&gt;BigQuery&lt;/b&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=6;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="505" y="303" width="38" height="32" as="geometry"/>
+    </mxCell>
+    <mxCell id="hex_silver_gcs" value="&lt;b style='font-size:8px;color:white;'&gt;GCS&lt;/b&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=6;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="550" y="303" width="38" height="32" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl_silver_bq_gcs" value="&lt;b style='font-size:8px;color:#1D4ED8;'&gt;BigQuery&lt;/b&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp; &lt;b style='font-size:8px;color:#1D4ED8;'&gt;GCS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="500" y="338" width="95" height="15" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_silver_to_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="486" y="319" as="sourcePoint"/><mxPoint x="505" y="319" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- INTER-TIER 2->3 ARROW -->
+    <mxCell id="edge_silver_to_gold" value="&lt;span style='font-size:7px;color:#475569;background-color:#FFFFFF;'&gt;Aggregation, advanced business logic, advanced analytics modelling, and reporting readiness&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="495" y="358" as="sourcePoint"/><mxPoint x="495" y="376" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- TIER 3: GOLD LAKEHOUSE (CURATED) -->
+    <mxCell id="box_gold" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
+      <mxGeometry x="268" y="376" width="330" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="pill_gold" value="&lt;b style='color:#15803D;font-size:11px;'&gt;🟢 Gold Lakehouse (Curated)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="276" y="378" width="200" height="20" as="geometry"/>
+    </mxCell>
+    <mxCell id="icon_gold_cyl" value="" style="image;html=1;image=${SVG_CYLINDER_3D_GREEN};" vertex="1" parent="1">
+      <mxGeometry x="278" y="401" width="34" height="40" as="geometry"/>
+    </mxCell>
+    <mxCell id="txt_gold_dataflow" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:8.5px;color:#15803D;'&gt;Dataflow&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;Analytical models (business-ready datasets)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="318" y="396" width="130" height="35" as="geometry"/>
+    </mxCell>
+    <mxCell id="icon_gold_hopper" value="" style="image;html=1;image=${SVG_HOPPER_GREEN};" vertex="1" parent="1">
+      <mxGeometry x="450" y="401" width="36" height="36" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_gold_flow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="312" y="421" as="sourcePoint"/><mxPoint x="445" y="421" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="hex_gold_bq" value="&lt;b style='font-size:8px;color:white;'&gt;BigQuery&lt;/b&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=6;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="505" y="401" width="38" height="32" as="geometry"/>
+    </mxCell>
+    <mxCell id="hex_gold_gcs" value="&lt;b style='font-size:8px;color:white;'&gt;GCS&lt;/b&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=6;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="550" y="401" width="38" height="32" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl_gold_bq_gcs" value="&lt;b style='font-size:8px;color:#1D4ED8;'&gt;BigQuery&lt;/b&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp; &lt;b style='font-size:8px;color:#1D4ED8;'&gt;GCS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="500" y="436" width="95" height="15" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_gold_to_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="486" y="417" as="sourcePoint"/><mxPoint x="505" y="417" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- INGRESS FROM PILLAR TO TIERS -->
+    <mxCell id="edge_pillar_to_bronze" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="245" y="220" as="sourcePoint"/><mxPoint x="268" y="220" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="edge_pillar_to_silver" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="245" y="318" as="sourcePoint"/><mxPoint x="268" y="318" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="edge_pillar_to_gold" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="245" y="416" as="sourcePoint"/><mxPoint x="268" y="416" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- ACTIVE DATA CONTROL PLANE -->
+    <mxCell id="col_control_plane" value="&lt;div style='text-align:center;font-size:9px;font-weight:bold;color:#1E40AF;'&gt;&lt;span style='font-size:18px;'&gt;🕸️&lt;/span&gt;&lt;br/&gt;cataloging,&lt;br/&gt;lineage,&lt;br/&gt;quality&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:18px;'&gt;🔍&lt;/span&gt;&lt;br/&gt;Search&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:18px;'&gt;🔗&lt;/span&gt;&lt;br/&gt;Lineage&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:18px;'&gt;🛡️&lt;/span&gt;&lt;br/&gt;Data&lt;br/&gt;Quality&lt;br/&gt;checks&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+      <mxGeometry x="618" y="165" width="65" height="350" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_medallion_control" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="608" y="340" as="sourcePoint"/><mxPoint x="618" y="340" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- RIGHT: LOOKER & READINESS -->
+    <mxCell id="persona_looker" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:24px;'&gt;👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Looker&lt;br/&gt;dashboards&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="715" y="190" width="75" height="55" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_control_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="683" y="225" as="sourcePoint"/><mxPoint x="715" y="225" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <mxCell id="box_readiness" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Monitor modern data&lt;br/&gt;stack logical &amp;amp;&lt;br/&gt;technical readiness&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+      <mxGeometry x="800" y="195" width="135" height="52" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_looker_readiness" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="790" y="225" as="sourcePoint"/><mxPoint x="800" y="225" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- ANALYTICAL TABLE WITH WAVE CHART -->
+    <mxCell id="box_analytical_table" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#DC2626;'&gt;Analytical table&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+      <mxGeometry x="788" y="280" width="140" height="98" as="geometry"/>
+    </mxCell>
+    <mxCell id="chart_wave" value="" style="image;html=1;image=${SVG_ANALYTICAL_CHART};" vertex="1" parent="1">
+      <mxGeometry x="803" y="300" width="110" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl_data_quality_tables" value="&lt;span style='font-size:7.5px;color:#475569;'&gt;Data quality tables, looker&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="793" y="355" width="130" height="18" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="edge_readiness_to_table" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="858" y="247" as="sourcePoint"/><mxPoint x="858" y="280" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- SRE PERSONA & ALERT FLOW -->
+    <mxCell id="persona_sre" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:24px;'&gt;👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;SRE&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="715" y="385" width="55" height="55" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_control_sre" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="683" y="415" as="sourcePoint"/><mxPoint x="715" y="415" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="edge_sre_looker" value="&lt;b style='font-size:7.5px;color:#DC2626;'&gt;Alert flow&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="742" y="385" as="sourcePoint"/><mxPoint x="742" y="245" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- AI/ML MODELS & DATA ENGINEER -->
+    <mxCell id="box_aiml" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:18px;'&gt;📊&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;AI/ML&lt;br/&gt;Models&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+      <mxGeometry x="780" y="388" width="60" height="58" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_sre_aiml" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="770" y="417" as="sourcePoint"/><mxPoint x="780" y="417" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <mxCell id="persona_data_eng" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:24px;'&gt;👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Data&lt;br/&gt;Engineer&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="870" y="380" width="65" height="65" as="geometry"/>
+    </mxCell>
+    <mxCell id="edge_aiml_data_eng" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="840" y="417" as="sourcePoint"/><mxPoint x="870" y="417" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- BOTTOM LEFT: COMPLIANCE -->
+    <mxCell id="lbl_compliance" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Compliance&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="50" y="515" width="120" height="20" as="geometry"/>
+    </mxCell>
+    <mxCell id="medal_soc2" value="" style="image;html=1;image=${SVG_SOC2_MEDAL};" vertex="1" parent="1">
+      <mxGeometry x="25" y="535" width="38" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="medal_21cfr" value="" style="image;html=1;image=${SVG_21CFR_MEDAL};" vertex="1" parent="1">
+      <mxGeometry x="80" y="535" width="38" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="medal_gxp" value="" style="image;html=1;image=${SVG_GXP_MEDAL};" vertex="1" parent="1">
+      <mxGeometry x="135" y="535" width="38" height="46" as="geometry"/>
+    </mxCell>
+
+    <!-- LEGEND (BOTTOM RIGHT) -->
+    <mxCell id="box_legend" value="&lt;div style='font-size:8.5px;color:#1E293B;'&gt;&lt;b&gt;Legend&lt;/b&gt;&lt;br/&gt;&lt;span style='color:#0F172A;'&gt;➡️&lt;/span&gt; &lt;b&gt;Solid Synch Flow&lt;/b&gt;&lt;br/&gt;&lt;span style='color:#3B82F6;'&gt;➡️&lt;/span&gt; &lt;b&gt;Async Flow&lt;/b&gt;&lt;br/&gt;&lt;span style='color:#EF4444;'&gt;➡️&lt;/span&gt; &lt;b style='color:#EF4444;'&gt;Alert flow&lt;/b&gt;&lt;br/&gt;&lt;span style='color:#38BDF8;'&gt;💠&lt;/span&gt; &lt;b&gt;Prerequisites&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+      <mxGeometry x="735" y="495" width="210" height="95" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>`;
+}
+
+export function getExactDataAiPipelineWbsXml(): string {
   return `
-<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="modern_data_stack_wbs" name="WBS 3.1.3: Modern Data Stack Architecture (To-Be State)">
-    <mxGraphModel dx="1200" dy="640" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="640" background="#FFFFFF">
+<mxfile host="app.diagrams.net" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="data-ai-pipeline-wbs" name="Data &amp; AI Pipeline Architecture (WBS 3.1.5)">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="560">
       <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
 
-        <!-- TOP MAIN TITLE & GCP BANNER -->
-        <mxCell id="main_title" value="WBS 3.1.3: Modern Data Stack Architecture (To-Be State)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="20" y="8" width="750" height="36" as="geometry" />
+        <!-- TOP HEADER BANNER -->
+        <mxCell id="hdr_banner" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="15" y="8" width="970" height="32" as="geometry"/>
         </mxCell>
-
-        <mxCell id="gcp_logo_badge" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:middle;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='32' height='32'/&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:4px;'&gt;&lt;b style='font-size:22px;color:#475569;letter-spacing:-0.5px;'&gt;GCP&lt;/b&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:10px;border-left:2px solid #94A3B8;'&gt;&lt;b style='font-size:15px;color:#0F172A;line-height:1.1;'&gt;Project Plan&lt;br/&gt;Foundation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="930" y="6" width="250" height="42" as="geometry" />
+        <mxCell id="hdr_title" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Blueprint ID: Data &amp;amp;. Data &amp;amp; AI Pipeline Architecture (To-Be State)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="25" y="8" width="600" height="32" as="geometry"/>
         </mxCell>
-
-        <!-- TOP DIVIDER -->
-        <mxCell id="top_divider" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;" edge="1" parent="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="20" y="52" />
-            <mxPoint x="1180" y="52" />
-          </mxGeometry>
+        <mxCell id="hdr_gcp_logo" value="&lt;span style='font-size:16px;'&gt;🇬&lt;/span&gt; &lt;b style='font-size:13px;color:#0F172A;'&gt;Google Cloud&lt;/b&gt;" style="text;html=1;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="660" y="8" width="170" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_wbs_tag" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;WBS 3.1.5&lt;/b&gt;" style="text;html=1;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="840" y="8" width="135" height="32" as="geometry"/>
         </mxCell>
 
-        <!-- TOP SUB-HEADER: PERSONAS & INFO BOX -->
-        <mxCell id="icon_p_green" value="" style="image;html=1;image=https://api.iconify.design/lucide:user-round.svg?color=%2316A34A;" vertex="1" parent="1">
-          <mxGeometry x="270" y="75" width="28" height="28" as="geometry" />
+        <!-- METADATA BOX & PERSONAS (SUBHEADER) -->
+        <mxCell id="persona_row_top" value="&lt;span style='font-size:18px;'&gt;🧑‍💼&lt;/span&gt; &lt;span style='font-size:18px;'&gt;📄🔍&lt;/span&gt; &lt;span style='font-size:18px;'&gt;👩‍💻&lt;/span&gt; &lt;span style='font-size:18px;'&gt;ℹ️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="180" y="45" width="130" height="35" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_p_search" value="" style="image;html=1;image=https://api.iconify.design/lucide:file-search.svg?color=%232563EB;" vertex="1" parent="1">
-          <mxGeometry x="310" y="75" width="28" height="28" as="geometry" />
+        <mxCell id="meta_box_1" value="&lt;div style='font-size:8px;color:#1E293B;line-height:1.3;'&gt;&lt;b&gt;Persona (Creator):&lt;/b&gt; 3. Data Architect&lt;br/&gt;&lt;b&gt;Target Audience:&lt;/b&gt; Data Gov Leads&lt;br/&gt;&lt;b&gt;Target Audience:&lt;/b&gt; MLOps, Data Sci.&lt;br/&gt;&lt;b&gt;Update Freq:&lt;/b&gt; Per Quarterly&lt;br/&gt;&lt;b&gt;Usage:&lt;/b&gt; High&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="320" y="42" width="165" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_p_blue" value="" style="image;html=1;image=https://api.iconify.design/lucide:user-round-check.svg?color=%232563EB;" vertex="1" parent="1">
-          <mxGeometry x="350" y="75" width="28" height="28" as="geometry" />
+        <mxCell id="box_project_plan" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:24px;'&gt;☁️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Project Plan&lt;br/&gt;Foundation&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="495" y="42" width="105" height="65" as="geometry"/>
         </mxCell>
-
-        <!-- CDC Info Box -->
-        <mxCell id="box_cdc_info" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;CDC, Bronze/Silver/Gold Lakehouse&lt;/b&gt;&lt;span style='font-size:10px;color:#334155;'&gt; - Change Data Capture (CDC) based medallion architecture mapping from prerequisites tech stack like prerequisites tech context prereqs, prerequisites prerequisites patreqs prequirements context&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;spacingLeft=10;spacingRight=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
-          <mxGeometry x="395" y="60" width="310" height="78" as="geometry" />
+        <mxCell id="meta_box_2" value="&lt;div style='font-size:8px;color:#1E293B;line-height:1.3;'&gt;&lt;b&gt;Creator:&lt;/b&gt; Project Plan Foundation&lt;br/&gt;&lt;b&gt;Tech Stack:&lt;/b&gt; Modern Data Stack (Vertex Pipelines)&lt;br/&gt;&lt;b&gt;Compliance:&lt;/b&gt; NIST AI RMF&lt;br/&gt;&lt;b&gt;Update Freq:&lt;/b&gt; Per Release&lt;br/&gt;&lt;b&gt;Usage:&lt;/b&gt; High&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="610" y="42" width="200" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- Creator Persona Callout -->
-        <mxCell id="creator_persona_avatar" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:10.5px;font-weight:700;color:#0F172A;'&gt;Creator&lt;br/&gt;(Persona)&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2364748B' width='28' height='28' style='margin:2px auto;'/&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;font-weight:700;color:#0F172A;'&gt;Target&lt;br/&gt;Audience&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="725" y="58" width="75" height="82" as="geometry" />
+        <!-- LEFT: SOURCES & FEATURE STORES INGESTION -->
+        <mxCell id="box_sources" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Sources&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;🗄️&lt;br/&gt;📄&lt;br/&gt;🗄️&lt;/span&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="15" y="150" width="45" height="130" as="geometry"/>
         </mxCell>
-        <mxCell id="arr_target_audience" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=classic;endSize=5;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="762" y="145" />
-            <mxPoint x="762" y="185" />
-          </mxGeometry>
+
+        <mxCell id="box_raw_ingestion" value="&lt;b style='font-size:9.5px;color:#B45309;'&gt;Raw Ingestion to&lt;br/&gt;Feature Stores&lt;/b&gt;&lt;br/&gt;&lt;div style='display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;'&gt;&lt;div&gt;&lt;span style='font-size:16px;'&gt;⚙️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;Dataflow&lt;/b&gt;&lt;/div&gt; &lt;span style='font-size:12px;'&gt;➡️&lt;/span&gt; &lt;div&gt;&lt;span style='font-size:16px;'&gt;📡&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;Pub/Sub&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="90" y="115" width="110" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_bronze_feature" value="&lt;div style='display:flex;align-items:center;justify-content:center;gap:6px;'&gt;&lt;div&gt;&lt;span style='font-size:18px;'&gt;🗄️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;Bronze&lt;br/&gt;Lakehouse&lt;/b&gt;&lt;/div&gt; &lt;span style='font-size:12px;'&gt;➡️&lt;/span&gt; &lt;div&gt;&lt;span style='font-size:18px;'&gt;🕸️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;Feature&lt;br/&gt;Store&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="90" y="210" width="110" height="85" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_src_raw" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="60" y="180" as="sourcePoint"/><mxPoint x="90" y="155" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_elt_stream_top" value="&lt;b style='font-size:7.5px;color:#0F172A;'&gt;ELT/&lt;br/&gt;Streaming&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="145" width="45" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_src_bronze" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="60" y="245" as="sourcePoint"/><mxPoint x="90" y="250" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_elt_stream_bot" value="&lt;b style='font-size:7.5px;color:#0F172A;'&gt;ELT/&lt;br/&gt;Streaming&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="225" width="45" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_raw_to_bronze" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="200" as="sourcePoint"/><mxPoint x="145" y="210" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- VERTICAL PILLAR -->
+        <mxCell id="pillar_mlops" value="&lt;div style='transform: rotate(-90deg); white-space: nowrap; font-size:11px; font-weight:bold; color:#1E40AF;'&gt;Pillar: MLOps &amp;amp; Feature Eng. (Operational Excellence)&lt;/div&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="215" y="115" width="28" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_bronze_pillar" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="200" y="250" as="sourcePoint"/><mxPoint x="215" y="250" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- CENTER DASHED CONTAINER: PURPOSE -->
+        <mxCell id="box_purpose_outer" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Purpose: Model Pipelines (MLOps Orchestration)&lt;/b&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &lt;span style='font-size:9.5px;color:#64748B;'&gt;cataloging, lineage, quality&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;dashed=1;dashPattern=6 4;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="250" y="115" width="415" height="320" as="geometry"/>
+        </mxCell>
+
+        <!-- VERTEX PIPELINES CONTAINER -->
+        <mxCell id="box_vertex_pipelines" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="260" y="140" width="220" height="255" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_vertex_pipelines" value="&lt;div style='text-align:center;'&gt;&lt;span style='background:#2563EB;color:white;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:bold;'&gt;🔵 Vertex Pipelines (MLOps Orchestration)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="265" y="143" width="210" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- 3 COLUMNS INSIDE VERTEX PIPELINES -->
+        <mxCell id="col_feature_retrieval" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Feature&lt;br/&gt;Retrieval&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites&lt;br/&gt;from feature&lt;br/&gt;store&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="265" y="168" width="66" height="215" as="geometry"/>
+        </mxCell>
+        <mxCell id="hex_feature_gcs" value="&lt;span style='font-size:16px;'&gt;🗄️&lt;/span&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=5;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="278" y="255" width="40" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_feature_gcs_txt" value="&lt;b style='font-size:8px;color:#1E40AF;'&gt;Cloud&lt;br/&gt;Storage&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="271" y="292" width="55" height="24" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="col_data_split" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Data&lt;br/&gt;Splitting&lt;br/&gt;&amp;amp; Transform&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="335" y="168" width="68" height="215" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_split_hopper_blue" value="&lt;span style='font-size:18px;'&gt;🔻&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="353" y="245" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_split_gcs_txt" value="&lt;b style='font-size:8px;color:#1E40AF;'&gt;Cloud&lt;br/&gt;Storage&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="341" y="280" width="55" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_split_hopper_red" value="&lt;span style='font-size:16px;'&gt;🔻&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="355" y="325" width="26" height="26" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="col_model_training" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Model&lt;br/&gt;Training&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="407" y="168" width="68" height="215" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_train_doc" value="&lt;span style='font-size:20px;'&gt;📄🔍&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="418" y="200" width="45" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_train_datasets" value="&lt;span style='font-size:24px;'&gt;🗂️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="418" y="240" width="45" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_model_eval_sub" value="&lt;b style='font-size:7.5px;color:#047857;'&gt;Model&lt;br/&gt;Evaluation&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="410" y="345" width="62" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- INTER-COLUMN ARROWS -->
+        <mxCell id="edge_pillar_pipelines" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="243" y="265" as="sourcePoint"/><mxPoint x="265" y="265" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_col1_col2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="331" y="265" as="sourcePoint"/><mxPoint x="335" y="265" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_col2_col3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="403" y="265" as="sourcePoint"/><mxPoint x="407" y="265" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- DATAPLEX CONTAINER -->
+        <mxCell id="box_dataplex" value="&lt;div style='text-align:center;font-size:9px;color:#1E40AF;'&gt;&lt;span style='font-size:16px;'&gt;🕸️&lt;/span&gt; &lt;b&gt;Dataplex&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;search&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;🔍&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;lineage&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;📈&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="495" y="130" width="95" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_train_dataplex" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="475" y="195" as="sourcePoint"/><mxPoint x="495" y="195" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- MODEL REGISTRY (VERTEX AI) -->
+        <mxCell id="box_model_registry" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#92400E;'&gt;Model Registry&lt;br/&gt;(Vertex AI)&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="495" y="270" width="125" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="chart_trained_models" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:20px;'&gt;📈&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;Trained&lt;br/&gt;models&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="502" y="310" width="55" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_verified_model" value="&lt;span style='font-size:18px;'&gt;☑️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="575" y="315" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_eval_registry" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="475" y="330" as="sourcePoint"/><mxPoint x="495" y="330" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- ACTIVE DATA CONTROL PLANE VERTICAL PILLAR -->
+        <mxCell id="pillar_control_plane" value="&lt;div style='transform: rotate(-90deg); white-space: nowrap; font-size:9px; font-weight:bold; color:#475569;'&gt;ACTIVE DATA CONTROL PLANE&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="630" y="125" width="22" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_dataplex_control" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="590" y="195" as="sourcePoint"/><mxPoint x="630" y="195" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_registry_control" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="620" y="330" as="sourcePoint"/><mxPoint x="630" y="330" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- RIGHT: MODEL DEPLOYMENT & GOVERNANCE -->
+        <mxCell id="box_model_deployment" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;Model&lt;br/&gt;Deployment&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#1E40AF;'&gt;Model&lt;br/&gt;Deployment&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="665" y="125" width="80" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="hex_deployment_icon" value="&lt;span style='font-size:22px;color:white;'&gt;📊&lt;/span&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=6;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="679" y="235" width="52" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_control_deployment" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="652" y="255" as="sourcePoint"/><mxPoint x="665" y="255" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- SERVERLESS GOVERNANCE & POLICY SHIELD -->
+        <mxCell id="icon_gov_shield" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🛡️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7px;color:#1E40AF;'&gt;Serverless&lt;br/&gt;query&lt;br/&gt;governance&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="760" y="230" width="55" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_deployment_shield" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="745" y="255" as="sourcePoint"/><mxPoint x="760" y="255" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge_policy_red_line" value="" style="endArrow=none;dashed=1;strokeColor=#EF4444;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="787" y="125" as="sourcePoint"/><mxPoint x="787" y="420" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="icon_policy_lock" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:18px;'&gt;🔒👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7px;color:#991B1B;'&gt;Policy&lt;br/&gt;enforcement&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="760" y="360" width="55" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- RIGHT: CONSUMPTION COLUMN -->
+        <mxCell id="col_consumption" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#92400E;'&gt;Consumption:&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#78350F;'&gt;Monitor AI pipeline&lt;br/&gt;performance &amp;amp;&lt;br/&gt;model drift&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#0F172A;'&gt;MLOps Lead&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;🎡&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#0F172A;'&gt;Looker&lt;br/&gt;Dashboards&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;🧠&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#0F172A;'&gt;AI/ML models&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#0F172A;'&gt;Data Scientist&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+          <mxGeometry x="830" y="125" width="115" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_shield_consumption" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="810" y="255" as="sourcePoint"/><mxPoint x="830" y="255" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- COMPLIANCE BADGES (BOTTOM LEFT) -->
+        <mxCell id="hdr_compliance" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Compliance&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="420" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_nist" value="&lt;b style='font-size:7.5px;color:white;'&gt;NIST&lt;br/&gt;AI RMF&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="445" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_21cfr" value="&lt;b style='font-size:7px;color:#991B1B;'&gt;21 CFR&lt;br/&gt;Part 11&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="72" y="445" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_gxp" value="&lt;b style='font-size:8px;color:#78350F;'&gt;GxP&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="114" y="445" width="32" height="32" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}
+
+export function getExactGcpDataLakehouseWbsXml(): string {
+  return `
+<mxfile host="app.diagrams.net" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="gcp-lakehouse-wbs" name="GCP Enterprise Data Lakehouse (WBS 3.1.2)">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="560">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- TOP HEADER BANNER -->
+        <mxCell id="hdr_banner" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="15" y="8" width="970" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_title" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Blueprint ID: tech_data_lakehouse_gcp - GCP Enterprise Data Lakehouse (To-Be State)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="25" y="8" width="650" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_wbs_tag" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;WBS 3.1.2&lt;/b&gt;" style="text;html=1;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="840" y="8" width="135" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- METADATA BOX & PERSONAS -->
+        <mxCell id="persona_row_top" value="&lt;span style='font-size:18px;'&gt;🧑‍💼&lt;/span&gt; &lt;span style='font-size:18px;'&gt;📄🔍&lt;/span&gt; &lt;span style='font-size:18px;'&gt;👩‍💻&lt;/span&gt; &lt;span style='font-size:18px;'&gt;ℹ️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="240" y="45" width="130" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="meta_box_1" value="&lt;div style='font-size:8px;color:#1E293B;line-height:1.3;'&gt;&lt;b&gt;Persona (Creator):&lt;/b&gt; 3. Data Architect&lt;br/&gt;&lt;b&gt;Target Audience:&lt;/b&gt; Data Gov Leads&lt;br/&gt;&lt;b&gt;Effort:&lt;/b&gt; High&lt;br/&gt;&lt;b&gt;Update Freq:&lt;/b&gt; Quarterly&lt;br/&gt;&lt;b&gt;Usage:&lt;/b&gt; High&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="380" y="42" width="170" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- LEFT: SOURCES & AWS PREREQUISITE -->
+        <mxCell id="box_sources" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Sources&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;🗄️&lt;br/&gt;📄&lt;br/&gt;🗄️&lt;/span&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="15" y="150" width="45" height="130" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box_aws_prereq" value="&lt;b style='font-size:9.5px;color:#B45309;'&gt;Prerequisite:&lt;br/&gt;4. AWS Data Lake&lt;/b&gt;&lt;br/&gt;&lt;div style='display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;'&gt;&lt;div&gt;&lt;span style='font-size:16px;'&gt;📦&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;AWS S3&lt;/b&gt;&lt;/div&gt; &lt;span style='font-size:12px;'&gt;➡️&lt;/span&gt; &lt;div&gt;&lt;span style='font-size:16px;'&gt;🗄️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;GCS&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="85" y="115" width="110" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_aws_transfer" value="&lt;div style='display:flex;align-items:center;justify-content:center;gap:6px;'&gt;&lt;div&gt;&lt;span style='font-size:18px;'&gt;📦&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;AWS S3&lt;/b&gt;&lt;/div&gt; &lt;span style='font-size:12px;'&gt;➡️&lt;/span&gt; &lt;div&gt;&lt;span style='font-size:18px;'&gt;🔄&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#92400E;'&gt;Data Transfer&lt;br/&gt;Service&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="85" y="210" width="110" height="85" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_src_aws" value="&lt;b style='font-size:7.5px;color:#0F172A;'&gt;ELT/Batch/&lt;br/&gt;Streaming&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="60" y="180" as="sourcePoint"/><mxPoint x="85" y="155" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_src_transfer" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="60" y="245" as="sourcePoint"/><mxPoint x="85" y="250" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_aws_to_transfer" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="140" y="200" as="sourcePoint"/><mxPoint x="140" y="210" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- VERTICAL PILLAR -->
+        <mxCell id="pillar_data_lakehouse" value="&lt;div style='transform: rotate(-90deg); white-space: nowrap; font-size:11px; font-weight:bold; color:#1E40AF;'&gt;Pillar: Data Storage &amp;amp; Lakehouse (Reliability)&lt;/div&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="210" y="115" width="28" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_transfer_pillar" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="195" y="250" as="sourcePoint"/><mxPoint x="210" y="250" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- CENTER DASHED CONTAINER: PURPOSE -->
+        <mxCell id="box_purpose_outer" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Purpose: Multi-tier object storage, cataloging&lt;/b&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &lt;span style='font-size:9.5px;color:#64748B;'&gt;cataloging&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;dashed=1;dashPattern=6 4;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="245" y="115" width="410" height="320" as="geometry"/>
+        </mxCell>
+
+        <!-- CLOUD STORAGE (GCS) CONTAINER -->
+        <mxCell id="box_gcs_container" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="255" y="140" width="220" height="255" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_gcs_container" value="&lt;div style='text-align:center;'&gt;&lt;span style='background:#2563EB;color:white;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:bold;'&gt;🔵 Cloud Storage (GCS)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="260" y="143" width="210" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- 3 ZONES INSIDE CLOUD STORAGE -->
+        <mxCell id="col_raw_zone" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Raw Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;(Unstructured,&lt;br/&gt;Cold)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="260" y="168" width="66" height="215" as="geometry"/>
+        </mxCell>
+        <mxCell id="hex_raw_gcs" value="&lt;span style='font-size:16px;'&gt;🗄️&lt;/span&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=5;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="273" y="255" width="40" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_raw_gcs_txt" value="&lt;b style='font-size:8px;color:#1E40AF;'&gt;Cloud&lt;br/&gt;Storage&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="266" y="292" width="55" height="24" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="col_staging_zone" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Staging&lt;br/&gt;Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;(Semi-&lt;br/&gt;structured, Hot)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="330" y="168" width="68" height="215" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_staging_hopper" value="&lt;span style='font-size:18px;'&gt;🔻&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="348" y="245" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_staging_gcs_txt" value="&lt;b style='font-size:8px;color:#1E40AF;'&gt;Cloud&lt;br/&gt;Storage&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="336" y="280" width="55" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_staging_red_hopper" value="&lt;span style='font-size:16px;'&gt;🔻&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="350" y="325" width="26" height="26" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="col_curated_zone" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;Curated Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;(Structured,&lt;br/&gt;Datasets)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="402" y="168" width="68" height="215" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_curated_doc" value="&lt;span style='font-size:20px;'&gt;📄🔍&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="413" y="200" width="45" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_curated_datasets" value="&lt;span style='font-size:24px;'&gt;🗂️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="413" y="240" width="45" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- INTER-ZONE ARROWS -->
+        <mxCell id="edge_pillar_gcs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="238" y="265" as="sourcePoint"/><mxPoint x="260" y="265" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_raw_staging" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="326" y="265" as="sourcePoint"/><mxPoint x="330" y="265" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_staging_curated" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="398" y="265" as="sourcePoint"/><mxPoint x="402" y="265" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- DATAPLEX CONTAINER -->
+        <mxCell id="box_dataplex" value="&lt;div style='text-align:center;font-size:9px;color:#1E40AF;'&gt;&lt;span style='font-size:16px;'&gt;🕸️&lt;/span&gt; &lt;b&gt;Dataplex&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;search&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;🔍&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;lineage&lt;/span&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;📈&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="485" y="130" width="95" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_curated_dataplex" value="&lt;b style='font-size:7px;color:#0F172A;'&gt;Data&lt;br/&gt;Cataloging&lt;br/&gt;&amp;amp; Discovery&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="470" y="200" as="sourcePoint"/><mxPoint x="485" y="200" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- PREREQUISITE: DIMENSIONAL DATA MODEL WITH STAR -->
+        <mxCell id="box_dim_prereq" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#92400E;'&gt;Prerequisite:&lt;br/&gt;Dimensional Data Model&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="485" y="270" width="130" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="star_dim" value="&lt;span style='font-size:26px;'&gt;⭐&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="532" y="308" width="34" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="tbl_facts_top" value="&lt;b style='font-size:7px;color:#991B1B;'&gt;Facts&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="532" y="295" width="36" height="13" as="geometry"/>
+        </mxCell>
+        <mxCell id="tbl_facts_left" value="&lt;b style='font-size:7px;color:#1E40AF;'&gt;Facts&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="492" y="320" width="36" height="13" as="geometry"/>
+        </mxCell>
+        <mxCell id="tbl_dim_right" value="&lt;b style='font-size:7px;color:#1E40AF;'&gt;Dimension&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="568" y="320" width="42" height="13" as="geometry"/>
+        </mxCell>
+        <mxCell id="tbl_dim_bl" value="&lt;b style='font-size:7px;color:#15803D;'&gt;Dimension&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="494" y="355" width="42" height="13" as="geometry"/>
+        </mxCell>
+        <mxCell id="tbl_dim_br" value="&lt;b style='font-size:7px;color:#15803D;'&gt;Dimension&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="566" y="355" width="42" height="13" as="geometry"/>
+        </mxCell>
+
+        <!-- BIGQUERY & BIGQUERY OMNI -->
+        <mxCell id="box_bigquery" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;BigQuery &amp;amp;&lt;br/&gt;BigQuery Omni&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;b style='font-size:9px;color:#1E40AF;'&gt;BigQuery&lt;br/&gt;&amp;amp; BigQuery&lt;br/&gt;Omni&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="660" y="125" width="80" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="hex_bigquery" value="&lt;span style='font-size:22px;color:white;'&gt;📊&lt;/span&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;size=6;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="674" y="235" width="52" height="46" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_dataplex_bq" value="&lt;b style='font-size:7px;color:#0F172A;'&gt;ELT/&lt;br/&gt;Serverless&lt;br/&gt;Processing&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="580" y="245" as="sourcePoint"/><mxPoint x="660" y="245" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_curated_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="470" y="325" as="sourcePoint"/><mxPoint x="660" y="325" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- FEEDBACK LOOP FROM BIGQUERY BACK TO CLOUD STORAGE RAW ZONE -->
+        <mxCell id="edge_bq_loopback" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="700" y="405" as="sourcePoint"/><mxPoint x="293" y="383" as="targetPoint"/><Array as="points"><mxPoint x="700" y="430"/><mxPoint x="293" y="430"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- SERVERLESS GOVERNANCE & POLICY SHIELD -->
+        <mxCell id="icon_gov_shield" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🛡️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7px;color:#1E40AF;'&gt;Serverless&lt;br/&gt;query&lt;br/&gt;governance&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="755" y="230" width="55" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_bq_shield" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="740" y="255" as="sourcePoint"/><mxPoint x="755" y="255" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge_policy_red_line" value="" style="endArrow=none;dashed=1;strokeColor=#EF4444;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="782" y="125" as="sourcePoint"/><mxPoint x="782" y="420" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="icon_policy_lock" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:18px;'&gt;🔒👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7px;color:#991B1B;'&gt;Policy&lt;br/&gt;enforcement&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="755" y="360" width="55" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- RIGHT: REPRESENTATION COLUMN -->
+        <mxCell id="col_representation" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9px;color:#92400E;'&gt;Representation:&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#78350F;'&gt;Serverless query&lt;br/&gt;governance&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;🎡&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#0F172A;'&gt;Looker&lt;br/&gt;Dashboards&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;🧠&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#0F172A;'&gt;AI/ML models&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style='font-size:22px;'&gt;👤&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:7.5px;color:#0F172A;'&gt;Data Analysts&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#F59E0B;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+          <mxGeometry x="825" y="125" width="115" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_shield_representation" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="805" y="255" as="sourcePoint"/><mxPoint x="825" y="255" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- COMPLIANCE BADGES (BOTTOM LEFT) -->
+        <mxCell id="hdr_compliance" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Compliance&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="420" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_soc2" value="&lt;b style='font-size:7.5px;color:white;'&gt;SOC&lt;br/&gt;2&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="445" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_21cfr" value="&lt;b style='font-size:7px;color:#991B1B;'&gt;21 CFR&lt;br/&gt;Part 11&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="72" y="445" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_gxp" value="&lt;b style='font-size:8px;color:#78350F;'&gt;GxP&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="114" y="445" width="32" height="32" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}
+
+export function getExactAgentGovernanceHitlReferenceXml(): string {
+  return `
+<mxfile host="app.diagrams.net" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="agent-gov-hitl-wbs" name="HITL AI Governance (WBS 1.1.2)">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1050" pageHeight="560">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- PAGE HEADER -->
+        <mxCell id="hdr_title" value="Human-in-the-Loop (HITL) AI Governance, Governingautonomous AI Agents" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="15" y="10" width="700" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_subtitle" value="*Total Unified System View (WBS 1.1.2)" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="15" y="34" width="350" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- METADATA CARD (TOP RIGHT) -->
+        <mxCell id="card_meta" value="&lt;div style='font-size:8px;color:#1E293B;line-height:1.2;'&gt;&lt;b&gt;Metadata:&lt;/b&gt;&lt;br/&gt;prerequisites prereqs prepreqs prerequisites&lt;br/&gt;for strategic presentation&lt;br/&gt;governance legibility and no crowding&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="750" y="10" width="270" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- LAYER 1: AI AGENT OPERATIONS -->
+        <mxCell id="box_layer1" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;LAYER 1: AI Agent Operations&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="15" y="60" width="460" height="115" as="geometry"/>
+        </mxCell>
+        <mxCell id="persona_client" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:24px;'&gt;👩‍💼&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8.5px;color:#0F172A;'&gt;External Client&lt;br/&gt;Request&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="85" width="85" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_enterprise_apps" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:20px;'&gt;⚙️🖥️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#1E40AF;'&gt;Enterprise&lt;br/&gt;Applications&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="125" y="85" width="85" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_client_apps" value="&lt;b style='font-size:7.5px;color:#0F172A;'&gt;*Request&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="95" y="112" as="sourcePoint"/><mxPoint x="125" y="112" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="box_ai_agent" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🌀🧠&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;AI Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#64748B;'&gt;(Powered by Gemini Pro)&lt;br/&gt;prerequisites context prereqs&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="235" y="80" width="145" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_apps_agent" value="&lt;b style='font-size:8px;color:#0F172A;'&gt;WBS 4.2.1&lt;br/&gt;prerequisites&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="210" y="112" as="sourcePoint"/><mxPoint x="235" y="112" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- LAYER 2: HITL GOVERNANCE & COMPLIANCE CONTROL PLANE -->
+        <mxCell id="box_layer2" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;LAYER 2: HITL Governance &amp;amp; Compliance Control Plane&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="15" y="185" width="460" height="210" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_layer2_wbs" value="&lt;div style='text-align:right;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;WBS 4.1.2&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites prereqs pattern prerequisites context&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=right;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="240" y="190" width="225" height="25" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box_proposed_decision" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:20px;'&gt;📄📈&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Proposed Decision&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;proposes context prerequisites&lt;br/&gt;prereqs context prereqs&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="235" width="125" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_agent_proposed" value="&lt;b style='font-size:8px;color:#0F172A;'&gt;generate proposed&lt;br/&gt;Action / Decision&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="365" y="148" as="sourcePoint"/><mxPoint x="92" y="235" as="targetPoint"/><Array as="points"><mxPoint x="365" y="200"/><mxPoint x="92" y="200"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- DECISION RHOMBUS -->
+        <mxCell id="rhombus_confidence" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="175" y="250" width="38" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_proposed_rhombus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="155" y="269" as="sourcePoint"/><mxPoint x="175" y="269" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- HIGH CONFIDENCE PATH -> ACTION -->
+        <mxCell id="box_action" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🖥️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Action&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;executing prerequisites&lt;br/&gt;deciding context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="355" y="235" width="105" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_high_conf" value="&lt;b style='font-size:8.5px;color:#16A34A;'&gt;HIGH CONFIDENCE / ROUTINE ACTION&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;b style='font-size:9px;color:#16A34A;'&gt;YES&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="194" y="250" as="sourcePoint"/><mxPoint x="355" y="260" as="targetPoint"/><Array as="points"><mxPoint x="194" y="225"/><mxPoint x="335" y="225"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- LOW CONFIDENCE PATH -> RED ALERT -->
+        <mxCell id="icon_alert_triangle" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:24px;'&gt;⚠️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#EF4444;'&gt;Alert&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="350" y="335" width="45" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_low_conf" value="&lt;b style='font-size:8.5px;color:#DC2626;'&gt;LOW CONFIDENCE / HIGH RISK ACTION&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;b style='font-size:9px;color:#DC2626;'&gt;NO&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="194" y="288" as="sourcePoint"/><mxPoint x="350" y="355" as="targetPoint"/><Array as="points"><mxPoint x="194" y="325"/><mxPoint x="320" y="325"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_action_no_alert" value="&lt;b style='font-size:8px;color:#DC2626;'&gt;NO&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="380" y="305" as="sourcePoint"/><mxPoint x="380" y="335" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- LAYER 3: HUMAN INTERVENTION & REGULATORY OVERRIDE (RIGHT COLUMN) -->
+        <mxCell id="box_layer3" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;LAYER 3: Human Intervention &amp;amp; Regulatory Override&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites pattern prereqs prereqs prereqs pattern context context prerequisites context.&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="490" y="60" width="530" height="335" as="geometry"/>
+        </mxCell>
+
+        <!-- HITL REVIEW PORTAL (TOP LEFT OF LAYER 3) -->
+        <mxCell id="box_hitl_portal" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:16px;'&gt;⚠️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#DC2626;'&gt;HITL Review Portal&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites purpose&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="505" y="90" width="115" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_alert_to_hitl" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="395" y="355" as="sourcePoint"/><mxPoint x="505" y="111" as="targetPoint"/><Array as="points"><mxPoint x="475" y="355"/><mxPoint x="475" y="111"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 4 PERSONAS -->
+        <mxCell id="persona_risk" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;👨‍💼&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;Risk Officer&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="640" y="85" width="55" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="persona_ciso" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;👨‍💼&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;CISO&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="705" y="85" width="45" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="persona_legal" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;👩‍💼&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;Legal Counsel&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="760" y="85" width="65" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="persona_sme" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;👨‍💻&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;Domain SME&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="835" y="85" width="60" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- 3 COMPLIANCE COLUMNS -->
+        <mxCell id="col_eu_ai" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;EU AI Act&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites purpose prereqs&lt;br/&gt;prerequisites context prereqs&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;EU AI Act&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="505" y="145" width="115" height="235" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="col_21cfr" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;21 CFR Part 11&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites EMA/GxP context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="630" y="145" width="165" height="235" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_auth" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Authentication&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="640" y="210" width="85" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_kms" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#1E40AF;'&gt;KMS&lt;br/&gt;Encrypted&lt;br/&gt;Override&lt;br/&gt;Signature&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="735" y="200" width="55" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_auth_kms" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3B82F6;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="725" y="230" as="sourcePoint"/><mxPoint x="735" y="230" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="col_gamp5" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;GAMP 5&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites context&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;GAMP 5&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="805" y="145" width="115" height="235" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_kms_gamp" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3B82F6;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="790" y="230" as="sourcePoint"/><mxPoint x="805" y="230" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- BLUE FEEDBACK ARROW FROM KMS OVERRIDE BACK TO ACTION -->
+        <mxCell id="edge_override_feedback" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3B82F6;strokeWidth=2;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="735" y="245" as="sourcePoint"/><mxPoint x="460" y="270" as="targetPoint"/><Array as="points"><mxPoint x="600" y="245"/><mxPoint x="600" y="270"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- TARGET AUDIENCE (BOTTOM CENTER) -->
+        <mxCell id="box_target_aud" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:24px;'&gt;👩‍💼 👨‍💼 👩‍💼 👨‍💼&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Target Audience&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#64748B;'&gt;Risk, CISO, and Legal context&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="405" width="170" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- LEGEND (BOTTOM RIGHT) -->
+        <mxCell id="box_legend" value="&lt;div style='font-size:8px;color:#1E293B;line-height:1.4;'&gt;&lt;b style='font-size:8.5px;'&gt;Legend&lt;/b&gt;&lt;br/&gt;➡️ &lt;b&gt;Solid Synch Flow&lt;/b&gt;&lt;br/&gt;➡️ &lt;b style='color:#2563EB;'&gt;Async Auditing&lt;/b&gt;&lt;br/&gt;⚠️ &lt;b style='color:#DC2626;'&gt;Alert flow&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="720" y="405" width="180" height="65" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}
+
+export function getExactGoLiveWarRoomRunbookXml(): string {
+  return `
+<mxfile host="app.diagrams.net" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="golive-warroom-wbs" name="Go-Live Cutover &amp; War Room Runbook (WBS 6.2.1)">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1050" pageHeight="560">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- PAGE HEADER -->
+        <mxCell id="hdr_title" value="WBS 6.2.1: Go-Live Cutover &amp;amp; War Room Runbook (Day-1 Cutover Phase / To-Be State)" style="text;html=1;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor:#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="15" y="10" width="850" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_divider" value="" style="line;strokeWidth=1;dashed=1;strokeColor=#CBD5E1;" vertex="1" parent="1">
+          <mxGeometry x="15" y="38" width="985" height="10" as="geometry"/>
+        </mxCell>
+
+        <!-- LAYER 1: PREPARATION & APPROVAL PHASE (TOP ROW) -->
+        <mxCell id="box_layer1_label" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;LAYER 1 (TOP):&lt;br/&gt;PREPARATION &amp;amp;&lt;br/&gt;APPROVAL PHASE&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="15" y="50" width="115" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box_cicd_pipeline" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:18px;'&gt;🐙 🦊&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;CI/CD Pipeline&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;Git, Jenkins/GitLab&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="140" y="50" width="90" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box_golive_checklist" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:18px;'&gt;💾 📋&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Go-Live Prep Checklist&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;WORM storage callout&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="250" y="50" width="115" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_cicd_checklist" value="&lt;b style='font-size:7px;color:#0F172A;'&gt;Triggering&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="230" y="87" as="sourcePoint"/><mxPoint x="250" y="87" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="box_decision_meeting" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:18px;'&gt;🧑‍💼 👨‍💼&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;Release Mgr / App Owner&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="385" y="50" width="90" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_checklist_meeting" value="&lt;b style='font-size:7px;color:#0F172A;'&gt;Validation Gates&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="365" y="87" as="sourcePoint"/><mxPoint x="385" y="87" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="box_confluence_draft" value="&lt;div style='display:flex;align-items:center;gap:4px;'&gt;&lt;span style='font-size:16px;'&gt;📘&lt;/span&gt; &lt;b style='font-size:8.5px;color:#1E40AF;'&gt;Confluence Runbook&lt;br/&gt;Draft&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=left;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="485" y="50" width="115" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_jira_ticket" value="&lt;div style='display:flex;align-items:center;gap:4px;'&gt;&lt;span style='font-size:16px;'&gt;🎫&lt;/span&gt; &lt;b style='font-size:8.5px;color:#1E40AF;'&gt;Jira Cutover Ticket&lt;br/&gt;(Approved)&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=left;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="485" y="90" width="115" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_meeting_confluence" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="465" y="67" as="sourcePoint"/><mxPoint x="485" y="67" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_meeting_jira" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="465" y="107" as="sourcePoint"/><mxPoint x="485" y="107" as="targetPoint"/></mxGeometry>
         </mxCell>
 
         <!-- TOP RIGHT METADATA TABLE -->
-        <mxCell id="meta_table" value="&lt;table style='width:100%;border-collapse:collapse;font-size:10px;color:#0F172A;' border='1'&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:2.5px 5px;font-weight:bold;width:45%;'&gt;GCAF Pillar&lt;/td&gt;&lt;td style='padding:2.5px 5px;'&gt;Data Lifecycle &amp;amp; Pipeline&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:2.5px 5px;font-weight:bold;'&gt;Phase&lt;/td&gt;&lt;td style='padding:2.5px 5px;'&gt;Project Plan Foundation&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:2.5px 5px;font-weight:bold;'&gt;Creator (Persona)&lt;/td&gt;&lt;td style='padding:2.5px 5px;'&gt;3. Data Architect&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:2.5px 5px;font-weight:bold;'&gt;Target Audience&lt;/td&gt;&lt;td style='padding:2.5px 5px;'&gt;Data Engineers&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:2.5px 5px;font-weight:bold;'&gt;Tech Stack&lt;/td&gt;&lt;td style='padding:2.5px 5px;'&gt;Dataflow, BigQuery&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:2.5px 5px;font-weight:bold;'&gt;Compliance&lt;/td&gt;&lt;td style='padding:2.5px 5px;'&gt;SOC 2&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#F8FAFC;'&gt;&lt;td style='padding:2.5px 5px;font-weight:bold;'&gt;Update Freq&lt;/td&gt;&lt;td style='padding:2.5px 5px;'&gt;Quarterly&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='padding:2.5px 5px;font-weight:bold;'&gt;Usage&lt;/td&gt;&lt;td style='padding:2.5px 5px;'&gt;High&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="820" y="60" width="350" height="95" as="geometry" />
+        <mxCell id="tbl_golive_meta" value="&lt;table style='font-size:8px;color:#1E293B;width:100%;border-collapse:collapse;'&gt;&lt;tr&gt;&lt;td style='font-weight:bold;padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Diagram Name&lt;/td&gt;&lt;td style='padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Go-Live Cutover &amp;amp; War Room Runbook&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-weight:bold;padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;GCAF Pillar&lt;/td&gt;&lt;td style='padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Operational Excellence&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-weight:bold;padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Phase&lt;/td&gt;&lt;td style='padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Operations (Go-Live &amp;amp; Cutover)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-weight:bold;padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Creator&lt;/td&gt;&lt;td style='padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;6. DevSecOps&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-weight:bold;padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Target Audience&lt;/td&gt;&lt;td style='padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Release Mgrs, SREs, App Owners&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-weight:bold;padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Tech Stack&lt;/td&gt;&lt;td style='padding:2px 4px;border-bottom:1px solid #E2E8F0;'&gt;Confluence, Opsgenie, Cloud CI/CD&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='font-weight:bold;padding:2px 4px;'&gt;Compliance&lt;/td&gt;&lt;td style='padding:2px 4px;'&gt;SOC 2, CSV&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="610" y="50" width="245" height="95" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT COLUMN: SOURCES -->
-        <mxCell id="lbl_sources_top" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="15" y="235" width="55" height="16" as="geometry" />
-        </mxCell>
-        <mxCell id="box_sources" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="255" width="50" height="170" as="geometry" />
-        </mxCell>
-        <mxCell id="src_cyl1" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="24" y="266" width="32" height="32" as="geometry" /></mxCell>
-        <mxCell id="src_files" value="" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=8;fillColor=#F1F5F9;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="22" y="312" width="18" height="26" as="geometry" /></mxCell>
-        <mxCell id="src_cyl_mid" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=3;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="42" y="318" width="18" height="20" as="geometry" /></mxCell>
-        <mxCell id="src_cyl3" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="24" y="360" width="32" height="32" as="geometry" /></mxCell>
-        <mxCell id="lbl_sources_bottom" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="15" y="430" width="55" height="16" as="geometry" />
+        <!-- LAYER 2: THE WAR ROOM & LIVE EXECUTION (CENTER ROW) -->
+        <mxCell id="box_layer2_label" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;LAYER 2 (Center):&lt;br/&gt;THE WAR ROOM &amp;amp;&lt;br/&gt;LIVE EXECUTION&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;(Opsgenie Integration)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="15" y="155" width="115" height="150" as="geometry"/>
         </mxCell>
 
-        <!-- Connector: Sources to Prerequisite -->
-        <mxCell id="arr_sources_elt" value="ELT/&lt;br/&gt;Streaming" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=10;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_prereq_dim">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- TOP BAR OF LAYER 2 -->
+        <mxCell id="box_comm_channel" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:8.5px;color:#0F172A;'&gt;Live Comm Channel&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;(Slack/Teams)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="250" y="148" width="105" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_war_room_title" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10.5px;color:#1E40AF;'&gt;Enterprise War Room (Day-1 Cutover)&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="365" y="148" width="195" height="35" as="geometry"/>
         </mxCell>
 
-        <!-- Prerequisite: Dimensional Data Model Box -->
-        <mxCell id="box_prereq_dim" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;Prerequisite:&lt;br/&gt;Dimensional&lt;br/&gt;Data Model&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#475569;'&gt;(from user)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="120" y="295" width="125" height="85" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_prereq_to_pillar" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_prereq_dim" target="pillar_data_lifecycle"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Vertical Pillar: Data Lifecycle & Pipeline (Reliability) -->
-        <mxCell id="pillar_data_lifecycle" value="Pillar: Data Lifecycle &amp;amp; Pipeline (Reliability)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;fontStyle=1;fontSize=12.5;direction=south;horizontal=0;spacing=6;" vertex="1" parent="1">
-          <mxGeometry x="255" y="165" width="34" height="440" as="geometry" />
+        <!-- OPSGENIE INTEGRATION ENGINE -->
+        <mxCell id="box_opsgenie" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:18px;'&gt;🚨 📱&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#1E40AF;'&gt;Opsgenie&lt;br/&gt;Integration Engine&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+          <mxGeometry x="140" y="195" width="80" height="95" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors from Pillar to Medallion Tiers -->
-        <mxCell id="arr_pillar_to_bronze" value="Query" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=10;fontStyle=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points"><mxPoint x="305" y="235" /></Array>
-            <mxPoint x="290" y="235" />
-            <mxPoint x="318" y="235" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="arr_pillar_to_silver" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points"><mxPoint x="305" y="375" /></Array>
-            <mxPoint x="290" y="375" />
-            <mxPoint x="318" y="375" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="arr_pillar_to_gold" value="Primate&lt;br/&gt;prerequs" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9.5;fontStyle=1;align=center;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points"><mxPoint x="305" y="525" /></Array>
-            <mxPoint x="290" y="525" />
-            <mxPoint x="318" y="525" />
-          </mxGeometry>
+        <!-- MINUTE-BY-MINUTE EXECUTION SCRIPT CONTAINER -->
+        <mxCell id="box_execution_script" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;MINUTE-BY-MINUTE EXECUTION SCRIPT&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="235" y="190" width="375" height="115" as="geometry"/>
         </mxCell>
 
-        <!-- CENTER ZONE: MEDALLION ARCHITECTURE MAPPING (Dashed Outer Box) -->
-        <mxCell id="box_medallion_outer" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="305" y="165" width="410" height="440" as="geometry" />
+        <!-- 5 STEP CARDS -->
+        <mxCell id="step1_card" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:16px;'&gt;🔍&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;1. Data&lt;br/&gt;Migration/&lt;br/&gt;ETL Verified&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="242" y="215" width="68" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_medallion_top" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Medallion architecture mapping&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="312" y="168" width="220" height="18" as="geometry" />
+        <mxCell id="step2_card" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:16px;'&gt;🌐&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;2. Cloud DNS&lt;br/&gt;Update&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:6.5px;color:#64748B;'&gt;(Global LB)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="314" y="215" width="68" height="80" as="geometry"/>
         </mxCell>
-
-        <!-- 1. BRONZE LAKEHOUSE (RAW) -->
-        <mxCell id="tier_bronze" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=#EF4444;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="318" y="190" width="385" height="110" as="geometry" />
+        <mxCell id="step3_card" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:16px;'&gt;⚛️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;3. MFE&lt;br/&gt;Orchestration&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:6.5px;color:#64748B;'&gt;&amp;amp; Live Mount&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="386" y="215" width="68" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="bronze_title" value="&lt;div style='display:flex;align-items:center;'&gt;&lt;span style='background:#DC2626;color:#FFFFFF;border-radius:6px;padding:1px 5px;font-size:10px;font-weight:900;margin-right:5px;'&gt;≡&lt;/span&gt;&lt;b style='font-size:13px;color:#000000;'&gt;Bronze Lakehouse (Raw)&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="325" y="194" width="240" height="20" as="geometry" />
+        <mxCell id="step4_card" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:16px;'&gt;✨&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;4. Vertex AI&lt;br/&gt;Agent Online&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="458" y="215" width="68" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="cyl_bronze_raw" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#EF4444;strokeColor=#DC2626;" vertex="1" parent="1">
-          <mxGeometry x="340" y="222" width="38" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_bronze_raw" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Raw Zone&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="330" y="270" width="60" height="15" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_cdc_raw" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Change Data Capture&lt;br/&gt;(CDC) - Raw&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#475569;'&gt;Inbound raw data&lt;br/&gt;(CDC / Streaming)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="388" y="218" width="120" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_bronze_bucket" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#DC2626;strokeColor=#991B1B;" vertex="1" parent="1">
-          <mxGeometry x="510" y="224" width="34" height="38" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_bronze_to_bq" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="550" y="242" />
-            <mxPoint x="575" y="242" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="icon_bq_bronze" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:bar-chart-3.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9.5px;font-weight:700;color:#0F172A;'&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="575" y="220" width="52" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gcs_bronze" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9.5px;font-weight:700;color:#0F172A;'&gt;GCS&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="635" y="220" width="52" height="48" as="geometry" />
+        <mxCell id="step5_card" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:16px;'&gt;📊&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#0F172A;'&gt;5. Real-Time&lt;br/&gt;Observability&lt;br/&gt;Check&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="530" y="215" width="72" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Downward Transition: Bronze to Silver -->
-        <mxCell id="arr_bronze_to_silver" value="CDC-based de-duplication, cleansing,&lt;br/&gt;schema standardization and logical validation" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9.5;align=center;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="525" y="300" />
-            <mxPoint x="525" y="338" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lbl_quertiny" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Quertiny&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="535" y="308" width="60" height="16" as="geometry" />
+        <mxCell id="edge_opsgenie_step1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="220" y="245" as="sourcePoint"/><mxPoint x="242" y="245" as="targetPoint"/></mxGeometry>
         </mxCell>
 
-        <!-- 2. SILVER LAKEHOUSE (CLEANSED) -->
-        <mxCell id="tier_silver" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="318" y="338" width="385" height="110" as="geometry" />
+        <!-- CUTOVER SUCCESS RHOMBUS -->
+        <mxCell id="rhombus_cutover" value="&lt;div style='text-align:center;font-size:8px;color:#0F172A;'&gt;&lt;b&gt;Cutover&lt;br/&gt;Success&lt;br/&gt;Verified?&lt;/b&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="625" y="222" width="65" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="silver_title" value="&lt;div style='display:flex;align-items:center;'&gt;&lt;span style='background:#2563EB;color:#FFFFFF;border-radius:6px;padding:1px 5px;font-size:10px;font-weight:900;margin-right:5px;'&gt;≡&lt;/span&gt;&lt;b style='font-size:13px;color:#000000;'&gt;Silver Lakehouse (Cleansed)&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="325" y="342" width="240" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="cyl_silver_staged" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#3B82F6;strokeColor=#1D4ED8;" vertex="1" parent="1">
-          <mxGeometry x="340" y="370" width="38" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_silver_staged" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Staged&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="330" y="418" width="60" height="15" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dataflow_silver" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Dataflow&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#475569;'&gt;Data transformation,&lt;br/&gt;cleansing, alignment&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="388" y="366" width="120" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_silver_bucket" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#2563EB;strokeColor=#1E40AF;" vertex="1" parent="1">
-          <mxGeometry x="510" y="372" width="34" height="38" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_silver_to_bq" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="550" y="390" />
-            <mxPoint x="575" y="390" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="icon_bq_silver" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:bar-chart-3.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9.5px;font-weight:700;color:#0F172A;'&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="575" y="368" width="52" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gcs_silver" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9.5px;font-weight:700;color:#0F172A;'&gt;GCS&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="635" y="368" width="52" height="48" as="geometry" />
+        <mxCell id="edge_step5_rhombus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="602" y="255" as="sourcePoint"/><mxPoint x="625" y="255" as="targetPoint"/></mxGeometry>
         </mxCell>
 
-        <!-- Downward Transition: Silver to Gold -->
-        <mxCell id="arr_silver_to_gold" value="Aggregation, advanced business logic, advanced&lt;br/&gt;analytics modelling, and reporting readiness" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9.5;align=center;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="525" y="448" />
-            <mxPoint x="525" y="485" />
-          </mxGeometry>
+        <!-- ROLLBACK LOGIC RED BOX -->
+        <mxCell id="box_rollback" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#DC2626;'&gt;ROLLBACK LOGIC&lt;/b&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#991B1B;'&gt;Cutover Failure detected!&lt;/b&gt;&lt;br/&gt;&lt;b style='font-size:8px;color:#DC2626;'&gt;EXECUTE AUTOMATED ROLLBACK SCRIPT&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;• DNS fallback&lt;br/&gt;• MFE rollback&lt;br/&gt;• Disable AI Agent&lt;br/&gt;• Restore Data snapshots&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="720" y="200" width="220" height="105" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_dataflow_trans" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Dataflow&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="535" y="456" width="60" height="16" as="geometry" />
+        <mxCell id="edge_rhombus_rollback" value="&lt;b style='font-size:8.5px;color:#DC2626;'&gt;NO&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="690" y="255" as="sourcePoint"/><mxPoint x="720" y="255" as="targetPoint"/></mxGeometry>
         </mxCell>
 
-        <!-- 3. GOLD LAKEHOUSE (CURATED) -->
-        <mxCell id="tier_gold" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="318" y="485" width="385" height="95" as="geometry" />
-        </mxCell>
-        <mxCell id="gold_title" value="&lt;div style='display:flex;align-items:center;'&gt;&lt;span style='background:#16A34A;color:#FFFFFF;border-radius:6px;padding:1px 5px;font-size:10px;font-weight:900;margin-right:5px;'&gt;≡&lt;/span&gt;&lt;b style='font-size:13px;color:#000000;'&gt;Gold Lakehouse (Curated)&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="325" y="490" width="240" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="cyl_gold_models" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#16A34A;strokeColor=#15803D;" vertex="1" parent="1">
-          <mxGeometry x="340" y="515" width="38" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dataflow_gold" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Dataflow&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="410" y="518" width="80" height="18" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gold_bucket" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#16A34A;strokeColor=#166534;" vertex="1" parent="1">
-          <mxGeometry x="510" y="516" width="34" height="38" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_gold_to_bq" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="550" y="534" />
-            <mxPoint x="575" y="534" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="icon_bq_gold" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:bar-chart-3.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9.5px;font-weight:700;color:#0F172A;'&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="575" y="512" width="52" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gcs_gold" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9.5px;font-weight:700;color:#0F172A;'&gt;GCS&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="635" y="512" width="52" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_gold_subtext" value="&lt;span style='font-size:9px;color:#334155;'&gt;Analytical models (business-ready datasets)&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Analytical models, business-ready datasets, reporting tables&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="325" y="555" width="370" height="24" as="geometry" />
+        <!-- LAYER 3: POST-LAUNCH DAY-2 OPERATIONS & SUPPORT -->
+        <mxCell id="box_layer3_label" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;POST-LAUNCH&lt;br/&gt;Day-2 OPERATIONS&lt;br/&gt;&amp;amp; SUPPORT&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="15" y="325" width="115" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Bottom Medallion Label -->
-        <mxCell id="lbl_medallion_bottom" value="&lt;b style='font-size:12px;color:#000000;'&gt;Medallion architecture mapping&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="400" y="582" width="220" height="18" as="geometry" />
+        <!-- DYNAMIC DASHBOARDS UI MOCKUP CARD -->
+        <mxCell id="box_dashboards" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Dynamic Dashboards&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:24px;'&gt;📈 📊 📉&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="250" y="325" width="150" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Connector: Medallion to Control Plane -->
-        <mxCell id="arr_medallion_to_cp" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_medallion_outer" target="box_control_plane"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- ACTIVE DATA CONTROL PLANE (Vertical Container) -->
-        <mxCell id="box_control_plane" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="725" y="190" width="85" height="390" as="geometry" />
-        </mxCell>
-        <mxCell id="cp_item1" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:network.svg?color=%232563EB' width='24' height='24'/&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#1E3A8A;font-weight:bold;'&gt;cataloging,&lt;br/&gt;lineage,&lt;br/&gt;quality&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="728" y="200" width="78" height="55" as="geometry" />
-        </mxCell>
-        <mxCell id="cp_item2" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:search.svg?color=%232563EB' width='26' height='26'/&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#0F172A;font-weight:bold;'&gt;Search&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="728" y="295" width="78" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="cp_item3" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:git-graph.svg?color=%232563EB' width='26' height='26'/&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#0F172A;font-weight:bold;'&gt;Lineage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="728" y="380" width="78" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="cp_item4" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield-check.svg?color=%232563EB' width='24' height='24'/&gt;&lt;br/&gt;&lt;span style='font-size:9.5px;color:#0F172A;font-weight:bold;'&gt;Data&lt;br/&gt;Quality&lt;br/&gt;checks&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="728" y="480" width="78" height="52" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_cp_vertical" value="ACTIVE DATA CONTROL PLANE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;direction=south;horizontal=0;fontSize=10.5;fontStyle=1;fontColor=#1E3A8A;spacing=4;" vertex="1" parent="1">
-          <mxGeometry x="788" y="190" width="20" height="390" as="geometry" />
+        <!-- GO-LIVE VERIFICATION SCORECARD -->
+        <mxCell id="box_scorecard" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Go-Live Verification Scorecard&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;Orchestrated Minute-by-Minute Cutover &amp;amp; Rollback logic&lt;br/&gt;verifying technical &amp;amp; logical readiness for launch&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="425" y="325" width="190" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- RIGHT ZONE: CONSUMPTION & SRE -->
-        <mxCell id="persona_looker" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23475569' width='32' height='32'/&gt;&lt;br/&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Looker&lt;br/&gt;dashboards&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="840" y="260" width="80" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="box_monitor_readiness" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Monitor modern data&lt;br/&gt;stack logical &amp;amp;&lt;br/&gt;technical readiness&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="960" y="265" width="165" height="55" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_looker_to_monitor" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="persona_looker" target="box_monitor_readiness"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Analytical Table Card -->
-        <mxCell id="card_analytical_table" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Analytical table&lt;/b&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:area-chart.svg?color=%233B82F6' width='55' height='30' style='margin:2px auto;'/&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#475569;'&gt;Data quality tables,&lt;br/&gt;looker&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="990" y="360" width="115" height="75" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_looker_to_analytical" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#EF4444;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="persona_looker" target="card_analytical_table">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="920" y="400" /></Array></mxGeometry>
-        </mxCell>
-
-        <!-- SRE Persona & Alert -->
-        <mxCell id="persona_sre" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-cog.svg?color=%23475569' width='32' height='32'/&gt;&lt;br/&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;SRE&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="845" y="495" width="65" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_alert_triangle" value="" style="image;html=1;image=https://api.iconify.design/lucide:triangle-alert.svg?color=%23DC2626;" vertex="1" parent="1">
-          <mxGeometry x="880" y="486" width="20" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_sre_alert_looker" value="Alert flow" style="edgeStyle=none;html=1;strokeColor=#DC2626;strokeWidth=1.8;endArrow=classic;endSize=5;fontColor=#DC2626;fontStyle=1;fontSize=10.5;align=center;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="872" y="490" />
-            <mxPoint x="872" y="330" />
-          </mxGeometry>
-        </mxCell>
-
-        <!-- AI/ML Models & Data Engineer -->
-        <mxCell id="card_aiml_models" value="&lt;div style='text-align:center;padding:3px;'&gt;&lt;img src='https://api.iconify.design/lucide:bar-chart-2.svg?color=%23475569' width='26' height='26'/&gt;&lt;br/&gt;&lt;b style='font-size:10.5px;color:#0F172A;'&gt;AI/ML&lt;br/&gt;Models&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;" vertex="1" parent="1">
-          <mxGeometry x="940" y="500" width="65" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_sre_to_aiml" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="persona_sre" target="card_aiml_models"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <mxCell id="persona_data_eng" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%23475569' width='32' height='32'/&gt;&lt;br/&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Data&lt;br/&gt;Engineer&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1035" y="495" width="70" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_aiml_to_eng" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="card_aiml_models" target="persona_data_eng"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="arr_eng_to_analytical" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="persona_data_eng" target="card_analytical_table"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Ingress from Control Plane to Looker & SRE -->
-        <mxCell id="arr_cp_to_looker" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_control_plane" target="persona_looker">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="825" y="290" /></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="arr_cp_to_sre" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_control_plane" target="persona_sre">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="825" y="525" /></Array></mxGeometry>
-        </mxCell>
-
-        <!-- BOTTOM LEFT: COMPLIANCE BADGES -->
-        <mxCell id="logo_gcp_compliance" value="" style="image;html=1;image=https://api.iconify.design/logos:google-cloud.svg;" vertex="1" parent="1">
-          <mxGeometry x="90" y="535" width="32" height="32" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_compliance_hdr" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Compliance&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="68" y="570" width="90" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_soc2" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;SOC&lt;br/&gt;2&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:6.5px;color:#DBEAFE;'&gt;COMPLIANCE&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#1D4ED8;strokeColor=#1E40AF;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="594" width="48" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_21cfr" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:9px;color:#1E293B;'&gt;21 CFR&lt;br/&gt;Part 11&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="72" y="592" width="48" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_gxp" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:11px;color:#78350F;'&gt;GxP&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="128" y="592" width="48" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- BOTTOM RIGHT: LEGEND -->
-        <mxCell id="box_legend" value="&lt;table style='width:100%;font-size:9.5px;color:#0F172A;'&gt;&lt;tr&gt;&lt;td colspan='2' style='text-align:center;font-weight:bold;padding-bottom:3px;'&gt;Legend&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='width:20px;vertical-align:middle;'&gt;&lt;div style='width:18px;height:10px;border:1.2px solid #94A3B8;border-radius:2px;'&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='padding-left:4px;'&gt;→ Solid Synch Flow&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='vertical-align:middle;'&gt;&lt;div style='width:14px;height:14px;border-radius:50%;background:#EFF6FF;border:1px solid #3B82F6;'&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style='padding-left:4px;'&gt;⟷ Async Flow&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='vertical-align:middle;'&gt;&lt;span style='background:#2563EB;color:#FFFFFF;border-radius:6px;padding:0 3px;font-size:8.5px;font-weight:bold;'&gt;≡&lt;/span&gt;&lt;/td&gt;&lt;td style='padding-left:4px;'&gt;&lt;span style='color:#DC2626;font-weight:bold;'&gt;→ Alert flow&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='vertical-align:middle;'&gt;&lt;span style='font-size:9px;'&gt;Icon&lt;/span&gt;&lt;/td&gt;&lt;td style='padding-left:4px;'&gt;&lt;img src='https://api.iconify.design/lucide:sparkles.svg?color=%2316A34A' width='12' height='12'/&gt; Prerequisites&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=left;spacingLeft=6;" vertex="1" parent="1">
-          <mxGeometry x="900" y="555" width="270" height="90" as="geometry" />
+        <!-- LEGEND (BOTTOM RIGHT) -->
+        <mxCell id="box_legend" value="&lt;div style='font-size:8px;color:#1E293B;line-height:1.4;'&gt;&lt;b style='font-size:8.5px;'&gt;Legend&lt;/b&gt;&lt;br/&gt;➡️ &lt;b&gt;Line styles&lt;/b&gt;&lt;br/&gt;👤 &lt;b&gt;Personas&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="640" y="325" width="150" height="75" as="geometry"/>
         </mxCell>
 
       </root>
     </mxGraphModel>
   </diagram>
 </mxfile>
-  `.trim();
-}
-
-
-/**
- * 🏛️ BLUEPRINT: WBS 3.1.5 Data & AI Pipeline Architecture (To-Be State)
- * Exact Replica of Reference Artifact media_1786215787805.png
- */
-export function getExactDataAiPipelineWbsXml(): string {
-  return `
-<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="data_ai_pipeline_wbs" name="Data &amp; AI Pipeline Architecture (To-Be State)">
-    <mxGraphModel dx="1200" dy="640" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="640" background="#FFFFFF">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-
-        <!-- TOP BANNER PILL -->
-        <mxCell id="banner_pill" value="" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#BFDBFE;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="10" width="1170" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="banner_title" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;Blueprint ID: Data &amp;amp;. Data &amp;amp; AI Pipeline Architecture (To-Be State)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="10" width="650" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="banner_gcp" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:24px;vertical-align:middle;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:4px;'&gt;&lt;b style='font-size:14px;color:#334155;'&gt;Google Cloud&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="815" y="10" width="140" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="banner_wbs" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;WBS 3.1.5&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="10" width="110" height="42" as="geometry" />
-        </mxCell>
-
-        <!-- TOP METADATA ROW -->
-        <mxCell id="top_icons" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2316A34A' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:file-search.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round-check.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:info.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="510" y="70" width="110" height="30" as="geometry" />
-        </mxCell>
-
-        <!-- Metadata Card 1 -->
-        <mxCell id="meta_card_1" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Persona (Creator):&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; 3. Data Architect&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Target Audience:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Data Gov Leads&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Target Audience:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; MLOps, Data Sci.&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Update Freq:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Per Quarterly&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Usage:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; High&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;spacingLeft=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
-          <mxGeometry x="635" y="60" width="190" height="75" as="geometry" />
-        </mxCell>
-
-        <!-- Project Plan Foundation Badge -->
-        <mxCell id="meta_ppf_badge" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:28px;vertical-align:middle;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='24' height='24'/&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:4px;'&gt;&lt;b style='font-size:12.5px;color:#0F172A;line-height:1.1;'&gt;Project Plan&lt;br/&gt;Foundation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="70" width="135" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Metadata Card 2 -->
-        <mxCell id="meta_card_2" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Creator:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Project Plan Foundation&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Tech Stack:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Modern Data Stack (Vertex Pipelines)&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Compliance:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; NIST AI RMF&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Update Freq:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Per Release&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Usage:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; High&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;spacingLeft=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
-          <mxGeometry x="980" y="60" width="200" height="75" as="geometry" />
-        </mxCell>
-
-        <!-- LEFT COLUMN: SOURCES -->
-        <mxCell id="lbl_src_top" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="15" y="240" width="55" height="16" as="geometry" />
-        </mxCell>
-        <mxCell id="box_sources" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="260" width="48" height="165" as="geometry" />
-        </mxCell>
-        <mxCell id="src_cyl1" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="23" y="270" width="32" height="32" as="geometry"/></mxCell>
-        <mxCell id="src_files" value="" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=8;fillColor=#F1F5F9;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="21" y="316" width="18" height="26" as="geometry"/></mxCell>
-        <mxCell id="src_cyl_mid" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=3;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="41" y="322" width="18" height="20" as="geometry"/></mxCell>
-        <mxCell id="src_cyl3" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="23" y="364" width="32" height="32" as="geometry"/></mxCell>
-
-        <!-- INGESTION TO FEATURE STORES (Yellow Containers) -->
-        <mxCell id="box_ingest_top" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="110" y="165" width="115" height="95" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_ingest_top" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Raw Ingestion to&lt;br/&gt;Feature Stores&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="112" y="168" width="110" height="26" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_dataflow" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:26px;height:26px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:git-branch.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;Dataflow&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="118" y="200" width="46" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_pubsub" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:26px;height:26px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:share-2.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;Pub/Sub&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="170" y="200" width="46" height="42" as="geometry" />
-        </mxCell>
-
-        <!-- Bottom Yellow Box -->
-        <mxCell id="box_ingest_bot" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="110" y="325" width="115" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_bronze_cyl" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#FFFFFF;strokeColor=#94A3B8;" vertex="1" parent="1">
-          <mxGeometry x="122" y="345" width="32" height="36" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_bronze_lh" value="&lt;b style='font-size:8.5px;color:#0F172A;'&gt;Bronze&lt;br/&gt;Lakehouse&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="114" y="385" width="48" height="24" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_feature_store" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:git-graph.svg?color=%232563EB' width='24' height='24'/&gt;&lt;br/&gt;&lt;b style='font-size:8.5px;color:#0F172A;'&gt;Feature&lt;br/&gt;Store&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="168" y="345" width="48" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Connecting Arrows for Ingestion -->
-        <mxCell id="arr_src_to_ingest1" value="ELT/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_ingest_top">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_src_to_ingest2" value="ELT/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_ingest_bot">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_top_to_bot_ingest" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_ingest_top" target="box_ingest_bot"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="arr_ingest_to_pillar" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_ingest_bot" target="pillar_mlops"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Vertical Pillar: MLOps & Feature Eng. -->
-        <mxCell id="pillar_mlops" value="Pillar: MLOps &amp;amp; Feature Eng. (Operational Excellence)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;fontStyle=1;fontSize=12;direction=south;horizontal=0;spacing=6;" vertex="1" parent="1">
-          <mxGeometry x="245" y="165" width="34" height="440" as="geometry" />
-        </mxCell>
-
-        <!-- Connector: Pillar to Vertex Pipelines -->
-        <mxCell id="arr_pillar_to_vertex" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="pillar_mlops" target="box_vertex_pipelines"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- CENTER ZONE: PURPOSE: MODEL PIPELINES (MLOps Orchestration) -->
-        <mxCell id="box_pipelines_outer" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="295" y="165" width="460" height="440" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_pipelines_top" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;Purpose: Model Pipelines (MLOps Orchestration)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="305" y="168" width="320" height="18" as="geometry" />
-        </mxCell>
-
-        <!-- Vertex Pipelines Container -->
-        <mxCell id="box_vertex_pipelines" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="305" y="190" width="265" height="375" as="geometry" />
-        </mxCell>
-        <mxCell id="vertex_title" value="&lt;div style='text-align:center;'&gt;&lt;span style='background:#2563EB;color:#FFFFFF;border-radius:6px;padding:1px 5px;font-size:9.5px;font-weight:bold;margin-right:4px;'&gt;≡&lt;/span&gt;&lt;b style='font-size:12px;color:#000000;'&gt;Vertex Pipelines&lt;br/&gt;(MLOps Orchestration)&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="315" y="196" width="245" height="32" as="geometry" />
-        </mxCell>
-
-        <!-- 3 Vertical Columns inside Vertex Pipelines -->
-        <!-- Col 1: Feature Retrieval -->
-        <mxCell id="col_feature_retrieval" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="312" y="235" width="75" height="270" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_fr_title" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Feature&lt;br/&gt;Retrieval&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;'&gt;prerequisites&lt;br/&gt;from feature&lt;br/&gt;store&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="314" y="240" width="71" height="55" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gcs_fr" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9px;font-weight:700;color:#0F172A;'&gt;Cloud&lt;br/&gt;Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="322" y="375" width="55" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Col 2: Data Splitting & Transform -->
-        <mxCell id="col_data_splitting" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="395" y="235" width="75" height="270" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_ds_title" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Data&lt;br/&gt;Splitting&lt;br/&gt;&amp;amp; Transform&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="397" y="240" width="71" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gcs_ds" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9px;font-weight:700;color:#0F172A;'&gt;Cloud&lt;br/&gt;Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="405" y="375" width="55" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_red_bucket_ds" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#DC2626;strokeColor=#991B1B;" vertex="1" parent="1">
-          <mxGeometry x="417" y="450" width="30" height="34" as="geometry" />
-        </mxCell>
-
-        <!-- Col 3: Model Training -->
-        <mxCell id="col_model_training" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="478" y="235" width="85" height="270" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_mt_title" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Model&lt;br/&gt;Training&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="480" y="240" width="81" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_mt_doc" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:file-text.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="500" y="295" width="40" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_mt_tables1" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:table.svg?color=%232563EB' width='32' height='32'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="495" y="375" width="50" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_mt_tables2" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:table.svg?color=%232563EB' width='32' height='32'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="495" y="445" width="50" height="40" as="geometry" />
-        </mxCell>
-
-        <!-- Horizontal Connectors inside Vertex Pipelines -->
-        <mxCell id="arr_fr_to_ds" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_feature_retrieval" target="col_data_splitting"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="arr_ds_to_mt" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_data_splitting" target="col_model_training"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="lbl_model_eval" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Model&lt;br/&gt;Evaluation&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="480" y="520" width="80" height="24" as="geometry" />
-        </mxCell>
-
-        <!-- Dataplex Card (Top Right of Center) -->
-        <mxCell id="box_dataplex" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="585" y="190" width="105" height="195" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dataplex_top" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:network.svg?color=%232563EB' width='22' height='22'/&gt;&lt;br/&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Dataplex&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="588" y="195" width="98" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dp_search" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:9px;color:#475569;'&gt;search&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:search.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="590" y="245" width="95" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dp_lineage" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:9px;color:#475569;'&gt;lineage&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:git-graph.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="590" y="300" width="95" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dp_discovery" value="&lt;span style='font-size:9px;color:#0F172A;font-weight:bold;'&gt;Data&lt;br/&gt;Cataloging&lt;br/&gt;&amp;amp; Discovery&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="525" y="265" width="60" height="40" as="geometry" />
-        </mxCell>
-
-        <!-- Model Registry (Vertex AI) Card -->
-        <mxCell id="box_model_registry" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="555" y="405" width="145" height="175" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_mr_title" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Model Registry&lt;br/&gt;(Vertex AI)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="560" y="410" width="135" height="28" as="geometry" />
-        </mxCell>
-        <mxCell id="mr_trained_models" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:9px;color:#475569;font-weight:bold;'&gt;Trained&lt;br/&gt;models&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:shield-check.svg?color=%232563EB' width='22' height='22' style='margin:2px auto;'/&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:line-chart.svg?color=%232563EB' width='45' height='25'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="565" y="445" width="125" height="125" as="geometry" />
-        </mxCell>
-
-        <!-- Connector: Model Training to Model Registry -->
-        <mxCell id="arr_mt_to_mr" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_model_training" target="box_model_registry"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Vertical ACTIVE DATA CONTROL PLANE bar -->
-        <mxCell id="bar_adcp" value="ACTIVE DATA CONTROL PLANE" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1;fontSize=10;fontStyle=1;fontColor=#1E3A8A;direction=south;horizontal=0;spacing=4;" vertex="1" parent="1">
-          <mxGeometry x="710" y="190" width="25" height="390" as="geometry" />
-        </mxCell>
-
-        <!-- RIGHT: MODEL DEPLOYMENT & CONSUMPTION -->
-        <mxCell id="box_model_deployment" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="745" y="190" width="105" height="390" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_md_top" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Model&lt;br/&gt;Deployment&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="748" y="196" width="98" height="32" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_md_large" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:52px;height:52px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:cpu.svg?color=%23FFFFFF' width='32' height='32'/&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="752" y="340" width="90" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_md_bot" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Model&lt;br/&gt;Deployment&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="748" y="445" width="98" height="30" as="geometry" />
-        </mxCell>
-
-        <!-- Connector: Registry to Deployment -->
-        <mxCell id="arr_mr_to_md" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_model_registry" target="box_model_deployment"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Governance Line -->
-        <mxCell id="line_gov_dashed" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#EF4444;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="880" y="270" /><mxPoint x="880" y="600" /></mxGeometry>
-        </mxCell>
-        <mxCell id="icon_gov_shield" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield-check.svg?color=%232563EB' width='28' height='28'/&gt;&lt;br/&gt;&lt;span style='font-size:9.5px;color:#0F172A;font-weight:bold;'&gt;Serverless&lt;br/&gt;query&lt;br/&gt;governance&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="840" y="375" width="80" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gov_lock" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:24px;height:24px;background:#EF4444;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:lock.svg?color=%23FFFFFF' width='14' height='14'/&gt;&lt;/div&gt;&lt;span style='font-size:9px;color:#DC2626;font-weight:bold;'&gt;Policy&lt;br/&gt;enforcement&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="845" y="525" width="70" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Consumption Yellow Pillar -->
-        <mxCell id="box_consumption" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="930" y="225" width="75" height="375" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_consumption_hdr" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Consumption:&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;color:#334155;'&gt;Monitor AI pipeline&lt;br/&gt;performance &amp;amp;&lt;br/&gt;model drift&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="900" y="175" width="135" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="c_mlops_lead" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2392400E' width='28' height='28'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;MLOps&lt;br/&gt;Lead&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="935" y="240" width="65" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="c_looker" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='24' height='24'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Looker&lt;br/&gt;Dashboards&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="935" y="325" width="65" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="c_aiml" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:brain.svg?color=%232563EB' width='28' height='28'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;AI/ML&lt;br/&gt;models&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="935" y="420" width="65" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="c_data_sci" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%230284C7' width='28' height='28'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Data&lt;br/&gt;Scientist&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="935" y="520" width="65" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Connector: Deployment to Consumption -->
-        <mxCell id="arr_md_to_consumption" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_model_deployment" target="box_consumption"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- BOTTOM LEFT COMPLIANCE BADGES -->
-        <mxCell id="logo_gcp_comp" value="" style="image;html=1;image=https://api.iconify.design/logos:google-cloud.svg;" vertex="1" parent="1">
-          <mxGeometry x="90" y="535" width="32" height="32" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_comp_hdr" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Compliance&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="68" y="570" width="90" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_nist" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:10px;color:#FFFFFF;'&gt;NIST&lt;br/&gt;AI RMF&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#1D4ED8;strokeColor=#1E40AF;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="594" width="48" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_21cfr_2" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:9px;color:#1E293B;'&gt;21 CFR&lt;br/&gt;Part 11&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="72" y="592" width="48" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_gxp_2" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:11px;color:#78350F;'&gt;GxP&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="128" y="592" width="48" height="50" as="geometry" />
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-  `.trim();
-}
-
-
-/**
- * 🏛️ BLUEPRINT: WBS 3.1.2 GCP Enterprise Data Lakehouse (To-Be State)
- * Exact Replica of Reference Artifact media_1786215837222.png
- */
-export function getExactGcpDataLakehouseWbsXml(): string {
-  return `
-<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="lakehouse_wbs" name="GCP Enterprise Data Lakehouse (To-Be State)">
-    <mxGraphModel dx="1200" dy="640" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="640" background="#FFFFFF">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-
-        <!-- TOP BANNER PILL -->
-        <mxCell id="banner_pill" value="" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#BFDBFE;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="10" width="1170" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="banner_title" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;Blueprint ID: tech_data_lakehouse_gcp - GCP Enterprise Data Lakehouse (To-Be State)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="10" width="750" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="banner_wbs" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;WBS 3.1.2&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="10" width="110" height="42" as="geometry" />
-        </mxCell>
-
-        <!-- TOP METADATA ROW -->
-        <mxCell id="top_icons" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2316A34A' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:file-search.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round-check.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:info.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="280" y="70" width="110" height="30" as="geometry" />
-        </mxCell>
-
-        <!-- Metadata Card -->
-        <mxCell id="meta_card_1" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Persona (Creator):&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; 3. Data Architect&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Target Audience:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Data Gov Leads&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Effort:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; High&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Update Freq:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Quarterly&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Usage:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; High&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;spacingLeft=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
-          <mxGeometry x="420" y="60" width="200" height="75" as="geometry" />
-        </mxCell>
-
-        <!-- LEFT COLUMN: SOURCES -->
-        <mxCell id="lbl_src_top" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="15" y="240" width="55" height="16" as="geometry" />
-        </mxCell>
-        <mxCell id="box_sources" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="260" width="48" height="165" as="geometry" />
-        </mxCell>
-        <mxCell id="src_cyl1" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="23" y="270" width="32" height="32" as="geometry"/></mxCell>
-        <mxCell id="src_files" value="" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=8;fillColor=#F1F5F9;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="21" y="316" width="18" height="26" as="geometry"/></mxCell>
-        <mxCell id="src_cyl_mid" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=3;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="41" y="322" width="18" height="20" as="geometry"/></mxCell>
-        <mxCell id="src_cyl3" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="23" y="364" width="32" height="32" as="geometry"/></mxCell>
-
-        <!-- INGESTION: AWS S3 & Data Transfer Service (Yellow Containers) -->
-        <mxCell id="box_prereq_s3" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="110" y="165" width="125" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_prereq_s3" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Prerequisite:&lt;br/&gt;4. AWS Data Lake&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="112" y="168" width="120" height="26" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_aws_s3_top" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:aws-s3.svg' width='26' height='26'/&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;AWS&lt;br/&gt;S3&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="118" y="202" width="45" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gcs_top" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='14' height='14'/&gt;&lt;/div&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;GCS&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="178" y="202" width="45" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_s3_to_gcs" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="icon_aws_s3_top" target="icon_gcs_top"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- Bottom Yellow Box -->
-        <mxCell id="box_s3_dts" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="110" y="325" width="125" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_aws_s3_bot" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:aws-s3.svg' width='26' height='26'/&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;AWS&lt;br/&gt;S3&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="118" y="345" width="45" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_dts_bot" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:database-zap.svg?color=%232563EB' width='24' height='24'/&gt;&lt;br/&gt;&lt;span style='font-size:8px;font-weight:700;color:#0F172A;'&gt;Data&lt;br/&gt;Transfer&lt;br/&gt;Service&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="172" y="340" width="55" height="55" as="geometry" />
-        </mxCell>
-
-        <!-- Connecting Arrows for Ingestion -->
-        <mxCell id="arr_src_to_s3_top" value="ELT/Batch/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=8.5;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_prereq_s3">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_src_to_s3_bot" value="ELT/Batch/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=8.5;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_s3_dts">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="arr_top_s3_to_bot" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_prereq_s3" target="box_s3_dts"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="arr_dts_to_pillar" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_s3_dts" target="pillar_storage"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Vertical Pillar: Data Storage & Lakehouse -->
-        <mxCell id="pillar_storage" value="Pillar: Data Storage &amp;amp; Lakehouse (Reliability)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;fontStyle=1;fontSize=12;direction=south;horizontal=0;spacing=6;" vertex="1" parent="1">
-          <mxGeometry x="245" y="165" width="34" height="440" as="geometry" />
-        </mxCell>
-
-        <!-- Connector: Pillar to GCS Container -->
-        <mxCell id="arr_pillar_to_gcs" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="pillar_storage" target="box_gcs_container"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- CENTER ZONE: PURPOSE: MULTI-TIER OBJECT STORAGE, CATALOGING -->
-        <mxCell id="box_lakehouse_outer" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="295" y="165" width="460" height="440" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_lakehouse_top" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;Purpose: Multi-tier object storage, cataloging&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="305" y="168" width="320" height="18" as="geometry" />
-        </mxCell>
-
-        <!-- Cloud Storage (GCS) Container -->
-        <mxCell id="box_gcs_container" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="305" y="190" width="265" height="375" as="geometry" />
-        </mxCell>
-        <mxCell id="gcs_title" value="&lt;div style='text-align:center;'&gt;&lt;span style='background:#2563EB;color:#FFFFFF;border-radius:6px;padding:1px 5px;font-size:9.5px;font-weight:bold;margin-right:4px;'&gt;≡&lt;/span&gt;&lt;b style='font-size:12px;color:#000000;'&gt;Cloud Storage (GCS)&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="315" y="196" width="245" height="32" as="geometry" />
-        </mxCell>
-
-        <!-- 3 Vertical Columns inside GCS -->
-        <!-- Col 1: Raw Zone -->
-        <mxCell id="col_raw_zone" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="312" y="235" width="75" height="270" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_raw_zone_title" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Raw Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;'&gt;(Unstructured,&lt;br/&gt;Cold)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="314" y="240" width="71" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gcs_raw" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9px;font-weight:700;color:#0F172A;'&gt;Cloud&lt;br/&gt;Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="322" y="375" width="55" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Col 2: Staging Zone -->
-        <mxCell id="col_staging_zone" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="395" y="235" width="75" height="270" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_staging_title" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Staging&lt;br/&gt;Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;'&gt;(Semi-&lt;br/&gt;structured, Hot)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="397" y="240" width="71" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gcs_staging" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9px;font-weight:700;color:#0F172A;'&gt;Cloud&lt;br/&gt;Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="405" y="375" width="55" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_red_bucket_stg" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#DC2626;strokeColor=#991B1B;" vertex="1" parent="1">
-          <mxGeometry x="417" y="450" width="30" height="34" as="geometry" />
-        </mxCell>
-
-        <!-- Col 3: Curated Zone -->
-        <mxCell id="col_curated_zone" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="478" y="235" width="85" height="270" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_curated_title" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Curated Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;'&gt;(Structured,&lt;br/&gt;Datasets)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="480" y="240" width="81" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_curated_doc" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:file-text.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="500" y="295" width="40" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_curated_tables1" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:table.svg?color=%232563EB' width='32' height='32'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="495" y="375" width="50" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_curated_tables2" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:table.svg?color=%232563EB' width='32' height='32'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="495" y="445" width="50" height="40" as="geometry" />
-        </mxCell>
-
-        <!-- Horizontal Connectors inside GCS -->
-        <mxCell id="arr_raw_to_staging" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_raw_zone" target="col_staging_zone"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="arr_staging_to_curated" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_staging_zone" target="col_curated_zone"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Dataplex Card (Top Right of Center) -->
-        <mxCell id="box_dataplex" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="585" y="190" width="105" height="195" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dataplex_top" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:network.svg?color=%232563EB' width='22' height='22'/&gt;&lt;br/&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Dataplex&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="588" y="195" width="98" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dp_search" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:9px;color:#475569;'&gt;search&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:search.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="590" y="245" width="95" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_dp_lineage" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:9px;color:#475569;'&gt;lineage&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:git-graph.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="590" y="300" width="95" height="45" as="geometry" />
-        </mxCell>
-
-        <!-- Prerequisite: Dimensional Data Model Card (Bottom Center) -->
-        <mxCell id="box_prereq_dim_model" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="560" y="415" width="145" height="150" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_pdm_title" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Prerequisite:&lt;br/&gt;Dimensional Data Model&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="565" y="420" width="135" height="28" as="geometry" />
-        </mxCell>
-        <mxCell id="star_schema_graphic" value="&lt;table style='width:100%;font-size:7.5px;'&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td style='background:#FEE2E2;border:1px solid #EF4444;text-align:center;padding:1px;'&gt;Facts&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='background:#F1F5F9;border:1px solid #94A3B8;text-align:center;padding:1px;'&gt;Facts&lt;/td&gt;&lt;td style='text-align:center;'&gt;&lt;span style='color:#EAB308;font-size:18px;'&gt;★&lt;/span&gt;&lt;/td&gt;&lt;td style='background:#DBEAFE;border:1px solid #3B82F6;text-align:center;padding:1px;'&gt;Dimension&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='background:#DCFCE7;border:1px solid #16A34A;text-align:center;padding:1px;'&gt;Dimension&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td style='background:#DCFCE7;border:1px solid #16A34A;text-align:center;padding:1px;'&gt;Dimension&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="565" y="455" width="135" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- BigQuery & BigQuery Omni Container -->
-        <mxCell id="box_bigquery_omni" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="745" y="190" width="100" height="390" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_bq_top" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;BigQuery &amp;amp;&lt;br/&gt;BigQuery Omni&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="748" y="196" width="94" height="32" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_bq_large" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:52px;height:52px;background:#2563EB;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:bar-chart-3.svg?color=%23FFFFFF' width='32' height='32'/&gt;&lt;/div&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;BigQuery&lt;br/&gt;&amp;amp; BigQuery&lt;br/&gt;Omni&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="750" y="340" width="90" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Connector: Curated Zone & Dim Model to BigQuery -->
-        <mxCell id="arr_curated_to_bq" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="col_curated_zone" target="box_bigquery_omni"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="arr_dim_to_bq" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_prereq_dim_model" target="box_bigquery_omni"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Feedback loop from BigQuery to Raw Zone -->
-        <mxCell id="arr_bq_loop_to_raw" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_bigquery_omni" target="col_raw_zone">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="795" y="605" />
-              <mxPoint x="350" y="605" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Representation: Serverless Query Governance -->
-        <mxCell id="lbl_rep_gov" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Representation:&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;color:#334155;'&gt;Serverless query&lt;br/&gt;governance&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="840" y="175" width="105" height="35" as="geometry" />
-        </mxCell>
-        <mxCell id="line_gov_dashed" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#EF4444;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="895" y="250" /><mxPoint x="895" y="600" /></mxGeometry>
-        </mxCell>
-        <mxCell id="icon_gov_shield" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:shield-check.svg?color=%232563EB' width='28' height='28'/&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#0F172A;font-weight:bold;'&gt;Serverless&lt;br/&gt;query&lt;br/&gt;governance&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="855" y="375" width="80" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="icon_gov_lock" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:24px;height:24px;background:#EF4444;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:lock.svg?color=%23FFFFFF' width='14' height='14'/&gt;&lt;/div&gt;&lt;span style='font-size:9px;color:#DC2626;font-weight:bold;'&gt;Policy&lt;br/&gt;enforcement&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="860" y="525" width="70" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Consumption Yellow Pillar -->
-        <mxCell id="box_consumption" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="955" y="225" width="75" height="375" as="geometry" />
-        </mxCell>
-        <mxCell id="c_looker" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='24' height='24'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Looker&lt;br/&gt;Dashboards&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="960" y="245" width="65" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="c_aiml" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:brain.svg?color=%232563EB' width='28' height='28'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;AI/ML&lt;br/&gt;models&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="960" y="380" width="65" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="c_analysts" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%230284C7' width='28' height='28'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Data&lt;br/&gt;Analysts&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="960" y="500" width="65" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Connector: BigQuery to Consumption -->
-        <mxCell id="arr_bq_to_consumption" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_bigquery_omni" target="box_consumption"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- BOTTOM LEFT COMPLIANCE BADGES -->
-        <mxCell id="logo_gcp_comp" value="" style="image;html=1;image=https://api.iconify.design/logos:google-cloud.svg;" vertex="1" parent="1">
-          <mxGeometry x="90" y="535" width="32" height="32" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_comp_hdr" value="&lt;b style='font-size:14px;color:#0F172A;'&gt;Compliance&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="68" y="570" width="90" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_soc2_3" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:10px;color:#FFFFFF;'&gt;SOC&lt;br/&gt;2&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:6.5px;color:#DBEAFE;'&gt;COMPLIANCE&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#1D4ED8;strokeColor=#1E40AF;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="594" width="48" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_21cfr_3" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:9px;color:#1E293B;'&gt;21 CFR&lt;br/&gt;Part 11&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="72" y="592" width="48" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="badge_gxp_3" value="&lt;table style='width:100%;height:100%;'&gt;&lt;tr&gt;&lt;td style='text-align:center;vertical-align:middle;'&gt;&lt;b style='font-size:11px;color:#78350F;'&gt;GxP&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="128" y="592" width="48" height="50" as="geometry" />
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-  `.trim();
+`.trim();
 }

@@ -35,11 +35,21 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     archType === 'federated_iam_sso' ||
     archType === 'tech_ai_trism_guardrails' ||
     archType === 'tech_micro_frontends' ||
-    archType === 'eval_safety_benchmarking' ||
+    archType === 'data_ai_pipeline' ||
+    archType === 'tech_data_lakehouse_gcp' ||
+    archType === 'tech_modern_data_stack' ||
     archType === 'business_agent_gov_hitl' ||
+    archType === 'business_agent_governance_hitl' ||
+    archType === 'golive_warroom_runbook' ||
+    archType === 'eval_safety_benchmarking' ||
     archType === 'tech_multi_agent_langgraph' ||
     archType === 'tech_agent_harness_runtime' ||
     (xmlInput && (
+      xmlInput.includes('id="data-ai-pipeline-wbs"') ||
+      xmlInput.includes('id="gcp-lakehouse-wbs"') ||
+      xmlInput.includes('id="modern-data-stack-wbs"') ||
+      xmlInput.includes('id="agent-gov-hitl-wbs"') ||
+      xmlInput.includes('id="golive-warroom-wbs"') ||
       xmlInput.includes('pageWidth="1400"') ||
       xmlInput.includes('pageHeight="800"') ||
       xmlInput.includes('id="frame_') ||
