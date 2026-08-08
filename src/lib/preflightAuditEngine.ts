@@ -111,8 +111,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
         /(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title)"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi,
         `$1${defaultHeaderHtml}$2`
       );
-    } else if (archType === 'unified_system_view' || (archType && archType.startsWith('tech_') && !xml.includes('id="col_top"'))) {
-      // 3) Inject clean 2-line Enterprise Governance Header for technical blueprints lacking a header cell
+    } else if (archType === 'unified_system_view') {
+      // 3) Inject clean 2-line Enterprise Governance Header for unified_system_view only
       const injectedHeaderCell = `\n        <mxCell id="main_title_bar_uv" value="${defaultHeaderHtml}" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">\n          <mxGeometry x="15" y="15" width="1570" height="60" as="geometry" />\n        </mxCell>`;
       xml = xml.replace(/(<mxCell\s+id="1"\s+parent="0"\s*\/>)/i, `$1${injectedHeaderCell}`);
     }

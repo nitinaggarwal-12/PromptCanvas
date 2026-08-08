@@ -410,39 +410,10 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getTechnicalArchitectureXml(id || 'tech_serverless_gcp');
   }
 
-  const isFlagshipBlueprint = (
-    id === 'business_agent_gov_hitl' ||
-    id === 'tech_multi_agent_langgraph' ||
-    id === 'tech_c4_system_context' ||
-    id === 'tech_modern_data_stack' ||
-    id === 'tech_event_driven_eda' ||
-    id === 'tech_agent_harness_runtime' ||
-    id === 'tech_serverless_gcp' ||
-    id === 'serverless_gcp' ||
-    id === 'tech_multi_region_dr' ||
-    id === 'multi_region_dr' ||
-    id === 'legacy_dependency_map' ||
-    id === 'six_rs_migration_matrix' ||
-    id === 'hybrid_strangler_transition' ||
-    id === 'cloud_finops_chargeback' ||
-    id === 'ai_coe_operating_model' ||
-    id === 'mcp_context_gateway' ||
-    id === 'logical_ai_config_tenant' ||
-    id === 'hub_and_spoke_agent_config' ||
-    id === 'unified_data_governance' ||
-    id === 'dataops_anomaly_detection' ||
-    id === 'golive_warroom_runbook' ||
-    id === 'enterprise_sre_observability' ||
-    id === 'data_residency_sovereign_map' ||
-    id === 'federated_iam_sso' ||
-    id === 'tech_ai_trism_guardrails' ||
-    id === 'ai_trism_guardrails' ||
-    id === 'tech_micro_frontends' ||
-    id === 'micro_frontends_ui' ||
-    id.includes('agent_harness')
-  );
+  const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
-  if (!isFlagshipBlueprint) {
+  // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor
+  if (hasCustomUserPrompt && !id.includes('agent_harness')) {
     const cleanUseCase = (useCaseContext && !/^\d+\.\s/.test(useCaseContext)) ? useCaseContext : undefined;
     const effectiveContext = cleanUseCase || userPrompt || getTemplateTitle(id);
     xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
