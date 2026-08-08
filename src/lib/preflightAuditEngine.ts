@@ -11,13 +11,21 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   archType: string = 'unified_system_view'
 ): string {
   if (
+    archType === 'tech_multi_region_dr' ||
+    archType === 'tech_serverless_gcp' ||
     archType === 'tech_c4_system_context' ||
     archType === 'tech_modern_data_stack' ||
     archType === 'tech_event_driven_eda' ||
+    archType === 'tech_event_driven_aws' ||
+    archType === 'tech_multi_cloud_dr' ||
+    archType === 'tech_hybrid_cloud' ||
+    archType === 'tech_zero_trust_mesh' ||
     (xmlInput && (
+      xmlInput.includes('id="gcp_multi_region_dr_case_b"') ||
       xmlInput.includes('id="c4_system_context"') ||
       xmlInput.includes('id="modern_data_stack"') ||
-      xmlInput.includes('id="event_driven_eda"')
+      xmlInput.includes('id="event_driven_eda"') ||
+      xmlInput.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR')
     ))
   ) {
     return xmlInput;

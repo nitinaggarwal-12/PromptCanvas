@@ -67,9 +67,9 @@ export function checkDiagramStaleness(
 
   // 2. Check Multi-Region DR GCP Active-Passive Master Template Signatures
   if (archType === 'tech_multi_region_dr' || archType === 'multi_region_dr') {
-    const hasDualRegionGcs = currentXml.includes('Google Cloud Storage (GCS) Multi-Region') || currentXml.includes('dual-region bucket');
+    const hasDualRegionGcs = currentXml.includes('Google Cloud Storage') && (currentXml.includes('dual-region') || currentXml.includes('dual-region bucket'));
     const hasZeroCollisionLayout = currentXml.includes('gcp_low_a_hdr') && currentXml.includes('gtm_hub');
-    const hasPageTwoSla = currentXml.includes('Multi-Region Disaster Recovery SLA Matrix');
+    const hasPageTwoSla = currentXml.includes('DR Playbook') || currentXml.includes('RECOVERY MATRIX') || currentXml.includes('SLA Matrix');
 
     if (!hasDualRegionGcs || !hasZeroCollisionLayout || !hasPageTwoSla) {
       return {
