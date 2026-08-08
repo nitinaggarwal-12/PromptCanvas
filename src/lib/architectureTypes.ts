@@ -223,6 +223,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 2.1.5 Model Context Protocol Gateway (MCP Context Gateway) with Universal Context Ingestion Adapters, MCP Message Bus & Normalization, and Tool Proxies.",
     prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade WBS 2.1.5 Model Context Protocol Gateway (MCP Context Gateway). Include: 5 Ingestion Sources (Database Source Cloud SQL, Object Storage Source Cloud Storage, Vector DB Source Vertex AI Vector Search, Logs Cloud Logging, Legacy Systems) -> Apigee & Looker Studio -> Security & Secret Management (Workload Identity IAM, VPC-SC, Secret Manager) -> Model Context Protocol (MCP) Gateway Node.js/Python (Universal Context Ingestion Adapters, Context Schema Mapping Engine, MCP Message Bus & Normalization with MCP Schemas, SOC 2 Compliance Filtering, IAM Access Control, BigQuery Audit Trail Logging, Tool Proxies & Downstream Integration with Cognitive Arch / Agentic RAG, API Proxy, GCP Service Proxy, Legacy Tool Proxy) -> External API Actionable Tool Systems -> Looker Studio Analytics & Total Unified System View (WBS Context / Platform View & PSO Support) -> Legend."
+  },
+  {
+    id: "logical_ai_config_tenant",
+    name: "Product Plan - Logical AI Config (Tenant Architecture)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "Product Plan: Multi-tenant Logical AI Config architecture modeling environment segregation across Dev/Test/Prod, Agent Designer topologies, and SOC 2 / GxP compliance within Gemini Enterprise.",
+    prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade Product Plan - Logical AI Config (Tenant Architecture) blueprint. Include: App Owners & Devs -> Logical AI Config Management Console & APIs -> Enterprise IAM -> Development, Testing, and Production Environments with Tenant Boundaries -> Platform Orchestrator -> Gemini Enterprise Engine instances -> Production Workspace A with Logical AI Config (Model Selection Gemini 1.5 Pro, System Instructions, Memory & Context Management, Tool Invocation Definitions) and Agent Designer (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents) -> Application Logic invocation -> SOC 2 & GxP Compliance Guardrails -> VPC Firewalls, Centralized Audit Logging, and KMS Configuration Encryption -> Legend."
   }
 ];
 
@@ -243,6 +250,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('finops') || id.includes('chargeback') || id === 'cloud_finops_chargeback') return 'cloud_finops_chargeback';
   if (id.includes('ai_coe') || id.includes('operating_model') || id === 'ai_coe_operating_model') return 'ai_coe_operating_model';
   if (id.includes('mcp') || id.includes('context_gateway') || id === 'mcp_context_gateway') return 'mcp_context_gateway';
+  if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
 }
@@ -310,6 +318,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'mcp_context_gateway') {
     const { getExactMcpContextGatewayXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactMcpContextGatewayXml();
+  } else if (id === 'logical_ai_config_tenant') {
+    const { getExactLogicalAiConfigTenantXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactLogicalAiConfigTenantXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -333,6 +344,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'cloud_finops_chargeback' ||
     id === 'ai_coe_operating_model' ||
     id === 'mcp_context_gateway' ||
+    id === 'logical_ai_config_tenant' ||
     id.includes('agent_harness')
   );
 

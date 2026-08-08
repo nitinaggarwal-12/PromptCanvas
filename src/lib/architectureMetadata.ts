@@ -369,6 +369,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "AI Integration Engineers, Platform Architects, MCP Developers, Security Officers",
     targetOutcomes: "Zero-Trust Context Ingestion, 100% SOC 2 Compliance Filtering, Sub-50ms Tool Proxies, Unified Schema Normalization",
     desc: "WBS 2.1.5 Model Context Protocol Gateway blueprint mapping context ingestion adapters, MCP message bus, and downstream tool proxies."
+  },
+  logical_ai_config_tenant: {
+    id: "logical_ai_config_tenant",
+    title: "Product Plan - Logical AI Config (Tenant Architecture) (Logical AI Config | To-Be)",
+    category: "Operational Excellence",
+    useCase: "LOGICAL AI CONFIG (TENANT ARCHITECTURE)",
+    businessUseCase: "Product Plan: Multi-tenant Logical AI Configuration architecture for Enterprise AI Platform within Gemini Enterprise. Enforces Environment Segregation across Development, Testing, and Production environments via Enterprise IAM, Logical AI Config Console, and APIs. Production workspaces encapsulate Logical AI Config (Model Selection Gemini 1.5 Pro, System Instructions, Memory & Context Management, Tool Invocation Definitions) and Agent Designer (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents) with strict SOC 2 and GxP Compliance Guardrails, VPC Firewalls, Centralized Audit Logging, and KMS Configuration Encryption.",
+    primaryActors: "App Owners, AI Developers, Cloud Platform Architects, Security & GxP Compliance Officers",
+    targetOutcomes: "Strict Multi-Tenant Environment Segregation, Automated Logical AI Config Propagation, SOC 2 & GxP Compliance Guardrails, Sub-10ms Agent Invocation, End-to-End KMS Encryption",
+    desc: "Product Plan Logical AI Config tenant architecture mapping Development, Testing, and Production environments with Agent Designer topologies, compliance guardrails, and KMS encryption."
+  },
+  tech_logical_ai_config: {
+    id: "logical_ai_config_tenant",
+    title: "Product Plan - Logical AI Config (Tenant Architecture)",
+    category: "Operational Excellence",
+    useCase: "LOGICAL AI CONFIG (TENANT ARCHITECTURE)",
+    businessUseCase: "Multi-tenant Logical AI Configuration topology illustrating Development, Testing, and Production workspace boundaries, Gemini Enterprise Engine instances, Agent Designer topologies, and compliance markers.",
+    primaryActors: "App Owners, Devs, Platform Architects, Compliance Officers",
+    targetOutcomes: "Multi-Tenant Isolation, SOC 2 & GxP Compliance, Automated Config APIs",
+    desc: "Logical AI Config blueprint mapping tenant boundaries, Agent Designer topologies, and compliance guardrails."
   }
 };
 

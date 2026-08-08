@@ -369,6 +369,30 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Model Context Protocol Gateway: 5 Ingestion Adapters -> Context Schema Mapping -> MCP Message Bus (SOC 2 Filter & Audit) -> Cognitive RAG & Tool Proxies -> Actionable Tool Systems & Unified View."
   },
   {
+    id: "logical_ai_config_tenant",
+    name: "Product Plan - Logical AI Config (Tenant Architecture)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (Product Plan)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to model enterprise multi-tenant logical AI configuration boundaries, environment segregation across Dev/Test/Prod, Agent Designer topologies, and compliance enforcement within Gemini Enterprise.",
+    bestFor: [
+      "Product Plan - Logical AI Config (Tenant Architecture) (Logical AI Config | To-Be)",
+      "Multi-tenant environment segregation across Development, Testing, and Production environments",
+      "Logical AI Config Management Console and automated Config Updates APIs with Enterprise IAM",
+      "Platform Orchestrator routing configurations to Gemini Enterprise Engine instances",
+      "Production Workspace encapsulation with Logical AI Config (Model Selection Gemini 1.5 Pro, System Instructions, Memory, Tool Invocation)",
+      "Agent Designer topologies (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents)",
+      "Application Logic execution with agent endpoint invocation",
+      "Strict SOC 2 & GxP Compliance Guardrails and compliance markers",
+      "Network Security Perimeters (VPC, Firewalls), Centralized Audit Logging, and KMS Configuration Encryption"
+    ],
+    keyTech: ["Gemini Enterprise", "Logical AI Config", "Agent Designer", "Multi-Tenant Isolation", "Enterprise IAM", "SOC 2 Guardrails", "GxP Compliance", "VPC Firewalls", "Cloud KMS", "Centralized Audit Logging"],
+    thumbnail: "/templates/logical_ai_config_tenant.png",
+    promptSummary: "Logical AI Config Tenant Architecture: App Owners / Devs -> IAM -> Dev/Test/Prod Environments -> Agent Designer Topologies -> SOC 2 / GxP Guardrails & KMS Encryption."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",
