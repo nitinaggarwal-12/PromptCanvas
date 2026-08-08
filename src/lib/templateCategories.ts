@@ -549,6 +549,55 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Federated IAM & SSO Architecture: Client Ingress -> Federated Identity & SSO Broker (OAuth2, SAML, JWT) <-> Okta / Google Identity Directory -> Enforced Workloads (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes) -> Analytics & HIPAA Compliance Reporting."
   },
   {
+    id: "tech_ai_trism_guardrails",
+    name: "AI TRiSM Security Guardrail Pipeline (WBS 4.3.1)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 4.3.1)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to design comprehensive AI Trust, Risk, and Security Management (AI TRiSM) guardrail pipelines, adversarial check & prompt injection defenses, Cloud DLP PII scrubbing/masking, and EU AI Act compliance observability.",
+    bestFor: [
+      "WBS 4.3.1 AI TRiSM Security Guardrail Pipeline System (Bespoke Security Solution)",
+      "Agent Runtime Platform prerequisite with core application logic and execution context",
+      "Input Guardrail with adversarial checks, prompt injection detection, and jailbreak prevention",
+      "Cloud DLP PII scrubbing & data masking for agent inputs and sensitive tokens",
+      "TRiSM Threat Logging & Alerting Engine with real-time audit gRPC streaming",
+      "Output Filter with hallucination defense, offensive content filtering, and PII leakage prevention",
+      "Looker Studio TRiSM Observability Dashboard (PII Scrubbing Rates, Threat Deflections, Compliance Status)",
+      "Cloud IAM, VPC-SC, and Secret Manager secure configuration flow driven by DevSecOps GitOps",
+      "EU AI Act continuous compliance and CISO / AI Sec posture reviews"
+    ],
+    keyTech: ["Cloud DLP", "Vertex AI Guardrails", "TRiSM Threat Engine", "Looker Studio", "VPC-SC", "Secret Manager", "DevSecOps GitOps", "EU AI Act Compliance"],
+    thumbnail: "/templates/tech_ai_trism_guardrails.png",
+    promptSummary: "AI TRiSM Security Guardrail Pipeline: Agent Runtime Platform -> Input Guardrail (Prompt Injection Defense) -> Cloud DLP PII Masking -> TRiSM Threat Engine -> Output Filter (Hallucination Defense) -> Looker Studio Observability Dashboard -> EU AI Act Compliance."
+  },
+  {
+    id: "tech_micro_frontends",
+    name: "Micro-Frontend & UI Architecture (WBS 4.2.1)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 4.2.1)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to design enterprise client-side architectures, micro-frontend orchestrators, browser runtime modules, WebSocket-enabled chat widgets, and high-performance CDN bundle delivery.",
+    bestFor: [
+      "WBS 4.2.1 Micro-Frontend & UI Architecture (Client Implementation - To-Be State)",
+      "End User HTTP browser ingress & interaction patterns",
+      "Enterprise App Frontend (Host App) container lifecycle",
+      "Cloud CDN static bundle & asset distribution (HTTPS/HTTP2)",
+      "Real-time WebSocket Server bi-directional messaging and presence",
+      "Micro-Frontend & UI System with JS Orchestrator, browser runtime, and Chat Widget",
+      "GraphQL / REST Backend APIs data fetching and action dispatching",
+      "GCP Identity Platform (IdP) OIDC / JWT authentication token exchange",
+      "External Logging & Observability System telemetry streaming (Cloud Logging)",
+      "Frontend Engineers & SRE operational workflows"
+    ],
+    keyTech: ["React", "WebSockets", "Cloud CDN", "Micro-Frontend Orchestrator", "GraphQL / REST", "GCP Identity Platform", "Cloud Logging"],
+    thumbnail: "/templates/tech_micro_frontends.png",
+    promptSummary: "Micro-Frontend & UI Architecture: End Users -> Host App -> Cloud CDN -> MFE Orchestrator & Chat Widget <-> Real-Time WebSocket Server & GraphQL/REST APIs -> GCP Identity Platform -> Cloud Logging Observability."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

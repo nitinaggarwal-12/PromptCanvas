@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml, getExactUnifiedDataGovernanceXml, getExactDataOpsAnomalyDetectionXml, getExactGoLiveWarRoomRunbookXml, getExactEnterpriseSreObservabilityXml, getExactDataResidencySovereignMapXml, getExactFederatedIamSsoXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml, getExactUnifiedDataGovernanceXml, getExactDataOpsAnomalyDetectionXml, getExactGoLiveWarRoomRunbookXml, getExactEnterpriseSreObservabilityXml, getExactDataResidencySovereignMapXml, getExactFederatedIamSsoXml, getExactAiTrismGuardrailsXml, getExactMicroFrontendsXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -55,6 +55,12 @@ const TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP = getExactDataResidencySovereignMapX
 
 // 1.15 WBS 5.1.4: Federated IAM & SSO Architecture (To-Be State)
 const TECH_XML_FEDERATED_IAM_SSO = getExactFederatedIamSsoXml();
+
+// 1.16 WBS 4.3.1: AI TRiSM Security Guardrail Pipeline System (Bespoke Security Solution)
+const TECH_XML_AI_TRISM_GUARDRAILS = getExactAiTrismGuardrailsXml();
+
+// 1.17 WBS 4.2.1: Micro-Frontend & UI Architecture (Client Implementation - To-Be State)
+const TECH_XML_MICRO_FRONTENDS = getExactMicroFrontendsXml();
 
 
 
@@ -1448,6 +1454,12 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('federated') || id === 'federated_iam_sso' || id === 'tech_federated_iam') {
     return TECH_XML_FEDERATED_IAM_SSO;
   }
+  if (id.includes('trism') || id.includes('guardrail') || id === 'tech_ai_trism_guardrails' || id === 'ai_trism_guardrails') {
+    return TECH_XML_AI_TRISM_GUARDRAILS;
+  }
+  if (id.includes('micro_frontend') || id.includes('mfe') || id === 'tech_micro_frontends' || id === 'micro_frontends_ui') {
+    return TECH_XML_MICRO_FRONTENDS;
+  }
   if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
@@ -1477,6 +1489,8 @@ export {
   TECH_XML_ENTERPRISE_SRE_OBSERVABILITY,
   TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP,
   TECH_XML_FEDERATED_IAM_SSO,
+  TECH_XML_AI_TRISM_GUARDRAILS,
+  TECH_XML_MICRO_FRONTENDS,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,

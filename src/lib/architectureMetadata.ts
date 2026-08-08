@@ -529,6 +529,46 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "IAM Architects, CISOs, Cloud Infra Leads, Data Stewards",
     targetOutcomes: "Centralized Identity Management, Multi-Protocol Support, Workload Identity Federation",
     desc: "Federated IAM and SSO blueprint illustrating broker adapters, identity control plane, and compliance audit reporting."
+  },
+  tech_ai_trism_guardrails: {
+    id: "tech_ai_trism_guardrails",
+    title: "WBS 4.3.1: AI TRiSM Security Guardrail Pipeline System (Bespoke Security Solution)",
+    category: "Security & Governance",
+    useCase: "AI TRISM SECURITY GUARDRAIL PIPELINE SYSTEM (WBS 4.3.1)",
+    businessUseCase: "WBS 4.3.1: Enterprise AI Trust, Risk, and Security Management (AI TRiSM) Guardrail Pipeline System architected across: Ingress Flow (Input Guardrail with adversarial checks, prompt injection defenses, jailbreak filters, and Cloud DLP PII scrubbing & data masking); TRiSM Threat Logging & Alerting Engine (with real-time audit gRPC streaming); Egress Flow (Output Filter with Vertex AI Guardrails for hallucination defense, offensive content checks, and PII leakage prevention); External AI Models & Looker Studio TRiSM Observability Dashboard (PII Scrubbing Rates, Threat Deflections, Compliance Status widgets); and Secure Infrastructure Configuration Flow (Cloud IAM, VPC-SC, Secret Manager, DevSecOps GitOps, and EU AI Act compliance oversight by CISO & AI Sec).",
+    primaryActors: "Chief Information Security Officers (CISOs), AI Security Leads, DevSecOps Engineers, Cloud Platform Engineers",
+    targetOutcomes: "Zero Prompt Injection Vulnerabilities, 100% PII Masking & Data Redaction, Automated Hallucination & Offensive Content Defense, Continuous EU AI Act Compliance",
+    desc: "WBS 4.3.1 AI TRiSM Guardrail blueprint mapping input/output security filters, Cloud DLP masking, TRiSM threat engine, Looker observability, and EU AI Act compliance."
+  },
+  ai_trism_guardrails: {
+    id: "tech_ai_trism_guardrails",
+    title: "AI TRiSM Security Guardrail Pipeline (WBS 4.3.1)",
+    category: "Security & Governance",
+    useCase: "AI TRISM SECURITY GUARDRAIL PIPELINE SYSTEM (WBS 4.3.1)",
+    businessUseCase: "Enterprise AI TRiSM guardrail pipeline securing LLMs and autonomous agents against prompt injection, data leakage, and hallucinations with EU AI Act compliance observability.",
+    primaryActors: "CISOs, AI Security Engineers, DevSecOps Leads",
+    targetOutcomes: "Prompt Injection Defense, Cloud DLP PII Masking, Hallucination Prevention, Real-Time Threat Alerting",
+    desc: "AI TRiSM Security Guardrail blueprint illustrating input defense, DLP scrubbing, threat logging, output filtering, and Looker Studio monitoring."
+  },
+  tech_micro_frontends: {
+    id: "tech_micro_frontends",
+    title: "WBS 4.2.1: Micro-Frontend & UI Architecture (Client Implementation - To-Be State)",
+    category: "Client & Presentation",
+    useCase: "MICRO-FRONTEND & UI ARCHITECTURE (WBS 4.2.1)",
+    businessUseCase: "WBS 4.2.1: Enterprise Micro-Frontend (MFE) & UI Architecture connecting End Users (Browser/HTTP) -> Enterprise App Frontend (Host App) -> Cloud CDN (HTTPS/HTTP2 asset delivery) -> Micro-Frontend & UI System (JS Orchestrator, browser-based MFE runtime modules, and WebSockets-enabled Chat Widget Component) <-> Real-Time WebSocket Server (bi-directional messaging and presence) & Backend APIs (GraphQL/REST over HTTPS) -> Authentication Provider (IdP / GCP Identity Platform for OIDC/JWT validation) -> External Logging & Observability System (Cloud Logging performance and error metrics) with Frontend Engineers and SRE operational integration.",
+    primaryActors: "Frontend Architects, Senior Frontend Engineers, Site Reliability Engineers (SREs), Product Designers",
+    targetOutcomes: "Sub-Second Module Mounting, Zero-Bundle-Bloat Lazy Loading, Resilient Bi-Directional WebSocket Streaming, 100% OIDC/JWT Security Compliance",
+    desc: "WBS 4.2.1 Micro-Frontend blueprint mapping Host App container, CDN bundles, MFE runtime orchestrator, WebSocket chat widgets, GraphQL APIs, and IdP token exchange."
+  },
+  micro_frontends_ui: {
+    id: "tech_micro_frontends",
+    title: "Micro-Frontend & UI Architecture (WBS 4.2.1)",
+    category: "Client & Presentation",
+    useCase: "MICRO-FRONTEND & UI ARCHITECTURE (WBS 4.2.1)",
+    businessUseCase: "Enterprise client presentation architecture featuring modular micro-frontends, WebSocket real-time chat widgets, CDN delivery, and IdP authentication.",
+    primaryActors: "Frontend Engineers, UI Architects, SREs",
+    targetOutcomes: "Modular UI Composition, Real-Time WebSocket Messaging, Cloud CDN Performance",
+    desc: "Micro-Frontend architecture blueprint illustrating host app composition, browser runtime modules, WebSocket server, and backend API integration."
   }
 };
 

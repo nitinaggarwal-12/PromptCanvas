@@ -398,6 +398,12 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'federated_iam_sso') {
     const { getExactFederatedIamSsoXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactFederatedIamSsoXml();
+  } else if (id === 'tech_ai_trism_guardrails' || id === 'ai_trism_guardrails') {
+    const { getExactAiTrismGuardrailsXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactAiTrismGuardrailsXml();
+  } else if (id === 'tech_micro_frontends' || id === 'micro_frontends_ui') {
+    const { getExactMicroFrontendsXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactMicroFrontendsXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -429,6 +435,10 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'enterprise_sre_observability' ||
     id === 'data_residency_sovereign_map' ||
     id === 'federated_iam_sso' ||
+    id === 'tech_ai_trism_guardrails' ||
+    id === 'ai_trism_guardrails' ||
+    id === 'tech_micro_frontends' ||
+    id === 'micro_frontends_ui' ||
     id.includes('agent_harness')
   );
 
