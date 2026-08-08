@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -19,6 +19,9 @@ const TECH_XML_LEGACY_DEPENDENCY_MAP = getExactLegacyDependencyMapXml();
 
 // 1.3 6Rs Migration Disposition Matrix (Assessment Phase)
 const TECH_XML_SIX_RS_MIGRATION_MATRIX = getExactSixRsMigrationMatrixXml();
+
+// 1.4 Hybrid / Strangler Fig Transition Architecture (Assessment Phase)
+const TECH_XML_HYBRID_STRANGLER_TRANSITION = getExactHybridStranglerTransitionXml();
 
 
 
@@ -1371,7 +1374,10 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('6rs') || id.includes('six_rs') || id.includes('disposition') || id === 'six_rs_migration_matrix') {
     return TECH_XML_SIX_RS_MIGRATION_MATRIX;
   }
-  if (id.includes('legacy') || id.includes('dependency_map') || id.includes('strangler') || id === 'legacy_dependency_map') {
+  if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id === 'hybrid_strangler_transition') {
+    return TECH_XML_HYBRID_STRANGLER_TRANSITION;
+  }
+  if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
   if (id.includes('harness') || id.includes('agent_runtime') || id.includes('agent_harness')) {
@@ -1388,6 +1394,7 @@ export {
   TECH_XML_MULTI_REGION_DR,
   TECH_XML_LEGACY_DEPENDENCY_MAP,
   TECH_XML_SIX_RS_MIGRATION_MATRIX,
+  TECH_XML_HYBRID_STRANGLER_TRANSITION,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,

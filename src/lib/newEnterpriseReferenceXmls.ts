@@ -2360,4 +2360,385 @@ export function getExactSixRsMigrationMatrixXml(): string {
 `.trim();
 }
 
+/**
+ * 🏛️ BLUEPRINT 2: WBS 0.1.3 HYBRID / STRANGLER FIG TRANSITION ARCHITECTURE
+ * Pixel-Perfect Replica of WBS 0.1.3 Hybrid / Strangler Fig Transition Architecture Blueprint
+ */
+export function getExactHybridStranglerTransitionXml(): string {
+  return `
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="hybrid_strangler_transition" name="WBS 0.1.3: Hybrid / Strangler Fig Transition Architecture">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1620" pageHeight="950" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ================= MAIN HEADER & SUBTITLE ================= -->
+        <mxCell id="hdr_title" value="&lt;b style=&quot;font-size:26px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 0.1.3 Hybrid / Strangler Fig Transition Architecture&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="36" y="24" width="840" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_subtitle" value="&lt;font style=&quot;font-size:16px;color:#334155;font-family:sans-serif;&quot;&gt;Phase 0: Assessment Transition&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="36" y="60" width="400" height="26" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= TOP CENTER: INCOMING CLIENT REQUESTS ================= -->
+        <mxCell id="box_client_req" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;Incoming Client&lt;br&gt;Requests&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#475569;&quot;&gt;(Internet)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="580" y="110" width="170" height="74" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow from Client Requests into Apigee API Gateway (Strangler Fig Interface) -->
+        <mxCell id="edge_client_to_apigee" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="665" y="184" as="sourcePoint"/>
+            <mxPoint x="770" y="320" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="665" y="320"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================= LEFT CONTAINER: ON-PREMISES DATACENTER (LEGACY) ================= -->
+        <mxCell id="box_onprem_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="36" y="220" width="410" height="430" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_onprem_header" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;On-Premises Datacenter&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:12.5px;color:#475569;&quot;&gt;(Legacy)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="36" y="232" width="410" height="38" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. Legacy Monolithic App v1.0 -->
+        <mxCell id="box_mono_app" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Legacy Monolithic&lt;br&gt;App v1.0&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="120" y="284" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <!-- Red Alert Badge on Monolith -->
+        <mxCell id="badge_mono_alert" value="⚠️" style="text;html=1;align=center;verticalAlign=middle;fontSize=22;" vertex="1" parent="1">
+          <mxGeometry x="260" y="320" width="30" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Legacy SQL Database -->
+        <mxCell id="box_legacy_db" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Legacy SQL&lt;br&gt;Database&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="120" y="410" width="180" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Mainframe System -->
+        <mxCell id="box_mainframe" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Mainframe System&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="120" y="536" width="180" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Vertical Flow Inside On-Prem: Monolith -> DB -> Mainframe -->
+        <mxCell id="edge_mono_to_db" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1" source="box_mono_app" target="box_legacy_db">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_db_to_mf" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1" source="box_legacy_db" target="box_mainframe">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Left Red Callout: Strangler Fig Pattern in Action -->
+        <mxCell id="lbl_strangler_pattern" value="&lt;font style=&quot;font-size:9.5px;color:#B91C1C;&quot;&gt;Strangler Fig&lt;br&gt;Pattern in Action&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="352" width="94" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_red_callout" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B91C1C;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="134" y="367" as="sourcePoint"/>
+            <mxPoint x="210" y="367" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Return Bus and Arrows from Interconnect into On-Premises Components -->
+        <mxCell id="edge_onprem_bus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="319" as="sourcePoint"/>
+            <mxPoint x="360" y="571" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_bus_to_mono" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="360" y="319" as="sourcePoint"/><mxPoint x="300" y="319" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_bus_to_sql" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="360" y="445" as="sourcePoint"/><mxPoint x="300" y="445" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_bus_to_mf" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="360" y="571" as="sourcePoint"/><mxPoint x="300" y="571" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_interconnect_to_bus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="436" y="394" as="sourcePoint"/>
+            <mxPoint x="360" y="394" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================= RIGHT CONTAINER: GOOGLE CLOUD PLATFORM (VPC) ================= -->
+        <mxCell id="box_gcp_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="740" y="220" width="840" height="430" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_gcp_header" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;Google Cloud Platform&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:12.5px;color:#475569;&quot;&gt;(VPC)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="740" y="232" width="840" height="38" as="geometry"/>
+        </mxCell>
+
+        <!-- Apigee API Gateway (Strangler Fig Interface) Inner Blue Container with soft shadow -->
+        <mxCell id="box_apigee_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.8;arcSize=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="770" y="280" width="240" height="300" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_apigee_title" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Apigee API Gateway&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10.5px;color:#475569;&quot;&gt;(Strangler Fig Interface)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="770" y="288" width="240" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- SRE Persona at Top of Apigee -->
+        <mxCell id="icon_sre_laptop" value="👩‍💻" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="930" y="120" width="34" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_sre_persona" value="&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;SRE&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;color:#475569;&quot;&gt;Monitoring&lt;br&gt;apigee metrics&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="970" y="120" width="110" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_sre_to_apigee" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="947" y="160" as="sourcePoint"/>
+            <mxPoint x="890" y="280" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="947" y="220"/>
+              <mxPoint x="890" y="220"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Apigee Inner Decision Logic & Paths -->
+        <!-- Secured Path 1 (Legacy Feature? Yes) -->
+        <mxCell id="lbl_legacy_feature_yes" value="&lt;font style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Legacy Feature?&lt;br&gt;(Yes)&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="780" y="340" width="94" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_secured_path_1" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Secured&lt;br&gt;Path 1&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="890" y="332" width="100" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Secured Path 2 (Legacy Feature? No/New) -->
+        <mxCell id="lbl_legacy_feature_no" value="&lt;font style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Legacy Feature?&lt;br&gt;(No/New)&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="780" y="474" width="94" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_secured_path_2" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Secured&lt;br&gt;Path 2&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="890" y="466" width="100" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Fork inside Apigee -->
+        <mxCell id="edge_apigee_fork" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="830" y="370" as="sourcePoint"/>
+            <mxPoint x="830" y="466" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_to_p1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="830" y="353" as="sourcePoint"/><mxPoint x="890" y="353" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_to_p2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="830" y="487" as="sourcePoint"/><mxPoint x="890" y="487" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Target Workloads in GCP -->
+        <!-- Modern Microservices (on GKE/Cloud Run) -->
+        <mxCell id="box_modern_ms" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Modern&lt;br&gt;Microservices&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#475569;&quot;&gt;(on GKE/Cloud Run)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="324" width="180" height="74" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud SQL for PostgreSQL -->
+        <mxCell id="box_cloud_sql" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Cloud SQL for&lt;br&gt;PostgreSQL&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="490" width="180" height="74" as="geometry"/>
+        </mxCell>
+
+        <!-- Backend Eng Persona -->
+        <mxCell id="icon_be_eng" value="👨‍💻" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="416" width="34" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_be_eng" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Backend Eng&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="452" width="94" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_be_to_ms" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1290" y="426" as="sourcePoint"/>
+            <mxPoint x="1260" y="380" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Routing from Secured Path 2 into Modern Microservices & Cloud SQL -->
+        <mxCell id="edge_p2_bus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="990" y="487" as="sourcePoint"/>
+            <mxPoint x="1040" y="487" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_p2_to_ms" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1040" y="487" as="sourcePoint"/>
+            <mxPoint x="1080" y="361" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1040" y="361"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_p2_to_sql" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1040" y="487" as="sourcePoint"/>
+            <mxPoint x="1080" y="527" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1040" y="527"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Microservices -> Cloud SQL Connection -->
+        <mxCell id="edge_ms_to_sql" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1" source="box_modern_ms" target="box_cloud_sql">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= MIDDLE HYBRID BRIDGES ================= -->
+
+        <!-- 1. PRIMARY PATH: SECURE CLOUD INTERCONNECT (THICK BLUE ARROW) -->
+        <mxCell id="node_glow_left_top" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#38BDF8;strokeColor=#0284C7;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="437" y="385" width="18" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_glow_right_top" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#38BDF8;strokeColor=#0284C7;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="731" y="385" width="18" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow_primary_interconnect" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=#2563EB;strokeColor=#1D4ED8;width=12;endSize=7;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="731" y="394" as="sourcePoint"/>
+            <mxPoint x="455" y="394" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_interconnect_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Secure Cloud Interconnect&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#475569;&quot;&gt;(Primary Path)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="455" y="410" width="276" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Network Eng Persona above Interconnect -->
+        <mxCell id="icon_net_eng" value="👨‍🔧" style="text;html=1;align=center;verticalAlign=middle;fontSize=26;" vertex="1" parent="1">
+          <mxGeometry x="480" y="240" width="34" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_net_eng" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Network Eng&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="450" y="278" width="94" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_net_mon" value="&lt;font style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Monitoring on&lt;br&gt;secure&lt;br&gt;Interconnect&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="536" y="242" width="100" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_net_eng_to_pipe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="497" y="306" as="sourcePoint"/>
+            <mxPoint x="497" y="385" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Badges on Primary Path: SOC 2 & HIPAA -->
+        <mxCell id="badge_soc2_top" value="&lt;font style=&quot;font-size:7px;color:#FFFFFF;font-weight:bold;&quot;&gt;SOC 2&lt;br&gt;Certified&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="550" y="336" width="38" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_hipaa_top" value="&lt;font style=&quot;font-size:8px;color:#0284C7;font-weight:bold;&quot;&gt;HIPAA&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#64748B;&quot;&gt;Compliant&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="596" y="340" width="56" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. BACKUP PATH: SITE-TO-SITE VPN (DASHED BLUE ARROW) -->
+        <mxCell id="node_glow_left_bot" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#38BDF8;strokeColor=#0284C7;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="437" y="535" width="18" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_glow_right_bot" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#38BDF8;strokeColor=#0284C7;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="731" y="535" width="18" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow_backup_vpn" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2.5;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="731" y="544" as="sourcePoint"/>
+            <mxPoint x="455" y="544" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_vpn_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Site-to-Site VPN&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#475569;&quot;&gt;(Backup/Segment Path)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="455" y="558" width="276" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Badges on Backup Path: SOC 2 & HIPAA -->
+        <mxCell id="badge_soc2_bot" value="&lt;font style=&quot;font-size:7px;color:#FFFFFF;font-weight:bold;&quot;&gt;SOC 2&lt;br&gt;Certified&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="550" y="612" width="38" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_hipaa_bot" value="&lt;font style=&quot;font-size:8px;color:#0284C7;font-weight:bold;&quot;&gt;HIPAA&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#64748B;&quot;&gt;Compliant&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="596" y="616" width="56" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Top Callout Text: Secure Legacy-to-Cloud Communication -->
+        <mxCell id="lbl_secure_comm_top" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Secure Legacy-to-Cloud&lt;br&gt;Communication&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="230" y="140" width="200" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_callout_bracket_top" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#94A3B8;strokeWidth=1.2;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="430" y="155" as="sourcePoint"/>
+            <mxPoint x="470" y="320" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="470" y="155"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Bottom Callout Text: Secure Legacy-to-Cloud Communication -->
+        <mxCell id="lbl_secure_comm_bot" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Secure Legacy-to-Cloud&lt;br&gt;Communication&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="360" y="690" width="200" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_callout_bracket_bot" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#94A3B8;strokeWidth=1.2;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="690" as="sourcePoint"/>
+            <mxPoint x="450" y="600" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Bottom Callout Text: Business Continuity (Gradual Rollout) -->
+        <mxCell id="lbl_biz_continuity" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Business Continuity&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#475569;&quot;&gt;(Gradual Rollout)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="610" y="690" width="180" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_biz_cont_pointer" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#94A3B8;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="690" as="sourcePoint"/>
+            <mxPoint x="670" y="550" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================= BOTTOM RIGHT: LEGEND CONTAINER ================= -->
+        <mxCell id="box_legend" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="880" y="680" width="660" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_legend_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="896" y="688" width="100" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend Item 1: Active Flow -->
+        <mxCell id="leg_line_active" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="900" y="726" as="sourcePoint"/><mxPoint x="946" y="726" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_txt_active" value="&lt;font style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Active Flow&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="956" y="714" width="110" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend Item 2: Backup Path -->
+        <mxCell id="leg_line_backup" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=2;dashed=1;dashPattern=3 3;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="900" y="756" as="sourcePoint"/><mxPoint x="946" y="756" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_txt_backup" value="&lt;font style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Backup Path&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="956" y="744" width="110" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend Item 3: Data Direction -->
+        <mxCell id="leg_line_data" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=2;endArrow=block;endFill=1;startArrow=block;startFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1110" y="726" as="sourcePoint"/><mxPoint x="1156" y="726" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_txt_data" value="&lt;font style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Data Direction&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1166" y="714" width="130" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend Item 4: SOC 2/HIPAA Certified -->
+        <mxCell id="leg_icon_lock" value="🔒" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1114" y="746" width="24" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_txt_lock" value="&lt;font style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;SOC 2/HIPAA Certified&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1166" y="744" width="150" height="24" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}
+
+
 

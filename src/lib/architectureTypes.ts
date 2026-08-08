@@ -195,6 +195,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 0.1.2 6Rs Migration Disposition Matrix evaluating legacy components (VMs, DBs, Mainframe, Monoliths, File Shares) across Business Value, Technical Feasibility, and Cloud Compatibility into Rehost, Replatform, Refactor, Retain, Retire, and Repurchase.",
     prompt: "Act as an Enterprise Cloud Migration Architect. Design a production-grade WBS 0.1.2 6Rs Migration Disposition Matrix. Include: Legacy Components (On-Premise VMs, Legacy Databases Oracle/SAP, Mainframe Systems, Custom Monolith Apps, File Shares) -> Migration Assessment Logic (Business Value, Technical Feasibility, Cloud Compatibility) -> 6Rs Dispositions (Rehost Lift & Shift, Replatform Lift & Reshape, Refactor Re-architect, Retain Revisit Later, Retire Decommission, Repurchase Drop & Shop) -> Cost Optimization GCAF & Continuous Validation feedback loops."
+  },
+  {
+    id: "hybrid_strangler_transition",
+    name: "Hybrid / Strangler Fig Transition (Assessment Phase)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 0.1.3 Hybrid Cloud & Strangler Fig Transition Architecture with Apigee API Gateway request interception, Secure Cloud Interconnect, Site-to-Site VPN, and parallel on-premise to GCP modern microservice execution.",
+    prompt: "Act as an Enterprise Cloud Migration Architect. Design a production-grade WBS 0.1.3 Hybrid / Strangler Fig Transition Architecture. Include: On-Premises Datacenter (Legacy Monolithic App v1.0, Legacy SQL DB, Mainframe System) -> Secure Cloud Interconnect (Primary Path) & Site-to-Site VPN (Backup Path) with SOC 2 & HIPAA perimeters -> Apigee API Gateway (Strangler Fig Interface) routing Legacy features back to on-prem vs Modern/New features to GKE/Cloud Run Microservices and Cloud SQL for PostgreSQL."
   }
 ];
 
@@ -211,7 +218,8 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id === 'tech_microservices_aws' || id === 'tech_microservices_gcp' || id === 'k8s_mesh') return 'tech_microservices_gcp';
   if (id === 'tech_event_driven_aws' || id === 'tech_event_driven_eda' || id === 'event_driven_aws') return 'tech_event_driven_eda';
   if (id.includes('6rs') || id.includes('six_rs') || id.includes('disposition')) return 'six_rs_migration_matrix';
-  if (id.includes('legacy') || id.includes('dependency_map') || id.includes('strangler')) return 'legacy_dependency_map';
+  if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id === 'hybrid_strangler_transition') return 'hybrid_strangler_transition';
+  if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
 }
 
@@ -266,6 +274,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'six_rs_migration_matrix') {
     const { getExactSixRsMigrationMatrixXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactSixRsMigrationMatrixXml();
+  } else if (id === 'hybrid_strangler_transition') {
+    const { getExactHybridStranglerTransitionXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactHybridStranglerTransitionXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -285,6 +296,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'multi_region_dr' ||
     id === 'legacy_dependency_map' ||
     id === 'six_rs_migration_matrix' ||
+    id === 'hybrid_strangler_transition' ||
     id.includes('agent_harness')
   );
 

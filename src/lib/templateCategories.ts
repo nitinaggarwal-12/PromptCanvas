@@ -278,6 +278,28 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "6Rs Migration Disposition Matrix: Legacy Components -> Migration Assessment Logic (Business Value, Technical Feasibility, Cloud Compatibility) -> 6Rs Dispositions (Rehost, Replatform, Refactor, Retain, Retire, Repurchase) -> Cost Optimization & Continuous Validation."
   },
   {
+    id: "hybrid_strangler_transition",
+    name: "Hybrid / Strangler Fig Transition (Assessment Phase)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 0.1.3)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use in Phase 0 Assessment Transition when architecting hybrid cloud interconnects, reverse proxy traffic splitting via Apigee API Gateway, and phased strangler migration from on-prem monoliths to Google Cloud microservices.",
+    bestFor: [
+      "WBS 0.1.3 Hybrid Cloud & Strangler Fig Transition Architecture",
+      "Apigee API Gateway Strangler Fig Interface with dynamic legacy vs modern feature routing",
+      "On-Premises Datacenter mapping (Legacy Monolithic App v1.0, Legacy SQL DB, Mainframe)",
+      "Secure Cloud Interconnect (Primary 10Gbps Path) & Site-to-Site VPN (Backup Path)",
+      "SOC 2 Type II and HIPAA compliant secure hybrid communication channels",
+      "Target modern cloud deployment on Google Kubernetes Engine (GKE), Cloud Run, and Cloud SQL for PostgreSQL",
+      "Persona-driven operations with SRE Apigee monitoring, Network Engineering, and Backend Engineering"
+    ],
+    keyTech: ["Apigee API Gateway", "Cloud Interconnect", "Cloud VPN", "GKE", "Cloud Run", "Cloud SQL PostgreSQL", "SOC 2 / HIPAA", "Legacy Monolith"],
+    thumbnail: "/templates/hybrid_strangler_transition.png",
+    promptSummary: "Hybrid / Strangler Fig Transition Architecture: On-Prem Monolith Datacenter -> Secure Cloud Interconnect & VPN -> Apigee API Gateway (Strangler Fig Interface) -> Modern Microservices on GKE/Cloud Run & Cloud SQL PostgreSQL."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

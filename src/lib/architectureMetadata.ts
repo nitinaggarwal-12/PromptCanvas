@@ -289,6 +289,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Cloud Infrastructure Leads, Data Architects, C-Suite, PMO, Migration Teams",
     targetOutcomes: "Prioritized Application Disposition Inventory, Clear 6Rs Migration Roadmap, Quantified Cloud TCO Savings, Zero Cloud Migration Regressions",
     desc: "WBS 0.1.2 6Rs Migration Disposition Matrix mapping legacy workloads into Rehost, Replatform, Refactor, Retain, Retire, and Repurchase cloud destinations."
+  },
+  hybrid_strangler_transition: {
+    id: "hybrid_strangler_transition",
+    title: "Hybrid / Strangler Fig Transition Architecture (Phase 0: Assessment Transition)",
+    category: "Legacy Discovery",
+    useCase: "HYBRID / STRANGLER FIG TRANSITION ARCHITECTURE (WBS 0.1.3)",
+    businessUseCase: "WBS 0.1.3: Enterprise Hybrid Cloud & Strangler Fig Transition Architecture connecting On-Premises Datacenter legacy systems (Legacy Monolithic App v1.0, Legacy SQL Database, Mainframe System) with Google Cloud Platform VPC via Secure Cloud Interconnect (Primary 10Gbps Path) and Site-to-Site VPN (Backup Path) with SOC 2 / HIPAA compliance perimeters. Incoming Internet client requests are intercepted by Apigee API Gateway (Strangler Fig Interface) and dynamically routed: legacy features route back to on-premise components while modern/new features route directly to Modern Microservices on GKE/Cloud Run and Cloud SQL for PostgreSQL.",
+    primaryActors: "Cloud Enterprise Architects, Network Engineers, SRE Leads, Backend Engineers, Security Officers",
+    targetOutcomes: "Zero-Downtime Gradual Migration, 100% SLA Business Continuity, SOC 2 & HIPAA Regulatory Assurance, Phased Monolith Decommissioning",
+    desc: "WBS 0.1.3 Hybrid Strangler Fig transition architecture with Apigee API Gateway request routing, Secure Cloud Interconnect, Site-to-Site VPN, and parallel on-premise to GCP modern microservice execution."
+  },
+  tech_hybrid_strangler: {
+    id: "hybrid_strangler_transition",
+    title: "Hybrid / Strangler Fig Transition Architecture (Phase 0: Assessment Transition)",
+    category: "Legacy Discovery",
+    useCase: "HYBRID / STRANGLER FIG TRANSITION ARCHITECTURE (WBS 0.1.3)",
+    businessUseCase: "WBS 0.1.3: Enterprise Hybrid Cloud & Strangler Fig Transition Architecture connecting On-Premises Datacenter legacy systems with Google Cloud Platform VPC via Secure Cloud Interconnect and Site-to-Site VPN with Apigee API Gateway routing.",
+    primaryActors: "Cloud Enterprise Architects, Network Engineers, SRE Leads, Backend Engineers, Security Officers",
+    targetOutcomes: "Zero-Downtime Gradual Migration, 100% SLA Business Continuity, SOC 2 & HIPAA Regulatory Assurance, Phased Monolith Decommissioning",
+    desc: "WBS 0.1.3 Hybrid Strangler Fig transition architecture with Apigee API Gateway request routing, Secure Cloud Interconnect, and modern microservices."
   }
 };
 
