@@ -272,6 +272,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 5.1.6 Data Residency & Sovereign Cloud Map modeling isolated regional perimeters across EU-West4 (The Netherlands) and US-Central1 (Iowa) with VPC Service Controls, restricted GCP APIs, cross-border GCP VPC-SC bridge, Looker Studio compliance reporting (GDPR, EU AI Act, HIPAA), and async management plane (Dataplex, Cloud Logging).",
     prompt: "Act as a Principal Security & Sovereign Cloud Architect. Design a production-grade WBS 5.1.6 Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase) blueprint. Include: Top Title Banner & GDPR/EU AI Act/HIPAA Badges; Left Ingress with End Users (Patient data source), SRE/Legal/CISO Personas, Cloud Load Balancing (Global/Regional) with Verified access control; Center Core Sovereign Cloud container with GCP Region EU-West4 (The Netherlands) VPC-SC perimeter, Restricted GCP APIs, Vertex AI Local Inference & Grounding, Cloud Storage Buckets, Cloud SQL GxP keys, Vertex AI Vector Search, Internal Compliant Data Flow; Center Channel with Cross-Border Data Transfer Path, GCP VPC-SC Bridge, and red alert perimeter tripwires; GCP Region US-Central1 (Iowa) VPC-SC perimeter with symmetric restricted services; Right Top Observability & Compliance Reporting container with Looker Studio Dashboards (Regional Data Compliance Score 99.8%, Cross-Border Transfer Audit Logs, VPC SC Perimeter Alerts, Vertex AI Grounding Lineage), Central logging with BigQuery historical data from prerequisite context; Right Bottom Management Plane (Async Flows) with Cloud Infra Lead, Internal metric collectors, Unified Trace Correlation, Vertex AI Monitoring, Dataplex, Cloud Logging, and Async Flow / Audit Flow connectors; Bottom Left Legend -> Footer Note."
+  },
+  {
+    id: "federated_iam_sso",
+    name: "Federated IAM & SSO Architecture (WBS 5.1.4)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 5.1.4 Federated IAM & SSO Architecture illustrating 4 horizontal tiers: Client Ingress with SOC 2/HIPAA Global Load Balancer, Federated Identity & SSO Broker (OAuth2, SAML, JWT) with Okta / Google Identity Directory federation, enforced downstream modern stack (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes, Dataplex), and analytics compliance reporting.",
+    prompt: "Act as a Principal IAM & Security Solutions Architect. Design a production-grade WBS 5.1.4 Federated IAM & SSO Architecture (To-Be State) blueprint. Include: 4 Horizontal Zones (Top Zone: Access Tier - Client Ingress with External/Internal Users, Data Eng, Vertex AI Agents, Enterprise Applications, External Entry Point / Global Load Balancer SOC 2/HIPAA; Second Zone: Control Tier - Federated IdP Brokerage with OAuth2/SAML/JWT requests, Federated Identity & SSO Broker containing OAuth2/SAML/API Token Adapters, User Attribute Mapping Engine, Token Translation Service, MFA Enforcement, Session Management & Auditing, Cloud IAM Policies, Active Identity Control Plane vertical bar, and Okta / Google Identity Directory with Credentials Validation, Attribute Lookup, Policy Directives; Third Zone: Data Tier - Enforced Modern Stack with GKE Clusters, Cloud Run Services, Cloud SQL Databases, Vertex AI Agents Workload Identity, Data Lakes, Dataplex, and System Element Legend; Fourth Zone: Analytics & Compliance Reporting with Personas IAM Architect, Cloud Infra Lead, CISO, Data Steward, Reporting Cards Authentication Audit Logs, User Access Report, Agent Token Usage, Compliance Checks OAuth2/OIDC, SAML, JWT Token Check, HIPAA Guardrails, Central Logging, and Bottom Right Legend) -> Metadata Table."
   }
 ];
 
@@ -298,6 +305,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('golive') || id.includes('war_room') || id.includes('cutover') || id === 'golive_warroom_runbook') return 'golive_warroom_runbook';
   if (id.includes('sre') || id.includes('observability') || id === 'enterprise_sre_observability') return 'enterprise_sre_observability';
   if (id.includes('data_residency') || id.includes('sovereign_map') || id.includes('sovereign') || id === 'data_residency_sovereign_map') return 'data_residency_sovereign_map';
+  if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('federated') || id === 'federated_iam_sso') return 'federated_iam_sso';
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
@@ -387,6 +395,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'data_residency_sovereign_map') {
     const { getExactDataResidencySovereignMapXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactDataResidencySovereignMapXml();
+  } else if (id === 'federated_iam_sso') {
+    const { getExactFederatedIamSsoXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactFederatedIamSsoXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -417,6 +428,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'golive_warroom_runbook' ||
     id === 'enterprise_sre_observability' ||
     id === 'data_residency_sovereign_map' ||
+    id === 'federated_iam_sso' ||
     id.includes('agent_harness')
   );
 

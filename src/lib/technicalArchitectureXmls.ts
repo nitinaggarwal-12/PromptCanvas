@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml, getExactUnifiedDataGovernanceXml, getExactDataOpsAnomalyDetectionXml, getExactGoLiveWarRoomRunbookXml, getExactEnterpriseSreObservabilityXml, getExactDataResidencySovereignMapXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml, getExactUnifiedDataGovernanceXml, getExactDataOpsAnomalyDetectionXml, getExactGoLiveWarRoomRunbookXml, getExactEnterpriseSreObservabilityXml, getExactDataResidencySovereignMapXml, getExactFederatedIamSsoXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -52,6 +52,9 @@ const TECH_XML_ENTERPRISE_SRE_OBSERVABILITY = getExactEnterpriseSreObservability
 
 // 1.14 WBS 5.1.6: Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase)
 const TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP = getExactDataResidencySovereignMapXml();
+
+// 1.15 WBS 5.1.4: Federated IAM & SSO Architecture (To-Be State)
+const TECH_XML_FEDERATED_IAM_SSO = getExactFederatedIamSsoXml();
 
 
 
@@ -1442,6 +1445,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('data_residency') || id.includes('sovereign_map') || id.includes('sovereign') || id === 'data_residency_sovereign_map' || id === 'tech_data_residency') {
     return TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP;
   }
+  if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('federated') || id === 'federated_iam_sso' || id === 'tech_federated_iam') {
+    return TECH_XML_FEDERATED_IAM_SSO;
+  }
   if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
@@ -1470,6 +1476,7 @@ export {
   TECH_XML_GOLIVE_WARROOM_RUNBOOK,
   TECH_XML_ENTERPRISE_SRE_OBSERVABILITY,
   TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP,
+  TECH_XML_FEDERATED_IAM_SSO,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,

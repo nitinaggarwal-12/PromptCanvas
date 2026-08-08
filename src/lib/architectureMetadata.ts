@@ -509,6 +509,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Legal, CISO, SRE Leads, SecOps Engineers",
     targetOutcomes: "Regional Isolation, Zero Unauthorized Cross-Border Egress, Automated Compliance Dashboards",
     desc: "Data residency and sovereign cloud blueprint illustrating VPC SC perimeters, cross-border bridges, and regulatory audit dashboards."
+  },
+  federated_iam_sso: {
+    id: "federated_iam_sso",
+    title: "WBS 5.1.4: Federated IAM & SSO Architecture (To-Be State)",
+    category: "Security & Governance",
+    useCase: "FEDERATED IAM & SSO ARCHITECTURE (WBS 5.1.4)",
+    businessUseCase: "WBS 5.1.4: Enterprise Federated IAM & Single Sign-On (SSO) Architecture establishing a unified identity control plane across client ingress, broker adapters (OAuth2/OIDC, SAML, JWT Token Exchange), enterprise user directory federation (Okta / Google Identity), and enforced downstream workload access (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes, Dataplex) with automated audit reporting and HIPAA compliance guardrails.",
+    primaryActors: "IAM Architects, Cloud Infra Leads, Chief Information Security Officers (CISOs), Data Stewards, Security Engineers",
+    targetOutcomes: "Zero-Trust Identity Federation, Sub-100ms Token Translation, 100% HIPAA & SOC 2 Compliance Auditability, Enforced Least-Privilege IAM",
+    desc: "WBS 5.1.4 Federated IAM & SSO blueprint illustrating multi-protocol broker adapters, Okta/Google Identity federation, downstream workload enforcement, and compliance reporting."
+  },
+  tech_federated_iam: {
+    id: "federated_iam_sso",
+    title: "Federated IAM & SSO Architecture (WBS 5.1.4)",
+    category: "Security & Governance",
+    useCase: "FEDERATED IAM & SSO ARCHITECTURE (WBS 5.1.4)",
+    businessUseCase: "Enterprise Federated Identity and SSO architecture connecting multi-protocol ingress, central IdP brokerage, federated user directories, and modern cloud workloads.",
+    primaryActors: "IAM Architects, CISOs, Cloud Infra Leads, Data Stewards",
+    targetOutcomes: "Centralized Identity Management, Multi-Protocol Support, Workload Identity Federation",
+    desc: "Federated IAM and SSO blueprint illustrating broker adapters, identity control plane, and compliance audit reporting."
   }
 };
 

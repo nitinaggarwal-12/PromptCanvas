@@ -526,6 +526,29 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Data Residency & Sovereign Cloud Map: Regional Ingress -> Core Sovereign Cloud (EU-West4 & US-Central1 VPC-SC Perimeters) -> GCP VPC-SC Bridge -> Looker Studio Compliance Dashboards -> Async Management Plane (Dataplex, Cloud Logging)."
   },
   {
+    id: "federated_iam_sso",
+    name: "Federated IAM & SSO Architecture (WBS 5.1.4)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 5.1.4)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to design multi-protocol federated identity brokerages, SSO integrations (OAuth2/OIDC, SAML, JWT), Okta/Google Identity user federation, and enforced downstream workload access (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes, Dataplex).",
+    bestFor: [
+      "WBS 5.1.4 Federated IAM & SSO Architecture (To-Be State, Infra Provisioning Phase)",
+      "Client Ingress with SOC 2 / HIPAA Compliant Global Load Balancing",
+      "Federated Identity & SSO Broker (Apigee / GCP Services) supporting OAuth2, SAML, and API Token Adapters",
+      "Attribute Mapping Engine, Token Translation Service, MFA Enforcement, and Session Auditing",
+      "Active Identity Control Plane communicating with Okta / Google Identity Directory",
+      "Enforced downstream IAM access across GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes, and Dataplex",
+      "Analytics & Compliance Reporting with Authentication Audit Logs, User Access Reports, and Agent Token Federation checks",
+      "HIPAA and SOC 2 Type II compliance guardrails"
+    ],
+    keyTech: ["Google Identity", "Okta", "OAuth2 / OIDC", "SAML 2.0", "JWT Token Exchange", "Apigee", "Cloud IAM", "Vertex AI Agents", "Dataplex", "HIPAA & SOC 2"],
+    thumbnail: "/templates/federated_iam_sso.png",
+    promptSummary: "Federated IAM & SSO Architecture: Client Ingress -> Federated Identity & SSO Broker (OAuth2, SAML, JWT) <-> Okta / Google Identity Directory -> Enforced Workloads (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes) -> Analytics & HIPAA Compliance Reporting."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",
