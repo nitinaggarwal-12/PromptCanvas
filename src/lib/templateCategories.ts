@@ -782,23 +782,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     thumbnail: "/templates/devops_cicd_pipeline.png",
     promptSummary: "Enterprise DevSecOps Pipeline: Plan & Govern -> Polyrepo Git -> 3-Track CI & SAST Scan -> ArgoCD GitOps Deployment."
   },
-  {
-    id: "tech_cicd_pipeline",
-    name: "Cloud-Native CI/CD Pipeline",
-    categoryId: "devsecops",
-    categoryName: "DevSecOps",
-    badge: "Platform CI/CD",
-    whenToUse: "Use when detailing cloud-native container build workflows, automated unit tests, container image scanning, and automated canary rollback mechanisms.",
-    bestFor: [
-      "Automated Docker container builds",
-      "Container vulnerability scanning (ECR/Artifact Registry)",
-      "Automated canary deployment with rollback",
-      "Prometheus & Grafana release health monitoring"
-    ],
-    keyTech: ["GitHub Actions", "Docker / BuildKit", "Artifact Registry", "ArgoCD", "Canary Analysis", "Prometheus"],
-    thumbnail: "/templates/tech_cicd_pipeline.png",
-    promptSummary: "Cloud Native CI/CD Pipeline: Git PR Trigger -> Unit Tests -> Container Build -> Artifact Scan -> Canary Promotion."
-  },
 
   // =========================================================================
   // 6. ENTERPRISE BUSINESS & STRATEGY

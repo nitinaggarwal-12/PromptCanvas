@@ -2266,7 +2266,7 @@ function WorkspaceContent() {
       fintech: ['erd', 'data_ai_pipeline', 'secure_deployment_map', 'tech_streaming_analytics', 'tech_c4_system_context', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
       legal: ['business_agent_gov_hitl', 'business_agent_governance_hitl', 'secure_deployment_map', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
       architect: ['conceptual_diagram', 'unified_system_view', 'tech_serverless_gcp', 'tech_microservices_gcp', 'tech_microservices_aws', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
-      devops: ['sequence_diagram', 'devops_cicd_pipeline', 'tech_cicd_pipeline', 'tech_event_driven_eda'],
+      devops: ['sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_eda'],
       security: ['secure_deployment_map', 'business_agent_gov_hitl', 'business_agent_governance_hitl', 'tech_microservices_gcp', 'tech_microservices_aws', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
       data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse_gcp', 'tech_data_lakehouse', 'tech_rag_gcp', 'tech_modern_data_stack', 'tech_agent_harness_runtime']
     };

@@ -116,7 +116,7 @@ export function renderMarkdown(input: ComposeRenderInput): string {
       tech_overview_repo: ['tech_microservices_gcp', 'tech_microservices_aws'],
       architecture_patterns: ['tech_event_driven_eda', 'tech_event_driven_aws', 'tech_streaming_analytics'],
       data_persistence: ['tech_data_lakehouse_gcp', 'tech_data_lakehouse', 'erd'],
-      cicd_automation: ['tech_cicd_pipeline', 'devops_cicd_pipeline', 'eval_safety_benchmarking'],
+      cicd_automation: ['devops_cicd_pipeline', 'eval_safety_benchmarking'],
     },
     exec_brief: {
       proposal_decision: ['unified_system_view'],

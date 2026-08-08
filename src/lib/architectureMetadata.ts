@@ -210,16 +210,6 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     targetOutcomes: "Million-Message-per-Second Scale, Zero Message Loss via DLQ, Decoupled Microservice Scaling",
     desc: "Event-driven architecture with Kafka brokers, Schema Registry Avro gates, and DLQ recovery."
   },
-  tech_cicd_pipeline: {
-    id: "tech_cicd_pipeline",
-    title: "Cloud-Native CI/CD Pipeline",
-    category: "DevSecOps & Platform Engineering",
-    useCase: "ENTERPRISE CI/CD PLATFORM",
-    businessUseCase: "DevSecOps build and deployment pipeline enforcing SAST static analysis, container image signing, and automated integration tests before promoting models to production.",
-    primaryActors: "DevSecOps Architects, Build Engineers, QA Managers",
-    targetOutcomes: "100% Automated Security Scans, Reproducible Immutable Build Artifacts, Audit-Ready Deployment History",
-    desc: "DevSecOps pipeline featuring SAST code analysis, container vulnerability scanning, ArgoCD GitOps, and canary rollbacks."
-  },
   tech_microservices_gcp: {
     id: "tech_microservices_gcp",
     title: "GCP Kubernetes & Zero-Trust VPC",

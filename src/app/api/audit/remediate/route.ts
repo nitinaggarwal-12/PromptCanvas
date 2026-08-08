@@ -68,7 +68,7 @@ ${remediationInstructions}
     }
 
     // Apply Pre-Flight 6-Audit Pre-Compiler Pass to guarantee zero visual collisions & 100% posture
-    rawXml = preflightVerifyAndHealXmlAcrossAll6Audits(rawXml || currentXml, architectureType || 'tech_cicd_pipeline');
+    rawXml = preflightVerifyAndHealXmlAcrossAll6Audits(rawXml || currentXml, architectureType || 'devops_cicd_pipeline');
 
     // Ensure all remediated compliance tokens exist in rawXml so subsequent AST audits pass 100%
     for (const gap of selectedGaps) {

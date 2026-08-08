@@ -444,7 +444,7 @@ export async function POST(request: Request) {
     const isPipelineOrGenomicPrompt = combinedText.includes('genomic') || combinedText.includes('fastq') || combinedText.includes('variant') || combinedText.includes('gatk') || combinedText.includes('pipeline') || combinedText.includes('ci/cd') || combinedText.includes('bwa');
 
     const effectiveArchType = isPipelineOrGenomicPrompt 
-      ? 'tech_cicd_pipeline' 
+      ? 'devops_cicd_pipeline' 
       : (architectureType || targetVersion.architecture_type || 'conceptual_diagram');
 
     let xmlContent = targetVersion.xml_content;
