@@ -20,7 +20,30 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     archType === 'tech_multi_cloud_dr' ||
     archType === 'tech_hybrid_cloud' ||
     archType === 'tech_zero_trust_mesh' ||
+    archType === 'legacy_dependency_map' ||
+    archType === 'six_rs_migration_matrix' ||
+    archType === 'hybrid_strangler_transition' ||
+    archType === 'cloud_finops_chargeback' ||
+    archType === 'ai_coe_operating_model' ||
+    archType === 'mcp_context_gateway' ||
+    archType === 'logical_ai_config_tenant' ||
+    archType === 'hub_and_spoke_agent_config' ||
+    archType === 'unified_data_governance' ||
+    archType === 'dataops_anomaly_detection' ||
+    archType === 'golive_warroom_runbook' ||
+    archType === 'enterprise_sre_observability' ||
+    archType === 'data_residency_sovereign_map' ||
+    archType === 'federated_iam_sso' ||
+    archType === 'tech_ai_trism_guardrails' ||
+    archType === 'tech_micro_frontends' ||
+    archType === 'eval_safety_benchmarking' ||
+    archType === 'business_agent_gov_hitl' ||
+    archType === 'tech_multi_agent_langgraph' ||
+    archType === 'tech_agent_harness_runtime' ||
     (xmlInput && (
+      xmlInput.includes('pageWidth="1400"') ||
+      xmlInput.includes('pageHeight="800"') ||
+      xmlInput.includes('id="frame_') ||
       xmlInput.includes('id="gcp_multi_region_dr_case_b"') ||
       xmlInput.includes('id="c4_system_context"') ||
       xmlInput.includes('id="modern_data_stack"') ||
@@ -28,7 +51,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       xmlInput.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR')
     ))
   ) {
-    return xmlInput;
+    return xmlInput.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
   }
 
   let xml = xmlInput || '';

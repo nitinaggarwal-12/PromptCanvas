@@ -1393,7 +1393,7 @@ export function getExactMultiRegionDrReferenceXml(): string {
 export function getExactLegacyDependencyMapXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.809Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.106Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="legacy_dependency_map" name="WBS 0.1.1: Legacy Dependency &amp; Monolith Discovery Map">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -1485,7 +1485,7 @@ export function getExactLegacyDependencyMapXml(): string {
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="e4" value="Decouple Auth ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_legacy_repo" target="node_auth_domain">
+        <mxCell id="e4" value="Decouple Auth ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_monolith_db" target="node_auth_domain">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
@@ -1510,7 +1510,7 @@ export function getExactLegacyDependencyMapXml(): string {
 export function getExactSixRsMigrationMatrixXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.811Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.108Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="six_rs_migration_matrix" name="WBS 0.1.2: 6-Rs Cloud Migration Strategy Matrix">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -1598,19 +1598,27 @@ export function getExactSixRsMigrationMatrixXml(): string {
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="e3" value="Containerize ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#7C3AED;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_rehost_path" target="node_replatform_path">
+        <mxCell id="e3" value="Risk Score ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2.5;fontColor=#0284C7;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_tco_calc" target="node_risk_matrix">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="e4" value="Cloud-Native ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#7C3AED;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_replatform_path" target="node_refactor_path">
+        <mxCell id="e4" value="Containerize ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#7C3AED;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_rehost_path" target="node_replatform_path">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="e5" value="Schedule Waves ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_refactor_path" target="node_wave_planner">
+        <mxCell id="e5" value="Cloud-Native ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#7C3AED;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_replatform_path" target="node_refactor_path">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="e6" value="Audit Performance ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_wave_planner" target="node_post_cutover_audit">
+        <mxCell id="e6" value="Schedule Waves ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_rehost_path" target="node_wave_planner">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e7" value="Repurchase SaaS ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_wave_planner" target="node_repurchase_saas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e8" value="Audit Performance ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_repurchase_saas" target="node_post_cutover_audit">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 </root>
@@ -1627,7 +1635,7 @@ export function getExactSixRsMigrationMatrixXml(): string {
 export function getExactHybridStranglerTransitionXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.812Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.109Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="hybrid_strangler_transition" name="WBS 0.1.3: Hybrid / Strangler Fig Transition Architecture">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -1752,7 +1760,7 @@ export function getExactHybridStranglerTransitionXml(): string {
 export function getExactCloudFinopsChargebackXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.813Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.109Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="cloud_finops_chargeback" name="WBS 1.1.4: Cloud FinOps &amp; Unit Economics Chargeback Model">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -1869,7 +1877,7 @@ export function getExactCloudFinopsChargebackXml(): string {
 export function getExactAiCoeOperatingModelXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.814Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.110Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="ai_coe_operating_model" name="WBS 1.1.5: AI Center of Excellence (CoE) Operating Model">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -1986,7 +1994,7 @@ export function getExactAiCoeOperatingModelXml(): string {
 export function getExactMcpContextGatewayXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.815Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.111Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="mcp_context_gateway" name="WBS 2.1.2: Model Context Protocol (MCP) Gateway Architecture">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -2103,7 +2111,7 @@ export function getExactMcpContextGatewayXml(): string {
 export function getExactLogicalAiConfigTenantXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.815Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.112Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="logical_ai_config_tenant" name="WBS 0.1.1: Product Plan - Logical AI Config (Tenant Architecture)">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -2220,7 +2228,7 @@ export function getExactLogicalAiConfigTenantXml(): string {
 export function getExactHubAndSpokeAgentConfigXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.816Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.113Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="hub_spoke_agent_config" name="WBS 0.1.2: Hub-and-Spoke Agent Configuration Architecture">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -2337,7 +2345,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
 export function getExactUnifiedDataGovernanceXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.818Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.115Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="unified_data_governance" name="WBS 1.2.1: Unified Data Governance &amp; Access Security Plane">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -2454,7 +2462,7 @@ export function getExactUnifiedDataGovernanceXml(): string {
 export function getExactDataOpsAnomalyDetectionXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.819Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.115Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="dataops_anomaly_detection" name="WBS 1.2.2: DataOps &amp; Real-Time Data Anomaly Detection Platform">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -2571,7 +2579,7 @@ export function getExactDataOpsAnomalyDetectionXml(): string {
 export function getExactGoLiveWarRoomRunbookXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.820Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.116Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="golive_warroom_runbook" name="WBS 3.1.1: Go-Live Cutover &amp; SRE War Room Runbook">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -2688,7 +2696,7 @@ export function getExactGoLiveWarRoomRunbookXml(): string {
 export function getExactEnterpriseSreObservabilityXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.820Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.117Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="enterprise_sre_observability" name="WBS 1.3.1: Enterprise SRE Observability &amp; Telemetry Mesh">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -2805,7 +2813,7 @@ export function getExactEnterpriseSreObservabilityXml(): string {
 export function getExactDataResidencySovereignMapXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.821Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.118Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="data_residency_sovereign_map" name="WBS 1.4.1: Data Residency &amp; Sovereign Cloud Topology">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -2922,7 +2930,7 @@ export function getExactDataResidencySovereignMapXml(): string {
 export function getExactFederatedIamSsoXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.822Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.119Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="federated_iam_sso" name="WBS 1.4.2: Federated IAM &amp; Zero-Trust SSO Topology">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3046,7 +3054,7 @@ export function getExactFederatedIamSsoXml(): string {
 export function getExactAiTrismGuardrailsXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.823Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.119Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="ai_trism_guardrails" name="WBS 2.2.1: AI TRiSM Guardrails &amp; Model Risk Management">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3162,7 +3170,7 @@ export function getExactAiTrismGuardrailsXml(): string {
 export function getExactMicroFrontendsXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.824Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.121Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="micro_frontends_federation" name="WBS 2.3.1: Enterprise Micro-Frontends &amp; Module Federation">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3278,7 +3286,7 @@ export function getExactMicroFrontendsXml(): string {
 export function getExactStreamingAnalyticsXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.825Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.122Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="streaming_analytics_cep" name="WBS 2.3.2: Real-Time Streaming Analytics &amp; CEP Engine">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3394,7 +3402,7 @@ export function getExactStreamingAnalyticsXml(): string {
 export function getExactDataLakehouseXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.826Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.122Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="data_lakehouse_iceberg" name="WBS 2.3.3: Modern Data Lakehouse with Delta &amp; Iceberg">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3510,7 +3518,7 @@ export function getExactDataLakehouseXml(): string {
 export function getExactZeroTrustMeshXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.827Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.123Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="zero_trust_mesh_mtls" name="WBS 2.4.1: Zero-Trust Service Mesh &amp; mTLS Ingress">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3626,7 +3634,7 @@ export function getExactZeroTrustMeshXml(): string {
 export function getExactFintechPaymentsXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.827Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.124Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="fintech_payments_settlement" name="WBS 2.4.2: PCI-DSS FinTech Payments &amp; Settlement Engine">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3742,7 +3750,7 @@ export function getExactFintechPaymentsXml(): string {
 export function getExactGenomicsClinicalXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.828Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.125Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="genomics_clinical_pipeline" name="WBS 2.4.3: Genomics &amp; Clinical Health Data Pipeline">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3858,7 +3866,7 @@ export function getExactGenomicsClinicalXml(): string {
 export function getExactSupplyChainXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.829Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.126Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="supply_chain_control_tower" name="WBS 2.4.4: Global Supply Chain &amp; Logistics Control Tower">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -3974,7 +3982,7 @@ export function getExactSupplyChainXml(): string {
 export function getExactEvalSafetyXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.831Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.127Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="eval_safety_benchmarking" name="WBS 2.5.1: AI Evaluation, Safety Benchmarking &amp; Red-Teaming">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
@@ -4090,7 +4098,7 @@ export function getExactEvalSafetyXml(): string {
 export function getExactAgenticMeshXml(): string {
   return `
 
-<mxfile host="app.diagrams.net" modified="2026-08-08T15:37:07.832Z" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T16:48:19.128Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="agentic_mesh_tool_network" name="WBS 2.5.2: Enterprise Agentic Mesh &amp; Tool Calling Network">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
       <root>
