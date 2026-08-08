@@ -971,34 +971,34 @@ export function getExactMultiRegionDrReferenceXml(): string {
 
     <!-- Microservice A -->
     <mxCell id="srv_a" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:10px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#202124;&quot;&gt;Cloud Run Svc&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Microservice-A&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:9px;&quot;&gt;Ingress API &amp;amp; Auth&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=4;" vertex="1" parent="1">
-      <mxGeometry x="64" y="240" width="102" height="80" as="geometry"/>
+      <mxGeometry x="64" y="242" width="94" height="78" as="geometry"/>
     </mxCell>
     <mxCell id="icon_srv_a" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_run;" vertex="1" parent="1">
-      <mxGeometry x="103" y="244" width="24" height="24" as="geometry"/>
+      <mxGeometry x="99" y="246" width="24" height="24" as="geometry"/>
     </mxCell>
 
     <!-- Microservice B -->
-    <mxCell id="srv_b" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:10px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#202124;&quot;&gt;Cloud Run Svc&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Microservice-B&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:9px;&quot;&gt;Core Transaction&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=4;" vertex="1" parent="1">
-      <mxGeometry x="186" y="240" width="102" height="80" as="geometry"/>
+    <mxCell id="srv_b" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:10px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#202124;&quot;&gt;Cloud Run Svc&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Microservice-B&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:9px;&quot;&gt;Core Engine&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=4;" vertex="1" parent="1">
+      <mxGeometry x="194" y="242" width="94" height="78" as="geometry"/>
     </mxCell>
     <mxCell id="icon_srv_b" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_run;" vertex="1" parent="1">
-      <mxGeometry x="225" y="244" width="24" height="24" as="geometry"/>
+      <mxGeometry x="229" y="246" width="24" height="24" as="geometry"/>
     </mxCell>
 
     <!-- Microservice C -->
     <mxCell id="srv_c" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:10px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#202124;&quot;&gt;Cloud Run Svc&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Microservice-C&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:9px;&quot;&gt;Data Pipeline&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=4;" vertex="1" parent="1">
-      <mxGeometry x="308" y="240" width="102" height="80" as="geometry"/>
+      <mxGeometry x="324" y="242" width="94" height="78" as="geometry"/>
     </mxCell>
     <mxCell id="icon_srv_c" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_run;" vertex="1" parent="1">
-      <mxGeometry x="347" y="244" width="24" height="24" as="geometry"/>
+      <mxGeometry x="359" y="246" width="24" height="24" as="geometry"/>
     </mxCell>
 
     <!-- Microservice D -->
-    <mxCell id="srv_d" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:10px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#202124;&quot;&gt;Cloud Run Svc&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Microservice-D&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:9px;&quot;&gt;Notification/Event&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=4;" vertex="1" parent="1">
-      <mxGeometry x="430" y="240" width="102" height="80" as="geometry"/>
+    <mxCell id="srv_d" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:10px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#202124;&quot;&gt;Cloud Run Svc&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Microservice-D&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:9px;&quot;&gt;Notifications&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=4;" vertex="1" parent="1">
+      <mxGeometry x="454" y="242" width="94" height="78" as="geometry"/>
     </mxCell>
     <mxCell id="icon_srv_d" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_run;" vertex="1" parent="1">
-      <mxGeometry x="469" y="244" width="24" height="24" as="geometry"/>
+      <mxGeometry x="489" y="246" width="24" height="24" as="geometry"/>
     </mxCell>
 
     <!-- Microservices Connecting Arrows -->
@@ -1061,7 +1061,7 @@ export function getExactMultiRegionDrReferenceXml(): string {
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
           <mxPoint x="360" y="160"/>
-          <mxPoint x="115" y="160"/>
+          <mxPoint x="111" y="160"/>
         </Array>
       </mxGeometry>
     </mxCell>
@@ -1075,7 +1075,7 @@ export function getExactMultiRegionDrReferenceXml(): string {
     <mxCell id="edge_compute_to_sqldb" value="&lt;b style=&quot;font-size:9px;color:#137333;&quot;&gt;ACID Transaction Writes (Port 5432)&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#34A853;strokeWidth=1.5;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#34A853;spacingTop=1;spacingBottom=1;" edge="1" parent="1" source="srv_b" target="db_primary">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
-          <mxPoint x="237" y="370"/>
+          <mxPoint x="241" y="370"/>
           <mxPoint x="48" y="370"/>
           <mxPoint x="48" y="502"/>
         </Array>
