@@ -961,35 +961,35 @@ export function getExactMultiRegionDrReferenceXml(): string {
     </mxCell>
 
     <!-- Cloud IAM & Workload Identity -->
-    <mxCell id="card_iam" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;Cloud IAM &amp;amp; SA&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Workload Identity&lt;br&gt;Least-Privilege RBAC&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=center;verticalAlign=bottom;spacingBottom=3;" vertex="1" parent="1">
+    <mxCell id="card_iam" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:24px;&quot;&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;Cloud IAM &amp;amp; SA&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Workload Identity&lt;br&gt;Least-Privilege RBAC&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="48" y="174" width="124" height="54" as="geometry"/>
     </mxCell>
     <mxCell id="icon_iam" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#7C3AED;align=center;verticalAlign=top;shape=mxgraph.gcp2.identity_and_access_management;" vertex="1" parent="1">
-      <mxGeometry x="100" y="178" width="20" height="20" as="geometry"/>
+      <mxGeometry x="52" y="191" width="18" height="18" as="geometry"/>
     </mxCell>
 
     <!-- Cloud KMS (CMEK) -->
-    <mxCell id="card_kms" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;Cloud KMS (CMEK)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Dual-Key Ring HSM&lt;br&gt;us-east1 / us-west1&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=center;verticalAlign=bottom;spacingBottom=3;" vertex="1" parent="1">
+    <mxCell id="card_kms" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:24px;&quot;&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;Cloud KMS (CMEK)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Dual-Key Ring HSM&lt;br&gt;us-east1 / us-west1&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="48" y="234" width="124" height="54" as="geometry"/>
     </mxCell>
     <mxCell id="icon_kms" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#7C3AED;align=center;verticalAlign=top;shape=mxgraph.gcp2.key_management_service;" vertex="1" parent="1">
-      <mxGeometry x="100" y="238" width="20" height="20" as="geometry"/>
+      <mxGeometry x="52" y="251" width="18" height="18" as="geometry"/>
     </mxCell>
 
     <!-- Secret Manager -->
-    <mxCell id="card_secrets" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;Secret Manager&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;DB Passwords &amp;amp; Keys&lt;br&gt;Auto-Rotation (90d)&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=center;verticalAlign=bottom;spacingBottom=3;" vertex="1" parent="1">
+    <mxCell id="card_secrets" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:24px;&quot;&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;Secret Manager&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;DB Passwords &amp;amp; Keys&lt;br&gt;Auto-Rotation (90d)&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="48" y="294" width="124" height="54" as="geometry"/>
     </mxCell>
     <mxCell id="icon_secrets" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#7C3AED;align=center;verticalAlign=top;shape=mxgraph.gcp2.secret_manager;" vertex="1" parent="1">
-      <mxGeometry x="100" y="298" width="20" height="20" as="geometry"/>
+      <mxGeometry x="52" y="311" width="18" height="18" as="geometry"/>
     </mxCell>
 
     <!-- VPC Service Controls & BinAuthz -->
-    <mxCell id="card_vpc_sc" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;VPC-SC Perimeter&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Binary Authorization&lt;br&gt;Zero Data Exfiltration&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=center;verticalAlign=bottom;spacingBottom=3;" vertex="1" parent="1">
+    <mxCell id="card_vpc_sc" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:24px;&quot;&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;VPC-SC Perimeter&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Binary Authorization&lt;br&gt;Zero Data Exfiltration&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="48" y="354" width="124" height="54" as="geometry"/>
     </mxCell>
     <mxCell id="icon_vpc_sc" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#7C3AED;align=center;verticalAlign=top;shape=mxgraph.gcp2.security_command_center;" vertex="1" parent="1">
-      <mxGeometry x="100" y="358" width="20" height="20" as="geometry"/>
+      <mxGeometry x="52" y="371" width="18" height="18" as="geometry"/>
     </mxCell>
 
     <!-- Security Enforcement Footer -->
@@ -997,8 +997,8 @@ export function getExactMultiRegionDrReferenceXml(): string {
       <mxGeometry x="48" y="416" width="124" height="38" as="geometry"/>
     </mxCell>
 
-    <!-- Global Operations Bar (Spanning across width) -->
-    <mxCell id="bar_ops_global" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:8.5px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Google Cloud Operations Suite&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot;&gt;Audit Logs • Cloud Trace&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+    <!-- Global Operations Box -->
+    <mxCell id="bar_ops_global" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:8.5px;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Cloud Operations Suite&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot;&gt;Audit Logs • Cloud Trace&lt;br&gt;Error Budgets &amp;amp; SLIs&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="48" y="462" width="124" height="74" as="geometry"/>
     </mxCell>
 
@@ -1132,11 +1132,11 @@ export function getExactMultiRegionDrReferenceXml(): string {
     </mxCell>
 
     <!-- Compute -> Cloud SQL Primary Transaction Edge (Clean Central Channel at x = 458) -->
-    <mxCell id="edge_compute_to_sqldb" value="&lt;b style=&quot;font-size:8px;color:#137333;&quot;&gt;ACID (5432)&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#34A853;strokeWidth=1.5;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#34A853;spacingTop=1;spacingBottom=1;" edge="1" parent="1" source="srv_b" target="db_primary">
+    <mxCell id="edge_compute_to_sqldb" value="&lt;b style=&quot;font-size:8px;color:#137333;&quot;&gt;ACID Writes (5432)&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#34A853;strokeWidth=1.5;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#34A853;spacingTop=1;spacingBottom=1;" edge="1" parent="1" source="srv_b" target="db_primary">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
-          <mxPoint x="384" y="294"/>
-          <mxPoint x="458" y="294"/>
+          <mxPoint x="384" y="278"/>
+          <mxPoint x="458" y="278"/>
           <mxPoint x="458" y="340"/>
           <mxPoint x="319" y="340"/>
         </Array>
@@ -1221,19 +1221,21 @@ export function getExactMultiRegionDrReferenceXml(): string {
       <mxGeometry x="1006" y="268" width="494" height="20" as="geometry"/>
     </mxCell>
 
-    <!-- Region B: Secondary Redis & Storage Mirror Container -->
-    <mxCell id="card_redis_b" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:28px;&quot;&gt;&lt;b style=&quot;color:#059669;&quot;&gt;Memorystore for Redis (Standby)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Pre-warmed cache instance in US-West1&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#059669;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-      <mxGeometry x="1006" y="302" width="234" height="36" as="geometry"/>
+    <!-- Region B: Secondary Storage Mirror & Redis Standby Container -->
+    <!-- Storage Mirror on Left (Directly adjacent to GCS Dual Region!) -->
+    <mxCell id="card_storage_mirror" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:28px;&quot;&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Secondary Storage Mirror (US-West1)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Dual-Region GCS replica &amp;amp; VPC Connector&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="1006" y="302" width="240" height="36" as="geometry"/>
     </mxCell>
-    <mxCell id="icon_redis_b" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#059669;align=center;verticalAlign=top;shape=mxgraph.gcp2.memorystore;" vertex="1" parent="1">
+    <mxCell id="icon_storage_mirror" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_storage;" vertex="1" parent="1">
       <mxGeometry x="1012" y="310" width="20" height="20" as="geometry"/>
     </mxCell>
 
-    <mxCell id="card_storage_mirror" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:28px;&quot;&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Secondary Storage Mirror (US-West1)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Dual-Region GCS replica &amp;amp; Serverless Connector&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BDC1C6;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-      <mxGeometry x="1264" y="302" width="236" height="36" as="geometry"/>
+    <!-- Redis Standby on Right -->
+    <mxCell id="card_redis_b" value="&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;font-size:9.5px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding-left:28px;&quot;&gt;&lt;b style=&quot;color:#059669;&quot;&gt;Memorystore for Redis (Standby)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5F6368&quot; style=&quot;font-size:8px;&quot;&gt;Pre-warmed cache instance in US-West1&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#059669;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="1260" y="302" width="240" height="36" as="geometry"/>
     </mxCell>
-    <mxCell id="icon_storage_mirror" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#4285F4;align=center;verticalAlign=top;shape=mxgraph.gcp2.cloud_storage;" vertex="1" parent="1">
-      <mxGeometry x="1270" y="310" width="20" height="20" as="geometry"/>
+    <mxCell id="icon_redis_b" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#059669;align=center;verticalAlign=top;shape=mxgraph.gcp2.memorystore;" vertex="1" parent="1">
+      <mxGeometry x="1266" y="310" width="20" height="20" as="geometry"/>
     </mxCell>
 
     <!-- Region B: Standby Database Tier Container -->
@@ -1274,12 +1276,12 @@ export function getExactMultiRegionDrReferenceXml(): string {
       </mxGeometry>
     </mxCell>
 
-    <!-- Turbo Sync Edge: GCS Dual-Region -> Region B Mirror (Clean Channel at y = 320) -->
+    <!-- Turbo Sync Edge: GCS Dual-Region -> Region B Mirror (Clean Adjacent Vector) -->
     <mxCell id="edge_gcs_to_regb_mirror" value="&lt;b style=&quot;font-size:8px;color:#1A73E8;&quot;&gt;Turbo Sync&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;spacingTop=1;spacingBottom=1;" edge="1" parent="1" source="card_gcs_dual" target="card_storage_mirror">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
-          <mxPoint x="980" y="237"/>
-          <mxPoint x="980" y="320"/>
+          <mxPoint x="984" y="237"/>
+          <mxPoint x="984" y="320"/>
         </Array>
       </mxGeometry>
     </mxCell>
@@ -1288,8 +1290,8 @@ export function getExactMultiRegionDrReferenceXml(): string {
     <mxCell id="edge_stby_compute_to_db" value="&lt;b style=&quot;font-size:8px;color:#B06000;&quot;&gt;Pre-conns (5432)&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FBBC04;strokeWidth=1.5;dashed=1;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FBBC04;spacingTop=1;spacingBottom=1;" edge="1" parent="1" source="srv_stby_a" target="db_replica">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
-          <mxPoint x="1055" y="294"/>
-          <mxPoint x="992" y="294"/>
+          <mxPoint x="1055" y="284"/>
+          <mxPoint x="992" y="284"/>
           <mxPoint x="992" y="409"/>
         </Array>
       </mxGeometry>
