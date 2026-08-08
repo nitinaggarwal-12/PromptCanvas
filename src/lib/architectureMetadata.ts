@@ -309,6 +309,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Cloud Enterprise Architects, Network Engineers, SRE Leads, Backend Engineers, Security Officers",
     targetOutcomes: "Zero-Downtime Gradual Migration, 100% SLA Business Continuity, SOC 2 & HIPAA Regulatory Assurance, Phased Monolith Decommissioning",
     desc: "WBS 0.1.3 Hybrid Strangler Fig transition architecture with Apigee API Gateway request routing, Secure Cloud Interconnect, and modern microservices."
+  },
+  cloud_finops_chargeback: {
+    id: "cloud_finops_chargeback",
+    title: "Cloud FinOps & Chargeback Model (FinOps & Economics Category)",
+    category: "FinOps & Economics",
+    useCase: "CLOUD FINOPS & CHARGEBACK MODEL (WBS 1.1.3)",
+    businessUseCase: "WBS 1.1.3: Enterprise Cloud FinOps, Cost Optimization & Automated Chargeback Framework connecting Ingestion & Usage Tracking (GKE Kubecost Agents, Compute Engine VMs, Cloud Storage, Vertex AI Generative AI Token Tracking, Cloud SQL, BigQuery) with Data Aggregation & Cost Allocation (GCP Billing Exports, Kubecost Container Costs, Vertex AI Token Cost Calculator, Enterprise Resource Tagging Policies into Unified BigQuery Cost Data Lake). Delivers automated Looker Studio executive reporting, FinOps Governance Engine (Tagging Enforcement, Budgets & Alerts, Commitment Manager CUDs/SUDs, Cloud Monitoring), and granular Chargeback/Showback generation for Business Unit 1 (Engineering), Business Unit 2 (Product), and Data Science & GenAI Teams under strict Cloud IAM access control and Secret Manager key security.",
+    primaryActors: "Cloud Economists, FinOps Leads, BU Leads, Engineering Directors, Product VP, C-Suite",
+    targetOutcomes: "100% Granular Cost Attribution, Automated GenAI Token Cost Accounting, Anomaly Detection & Budget Alerts, Optimized CUD/SUD Utilization, Zero Unallocated Cloud Spend",
+    desc: "WBS 1.1.3 Cloud FinOps & Chargeback model mapping usage tracking, BigQuery cost data lake, Vertex AI token pricing, Looker Studio reporting, and automated showback/chargeback generation."
+  },
+  tech_cloud_finops: {
+    id: "cloud_finops_chargeback",
+    title: "Cloud FinOps & Chargeback Model (FinOps & Economics Category)",
+    category: "FinOps & Economics",
+    useCase: "CLOUD FINOPS & CHARGEBACK MODEL (WBS 1.1.3)",
+    businessUseCase: "WBS 1.1.3: Enterprise Cloud FinOps, Cost Optimization & Automated Chargeback Framework connecting Ingestion & Usage Tracking with Data Aggregation & Cost Allocation into Unified BigQuery Cost Data Lake, Looker Studio dashboards, and FinOps Governance.",
+    primaryActors: "Cloud Economists, FinOps Leads, BU Leads, Engineering Directors, Product VP",
+    targetOutcomes: "100% Granular Cost Attribution, Automated GenAI Token Cost Accounting, Anomaly Detection & Budget Alerts, Optimized CUD/SUD Utilization",
+    desc: "WBS 1.1.3 Cloud FinOps & Chargeback model with BigQuery cost data lake, Vertex AI token tracking, Looker Studio dashboards, and showback generator."
   }
 };
 

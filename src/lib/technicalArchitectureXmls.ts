@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -22,6 +22,9 @@ const TECH_XML_SIX_RS_MIGRATION_MATRIX = getExactSixRsMigrationMatrixXml();
 
 // 1.4 Hybrid / Strangler Fig Transition Architecture (Assessment Phase)
 const TECH_XML_HYBRID_STRANGLER_TRANSITION = getExactHybridStranglerTransitionXml();
+
+// 1.5 Cloud FinOps & Chargeback Model (FinOps & Economics Category)
+const TECH_XML_CLOUD_FINOPS_CHARGEBACK = getExactCloudFinopsChargebackXml();
 
 
 
@@ -1377,6 +1380,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id === 'hybrid_strangler_transition') {
     return TECH_XML_HYBRID_STRANGLER_TRANSITION;
   }
+  if (id.includes('finops') || id.includes('chargeback') || id === 'cloud_finops_chargeback') {
+    return TECH_XML_CLOUD_FINOPS_CHARGEBACK;
+  }
   if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
@@ -1395,6 +1401,7 @@ export {
   TECH_XML_LEGACY_DEPENDENCY_MAP,
   TECH_XML_SIX_RS_MIGRATION_MATRIX,
   TECH_XML_HYBRID_STRANGLER_TRANSITION,
+  TECH_XML_CLOUD_FINOPS_CHARGEBACK,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,

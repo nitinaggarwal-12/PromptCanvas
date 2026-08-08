@@ -300,6 +300,29 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Hybrid / Strangler Fig Transition Architecture: On-Prem Monolith Datacenter -> Secure Cloud Interconnect & VPN -> Apigee API Gateway (Strangler Fig Interface) -> Modern Microservices on GKE/Cloud Run & Cloud SQL PostgreSQL."
   },
   {
+    id: "cloud_finops_chargeback",
+    name: "Cloud FinOps & Chargeback Model",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 1.1.3)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to implement comprehensive cloud financial management, automated unit cost allocation, Vertex AI GenAI token tracking, and departmental showback/chargeback reporting across engineering, product, and AI teams.",
+    bestFor: [
+      "WBS 1.1.3 Cloud FinOps & Chargeback Model (FinOps & Economics)",
+      "Ingestion & Usage Tracking (GKE Kubecost Agents, GCE VMs, GCS, Cloud SQL, BigQuery)",
+      "Generative AI Token Tracking for Vertex AI prompt and completion tokens across Cloud Run & GKE Pods",
+      "GCP Billing Exports and Kubecost container costs aggregation into Unified BigQuery Cost Data Lake",
+      "Dynamic Vertex AI Token Cost Calculator with real-time model pricing tables",
+      "Looker Studio visualization with executive summary, unit cost anomalies, GenAI costs, and budget forecasts",
+      "FinOps Governance Engine with tagging enforcement, Cloud Monitoring budgets/alerts, and CUD/SUD commitment management",
+      "Automated Chargeback & Showback generation for Business Units and GenAI teams with Cloud IAM governance and Secret Manager"
+    ],
+    keyTech: ["BigQuery Cost Data Lake", "Kubecost", "Vertex AI Token Tracker", "Looker Studio", "GCP Billing Export", "Cloud Monitoring", "Cloud IAM", "Secret Manager"],
+    thumbnail: "/templates/cloud_finops_chargeback.png",
+    promptSummary: "Cloud FinOps & Chargeback Model: Usage Tracking (Kubecost, GenAI Tokens, GCE, GCS) -> BigQuery Cost Data Lake -> Looker Studio Analytics & FinOps Governance -> Chargeback Generator for Business Units."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",
