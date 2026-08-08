@@ -899,584 +899,473 @@ export function getExactServerlessGcpReferenceXml(): string {
  * Pixel-Perfect Replica of GCP Active-Passive Multi-Region DR Technical Infrastructure & Data Flow (Case B)
  */
 export function getExactMultiRegionDrReferenceXml(): string {
-  // SRE-grade Pixel-Perfect GCP Active-Passive Multi-Region DR (Case B: Technical Infrastructure & Data Flow)
-  const GCP_LOGO = `&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;`;
-  
-  const CLOUD_RUN_ICON = `&lt;svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;`;
-
-  const PUBSUB_ICON = `&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;11&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;6&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;6&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;18&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;2.5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;6&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;18&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;`;
-
-  const CLOUD_SQL_ICON = `&lt;svg width=&quot;20&quot; height=&quot;22&quot; viewBox=&quot;0 0 28 30&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M2 7C2 4.24 7.37 2 14 2C20.63 2 26 4.24 26 7V23C26 25.76 20.63 28 14 28C7.37 28 2 25.76 2 23V7Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;14&quot; cy=&quot;7&quot; rx=&quot;12&quot; ry=&quot;5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M2 14C2 16.76 7.37 19 14 19C20.63 19 26 16.76 26 14&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M2 21C2 23.76 7.37 26 14 26C20.63 26 26 23.76 26 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;`;
-
-  const GCS_BUCKET_ICON = `&lt;svg width=&quot;22&quot; height=&quot;18&quot; viewBox=&quot;0 0 30 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M4 8L6.5 23C6.7 24.1 7.7 25 8.8 25H21.2C22.3 25 23.3 24.1 23.5 23L26 8H4Z&quot; fill=&quot;#4285F4&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;15&quot; cy=&quot;8&quot; rx=&quot;11&quot; ry=&quot;4&quot; fill=&quot;#6BA4F8&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M8 15H22&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;`;
-
-  const AWS_LOGO = `&lt;svg width=&quot;22&quot; height=&quot;14&quot; viewBox=&quot;0 0 40 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M8 16L12 4L16 16M9.5 12H14.5&quot; stroke=&quot;#232F3E&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M18 6L21 16L24 8L27 16L30 6&quot; stroke=&quot;#232F3E&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M38 8C36 6 33 7 33 9C33 12 38 11 38 14C38 16 35 17 33 15&quot; stroke=&quot;#232F3E&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;path d=&quot;M6 21C14 25 26 25 34 20&quot; stroke=&quot;#FF9900&quot; stroke-width=&quot;2.5&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;path d=&quot;M31 18L35 20L33 23&quot; fill=&quot;#FF9900&quot;/&gt;&lt;/svg&gt;`;
-
-  const AWS_EKS_ICON = `&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M12 2L21 7.2V16.8L12 22L3 16.8V7.2L12 2Z&quot; fill=&quot;#FFF7ED&quot; stroke=&quot;#EA580C&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3.5&quot; fill=&quot;#F97316&quot;/&gt;&lt;path d=&quot;M12 2V8.5M21 16.8L15 13.5M3 16.8L9 13.5&quot; stroke=&quot;#EA580C&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;/svg&gt;`;
-
-  const AWS_RDS_ICON = `&lt;svg width=&quot;18&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M2 6C2 3.8 6.5 2 12 2C17.5 2 22 3.8 22 6V20C22 22.2 17.5 24 12 24C6.5 24 2 22.2 2 20V6Z&quot; fill=&quot;#2563EB&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;6&quot; rx=&quot;10&quot; ry=&quot;4&quot; fill=&quot;#60A5FA&quot;/&gt;&lt;path d=&quot;M2 12C2 14.2 6.5 16 12 16C17.5 16 22 14.2 22 12&quot; stroke=&quot;#93C5FD&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;path d=&quot;M2 18C2 20.2 6.5 22 12 22C17.5 22 22 20.2 22 18&quot; stroke=&quot;#93C5FD&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;/svg&gt;`;
-
-  const AWS_S3_ICON = `&lt;svg width=&quot;18&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 22&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M3 6L5 19C5.2 20.1 6.1 21 7.2 21H16.8C17.9 21 18.8 20.1 19 19L21 6H3Z&quot; fill=&quot;#EF4444&quot; stroke=&quot;#B91C1C&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;6&quot; rx=&quot;9&quot; ry=&quot;3.5&quot; fill=&quot;#F87171&quot; stroke=&quot;#B91C1C&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;/svg&gt;`;
-
-  const DEV_WEB_ICON = `&lt;svg width=&quot;24&quot; height=&quot;20&quot; viewBox=&quot;0 0 28 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;1&quot; y=&quot;2&quot; width=&quot;26&quot; height=&quot;20&quot; rx=&quot;3&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;1&quot; y=&quot;2&quot; width=&quot;26&quot; height=&quot;6&quot; fill=&quot;#F1F5F9&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;4.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#EA4335&quot;/&gt;&lt;circle cx=&quot;7.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;circle cx=&quot;10.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;`;
-
-  const DEV_MOB_ICON = `&lt;svg width=&quot;14&quot; height=&quot;22&quot; viewBox=&quot;0 0 18 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;1.5&quot; y=&quot;1.5&quot; width=&quot;15&quot; height=&quot;23&quot; rx=&quot;3&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;10&quot; height=&quot;15&quot; rx=&quot;1&quot; fill=&quot;#E2E8F0&quot;/&gt;&lt;circle cx=&quot;9&quot; cy=&quot;21.5&quot; r=&quot;1&quot; fill=&quot;#475569&quot;/&gt;&lt;/svg&gt;`;
-
-  const DEV_IOT_ICON = `&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;2&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;7&quot; y=&quot;7&quot; width=&quot;10&quot; height=&quot;10&quot; rx=&quot;1&quot; fill=&quot;#10B981&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;1&quot; x2=&quot;8&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;1&quot; x2=&quot;12&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;16&quot; y1=&quot;1&quot; x2=&quot;16&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;20&quot; x2=&quot;8&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;16&quot; y1=&quot;20&quot; x2=&quot;16&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;8&quot; x2=&quot;4&quot; y2=&quot;8&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;12&quot; x2=&quot;4&quot; y2=&quot;12&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;16&quot; x2=&quot;4&quot; y2=&quot;16&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;8&quot; x2=&quot;23&quot; y2=&quot;8&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;12&quot; x2=&quot;23&quot; y2=&quot;12&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;16&quot; x2=&quot;23&quot; y2=&quot;16&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;`;
-
-  const GLB_USERS_ICON = `&lt;svg width=&quot;24&quot; height=&quot;20&quot; viewBox=&quot;0 0 28 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;10&quot; cy=&quot;8&quot; r=&quot;4&quot; fill=&quot;#4285F4&quot;/&gt;&lt;circle cx=&quot;18&quot; cy=&quot;8&quot; r=&quot;4&quot; fill=&quot;#34A853&quot;/&gt;&lt;path d=&quot;M4 18C4 15 8 14 10 14C12 14 16 15 16 18&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;path d=&quot;M14 18C14 15.5 17 14.5 18 14.5C20 14.5 24 15.5 24 18&quot; stroke=&quot;#34A853&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;`;
-
-  const GTM_COMPASS_ICON = `&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot; fill=&quot;#F5F3FF&quot; stroke=&quot;#7C3AED&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;polygon points=&quot;12,4 15,12 12,10 9,12&quot; fill=&quot;#7C3AED&quot;/&gt;&lt;polygon points=&quot;12,20 15,12 12,14 9,12&quot; fill=&quot;#C4B5FD&quot;/&gt;&lt;/svg&gt;`;
-
   return `
-<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-08-08T05:58:08.988Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="gcp_multi_region_dr_case_b" name="1. GCP Active-Passive Multi-Region DR (Case B)">
-    <mxGraphModel dx="1480" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1480" pageHeight="820" background="#FFFFFF">
+    <mxGraphModel dx="1560" dy="980" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="980" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- TOP PUBLICATION HEADER -->
-        <mxCell id="header_title" value="GCP ACTIVE-PASSIVE MULTI-REGION DR: TECHNICAL INFRASTRUCTURE &amp;amp; DATA FLOW (CASE B)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;fontStyle=1;fontColor=#000000;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="25" y="12" width="1430" height="28" as="geometry" />
+        <!-- =================================================================== -->
+        <!-- TOP PUBLICATION HEADER BAR (x: 40..1520, y: 14..46)                -->
+        <!-- =================================================================== -->
+        <mxCell id="header_title" value="GCP ACTIVE-PASSIVE MULTI-REGION DISASTER RECOVERY: INFRASTRUCTURE &amp;amp; DATA FLOW (CASE B)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=15;fontStyle=1;fontColor=#202124;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="14" width="1020" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="header_line" value="" style="line;strokeWidth=1.5;strokeColor=#000000;html=1;" vertex="1" parent="1">
-          <mxGeometry x="25" y="42" width="1430" height="4" as="geometry" />
+        <mxCell id="header_badge_appr" value="&lt;span style=&#39;color:#137333;font-weight:700;font-size:10.5px;&#39;&gt;● Production Approved&lt;/span&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style=&#39;color:#5F6368;font-size:10px;&#39;&gt;Google Cloud Architecture Framework (v1.0)&lt;/span&gt;" style="rounded=1;fillColor=#E6F4EA;strokeColor=#34A853;strokeWidth=1;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="14" width="440" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="header_line" value="" style="line;strokeWidth=1.5;strokeColor=#DADCE0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="44" width="1480" height="4" as="geometry" />
         </mxCell>
 
         <!-- =================================================================== -->
-        <!-- LEFT VERTICAL PATH LEGEND (x: 10..100, y: 240..470) -->
+        <!-- TOP INGRESS TIER (PERFECT GEOMETRIC PITCH: 4 NON-OVERLAPPING CARDS)  -->
         <!-- =================================================================== -->
-        <!-- Active Path -->
-        <mxCell id="leg_act_line" value="" style="line;strokeWidth=2.5;strokeColor=#1E293B;html=1;direction=south;" vertex="1" parent="1">
-          <mxGeometry x="18" y="248" width="2" height="34" as="geometry" />
+        <!-- 1. External Global Clients (x: 40, w: 210) -->
+        <mxCell id="grp_ext_clients" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#4285F4;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="40" y="58" width="210" height="92" as="geometry" />
         </mxCell>
-        <mxCell id="leg_act_t1" value="" style="line;strokeWidth=2;strokeColor=#1E293B;html=1;" vertex="1" parent="1">
-          <mxGeometry x="13" y="248" width="12" height="2" as="geometry" />
+        <mxCell id="lbl_ext_clients_title" value="&lt;b style=&#39;font-size:11px;color:#202124;&#39;&gt;External Global Clients&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="42" y="60" width="190" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="leg_act_t2" value="" style="line;strokeWidth=2;strokeColor=#1E293B;html=1;" vertex="1" parent="1">
-          <mxGeometry x="13" y="282" width="12" height="2" as="geometry" />
+        <!-- Web -->
+        <mxCell id="dev_wb_box" value="" style="rounded=1;strokeColor=#BDC1C6;fillColor=#F8F9FA;arcSize=3;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="82" width="48" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="leg_act_txt" value="&lt;b style=&quot;font-size:9.5px;color:#1E293B;&quot;&gt;Active&lt;br/&gt;Path&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
-          <mxGeometry x="27" y="248" width="62" height="34" as="geometry" />
+        <mxCell id="dev_wb_ico" value="&lt;svg width=&quot;22&quot; height=&quot;18&quot; viewBox=&quot;0 0 28 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;1&quot; y=&quot;2&quot; width=&quot;26&quot; height=&quot;20&quot; rx=&quot;3&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;1&quot; y=&quot;2&quot; width=&quot;26&quot; height=&quot;6&quot; fill=&quot;#F1F5F9&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;4.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#EA4335&quot;/&gt;&lt;circle cx=&quot;7.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;circle cx=&quot;10.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;22&quot; height=&quot;18&quot; viewBox=&quot;0 0 28 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;1&quot; y=&quot;2&quot; width=&quot;26&quot; height=&quot;20&quot; rx=&quot;3&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;1&quot; y=&quot;2&quot; width=&quot;26&quot; height=&quot;6&quot; fill=&quot;#F1F5F9&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;4.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#EA4335&quot;/&gt;&lt;circle cx=&quot;7.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;circle cx=&quot;10.5&quot; cy=&quot;5&quot; r=&quot;1&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="63" y="90" width="22" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_wb_lbl" value="&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Web&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="50" y="124" width="48" height="14" as="geometry" />
+        </mxCell>
+        <!-- Mobile -->
+        <mxCell id="dev_mob_box" value="" style="rounded=1;strokeColor=#BDC1C6;fillColor=#F8F9FA;arcSize=3;html=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="82" width="48" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_mob_ico" value="&lt;svg width=&quot;14&quot; height=&quot;20&quot; viewBox=&quot;0 0 18 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;1.5&quot; y=&quot;1.5&quot; width=&quot;15&quot; height=&quot;23&quot; rx=&quot;3&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;10&quot; height=&quot;15&quot; rx=&quot;1&quot; fill=&quot;#E2E8F0&quot;/&gt;&lt;circle cx=&quot;9&quot; cy=&quot;21.5&quot; r=&quot;1&quot; fill=&quot;#475569&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;14&quot; height=&quot;20&quot; viewBox=&quot;0 0 18 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;1.5&quot; y=&quot;1.5&quot; width=&quot;15&quot; height=&quot;23&quot; rx=&quot;3&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;10&quot; height=&quot;15&quot; rx=&quot;1&quot; fill=&quot;#E2E8F0&quot;/&gt;&lt;circle cx=&quot;9&quot; cy=&quot;21.5&quot; r=&quot;1&quot; fill=&quot;#475569&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="127" y="90" width="14" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_mob_lbl" value="&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Mobile&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="110" y="124" width="48" height="14" as="geometry" />
+        </mxCell>
+        <!-- IoT -->
+        <mxCell id="dev_iot_box" value="" style="rounded=1;strokeColor=#BDC1C6;fillColor=#F8F9FA;arcSize=3;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="82" width="48" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_iot_ico" value="&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;2&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;7&quot; y=&quot;7&quot; width=&quot;10&quot; height=&quot;10&quot; rx=&quot;1&quot; fill=&quot;#10B981&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;1&quot; x2=&quot;8&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;1&quot; x2=&quot;12&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;16&quot; y1=&quot;1&quot; x2=&quot;16&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;20&quot; x2=&quot;8&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;16&quot; y1=&quot;20&quot; x2=&quot;16&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;8&quot; x2=&quot;4&quot; y2=&quot;8&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;12&quot; x2=&quot;4&quot; y2=&quot;12&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;16&quot; x2=&quot;4&quot; y2=&quot;16&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;8&quot; x2=&quot;23&quot; y2=&quot;8&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;12&quot; x2=&quot;23&quot; y2=&quot;12&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;16&quot; x2=&quot;23&quot; y2=&quot;16&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;2&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;rect x=&quot;7&quot; y=&quot;7&quot; width=&quot;10&quot; height=&quot;10&quot; rx=&quot;1&quot; fill=&quot;#10B981&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;1&quot; x2=&quot;8&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;1&quot; x2=&quot;12&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;16&quot; y1=&quot;1&quot; x2=&quot;16&quot; y2=&quot;4&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;20&quot; x2=&quot;8&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;16&quot; y1=&quot;20&quot; x2=&quot;16&quot; y2=&quot;23&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;8&quot; x2=&quot;4&quot; y2=&quot;8&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;12&quot; x2=&quot;4&quot; y2=&quot;12&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;1&quot; y1=&quot;16&quot; x2=&quot;4&quot; y2=&quot;16&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;8&quot; x2=&quot;23&quot; y2=&quot;8&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;12&quot; x2=&quot;23&quot; y2=&quot;12&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;20&quot; y1=&quot;16&quot; x2=&quot;23&quot; y2=&quot;16&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="185" y="91" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_iot_lbl" value="&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;IoT / API&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="170" y="124" width="48" height="14" as="geometry" />
         </mxCell>
 
-        <!-- Standby Path -->
-        <mxCell id="leg_stb_line" value="" style="line;strokeWidth=2.5;dashed=1;strokeColor=#1E293B;html=1;direction=south;" vertex="1" parent="1">
-          <mxGeometry x="18" y="300" width="2" height="34" as="geometry" />
-        </mxCell>
-        <mxCell id="leg_stb_t1" value="" style="line;strokeWidth=2;strokeColor=#1E293B;html=1;" vertex="1" parent="1">
-          <mxGeometry x="13" y="300" width="12" height="2" as="geometry" />
-        </mxCell>
-        <mxCell id="leg_stb_t2" value="" style="line;strokeWidth=2;strokeColor=#1E293B;html=1;" vertex="1" parent="1">
-          <mxGeometry x="13" y="334" width="12" height="2" as="geometry" />
-        </mxCell>
-        <mxCell id="leg_stb_txt" value="&lt;b style=&quot;font-size:9.5px;color:#1E293B;&quot;&gt;Standby&lt;br/&gt;Path&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
-          <mxGeometry x="27" y="300" width="62" height="34" as="geometry" />
-        </mxCell>
-
-        <!-- Asynchronous Replication Path -->
-        <mxCell id="leg_rep_arrow" value="" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#DC2626;dashed=1;endArrow=classic;endFill=1;endSize=5;" edge="1" parent="1">
+        <!-- HTTPS Connector Arrow (x: 250 -> 310) -->
+        <mxCell id="edge_https" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;HTTPS&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#202124;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#DADCE0;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="19" y="358" as="sourcePoint"/>
-            <mxPoint x="19" y="398" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="leg_rep_txt" value="&lt;b style=&quot;font-size:8px;color:#1E293B;line-height:1.2;&quot;&gt;Async&lt;br/&gt;Replication&lt;br/&gt;Path&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
-          <mxGeometry x="27" y="358" width="65" height="40" as="geometry" />
-        </mxCell>
-
-        <!-- Failover Process -->
-        <mxCell id="leg_fail_arrow" value="" style="edgeStyle=none;html=1;strokeWidth=2.5;strokeColor=#7F1D1D;endArrow=classic;endFill=1;endSize=5;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="19" y="418" as="sourcePoint"/>
-            <mxPoint x="19" y="454" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="leg_fail_txt" value="&lt;b style=&quot;font-size:9px;color:#1E293B;&quot;&gt;Failover&lt;br/&gt;Process&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
-          <mxGeometry x="27" y="418" width="62" height="36" as="geometry" />
-        </mxCell>
-
-        <!-- =================================================================== -->
-        <!-- TOP TIER: EXTERNAL CLIENTS & GLOBAL L7 LOAD BALANCER -->
-        <!-- =================================================================== -->
-        <!-- External Clients Container (x: 35, y: 62, w: 220, h: 96) -->
-        <mxCell id="box_clients" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#64748B;fillColor=#F8FAFC;" vertex="1" parent="1">
-          <mxGeometry x="35" y="62" width="220" height="96" as="geometry" />
-        </mxCell>
-        <mxCell id="clients_hdr" value="&lt;b style=&quot;font-size:11px;color:#1E293B;&quot;&gt;External Clients&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="64" width="220" height="18" as="geometry" />
-        </mxCell>
-        
-        <!-- Device 1: Web browsers -->
-        <mxCell id="dev_web_box" value="${DEV_WEB_ICON}" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="48" y="86" width="36" height="34" as="geometry" />
-        </mxCell>
-        <mxCell id="dev_web_lbl" value="&lt;b style=&quot;font-size:8px;color:#1E293B;&quot;&gt;Web browsers&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="34" y="124" width="66" height="16" as="geometry" />
-        </mxCell>
-
-        <!-- Device 2: Mobile apps -->
-        <mxCell id="dev_mob_box" value="${DEV_MOB_ICON}" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="127" y="86" width="36" height="34" as="geometry" />
-        </mxCell>
-        <mxCell id="dev_mob_lbl" value="&lt;b style=&quot;font-size:8px;color:#1E293B;&quot;&gt;Mobile apps&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="115" y="124" width="62" height="16" as="geometry" />
-        </mxCell>
-
-        <!-- Device 3: IoT devices -->
-        <mxCell id="dev_iot_box" value="${DEV_IOT_ICON}" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="202" y="86" width="36" height="34" as="geometry" />
-        </mxCell>
-        <mxCell id="dev_iot_lbl" value="&lt;b style=&quot;font-size:8px;color:#1E293B;&quot;&gt;IoT devices&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="190" y="124" width="62" height="16" as="geometry" />
-        </mxCell>
-
-        <!-- Global L7 HTTPS Load Balancer (x: 460, y: 68, w: 180, h: 58) -->
-        <mxCell id="node_glb" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;${GLB_USERS_ICON}&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;b style=&quot;font-size:10.5px;color:#1E293B;&quot;&gt;Global L7 HTTPS&lt;br/&gt;Load Balancer&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;- Global SSL Offloading&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="460" y="68" width="180" height="58" as="geometry" />
-        </mxCell>
-
-        <!-- GLB Speech Callout (x: 655, y: 66, w: 235, h: 46) -->
-        <mxCell id="glb_callout" value="&lt;b style=&quot;font-size:8.5px;color:#1E293B;&quot;&gt;Traffic Routing:&lt;/b&gt; &lt;span style=&quot;font-size:8px;color:#334155;&quot;&gt;100% to Region A (Active).&lt;br/&gt;Standby path to Region B (Passive/Standby)&lt;/span&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.5;size=10;position=0.15;strokeColor=#94A3B8;fillColor=#F8FAFC;align=left;spacingLeft=6;" vertex="1" parent="1">
-          <mxGeometry x="655" y="66" width="235" height="46" as="geometry" />
-        </mxCell>
-
-        <!-- GLB Tree Dispatcher Node (x: 535, y: 132) -->
-        <mxCell id="glb_tree" value="&lt;svg width=&quot;24&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M12 2V10M12 10L4 18M12 10L20 18&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;2&quot; r=&quot;2&quot; fill=&quot;#0284C7&quot;/&gt;&lt;circle cx=&quot;4&quot; cy=&quot;18&quot; r=&quot;2&quot; fill=&quot;#0284C7&quot;/&gt;&lt;circle cx=&quot;20&quot; cy=&quot;18&quot; r=&quot;2&quot; fill=&quot;#0284C7&quot;/&gt;&lt;/svg&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="535" y="132" width="30" height="24" as="geometry" />
-        </mxCell>
-
-        <!-- Ingress HTTPS Connector -->
-        <mxCell id="conn_clients_glb" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;fontColor=#1E293B;fontStyle=1;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="box_clients" target="node_glb">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- =================================================================== -->
-        <!-- MIDDLE SECTION: REGION A vs CENTER COLUMN vs REGION B -->
-        <!-- =================================================================== -->
-
-        <!-- 1. REGION A (Active Site - US-East1) (x: 95, y: 195, w: 375, h: 305) -->
-        <mxCell id="region_a_box" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#94A3B8;fillColor=#FFFFFF;" vertex="1" parent="1">
-          <mxGeometry x="95" y="195" width="375" height="305" as="geometry" />
-        </mxCell>
-        <mxCell id="region_a_hdr" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:5px;&quot;&gt;${GCP_LOGO}&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;b style=&quot;font-size:11.5px;color:#1E293B;&quot;&gt;REGION A (Active Site - US-East1)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
-          <mxGeometry x="95" y="197" width="340" height="24" as="geometry" />
-        </mxCell>
-
-        <!-- Region A: Compute Layer Inner Container (x: 105, y: 224, w: 355, h: 195) -->
-        <mxCell id="reg_a_compute_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#EFF6FF;" vertex="1" parent="1">
-          <mxGeometry x="105" y="224" width="355" height="195" as="geometry" />
-        </mxCell>
-        <mxCell id="reg_a_compute_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#1E293B;&quot;&gt;Compute Layer&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
-          <mxGeometry x="105" y="226" width="105" height="18" as="geometry" />
-        </mxCell>
-        <mxCell id="reg_a_scale_note" value="Scaled to handle to extre full instances" style="text;html=1;align=center;verticalAlign=middle;fontSize=8;fontColor=#475569;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="165" y="240" width="190" height="16" as="geometry" />
-        </mxCell>
-
-        <!-- Cloud Run Microservices Sub-Frame (x: 112, y: 258, w: 275, h: 110) -->
-        <mxCell id="reg_a_cr_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#93C5FD;fillColor=#DBEAFE;" vertex="1" parent="1">
-          <mxGeometry x="112" y="258" width="275" height="110" as="geometry" />
-        </mxCell>
-
-        <!-- Microservice A -->
-        <mxCell id="cr_ms_a" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7.5px;color:#1E293B;&quot;&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;(Microservice-A)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="117" y="292" width="60" height="66" as="geometry" />
-        </mxCell>
-        <!-- Microservice B (1) -->
-        <mxCell id="cr_ms_b1" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7.5px;color:#1E293B;&quot;&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;(Microservice-B)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="185" y="292" width="60" height="66" as="geometry" />
-        </mxCell>
-        <!-- Microservice B (2) -->
-        <mxCell id="cr_ms_b2" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7.5px;color:#1E293B;&quot;&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;(Microservice-B)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="253" y="292" width="60" height="66" as="geometry" />
-        </mxCell>
-        <!-- Microservice C -->
-        <mxCell id="cr_ms_c" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7.5px;color:#1E293B;&quot;&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;(Microservice-C)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="321" y="292" width="60" height="66" as="geometry" />
-        </mxCell>
-
-        <!-- Scaled to 100-500 instances callout badge -->
-        <mxCell id="badge_100_500" value="scaled to&lt;br/&gt;&lt;b style=&quot;font-size:9px;color:#1E293B;&quot;&gt;100-500&lt;/b&gt;&lt;br/&gt;instances" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;fontSize=7.5;align=center;verticalAlign=middle;fontColor=#475569;" vertex="1" parent="1">
-          <mxGeometry x="395" y="285" width="58" height="56" as="geometry" />
-        </mxCell>
-
-        <!-- Connectors between microservices -->
-        <mxCell id="conn_ms1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;" edge="1" parent="1" source="cr_ms_a" target="cr_ms_b1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="conn_ms2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;" edge="1" parent="1" source="cr_ms_b1" target="cr_ms_b2">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="conn_ms3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;" edge="1" parent="1" source="cr_ms_b2" target="cr_ms_c">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Full scale serving layer bar -->
-        <mxCell id="bar_reg_a_cap" value="&lt;b style=&quot;font-size:9px;color:#1E293B;&quot;&gt;FULL-SCALE SERVING LAYER: 100% Capacity&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="112" y="392" width="340" height="18" as="geometry" />
-        </mxCell>
-
-        <!-- Region A: Data & Business Logic Layer (x: 105, y: 425, w: 355, h: 65) -->
-        <mxCell id="reg_a_data_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#EFF6FF;" vertex="1" parent="1">
-          <mxGeometry x="105" y="425" width="355" height="65" as="geometry" />
-        </mxCell>
-        <mxCell id="reg_a_data_content" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;table style=&quot;margin:0 auto;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;${PUBSUB_ICON}&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:10.5px;color:#1E293B;&quot;&gt;Data &amp;amp; Business Logic Layer&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;(e.g., Pub/Sub for internal message queues)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="105" y="427" width="355" height="60" as="geometry" />
-        </mxCell>
-
-        <!-- 2. CENTER COLUMN: API Management & ENTRY + GCS Storage Bridge (x: 485, y: 195, w: 175, h: 305) -->
-        <!-- API Management Note (x: 490, y: 195, w: 165, h: 95) -->
-        <mxCell id="node_apimgmt" value="&lt;b style=&quot;font-size:9.5px;color:#1E293B;&quot;&gt;API Management &amp;amp;&lt;br/&gt;ENTRY&lt;/b&gt; &lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;(Active-Passive)&lt;/span&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#64748B;&quot;&gt;Detailed action &amp;amp; Management&lt;br/&gt;&amp;amp; Load Balancer (e.g., named&lt;br/&gt;aumencent/ Active-Passive)&lt;/span&gt;" style="shape=note;whiteSpace=wrap;html=1;size=12;verticalAlign=middle;align=center;strokeColor=#94A3B8;fillColor=#F8FAFC;" vertex="1" parent="1">
-          <mxGeometry x="490" y="195" width="165" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- GCS Multi-Region Note (x: 490, y: 345, w: 165, h: 65) -->
-        <mxCell id="node_gcs_bridge" value="&lt;b style=&quot;font-size:8.5px;color:#1E293B;&quot;&gt;Google Cloud Storage&lt;br/&gt;(GCS) Multi-Region&lt;/b&gt;&lt;br/&gt;&lt;b style=&quot;font-size:8px;color:#0284C7;&quot;&gt;dual-region bucket&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#64748B;&quot;&gt;(e.g. dual-region-static-data-us)&lt;/span&gt;" style="shape=note;whiteSpace=wrap;html=1;size=12;verticalAlign=top;align=center;strokeColor=#94A3B8;fillColor=#F8FAFC;spacingTop=4;" vertex="1" parent="1">
-          <mxGeometry x="490" y="345" width="165" height="65" as="geometry" />
-        </mxCell>
-
-        <!-- GCS Bucket in Center Bridge (x: 552, y: 418, w: 38, h: 32) -->
-        <mxCell id="bucket_left" value="${GCS_BUCKET_ICON}" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="552" y="418" width="38" height="32" as="geometry" />
-        </mxCell>
-        <!-- Lower GCS Replication Note Box (x: 490, y: 458, w: 165, h: 42) -->
-        <mxCell id="bucket_sub_note" value="Replication tool to replication with&lt;br/&gt;data consistency with rules named&lt;br/&gt;&lt;i&gt;(e.g. dual-region-static-data-us)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;fontSize=7;align=center;verticalAlign=middle;fontColor=#475569;" vertex="1" parent="1">
-          <mxGeometry x="490" y="458" width="165" height="42" as="geometry" />
-        </mxCell>
-
-        <!-- 3. REGION B (Passive/Standby - US-West1) (x: 675, y: 195, w: 330, h: 305) -->
-        <mxCell id="region_b_box" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#94A3B8;fillColor=#FFFFFF;" vertex="1" parent="1">
-          <mxGeometry x="675" y="195" width="330" height="305" as="geometry" />
-        </mxCell>
-        <mxCell id="region_b_hdr" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:5px;&quot;&gt;${GCP_LOGO}&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;b style=&quot;font-size:11.5px;color:#1E293B;&quot;&gt;REGION B (Passive/Standby - US-West1)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
-          <mxGeometry x="675" y="197" width="330" height="24" as="geometry" />
-        </mxCell>
-
-        <!-- Region B: Scaled Services Container (x: 685, y: 224, w: 310, h: 195) -->
-        <mxCell id="reg_b_compute_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#EFF6FF;" vertex="1" parent="1">
-          <mxGeometry x="685" y="224" width="310" height="195" as="geometry" />
-        </mxCell>
-        <mxCell id="reg_b_compute_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#1E293B;&quot;&gt;Scaled Services&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
-          <mxGeometry x="685" y="226" width="105" height="18" as="geometry" />
-        </mxCell>
-
-        <!-- Scaled Cloud Run Card 1 -->
-        <mxCell id="cr_b_ms1" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:8px;color:#1E293B;&quot;&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="696" y="292" width="65" height="66" as="geometry" />
-        </mxCell>
-        <!-- Scaled Cloud Run Card 2 -->
-        <mxCell id="cr_b_ms2" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:8px;color:#1E293B;&quot;&gt;Scaled&lt;br/&gt;services&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="768" y="292" width="65" height="66" as="geometry" />
-        </mxCell>
-
-        <!-- Pilot Light Callout in Region B -->
-        <mxCell id="reg_b_pilot_note" value="&lt;b style=&quot;font-size:8px;color:#1E293B;&quot;&gt;PILOT LIGHT STATE (B):&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Pre-deployed, scaled&lt;br/&gt;to zero or minimal&lt;br/&gt;(e.g., 1-2 instances)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;lineHeight=1.2;" vertex="1" parent="1">
-          <mxGeometry x="842" y="285" width="145" height="70" as="geometry" />
-        </mxCell>
-
-        <!-- Not Serving Traffic Bar -->
-        <mxCell id="bar_reg_b_not" value="&lt;b style=&quot;font-size:9px;color:#1E293B;&quot;&gt;NOT SERVING TRAFFIC&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="685" y="392" width="310" height="18" as="geometry" />
-        </mxCell>
-
-        <!-- Standby Bucket Box in Region B (x: 795, y: 442, w: 38, h: 32) -->
-        <mxCell id="bucket_b" value="${GCS_BUCKET_ICON}" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="795" y="442" width="38" height="32" as="geometry" />
-        </mxCell>
-        <mxCell id="bucket_b_lbl" value="&lt;b style=&quot;font-size:8.5px;color:#1E293B;&quot;&gt;Buckets&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="785" y="476" width="58" height="15" as="geometry" />
-        </mxCell>
-        <mxCell id="bucket_b_callout" value="&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;Scaled-down resources&lt;br/&gt;ready for rapid&lt;br/&gt;auto-scaling on&lt;br/&gt;failover&lt;/span&gt;" style="shape=note;whiteSpace=wrap;html=1;size=8;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;spacingLeft=3;" vertex="1" parent="1">
-          <mxGeometry x="850" y="438" width="140" height="48" as="geometry" />
-        </mxCell>
-
-        <!-- Routing lines from GLB dispatcher to Region A and Region B -->
-        <mxCell id="conn_glb_reg_a" value="Health Checks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;fontSize=9;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="glb_tree" target="region_a_box">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="550" y="172"/>
-              <mxPoint x="282" y="172"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="conn_glb_reg_b" value="Health Checks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;fontSize=9;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="glb_tree" target="region_b_box">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="550" y="172"/>
-              <mxPoint x="840" y="172"/>
-            </Array>
+            <mxPoint x="250" y="104" as="sourcePoint" />
+            <mxPoint x="310" y="104" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Red dashed replication from Bucket A to Bucket B -->
-        <mxCell id="conn_bucket_sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;" edge="1" parent="1" source="bucket_left" target="bucket_b">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- 2. Global External HTTPS Load Balancer (x: 310, w: 330) -->
+        <mxCell id="node_glb" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1A73E8;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="310" y="58" width="330" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="glb_icon_box" value="&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M12 2L3 6V12C3 17.5 6.8 22.6 12 24C17.2 22.6 21 17.5 21 12V6L12 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M9 12L11 14L15 10&quot; stroke=&quot;#34A853&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M12 2L3 6V12C3 17.5 6.8 22.6 12 24C17.2 22.6 21 17.5 21 12V6L12 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M9 12L11 14L15 10&quot; stroke=&quot;#34A853&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="322" y="68" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="glb_txt" value="&lt;b style=&#39;font-size:11px;color:#1A73E8;&#39;&gt;Global External HTTPS Load Balancer&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:8px;color:#5F6368;line-height:1.4;&#39;&gt;• &lt;b style=&#39;color:#202124;&#39;&gt;Cloud Armor:&lt;/b&gt; Enterprise WAF &amp;amp; L7 DDoS Mitigation&lt;br/&gt;• &lt;b style=&#39;color:#202124;&#39;&gt;Global Anycast VIP:&lt;/b&gt; Single IP fronting backends&lt;br/&gt;• &lt;b style=&#39;color:#202124;&#39;&gt;Active Health Checks:&lt;/b&gt; Sub-second regional probing&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="350" y="60" width="285" height="86" as="geometry" />
         </mxCell>
 
-        <!-- =================================================================== -->
-        <!-- LOWER SECTION: GCP / AWS ACTIVE & CROSS-REGION ASYNC DB REPLICATION -->
-        <!-- =================================================================== -->
-
-        <!-- Lower Sub-Container 1: GCP (region-a) ACTIVE (x: 35, y: 560, w: 250, h: 225) -->
-        <mxCell id="gcp_low_a_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#93C5FD;fillColor=#F0F9FF;" vertex="1" parent="1">
-          <mxGeometry x="35" y="560" width="250" height="225" as="geometry" />
+        <!-- 3. Traffic Routing Policy Controller (x: 670, w: 410) -->
+        <mxCell id="node_traffic_policy" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#34A853;strokeWidth=1.2;fillColor=#FFFFFF;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="670" y="58" width="410" height="92" as="geometry" />
         </mxCell>
-        <mxCell id="gcp_low_a_hdr" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:4px;&quot;&gt;${GCP_LOGO}&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#1E293B;&quot;&gt;(region-a)&lt;/b&gt; &lt;span style=&quot;font-size:7.5px;background-color:#9333EA;color:#FFFFFF;padding:1px 4px;border-radius:2px;font-weight:bold;&quot;&gt;S3&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:right;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#1E293B;&quot;&gt;ACTIVE&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=5;spacingRight=5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="562" width="250" height="20" as="geometry" />
+        <mxCell id="tp_ico" value="&lt;svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;12&quot; rx=&quot;4.5&quot; ry=&quot;10&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;line x1=&quot;2&quot; y1=&quot;12&quot; x2=&quot;22&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;12&quot; rx=&quot;4.5&quot; ry=&quot;10&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;line x1=&quot;2&quot; y1=&quot;12&quot; x2=&quot;22&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.2&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="682" y="68" width="22" height="22" as="geometry" />
         </mxCell>
-
-        <!-- 3 Cloud Run cards in row -->
-        <mxCell id="low_a_cr1" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="42" y="588" width="46" height="44" as="geometry" />
-        </mxCell>
-        <mxCell id="low_a_cr2" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="96" y="588" width="46" height="44" as="geometry" />
-        </mxCell>
-        <mxCell id="low_a_cr3" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;Cloud Run&lt;br/&gt;services&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="150" y="588" width="46" height="44" as="geometry" />
+        <mxCell id="tp_txt" value="&lt;b style=&#39;font-size:11px;color:#137333;&#39;&gt;Traffic Routing &amp;amp; Cloud DNS Failover Policy&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:8px;color:#202124;line-height:1.4;&#39;&gt;• &lt;b style=&#39;color:#137333;&#39;&gt;Active State:&lt;/b&gt; 100% Ingress routed to Region A (US-East1)&lt;br/&gt;• &lt;b style=&#39;color:#B06000;&#39;&gt;Standby State:&lt;/b&gt; Region B (US-West1) kept in warm Pilot Light&lt;br/&gt;• &lt;b style=&#39;color:#D93025;&#39;&gt;DR Trigger:&lt;/b&gt; Automated cutover on 3x health probe failures&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="708" y="60" width="368" height="86" as="geometry" />
         </mxCell>
 
-        <!-- Cloud SQL Primary & HA -->
-        <mxCell id="low_a_sql" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_SQL_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;Cloud SQL&lt;br/&gt;Primary&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="90" y="640" width="56" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="low_a_ha" value="&lt;b style=&quot;font-size:9.5px;color:#0284C7;&quot;&gt;HA&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;High Availability&lt;br/&gt;local HA&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="154" y="640" width="60" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="conn_low_sql_ha" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;" edge="1" parent="1" source="low_a_sql" target="low_a_ha">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- 4. Legend Key (x: 1110, w: 410) -->
+        <mxCell id="node_top_legend" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:8px;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#1A73E8;font-weight:bold;&#39;&gt;━━ Active Serving Path (100% Traffic)&lt;/span&gt;&lt;/td&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#5F6368;font-weight:bold;&#39;&gt;╌╌ Standby / Dormant Route&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#EA4335;font-weight:bold;&#39;&gt;╍╍ Async DB Replication Path&lt;/span&gt;&lt;/td&gt;&lt;td style=&#39;padding:2px 4px;&#39;&gt;&lt;span style=&#39;color:#D93025;font-weight:bold;&#39;&gt;━━ Emergency SRE Failover Signal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;strokeColor=#DADCE0;strokeWidth=1;fillColor=#F8F9FA;html=1;whiteSpace=wrap;overflow=hidden;verticalAlign=middle;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="58" width="410" height="92" as="geometry" />
         </mxCell>
 
-        <!-- Bottom Storage GCP region-a -->
-        <mxCell id="low_a_gcs" value="&lt;div style=&quot;text-align:center;&quot;&gt;${GCS_BUCKET_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#FFFFFF;&quot;&gt;Cloud Storage&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="42" y="730" width="60" height="36" as="geometry" />
-        </mxCell>
-        <mxCell id="low_a_s3" value="&lt;div style=&quot;text-align:center;&quot;&gt;${AWS_S3_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#FFFFFF;&quot;&gt;S3&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#B91C1C;fillColor=#EF4444;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="124" y="730" width="44" height="36" as="geometry" />
-        </mxCell>
-        <mxCell id="conn_low_a_rep" value="Replicated" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#1E293B;fontSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="low_a_gcs" target="low_a_s3">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Callout text: PRIMARY DB LAYER (A) -->
-        <mxCell id="callout_pri_db" value="&lt;b style=&quot;font-size:7.5px;color:#1E293B;&quot;&gt;PRIMARY DB LAYER (A):&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;Read-Write.&lt;br/&gt;Handles all data&lt;br/&gt;transactions (az-a),&lt;br/&gt;read-replica in az-b&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;lineHeight=1.2;" vertex="1" parent="1">
-          <mxGeometry x="220" y="632" width="95" height="70" as="geometry" />
-        </mxCell>
-
-        <!-- Center Top Hub: Global Traffic Manager (Route 53 or Global LB) (x: 275, y: 530, w: 95, h: 48) -->
-        <mxCell id="gtm_hub" value="&lt;table style=&quot;margin:0 auto;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:4px;&quot;&gt;${GTM_COMPASS_ICON}&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;Global Traffic Manager&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;(Route 53 or Global LB)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7C3AED;fillColor=#EDE9FE;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="275" y="530" width="95" height="48" as="geometry" />
-        </mxCell>
-
-        <!-- Lower Sub-Container 2: AWS ACTIVE (x: 345, y: 560, w: 215, h: 225) -->
-        <mxCell id="aws_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#FED7AA;fillColor=#FFEDD5;" vertex="1" parent="1">
-          <mxGeometry x="345" y="560" width="215" height="225" as="geometry" />
-        </mxCell>
-        <mxCell id="aws_hdr" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:4px;&quot;&gt;${AWS_LOGO}&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;span style=&quot;font-size:7.5px;background-color:#EA580C;color:#FFFFFF;padding:1px 4px;border-radius:2px;font-weight:bold;&quot;&gt;RDS&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:right;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#1E293B;&quot;&gt;ACTIVE&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=5;spacingRight=5;" vertex="1" parent="1">
-          <mxGeometry x="345" y="562" width="215" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- AWS Components -->
-        <mxCell id="aws_eks1" value="&lt;div style=&quot;text-align:center;&quot;&gt;${AWS_EKS_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;EKS&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="352" y="588" width="44" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="aws_rds" value="&lt;div style=&quot;text-align:center;&quot;&gt;${AWS_RDS_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;RDS&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="404" y="588" width="44" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="aws_eks2" value="&lt;div style=&quot;text-align:center;&quot;&gt;${AWS_EKS_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;EKS&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="456" y="588" width="44" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="aws_rds2" value="&lt;div style=&quot;text-align:center;&quot;&gt;${AWS_RDS_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#FFFFFF;&quot;&gt;RDS&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="352" y="640" width="44" height="44" as="geometry" />
-        </mxCell>
-        <mxCell id="aws_aurora" value="&lt;div style=&quot;text-align:center;&quot;&gt;${AWS_RDS_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#FFFFFF;&quot;&gt;Aurora&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#EA580C;fillColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="404" y="640" width="54" height="44" as="geometry" />
-        </mxCell>
-        <mxCell id="conn_rds_aurora" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;" edge="1" parent="1" source="aws_rds2" target="aws_aurora">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Bottom Storage AWS -->
-        <mxCell id="aws_gcs" value="&lt;div style=&quot;text-align:center;&quot;&gt;${GCS_BUCKET_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#FFFFFF;&quot;&gt;Cloud Storage&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="380" y="730" width="60" height="36" as="geometry" />
-        </mxCell>
-        <mxCell id="aws_s3" value="&lt;div style=&quot;text-align:center;&quot;&gt;${AWS_S3_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#FFFFFF;&quot;&gt;S3&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#B91C1C;fillColor=#EF4444;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="460" y="730" width="44" height="36" as="geometry" />
-        </mxCell>
-        <mxCell id="conn_aws_rep" value="Replicated" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#1E293B;fontSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="aws_gcs" target="aws_s3">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Lower Sub-Container 3: GCP (region-b) ACTIVE (x: 690, y: 560, w: 250, h: 225) -->
-        <mxCell id="gcp_low_b_box" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#93C5FD;fillColor=#F0F9FF;" vertex="1" parent="1">
-          <mxGeometry x="690" y="560" width="250" height="225" as="geometry" />
-        </mxCell>
-        <mxCell id="gcp_low_b_hdr" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:4px;&quot;&gt;${GCP_LOGO}&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#1E293B;&quot;&gt;(region-b)&lt;/b&gt; &lt;span style=&quot;font-size:7.5px;background-color:#9333EA;color:#FFFFFF;padding:1px 4px;border-radius:2px;font-weight:bold;&quot;&gt;S3&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:right;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#1E293B;&quot;&gt;STANDBY&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=5;spacingRight=5;" vertex="1" parent="1">
-          <mxGeometry x="690" y="562" width="250" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- 3 Cloud Run cards in row (Region B) -->
-        <mxCell id="low_b_cr1" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#1E293B;&quot;&gt;Cloud Run&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="698" y="588" width="40" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="low_b_cr2" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#1E293B;&quot;&gt;Cloud Run&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="742" y="588" width="40" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="low_b_cr3" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_RUN_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#1E293B;&quot;&gt;Cloud Run&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="786" y="588" width="40" height="42" as="geometry" />
-        </mxCell>
-
-        <!-- Cloud SQL Replica in Region B -->
-        <mxCell id="low_b_replica" value="&lt;div style=&quot;text-align:center;&quot;&gt;${CLOUD_SQL_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:7px;color:#1E293B;&quot;&gt;Cloud SQL&lt;br/&gt;Replica&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="744" y="640" width="56" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Callout text: READ-ONLY REPLICA (B) -->
-        <mxCell id="callout_rep_db" value="&lt;b style=&quot;font-size:7.5px;color:#1E293B;&quot;&gt;READ-ONLY REPLICA (B):&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;Pre-populated. Low compute cost.&lt;br/&gt;Labeled: Read-Only. Pre-failure state.&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;lineHeight=1.2;" vertex="1" parent="1">
-          <mxGeometry x="832" y="590" width="105" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Bottom Storage GCP region-b -->
-        <mxCell id="low_b_gcs" value="&lt;div style=&quot;text-align:center;&quot;&gt;${GCS_BUCKET_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#FFFFFF;&quot;&gt;Cloud Storage&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0284C7;fillColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="698" y="730" width="60" height="36" as="geometry" />
-        </mxCell>
-        <mxCell id="low_b_s3" value="&lt;div style=&quot;text-align:center;&quot;&gt;${AWS_S3_ICON}&lt;br/&gt;&lt;b style=&quot;font-size:6.5px;color:#FFFFFF;&quot;&gt;S3&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#B91C1C;fillColor=#EF4444;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="778" y="730" width="44" height="36" as="geometry" />
-        </mxCell>
-        <mxCell id="conn_low_b_rep" value="Replicated" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#1E293B;fontSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="low_b_gcs" target="low_b_s3">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- =================================================================== -->
-        <!-- MIDDLE-TO-LOWER CONNECTORS & REPLICATION LINES -->
-        <!-- =================================================================== -->
-        <!-- Connection from Region A Data Layer down to lower GCP region-a -->
-        <mxCell id="conn_reg_a_to_low" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;" edge="1" parent="1" source="reg_a_data_box" target="low_a_cr2">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Connection from Region A Data Layer to Global Traffic Manager -->
-        <mxCell id="conn_reg_a_to_gtm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#7C3AED;" edge="1" parent="1" source="reg_a_data_box" target="gtm_hub">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Health Check line from GTM to GCP lower box -->
-        <mxCell id="conn_gtm_to_gcp" value="Health check" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#1E293B;fontSize=7.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="gtm_hub" target="gcp_low_a_box">
+        <!-- Ingress Dispatcher Horizontal Bus & Centered Downward Arrows -->
+        <mxCell id="edge_glb_bus_a" value="" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#1A73E8;endArrow=none;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="290" y="520"/>
-              <mxPoint x="160" y="520"/>
-            </Array>
+            <mxPoint x="475" y="150" as="sourcePoint" />
+            <mxPoint x="475" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_glb_hbus" value="" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#1A73E8;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="170" as="sourcePoint" />
+            <mxPoint x="1210" y="170" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Health Checks line from GTM to AWS lower box -->
-        <mxCell id="conn_gtm_to_aws" value="Health checks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;strokeColor=#1E293B;fontSize=7.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="gtm_hub" target="aws_box">
+        <!-- Down to Region A (Active Ingress - Centered at x=350) -->
+        <mxCell id="edge_to_rega" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.5;strokeColor=#1A73E8;endArrow=block;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="350" y="520"/>
-              <mxPoint x="452" y="520"/>
-            </Array>
+            <mxPoint x="350" y="170" as="sourcePoint" />
+            <mxPoint x="350" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pill_hc_rega" value="&lt;b style=&#39;font-size:8px;color:#1A73E8;&#39;&gt;100% Active Ingress (Health Checked)&lt;/b&gt;" style="rounded=1;fillColor=#E8F0FE;strokeColor=#1A73E8;strokeWidth=1;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="250" y="161" width="200" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Down to Region B (Standby Ingress - Centered at x=1210) -->
+        <mxCell id="edge_to_regb" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#5F6368;dashed=1;dashPattern=3 3;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1210" y="170" as="sourcePoint" />
+            <mxPoint x="1210" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pill_hc_regb" value="&lt;b style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Dormant Standby Route (Zero Live Traffic)&lt;/b&gt;" style="rounded=1;fillColor=#F8F9FA;strokeColor=#5F6368;strokeWidth=1;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="161" width="240" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- =================================================================== -->
+        <!-- TIER 2: MAIN REGIONAL ARCHITECTURE (y: 195..665)                    -->
+        <!-- =================================================================== -->
+
+        <!-- 1. REGION A: PRIMARY ACTIVE REGION (US-East1) (x: 40, w: 620, h: 470)-->
+        <mxCell id="grp_region_a" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#4285F4;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="195" width="620" height="470" as="geometry" />
+        </mxCell>
+        <mxCell id="rega_gcp_ico" value="&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="52" y="204" width="18" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_region_a_title" value="&lt;b style=&#39;font-size:12px;color:#1A73E8;&#39;&gt;REGION A (Primary Active Site - US-East1)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="75" y="202" width="330" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="rega_act_pill" value="&lt;b style=&#39;font-size:8.5px;color:#137333;&#39;&gt;● 100% SERVING CAPACITY&lt;/b&gt;" style="rounded=1;fillColor=#E6F4EA;strokeColor=#34A853;strokeWidth=1;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="480" y="202" width="170" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Compute Layer Container (Region A) -->
+        <mxCell id="grp_rega_compute" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1A73E8;strokeWidth=1.2;fillColor=#F8FAFC;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="48" y="228" width="604" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_rega_comp_title" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Compute &amp;amp; Application Layer (Google Cloud Run)&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;i style=&#39;font-size:8.5px;color:#5F6368;&#39;&gt;— Scaled for 100% active load&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="52" y="230" width="460" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- 4 Microservices in Spacious Horizontal Grid -->
+        <mxCell id="cr_srv_a_box" value="" style="rounded=1;strokeColor=#4285F4;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="56" y="254" width="100" height="98" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_srv_a_ico" value="&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="94" y="260" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_srv_a_lbl" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;Cloud Run Svc&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#202124;&#39;&gt;&lt;b&gt;Microservice-A&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7px;color:#5F6368;&#39;&gt;Ingress API &amp;amp; Auth&lt;br/&gt;Autoscaling Active&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="58" y="286" width="96" height="62" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cr_srv_b_box" value="" style="rounded=1;strokeColor=#4285F4;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="166" y="254" width="100" height="98" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_srv_b_ico" value="&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="204" y="260" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_srv_b_lbl" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;Cloud Run Svc&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#202124;&#39;&gt;&lt;b&gt;Microservice-B&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7px;color:#5F6368;&#39;&gt;Core Transaction&lt;br/&gt;Business Engine&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="168" y="286" width="96" height="62" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cr_srv_c_box" value="" style="rounded=1;strokeColor=#4285F4;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="276" y="254" width="100" height="98" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_srv_c_ico" value="&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="314" y="260" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_srv_c_lbl" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;Cloud Run Svc&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#202124;&#39;&gt;&lt;b&gt;Microservice-C&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7px;color:#5F6368;&#39;&gt;Data Pipeline &amp;amp;&lt;br/&gt;Worker Services&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="278" y="286" width="96" height="62" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cr_srv_d_box" value="" style="rounded=1;strokeColor=#4285F4;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="386" y="254" width="100" height="98" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_srv_d_ico" value="&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="424" y="260" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_srv_d_lbl" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;Cloud Run Svc&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#202124;&#39;&gt;&lt;b&gt;Microservice-D&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7px;color:#5F6368;&#39;&gt;Notification &amp;amp;&lt;br/&gt;Event Dispatcher&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="388" y="286" width="96" height="62" as="geometry" />
+        </mxCell>
+
+        <!-- Autoscaling Status Badge (Region A) -->
+        <mxCell id="badge_rega_scale" value="&lt;font style=&#39;font-size:8px;color:#1A73E8;&#39;&gt;AUTOSCALED&lt;br/&gt;&lt;b style=&#39;font-size:11px;color:#137333;&#39;&gt;100 - 500&lt;/b&gt;&lt;br/&gt;Instances Live&lt;/font&gt;" style="rounded=1;strokeColor=#1A73E8;fillColor=#FFFFFF;arcSize=2;align=center;verticalAlign=middle;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="496" y="254" width="148" height="98" as="geometry" />
+        </mxCell>
+
+        <!-- Full-Scale Serving Layer Bar -->
+        <mxCell id="bar_rega_fullscale" value="&lt;b style=&#39;font-size:8.5px;color:#1A73E8;&#39;&gt;FULL PRODUCTION SERVING CAPACITY (100% TRAFFIC LOAD) • ZERO COLD STARTS&lt;/b&gt;" style="rounded=1;strokeColor=#1A73E8;strokeWidth=1;fillColor=#E8F0FE;align=center;verticalAlign=middle;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="56" y="360" width="588" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- Data & Logic Layer (Cloud Pub/Sub) -->
+        <mxCell id="grp_rega_pubsub" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1A73E8;strokeWidth=1.2;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="48" y="421" width="604" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rega_ps_ico" value="&lt;svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;11&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;6&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;6&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;18&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;2.5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;6&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;18&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;11&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;6&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;6&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;18&quot; cy=&quot;16&quot; r=&quot;2.2&quot; fill=&quot;#1A73E8&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;2.5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;6&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;line x1=&quot;18&quot; y1=&quot;16&quot; x2=&quot;12&quot; y2=&quot;12&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="58" y="434" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_rega_ps_txt" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Event Bus &amp;amp; Messaging Hub (Google Cloud Pub/Sub)&lt;/b&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Event buffering &amp;amp; VPC Connector&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="86" y="423" width="558" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- Primary Database Tier (Cloud SQL HA) -->
+        <mxCell id="grp_db_rega" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#34A853;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="48" y="479" width="604" height="178" as="geometry" />
+        </mxCell>
+        <mxCell id="db_rega_ico" value="&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="58" y="487" width="18" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_db_rega_title" value="&lt;b style=&#39;font-size:10.5px;color:#137333;&#39;&gt;PRIMARY DATABASE TIER (US-East1) • ACTIVE READ/WRITE TRANSACTION CORE&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="80" y="485" width="540" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud SQL Primary Box -->
+        <mxCell id="box_csql_pri" value="" style="rounded=1;strokeColor=#1A73E8;strokeWidth=1.2;fillColor=#E8F0FE;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="56" y="505" width="235" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="csql_pri_ico" value="&lt;svg width=&quot;24&quot; height=&quot;26&quot; viewBox=&quot;0 0 28 30&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M2 7C2 4.24 7.37 2 14 2C20.63 2 26 4.24 26 7V23C26 25.76 20.63 28 14 28C7.37 28 2 25.76 2 23V7Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;14&quot; cy=&quot;7&quot; rx=&quot;12&quot; ry=&quot;5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M2 14C2 16.76 7.37 19 14 19C20.63 19 26 16.76 26 14&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M2 21C2 23.76 7.37 26 14 26C20.63 26 26 23.76 26 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;26&quot; viewBox=&quot;0 0 28 30&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M2 7C2 4.24 7.37 2 14 2C20.63 2 26 4.24 26 7V23C26 25.76 20.63 28 14 28C7.37 28 2 25.76 2 23V7Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;14&quot; cy=&quot;7&quot; rx=&quot;12&quot; ry=&quot;5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M2 14C2 16.76 7.37 19 14 19C20.63 19 26 16.76 26 14&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M2 21C2 23.76 7.37 26 14 26C20.63 26 26 23.76 26 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="66" y="515" width="24" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="csql_pri_lbl" value="&lt;b style=&#39;font-size:11px;color:#1A73E8;&#39;&gt;Cloud SQL Primary HA&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px;color:#137333;&#39;&gt;&lt;b&gt;Zone: us-east1-b (Active)&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:8px;color:#5F6368;line-height:1.4;&#39;&gt;• Handles 100% Read/Write Queries&lt;br/&gt;• CMEK Encryption (Cloud KMS)&lt;br/&gt;• Automated PITR backup&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="92" y="510" width="195" height="94" as="geometry" />
+        </mxCell>
+
+        <!-- Synchronous Zonal HA Standby Box -->
+        <mxCell id="box_csql_ha" value="" style="rounded=1;strokeColor=#34A853;strokeWidth=1.2;fillColor=#E6F4EA;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="409" y="505" width="235" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="csql_ha_ico" value="&lt;svg width=&quot;24&quot; height=&quot;26&quot; viewBox=&quot;0 0 28 30&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M2 7C2 4.24 7.37 2 14 2C20.63 2 26 4.24 26 7V23C26 25.76 20.63 28 14 28C7.37 28 2 25.76 2 23V7Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;14&quot; cy=&quot;7&quot; rx=&quot;12&quot; ry=&quot;5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M2 14C2 16.76 7.37 19 14 19C20.63 19 26 16.76 26 14&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M2 21C2 23.76 7.37 26 14 26C20.63 26 26 23.76 26 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;26&quot; viewBox=&quot;0 0 28 30&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M2 7C2 4.24 7.37 2 14 2C20.63 2 26 4.24 26 7V23C26 25.76 20.63 28 14 28C7.37 28 2 25.76 2 23V7Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;14&quot; cy=&quot;7&quot; rx=&quot;12&quot; ry=&quot;5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M2 14C2 16.76 7.37 19 14 19C20.63 19 26 16.76 26 14&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M2 21C2 23.76 7.37 26 14 26C20.63 26 26 23.76 26 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="419" y="515" width="24" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="csql_ha_lbl" value="&lt;b style=&#39;font-size:11px;color:#137333;&#39;&gt;Cloud SQL Zonal Standby&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px;color:#137333;&#39;&gt;&lt;b&gt;Zone: us-east1-c (HA Sync)&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:8px;color:#5F6368;line-height:1.4;&#39;&gt;• Synchronous replication (RPO=0)&lt;br/&gt;• Automatic failover (&amp;lt;30s)&lt;br/&gt;• Zero RPO for single-zone outage&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="445" y="510" width="195" height="94" as="geometry" />
+        </mxCell>
+
+        <!-- Intra-Region Sync HA Connector Arrow -->
+        <mxCell id="edge_intra_ha" value="&lt;b style=&#39;font-size:8px;color:#137333;&#39;&gt;Sync HA&lt;br/&gt;(RPO=0)&lt;/b&gt;" style="edgeStyle=none;html=1;strokeWidth=2;strokeColor=#34A853;endArrow=block;endFill=1;startArrow=block;startFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#34A853;spacingTop=2;spacingBottom=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="295" y="557" as="sourcePoint" />
+            <mxPoint x="405" y="557" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
-        <!-- Connection from Region B Buckets down to lower GCP region-b -->
-        <mxCell id="conn_bucket_to_low_b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;" edge="1" parent="1" source="bucket_b" target="low_b_cr2">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- Primary DB Metadata & Storage Anchor Footer -->
+        <mxCell id="box_rega_gcs_anchor" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:8px;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:2px 6px;&#39;&gt;&lt;b style=&#39;color:#137333;&#39;&gt;ENCRYPTION:&lt;/b&gt; CMEK (KMS us-east1) | PITR Active&lt;/td&gt;&lt;td style=&#39;text-align:right;padding:2px 6px;&#39;&gt;&lt;b style=&#39;color:#1A73E8;&#39;&gt;GCS DUAL-REGION:&lt;/b&gt; us-east1 • Turbo SLA&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;strokeColor=#DADCE0;fillColor=#F8FAFC;align=left;verticalAlign=middle;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="56" y="618" width="588" height="28" as="geometry" />
         </mxCell>
 
-        <!-- Primary DB to RDS replication connector -->
-        <mxCell id="conn_db_pri_to_rds" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#1E293B;" edge="1" parent="1" source="low_a_ha" target="aws_rds2">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- =================================================================== -->
+        <!-- CENTER REPLICATION & STORAGE BRIDGE (x: 680..880, y: 228..657)     -->
+        <!-- =================================================================== -->
+        <!-- GCS Dual-Region Storage Hub (w: 200) -->
+        <mxCell id="node_gcs_bridge" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1A73E8;strokeWidth=1.2;fillColor=#FFFFFF;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="680" y="228" width="200" height="243" as="geometry" />
+        </mxCell>
+        <mxCell id="gcs_bridge_ico" value="&lt;svg width=&quot;26&quot; height=&quot;22&quot; viewBox=&quot;0 0 30 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M4 8L6.5 23C6.7 24.1 7.7 25 8.8 25H21.2C22.3 25 23.3 24.1 23.5 23L26 8H4Z&quot; fill=&quot;#4285F4&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;15&quot; cy=&quot;8&quot; rx=&quot;11&quot; ry=&quot;4&quot; fill=&quot;#6BA4F8&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M8 15H22&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;26&quot; height=&quot;22&quot; viewBox=&quot;0 0 30 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M4 8L6.5 23C6.7 24.1 7.7 25 8.8 25H21.2C22.3 25 23.3 24.1 23.5 23L26 8H4Z&quot; fill=&quot;#4285F4&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;15&quot; cy=&quot;8&quot; rx=&quot;11&quot; ry=&quot;4&quot; fill=&quot;#6BA4F8&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M8 15H22&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="767" y="240" width="26" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="gcs_bridge_txt" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Google Cloud Storage&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px;color:#1A73E8;&#39;&gt;&lt;b&gt;Dual-Region Bucket&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:8px;color:#202124;&#39;&gt;&lt;b&gt;us-east1 ↔ us-west1&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#5F6368;line-height:1.4;&#39;&gt;• &lt;b style=&#39;color:#137333;&#39;&gt;Turbo Replication:&lt;/b&gt; 15-min SLA&lt;br/&gt;• &lt;b style=&#39;color:#1A73E8;&#39;&gt;Durability:&lt;/b&gt; 99.999999999% (11 9s)&lt;br/&gt;• &lt;b style=&#39;color:#202124;&#39;&gt;Automatic cross-region failover&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="684" y="266" width="192" height="195" as="geometry" />
         </mxCell>
 
-        <!-- Bottom dashed Replication line from GCP region-a across to AWS -->
-        <mxCell id="conn_bot_rep_line" value="Replication" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;strokeWidth=1;strokeColor=#1E293B;fontSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="214" y="705" as="sourcePoint"/>
-            <mxPoint x="380" y="705" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="214" y="742"/>
-              <mxPoint x="380" y="742"/>
-            </Array>
+        <!-- Cross-Region Asynchronous Database Replication Arrow & Card (w: 200) -->
+        <mxCell id="box_async_rep_hub" value="" style="rounded=1;strokeColor=#EA4335;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="680" y="479" width="200" height="178" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_async_rep_hdr" value="&lt;b style=&#39;font-size:9px;color:#D93025;&#39;&gt;ASYNC DATABASE REPLICATION&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#5F6368;&#39;&gt;Google Dedicated Global Fiber&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;spacingTop=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="684" y="484" width="192" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- Red Flex Arrow (Centered in 200px box) -->
+        <mxCell id="arr_async_db" value="" style="shape=flexArrow;endArrow=classic;startArrow=none;html=1;strokeColor=#D93025;fillColor=#EA4335;width=14;endSize=7;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="695" y="557" as="sourcePoint" />
+            <mxPoint x="865" y="557" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 
-        <!-- =================================================================== -->
-        <!-- GIANT RED ASYNCHRONOUS DATABASE REPLICATION VECTOR (OVERLAY) -->
-        <!-- =================================================================== -->
-        <mxCell id="giant_rep_title" value="&lt;b style=&quot;font-size:10.5px;color:#1E293B;&quot;&gt;ASYNCHRONOUS DATABASE&lt;br/&gt;REPLICATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="480" y="598" width="220" height="28" as="geometry" />
-        </mxCell>
-        <mxCell id="giant_rep_arrow" value="" style="shape=singleArrow;whiteSpace=wrap;html=1;arrowWidth=0.35;arrowSize=0.22;fillColor=#DC2626;strokeColor=#991B1B;" vertex="1" parent="1">
-          <mxGeometry x="460" y="648" width="288" height="26" as="geometry" />
-        </mxCell>
-        <mxCell id="giant_rep_callout" value="&lt;b style=&quot;font-size:7.5px;color:#1E293B;&quot;&gt;ASYNCHRONOUS REPLICATION:&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;Data lag ~5min (maximum data delay)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#FED7AA;fillColor=#FFFBEB;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="495" y="682" width="180" height="34" as="geometry" />
+        <!-- Replication Lag Pill -->
+        <mxCell id="pill_rep_lag" value="&lt;b style=&#39;font-size:8.5px;color:#D93025;&#39;&gt;DATA LAG: 1-5 MIN&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7px;color:#5F6368;&#39;&gt;(Engineered RPO Boundary)&lt;/font&gt;" style="rounded=1;strokeColor=#EA4335;fillColor=#FEF2F2;align=center;verticalAlign=middle;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="690" y="590" width="180" height="32" as="geometry" />
         </mxCell>
 
         <!-- =================================================================== -->
-        <!-- RIGHT PANELS: RTO & RPO TARGETS & FAILOVER PROCESS RUNBOOK -->
+        <!-- 2. REGION B: STANDBY PILOT LIGHT REGION (US-West1) (x: 900, w: 620)  -->
         <!-- =================================================================== -->
-
-        <!-- PANEL 1: RTO & RPO TARGETS & TECHNICAL CONSIDERATIONS (CASE B) (x: 1030, y: 62, w: 425, h: 260) -->
-        <mxCell id="panel_rto_rpo" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:14px;background-color:#F8FAFC;&#39;&gt;&lt;font color=&#39;#1E293B&#39; style=&#39;font-size:10.5px;line-height:1.4;&#39;&gt;&lt;b style=&#39;font-size:11.5px;&#39;&gt;RTO &amp;amp; RPO TARGETS &amp;amp; TECHNICAL&lt;br/&gt;CONSIDERATIONS (CASE B)&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;• &lt;b&gt;Target RTO (Recovery Time Objective): 15-30m&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;- Detect failure -&amp;gt; Trigger Orchestration -&amp;gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Update DNS -&amp;gt; Promote DB -&amp;gt; Scale Services&lt;br/&gt;&lt;br/&gt;• &lt;b&gt;Target RPO (Recovery Point Objective): 1-5m&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;- Max data loss is replication delay (e.g., ~5m)&lt;br/&gt;&lt;br/&gt;• &lt;b&gt;Lower Cost:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;- B has 10% of A&#39;s compute cost&lt;br/&gt;&lt;br/&gt;• &lt;b&gt;Failover:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;- Requires service scaling to full load&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;and DNS update / GLB re-routing&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=note;whiteSpace=wrap;html=1;size=16;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1030" y="62" width="425" height="260" as="geometry" />
+        <mxCell id="grp_region_b" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#5F6368;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="900" y="195" width="620" height="470" as="geometry" />
+        </mxCell>
+        <mxCell id="regb_gcp_ico" value="&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="912" y="204" width="18" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_region_b_title" value="&lt;b style=&#39;font-size:12px;color:#5F6368;&#39;&gt;REGION B (Standby Pilot Light Site - US-West1)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="935" y="202" width="330" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="regb_stby_pill" value="&lt;b style=&#39;font-size:8.5px;color:#B06000;&#39;&gt;● PILOT LIGHT STANDBY (~10% COST)&lt;/b&gt;" style="rounded=1;fillColor=#FEF7E0;strokeColor=#FBBC04;strokeWidth=1;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="202" width="230" height="18" as="geometry" />
         </mxCell>
 
-        <!-- PANEL 2: FAILOVER PROCESS RUNBOOK (x: 1030, y: 335, w: 425, h: 450) -->
-        <mxCell id="panel_failover_box" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:14px;background-color:#F1F5F9;&#39;&gt;&lt;font color=&#39;#1E293B&#39; style=&#39;font-size:9.5px;line-height:1.4;&#39;&gt;&lt;div style=&#39;text-align:center;&#39;&gt;&lt;b style=&#39;font-size:12.5px;color:#1E293B;&#39;&gt;FAILOVER PROCESS&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:9px;color:#475569;&#39;&gt;(Automated or Manual Trigger)&lt;/span&gt;&lt;/div&gt;&lt;br/&gt;&lt;b&gt;❶ Target RTO (Recovery Time Objective):&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Detect failure -&amp;gt; Trigger Orchestration&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Update DNS -&amp;gt; Promote Services&lt;br/&gt;&lt;br/&gt;&lt;b&gt;❷ Target RPO (Promote Services):&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Max data loss is its replication delay&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;(e.g., ~5m)&lt;br/&gt;&lt;br/&gt;&lt;b&gt;❸ Step Cost / Pilot Light State:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;(Pre-deployed minimal scale)&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Detect condition -&amp;gt; Trigger orchestration issue&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Promote application: scale to full and DNS update&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Standby application to Cloud DNS replications&lt;br/&gt;&lt;br/&gt;&lt;b&gt;❹ Cloud SQL Cross-Region Read Replica:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Interleaved application calls&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Scale current HA&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Scaled-down warm resources ready to rapid&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;auto-scaling on failover&lt;br/&gt;&lt;br/&gt;&lt;b&gt;❺ Failover:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;• Requires service scaling to full load and&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;DNS update / GLB re-routing&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#94A3B8;fillColor=#F1F5F9;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1030" y="335" width="425" height="450" as="geometry" />
+        <!-- Compute Layer Container (Region B Standby) -->
+        <mxCell id="grp_regb_compute" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#BDC1C6;strokeWidth=1.2;fillColor=#F8FAFC;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="908" y="228" width="604" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_regb_comp_title" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Warm Pilot Light Compute Layer (Cloud Run)&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;i style=&#39;font-size:8.5px;color:#5F6368;&#39;&gt;— Pre-deployed warm instances ready for scale&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="912" y="230" width="460" height="18" as="geometry" />
         </mxCell>
 
-        <!-- Left bracket connection for Failover Process -->
-        <mxCell id="conn_failover_bracket" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#7F1D1D;" edge="1" parent="1" source="panel_failover_box" target="giant_rep_arrow">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1012" y="560"/>
-              <mxPoint x="1012" y="661"/>
-            </Array>
-          </mxGeometry>
+        <!-- 2 Pre-deployed Warm Cloud Run Services -->
+        <mxCell id="cr_stby_a_box" value="" style="rounded=1;strokeColor=#BDC1C6;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="916" y="254" width="105" height="98" as="geometry" />
         </mxCell>
+        <mxCell id="cr_stby_a_ico" value="&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="956" y="260" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_stby_a_lbl" value="&lt;b style=&#39;font-size:8.5px;color:#5F6368;&#39;&gt;Cloud Run Svc&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#202124;&#39;&gt;&lt;b&gt;Warm Pilot (1-2 Inst)&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7px;color:#5F6368;&#39;&gt;Pre-warmed binary&lt;br/&gt;Ready for traffic load&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="918" y="286" width="101" height="62" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cr_stby_b_box" value="" style="rounded=1;strokeColor=#BDC1C6;fillColor=#FFFFFF;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1031" y="254" width="105" height="98" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_stby_b_ico" value="&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 32 32&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M16 2L28.12 9V23L16 30L3.88 23V9L16 2Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M10 11L15 16L10 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M16 11L21 16L16 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M22 11L27 16L22 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="1071" y="260" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_stby_b_lbl" value="&lt;b style=&#39;font-size:8.5px;color:#5F6368;&#39;&gt;Worker Svc&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#202124;&#39;&gt;&lt;b&gt;Warm Pilot (1-2 Inst)&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7px;color:#5F6368;&#39;&gt;Configured VPC Access&lt;br/&gt;Pre-connected to DB&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1033" y="286" width="101" height="62" as="geometry" />
+        </mxCell>
+
+        <!-- Pilot Light State Explanatory Card (x: 1146, w: 358) -->
+        <mxCell id="callout_pilot_light" value="&lt;b style=&#39;font-size:9.5px;color:#B06000;&#39;&gt;PILOT LIGHT ARCHITECTURE PATTERN (CASE B)&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:8px;color:#202124;line-height:1.45;&#39;&gt;• &lt;b style=&#39;color:#B06000;&#39;&gt;Cost Optimization:&lt;/b&gt; Compute operates at ~10% capacity, saving ~90% idle cost&lt;br/&gt;• &lt;b style=&#39;color:#137333;&#39;&gt;Rapid Autoscaling:&lt;/b&gt; On failover, scales from 1 to 500 instances in &amp;lt;45s&lt;br/&gt;• &lt;b style=&#39;color:#5F6368;&#39;&gt;Traffic Isolation:&lt;/b&gt; Ingress blocked until Cloud SQL replica is promoted&lt;/font&gt;" style="text;html=1;strokeColor=#FBBC04;strokeWidth=1;fillColor=#FEF7E0;rounded=1;align=left;verticalAlign=middle;spacingLeft=8;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1146" y="254" width="358" height="98" as="geometry" />
+        </mxCell>
+
+        <!-- Standby Status Banner -->
+        <mxCell id="bar_regb_status" value="&lt;b style=&#39;font-size:8.5px;color:#5F6368;&#39;&gt;NOT SERVING ACTIVE TRAFFIC • PRE-WARMED STANDBY TIERS SYNCHRONIZED ACROSS VPC&lt;/b&gt;" style="rounded=1;strokeColor=#BDC1C6;strokeWidth=1;fillColor=#F1F3F4;align=center;verticalAlign=middle;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="916" y="360" width="588" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- Secondary Storage Mirror Note -->
+        <mxCell id="grp_regb_storage" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#BDC1C6;strokeWidth=1.2;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="908" y="421" width="604" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="regb_gcs_ico" value="&lt;svg width=&quot;26&quot; height=&quot;22&quot; viewBox=&quot;0 0 30 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M4 8L6.5 23C6.7 24.1 7.7 25 8.8 25H21.2C22.3 25 23.3 24.1 23.5 23L26 8H4Z&quot; fill=&quot;#4285F4&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;15&quot; cy=&quot;8&quot; rx=&quot;11&quot; ry=&quot;4&quot; fill=&quot;#6BA4F8&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M8 15H22&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;26&quot; height=&quot;22&quot; viewBox=&quot;0 0 30 26&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M4 8L6.5 23C6.7 24.1 7.7 25 8.8 25H21.2C22.3 25 23.3 24.1 23.5 23L26 8H4Z&quot; fill=&quot;#4285F4&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;15&quot; cy=&quot;8&quot; rx=&quot;11&quot; ry=&quot;4&quot; fill=&quot;#6BA4F8&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M8 15H22&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="918" y="434" width="26" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_regb_gcs_txt" value="&lt;b style=&#39;font-size:10px;color:#1E293B;&#39;&gt;Secondary Storage Mirror &amp;amp; Standby VPC Subnet (US-West1)&lt;/b&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font style=&#39;font-size:8px;color:#5F6368;&#39;&gt;Dual-region GCS replica &amp;amp; VPC Connector&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="946" y="423" width="558" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- Standby Database Tier (Cloud SQL Replica) -->
+        <mxCell id="grp_db_regb" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#FBBC04;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="908" y="479" width="604" height="178" as="geometry" />
+        </mxCell>
+        <mxCell id="db_regb_ico" value="&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;18&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 20&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2 9.11 2 6.6 3.64 5.35 6.04 2.34 6.36 0 8.91 0 12c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M19.35 8.04C18.67 4.59 15.64 2 12 2c-0.42 0-0.83 0.04-1.23 0.11l3.58 6.93 4.95-1z&quot; fill=&quot;#EA4335&quot;/&gt;&lt;path d=&quot;M10.77 2.11C9.11 2.37 7.63 3.2 6.6 4.35l4.17 4.65L10.77 2.11z&quot; fill=&quot;#FBBC05&quot;/&gt;&lt;path d=&quot;M5.35 6.04C2.34 6.36 0 8.91 0 12c0 1.25 0.38 2.41 1.04 3.37l4.31-9.33z&quot; fill=&quot;#34A853&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="918" y="487" width="18" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_db_regb_title" value="&lt;b style=&#39;font-size:10.5px;color:#B06000;&#39;&gt;STANDBY DATABASE TIER (US-West1) • CROSS-REGION ASYNC READ REPLICA&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="940" y="485" width="540" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud SQL Replica Box (w: 230) -->
+        <mxCell id="box_csql_replica" value="" style="rounded=1;strokeColor=#FBBC04;strokeWidth=1.2;fillColor=#FEF7E0;arcSize=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="916" y="505" width="230" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="csql_rep_ico" value="&lt;svg width=&quot;24&quot; height=&quot;26&quot; viewBox=&quot;0 0 28 30&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M2 7C2 4.24 7.37 2 14 2C20.63 2 26 4.24 26 7V23C26 25.76 20.63 28 14 28C7.37 28 2 25.76 2 23V7Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;14&quot; cy=&quot;7&quot; rx=&quot;12&quot; ry=&quot;5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M2 14C2 16.76 7.37 19 14 19C20.63 19 26 16.76 26 14&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M2 21C2 23.76 7.37 26 14 26C20.63 26 26 23.76 26 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;" style="shape=image;html=1;verticalAlign=top;image=data:image/svg+xml,&lt;svg width=&quot;24&quot; height=&quot;26&quot; viewBox=&quot;0 0 28 30&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M2 7C2 4.24 7.37 2 14 2C20.63 2 26 4.24 26 7V23C26 25.76 20.63 28 14 28C7.37 28 2 25.76 2 23V7Z&quot; fill=&quot;#E8F0FE&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;ellipse cx=&quot;14&quot; cy=&quot;7&quot; rx=&quot;12&quot; ry=&quot;5&quot; fill=&quot;#4285F4&quot;/&gt;&lt;path d=&quot;M2 14C2 16.76 7.37 19 14 19C20.63 19 26 16.76 26 14&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;path d=&quot;M2 21C2 23.76 7.37 26 14 26C20.63 26 26 23.76 26 21&quot; stroke=&quot;#1A73E8&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;/svg&gt;;" vertex="1" parent="1">
+          <mxGeometry x="926" y="515" width="24" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="csql_rep_lbl" value="&lt;b style=&#39;font-size:11px;color:#B06000;&#39;&gt;Cloud SQL Read Replica&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px;color:#B06000;&#39;&gt;&lt;b&gt;Zone: us-west1-a (Standby)&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style=&#39;font-size:7.5px;color:#5F6368;line-height:1.35;&#39;&gt;• Continuous WAL async replication&lt;br/&gt;• Read-Only mode in steady state&lt;br/&gt;• Promoted to Primary on failover&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=4;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="952" y="508" width="190" height="98" as="geometry" />
+        </mxCell>
+
+        <!-- Replica Promotion & Failover Controller Card (x: 1156, w: 348) -->
+        <mxCell id="box_db_regb_note" value="&lt;b style=&#39;font-size:9.5px;color:#D93025;&#39;&gt;REPLICA PROMOTION &amp;amp; INGRESS SWITCHING&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size:8px;color:#202124;line-height:1.4;&#39;&gt;• &lt;b style=&#39;color:#D93025;&#39;&gt;Command:&lt;/b&gt; &lt;code&gt;gcloud sql instances promote-replica&lt;/code&gt;&lt;br/&gt;• &lt;b style=&#39;color:#1A73E8;&#39;&gt;Duration:&lt;/b&gt; Converts replica to Primary in 2-5m&lt;br/&gt;• &lt;b style=&#39;color:#137333;&#39;&gt;Integrity:&lt;/b&gt; Sever Region A ingress before promotion&lt;/font&gt;" style="rounded=1;strokeColor=#FBBC04;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=8;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1156" y="505" width="348" height="104" as="geometry" />
+        </mxCell>
+
+        <!-- Standby DB Metadata Footer -->
+        <mxCell id="bar_db_regb_meta" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:8px;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;padding:2px 6px;&#39;&gt;&lt;b style=&#39;color:#B06000;&#39;&gt;STANDBY DB:&lt;/b&gt; Pre-warmed async replica • CMEK (KMS us-west1)&lt;/td&gt;&lt;td style=&#39;text-align:right;padding:2px 6px;&#39;&gt;&lt;b style=&#39;color:#1A73E8;&#39;&gt;GCS DUAL-REGION:&lt;/b&gt; us-west1 (Mirror)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;strokeColor=#DADCE0;fillColor=#F8FAFC;align=left;verticalAlign=middle;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="916" y="618" width="588" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- =================================================================== -->
+        <!-- TIER 3: BOTTOM SRE RUNBOOK & SLA METRICS CARDS (y: 680..830)         -->
+        <!-- =================================================================== -->
+        <!-- LEFT CARD: SRE FAILOVER & RECOVERY RUNBOOK (SCIENTIFIC 6 STEPS) -->
+        <mxCell id="card_failover_runbook" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1A73E8;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="680" width="930" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="fo_runbook_title" value="&lt;b style=&#39;font-size:11px;color:#1A73E8;&#39;&gt;🚀 SRE DISASTER RECOVERY &amp;amp; FAILOVER RUNBOOK (PILOT LIGHT CASE B)&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;font-size:8.5px;color:#5F6368;&#39;&gt;— Ordered failover sequence ensuring zero split-brain and minimal data loss&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="42" y="682" width="920" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="fo_runbook_body" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:8px;line-height:1.4;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;width:33%;padding:4px 8px;vertical-align:top;border-right:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#137333;font-size:8.5px;&#39;&gt;❶ Step 1: Detect &amp;amp; Verify Failure&lt;/b&gt;&lt;br/&gt;• Probes report 3 consecutive failures&lt;br/&gt;• Automated P1 Escalation triggered&lt;/td&gt;&lt;td style=&#39;width:33%;padding:4px 8px;vertical-align:top;border-right:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#D93025;font-size:8.5px;&#39;&gt;❷ Step 2: Ingress Fencing (STONITH)&lt;/b&gt;&lt;br/&gt;• Sever ingress to Region A at Global LB&lt;br/&gt;• Prevent dual-primary split-brain writes&lt;/td&gt;&lt;td style=&#39;width:34%;padding:4px 8px;vertical-align:top;&#39;&gt;&lt;b style=&#39;color:#1A73E8;font-size:8.5px;&#39;&gt;❸ Step 3: Promote Cloud SQL Replica&lt;/b&gt;&lt;br/&gt;• Run &lt;code&gt;gcloud sql instances promote-replica&lt;/code&gt;&lt;br/&gt;• Converts replica to Primary in 2-5m&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;border-top:1px solid #DADCE0;&#39;&gt;&lt;td style=&#39;width:33%;padding:4px 8px;vertical-align:top;border-right:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#1A73E8;font-size:8.5px;&#39;&gt;❹ Step 4: Scale Pilot Light Compute&lt;/b&gt;&lt;br/&gt;• Autoscale Cloud Run to 100-500 instances&lt;br/&gt;• Warm instances eliminate cold starts (&amp;lt;45s)&lt;/td&gt;&lt;td style=&#39;width:33%;padding:4px 8px;vertical-align:top;border-right:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#137333;font-size:8.5px;&#39;&gt;❺ Step 5: Traffic Shift &amp;amp; Ingress Cutover&lt;/b&gt;&lt;br/&gt;• Point Global LB 100% to Region B&lt;br/&gt;• Verify zero-downtime serving &amp;amp; low errors&lt;/td&gt;&lt;td style=&#39;width:34%;padding:4px 8px;vertical-align:top;&#39;&gt;&lt;b style=&#39;color:#5F6368;font-size:8.5px;&#39;&gt;❻ Step 6: Failback Protocol (Recovery)&lt;/b&gt;&lt;br/&gt;• Configure reverse async replication&lt;br/&gt;• Drain WAL lag before restoring traffic&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=2;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="42" y="704" width="920" height="125" as="geometry" />
+        </mxCell>
+
+        <!-- RIGHT CARD: CONTINUITY SLA & METRICS SUMMARY -->
+        <mxCell id="card_rto_rpo" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#34A853;strokeWidth=1.5;fillColor=#FFFFFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="990" y="680" width="530" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="rto_rpo_title" value="&lt;b style=&#39;font-size:11px;color:#137333;&#39;&gt;📊 CONTINUITY SLA &amp;amp; RPO/RTO RECOVERY METRICS (CASE B)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="992" y="682" width="520" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rto_rpo_body" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.4;&#39;&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;&#39;&gt;&lt;b style=&#39;color:#137333;&#39;&gt;Target RTO (Recovery Time):&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;font-weight:bold;color:#137333;&#39;&gt;15 - 30 minutes&lt;/td&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;color:#5F6368;&#39;&gt;Detection + Promotion + Scaling + Cutover&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;&#39;&gt;&lt;b style=&#39;color:#D93025;&#39;&gt;Target RPO (Data Loss):&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;font-weight:bold;color:#D93025;&#39;&gt;1 - 5 minutes&lt;/td&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;color:#5F6368;&#39;&gt;Bounded by cross-region replication lag&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;&#39;&gt;&lt;b style=&#39;color:#B06000;&#39;&gt;Pilot Light Cost Efficiency:&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;font-weight:bold;color:#B06000;&#39;&gt;~90% Compute Savings&lt;/td&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;color:#5F6368;&#39;&gt;Region B runs at ~10% capacity in standby&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;&#39;&gt;&lt;b style=&#39;color:#1A73E8;&#39;&gt;Storage Replication SLA:&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;font-weight:bold;color:#1A73E8;&#39;&gt;&amp;lt; 15 min (Turbo SLA)&lt;/td&gt;&lt;td style=&#39;padding:4px 6px;border:1px solid #E2E8F0;color:#5F6368;&#39;&gt;99.999999999% (11 9s) dual-region durability&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingTop=2;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="992" y="704" width="520" height="125" as="geometry" />
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>
 
-  <!-- PAGE 2: DR PLAYBOOK & ENTERPRISE CONTINUITY SLA MATRIX -->
-  <diagram id="gcp_multi_region_dr_playbook" name="Page 2: DR Playbook &amp; Enterprise Continuity SLA Matrix">
-    <mxGraphModel dx="1480" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="780" background="#FFFFFF">
+  <!-- ======================================================================= -->
+  <!-- PAGE 2: EXECUTIVE ARCHITECTURE PLAYBOOK & DISASTER RECOVERY SLA MATRIX   -->
+  <!-- ======================================================================= -->
+  <diagram id="gcp_dr_executive_playbook" name="2. Executive Playbook &amp; Continuity SLA Matrix">
+    <mxGraphModel dx="1560" dy="980" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="980" background="#FFFFFF">
       <root>
-        <mxCell id="0_drp2" />
-        <mxCell id="1_drp2" parent="0_drp2" />
+        <mxCell id="p2_0" />
+        <mxCell id="p2_1" parent="p2_0" />
 
-        <mxCell id="drp2_title" value="GCP Multi-Region Disaster Recovery Strategy &amp;amp; Business Continuity Governance (Case B)" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_drp2">
-          <mxGeometry x="30" y="15" width="1380" height="28" as="geometry" />
+        <!-- PAGE 2 HEADER -->
+        <mxCell id="p2_hdr_title" value="GCP DISASTER RECOVERY: EXECUTIVE ARCHITECTURE PLAYBOOK &amp;amp; SLA MATRIX" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=15;fontStyle=1;fontColor=#202124;spacingLeft=8;" vertex="1" parent="p2_1">
+          <mxGeometry x="40" y="14" width="1020" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="drp2_sub" value="Active-Passive Pilot Light Architecture • RTO/RPO Recovery Matrix • Asynchronous Cross-Region Database Replication • Split-Brain Safeguards" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1_drp2">
-          <mxGeometry x="30" y="42" width="1380" height="20" as="geometry" />
+        <mxCell id="p2_hdr_badge" value="&lt;span style=&#39;color:#137333;font-weight:700;font-size:10.5px;&#39;&gt;● SRE &amp;amp; Board Level Approved&lt;/span&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style=&#39;color:#5F6368;font-size:10px;&#39;&gt;Multi-Region Pilot Light (Case B)&lt;/span&gt;" style="rounded=1;fillColor=#E6F4EA;strokeColor=#34A853;strokeWidth=1;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;" vertex="1" parent="p2_1">
+          <mxGeometry x="1080" y="14" width="440" height="24" as="geometry" />
         </mxCell>
-
-        <!-- TWO-COLUMN STRATEGIC PERSPECTIVE -->
-        <mxCell id="drlens_google" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#16A34A;padding:10px 14px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:14px;&#39;&gt;&lt;b&gt;🚀 BIG TECH SRE &amp;amp; RELIABILITY STANDPOINT (Case B: Pilot Light)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:16px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:12px;line-height:1.6;&#39;&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;1. Cost-Optimized Pilot Light Footprint:&lt;/b&gt; Secondary standby compute is kept at 10% capacity during normal state (1-2 minimum instances), drastically lowering monthly cloud infrastructure burn while keeping services pre-warmed.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;2. Cross-Region Cloud SQL Asynchronous Replication:&lt;/b&gt; Asynchronous read replica in us-west1 maintains continuous data synchronization with an engineered RPO of 1-5 minutes.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#16A34A;&#39;&gt;3. Automated Failover Orchestration:&lt;/b&gt; Health-checked Global L7 Load Balancer detects primary region failure, promotes Cloud SQL read-replica to primary read-write, and triggers Cloud Run autoscaler (100-500 instances) in &amp;lt;15-30m RTO.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#16A34A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
-          <mxGeometry x="35" y="70" width="670" height="320" as="geometry" />
-        </mxCell>
-
-        <mxCell id="drlens_mckinsey" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#DC2626;padding:10px 14px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:14px;&#39;&gt;&lt;b&gt;💼 TIER-1 MANAGEMENT CONSULTING &amp;amp; REGULATORY STANDPOINT&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:16px;background-color:#FEF2F2;&#39;&gt;&lt;font color=&#39;#0F172A&#39; style=&#39;font-size:12px;line-height:1.6;&#39;&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;1. Regulatory Business Continuity (SEC / FINRA / ISO 22301):&lt;/b&gt; Geographic separation across US-East1 and US-West1 (&amp;gt;2,000 miles) satisfies strict disaster recovery separation mandates for financial and enterprise systems.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;2. Dual-Region GCS Object Replication:&lt;/b&gt; Multi-region dual-region buckets ensure all transactional payload objects and static assets are asynchronously replicated with 99.999999999% durability.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#DC2626;&#39;&gt;3. Enterprise Insurance &amp;amp; Risk Mitigation:&lt;/b&gt; Documented 5-step failover runbook and verified automated failover simulations protect against regional cloud service provider blackouts.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#DC2626;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
-          <mxGeometry x="735" y="70" width="675" height="320" as="geometry" />
+        <mxCell id="p2_hdr_line" value="" style="line;strokeWidth=1.5;strokeColor=#DADCE0;html=1;" vertex="1" parent="p2_1">
+          <mxGeometry x="40" y="44" width="1480" height="4" as="geometry" />
         </mxCell>
 
-        <!-- DR SLA & FAILURE MODE MATRIX TABLE -->
-        <mxCell id="dr_slo_matrix" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#0F172A;padding:8px 12px;&#39; colspan=&#39;5&#39;&gt;&lt;font color=&#39;#FFFFFF&#39; style=&#39;font-size:13px;&#39;&gt;&lt;b&gt;📊 ENTERPRISE DISASTER RECOVERY FAILURE MODE &amp;amp; RPO/RTO RECOVERY MATRIX (CASE B)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Failure Scenario&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Detection Mechanism&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Target RTO (Recovery Time)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Target RPO (Data Loss)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-weight:bold;font-size:11px;color:#0F172A;&#39;&gt;Automated Failover Action&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Normal Production State&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Global L7 LB Health Checks&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds (Live)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds (Live)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;100% Ingress to US-East1; Pilot Light 10% standby in US-West1&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Single Zone Failure (e.g., us-east1-b)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Cloud Run / Cloud SQL HA Failover&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;&amp;lt; 30 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Intra-region failover to secondary zone HA replica in us-east1-c&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Major Regional Outage (US-East1 Down)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Global LB Health Probe Failures (3x)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#D97706;font-weight:bold;&#39;&gt;15 - 30 minutes&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#D97706;font-weight:bold;&#39;&gt;1 - 5 minutes (Async DB Lag)&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Promote Cloud SQL Replica to Primary; Scale Cloud Run pods from 1 to 500 in US-West1&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8FAFC;&#39;&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;&lt;b&gt;Storage / Object Outage&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;GCS Dual-Region Health Sentry&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;Instantaneous&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;color:#16A34A;font-weight:bold;&#39;&gt;0 seconds&lt;/td&gt;&lt;td style=&#39;padding:8px;border:1px solid #E2E8F0;font-size:11px;&#39;&gt;Dual-region GCS automatically serves requests from healthy region bucket&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_drp2">
-          <mxGeometry x="35" y="405" width="1375" height="240" as="geometry" />
+        <!-- COLUMN 1: BIG TECH SRE PERSPECTIVE (GOOGLE / STRIPE) -->
+        <mxCell id="p2_col1_card" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#1A73E8;padding:8px 12px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39;&gt;&lt;b&gt;🚀 1. Big Tech Product Standpoint (Google / Stripe SRE)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:12px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#202124&#39; style=&#39;font-size:11px;line-height:1.5;&#39;&gt;&lt;b style=&#39;color:#1A73E8;&#39;&gt;• Automated Health Probing &amp;amp; Anycast Ingress&lt;/b&gt;&lt;br/&gt;Global L7 External Load Balancer probes backend instances every 5 seconds. Traffic cutover to US-West1 occurs via Anycast IP reconfiguration without client DNS TTL propagation delays.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#1A73E8;&#39;&gt;• Zero-Data-Loss Split-Brain Prevention&lt;/b&gt;&lt;br/&gt;Ingress fencing ensures primary region is isolated before database promotion. Cloud SQL replica is promoted with strict transaction log synchronization.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#1A73E8;&#39;&gt;• Serverless Container Warmup SLA&lt;/b&gt;&lt;br/&gt;Cloud Run instances scale from 1 warm pilot instance to 500 instances in &amp;lt;45 seconds upon traffic shift, ensuring zero cold-start dropouts.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#1A73E8;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="p2_1">
+          <mxGeometry x="40" y="65" width="725" height="260" as="geometry" />
         </mxCell>
+
+        <!-- COLUMN 2: TIER-1 MANAGEMENT CONSULTING PERSPECTIVE (MCKINSEY / BCG) -->
+        <mxCell id="p2_col2_card" value="&lt;table style=&#39;width:100%;border-collapse:collapse;&#39;&gt;&lt;tr&gt;&lt;td style=&#39;background-color:#137333;padding:8px 12px;&#39;&gt;&lt;font color=&#39;#FFFFFF&#39;&gt;&lt;b&gt;🏛️ 2. Management Consulting Standpoint (McKinsey / BCG)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&#39;padding:12px;background-color:#FFFFFF;&#39;&gt;&lt;font color=&#39;#202124&#39; style=&#39;font-size:11px;line-height:1.5;&#39;&gt;&lt;b style=&#39;color:#137333;&#39;&gt;• FinOps Cost Optimization (Pilot Light Model)&lt;/b&gt;&lt;br/&gt;Case B reduces disaster recovery idle compute spend by ~90% compared to Active-Active Hot Standby, saving millions in annual cloud operating expenses.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#137333;&#39;&gt;• Business Continuity &amp;amp; Regulatory Compliance&lt;/b&gt;&lt;br/&gt;Meets ISO 22301, SOC 2 Type II, and FDA/GxP disaster recovery audit requirements with a verified 15-30m RTO and 1-5m RPO boundary.&lt;br/&gt;&lt;br/&gt;&lt;b style=&#39;color:#137333;&#39;&gt;• Boardroom Operational Risk Mitigation&lt;/b&gt;&lt;br/&gt;Protects corporate revenue and enterprise reputation with proven quarterly automated DR drill capability.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#34A853;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="p2_1">
+          <mxGeometry x="795" y="65" width="725" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- FULL-WIDTH BOTTOM TABLE: ENTERPRISE DISASTER RECOVERY SLA MATRIX -->
+        <mxCell id="p2_sla_table" value="&lt;table style=&#39;width:100%;border-collapse:collapse;font-size:10px;&#39;&gt;&lt;tr style=&#39;background-color:#202124;color:#FFFFFF;&#39;&gt;&lt;th style=&#39;padding:8px;border:1px solid #DADCE0;text-align:left;&#39;&gt;Failure Mode / Component&lt;/th&gt;&lt;th style=&#39;padding:8px;border:1px solid #DADCE0;text-align:left;&#39;&gt;Primary Technology&lt;/th&gt;&lt;th style=&#39;padding:8px;border:1px solid #DADCE0;text-align:left;&#39;&gt;Standby Technology&lt;/th&gt;&lt;th style=&#39;padding:8px;border:1px solid #DADCE0;text-align:left;&#39;&gt;Target RPO&lt;/th&gt;&lt;th style=&#39;padding:8px;border:1px solid #DADCE0;text-align:left;&#39;&gt;Target RTO&lt;/th&gt;&lt;th style=&#39;padding:8px;border:1px solid #DADCE0;text-align:left;&#39;&gt;Failover Trigger &amp;amp; Automated Runbook&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8F9FA;&#39;&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b&gt;Zonal Outage (us-east1-b)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Cloud SQL Primary (Zone b)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Cloud SQL Standby (Zone c)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#137333;&#39;&gt;0 seconds (RPO=0)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&amp;lt; 30 seconds&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Automatic synchronous zonal failover managed by GCP&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#FFFFFF;&#39;&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b&gt;Regional Outage (US-East1)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Cloud Run (100-500 instances)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Cloud Run (Warm Pilot Light)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#137333;&#39;&gt;0 seconds&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&amp;lt; 45 seconds&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Automatic concurrency autoscaling trigger from 1 to 500 instances&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8F9FA;&#39;&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b&gt;Regional Database Failure&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Cloud SQL Primary HA (us-east1)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Cloud SQL Replica (us-west1)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#D93025;&#39;&gt;1 - 5 minutes&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;2 - 5 minutes&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;code&gt;gcloud sql instances promote-replica&lt;/code&gt; orchestration&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#FFFFFF;&#39;&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b&gt;Storage &amp;amp; Document Loss&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;GCS Bucket (us-east1)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;GCS Dual-Region (us-west1)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#137333;&#39;&gt;&amp;lt; 15 minutes (Turbo SLA)&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;0 seconds (Instant)&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Dual-region active replication with 99.999999999% durability&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background-color:#F8F9FA;&#39;&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b&gt;Global Traffic Cutover&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Global External HTTPS LB&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Cloud DNS Routing Policies&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&lt;b style=&#39;color:#137333;&#39;&gt;0 seconds&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;&amp;lt; 15 seconds&lt;/td&gt;&lt;td style=&#39;padding:7px;border:1px solid #DADCE0;&#39;&gt;Anycast IP backend capacity shift &amp;amp; health probe failover&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;strokeWidth=1.5;strokeColor=#202124;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="p2_1">
+          <mxGeometry x="40" y="345" width="1480" height="420" as="geometry" />
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>
 </mxfile>
-  `.trim();
+`.trim();
 }
-
-
-
