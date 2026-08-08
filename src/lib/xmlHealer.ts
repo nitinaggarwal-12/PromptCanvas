@@ -35,7 +35,6 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     archType === 'tech_c4_system_context' ||
     archType === 'tech_modern_data_stack' ||
     archType === 'tech_event_driven_eda' ||
-    archType === 'legacy_dependency_map' ||
     archType === 'six_rs_migration_matrix' ||
     archType === 'hybrid_strangler_transition' ||
     archType === 'cloud_finops_chargeback' ||

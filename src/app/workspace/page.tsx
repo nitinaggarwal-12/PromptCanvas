@@ -2265,10 +2265,10 @@ function WorkspaceContent() {
       executive: ['conceptual_diagram', 'unified_system_view', 'business_agent_gov_hitl', 'business_agent_governance_hitl', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
       fintech: ['erd', 'data_ai_pipeline', 'secure_deployment_map', 'tech_streaming_analytics', 'tech_c4_system_context', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
       legal: ['business_agent_gov_hitl', 'business_agent_governance_hitl', 'secure_deployment_map', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
-      architect: ['conceptual_diagram', 'unified_system_view', 'tech_serverless_gcp', 'tech_microservices_gcp', 'tech_microservices_aws', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
+      architect: ['conceptual_diagram', 'unified_system_view', 'secure_deployment_map', 'tech_serverless_gcp', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
       devops: ['sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_eda'],
-      security: ['secure_deployment_map', 'business_agent_gov_hitl', 'business_agent_governance_hitl', 'tech_microservices_gcp', 'tech_microservices_aws', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
-      data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse_gcp', 'tech_data_lakehouse', 'tech_rag_gcp', 'tech_modern_data_stack', 'tech_agent_harness_runtime']
+      security: ['secure_deployment_map', 'business_agent_gov_hitl', 'business_agent_governance_hitl', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
+      data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse_gcp', 'tech_modern_data_stack', 'tech_agent_harness_runtime']
     };
 
     function getPersonaBadge(id: string) {
@@ -3933,7 +3933,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       const targetArch = archId.toLowerCase();
       return vArch === targetArch ||
              (targetArch === 'conceptual_diagram' && (vArch === 'conceptual' || vArch === '1. conceptual diagram')) ||
-             (targetArch === 'tech_rag_gcp' && (vArch === 'rag_gcp' || vArch === 'ai_rag')) ||
+             (targetArch === 'agentic_rag' && (vArch === 'rag_gcp' || vArch === 'ai_rag' || vArch === 'agentic_rag' || vArch === 'tech_rag_gcp')) ||
              (targetArch === 'secure_deployment_map' && vArch.includes('secure_deployment')) ||
              (targetArch === 'governance_state_machine' && vArch.includes('governance'));
     });

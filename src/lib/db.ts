@@ -2199,7 +2199,7 @@ const CICD_PIPELINE_XML = `
 </mxfile>
 `.trim();
 
-const AI_RAG_XML = getTechnicalArchitectureXml('tech_rag_gcp');
+const AI_RAG_XML = getDefaultXmlForArchitecture('agentic_rag') || '';
 
 async function seedDiagram(name: string, xml: string, comment: string, prompt: string) {
   const diagramId = uuidv4();

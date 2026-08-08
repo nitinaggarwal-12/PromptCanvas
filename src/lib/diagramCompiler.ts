@@ -4010,49 +4010,6 @@ export function getBenchmarkTechnicalArchitectureSpec(archId: string): CompiledD
     };
   }
 
-  if (archId === 'tech_microservices_gcp' || archId === 'tech_microservices_aws' || archId === 'k8s_mesh') {
-    return {
-      diagramId: archId,
-      title: "AWS EKS Microservices Service Mesh Architecture",
-      columns: [
-        {
-          id: "c1", title: "AWS Edge & Ingress", theme: "blue",
-          nodes: [
-            { id: "n1", stencil: "standard_card", title: "Amazon Route 53", subtitle: "DNS & Latency-Based Routing" },
-            { id: "n2", stencil: "standard_card", title: "AWS Shield & WAF", subtitle: "L3/L4 DDoS & L7 WAF Shield" },
-            { id: "n3", stencil: "standard_card", title: "ALB Ingress Controller", subtitle: "Application Load Balancer Ingress" }
-          ]
-        },
-        {
-          id: "c2", title: "EKS Kubernetes Service Mesh", theme: "green",
-          nodes: [
-            { id: "n4", stencil: "cube_platform", title: "Istio / AWS App Mesh", subtitle: "Zero-Trust mTLS & Traffic Splitting" },
-            { id: "n5", stencil: "cube_platform", title: "EKS Microservices Pods", subtitle: "Multi-AZ Auto-Scaling ReplicaSets" },
-            { id: "n6", stencil: "standard_card", title: "Amazon ECR Registry", subtitle: "Vulnerability Scanned Images" }
-          ]
-        },
-        {
-          id: "c3", title: "Persistence & Observability", theme: "amber",
-          nodes: [
-            { id: "n7", stencil: "standard_card", title: "Amazon Aurora PostgreSQL", subtitle: "Multi-AZ Highly Available Relational DB" },
-            { id: "n8", stencil: "standard_card", title: "ElastiCache for Redis", subtitle: "Sub-millisecond Session Caching" },
-            { id: "n9", stencil: "standard_card", title: "Prometheus & CloudWatch", subtitle: "Distributed Tracing & Metrics" }
-          ]
-        }
-      ],
-      connections: [
-        { fromNodeId: "n1", toNodeId: "n2", label: "DNS Resolve", style: "direct" },
-        { fromNodeId: "n2", toNodeId: "n3", label: "Inspect Ingress", style: "direct" },
-        { fromNodeId: "n3", toNodeId: "n4", label: "Route Ingress", style: "orthogonal" },
-        { fromNodeId: "n4", toNodeId: "n5", label: "mTLS Call", style: "direct" },
-        { fromNodeId: "n6", toNodeId: "n5", label: "Pull Image", style: "dashed" },
-        { fromNodeId: "n5", toNodeId: "n8", label: "Cache Read/Write", style: "direct" },
-        { fromNodeId: "n5", toNodeId: "n7", label: "SQL Transaction", style: "orthogonal" },
-        { fromNodeId: "n5", toNodeId: "n9", label: "Scrape Metrics", style: "dashed" }
-      ]
-    };
-  }
-
   if (archId === 'tech_data_lakehouse' || archId === 'data_lakehouse') {
     return {
       diagramId: archId,

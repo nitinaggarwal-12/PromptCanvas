@@ -105,13 +105,6 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Flagship Stateful Directed Acyclic Graph (DAG) Multi-Agent Orchestration Platform:\n- Tier 1: Multimodal WebRTC / 2M+ Token Long-Context Ingress, Master Directed Graph Supervisor Agent & Run State Machine Checkpoint Store\n- Tier 2: Specialized Autonomous Worker Cluster (Research & Grounding Agent, Code/SQL/GUI Synthesis Agent, Verification & Safety Critic Agent) with Hierarchical Peer Hand-off Routines\n- Tier 3: Parallel Sandboxed Code Execution Kernel, Autonomous GUI OS Computer Use Container, gRPC/REST Tool Call Gateway & Long-Term Vector Memory with Ephemeral System Prompt Caching (90% Cost Cut)\n- Tier 4: Run Lifecycle Human Interrupt Approval Gate (requires_action), Final Grounded Response Synthesizer & Distributed Trace Observability"
   },
   {
-    id: "tech_rag_gcp",
-    name: "Enterprise Vertex AI Vector Search",
-    category: "AI & Cognitive Systems",
-    whenToUse: "Enterprise GCP cloud infrastructure for high-scale AI Retrieval-Augmented Generation (RAG) featuring Vertex AI Text Embeddings, Vertex AI Vector Search, Cloud Run / GKE serving, BigQuery data source integration, and VPC Service Controls private security perimeters",
-    prompt: "Act as a GCP AI Principal Infrastructure Architect. Design a production enterprise GCP infrastructure for Retrieval-Augmented Generation (RAG). Include: Automated ingestion pipelines from Cloud Storage and BigQuery, continuous embedding generation via Vertex AI Text Embeddings API, ultra-low-latency vector indexing & ANN retrieval in Vertex AI Vector Search, high-availability container serving on Cloud Run & GKE, Gemini 3.6 Pro/Flash enterprise LLM inference, and air-gapped security boundaries via VPC Service Controls and Cloud KMS encryption."
-  },
-  {
     id: "tech_agent_harness_runtime",
     name: "Enterprise Agent Harness Runtime Platform",
     category: "AI & Cognitive Systems",
@@ -155,13 +148,6 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Enterprise Event-Driven Architecture (EDA): Order Microservice Producers -> Schema Registry Avro Gate -> Partitioned Kafka/PubSub Broker -> Dead-Letter Queue (DLQ) automated recovery -> GKE Decoupled Consumer Groups -> Cloud Spanner Immutable Event Ledger."
   },
   {
-    id: "tech_microservices_gcp",
-    name: "GCP Kubernetes & Zero-Trust VPC",
-    category: "Cloud Infrastructure & Networking",
-    whenToUse: "Production GCP GKE Kubernetes microservices cluster integrated with Zero-Trust VPC network infrastructure, Cloud Armor WAF, Istio mTLS, Cloud SQL HA, and Private Service Connect",
-    prompt: "Act as a GCP Principal Cloud Native & Security Architect. Design a production GCP Kubernetes & Zero-Trust VPC Infrastructure combining: Cloud DNS, Cloud Armor WAF & DDoS Shield, Shared VPC multi-subnet networks, GKE Autopilot Cluster across Multi-Zone Private Subnets, Istio Service Mesh with mTLS, Private Service Connect (PSC) endpoints for Cloud Storage & BigQuery, Cloud SQL PostgreSQL database with Private IP, and Cloud Monitoring / Cloud Trace observability."
-  },
-  {
     id: "tech_serverless_gcp",
     name: "Serverless Web Application - GCP",
     category: "Cloud Infrastructure & Networking",
@@ -174,13 +160,6 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "SRE-grade GCP active-passive disaster recovery architecture with Global L7 HTTPS Load Balancing, Cloud Run pilot light compute, Cloud SQL HA with cross-region asynchronous replication (<5min lag), Dual-Region GCS, and automated failover runbooks.",
     prompt: "Act as a GCP Principal Reliability Engineer & SRE. Design a production-grade GCP Active-Passive Multi-Region Disaster Recovery architecture across Region A (US-East1 Active) and Region B (US-West1 Pilot Light Standby). Include: Global L7 HTTPS Load Balancer with Anycast IP & SSL Offloading, Cloud Run microservices (100% active load vs 10% warm pilot light), Cloud SQL HA with cross-region asynchronous replication (<5min data lag), Dual-Region GCS bucket with Turbo Replication, and a documented 5-step automated failover and zero-data-loss failback runbook with full SLA recovery matrix."
-  },
-  {
-    id: "legacy_dependency_map",
-    name: "Legacy Data & System Dependency Map (Strangler Fig)",
-    category: "Cloud Infrastructure & Networking",
-    whenToUse: "WBS 0.1.1 / 0.2.1 Legacy discovery and Strangler Fig transition architecture mapping on-prem monoliths (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2), data gravity anchors, and progressive strangler migration into GCP serverless production.",
-    prompt: "Act as an Enterprise Data & Migration Architect. Design a production-grade WBS 0.1.1 / 0.2.1 Legacy Data & System Dependency Map and Strangler Fig Transition Architecture. Include: Stage 1 As-Is Discovery On-Premises Datacenter (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2, Message Queue, File Shares), Stage 2 Strangler reverse proxy, Stage 3 Microservice decoupling & Informatica ETL grid, and Stage 4 Optimized GCP To-Be Production Architecture (Cloud Run, Cloud SQL, BigQuery, Bigtable, Eventarc, Workflows)."
   },
   {
     id: "six_rs_migration_matrix",
@@ -284,9 +263,10 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (!archId) return 'conceptual_diagram';
   const id = archId.toLowerCase().trim();
   if (id === 'tech_cicd_pipeline' || id === 'tech_cicd') return 'devops_cicd_pipeline';
+  if (id === 'tech_rag_gcp' || id === 'rag_gcp' || id === 'ai_rag') return 'agentic_rag';
   if (id === 'business_agent_governance_hitl' || id === 'business_agent_gov_hitl') return 'business_agent_gov_hitl';
   if (id === 'tech_data_lakehouse' || id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse') return 'tech_data_lakehouse_gcp';
-  if (id === 'tech_microservices_aws' || id === 'tech_microservices_gcp' || id === 'k8s_mesh') return 'tech_microservices_gcp';
+  if (id === 'tech_microservices_aws' || id === 'tech_microservices_gcp' || id === 'k8s_mesh' || id === 'zero_trust_mesh' || id.includes('zero_trust')) return 'secure_deployment_map';
   if (id === 'tech_event_driven_aws' || id === 'tech_event_driven_eda' || id === 'event_driven_aws') return 'tech_event_driven_eda';
   if (id.includes('6rs') || id.includes('six_rs') || id.includes('disposition')) return 'six_rs_migration_matrix';
   if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id === 'hybrid_strangler_transition') return 'hybrid_strangler_transition';
@@ -301,7 +281,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('data_residency') || id.includes('sovereign_map') || id.includes('sovereign') || id === 'data_residency_sovereign_map') return 'data_residency_sovereign_map';
   if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('federated') || id === 'federated_iam_sso') return 'federated_iam_sso';
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
-  if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
+  if (id.includes('legacy') || id.includes('dependency_map')) return 'hybrid_strangler_transition';
   return id;
 }
 
@@ -329,14 +309,16 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactItacsReferenceXml();
   } else if (id === 'erd') {
     xml = compileSpecToDrawioXml(getBenchmarkErdSpec());
-  } else if (id === 'agentic_rag') {
-    xml = compileSpecToDrawioXml(getBenchmarkAgenticRagSpec());
+  } else if (id === 'agentic_rag' || id.includes('rag')) {
+    const { getExactAgenticRagWidescreenXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactAgenticRagWidescreenXml();
   } else if (id === 'sequence_diagram') {
     xml = getExactSequenceDiagramReferenceXml();
   } else if (id === 'data_ai_pipeline') {
     xml = getExactDataAiPipelineReferenceXml();
-  } else if (id === 'secure_deployment_map') {
-    xml = getExactSecureDeploymentMapReferenceXml();
+  } else if (id === 'secure_deployment_map' || id.includes('secure_deployment') || id.includes('zero_trust')) {
+    const { getExactSecureDeploymentMapWidescreenXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactSecureDeploymentMapWidescreenXml();
   } else if (id === 'devops_cicd_pipeline') {
     xml = getExactDevopsCicdPipelineReferenceXml();
   } else if (id === 'unified_system_view') {
@@ -350,9 +332,6 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'tech_agent_harness_runtime' || id.includes('agent_harness') || id.includes('agent_runtime')) {
     const { getExactAgentHarnessRuntimeReferenceXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAgentHarnessRuntimeReferenceXml();
-  } else if (id === 'legacy_dependency_map') {
-    const { getExactLegacyDependencyMapXml } = require('./newEnterpriseReferenceXmls');
-    xml = getExactLegacyDependencyMapXml();
   } else if (id === 'six_rs_migration_matrix') {
     const { getExactSixRsMigrationMatrixXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactSixRsMigrationMatrixXml();

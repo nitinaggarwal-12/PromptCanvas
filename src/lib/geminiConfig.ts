@@ -24,10 +24,8 @@ export function getGeminiModelForArchitecture(archId?: string): string {
   const PRO_ARCHITECTURES = [
     'agentic_rag',
     'unified_system_view',
+    'secure_deployment_map',
     'tech_multi_agent_langgraph',
-    'tech_rag_gcp',
-    'tech_microservices_gcp',
-    'tech_microservices_aws',
     'tech_multi_region_dr',
     'tech_agent_harness_runtime',
     'business_agent_gov_hitl',

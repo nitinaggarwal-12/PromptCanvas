@@ -139,23 +139,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Cognitive RAG Architecture: Document Chunking -> Embeddings DB -> Hybrid Retrieval -> LLM Synthesis -> Guardrails."
   },
   {
-    id: "tech_rag_gcp",
-    name: "Enterprise Vertex AI Vector Search",
-    categoryId: "ai_agentic",
-    categoryName: "AI & Agentic Systems",
-    badge: "Cloud Reference",
-    whenToUse: "Use when implementing enterprise-scale vector search and RAG natively on Google Cloud Platform with Vertex AI, Cloud Storage, and VPC-SC perimeters.",
-    bestFor: [
-      "Vertex AI Vector Search (ScaNN index)",
-      "BigQuery & Cloud Storage automated embeddings",
-      "Air-gapped VPC Service Controls security",
-      "Gemini 3.6 Pro enterprise inference endpoints"
-    ],
-    keyTech: ["Vertex AI Vector Search", "Text Embeddings API", "BigQuery", "Cloud Storage", "GKE / Cloud Run", "VPC-SC"],
-    thumbnail: "/templates/tech_rag_gcp.png",
-    promptSummary: "GCP Vertex AI RAG Infrastructure: BigQuery Ingestion -> Text Embeddings API -> Vertex Vector Search -> GKE -> Gemini Pro."
-  },
-  {
     id: "business_agent_gov_hitl",
     name: "Human-in-the-Loop AI Governance",
     categoryId: "ai_agentic",
@@ -177,23 +160,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // =========================================================================
   // 2. CLOUD & ZERO-TRUST INFRASTRUCTURE
   // =========================================================================
-  {
-    id: "tech_microservices_gcp",
-    name: "GCP Kubernetes & Zero-Trust VPC",
-    categoryId: "cloud_infra",
-    categoryName: "Cloud & Infrastructure",
-    badge: "2D Network Topology",
-    whenToUse: "Use when architecting enterprise production GKE Kubernetes across Multi-Zone private subnets with Cloud Armor WAF, Istio mTLS, and Private Service Connect.",
-    bestFor: [
-      "Multi-Zone GKE Autopilot Kubernetes clusters",
-      "Zero-Trust VPC network segmentation",
-      "Istio Service Mesh with mutual TLS (mTLS)",
-      "Private Service Connect (PSC) Endpoints for BigQuery & Cloud Storage"
-    ],
-    keyTech: ["Google GKE", "Cloud Armor WAF", "Istio mTLS", "Cloud SQL HA", "Cloud DNS", "Cloud Monitoring"],
-    thumbnail: "/templates/tech_microservices_aws.png",
-    promptSummary: "GCP Kubernetes Zero-Trust VPC: Cloud DNS -> Cloud Armor WAF -> Multi-Zone Private Subnets -> Istio Mesh -> Cloud SQL HA."
-  },
   {
     id: "tech_serverless_gcp",
     name: "Serverless Web Application - GCP",
@@ -231,27 +197,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     keyTech: ["Global HTTPS LB", "Cloud Armor WAF", "Cloud Run Gen2", "Memorystore Redis HA", "Cloud SQL HA & Cross-Region Replica", "Dual-Region GCS", "Cloud KMS CMEK", "VPC-SC & PSC", "Terraform IaC"],
     thumbnail: "/templates/tech_multi_region_dr.png",
     promptSummary: "Master Multi-Region Active-Passive DR: Global L7 LB -> Zero-Trust Active Region A (US-East1) & Pilot Light Region B (US-West1) -> Redis Cache -> Cross-Region Async DB Replication -> 6-Step SRE Failover Runbook & FMEA Matrix."
-  },
-  {
-    id: "legacy_dependency_map",
-    name: "Legacy Data & System Dependency Map (Strangler Fig)",
-    categoryId: "cloud_infra",
-    categoryName: "Cloud & Infrastructure",
-    badge: "Master Blueprint (WBS 0.1.1 / 0.2.1)",
-    isFlagship: true,
-    isNew: true,
-    whenToUse: "Use for enterprise legacy discovery, data gravity assessment, technical debt cataloging, and orchestrating progressive Strangler Fig zero-downtime migrations from on-prem monoliths into Google Cloud Platform.",
-    bestFor: [
-      "WBS 0.1.1 Legacy Assessment & As-Is System Discovery",
-      "WBS 0.2.1 Migration Strangler Fig Transition Architecture",
-      "On-Premises Datacenter mapping (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2)",
-      "Technical Debt & Data Gravity Anchor identification",
-      "Reverse proxy traffic interception & selective microservice routing",
-      "Informatica PowerCenter ETL grid ingestion into GCP Target Data Platform (Cloud Run, Cloud SQL, BigQuery, Bigtable)"
-    ],
-    keyTech: ["Oracle 11g", "SAP ECC R/3", "Mainframe z/OS", "IBM DB2", "Informatica PowerCenter", "Google Cloud Run", "Cloud SQL", "BigQuery", "Bigtable", "Eventarc", "Cloud Workflows", "StratoZone"],
-    thumbnail: "/templates/legacy_dependency_map.png",
-    promptSummary: "Legacy Data & Dependency Map: As-Is On-Prem Datacenter (ERP Monolith, Mainframe, Oracle/DB2) -> Strangler Reverse Proxy -> Microservice Decoupling -> Informatica ETL Grid -> Optimized GCP To-Be Target Tier."
   },
   {
     id: "six_rs_migration_matrix",

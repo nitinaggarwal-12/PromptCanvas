@@ -120,16 +120,6 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     targetOutcomes: "Parallel Execution Throughput, Deterministic State Persistence, Safe Sandboxed Execution",
     desc: "Stateful Directed Graph multi-agent architecture with sandboxed kernel and checkpoint store."
   },
-  tech_rag_gcp: {
-    id: "tech_rag_gcp",
-    title: "Enterprise Vertex AI Vector Search",
-    category: "AI & Cognitive Systems",
-    useCase: "ENTERPRISE VECTOR SEARCH & RAG",
-    businessUseCase: "High-density Vertex AI Vector Search indexing millions of embeddings for instantaneous semantic retrieval by Gemini LLMs.",
-    primaryActors: "AI Principal Architects, NLP Engineers, Enterprise Developers",
-    targetOutcomes: "<100ms Vector Search Latency, High-Fidelity Semantic Retrieval, Private Air-Gapped AI Execution",
-    desc: "Enterprise RAG topology with Vertex AI Vector Search, Gemini LLM reasoning, and private VPC Service Controls."
-  },
   tech_agent_harness_runtime: {
     id: "tech_agent_harness_runtime",
     title: "Enterprise Agent Runtime Platform",
@@ -210,26 +200,6 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     targetOutcomes: "Million-Message-per-Second Scale, Zero Message Loss via DLQ, Decoupled Microservice Scaling",
     desc: "Event-driven architecture with Kafka brokers, Schema Registry Avro gates, and DLQ recovery."
   },
-  tech_microservices_gcp: {
-    id: "tech_microservices_gcp",
-    title: "GCP Kubernetes & Zero-Trust VPC",
-    category: "Cloud Infrastructure & Networking",
-    useCase: "GCP CLOUD ARCHITECTURE",
-    businessUseCase: "GCP GKE microservices service mesh hosting containerized algorithms, Istio mTLS encrypted communications, and Cloud SQL HA database clusters.",
-    primaryActors: "Cloud Native Architects, DevOps Engineers, Kubernetes Operators",
-    targetOutcomes: "Zero-Trust Service-to-Service Encryption, Elastic Multi-Zone Resilience, Fine-Grained Traffic Splitting",
-    desc: "Production GKE cluster architecture with Cloud Armor Ingress, Istio mTLS mesh, Cloud SQL HA, and Cloud Monitoring telemetry."
-  },
-  tech_microservices_aws: {
-    id: "tech_microservices_gcp",
-    title: "GCP Kubernetes & Zero-Trust VPC",
-    category: "Cloud Infrastructure & Networking",
-    useCase: "GCP CLOUD ARCHITECTURE",
-    businessUseCase: "GCP GKE microservices service mesh hosting containerized algorithms, Istio mTLS encrypted communications, and Cloud SQL HA database clusters.",
-    primaryActors: "Cloud Native Architects, DevOps Engineers, Kubernetes Operators",
-    targetOutcomes: "Zero-Trust Service-to-Service Encryption, Elastic Multi-Zone Resilience, Fine-Grained Traffic Splitting",
-    desc: "Production GKE cluster architecture with Cloud Armor Ingress, Istio mTLS mesh, Cloud SQL HA, and Cloud Monitoring telemetry."
-  },
   tech_serverless_gcp: {
     id: "tech_serverless_gcp",
     title: "Serverless Web Application - GCP",
@@ -249,16 +219,6 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Principal Cloud Architects, Site Reliability Engineering (SRE) Leads, CISO / Security Architects, Infrastructure Leads",
     targetOutcomes: "Target RTO 15-30m, Target RPO 1-5m, Pilot Light 10% Standby Cost (~90% Compute Savings), Zero-Trust VPC-SC Compliance, 1:1 Terraform State Parity, FMEA Failure Mode Certification",
     desc: "Production-grade GCP Active-Passive Disaster Recovery master template with Global L7 Load Balancer, Zero-Trust perimeter, Cloud KMS CMEK, Memorystore Redis HA, Cloud SQL cross-region async replication, Dual-Region GCS, and executive SRE failover runbooks."
-  },
-  legacy_dependency_map: {
-    id: "legacy_dependency_map",
-    title: "Legacy Data & System Dependency Map (Strangler Fig Transition)",
-    category: "Legacy Discovery",
-    useCase: "LEGACY DISCOVERY & STRANGLER FIG MIGRATION (PHASE 0: ASSESSMENT)",
-    businessUseCase: "WBS 0.1.1 / 0.2.1: Comprehensive Legacy Data & System Dependency Map depicting the As-Is on-premise monolith datacenter (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2, Message Queue, File Shares), Strangler Fig reverse proxy interception, and progressive strangler migration into Google Cloud Platform (Cloud Run, Cloud SQL, BigQuery, Bigtable, Eventarc, Workflows).",
-    primaryActors: "Data Architects, Enterprise Architects, Application Owners, Migration Leads, EA Boards",
-    targetOutcomes: "Identification of Technical Debt & Data Gravity Anchors, Zero-Downtime Strangler Fig Decoupling, Full Serverless Scale, Reduced TCO, Data Residency Sovereignty Compliance",
-    desc: "WBS 0.1.1 / 0.2.1 Legacy discovery and strangler fig transition architecture mapping on-prem monoliths, databases, file shares, and progressive decoupling into GCP target state."
   },
   six_rs_migration_matrix: {
     id: "six_rs_migration_matrix",

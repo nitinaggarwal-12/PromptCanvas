@@ -10,7 +10,6 @@ import {
   getExactMultiAgentLangGraphReferenceXml,
   getExactServerlessGcpReferenceXml, 
   getExactMultiRegionDrReferenceXml, 
-  getExactLegacyDependencyMapXml, 
   getExactSixRsMigrationMatrixXml, 
   getExactHybridStranglerTransitionXml, 
   getExactCloudFinopsChargebackXml, 
@@ -33,7 +32,8 @@ import {
   getExactGenomicsClinicalXml,
   getExactSupplyChainXml,
   getExactEvalSafetyXml,
-  getExactAgenticMeshXml
+  getExactAgenticMeshXml,
+  getExactAgenticRagWidescreenXml
 } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
@@ -41,9 +41,6 @@ const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
 
 // 1.1 GCP Multi-Region Active-Passive Disaster Recovery Topology
 const TECH_XML_MULTI_REGION_DR = getExactMultiRegionDrReferenceXml();
-
-// 1.2 Legacy Data & System Dependency Map (Strangler Fig Transition Architecture)
-const TECH_XML_LEGACY_DEPENDENCY_MAP = getExactLegacyDependencyMapXml();
 
 // 1.3 6Rs Migration Disposition Matrix (Assessment Phase)
 const TECH_XML_SIX_RS_MIGRATION_MATRIX = getExactSixRsMigrationMatrixXml();
@@ -171,56 +168,8 @@ const TECH_XML_MICROSERVICES_AWS = `<mxfile host="embed.diagrams.net">
 // 4. AWS Data Lakehouse Architecture (Authentic Master Architecture)
 const TECH_XML_DATA_LAKEHOUSE = getExactDataLakehouseXml();
 
-// 5. GCP Enterprise Vertex AI Vector Search & RAG Infrastructure
-const TECH_XML_RAG_GCP = `<mxfile host="embed.diagrams.net">
-  <diagram id="gcp_rag_infrastructure" name="GCP Enterprise Vertex AI Vector Search &amp; RAG Infrastructure (VPC Service Controls)">
-    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="node1" value="🌐 &lt;b&gt;[1] Enterprise Document Lake&lt;/b&gt;&lt;br&gt;&lt;i&gt;PDF, Docx, &amp; BigQuery Corporate Corpus&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="100" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node2" value="🛡️ &lt;b&gt;[2] VPC Service Controls Perimeter&lt;/b&gt;&lt;br&gt;&lt;i&gt;Air-Gapped Data Perimeter &amp; CMEK Encryption&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="270" width="280" height="95" as="geometry"/>
-        </mxCell>
-        <mxCell id="node3" value="⚡ &lt;b&gt;[3] Cloud Run Document Parser&lt;/b&gt;&lt;br&gt;&lt;i&gt;Private Subnet Ingestion (10.130.10.0/24)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="100" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node4" value="🧠 &lt;b&gt;[4] Vertex AI Text Embeddings API&lt;/b&gt;&lt;br&gt;&lt;i&gt;768-Dim Dense Vector Generator&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FAF5FF;strokeColor=#7C3AED;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="280" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node5" value="🔍 &lt;b&gt;[5] Vertex AI Vector Search (PSC Endpoint)&lt;/b&gt;&lt;br&gt;&lt;i&gt;ScaNN Ultra-Low-Latency ANN Index&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="100" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="node6" value="🤖 &lt;b&gt;[6] Gemini 3.6 Pro Reasoner LLM&lt;/b&gt;&lt;br&gt;&lt;i&gt;Grounded RAG Generation &amp; Hallucination Audit&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="280" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="e1" value="1. Document Ingestion" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node1" target="node2">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e2" value="2. VPC-SC Protected Parsing" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node2" target="node3">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="240" y="225"/>
-              <mxPoint x="480" y="225"/>
-              <mxPoint x="480" y="135"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e3" value="3. Chunk Embedding Call" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node3" target="node4">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e4" value="4. Private Service Connect Vector Index" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node4" target="node5">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e5" value="5. Grounded LLM Inference" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node5" target="node6">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+// 5. Enterprise Agentic RAG Platform Architecture
+const TECH_XML_RAG_GCP = getExactAgenticRagWidescreenXml();
 
 // 6. GCP Enterprise DevSecOps CI/CD & Artifact Registry
 const TECH_XML_DEVSECOPS_GCP = `<mxfile host="embed.diagrams.net">
@@ -1094,8 +1043,8 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('lakehouse') || id.includes('data_lakehouse')) {
     return getExactDataLakehouseXml();
   }
-  if (id.includes('rag_gcp') || id.includes('vector_search') || id.includes('rag')) {
-    return getExactAgenticMeshXml();
+  if (id.includes('rag') || id.includes('vector_search')) {
+    return getExactAgenticRagWidescreenXml();
   }
   if (id.includes('devsecops') || id.includes('cicd')) {
     return getExactEvalSafetyXml();
@@ -1160,8 +1109,8 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('micro_frontend') || id.includes('mfe') || id === 'tech_micro_frontends' || id === 'micro_frontends_ui') {
     return getExactMicroFrontendsXml();
   }
-  if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
-    return getExactLegacyDependencyMapXml();
+  if (id.includes('strangler') || id.includes('hybrid_strangler') || id === 'hybrid_strangler_transition') {
+    return getExactHybridStranglerTransitionXml();
   }
   if (id.includes('harness') || id.includes('agent_runtime') || id.includes('agent_harness')) {
     const { getExactAgentHarnessRuntimeReferenceXml } = require('./newEnterpriseReferenceXmls');
@@ -1175,7 +1124,6 @@ export const TECH_XML_AGENT_HARNESS_RUNTIME = '';
 export {
   TECH_XML_SERVERLESS_GCP,
   TECH_XML_MULTI_REGION_DR,
-  TECH_XML_LEGACY_DEPENDENCY_MAP,
   TECH_XML_SIX_RS_MIGRATION_MATRIX,
   TECH_XML_HYBRID_STRANGLER_TRANSITION,
   TECH_XML_CLOUD_FINOPS_CHARGEBACK,

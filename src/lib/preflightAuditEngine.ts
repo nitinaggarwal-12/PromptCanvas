@@ -20,7 +20,6 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     archType === 'tech_multi_cloud_dr' ||
     archType === 'tech_hybrid_cloud' ||
     archType === 'tech_zero_trust_mesh' ||
-    archType === 'legacy_dependency_map' ||
     archType === 'six_rs_migration_matrix' ||
     archType === 'hybrid_strangler_transition' ||
     archType === 'cloud_finops_chargeback' ||
