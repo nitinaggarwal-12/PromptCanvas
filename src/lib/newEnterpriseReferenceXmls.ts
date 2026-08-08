@@ -3531,111 +3531,582 @@ export function getExactLogicalAiConfigTenantXml(): string {
  */
 export function getExactHubAndSpokeAgentConfigXml(): string {
   return `
-
-<mxfile host="app.diagrams.net" modified="2026-08-08T16:56:10.336Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="hub_spoke_agent_config" name="WBS 0.1.2: Hub-and-Spoke Agent Configuration Architecture">
-    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="#FFFFFF">
+<mxfile host="app.diagrams.net" modified="2026-08-08T18:52:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="hub_and_spoke_agent_config" name="WBS 2.2.2 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)">
+    <mxGraphModel dx="1200" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1080" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- CANVAS FRAME -->
-        <mxCell id="frame_hub_spoke_agent_config" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="20" y="20" width="1360" height="760" as="geometry" />
+        <!-- TOP TITLE BANNER (LEFT) -->
+        <mxCell id="hdr_title" value="&lt;div style=&quot;text-align:left;padding-left:6px;&quot;&gt;&lt;b style=&quot;font-size:13px;color:#000000;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;WBS 2.2.2 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)&lt;br/&gt;(Workspace &amp;amp; Tenant Production Environment) (Gemini Platform in View)&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="15" y="15" width="675" height="42" as="geometry" />
         </mxCell>
 
-        <!-- TOP PUBLICATION BANNER -->
-        <mxCell id="hdr_title_hub_spoke_agent_config" value="WBS 0.1.2: HUB-AND-SPOKE MULTI-AGENT TOPOLOGY &amp; ROUTING MESH" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="40" y="35" width="1320" height="24" as="geometry" />
-        </mxCell>
-        <mxCell id="hdr_sub_hub_spoke_agent_config" value="Central Orchestration Hub • Specialized Spoke Worker Agents • Dynamic Capability Routing • End-to-End Task Convergence" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
-          <mxGeometry x="40" y="60" width="1320" height="20" as="geometry" />
+        <!-- TOP METADATA BANNER (RIGHT) -->
+        <mxCell id="hdr_meta" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#000000;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left;padding-left:4px;&quot;&gt;&lt;b&gt;Status:&lt;/b&gt; Continuously Updated&lt;br/&gt;&lt;b&gt;Effort:&lt;/b&gt; High&lt;br/&gt;&lt;b&gt;Compliance:&lt;/b&gt; 21 CFR Part 11&lt;/td&gt;&lt;td style=&quot;text-align:left;padding-left:8px;border-left:1px solid #CBD5E1;&quot;&gt;&lt;b&gt;Classification:&lt;/b&gt; High&lt;br/&gt;&lt;b&gt;GCAF Pillar:&lt;/b&gt;&lt;br/&gt;Operational Excellence&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.2;fillColor=#FFFFFF;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="700" y="15" width="295" height="42" as="geometry" />
         </mxCell>
 
-        <!-- COLUMN 1: TIER 1: ENTERPRISE USER INGRESS &amp; TASK DISPATCH -->
-        <mxCell id="col_ingress_hub_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="40" y="95" width="410" height="660" as="geometry" />
-        </mxCell>
-        <mxCell id="col_ingress_hub_header" value="TIER 1: ENTERPRISE USER INGRESS &amp; TASK DISPATCH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=#0284C7;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="60" y="110" width="370" height="34" as="geometry" />
+        <!-- OUTER BOUNDING ENCLOSURE CARD (WARM GREY WITH ROUNDED CORNERS) -->
+        <mxCell id="outer_wrapper" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EAECEF;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="15" y="68" width="980" height="595" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_user_query" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Multimodal User Request Ingress&lt;/b&gt; &lt;span style=&quot;font-size:9px;background:#DCFCE7;color:#15803D;padding:2px 6px;border-radius:4px;font-weight:bold;&quot;&gt;Ingress&lt;/span&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Voice, Chat, REST API, Webhooks, Batch Jobs&lt;br/&gt;• Natural language intent parsing and goal extraction&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="65" y="165" width="360" height="140" as="geometry" />
+        <!-- TOP LABELS INSIDE WRAPPER -->
+        <mxCell id="lbl_workspace_env" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;Workspace X (Tenant Y - Production Environment)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="25" y="74" width="350" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_gemini_platform" value="&lt;span style=&quot;font-size:11.5px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;Gemini Enterprise / Agent Designer&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="74" width="260" height="18" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_task_queue" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Cloud Pub/Sub Asynchronous Task Queue&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Reliable message delivery with dead-letter queue&lt;br/&gt;• Handles high-throughput spikes with backpressure control&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="65" y="345" width="360" height="140" as="geometry" />
+        <!-- ==================== LEFT COLUMN: 3 SUB-AGENTS (SPOKES) ==================== -->
+        <!-- Persona Bubble: Sub-Agent 1 (Support Tickets) -->
+        <mxCell id="per_subagent_1" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#3B82F6;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Sub-Agent 1&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(Support&lt;br/&gt;Tickets)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="145" width="65" height="50" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_session_state" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:redis.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Redis Shared Execution Context Store&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Persists conversational memory &amp; intermediate artifacts&lt;br/&gt;• Millisecond latency read/write for agent collaboration&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="65" y="535" width="360" height="140" as="geometry" />
+        <!-- SUB-AGENT 1 CONTAINER -->
+        <mxCell id="cont_subagent_1" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#D9E8F8;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="98" width="225" height="152" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_subagent_1_title" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Sub-Agent (Spoke) 1 - Customer Support&lt;br/&gt;&lt;span style=&quot;font-weight:normal;font-size:8px;color:#334155;&quot;&gt;Logical Configuration Matrix&lt;/span&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="92" y="100" width="220" height="24" as="geometry" />
+        </mxCell>
+        <!-- Grounding Sub-box 1 (Container + Content) -->
+        <mxCell id="box_grounding_1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="96" y="126" width="213" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_grounding_1_title" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Dedicated Knowledge Section (Grounding)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="96" y="127" width="213" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="g1_bq" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="100" y="142" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="g1_vector" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:search.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Vector Search&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="142" y="142" width="48" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="g1_target" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Support SA to&lt;br/&gt;(Support Tickets)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="205" y="147" width="98" height="28" as="geometry" />
+        </mxCell>
+        <!-- Tools & Proxies Sub-box 1 -->
+        <mxCell id="box_tools_1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="96" y="188" width="213" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_tools_1" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Tool / MCP Proxies&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#334155;&quot;&gt;API calls (standardized&lt;br/&gt;Invoker commands&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;padding-left:2px;" vertex="1" parent="1">
+          <mxGeometry x="98" y="192" width="96" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="g1_zendesk" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Support SA using&lt;br/&gt;Zendesk API&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="225" y="198" width="80" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_tool1_zendesk" value="" style="edgeStyle=none;html=1;strokeColor=#EA580C;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="195" y="215" as="sourcePoint" />
+            <mxPoint x="225" y="215" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
 
-        <!-- COLUMN 2: TIER 2: CENTRAL ORCHESTRATION &amp; DECOMPOSITION HUB -->
-        <mxCell id="col_central_hub_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="495" y="95" width="410" height="660" as="geometry" />
-        </mxCell>
-        <mxCell id="col_central_hub_header" value="TIER 2: CENTRAL ORCHESTRATION &amp; DECOMPOSITION HUB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7C3AED;strokeColor=#7C3AED;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="515" y="110" width="370" height="34" as="geometry" />
+        <!-- Persona Bubble: Fulfillment SA (BigQuery) -->
+        <mxCell id="per_subagent_2" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#475569;border-radius:12px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Fulfillment SA&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(BigQuery)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="300" width="65" height="50" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_hub_master" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Master Hub Orchestrator Agent (Gemini 3.6)&lt;/b&gt; &lt;span style=&quot;font-size:9px;background:#DCFCE7;color:#15803D;padding:2px 6px;border-radius:4px;font-weight:bold;&quot;&gt;Central Hub&lt;/span&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Decomposes complex multi-stage goals into sub-tasks&lt;br/&gt;• Assigns tasks dynamically to specialized spoke workers&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="520" y="165" width="360" height="140" as="geometry" />
+        <!-- SUB-AGENT 2 CONTAINER (GREENISH BACKGROUND) -->
+        <mxCell id="cont_subagent_2" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="258" width="225" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_subagent_2_title" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Sub-Agent 2 - Fulfillment&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="92" y="260" width="190" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="icon_subagent_2_py" value="&lt;img src=&quot;https://api.iconify.design/logos:python.svg&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="290" y="260" width="20" height="16" as="geometry" />
+        </mxCell>
+        <!-- Grounding Sub-box 2 -->
+        <mxCell id="box_grounding_2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="96" y="278" width="213" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_grounding_2_title" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Dedicated Knowledge Section (Grounding)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="96" y="279" width="213" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="g2_bq" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;BigQuery&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="102" y="294" width="38" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="g2_storage" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:equal.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Cloud Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="144" y="294" width="48" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="g2_target" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Fulfillment SA using&lt;br/&gt;SAP ERP API&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="205" y="298" width="98" height="28" as="geometry" />
+        </mxCell>
+        <!-- Specific Config 2 -->
+        <mxCell id="box_config_2" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Specific Config&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#334155;&quot;&gt;Dedicated Gemini models and specialized system instructions&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="96" y="338" width="213" height="46" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_dag_engine" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:python.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Stateful DAG Workflow Engine&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Coordinates parallel and sequential task dependencies&lt;br/&gt;• Manages error retries, timeouts, and state checkpoints&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="520" y="345" width="360" height="140" as="geometry" />
+        <!-- Persona Bubble: Knowledge SA to GCS (PDF/Doc) -->
+        <mxCell id="per_subagent_3" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-text.svg?color=%23FFFFFF&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#0F172A;padding-top:2px;&quot;&gt;&lt;b&gt;Knowledge SA&lt;br/&gt;to GCS&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#475569;font-size:7px;&quot;&gt;(PDF/Doc)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="460" width="65" height="55" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_hitl_checkpoint" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Human-in-the-Loop Interrupt Gate&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Pauses execution for critical financial/security actions&lt;br/&gt;• Webhook callback resumes execution upon approval&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="520" y="535" width="360" height="140" as="geometry" />
+        <!-- SUB-AGENT 3 CONTAINER (LIGHT BLUE BACKGROUND) -->
+        <mxCell id="cont_subagent_3" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#D9E8F8;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="398" width="225" height="162" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_subagent_3_title" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Sub-Agent 3 - Knowledge Base&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="92" y="400" width="190" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="icon_subagent_3_gcp" value="&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="290" y="400" width="20" height="16" as="geometry" />
+        </mxCell>
+        <!-- Grounding Sub-box 3 -->
+        <mxCell id="box_grounding_3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="96" y="418" width="213" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_grounding_3_title" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Dedicated Knowledge Section (Grounding)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="96" y="419" width="213" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="g3_gcs" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:cloud.svg?color=%23FFFFFF&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;GCS Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="100" y="434" width="46" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="g3_vector" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;div style=&quot;width:16px;height:16px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:search.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/div&gt;&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Vector Search&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="148" y="434" width="55" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="g3_target" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Logs from&lt;br/&gt;PDF/Doc&lt;br/&gt;documents&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="210" y="434" width="93" height="30" as="geometry" />
+        </mxCell>
+        <!-- Tools & Proxies 3 -->
+        <mxCell id="lbl_tools_3" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Tool / MCP Proxies&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#334155;&quot;&gt;(e.g. using Zendesk API)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="100" y="472" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_tool3_doc" value="" style="edgeStyle=none;html=1;strokeColor=#EA580C;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="195" y="484" as="sourcePoint" />
+            <mxPoint x="220" y="484" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <!-- Specific Config 3 -->
+        <mxCell id="box_config_3" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;font-size:12px;&quot;&gt;...&lt;/td&gt;&lt;td style=&quot;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Specific Config&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#334155;&quot;&gt;Dedicated Gemini models and&lt;br/&gt;specialized system instructions&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="96" y="508" width="213" height="46" as="geometry" />
         </mxCell>
 
-        <!-- COLUMN 3: TIER 3: SPECIALIZED SPOKE AGENTS &amp; SYNTHESIS -->
-        <mxCell id="col_spokes_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="950" y="95" width="410" height="660" as="geometry" />
+        <!-- Labels: Spoke-to-Grounding -->
+        <mxCell id="lbl_spoke_ground_1" value="&lt;span style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Spoke-to-Grounding&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="220" y="248" width="95" height="12" as="geometry" />
         </mxCell>
-        <mxCell id="col_spokes_header" value="TIER 3: SPECIALIZED SPOKE AGENTS &amp; SYNTHESIS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#16A34A;strokeColor=#16A34A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="970" y="110" width="370" height="34" as="geometry" />
-        </mxCell>
-
-        <mxCell id="node_spoke_research" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Spoke 1: Knowledge &amp; RAG Worker Agent&lt;/b&gt; &lt;span style=&quot;font-size:9px;background:#DCFCE7;color:#15803D;padding:2px 6px;border-radius:4px;font-weight:bold;&quot;&gt;Spoke 1&lt;/span&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Vector search across unstructured docs &amp; PDFs&lt;br/&gt;• Returns validated citations and evidence snippets&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="975" y="165" width="360" height="140" as="geometry" />
+        <mxCell id="lbl_spoke_ground_2" value="&lt;span style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Spoke-to-Grounding&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="220" y="388" width="95" height="12" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_spoke_sql" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:postgresql.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Spoke 2: Database &amp; Analytics Worker Agent&lt;/b&gt; &lt;span style=&quot;font-size:9px;background:#DCFCE7;color:#15803D;padding:2px 6px;border-radius:4px;font-weight:bold;&quot;&gt;Spoke 2&lt;/span&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Generates and runs sandboxed SQL on BigQuery/Spanner&lt;br/&gt;• Returns structured charts and summary tables&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="975" y="345" width="360" height="140" as="geometry" />
+        <!-- Flow Intent Dispatch Arrows between Sub-Agents and Orchestrator -->
+        <mxCell id="lbl_user_reqs" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;User&lt;br/&gt;Requests&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="316" y="130" width="48" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_flow_dispatch" value="&lt;b style=&quot;font-size:7.5px;color:#7C2D12;&quot;&gt;Flow&lt;br/&gt;intent-based&lt;br/&gt;dispatch&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="312" y="156" width="56" height="30" as="geometry" />
         </mxCell>
 
-        <mxCell id="node_hub_synth" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Executive Response Synthesis Engine&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;• Combines all spoke artifacts into cohesive response&lt;br/&gt;• Formats markdown, UI widgets, and audit receipts&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="975" y="535" width="360" height="140" as="geometry" />
+        <!-- Bidirectional & Multi-Agent Dispatch Lines -->
+        <mxCell id="edge_user_req_arrow" value="" style="edgeStyle=none;html=1;strokeColor=#B91C1C;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="365" y="150" as="sourcePoint" />
+            <mxPoint x="315" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_dispatch_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#B91C1C;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="370" y="295" as="sourcePoint" />
+            <mxPoint x="315" y="295" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_dispatch_2" value="" style="edgeStyle=none;html=1;strokeColor=#7E22CE;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=block;startFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="315" y="313" as="sourcePoint" />
+            <mxPoint x="370" y="313" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_dispatch_3" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="370" y="331" as="sourcePoint" />
+            <mxPoint x="315" y="331" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
 
-        <mxCell id="e1" value="Intent Parse ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2.5;fontColor=#0284C7;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_user_query" target="node_hub_master">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- Compliance Flow Dashed Line from Spoke 3 to Audit Ledger -->
+        <mxCell id="edge_compliance_flow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="345" y="340" as="sourcePoint" />
+            <mxPoint x="430" y="525" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="345" y="525" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_compliance_flows" value="&lt;span style=&quot;font-size:7.5px;color:#16A34A;&quot;&gt;Compliance flows&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="348" y="512" width="75" height="14" as="geometry" />
         </mxCell>
 
-        <mxCell id="e2" value="Queue Task ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2.5;fontColor=#0284C7;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_user_query" target="node_task_queue">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- ==================== CENTER: ORCHESTRATOR (PARENT AGENT) HUB ==================== -->
+        <mxCell id="cont_orchestrator_hub" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#D9E8F8;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="370" y="98" width="240" height="375" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_orchestrator_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Orchestrator (Parent Agent)&lt;br/&gt;&lt;span style=&quot;font-size:8.5px;&quot;&gt;Hub - Logical UI Config Matrix&lt;br/&gt;- Logical UI Config Matrix&lt;/span&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="375" y="100" width="200" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="icon_orch_hub" value="&lt;img src=&quot;https://api.iconify.design/lucide:network.svg?color=%232563EB&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="580" y="108" width="22" height="18" as="geometry" />
         </mxCell>
 
-        <mxCell id="e3" value="DAG Dispatch ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#7C3AED;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_hub_master" target="node_dag_engine">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- Section 1: General Configuration -->
+        <mxCell id="box_general_config" value="&lt;b style=&quot;font-size:8px;color:#0F172A;line-height:16px;&quot;&gt;1. General Configuration&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;" vertex="1" parent="1">
+          <mxGeometry x="378" y="138" width="224" height="92" as="geometry" />
+        </mxCell>
+        <!-- Form Skeleton Mockup Left -->
+        <mxCell id="cfg_form_left" value="&lt;div style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;Gysser L Form&lt;/div&gt;&lt;div style=&quot;width:70px;height:4px;background:#E2E8F0;margin-top:2px;border-radius:2px;&quot;&gt;&lt;/div&gt;&lt;div style=&quot;width:70px;height:4px;background:#E2E8F0;margin-top:3px;border-radius:2px;&quot;&gt;&lt;/div&gt;&lt;div style=&quot;width:55px;height:4px;background:#E2E8F0;margin-top:3px;border-radius:2px;&quot;&gt;&lt;/div&gt;&lt;div style=&quot;width:60px;height:4px;background:#E2E8F0;margin-top:3px;border-radius:2px;&quot;&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="384" y="158" width="80" height="64" as="geometry" />
+        </mxCell>
+        <!-- Form Right Items -->
+        <mxCell id="cfg_item_gemini" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Gemini 1.5 Pro&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding-left:4px;" vertex="1" parent="1">
+          <mxGeometry x="470" y="156" width="126" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_item_sysinst" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Global System Instructions&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding-left:4px;" vertex="1" parent="1">
+          <mxGeometry x="470" y="173" width="126" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_item_context" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Shared Context Window&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding-left:4px;" vertex="1" parent="1">
+          <mxGeometry x="470" y="190" width="126" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_item_ttl" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Memory TTL&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding-left:4px;" vertex="1" parent="1">
+          <mxGeometry x="470" y="207" width="126" height="14" as="geometry" />
         </mxCell>
 
-        <mxCell id="e4" value="Assign Spoke 1 ➔" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_hub_master" target="node_spoke_research">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- Section 2: Multi-Agent Router / Dispatcher Logic -->
+        <mxCell id="box_router_logic" value="&lt;b style=&quot;font-size:8px;color:#0F172A;line-height:16px;&quot;&gt;Multi-Agent Router / Dispatcher Logic&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;" vertex="1" parent="1">
+          <mxGeometry x="378" y="238" width="224" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="icon_router" value="&lt;img src=&quot;https://api.iconify.design/lucide:git-fork.svg?color=%2316A34A&quot; width=&quot;13&quot; height=&quot;13&quot;/&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="575" y="240" width="20" height="12" as="geometry" />
+        </mxCell>
+        <!-- Router Rule 1 -->
+        <mxCell id="rule_1_lhs" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;if intent == &quot;customer_support&quot;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="384" y="258" width="108" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="rule_1_rhs" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Dispatch to Support&lt;br/&gt;Sub-Agent&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="508" y="256" width="88" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_r1" value="" style="edgeStyle=none;html=1;strokeColor=#B91C1C;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="492" y="266" as="sourcePoint" />
+            <mxPoint x="508" y="266" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <!-- Router Rule 2 -->
+        <mxCell id="rule_2_lhs" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;if intent == &quot;order_status&quot;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="384" y="280" width="108" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="rule_2_rhs" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Dispatch to Fulfillment&lt;br/&gt;Sub-Agent&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="508" y="278" width="88" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_r2" value="" style="edgeStyle=none;html=1;strokeColor=#7E22CE;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="492" y="288" as="sourcePoint" />
+            <mxPoint x="508" y="288" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <!-- Router Rule 3 -->
+        <mxCell id="rule_3_lhs" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;if intent == &quot;order_status&quot;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="384" y="302" width="108" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="rule_3_rhs" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Dispatch to Fulfillment&lt;br/&gt;Sub-Agent&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="508" y="300" width="88" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_r3" value="" style="edgeStyle=none;html=1;strokeColor=#B91C1C;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="492" y="310" as="sourcePoint" />
+            <mxPoint x="508" y="310" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
 
-        <mxCell id="e5" value="Pipeline Task ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_spoke_research" target="node_spoke_sql">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- Section 3: Shared Memory & State / Vertex AI Agent Runtime -->
+        <mxCell id="box_shared_memory" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="378" y="342" width="224" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="mem_left" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg?color=%23475569&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Shared Memory &amp;amp; State&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;Shared external&lt;br/&gt;state storgs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="344" width="115" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mem_to_runtime" value="" style="edgeStyle=none;html=1;strokeColor=#475569;strokeWidth=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="495" y="366" as="sourcePoint" />
+            <mxPoint x="515" y="366" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="runtime_right" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Vertex AI&lt;br/&gt;Agent Runtime&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;Model invocation&lt;br/&gt;call pattern&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="515" y="344" width="85" height="44" as="geometry" />
         </mxCell>
 
-        <mxCell id="e6" value="Synthesize Results ⇩" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#16A34A;fontStyle=1;fontSize=9;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;perimeterSpacing=4;" edge="1" parent="1" source="node_spoke_sql" target="node_hub_synth">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- Section 4: 21 CFR Part 11 Compliance Gate -->
+        <mxCell id="box_cfr_gate" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:26px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-alert.svg?color=%2316A34A&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;21 CFR Part 11 Compliance Gate&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#334155;&quot;&gt;&lt;i style=&quot;color:#16A34A;&quot;&gt;Signed&lt;/i&gt; &amp;nbsp; All configuration updates are validated and signed.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="378" y="398" width="224" height="40" as="geometry" />
         </mxCell>
-</root>
+
+        <!-- Bottom Audit Trail & E-Signature Ledger -->
+        <mxCell id="box_audit_ledger" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Immutable Audit Trail&lt;br/&gt;&amp;amp; E-Signature Ledger&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding-top:4px;&quot;&gt;&lt;div style=&quot;width:24px;height:28px;background:#FFFFFF;border:1px solid #16A34A;border-radius:2px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-check.svg?color=%2316A34A&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;font-size:7.5px;color:#16A34A;padding-top:2px;&quot;&gt;&lt;b&gt;21 CFR Part 11&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="430" y="488" width="130" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow from CFR Gate down into Audit Ledger -->
+        <mxCell id="edge_gate_to_ledger" value="" style="edgeStyle=none;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="495" y="438" as="sourcePoint" />
+            <mxPoint x="495" y="488" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== RIGHT TOP: LOGICAL UI CONFIGURATION MATRIX ==================== -->
+        <mxCell id="cont_ui_matrix" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="645" y="165" width="335" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_ui_matrix_title" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Logical UI Configuration Matrix&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:8px;color:#334155;&quot;&gt;(Referenced from Logical Configuration &apos;s console)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="648" y="167" width="330" height="24" as="geometry" />
+        </mxCell>
+        <!-- Matrix Rows -->
+        <!-- Row 1: Prompt editors -->
+        <mxCell id="lbl_prompt_ed" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Prompt editors&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="652" y="195" width="75" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="box_prompt_preview" value="&lt;span style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;Prompt editor&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="193" width="190" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mat_1" value="" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="204" as="sourcePoint" />
+            <mxPoint x="778" y="204" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Row 2: Rule editors / Rule editors -->
+        <mxCell id="lbl_rule_ed" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Rule editors/&lt;br/&gt;Rule editors&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="652" y="222" width="75" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="box_rule_preview" value="&lt;table style=&quot;width:100%;font-size:6.5px;color:#64748B;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #E2E8F0;padding-right:4px;&quot;&gt;&lt;b&gt;Rule editors&lt;/b&gt;&lt;br/&gt;1. if intent == &quot;customer_support&quot;&lt;br/&gt;2. if intent == &quot;order_status&quot;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b&gt;Rule editors&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="220" width="190" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mat_2" value="" style="edgeStyle=none;html=1;strokeColor=#16A34A;strokeWidth=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="236" as="sourcePoint" />
+            <mxPoint x="778" y="236" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Row 3: Knowledge Source selectors -->
+        <mxCell id="lbl_ks_ed" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Knowledge Source&lt;br/&gt;selectors&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="652" y="256" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="box_ks_preview" value="&lt;span style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;Knowledge Source&lt;/span&gt;&lt;br/&gt;&lt;span style=&quot;font-size:6.5px;color:#2563EB;&quot;&gt;● BigQuery &amp;nbsp;● GCS&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="256" width="190" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mat_3" value="" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="268" as="sourcePoint" />
+            <mxPoint x="778" y="268" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Row 4: API Config panels -->
+        <mxCell id="lbl_api_ed" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;API Config panels&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="652" y="284" width="85" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="box_api_preview" value="&lt;table style=&quot;width:100%;font-size:6.5px;color:#64748B;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #E2E8F0;padding-right:4px;&quot;&gt;&lt;b&gt;API Config&lt;/b&gt;&lt;br/&gt;Support API&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b&gt;API Config&lt;/b&gt;&lt;br/&gt;SAP ERP API&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="284" width="190" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mat_4" value="" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="296" as="sourcePoint" />
+            <mxPoint x="778" y="296" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Intermediary Connectors from Orchestrator into Matrix -->
+        <mxCell id="edge_orch_to_matrix1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="195" as="sourcePoint" />
+            <mxPoint x="645" y="204" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_orch_to_matrix2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="236" as="sourcePoint" />
+            <mxPoint x="645" y="236" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_orch_to_matrix3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="268" as="sourcePoint" />
+            <mxPoint x="645" y="268" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_orch_to_matrix4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="296" as="sourcePoint" />
+            <mxPoint x="645" y="296" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== CENTER-RIGHT INTERMEDIARY LAYER ==================== -->
+        <!-- Logical UI Config Management Console -->
+        <mxCell id="box_ui_console" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Logical UI Config&lt;br/&gt;Management&lt;br/&gt;Console&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(from &amp;lt;IMAGE 2&amp;gt;)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="640" y="340" width="105" height="52" as="geometry" />
+        </mxCell>
+        <!-- Blue Double Arrow between Orchestrator and Console -->
+        <mxCell id="edge_orch_console" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=block;startFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="366" as="sourcePoint" />
+            <mxPoint x="640" y="366" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Human-in-the-Loop (HITL) Gate -->
+        <mxCell id="box_hitl_gate" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;display:flex;justify-content:center;gap:3px;align-items:center;&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#2563EB;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;img src=&quot;https://api.iconify.design/lucide:smartphone.svg?color=%23EA580C&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Human-in-the-Loop&lt;br/&gt;(HITL) Gate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="715" y="420" width="95" height="55" as="geometry" />
+        </mxCell>
+        <!-- Connector from Console to HITL Gate -->
+        <mxCell id="edge_console_to_hitl" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="366" as="sourcePoint" />
+            <mxPoint x="762" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="762" y="366" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Connector from HITL Gate down to Persona Dashboards / Audit Ledger -->
+        <mxCell id="edge_hitl_to_audit" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="762" y="475" as="sourcePoint" />
+            <mxPoint x="560" y="530" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="762" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== RIGHT BOTTOM PERSONA CONTAINER & DASHBOARDS ==================== -->
+        <mxCell id="cont_persona_dashboards" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="815" y="335" width="145" height="135" as="geometry" />
+        </mxCell>
+        <!-- Top Persona Row inside Dashboard -->
+        <mxCell id="per_ai_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#334155;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;AI&lt;br/&gt;Architect&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="820" y="342" width="45" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dash_runtime_looker" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:looker-icon.svg&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;color:#0F172A;line-height:1;&quot;&gt;Runtime performance&lt;br/&gt;&amp;amp; compliance&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="870" y="342" width="85" height="38" as="geometry" />
+        </mxCell>
+        <!-- Bottom Persona Row inside Dashboard -->
+        <mxCell id="per_wt_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#475569;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;W&amp;amp;T&lt;br/&gt;Arch&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="820" y="392" width="45" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dash_economic" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:bar-chart-3.svg?color=%232563EB&quot; width=&quot;14&quot; height=&quot;14&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;color:#0F172A;line-height:1;&quot;&gt;&lt;b&gt;Agent Economic&lt;br/&gt;dashboards&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="870" y="392" width="85" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- Connector from HITL Gate into Persona Dashboards -->
+        <mxCell id="edge_hitl_to_dash" value="" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="810" y="447" as="sourcePoint" />
+            <mxPoint x="825" y="447" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Persona Callouts Container (Bottom Center-Right) -->
+        <mxCell id="cont_persona_callouts" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="640" y="495" width="165" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_callouts_title" value="&lt;b style=&quot;font-size:7.5px;color:#16A34A;&quot;&gt;Persona Callouts&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Runtime Performance &amp;amp; compliance&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="642" y="497" width="160" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="callout_wt_arch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:20px;height:20px;background:#475569;border-radius:10px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:user.svg?color=%23FFFFFF&quot; width=&quot;12&quot; height=&quot;12&quot;/&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;W&amp;amp;T Arch&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="645" y="534" width="45" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="callout_charts" value="&lt;div style=&quot;display:flex;gap:3px;align-items:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:bar-chart-2.svg?color=%232563EB&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;img src=&quot;https://api.iconify.design/lucide:line-chart.svg?color=%230284C7&quot; width=&quot;16&quot; height=&quot;16&quot;/&gt;&lt;/div&gt;&lt;div style=&quot;font-size:6.5px;color:#0F172A;font-weight:bold;margin-top:2px;&quot;&gt;Agent Runtime Metrics&lt;br/&gt;dashboards&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="692" y="532" width="105" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== BOTTOM RIGHT LEGEND ==================== -->
+        <mxCell id="box_legend" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="825" y="485" width="135" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_legend_title" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Legend&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830" y="487" width="50" height="12" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_item_sym" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg?color=%232563EB&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt; &lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;10&quot; height=&quot;10&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Symbol&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="828" y="500" width="125" height="12" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_item_arr" value="" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="832" y="520" as="sourcePoint" />
+            <mxPoint x="856" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_leg_symbols" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Symbols&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="514" width="75" height="12" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_line_routing" value="" style="edgeStyle=none;html=1;strokeColor=#B91C1C;strokeWidth=1.2;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="832" y="534" as="sourcePoint" />
+            <mxPoint x="856" y="534" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_leg_routing" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Routing flow&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="528" width="75" height="12" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_line_ground" value="" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="832" y="548" as="sourcePoint" />
+            <mxPoint x="856" y="548" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_leg_ground" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Data grounding flow&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="542" width="95" height="12" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_line_comp" value="" style="edgeStyle=none;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="832" y="562" as="sourcePoint" />
+            <mxPoint x="856" y="562" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_leg_comp" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Compliance flow&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;vertical2Align=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="556" width="75" height="12" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_line_cfg" value="" style="edgeStyle=none;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="832" y="576" as="sourcePoint" />
+            <mxPoint x="856" y="576" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_leg_cfg" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Configuration update&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="570" width="95" height="12" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_box_blue" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D9E8F8;strokeColor=#3B82F6;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="832" y="588" width="24" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_leg_color_blue" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Color&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="585" width="75" height="12" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_box_green" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="832" y="599" width="24" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_leg_color_green" value="&lt;span style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Colors&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="596" width="75" height="12" as="geometry" />
+        </mxCell>
+
+      </root>
     </mxGraphModel>
   </diagram>
 </mxfile>
@@ -3643,8 +4114,7 @@ export function getExactHubAndSpokeAgentConfigXml(): string {
 }
 
 /**
- * 🏛️ MASTER BLUEPRINT: WBS 3.1.4 UNIFIED DATA GOVERNANCE & ACCESS CONTROL ARCHITECTURE
- * Pixel-Perfect Replica of WBS 3.1.4 Unified Data Governance & Access Control Architecture (To-Be State)
+ * 🏛️ MASTER BLUEPRINT: UNIFIED DATA GOVERNANCE & ACCESS CONTROL ARCHITECTURE (WBS 3.1.4)
  */
 export function getExactUnifiedDataGovernanceXml(): string {
   return `
