@@ -329,6 +329,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Cloud Economists, FinOps Leads, BU Leads, Engineering Directors, Product VP",
     targetOutcomes: "100% Granular Cost Attribution, Automated GenAI Token Cost Accounting, Anomaly Detection & Budget Alerts, Optimized CUD/SUD Utilization",
     desc: "WBS 1.1.3 Cloud FinOps & Chargeback model with BigQuery cost data lake, Vertex AI token tracking, Looker Studio dashboards, and showback generator."
+  },
+  ai_coe_operating_model: {
+    id: "ai_coe_operating_model",
+    title: "AI Center of Excellence (CoE) Operating Model (Operational Excellence Category)",
+    category: "Operational Excellence",
+    useCase: "AI CENTER OF EXCELLENCE (COE) OPERATING MODEL (WBS 1.1.5)",
+    businessUseCase: "WBS 1.1.5: Enterprise AI Center of Excellence (CoE) Operating Model establishing cross-functional Governance & Strategy (Adoption Modeling, Business Plan ideation, Cloud Plans alignment), Process & Operations (User Onboarding, Prompt Curation, Continuous Feedback Loops with Jira/Confluence integration), and Analytics & Measurement (Performance Metrics, Utilization Insights via Looker). Enforces GAMP 5 Compliance Framework validation, delivers the certified AI CoE Operating Model artifact into Total Unified System View (WBS Platform Context & PSO Operations Support), and secures recurring quarterly Funding through closed-loop executive review and approval with Business Leads.",
+    primaryActors: "Head of AI / AI CoE Leads, Chief Strategy Officer, VP of Engineering, GAMP 5 Compliance Officers, Business Unit Leads, SRE / PSO Leads",
+    targetOutcomes: "Accelerated Enterprise AI Adoption, 100% GAMP 5 Regulatory Validation, Standardized Prompt Curation & Guardrails, Continuous Feedback Flywheel, Secured Multi-Year AI Funding",
+    desc: "WBS 1.1.5 AI Center of Excellence operating model framework mapping governance, continuous user onboarding & prompt curation loops, Looker analytics, GAMP 5 compliance, and executive funding loops."
+  },
+  tech_ai_coe: {
+    id: "ai_coe_operating_model",
+    title: "AI Center of Excellence (CoE) Operating Model (Operational Excellence Category)",
+    category: "Operational Excellence",
+    useCase: "AI CENTER OF EXCELLENCE (COE) OPERATING MODEL (WBS 1.1.5)",
+    businessUseCase: "WBS 1.1.5: Enterprise AI Center of Excellence (CoE) Operating Model establishing cross-functional Governance & Strategy, Process & Operations (User Onboarding, Prompt Curation, Feedback Loops), and Analytics & Measurement under GAMP 5 validation and executive funding approval.",
+    primaryActors: "Head of AI / AI CoE Leads, Chief Strategy Officer, VP of Engineering, GAMP 5 Compliance Officers, Business Unit Leads",
+    targetOutcomes: "Accelerated Enterprise AI Adoption, 100% GAMP 5 Regulatory Validation, Standardized Prompt Curation, Secured AI Funding",
+    desc: "WBS 1.1.5 AI Center of Excellence operating model framework mapping governance, prompt curation workflows, Looker analytics, and executive funding."
   }
 };
 

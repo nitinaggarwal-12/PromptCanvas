@@ -323,6 +323,28 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Cloud FinOps & Chargeback Model: Usage Tracking (Kubecost, GenAI Tokens, GCE, GCS) -> BigQuery Cost Data Lake -> Looker Studio Analytics & FinOps Governance -> Chargeback Generator for Business Units."
   },
   {
+    id: "ai_coe_operating_model",
+    name: "AI Center of Excellence (CoE) Operating Model",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 1.1.5)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to establish an enterprise AI Center of Excellence operating model connecting strategic business planning, GAMP 5 compliance validation, continuous prompt curation loops, Looker performance tracking, and recurring executive funding approval.",
+    bestFor: [
+      "WBS 1.1.5 AI Center of Excellence (CoE) Operating Model (Operational Excellence / Exec & Business Arch)",
+      "Governance & Strategy layer with Adoption Modeling and cross-functional Cloud Plans alignment",
+      "Process & Operations workflows with 3 circular loops (User Onboarding, Prompt Curation, Continuous Feedback Loops)",
+      "Analytics & Measurement tracking Performance Metrics and Utilization Insights via Looker",
+      "GAMP 5 Compliance Framework validation perimeter",
+      "Delivers certified AI CoE Operating Model into Total Unified System View (WBS Platform Context & PSO Operations Support)",
+      "Closed-loop executive review and approval with Business Leads to secure recurring multi-year Funding"
+    ],
+    keyTech: ["AI Governance", "Prompt Curation", "GAMP 5 Validation", "Looker Analytics", "Adoption Modeling", "Jira / Confluence", "PSO Operations", "Executive Funding"],
+    thumbnail: "/templates/ai_coe_operating_model.png",
+    promptSummary: "AI Center of Excellence (CoE) Operating Model: Exec Strategy & GAMP 5 -> Governance, Prompt Curation Loops & Looker Analytics -> AI CoE Operating Model -> Unified System View & Executive Funding."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

@@ -3183,6 +3183,297 @@ export function getExactCloudFinopsChargebackXml(): string {
 `.trim();
 }
 
+/**
+ * 🏛️ BLUEPRINT 4: WBS 1.1.5 AI CENTER OF EXCELLENCE (COE) OPERATING MODEL
+ * Pixel-Perfect Replica of WBS 1.1.5 AI Center of Excellence Operating Model Blueprint
+ */
+export function getExactAiCoeOperatingModelXml(): string {
+  return `
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="ai_coe_operating_model" name="WBS 1.1.5: AI Center of Excellence (CoE) Operating Model">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1620" pageHeight="950" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- MAIN HEADER AND SUBTITLE -->
+        <mxCell id="hdr_title_box" value="&lt;b style=&quot;font-size:16.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 1.1.5: AI Center of Excellence (CoE) Operating Model&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:13px;color:#334155;font-weight:normal;&quot;&gt;(Operational Excellence / Exec &amp;amp; Business Arch Category)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="16" width="520" height="54" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="hdr_tobe_box" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;'To-Be'&lt;/b&gt;&amp;nbsp;&lt;font style=&quot;font-size:12px;color:#334155;&quot;&gt;State, Updates: Quarterly, Classification: High&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="560" y="20" width="370" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- LEFT INPUTS CLUSTER -->
+        <!-- 1. Exec and Strategy -->
+        <mxCell id="box_exec_strat" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Exec &amp;amp;&lt;br&gt;Strategy&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="20" y="96" width="90" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Business Plan (with PPT and Confluence icons) -->
+        <mxCell id="box_biz_plan" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Business Plan&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:16px;&quot;&gt;📊 📑&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="140" y="96" width="110" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_exec_to_biz" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="box_exec_strat" target="box_biz_plan">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Cloud Plans -->
+        <mxCell id="box_cloud_plans" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Cloud&lt;br&gt;Plans&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="20" y="180" width="90" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_exec_to_cloud" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="box_exec_strat" target="box_cloud_plans">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. GAMP 5 Compliance Framework Badge -->
+        <mxCell id="box_gamp5" value="&lt;font style=&quot;font-size:24px;color:#0284C7;&quot;&gt;🛡️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;GAMP 5&lt;br&gt;Compliance&lt;br&gt;Framework&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;background:#E0F2FE;color:#0369A1;padding:1px 4px;border-radius:2px;&quot;&gt;Validated&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#0284C7;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="60" y="270" width="160" height="74" as="geometry"/>
+        </mxCell>
+
+        <!-- MAIN CENTER CONTAINER: AI CENTER OF EXCELLENCE (COE) -->
+        <mxCell id="box_coe_main" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="280" y="90" width="460" height="420" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_coe_title" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;AI Center of Excellence (CoE)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="280" y="96" width="460" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Connections from left into CoE -->
+        <mxCell id="edge_biz_to_coe" value="&lt;font style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Strategy&lt;br&gt;&amp;amp; Ideation&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="120" as="sourcePoint"/>
+            <mxPoint x="280" y="120" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_cloud_to_coe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="204" as="sourcePoint"/>
+            <mxPoint x="280" y="204" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_gamp5_to_coe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="307" as="sourcePoint"/>
+            <mxPoint x="280" y="307" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- TIER 1: GOVERNANCE AND STRATEGY -->
+        <mxCell id="box_coe_tier1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="295" y="125" width="430" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_coe_tier1" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Governance &amp;amp; Strategy&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="295" y="131" width="430" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_tier1_icons" value="&lt;font style=&quot;font-size:14px;&quot;&gt;📑 📊&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="660" y="131" width="55" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Subcard: Adoption Modeling -->
+        <mxCell id="box_adopt_model" value="&lt;font style=&quot;font-size:16px;&quot;&gt;📈&lt;/font&gt;&amp;nbsp;&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Adoption&lt;br&gt;Modeling&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="435" y="155" width="150" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- TIER 2: PROCESS AND OPERATIONS -->
+        <mxCell id="box_coe_tier2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="295" y="230" width="430" height="145" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_coe_tier2" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Process &amp;amp; Operations&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="295" y="236" width="430" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_tier2_icons" value="&lt;font style=&quot;font-size:14px;&quot;&gt;🔷 💠&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="660" y="236" width="55" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Circular Loop 1: User Onboarding -->
+        <mxCell id="loop_user_onboard" value="&lt;font style=&quot;font-size:22px;color:#2563EB;&quot;&gt;🔄&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;User&lt;br&gt;Onboarding&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="320" y="260" width="86" height="86" as="geometry"/>
+        </mxCell>
+
+        <!-- Circular Loop 2: Prompt Curation -->
+        <mxCell id="loop_prompt_curate" value="&lt;font style=&quot;font-size:22px;color:#2563EB;&quot;&gt;🔄&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Prompt&lt;br&gt;Curation&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="445" y="260" width="86" height="86" as="geometry"/>
+        </mxCell>
+
+        <!-- Circular Loop 3: Feedback Loops -->
+        <mxCell id="loop_feedback" value="&lt;font style=&quot;font-size:22px;color:#2563EB;&quot;&gt;🔄&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Feedback&lt;br&gt;Loops&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="570" y="260" width="86" height="86" as="geometry"/>
+        </mxCell>
+
+        <!-- TIER 3: ANALYTICS AND MEASUREMENT -->
+        <mxCell id="box_coe_tier3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="295" y="385" width="430" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_coe_tier3" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Analytics &amp;amp; Measurement&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="295" y="391" width="430" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_tier3_icons" value="&lt;font style=&quot;font-size:14px;&quot;&gt;📊 📈&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="660" y="391" width="55" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box_perf_metrics" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Performance&lt;br&gt;Metrics&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="345" y="425" width="130" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_util_insights" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Utilization Insights&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="515" y="425" width="130" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- RIGHT SIDE: OPERATING MODEL AND UNIFIED SYSTEM VIEW -->
+        <!-- AI CoE Operating Model (Central deliverable box) -->
+        <mxCell id="box_coe_op_model" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;AI CoE&lt;br&gt;Operating&lt;br&gt;Model&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="780" y="275" width="90" height="74" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_coe_to_opmodel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="box_coe_main" target="box_coe_op_model">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Right Container: Total Unified System View -->
+        <mxCell id="box_unified_view_outer" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="930" y="90" width="170" height="420" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_unified_view_ctx" value="&lt;font style=&quot;font-size:9px;color:#64748B;&quot;&gt;Generalized context&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="930" y="72" width="170" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_unified_view_hdr" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Total Unified&lt;br&gt;System View&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="930" y="98" width="170" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Inner Box: WBS Context / Platform View -->
+        <mxCell id="box_wbs_ctx_view" value="&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;WBS Context /&lt;br&gt;Platform View&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.5px;color:#475569;&quot;&gt;(e.g., related to&lt;br&gt;broader enterprise&lt;br&gt;systems)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="948" y="150" width="134" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- Inner Box: PSO (Operations Support) -->
+        <mxCell id="box_pso_support" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;PSO (Operations&lt;br&gt;Support)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="948" y="420" width="134" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Edge from AI CoE Operating Model into Unified System View -->
+        <mxCell id="edge_opmodel_to_wbs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="box_coe_op_model" target="box_wbs_ctx_view">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_opmodel_to_pso" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="320" as="sourcePoint"/>
+            <mxPoint x="948" y="450" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="895" y="320"/>
+              <mxPoint x="895" y="450"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- CSV Data Export/Import -->
+        <mxCell id="box_csv_export" value="&lt;font style=&quot;font-size:16px;color:#10B981;&quot;&gt;📄&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#047857;&quot;&gt;CSV&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Data&lt;br&gt;export/&lt;br&gt;import&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=1;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="752" y="420" width="56" height="66" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_analytics_to_csv" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.2;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="645" y="453" as="sourcePoint"/>
+            <mxPoint x="752" y="453" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM SECTION: EXECS, GOVERNANCE AND FUNDING -->
+        <!-- Execs & Business Leads Box -->
+        <mxCell id="box_execs_leads" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Execs &amp;amp; Business Leads&lt;/b&gt;&lt;br&gt;&lt;ul style=&quot;text-align:left;margin:4px 0 0 16px;padding:0;font-size:10px;color:#334155;&quot;&gt;&lt;li&gt;&lt;b&gt;Review:&lt;/b&gt; Performance Metrics&lt;br&gt;&lt;span style=&quot;color:#64748B;&quot;&gt;(from Looker)&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;Approve:&lt;/b&gt; Strategy &amp;amp; Business&lt;br&gt;Plan updates&lt;/li&gt;&lt;/ul&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=top;arcSize=4;padding=8;" vertex="1" parent="1">
+          <mxGeometry x="250" y="550" width="240" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_coe_to_execs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="490" y="510" as="sourcePoint"/>
+            <mxPoint x="410" y="550" as="targetPoint"/>
+            <Array as="points"><mxPoint x="490" y="530"/><mxPoint x="410" y="530"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Funding Box ($ Icon in Green Circle) -->
+        <mxCell id="box_funding" value="&lt;font style=&quot;font-size:26px;color:#10B981;&quot;&gt;💲&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Funding&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=1.5;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="600" y="560" width="90" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrows around Funding -->
+        <mxCell id="edge_funding_to_execs" value="&lt;font style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Secured via&lt;br&gt;Adoption&lt;br&gt;Modeling&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="605" as="sourcePoint"/>
+            <mxPoint x="490" y="605" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_funding_to_coe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="645" y="560" as="sourcePoint"/>
+            <mxPoint x="645" y="510" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_csv_to_funding" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="780" y="486" as="sourcePoint"/>
+            <mxPoint x="690" y="605" as="targetPoint"/>
+            <Array as="points"><mxPoint x="780" y="605"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM RIGHT: LEGEND CONTAINER -->
+        <mxCell id="box_ai_coe_legend" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="930" y="530" width="170" height="210" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_ai_coe_legend" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="940" y="536" width="150" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_sym1" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🛡️ 📊 💲&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="940" y="558" width="60" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_sym1_txt" value="&lt;font style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Symbol&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1005" y="558" width="80" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_arrow_sym" value="➡️" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="940" y="584" width="40" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_arrow_txt" value="&lt;font style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Symbols&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1005" y="584" width="80" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_fin_line" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#10B981;strokeWidth=2;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="942" y="620" as="sourcePoint"/><mxPoint x="992" y="620" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_fin_txt" value="&lt;font style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Financial data&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1005" y="610" width="90" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_usage_line" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3B82F6;strokeWidth=1.5;dashed=1;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="942" y="646" as="sourcePoint"/><mxPoint x="992" y="646" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_usage_txt" value="&lt;font style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Usage metrics&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1005" y="636" width="90" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_clr_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="942" y="672" width="50" height="10" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_clr_txt" value="&lt;font style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Financial&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1005" y="666" width="90" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_clr_box2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#10B981;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="942" y="698" width="50" height="10" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_clr_txt2" value="&lt;font style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Colors&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1005" y="692" width="90" height="20" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}
+
+
 
 
 

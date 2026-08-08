@@ -209,6 +209,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 1.1.3 Cloud FinOps & Chargeback Model for unit cost allocation, GenAI Vertex AI token tracking, BigQuery cost data lake, and automated showback/chargeback reporting.",
     prompt: "Act as an Enterprise FinOps & Cloud Economics Architect. Design a production-grade WBS 1.1.3 Cloud FinOps & Chargeback Model. Include: Ingestion & Usage Tracking (GKE Kubecost, GCE VMs, GCS, Cloud SQL, BigQuery, Vertex AI Token Tracking) -> Data Aggregation (GCP Billing Exports, Kubecost Costs, Vertex AI Token Cost Calculator, Tagging Policies into Unified BigQuery Cost Data Lake) -> Looker Studio Analytics & FinOps Governance Engine (Tagging Enforcement, Budgets & Alerts, Commitment Manager CUDs/SUDs, Cloud Monitoring) -> Chargeback Generator for Business Units (Engineering, Product, Data Science & GenAI) under Cloud IAM access control and Secret Manager."
+  },
+  {
+    id: "ai_coe_operating_model",
+    name: "AI Center of Excellence (CoE) Operating Model",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 1.1.5 AI Center of Excellence (CoE) Operating Model for AI governance, prompt curation loops, Looker analytics, GAMP 5 compliance, and executive funding loops.",
+    prompt: "Act as an Enterprise AI Strategy & Governance Architect. Design a production-grade WBS 1.1.5 AI Center of Excellence (CoE) Operating Model. Include: Exec & Strategy, Business Plan, Cloud Plans -> GAMP 5 Compliance Framework (Validated) -> AI Center of Excellence (Governance & Strategy with Adoption Modeling; Process & Operations with User Onboarding, Prompt Curation, Feedback Loops; Analytics & Measurement with Performance Metrics and Utilization Insights) -> AI CoE Operating Model artifact -> Total Unified System View (WBS Platform View, PSO Operations Support) -> CSV data export -> Funding and Execs & Business Leads approval loop."
   }
 ];
 
@@ -227,6 +234,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('6rs') || id.includes('six_rs') || id.includes('disposition')) return 'six_rs_migration_matrix';
   if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id === 'hybrid_strangler_transition') return 'hybrid_strangler_transition';
   if (id.includes('finops') || id.includes('chargeback') || id === 'cloud_finops_chargeback') return 'cloud_finops_chargeback';
+  if (id.includes('ai_coe') || id.includes('operating_model') || id === 'ai_coe_operating_model') return 'ai_coe_operating_model';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
 }
@@ -288,6 +296,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'cloud_finops_chargeback') {
     const { getExactCloudFinopsChargebackXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactCloudFinopsChargebackXml();
+  } else if (id === 'ai_coe_operating_model') {
+    const { getExactAiCoeOperatingModelXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactAiCoeOperatingModelXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -309,6 +320,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'six_rs_migration_matrix' ||
     id === 'hybrid_strangler_transition' ||
     id === 'cloud_finops_chargeback' ||
+    id === 'ai_coe_operating_model' ||
     id.includes('agent_harness')
   );
 
