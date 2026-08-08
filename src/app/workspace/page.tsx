@@ -4038,8 +4038,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         });
       setChatMessages(messages);
     } else {
-      // Instant Seamless Switch: Load reference backbone instantly without blocking modal friction!
+      // Dynamic AI Customization: Prompt Gemini 3.6 to customize this architecture for the user's prompt!
       setSelectedArchType(newArchId);
+      const archMeta = getArchitectureTypeById(newArchId);
+      const archName = archMeta?.name || newArchId;
+      const effectivePrompt = activeDiagram?.prompt || activeDiagram?.name || 'Enterprise System';
+
       if (activeDiagram?.id) {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
@@ -4049,56 +4053,75 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
       }
 
-      const matchingVersion = activeDiagram?.versions?.find(v => v.architecture_type === newArchId);
-      if (matchingVersion) {
-        setActiveVersion(matchingVersion);
-        setPreviewVersion(null);
-      } else {
-        const refXml = getDefaultXmlForArchitecture(newArchId, activeDiagram?.name, activeDiagram?.name);
-        const nextVerNum = (activeDiagram?.versions?.length || 0) + 1;
-        const tempVersion: DiagramVersion = {
-          id: `temp_ref_${newArchId}_${Date.now()}`,
-          diagram_id: activeDiagram?.id || 'temp',
-          version_number: nextVerNum,
-          xml_content: refXml || '',
-          comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name || newArchId}`,
-          created_by: 'System',
-          created_at: new Date().toISOString(),
-          architecture_type: newArchId
-        };
-        setActiveVersion(tempVersion);
-        setPreviewVersion(null);
+      // 1. Instantly display pre-flavored base XML so user has zero blocking wait
+      const baseRefXml = getDefaultXmlForArchitecture(newArchId, activeDiagram?.name, effectivePrompt);
+      const nextVerNum = (activeDiagram?.versions?.length || 0) + 1;
+      const tempVersion: DiagramVersion = {
+        id: `temp_ref_${newArchId}_${Date.now()}`,
+        diagram_id: activeDiagram?.id || 'temp',
+        version_number: nextVerNum,
+        xml_content: baseRefXml || '',
+        comment: `✨ Gemini 3.6 is customizing ${archName}...`,
+        created_by: 'AI',
+        created_at: new Date().toISOString(),
+        architecture_type: newArchId
+      };
+      setActiveVersion(tempVersion);
+      setPreviewVersion(null);
+      setIsGenerating(true);
+      setAiStepTelemetry(`✨ Gemini 3.6 is tailoring "${archName}" for "${effectivePrompt.slice(0, 35)}..."`);
 
-        // Persist new architecture version to database so browser refreshes retain active diagram
-        if (activeDiagram?.id) {
-          fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-            body: JSON.stringify({
-              xml_content: refXml || '',
-              xmlContent: refXml || '',
-              comment: `Master Reference Backbone: ${getArchitectureTypeById(newArchId)?.name || newArchId}`,
+      // 2. Call /api/diagrams/customize in background to generate prompt-aware architecture
+      fetch('/api/diagrams/customize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {})
+        },
+        body: JSON.stringify({
+          diagramId: activeDiagram?.id,
+          architectureType: newArchId,
+          prompt: effectivePrompt
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          setIsGenerating(false);
+          setAiStepTelemetry('');
+          if (data && data.xml) {
+            const customizedVersion: DiagramVersion = data.version || {
+              id: `ver_${newArchId}_${Date.now()}`,
+              diagram_id: activeDiagram?.id || 'temp',
+              version_number: nextVerNum,
+              xml_content: data.xml,
+              comment: `${archName} (Tailored for: ${effectivePrompt.slice(0, 40)}...)`,
+              created_by: 'AI',
+              created_at: new Date().toISOString(),
               architecture_type: newArchId,
-              architectureType: newArchId
-            }),
-          }).then(r => r.json()).then(newVer => {
-            if (newVer && newVer.id) {
-              setActiveVersion(newVer);
-              setActiveDiagram(prev => prev ? {
-                ...prev,
-                versions: [newVer, ...(prev.versions || []).filter(v => v.id !== newVer.id)]
-              } : prev);
-            }
-          }).catch(console.error);
-        }
-      }
-      setChatMessages([{
-        id: `msg_ref_switch_${Date.now()}`,
-        sender: 'ai',
-        text: `Loaded master reference architecture backbone for "${getArchitectureTypeById(newArchId)?.name}". Click "✨ Generate AI Flavor" to customize for your prompt!`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        versionNumber: 1
-      }]);
+              ai_reasoning: data.reasoning,
+              business_usecase: data.businessUsecase,
+              technical_usecase: data.technicalUsecase
+            };
+            setActiveVersion(customizedVersion);
+            setActiveDiagram(prev => prev ? {
+              ...prev,
+              architecture_type: newArchId,
+              versions: [customizedVersion, ...(prev.versions || []).filter(v => v.id !== customizedVersion.id && v.id !== tempVersion.id)]
+            } : prev);
+            setChatMessages([{
+              id: `msg_ai_${Date.now()}`,
+              sender: 'ai',
+              text: `✨ Successfully tailored **${archName}** for "${effectivePrompt}". All 2D topology nodes and lifelines represent your domain!`,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              versionNumber: customizedVersion.version_number
+            }]);
+          }
+        })
+        .catch(err => {
+          console.error('Failed to customize architecture with Gemini:', err);
+          setIsGenerating(false);
+          setAiStepTelemetry('');
+        });
     }
   };
 
@@ -4115,7 +4138,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     });
 
     try {
-      const res = await fetch('/api/generate', {
+      const res = await fetch('/api/diagrams/customize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -4123,11 +4146,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         },
         body: JSON.stringify({
           diagramId: activeDiagram.id,
-          name: activeDiagram.name,
           architectureType: archToRefresh,
-          prompt: activeDiagram.prompt || activeDiagram.name,
-          forceRefresh: true,
-          forceFreshMaster: true
+          prompt: activeDiagram.prompt || activeDiagram.name
         })
       });
 
@@ -4137,7 +4157,16 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       }
 
       const data = await res.json();
-      const freshVer = data.version;
+      const freshVer = data.version || {
+        id: `ver_${archToRefresh}_${Date.now()}`,
+        diagram_id: activeDiagram.id,
+        version_number: (activeDiagram.versions?.length || 0) + 1,
+        xml_content: data.xml,
+        comment: `${getArchitectureTypeById(archToRefresh)?.name || archToRefresh} (Tailored for: ${(activeDiagram.prompt || activeDiagram.name).slice(0, 40)}...)`,
+        created_by: 'AI',
+        created_at: new Date().toISOString(),
+        architecture_type: archToRefresh
+      };
       if (freshVer) {
         setActiveVersion(freshVer);
         activeXmlRef.current = freshVer.xml_content;
@@ -4154,7 +4183,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         });
       }
       setForceRefreshToast({
-        message: `✅ Successfully Force-Refreshed "${activeDiagram.name}" from Master Template via Live API!`,
+        message: `✅ Successfully Tailored "${getArchitectureTypeById(archToRefresh)?.name || archToRefresh}" with Gemini 3.6!`,
         type: 'success'
       });
       setTimeout(() => setForceRefreshToast(null), 4000);
