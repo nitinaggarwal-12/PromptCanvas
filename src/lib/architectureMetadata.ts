@@ -349,6 +349,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Head of AI / AI CoE Leads, Chief Strategy Officer, VP of Engineering, GAMP 5 Compliance Officers, Business Unit Leads",
     targetOutcomes: "Accelerated Enterprise AI Adoption, 100% GAMP 5 Regulatory Validation, Standardized Prompt Curation, Secured AI Funding",
     desc: "WBS 1.1.5 AI Center of Excellence operating model framework mapping governance, prompt curation workflows, Looker analytics, and executive funding."
+  },
+  mcp_context_gateway: {
+    id: "mcp_context_gateway",
+    title: "Model Context Protocol Gateway (MCP Context Gateway) (Operational Excellence Category)",
+    category: "Operational Excellence",
+    useCase: "MODEL CONTEXT PROTOCOL (MCP) GATEWAY (WBS 2.1.5)",
+    businessUseCase: "WBS 2.1.5: Enterprise Model Context Protocol (MCP) Gateway architecture (Node.js/Python) establishing Universal Context Ingestion & Adapters (SQL, Storage, Vector DB, Logs, Legacy Systems into Context Schema Mapping Engine), an MCP Message Bus & Normalization Tier (MCP Schemas, Schema Validation, SOC 2 Compliance Filtering, IAM Access Control, BigQuery Audit Trail Logging), and Tool Proxies & Downstream Integration (Cognitive Arch / Agentic RAG into API Proxy, GCP Service Proxy, and Legacy Tool Proxy). Connects to external Actionable Tool Systems, Looker Studio reporting, AI Integration Engineers, and Total Unified System View with PSO Operations Support under strict Workload Identity, VPC-SC, and Secret Manager security.",
+    primaryActors: "AI Integration Engineers, Platform Architects, MCP Developers, Security & Compliance Officers, SRE / PSO Leads",
+    targetOutcomes: "Zero-Trust Context Ingestion, 100% SOC 2 Compliance Filtering, Sub-50ms Tool Execution Proxies, Unified Schema Normalization, Immutable Audit Logging",
+    desc: "WBS 2.1.5 Model Context Protocol Gateway blueprint mapping multi-source context ingestion, normalized MCP message bus, tool proxies, and actionable tool integration."
+  },
+  tech_mcp_gateway: {
+    id: "mcp_context_gateway",
+    title: "Model Context Protocol Gateway (MCP Context Gateway) (Operational Excellence Category)",
+    category: "Operational Excellence",
+    useCase: "MODEL CONTEXT PROTOCOL (MCP) GATEWAY (WBS 2.1.5)",
+    businessUseCase: "WBS 2.1.5: Enterprise Model Context Protocol (MCP) Gateway architecture connecting multi-source context adapters, MCP Schema Message Bus, and Tool Proxies to downstream actionable tool systems and Looker analytics.",
+    primaryActors: "AI Integration Engineers, Platform Architects, MCP Developers, Security Officers",
+    targetOutcomes: "Zero-Trust Context Ingestion, 100% SOC 2 Compliance Filtering, Sub-50ms Tool Proxies, Unified Schema Normalization",
+    desc: "WBS 2.1.5 Model Context Protocol Gateway blueprint mapping context ingestion adapters, MCP message bus, and downstream tool proxies."
   }
 };
 

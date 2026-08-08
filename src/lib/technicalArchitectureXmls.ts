@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -28,6 +28,9 @@ const TECH_XML_CLOUD_FINOPS_CHARGEBACK = getExactCloudFinopsChargebackXml();
 
 // 1.6 AI Center of Excellence (CoE) Operating Model (Operational Excellence Category)
 const TECH_XML_AI_COE_OPERATING_MODEL = getExactAiCoeOperatingModelXml();
+
+// 1.7 Model Context Protocol (MCP) Gateway (To-Be / Operational Excellence Category)
+const TECH_XML_MCP_CONTEXT_GATEWAY = getExactMcpContextGatewayXml();
 
 
 
@@ -1389,6 +1392,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('ai_coe') || id.includes('operating_model') || id === 'ai_coe_operating_model') {
     return TECH_XML_AI_COE_OPERATING_MODEL;
   }
+  if (id.includes('mcp') || id.includes('context_gateway') || id === 'mcp_context_gateway') {
+    return TECH_XML_MCP_CONTEXT_GATEWAY;
+  }
   if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
@@ -1409,6 +1415,7 @@ export {
   TECH_XML_HYBRID_STRANGLER_TRANSITION,
   TECH_XML_CLOUD_FINOPS_CHARGEBACK,
   TECH_XML_AI_COE_OPERATING_MODEL,
+  TECH_XML_MCP_CONTEXT_GATEWAY,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,
@@ -1424,4 +1431,5 @@ export {
   TECH_XML_MODERN_DATA_STACK,
   TECH_XML_EVENT_DRIVEN_EDA
 };
+
 

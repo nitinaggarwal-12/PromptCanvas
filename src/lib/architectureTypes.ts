@@ -216,6 +216,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 1.1.5 AI Center of Excellence (CoE) Operating Model for AI governance, prompt curation loops, Looker analytics, GAMP 5 compliance, and executive funding loops.",
     prompt: "Act as an Enterprise AI Strategy & Governance Architect. Design a production-grade WBS 1.1.5 AI Center of Excellence (CoE) Operating Model. Include: Exec & Strategy, Business Plan, Cloud Plans -> GAMP 5 Compliance Framework (Validated) -> AI Center of Excellence (Governance & Strategy with Adoption Modeling; Process & Operations with User Onboarding, Prompt Curation, Feedback Loops; Analytics & Measurement with Performance Metrics and Utilization Insights) -> AI CoE Operating Model artifact -> Total Unified System View (WBS Platform View, PSO Operations Support) -> CSV data export -> Funding and Execs & Business Leads approval loop."
+  },
+  {
+    id: "mcp_context_gateway",
+    name: "Model Context Protocol (MCP) Gateway",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 2.1.5 Model Context Protocol Gateway (MCP Context Gateway) with Universal Context Ingestion Adapters, MCP Message Bus & Normalization, and Tool Proxies.",
+    prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade WBS 2.1.5 Model Context Protocol Gateway (MCP Context Gateway). Include: 5 Ingestion Sources (Database Source Cloud SQL, Object Storage Source Cloud Storage, Vector DB Source Vertex AI Vector Search, Logs Cloud Logging, Legacy Systems) -> Apigee & Looker Studio -> Security & Secret Management (Workload Identity IAM, VPC-SC, Secret Manager) -> Model Context Protocol (MCP) Gateway Node.js/Python (Universal Context Ingestion Adapters, Context Schema Mapping Engine, MCP Message Bus & Normalization with MCP Schemas, SOC 2 Compliance Filtering, IAM Access Control, BigQuery Audit Trail Logging, Tool Proxies & Downstream Integration with Cognitive Arch / Agentic RAG, API Proxy, GCP Service Proxy, Legacy Tool Proxy) -> External API Actionable Tool Systems -> Looker Studio Analytics & Total Unified System View (WBS Context / Platform View & PSO Support) -> Legend."
   }
 ];
 
@@ -235,6 +242,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id === 'hybrid_strangler_transition') return 'hybrid_strangler_transition';
   if (id.includes('finops') || id.includes('chargeback') || id === 'cloud_finops_chargeback') return 'cloud_finops_chargeback';
   if (id.includes('ai_coe') || id.includes('operating_model') || id === 'ai_coe_operating_model') return 'ai_coe_operating_model';
+  if (id.includes('mcp') || id.includes('context_gateway') || id === 'mcp_context_gateway') return 'mcp_context_gateway';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
 }
@@ -299,6 +307,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'ai_coe_operating_model') {
     const { getExactAiCoeOperatingModelXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAiCoeOperatingModelXml();
+  } else if (id === 'mcp_context_gateway') {
+    const { getExactMcpContextGatewayXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactMcpContextGatewayXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -321,6 +332,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'hybrid_strangler_transition' ||
     id === 'cloud_finops_chargeback' ||
     id === 'ai_coe_operating_model' ||
+    id === 'mcp_context_gateway' ||
     id.includes('agent_harness')
   );
 

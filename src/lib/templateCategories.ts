@@ -345,6 +345,30 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "AI Center of Excellence (CoE) Operating Model: Exec Strategy & GAMP 5 -> Governance, Prompt Curation Loops & Looker Analytics -> AI CoE Operating Model -> Unified System View & Executive Funding."
   },
   {
+    id: "mcp_context_gateway",
+    name: "Model Context Protocol Gateway (MCP Context Gateway)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 2.1.5)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to build an enterprise Model Context Protocol (MCP) gateway connecting heterogeneous databases, object stores, vector search, and legacy APIs with schema validation, SOC 2 compliance filtering, and tool execution proxies.",
+    bestFor: [
+      "WBS 2.1.5 Model Context Protocol Gateway (To-Be / Operational Excellence Category)",
+      "Universal Context Ingestion & Adapters (Cloud SQL, Cloud Storage, Vertex AI Vector Search, Cloud Logging, Legacy Systems)",
+      "Context Schema Mapping Engine normalizing multi-source data payloads",
+      "MCP Message Bus & Normalization Tier (MCP Schemas, Schema Validation, SOC 2 Compliance Filtering, IAM Access Control)",
+      "Audit Trail Logging to BigQuery/Cloud Logging with dedicated SOC 2 Audit Trail",
+      "Tool Proxies & Downstream Integration (Cognitive Arch / Agentic RAG into API Proxy, GCP Service Proxy, Legacy Tool Proxy)",
+      "Actionable Tool Systems integration and Looker Studio usage/economics metrics",
+      "Total Unified System View with WBS Context / Platform View and PSO Operations Support",
+      "Perimeter Security via Workload Identity (IAM), VPC-SC, and Secret Manager"
+    ],
+    keyTech: ["Model Context Protocol", "MCP Gateway (Node.js/Python)", "Cloud SQL", "Vertex AI Vector Search", "BigQuery Audit Trail", "SOC 2 Compliance", "Looker Studio", "Workload Identity", "VPC-SC", "Secret Manager"],
+    thumbnail: "/templates/mcp_context_gateway.png",
+    promptSummary: "Model Context Protocol Gateway: 5 Ingestion Adapters -> Context Schema Mapping -> MCP Message Bus (SOC 2 Filter & Audit) -> Cognitive RAG & Tool Proxies -> Actionable Tool Systems & Unified View."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",
