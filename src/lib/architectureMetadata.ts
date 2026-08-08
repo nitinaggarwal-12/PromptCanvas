@@ -269,6 +269,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Data Architects, Enterprise Architects, Application Owners, Migration Leads, EA Boards",
     targetOutcomes: "Identification of Technical Debt & Data Gravity Anchors, Zero-Downtime Strangler Fig Decoupling, Full Serverless Scale, Reduced TCO, Data Residency Sovereignty Compliance",
     desc: "WBS 0.1.1 / 0.2.1 Legacy discovery and strangler fig transition architecture mapping on-prem monoliths, databases, file shares, and progressive decoupling into GCP target state."
+  },
+  six_rs_migration_matrix: {
+    id: "six_rs_migration_matrix",
+    title: "6Rs Migration Disposition Matrix (Assessment Phase)",
+    category: "Legacy Discovery",
+    useCase: "6RS MIGRATION DISPOSITION MATRIX (WBS 0.1.2)",
+    businessUseCase: "WBS 0.1.2: Enterprise Cloud Migration Assessment & 6Rs Disposition Framework evaluating Legacy Components (On-Premise VMs, Legacy Databases Oracle/SAP, Mainframe Systems, Custom Monolith Apps, File Shares) across Business Value, Technical Feasibility, and Cloud Compatibility decision tracks into Rehost (Lift & Shift), Replatform (Lift & Reshape), Refactor (Re-architect), Retain (Revisit Later), Retire (Decommission), and Repurchase (Drop & Shop) target dispositions with GCAF Cost Optimization feedback loops.",
+    primaryActors: "Cloud Infrastructure Leads, Data Architects, C-Suite, PMO, Migration Teams",
+    targetOutcomes: "Prioritized Application Disposition Inventory, Clear 6Rs Migration Roadmap, Quantified Cloud TCO Savings, Zero Cloud Migration Regressions",
+    desc: "WBS 0.1.2 6Rs Migration Disposition Matrix mapping legacy workloads across multi-tier assessment logic into Rehost, Replatform, Refactor, Retain, Retire, and Repurchase cloud destinations."
+  },
+  tech_6rs_migration: {
+    id: "six_rs_migration_matrix",
+    title: "6Rs Migration Disposition Matrix (Assessment Phase)",
+    category: "Legacy Discovery",
+    useCase: "6RS MIGRATION DISPOSITION MATRIX (WBS 0.1.2)",
+    businessUseCase: "WBS 0.1.2: Enterprise Cloud Migration Assessment & 6Rs Disposition Framework evaluating Legacy Components across Business Value, Technical Feasibility, and Cloud Compatibility decision tracks into Rehost, Replatform, Refactor, Retain, Retire, and Repurchase target dispositions.",
+    primaryActors: "Cloud Infrastructure Leads, Data Architects, C-Suite, PMO, Migration Teams",
+    targetOutcomes: "Prioritized Application Disposition Inventory, Clear 6Rs Migration Roadmap, Quantified Cloud TCO Savings, Zero Cloud Migration Regressions",
+    desc: "WBS 0.1.2 6Rs Migration Disposition Matrix mapping legacy workloads into Rehost, Replatform, Refactor, Retain, Retire, and Repurchase cloud destinations."
   }
 };
 

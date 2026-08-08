@@ -188,6 +188,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 0.1.1 / 0.2.1 Legacy discovery and Strangler Fig transition architecture mapping on-prem monoliths (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2), data gravity anchors, and progressive strangler migration into GCP serverless production.",
     prompt: "Act as an Enterprise Data & Migration Architect. Design a production-grade WBS 0.1.1 / 0.2.1 Legacy Data & System Dependency Map and Strangler Fig Transition Architecture. Include: Stage 1 As-Is Discovery On-Premises Datacenter (SAP ECC R/3, Mainframe z/OS, Oracle 11g, IBM DB2, Message Queue, File Shares), Stage 2 Strangler reverse proxy, Stage 3 Microservice decoupling & Informatica ETL grid, and Stage 4 Optimized GCP To-Be Production Architecture (Cloud Run, Cloud SQL, BigQuery, Bigtable, Eventarc, Workflows)."
+  },
+  {
+    id: "six_rs_migration_matrix",
+    name: "6Rs Migration Disposition Matrix (Assessment Phase)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 0.1.2 6Rs Migration Disposition Matrix evaluating legacy components (VMs, DBs, Mainframe, Monoliths, File Shares) across Business Value, Technical Feasibility, and Cloud Compatibility into Rehost, Replatform, Refactor, Retain, Retire, and Repurchase.",
+    prompt: "Act as an Enterprise Cloud Migration Architect. Design a production-grade WBS 0.1.2 6Rs Migration Disposition Matrix. Include: Legacy Components (On-Premise VMs, Legacy Databases Oracle/SAP, Mainframe Systems, Custom Monolith Apps, File Shares) -> Migration Assessment Logic (Business Value, Technical Feasibility, Cloud Compatibility) -> 6Rs Dispositions (Rehost Lift & Shift, Replatform Lift & Reshape, Refactor Re-architect, Retain Revisit Later, Retire Decommission, Repurchase Drop & Shop) -> Cost Optimization GCAF & Continuous Validation feedback loops."
   }
 ];
 
@@ -203,6 +210,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id === 'tech_data_lakehouse' || id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse') return 'tech_data_lakehouse_gcp';
   if (id === 'tech_microservices_aws' || id === 'tech_microservices_gcp' || id === 'k8s_mesh') return 'tech_microservices_gcp';
   if (id === 'tech_event_driven_aws' || id === 'tech_event_driven_eda' || id === 'event_driven_aws') return 'tech_event_driven_eda';
+  if (id.includes('6rs') || id.includes('six_rs') || id.includes('disposition')) return 'six_rs_migration_matrix';
   if (id.includes('legacy') || id.includes('dependency_map') || id.includes('strangler')) return 'legacy_dependency_map';
   return id;
 }
@@ -255,6 +263,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'legacy_dependency_map') {
     const { getExactLegacyDependencyMapXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactLegacyDependencyMapXml();
+  } else if (id === 'six_rs_migration_matrix') {
+    const { getExactSixRsMigrationMatrixXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactSixRsMigrationMatrixXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -273,6 +284,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'tech_multi_region_dr' ||
     id === 'multi_region_dr' ||
     id === 'legacy_dependency_map' ||
+    id === 'six_rs_migration_matrix' ||
     id.includes('agent_harness')
   );
 

@@ -254,6 +254,30 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Legacy Data & Dependency Map: As-Is On-Prem Datacenter (ERP Monolith, Mainframe, Oracle/DB2) -> Strangler Reverse Proxy -> Microservice Decoupling -> Informatica ETL Grid -> Optimized GCP To-Be Target Tier."
   },
   {
+    id: "six_rs_migration_matrix",
+    name: "6Rs Migration Disposition Matrix (Assessment Phase)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 0.1.2)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use during Phase 0 Assessment to systematically evaluate legacy on-premise components (VMs, DBs, Mainframes, Monoliths, File Shares) across Business Value, Technical Feasibility, and Cloud Compatibility to classify them into the 6Rs migration strategies.",
+    bestFor: [
+      "WBS 0.1.2 Cloud Migration Assessment & Application Disposition Framework",
+      "Evaluation across Business Value, Technical Feasibility, and Cloud Compatibility tracks",
+      "Rehost (Lift & Shift) to Google Compute Engine (GCE) and Migrate for Anthos",
+      "Replatform (Lift & Reshape) to Google Kubernetes Engine (GKE) and Cloud SQL managed services",
+      "Refactor (Re-architect) to Cloud Run microservices and Cloud Functions serverless",
+      "Retain (Revisit Later) for high-complexity on-premise mainframes and regulatory apps",
+      "Retire (Decommission) for redundant reporting tools and legacy dev environments",
+      "Repurchase (Drop & Shop) for SaaS replacements (Salesforce, Google Workspace, SAP S/4HANA Public Cloud)",
+      "Continuous validation loop against Google Cloud Architecture Framework (GCAF) Cost Optimization pillar"
+    ],
+    keyTech: ["Compute Engine (GCE)", "Kubernetes Engine (GKE)", "Cloud Run", "Cloud Functions", "Cloud SQL", "Migrate for Anthos", "SaaS Solutions", "GCAF Cost Optimization"],
+    thumbnail: "/templates/six_rs_migration_matrix.png",
+    promptSummary: "6Rs Migration Disposition Matrix: Legacy Components -> Migration Assessment Logic (Business Value, Technical Feasibility, Cloud Compatibility) -> 6Rs Dispositions (Rehost, Replatform, Refactor, Retain, Retire, Repurchase) -> Cost Optimization & Continuous Validation."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

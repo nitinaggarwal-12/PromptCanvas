@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -16,6 +16,9 @@ const TECH_XML_MULTI_REGION_DR = getExactMultiRegionDrReferenceXml();
 
 // 1.2 Legacy Data & System Dependency Map (Strangler Fig Transition Architecture)
 const TECH_XML_LEGACY_DEPENDENCY_MAP = getExactLegacyDependencyMapXml();
+
+// 1.3 6Rs Migration Disposition Matrix (Assessment Phase)
+const TECH_XML_SIX_RS_MIGRATION_MATRIX = getExactSixRsMigrationMatrixXml();
 
 
 
@@ -1365,6 +1368,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('agentic_mesh') || id.includes('mesh')) {
     return TECH_XML_AGENTIC_MESH_GCP;
   }
+  if (id.includes('6rs') || id.includes('six_rs') || id.includes('disposition') || id === 'six_rs_migration_matrix') {
+    return TECH_XML_SIX_RS_MIGRATION_MATRIX;
+  }
   if (id.includes('legacy') || id.includes('dependency_map') || id.includes('strangler') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
@@ -1381,6 +1387,7 @@ export {
   TECH_XML_SERVERLESS_GCP,
   TECH_XML_MULTI_REGION_DR,
   TECH_XML_LEGACY_DEPENDENCY_MAP,
+  TECH_XML_SIX_RS_MIGRATION_MATRIX,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,
