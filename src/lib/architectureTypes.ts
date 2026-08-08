@@ -265,6 +265,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 6.1.1 Enterprise SRE & Observability Architecture spanning Prerequisite CI/CD flow, Observed Workloads (Client, Microservices, AI Agents, Data Tier), Unified Telemetry Pipeline Core, Datadog SIEM, Looker Studio dynamic dashboards, automated drift remediation, and PagerDuty incident management.",
     prompt: "Act as a Principal SRE & Observability Solutions Architect. Design a production-grade WBS 6.1.1 Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State) blueprint. Include: Left Prerequisite Flow (Cloud-Native CI/CD with Git Repository, Jenkins, GitLab); Container 1 Observed Workloads (GCP Workload Ingress with Client Applications, Microservices on Cloud Run/GKE, AI Agents Gemini Pro, and Data Tier Cloud SQL/BigQuery emitting logs, metrics, traces); Container 2 Unified Observability & Telemetry Pipeline (The Core with distributed tracing, Cloud Logging with SOC 2 log sinks, Cloud Monitoring metrics aggregation, and Operational Excellence Control Plane for SRE SLO/SLA definitions and budget alerts); Container 3 Actionable Operations & Reporting (Datadog Observability & SIEM Integration, Looker Studio dynamic dashboards with SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn, personas SRE, Ops Team, DevSecOps, Day-2 Ops Drift Detection & Automated Remediation with Automated Runbooks, and Incident Management with Cloud Monitoring Alerts and PagerDuty receiving RED alerts) -> Legend."
+  },
+  {
+    id: "data_residency_sovereign_map",
+    name: "Data Residency & Sovereign Cloud Map (WBS 5.1.6)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 5.1.6 Data Residency & Sovereign Cloud Map modeling isolated regional perimeters across EU-West4 (The Netherlands) and US-Central1 (Iowa) with VPC Service Controls, restricted GCP APIs, cross-border GCP VPC-SC bridge, Looker Studio compliance reporting (GDPR, EU AI Act, HIPAA), and async management plane (Dataplex, Cloud Logging).",
+    prompt: "Act as a Principal Security & Sovereign Cloud Architect. Design a production-grade WBS 5.1.6 Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase) blueprint. Include: Top Title Banner & GDPR/EU AI Act/HIPAA Badges; Left Ingress with End Users (Patient data source), SRE/Legal/CISO Personas, Cloud Load Balancing (Global/Regional) with Verified access control; Center Core Sovereign Cloud container with GCP Region EU-West4 (The Netherlands) VPC-SC perimeter, Restricted GCP APIs, Vertex AI Local Inference & Grounding, Cloud Storage Buckets, Cloud SQL GxP keys, Vertex AI Vector Search, Internal Compliant Data Flow; Center Channel with Cross-Border Data Transfer Path, GCP VPC-SC Bridge, and red alert perimeter tripwires; GCP Region US-Central1 (Iowa) VPC-SC perimeter with symmetric restricted services; Right Top Observability & Compliance Reporting container with Looker Studio Dashboards (Regional Data Compliance Score 99.8%, Cross-Border Transfer Audit Logs, VPC SC Perimeter Alerts, Vertex AI Grounding Lineage), Central logging with BigQuery historical data from prerequisite context; Right Bottom Management Plane (Async Flows) with Cloud Infra Lead, Internal metric collectors, Unified Trace Correlation, Vertex AI Monitoring, Dataplex, Cloud Logging, and Async Flow / Audit Flow connectors; Bottom Left Legend -> Footer Note."
   }
 ];
 
@@ -290,6 +297,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('dataops_anomaly') || id.includes('dataops') || id === 'dataops_anomaly_detection') return 'dataops_anomaly_detection';
   if (id.includes('golive') || id.includes('war_room') || id.includes('cutover') || id === 'golive_warroom_runbook') return 'golive_warroom_runbook';
   if (id.includes('sre') || id.includes('observability') || id === 'enterprise_sre_observability') return 'enterprise_sre_observability';
+  if (id.includes('data_residency') || id.includes('sovereign_map') || id.includes('sovereign') || id === 'data_residency_sovereign_map') return 'data_residency_sovereign_map';
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
@@ -376,6 +384,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'enterprise_sre_observability') {
     const { getExactEnterpriseSreObservabilityXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactEnterpriseSreObservabilityXml();
+  } else if (id === 'data_residency_sovereign_map') {
+    const { getExactDataResidencySovereignMapXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactDataResidencySovereignMapXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -405,6 +416,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'dataops_anomaly_detection' ||
     id === 'golive_warroom_runbook' ||
     id === 'enterprise_sre_observability' ||
+    id === 'data_residency_sovereign_map' ||
     id.includes('agent_harness')
   );
 

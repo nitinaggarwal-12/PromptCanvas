@@ -489,6 +489,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "SREs, Ops Teams, DevSecOps Engineers, Cloud Architects",
     targetOutcomes: "Distributed Tracing, Automated Drift Remediation, High-Precision Alerting",
     desc: "Enterprise SRE and observability blueprint illustrating unified telemetry pipelines, Datadog SIEM integration, and Looker Studio reporting."
+  },
+  data_residency_sovereign_map: {
+    id: "data_residency_sovereign_map",
+    title: "WBS 5.1.6: Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase)",
+    category: "Security & Governance",
+    useCase: "DATA RESIDENCY & SOVEREIGN CLOUD MAP (WBS 5.1.6)",
+    businessUseCase: "WBS 5.1.6: Enterprise Data Residency and Sovereign Cloud Map establishing isolated regional boundaries across EU-West4 (The Netherlands) and US-Central1 (Iowa) with VPC Service Controls (VPC SC) perimeters, restricted GCP APIs, and Vertex AI local inference & grounding. Features cross-border GCP VPC-SC bridge data transfer paths, red alert perimeter tripwires, Looker Studio compliance dashboards (Compliance Score 99.8%, cross-border audit logs, grounding lineage), personas (Legal, CISO, SRE Ops Lead), and async management plane (Unified Trace Correlation, Vertex AI monitoring, Dataplex, Cloud Logging) enforcing GDPR, EU AI Act, and HIPAA regulatory guarantees.",
+    primaryActors: "Legal Counsel, Chief Information Security Officers (CISOs), SecOps Engineers, SRE Ops Leads, Cloud Architects",
+    targetOutcomes: "Zero Cross-Border Data Leakage, 100% GDPR / EU AI Act / HIPAA Isolation Compliance, Sub-Minute VPC-SC Perimeter Alerting, Immutable Regulatory Audit Lineage",
+    desc: "WBS 5.1.6 Data Residency blueprint mapping multi-region sovereign boundaries, VPC Service Controls perimeters, cross-border transfer bridges, and Looker Studio compliance reporting."
+  },
+  tech_data_residency: {
+    id: "data_residency_sovereign_map",
+    title: "Data Residency & Sovereign Cloud Map (WBS 5.1.6)",
+    category: "Security & Governance",
+    useCase: "DATA RESIDENCY & SOVEREIGN CLOUD MAP (WBS 5.1.6)",
+    businessUseCase: "Enterprise Data Residency and Sovereign Cloud architecture connecting isolated VPC-SC perimeters in EU-West4 and US-Central1 with Looker Studio compliance reporting.",
+    primaryActors: "Legal, CISO, SRE Leads, SecOps Engineers",
+    targetOutcomes: "Regional Isolation, Zero Unauthorized Cross-Border Egress, Automated Compliance Dashboards",
+    desc: "Data residency and sovereign cloud blueprint illustrating VPC SC perimeters, cross-border bridges, and regulatory audit dashboards."
   }
 };
 

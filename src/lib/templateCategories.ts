@@ -503,6 +503,29 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Enterprise SRE & Observability: CI/CD Prereq -> Observed Workloads (Client, Microservices, AI Agents, Data Tier) -> Unified Telemetry Pipeline (Tracing, Logging, Monitoring) -> Datadog SIEM & Looker Studio Dashboards -> Automated Drift Remediation & PagerDuty Incident Management."
   },
   {
+    id: "data_residency_sovereign_map",
+    name: "Data Residency & Sovereign Cloud Map (WBS 5.1.6)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 5.1.6)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to design multi-region data sovereignty, regional boundary isolation (EU-West4 vs US-Central1), VPC Service Controls (VPC SC) perimeters, cross-border VPC-SC transfer bridges, and Looker Studio compliance reporting (GDPR, EU AI Act, HIPAA).",
+    bestFor: [
+      "WBS 5.1.6 Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase)",
+      "Multi-region isolation across EU-West4 (The Netherlands) and US-Central1 (Iowa)",
+      "VPC Service Controls (VPC SC) perimeters with restricted GCP APIs and CMEK encryption",
+      "Vertex AI Local Inference & Grounding patterns strictly isolated inside sovereign regions",
+      "Cross-Border Data Transfer Path with GCP VPC-SC Bridge and perimeter red alert tripwires",
+      "Looker Studio Compliance Dashboards (Regional Data Compliance Score 99.8%, cross-border audit logs, grounding lineage)",
+      "Async Management Plane: Unified Trace Correlation, Vertex AI monitoring, Dataplex, Cloud Logging",
+      "Persona-driven compliance oversight for Legal, CISO, and SRE Ops Leads"
+    ],
+    keyTech: ["VPC Service Controls (VPC SC)", "Vertex AI Localization", "Cloud Storage Buckets", "Cloud SQL", "Vertex AI Vector Search", "GCP VPC-SC Bridge", "Looker Studio", "Dataplex", "GDPR, EU AI Act, HIPAA"],
+    thumbnail: "/templates/data_residency_sovereign_map.png",
+    promptSummary: "Data Residency & Sovereign Cloud Map: Regional Ingress -> Core Sovereign Cloud (EU-West4 & US-Central1 VPC-SC Perimeters) -> GCP VPC-SC Bridge -> Looker Studio Compliance Dashboards -> Async Management Plane (Dataplex, Cloud Logging)."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",
