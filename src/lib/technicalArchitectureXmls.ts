@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml, getExactUnifiedDataGovernanceXml, getExactDataOpsAnomalyDetectionXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml, getExactUnifiedDataGovernanceXml, getExactDataOpsAnomalyDetectionXml, getExactGoLiveWarRoomRunbookXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -43,6 +43,10 @@ const TECH_XML_UNIFIED_DATA_GOVERNANCE = getExactUnifiedDataGovernanceXml();
 
 // 1.11 WBS 3.1.7: DataOps & Anomaly Detection Architecture (To-Be State)
 const TECH_XML_DATAOPS_ANOMALY_DETECTION = getExactDataOpsAnomalyDetectionXml();
+
+// 1.12 WBS 6.2.1: Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State)
+const TECH_XML_GOLIVE_WARROOM_RUNBOOK = getExactGoLiveWarRoomRunbookXml();
+
 
 
 
@@ -1423,6 +1427,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('dataops_anomaly') || id.includes('dataops') || id === 'dataops_anomaly_detection') {
     return TECH_XML_DATAOPS_ANOMALY_DETECTION;
   }
+  if (id.includes('golive') || id.includes('war_room') || id.includes('cutover') || id === 'golive_warroom_runbook') {
+    return TECH_XML_GOLIVE_WARROOM_RUNBOOK;
+  }
   if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
@@ -1448,6 +1455,7 @@ export {
   TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG,
   TECH_XML_UNIFIED_DATA_GOVERNANCE,
   TECH_XML_DATAOPS_ANOMALY_DETECTION,
+  TECH_XML_GOLIVE_WARROOM_RUNBOOK,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,

@@ -251,6 +251,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 3.1.7 DataOps & Anomaly Detection Architecture spanning Looker Studio observability, SRE PagerDuty incident alerts, Dataplex SODA/CARLO anomaly engine, and hallucination-free Vertex AI model grounding.",
     prompt: "Act as a Lead DataOps & Reliability Architect. Design a production-grade WBS 3.1.7 DataOps & Anomaly Detection Architecture (To-Be State) blueprint. Include: 5 Horizontal Zones (Top Zone Strategy & Observability Dashboard with Looker Studio 8-metric reporting; Second Zone Incident Management & SRE View with SRE, Cloud Monitoring, PagerDuty, RCA feedback loop; Third Zone The Core Dataplex Integrated DataOps Control Plane with Partner observability, SODA Quality checks, Active Schema Drift Monitoring, Anomaly Detection Engine, CARLO observability, CSV Checkpoints, Reliability Guardrails; Fourth Zone Enforced Pipeline & Consumption with Validated GCS Lakes and Vertex AI Hallucination Prevention; Bottom Zone Unified Modern Data Stack with BigQuery, GCS, Cloud SQL, Dataflow, Dataproc, External SaaS) -> Legend."
+  },
+  {
+    id: "golive_warroom_runbook",
+    name: "Go-Live Cutover & War Room Runbook (WBS 6.2.1)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 6.2.1 Go-Live Cutover & War Room Runbook across 3 horizontal layers: Preparation & Approval Gates, War Room & Opsgenie Execution with 5-Step Minute-by-Minute Cutover & Automated Rollback Script, and Post-Launch Day-2 Operations.",
+    prompt: "Act as a Lead DevSecOps & SRE Solutions Architect. Design a production-grade WBS 6.2.1 Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State) blueprint. Include: 3 Horizontal Layers (Layer 1 Top Preparation & Approval Phase with CI/CD Pipeline, WORM storage Go-Live Prep Checklist, Release Manager & App Owner Go/No-Go Decision Gate, Confluence Runbook Draft, Jira Cutover Ticket; Layer 2 Center The War Room & Live Execution with SRE, Live Communication Channel, Enterprise War Room banner, Opsgenie Integration Engine, 5-Step Minute-by-Minute Execution Script, Automated Rollback Script with DNS fallback/MFE rollback/Disable AI Agent/Restore Data snapshots and Red Alert; Layer 3 Bottom Post-Launch Day-2 Operations & Support with SRE, Release Manager, Dynamic Dashboards, Active Data Control Plane, Go-Live Verification Scorecard) -> Legend."
   }
 ];
 
@@ -274,6 +281,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('hub_and_spoke') || id.includes('hub_spoke') || id === 'hub_and_spoke_agent_config') return 'hub_and_spoke_agent_config';
   if (id.includes('unified_data_governance') || id.includes('data_governance') || id === 'unified_data_governance') return 'unified_data_governance';
   if (id.includes('dataops_anomaly') || id.includes('dataops') || id === 'dataops_anomaly_detection') return 'dataops_anomaly_detection';
+  if (id.includes('golive') || id.includes('war_room') || id.includes('cutover') || id === 'golive_warroom_runbook') return 'golive_warroom_runbook';
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
@@ -354,6 +362,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'dataops_anomaly_detection') {
     const { getExactDataOpsAnomalyDetectionXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactDataOpsAnomalyDetectionXml();
+  } else if (id === 'golive_warroom_runbook') {
+    const { getExactGoLiveWarRoomRunbookXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactGoLiveWarRoomRunbookXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -381,6 +392,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'hub_and_spoke_agent_config' ||
     id === 'unified_data_governance' ||
     id === 'dataops_anomaly_detection' ||
+    id === 'golive_warroom_runbook' ||
     id.includes('agent_harness')
   );
 

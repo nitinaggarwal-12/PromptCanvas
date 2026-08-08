@@ -461,6 +461,27 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "DataOps Architecture: Looker Observability -> SRE PagerDuty -> Dataplex SODA & CARLO Anomaly Engine -> Validated GCS Lakes & Hallucination-Free Vertex AI Grounding."
   },
   {
+    id: "golive_warroom_runbook",
+    name: "Go-Live Cutover & War Room Runbook (WBS 6.2.1)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 6.2.1)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to design Day-1 enterprise Go-Live cutover playbooks, war room communications (Slack/Teams, Opsgenie), minute-by-minute execution steps (Data Migration, DNS, MFE mount, AI agents), and automated rollback scripts.",
+    bestFor: [
+      "WBS 6.2.1 Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State)",
+      "Layer 1 Top Preparation & Approval Phase (CI/CD Pipeline triggers, WORM storage Go-Live Prep Checklist, Release Manager & App Owner Go/No-Go Decision Gate, Confluence Runbook, Jira Cutover Ticket)",
+      "Layer 2 Center The War Room & Live Execution with Opsgenie (SRE / DevSecOps communication, Enterprise War Room banner, Opsgenie Integration Engine)",
+      "5-Step Minute-by-Minute Execution Script (1. Data Migration/ETL Verified, 2. Cloud DNS Update with GLB, 3. MFE Orchestration & Live Mount, 4. Vertex AI Agent Online, 5. Real-Time Observability Check)",
+      "Automated Rollback Logic (Cutover Success Verification diamond, Automated Rollback Script: DNS fallback, MFE rollback, Disable AI Agent, Restore Data snapshots, Red Alert alerting)",
+      "Layer 3 Bottom Post-Launch Day-2 Operations (Dynamic Dashboards, Active Data Control Plane monitoring, Go-Live Verification Scorecard)"
+    ],
+    keyTech: ["Jira & Confluence", "Opsgenie", "Slack / Microsoft Teams", "Google Cloud DNS", "Cloud Load Balancing", "Vertex AI Agents", "Micro-Frontends (MFE)", "Cloud Monitoring", "Automated Rollback Scripts", "SOC 2 & CSV"],
+    thumbnail: "/templates/golive_warroom_runbook.png",
+    promptSummary: "Go-Live War Room Runbook: CI/CD & Go/No-Go Gates -> War Room & Opsgenie -> 5-Step Minute-by-Minute Execution Script -> Automated Rollback Logic -> Post-Launch Operations."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

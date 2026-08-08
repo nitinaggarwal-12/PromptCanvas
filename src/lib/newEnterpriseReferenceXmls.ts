@@ -5345,6 +5345,362 @@ export function getExactDataOpsAnomalyDetectionXml(): string {
 `.trim();
 }
 
+/**
+ * 🏛️ MASTER BLUEPRINT: WBS 6.2.1 GO-LIVE CUTOVER & WAR ROOM RUNBOOK
+ * Pixel-Perfect Replica of WBS 6.2.1 Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State)
+ */
+export function getExactGoLiveWarRoomRunbookXml(): string {
+  return `
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="golive_warroom_runbook" name="WBS 6.2.1: Go-Live Cutover &amp; War Room Runbook">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1620" pageHeight="950" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- MAIN TITLE (TOP LEFT) -->
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:20px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 6.2.1: Go-Live Cutover &amp;amp; War Room Runbook (Day-1 Cutover Phase / To-Be State)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="850" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== LEFT TIER SIDEBAR BARS ==================== -->
+        <!-- Layer 1 Sidebar -->
+        <mxCell id="layer1_bar" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;LAYER 1 (TOP):&lt;br&gt;PREPARATION &amp;amp;&lt;br&gt;APPROVAL PHASE&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="65" width="175" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 2 Sidebar -->
+        <mxCell id="layer2_bar" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;LAYER 2 (Center):&lt;br&gt;THE WAR ROOM &amp;amp;&lt;br&gt;LIVE EXECUTION&lt;br&gt;&lt;span style=&quot;font-size:9px;font-weight:normal;color:#475569;&quot;&gt;(Opsgenie Integration)&lt;/span&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="225" width="175" height="310" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 3 Sidebar -->
+        <mxCell id="layer3_bar" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;POST-LAUNCH&lt;br&gt;Day-2 OPERATIONS&lt;br&gt;&amp;amp; SUPPORT&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="545" width="175" height="185" as="geometry"/>
+        </mxCell>
+
+        <!-- Horizontal Tier Dividers -->
+        <mxCell id="div_l1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;endArrow=none;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="20" y="220" as="sourcePoint"/><mxPoint x="1450" y="220" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="div_l2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;endArrow=none;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="20" y="540" as="sourcePoint"/><mxPoint x="1450" y="540" as="targetPoint"/></mxGeometry></mxCell>
+
+
+        <!-- ==================== LAYER 1 (TOP): PREPARATION & APPROVAL ==================== -->
+        <!-- CI/CD Pipeline Box -->
+        <mxCell id="box_cicd_prep" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="210" y="70" width="135" height="135" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_cicd_trigger" value="&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Triggering&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="210" y="52" width="135" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="cicd_icons" value="&lt;font style=&quot;font-size:22px;&quot;&gt;🚀 🐙 🦊&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="210" y="78" width="135" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_cicd_desc" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;CI/CD Pipeline&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#475569;&quot;&gt;(Git, Jenkins/GitLab icons - prerequisites&lt;br&gt;context for release cutover)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="210" y="115" width="135" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Deploy Manifests Arrow -->
+        <mxCell id="edge_cicd_to_prep" value="&lt;font style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Deploy Manifests&lt;br&gt;&amp;amp; Verified Artefacts&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="345" y="135" as="sourcePoint"/><mxPoint x="405" y="135" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Go-Live Prep Checklist -->
+        <mxCell id="box_prep_checklist" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="405" y="70" width="165" height="135" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_prep_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Go-Live Prep Checklist&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;(WORM storage callout prereqs)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="405" y="74" width="165" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_worm_callout" value="&lt;font style=&quot;font-size:18px;&quot;&gt;📋&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;WORM storage callout&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#475569;&quot;&gt;prereqs context for compliance&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="415" y="105" width="145" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Validation Gates -> Release Mgr / App Owner -->
+        <mxCell id="edge_prep_to_gates" value="&lt;font style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Validation&lt;br&gt;Gates&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="570" y="135" as="sourcePoint"/><mxPoint x="620" y="135" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_mgr_icon" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Release&lt;br&gt;Manager&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="585" y="70" width="55" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="app_owner_icon" value="&lt;font style=&quot;font-size:20px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;App&lt;br&gt;Owner&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="618" y="115" width="45" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_gonogo" value="&lt;font style=&quot;font-size:7px;color:#0F172A;&quot;&gt;&lt;b&gt;Go/No-Go&lt;/b&gt;&lt;br&gt;Decision Meeting&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="590" y="168" width="95" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Confluence & Jira Tickets -->
+        <mxCell id="box_docs_right" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="695" y="70" width="130" height="135" as="geometry"/>
+        </mxCell>
+        <mxCell id="conf_draft" value="&lt;font style=&quot;font-size:18px;&quot;&gt;📘&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Confluence&lt;br&gt;Runbook Draft&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;Per Release update freq&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="700" y="74" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="jira_ticket" value="&lt;font style=&quot;font-size:15px;&quot;&gt;🎟️&lt;/font&gt;&amp;nbsp;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Jira Cutover&lt;br&gt;Ticket (Approved)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="700" y="138" width="120" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_owner_to_docs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="665" y="135" as="sourcePoint"/><mxPoint x="695" y="135" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- Top Right Metadata Table -->
+        <mxCell id="box_top_meta_table" value="&lt;table style=&quot;font-size:7.5px;color:#0F172A;width:100%;border-collapse:collapse;&quot; border=&quot;1&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Diagram Name&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Go-Live Cutover &amp;amp; War Room Runbook&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;GCAF Pillar&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Operational Excellence&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Phase&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Operations (Go-Live &amp;amp; Cutover)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Creator&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;6. DevSecOps&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Target Audience&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Release Mgrs, SREs, App Owners&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Effort&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;High&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Tech Stack&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Jira, Confluence, Opsgenie, Cloud-Native CI/CD&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Creation Tool&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Confluence / Excel (Lucidchart-style clarity)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Compliance&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;SOC 2, CSV&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Update Freq&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Per Release&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Usage&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;High&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Purpose&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Minute-by-minute execution script for launch&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Representation&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Orchestrates the physical cutover &amp;amp; rollback logic&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Blueprint ID&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;N/A&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="880" y="60" width="370" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="top_soc2_badge" value="&lt;font style=&quot;font-size:7px;color:#FFFFFF;&quot;&gt;&lt;b&gt;SOC 2&lt;/b&gt;&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="120" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="top_csv_badge" value="&lt;font style=&quot;font-size:7px;color:#FFFFFF;&quot;&gt;&lt;b&gt;CSV&lt;/b&gt;&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1295" y="120" width="30" height="30" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== LAYER 2: THE WAR ROOM & LIVE EXECUTION ==================== -->
+        <!-- SRE & Communication Channel Left -->
+        <mxCell id="sre_comm_ico" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;SRE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="225" y="240" width="45" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_live_channel" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Live Communi-&lt;br&gt;cation Channel&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7px;color:#64748B;&quot;&gt;(e.g., Slack/Teams)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="310" y="240" width="115" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_sre_to_channel" value="&lt;font style=&quot;font-size:7px;color:#475569;&quot;&gt;ws/wss&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=block;startFill=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="270" y="264" as="sourcePoint"/><mxPoint x="310" y="264" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- War Room Header Banner -->
+        <mxCell id="box_war_room_banner" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Enterprise War Room&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#334155;&quot;&gt;(Day-1 Cutover)&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="445" y="240" width="240" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="war_room_personas" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👤 👥&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;DevSecOps&amp;nbsp;&amp;nbsp;App Owner&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="700" y="240" width="150" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Opsgenie Integration Engine Left Center -->
+        <mxCell id="sre_ops_ico" value="&lt;font style=&quot;font-size:20px;&quot;&gt;🎧👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;SRE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="200" y="360" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_opsgenie" value="&lt;font style=&quot;font-size:20px;&quot;&gt;🛎️👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Opsgenie&lt;br&gt;Integration&lt;br&gt;Engine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="240" y="340" width="75" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="devsec_ops_ico" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;DevSecOps&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="190" y="475" width="55" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="app_owner_bot" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;App Owner&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="250" y="475" width="55" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- Opsgenie Connections -->
+        <mxCell id="edge_channel_to_opsgenie" value="&lt;font style=&quot;font-size:7px;color:#475569;&quot;&gt;DNS HTTPS&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=block;startFill=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="278" y="288" as="sourcePoint"/><mxPoint x="278" y="340" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Execution Script Outer Container -->
+        <mxCell id="box_exec_script_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="325" y="315" width="510" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_exec_script_title" value="&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;MINUTE-BY-MINUTE EXECUTION SCRIPT&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7px;color:#475569;&quot;&gt;(WORM storage callout prereqs)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="325" y="318" width="510" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Downward Arrow from War Room Banner -->
+        <mxCell id="edge_war_to_script" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="565" y="288" as="sourcePoint"/><mxPoint x="565" y="315" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- 5 Execution Step Cards -->
+        <!-- Step 1: Data Migration -->
+        <mxCell id="step1_card" value="&lt;font style=&quot;font-size:18px;&quot;&gt;🔍&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;1. Data&lt;br&gt;Migration/&lt;br&gt;ETL Verified&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;prereqs context&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="335" y="350" width="85" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 2: DNS Update -->
+        <mxCell id="step2_card" value="&lt;font style=&quot;font-size:18px;&quot;&gt;🌐&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;2. Cloud DNS&lt;br&gt;Update&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;(Global Load&lt;br&gt;Balancer&lt;br&gt;prereqs context)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="430" y="350" width="90" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 3: MFE Orchestration -->
+        <mxCell id="step3_card" value="&lt;font style=&quot;font-size:18px;&quot;&gt;⚛️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;3. MFE&lt;br&gt;Orchestration&lt;br&gt;&amp;amp; Live Mount&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;prerequisites&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="530" y="350" width="90" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 4: Vertex AI Agent -->
+        <mxCell id="step4_card" value="&lt;font style=&quot;font-size:18px;&quot;&gt;🧠&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;4. Vertex AI&lt;br&gt;Agent Online&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;prerequisites&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="630" y="350" width="90" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 5: Real-Time Observability Check -->
+        <mxCell id="step5_card" value="&lt;font style=&quot;font-size:18px;&quot;&gt;📈&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;5. Real-Time&lt;br&gt;Observability&lt;br&gt;Check&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;prerequisites&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="730" y="350" width="95" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Step to Step Connecting Arrows -->
+        <mxCell id="arr_step1_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="420" y="400" as="sourcePoint"/><mxPoint x="430" y="400" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="arr_step2_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="520" y="400" as="sourcePoint"/><mxPoint x="530" y="400" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="arr_step3_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="620" y="400" as="sourcePoint"/><mxPoint x="630" y="400" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="arr_step4_5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="720" y="400" as="sourcePoint"/><mxPoint x="730" y="400" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- Opsgenie to Step 1 Connection -->
+        <mxCell id="edge_ops_to_step1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="315" y="400" as="sourcePoint"/><mxPoint x="335" y="400" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="edge_channel_to_step1" value="&lt;font style=&quot;font-size:7px;color:#475569;&quot;&gt;ws/wss&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="365" y="288" as="sourcePoint"/><mxPoint x="365" y="350" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== ROLLBACK & VERIFICATION LOGIC (RIGHT) ==================== -->
+        <mxCell id="box_rollback_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="870" y="250" width="380" height="235" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_rollback_title" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;ROLLBACK LOGIC&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="870" y="255" width="380" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Execution to Verification Edge -->
+        <mxCell id="edge_script_to_verify" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;YES&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="835" y="390" as="sourcePoint"/><mxPoint x="890" y="390" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Rhombus Verification Gate -->
+        <mxCell id="rhombus_verify" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;&lt;b&gt;Cutover&lt;br&gt;Success&lt;br&gt;Verified?&lt;/b&gt;&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="890" y="350" width="90" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Failure Callout Top -->
+        <mxCell id="lbl_fail_top" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Cutover Failure&lt;br&gt;detected!&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="278" width="120" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Red Rollback Script Details -->
+        <mxCell id="box_rollback_script" value="&lt;b style=&quot;font-size:9.5px;color:#DC2626;&quot;&gt;EXECUTE AUTOMATED&lt;br&gt;ROLLBACK SCRIPT&lt;/b&gt;&lt;br&gt;&lt;div style=&quot;text-align:left;font-size:8px;color:#0F172A;padding-left:10px;margin-top:6px;&quot;&gt;- DNS fallback&lt;br&gt;- MFE rollback&lt;br&gt;- Disable AI Agent&lt;br&gt;- Restore Data snapshots&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#64748B;&quot;&gt;prerequisites context&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="990" y="325" width="240" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- NO Flow Top into Rollback -->
+        <mxCell id="edge_no_top" value="&lt;b style=&quot;font-size:8.5px;color:#DC2626;&quot;&gt;NO&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="955" y="365" as="sourcePoint"/><mxPoint x="990" y="335" as="targetPoint"/><Array as="points"><mxPoint x="955" y="335"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Failure Callout Bottom Red Alert -->
+        <mxCell id="lbl_fail_bot" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Cutover Failure&lt;br&gt;detected!&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:8.5px;color:#DC2626;&quot;&gt;Red Alert&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="870" y="440" width="130" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- NO Flow Bottom into Red Alert -->
+        <mxCell id="edge_no_bot" value="&lt;b style=&quot;font-size:8.5px;color:#DC2626;&quot;&gt;NO&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="935" y="430" as="sourcePoint"/><mxPoint x="935" y="445" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_no_bot_to_rollback" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="950" y="455" as="sourcePoint"/><mxPoint x="1000" y="430" as="targetPoint"/><Array as="points"><mxPoint x="1000" y="455"/></Array></mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== POST-LAUNCH DAY-2 OPERATIONS & SUPPORT (BOTTOM) ==================== -->
+        <!-- SRE & Release Mgr -->
+        <mxCell id="bot_sre_ico" value="&lt;font style=&quot;font-size:22px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;SRE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="215" y="585" width="45" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="bot_rel_mgr_ico" value="&lt;font style=&quot;font-size:22px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Release Manager&lt;br&gt;App Owner&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="285" y="585" width="105" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_sre_to_mgr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="260" y="610" as="sourcePoint"/><mxPoint x="285" y="610" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- SRE Pattern Prerequisites Edge to Dashboards -->
+        <mxCell id="edge_mgr_to_dash" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;SRE pattern&lt;br&gt;prerequisites&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="390" y="610" as="sourcePoint"/><mxPoint x="430" y="610" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Dynamic Dashboards Mockup -->
+        <mxCell id="box_dyn_dash" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="430" y="565" width="260" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="dyn_dash_hdr" value="&lt;div style=&quot;font-size:7.5px;color:#334155;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:2px 4px;display:flex;justify-content:space-between;&quot;&gt;&lt;span&gt;&lt;b&gt;📊 Dynamic Dashboards&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="430" y="565" width="260" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="dyn_metric_1" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;&lt;b&gt;Data Freshness&lt;/b&gt;&lt;br&gt;📊 Optimal&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="436" y="586" width="58" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="dyn_metric_2" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;&lt;b&gt;Schema Evolution&lt;/b&gt;&lt;br&gt;📈 Stable&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="498" y="586" width="60" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="dyn_metric_3" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;&lt;b&gt;Volume Anomalies&lt;/b&gt;&lt;br&gt;📉 0 Alerts&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="562" y="586" width="60" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="dyn_metric_4" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;&lt;b&gt;Score&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#16A34A;font-size:10px;&quot;&gt;105&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="626" y="586" width="58" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="dyn_graph_bottom" value="&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;📊 Volume Analytics &amp;amp; Distribution Shifts&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="436" y="632" width="248" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_dyn_dash_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Dynamic Dashboards&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="430" y="695" width="260" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Right SRE & Active Control Plane -->
+        <mxCell id="bot_sre_right" value="&lt;font style=&quot;font-size:22px;&quot;&gt;🎧👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;SRE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="720" y="585" width="45" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_active_control" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Active Data&lt;br&gt;Control Plane&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#475569;&quot;&gt;monitoring technical&lt;br&gt;&amp;amp; logical readiness&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="765" y="585" width="105" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_sre_right_to_dash" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="720" y="610" as="sourcePoint"/><mxPoint x="690" y="610" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- Equals Sign & Go-Live Verification Scorecard -->
+        <mxCell id="lbl_equals" value="&lt;font style=&quot;font-size:16px;font-weight:bold;color:#0F172A;&quot;&gt;=&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="870" y="600" width="20" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box_scorecard" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Go-Live Verification Scorecard&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7px;color:#334155;&quot;&gt;- Orchestrated Minute-by-Minute Cutover &amp;amp; Rollback logic verifying technical &amp;amp; logical readiness for launch&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="895" y="575" width="205" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== BOTTOM RIGHT: LEGEND ==================== -->
+        <mxCell id="box_legend" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="555" width="230" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_legend_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Legend&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="559" width="230" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend Items -->
+        <mxCell id="leg_box_shape" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Box&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="580" width="40" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_box_desc" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Box type&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="580" width="95" height="24" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_persona_ico" value="&lt;font style=&quot;font-size:16px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;Personas&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="612" width="40" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_persona_desc" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Personas&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="615" width="95" height="24" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_line_style1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1175" y="658" as="sourcePoint"/><mxPoint x="1215" y="658" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_line_desc1" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Line styles&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="646" width="95" height="24" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_line_style2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1175" y="680" as="sourcePoint"/><mxPoint x="1215" y="680" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_line_desc2" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Line styles&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="668" width="95" height="24" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}
+
+
 
 
 

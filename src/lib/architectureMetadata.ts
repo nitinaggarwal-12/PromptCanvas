@@ -449,6 +449,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Data Architects, SREs, Data Engineers, AI Engineers",
     targetOutcomes: "Anomaly Detection, Schema Drift Prevention, Hallucination-Free Grounding",
     desc: "DataOps architecture blueprint illustrating Looker Studio observability, Dataplex anomaly detection, and validated data lakehouses."
+  },
+  golive_warroom_runbook: {
+    id: "golive_warroom_runbook",
+    title: "WBS 6.2.1: Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State)",
+    category: "Operational Excellence",
+    useCase: "GO-LIVE CUTOVER & WAR ROOM RUNBOOK (WBS 6.2.1)",
+    businessUseCase: "WBS 6.2.1: Enterprise Go-Live Cutover and War Room Execution Runbook across 3 horizontal layers: Layer 1 Top Preparation & Approval Phase (CI/CD Pipeline with Git, Jenkins/GitLab triggering deploy manifests, Go-Live Prep Checklist with WORM storage callouts, Validation Gates with Release Manager and App Owner Go/No-Go Decision Meeting, Confluence Runbook Draft, and Approved Jira Cutover Ticket); Layer 2 Center The War Room & Live Execution with Opsgenie Integration (SRE, DevSecOps, App Owner, Live Communication Channel via Slack/Teams, Enterprise War Room Day-1 Cutover banner, Opsgenie Integration Engine, 5-Step Minute-by-Minute Execution Script spanning 1. Data Migration/ETL Verified, 2. Cloud DNS Update with Global Load Balancer, 3. MFE Orchestration & Live Mount, 4. Vertex AI Agent Online, 5. Real-Time Observability Check, and Automated Rollback Logic with DNS fallback, MFE rollback, Disable AI Agent, Restore Data snapshots upon failure); and Layer 3 Bottom Post-Launch Day-2 Operations & Support (SRE, Release Manager, App Owner, Dynamic Dashboards with Freshness/Schema/Volume/Distribution metrics, Active Data Control Plane monitoring, and Go-Live Verification Scorecard).",
+    primaryActors: "Release Managers, Site Reliability Engineers (SREs), App Owners, DevSecOps Leads, Cloud Architects",
+    targetOutcomes: "Sub-Second DNS Cutover, 100% Automated Rollback Readiness, Zero-Downtime MFE Mounting, SOC 2 & CSV Compliant Go-Live Verification",
+    desc: "WBS 6.2.1 Go-Live Cutover blueprint mapping preparation gates, war room Opsgenie integration, 5-step minute-by-minute cutover script, and automated rollback logic."
+  },
+  tech_golive_warroom: {
+    id: "golive_warroom_runbook",
+    title: "Go-Live Cutover & War Room Runbook (WBS 6.2.1)",
+    category: "Operational Excellence",
+    useCase: "GO-LIVE CUTOVER & WAR ROOM RUNBOOK (WBS 6.2.1)",
+    businessUseCase: "Enterprise Day-1 Go-Live War Room Runbook orchestrating minute-by-minute cutover steps, Opsgenie alerting, and automated rollback scripts.",
+    primaryActors: "Release Managers, SREs, DevSecOps, App Owners",
+    targetOutcomes: "Minute-by-Minute Cutover, Automated Rollback, Dynamic Telemetry Verification",
+    desc: "Go-live cutover runbook blueprint illustrating preparation gates, war room execution, and automated rollback scripts."
   }
 };
 
