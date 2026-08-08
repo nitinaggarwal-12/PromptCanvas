@@ -389,8 +389,10 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
 
   const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
+  const isFlagshipBlueprint = id.includes('agent_harness') || id.includes('modern_data_stack') || id.includes('data_ai') || id.includes('lakehouse') || id.includes('hitl') || id.includes('golive') || id === 'tech_modern_data_stack' || id === 'data_ai_pipeline' || id === 'tech_data_lakehouse_gcp' || id === 'business_agent_gov_hitl' || id === 'golive_warroom_runbook';
+
   // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor
-  if (hasCustomUserPrompt && !id.includes('agent_harness')) {
+  if (hasCustomUserPrompt && !isFlagshipBlueprint) {
     const cleanUseCase = (useCaseContext && !/^\d+\.\s/.test(useCaseContext)) ? useCaseContext : undefined;
     const effectiveContext = cleanUseCase || userPrompt || getTemplateTitle(id);
     xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
