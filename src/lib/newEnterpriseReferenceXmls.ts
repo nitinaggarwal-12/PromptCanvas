@@ -6724,12 +6724,12 @@ export function getExactModernDataStackWbsXml(): string {
         <mxCell id="1" parent="0" />
 
         <!-- TOP MAIN TITLE & GCP BANNER -->
-        <mxCell id="main_title" value="WBS 3.1.3: Modern Data Stack Architecture (To-Be State)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="20" y="10" width="750" height="32" as="geometry" />
+        <mxCell id="main_title" value="WBS 3.1.3: Modern Data Stack Architecture (To-Be State)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="20" y="8" width="750" height="36" as="geometry" />
         </mxCell>
 
-        <mxCell id="gcp_logo_badge" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:32px;vertical-align:middle;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='28' height='28'/&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:4px;'&gt;&lt;b style='font-size:20px;color:#475569;letter-spacing:-0.5px;'&gt;GCP&lt;/b&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:10px;border-left:2px solid #94A3B8;'&gt;&lt;b style='font-size:14px;color:#0F172A;line-height:1.1;'&gt;Project Plan&lt;br/&gt;Foundation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="930" y="6" width="250" height="40" as="geometry" />
+        <mxCell id="gcp_logo_badge" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:36px;vertical-align:middle;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='32' height='32'/&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:4px;'&gt;&lt;b style='font-size:22px;color:#475569;letter-spacing:-0.5px;'&gt;GCP&lt;/b&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:10px;border-left:2px solid #94A3B8;'&gt;&lt;b style='font-size:15px;color:#0F172A;line-height:1.1;'&gt;Project Plan&lt;br/&gt;Foundation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="930" y="6" width="250" height="42" as="geometry" />
         </mxCell>
 
         <!-- TOP DIVIDER -->
@@ -6742,28 +6742,28 @@ export function getExactModernDataStackWbsXml(): string {
 
         <!-- TOP SUB-HEADER: PERSONAS & INFO BOX -->
         <mxCell id="icon_p_green" value="" style="image;html=1;image=https://api.iconify.design/lucide:user-round.svg?color=%2316A34A;" vertex="1" parent="1">
-          <mxGeometry x="270" y="75" width="26" height="26" as="geometry" />
+          <mxGeometry x="270" y="75" width="28" height="28" as="geometry" />
         </mxCell>
         <mxCell id="icon_p_search" value="" style="image;html=1;image=https://api.iconify.design/lucide:file-search.svg?color=%232563EB;" vertex="1" parent="1">
-          <mxGeometry x="310" y="75" width="26" height="26" as="geometry" />
+          <mxGeometry x="310" y="75" width="28" height="28" as="geometry" />
         </mxCell>
         <mxCell id="icon_p_blue" value="" style="image;html=1;image=https://api.iconify.design/lucide:user-round-check.svg?color=%232563EB;" vertex="1" parent="1">
-          <mxGeometry x="350" y="75" width="26" height="26" as="geometry" />
+          <mxGeometry x="350" y="75" width="28" height="28" as="geometry" />
         </mxCell>
 
         <!-- CDC Info Box -->
-        <mxCell id="box_cdc_info" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;CDC, Bronze/Silver/Gold Lakehouse&lt;/b&gt;&lt;span style='font-size:10px;color:#334155;'&gt; - Change Data Capture (CDC) based medallion architecture mapping from prerequisites tech stack like prerequisites tech context prereqs, prerequisites prerequisites patreqs prequirements context&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;spacingLeft=8;spacingRight=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
-          <mxGeometry x="395" y="60" width="310" height="75" as="geometry" />
+        <mxCell id="box_cdc_info" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;CDC, Bronze/Silver/Gold Lakehouse&lt;/b&gt;&lt;span style='font-size:10px;color:#334155;'&gt; - Change Data Capture (CDC) based medallion architecture mapping from prerequisites tech stack like prerequisites tech context prereqs, prerequisites prerequisites patreqs prequirements context&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;spacingLeft=10;spacingRight=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="395" y="60" width="310" height="78" as="geometry" />
         </mxCell>
 
         <!-- Creator Persona Callout -->
-        <mxCell id="creator_persona_avatar" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:10px;font-weight:700;color:#0F172A;'&gt;Creator&lt;br/&gt;(Persona)&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2364748B' width='26' height='26' style='margin:2px auto;'/&gt;&lt;br/&gt;&lt;span style='font-size:10px;font-weight:700;color:#0F172A;'&gt;Target&lt;br/&gt;Audience&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="725" y="60" width="75" height="80" as="geometry" />
+        <mxCell id="creator_persona_avatar" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:10.5px;font-weight:700;color:#0F172A;'&gt;Creator&lt;br/&gt;(Persona)&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2364748B' width='28' height='28' style='margin:2px auto;'/&gt;&lt;br/&gt;&lt;span style='font-size:10.5px;font-weight:700;color:#0F172A;'&gt;Target&lt;br/&gt;Audience&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="725" y="58" width="75" height="82" as="geometry" />
         </mxCell>
-        <mxCell id="arr_target_audience" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1">
+        <mxCell id="arr_target_audience" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.8;endArrow=classic;endSize=5;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="762" y="145" />
-            <mxPoint x="762" y="170" />
+            <mxPoint x="762" y="185" />
           </mxGeometry>
         </mxCell>
 
@@ -6773,7 +6773,7 @@ export function getExactModernDataStackWbsXml(): string {
         </mxCell>
 
         <!-- LEFT COLUMN: SOURCES -->
-        <mxCell id="lbl_sources_top" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_sources_top" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="235" width="55" height="16" as="geometry" />
         </mxCell>
         <mxCell id="box_sources" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
@@ -6783,7 +6783,7 @@ export function getExactModernDataStackWbsXml(): string {
         <mxCell id="src_files" value="" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=8;fillColor=#F1F5F9;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="22" y="312" width="18" height="26" as="geometry" /></mxCell>
         <mxCell id="src_cyl_mid" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=3;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="42" y="318" width="18" height="20" as="geometry" /></mxCell>
         <mxCell id="src_cyl3" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="24" y="360" width="32" height="32" as="geometry" /></mxCell>
-        <mxCell id="lbl_sources_bottom" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_sources_bottom" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;Sources&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="430" width="55" height="16" as="geometry" />
         </mxCell>
 
@@ -6796,6 +6796,7 @@ export function getExactModernDataStackWbsXml(): string {
         <mxCell id="box_prereq_dim" value="&lt;div style='text-align:center;padding:4px;'&gt;&lt;b style='font-size:12px;color:#0F172A;'&gt;Prerequisite:&lt;br/&gt;Dimensional&lt;br/&gt;Data Model&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:10px;color:#475569;'&gt;(from user)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;align=center;" vertex="1" parent="1">
           <mxGeometry x="120" y="295" width="125" height="85" as="geometry" />
         </mxCell>
+        <mxCell id="arr_prereq_to_pillar" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_prereq_dim" target="pillar_data_lifecycle"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- Vertical Pillar: Data Lifecycle & Pipeline (Reliability) -->
         <mxCell id="pillar_data_lifecycle" value="Pillar: Data Lifecycle &amp;amp; Pipeline (Reliability)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;fontStyle=1;fontSize=12.5;direction=south;horizontal=0;spacing=6;" vertex="1" parent="1">
@@ -6805,23 +6806,23 @@ export function getExactModernDataStackWbsXml(): string {
         <!-- Connectors from Pillar to Medallion Tiers -->
         <mxCell id="arr_pillar_to_bronze" value="Query" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=10;fontStyle=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points"><mxPoint x="310" y="235" /></Array>
+            <Array as="points"><mxPoint x="305" y="235" /></Array>
             <mxPoint x="290" y="235" />
-            <mxPoint x="320" y="235" />
+            <mxPoint x="318" y="235" />
           </mxGeometry>
         </mxCell>
         <mxCell id="arr_pillar_to_silver" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points"><mxPoint x="310" y="375" /></Array>
+            <Array as="points"><mxPoint x="305" y="375" /></Array>
             <mxPoint x="290" y="375" />
-            <mxPoint x="320" y="375" />
+            <mxPoint x="318" y="375" />
           </mxGeometry>
         </mxCell>
         <mxCell id="arr_pillar_to_gold" value="Primate&lt;br/&gt;prerequs" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9.5;fontStyle=1;align=center;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points"><mxPoint x="310" y="525" /></Array>
+            <Array as="points"><mxPoint x="305" y="525" /></Array>
             <mxPoint x="290" y="525" />
-            <mxPoint x="320" y="525" />
+            <mxPoint x="318" y="525" />
           </mxGeometry>
         </mxCell>
 
@@ -6956,6 +6957,9 @@ export function getExactModernDataStackWbsXml(): string {
           <mxGeometry x="400" y="582" width="220" height="18" as="geometry" />
         </mxCell>
 
+        <!-- Connector: Medallion to Control Plane -->
+        <mxCell id="arr_medallion_to_cp" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_medallion_outer" target="box_control_plane"><mxGeometry relative="1" as="geometry" /></mxCell>
+
         <!-- ACTIVE DATA CONTROL PLANE (Vertical Container) -->
         <mxCell id="box_control_plane" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="725" y="190" width="85" height="390" as="geometry" />
@@ -7075,7 +7079,7 @@ export function getExactDataAiPipelineWbsXml(): string {
           <mxGeometry x="15" y="10" width="1170" height="42" as="geometry" />
         </mxCell>
         <mxCell id="banner_title" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;Blueprint ID: Data &amp;amp;. Data &amp;amp; AI Pipeline Architecture (To-Be State)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="10" width="600" height="42" as="geometry" />
+          <mxGeometry x="25" y="10" width="650" height="42" as="geometry" />
         </mxCell>
         <mxCell id="banner_gcp" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='width:24px;vertical-align:middle;'&gt;&lt;img src='https://api.iconify.design/logos:google-cloud.svg' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='vertical-align:middle;padding-left:4px;'&gt;&lt;b style='font-size:14px;color:#334155;'&gt;Google Cloud&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="815" y="10" width="140" height="42" as="geometry" />
@@ -7086,12 +7090,12 @@ export function getExactDataAiPipelineWbsXml(): string {
 
         <!-- TOP METADATA ROW -->
         <mxCell id="top_icons" value="&lt;table style='width:100%;'&gt;&lt;tr&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%2316A34A' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:file-search.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round-check.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;td style='padding:0 3px;'&gt;&lt;img src='https://api.iconify.design/lucide:info.svg?color=%232563EB' width='22' height='22'/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="540" y="70" width="110" height="30" as="geometry" />
+          <mxGeometry x="510" y="70" width="110" height="30" as="geometry" />
         </mxCell>
 
         <!-- Metadata Card 1 -->
         <mxCell id="meta_card_1" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Persona (Creator):&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; 3. Data Architect&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Target Audience:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Data Gov Leads&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Target Audience:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; MLOps, Data Sci.&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Update Freq:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; Per Quarterly&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Usage:&lt;/b&gt;&lt;span style='font-size:9.5px;color:#334155;'&gt; High&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;spacingLeft=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
-          <mxGeometry x="660" y="60" width="165" height="75" as="geometry" />
+          <mxGeometry x="635" y="60" width="190" height="75" as="geometry" />
         </mxCell>
 
         <!-- Project Plan Foundation Badge -->
@@ -7111,54 +7115,56 @@ export function getExactDataAiPipelineWbsXml(): string {
         <mxCell id="box_sources" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="15" y="260" width="48" height="165" as="geometry" />
         </mxCell>
-        <mxCell id="src_cyl1" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="23" y="270" width="32" height="32" as="geometry" /></mxCell>
-        <mxCell id="src_files" value="" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=8;fillColor=#F1F5F9;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="21" y="316" width="18" height="26" as="geometry" /></mxCell>
-        <mxCell id="src_cyl_mid" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=3;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="41" y="322" width="18" height="20" as="geometry" /></mxCell>
-        <mxCell id="src_cyl3" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="23" y="364" width="32" height="32" as="geometry" /></mxCell>
+        <mxCell id="src_cyl1" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="23" y="270" width="32" height="32" as="geometry"/></mxCell>
+        <mxCell id="src_files" value="" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=8;fillColor=#F1F5F9;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="21" y="316" width="18" height="26" as="geometry"/></mxCell>
+        <mxCell id="src_cyl_mid" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=3;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="41" y="322" width="18" height="20" as="geometry"/></mxCell>
+        <mxCell id="src_cyl3" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#F8FAFC;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="23" y="364" width="32" height="32" as="geometry"/></mxCell>
 
         <!-- INGESTION TO FEATURE STORES (Yellow Containers) -->
         <mxCell id="box_ingest_top" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="120" y="165" width="105" height="95" as="geometry" />
+          <mxGeometry x="110" y="165" width="115" height="95" as="geometry" />
         </mxCell>
         <mxCell id="lbl_ingest_top" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Raw Ingestion to&lt;br/&gt;Feature Stores&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="122" y="168" width="100" height="26" as="geometry" />
+          <mxGeometry x="112" y="168" width="110" height="26" as="geometry" />
         </mxCell>
         <mxCell id="icon_dataflow" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:26px;height:26px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:git-branch.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;Dataflow&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="128" y="200" width="42" height="42" as="geometry" />
+          <mxGeometry x="118" y="200" width="46" height="42" as="geometry" />
         </mxCell>
         <mxCell id="icon_pubsub" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:26px;height:26px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:share-2.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;Pub/Sub&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="175" y="200" width="42" height="42" as="geometry" />
+          <mxGeometry x="170" y="200" width="46" height="42" as="geometry" />
         </mxCell>
 
         <!-- Bottom Yellow Box -->
         <mxCell id="box_ingest_bot" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="120" y="325" width="105" height="120" as="geometry" />
+          <mxGeometry x="110" y="325" width="115" height="120" as="geometry" />
         </mxCell>
         <mxCell id="icon_bronze_cyl" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#FFFFFF;strokeColor=#94A3B8;" vertex="1" parent="1">
-          <mxGeometry x="132" y="345" width="30" height="34" as="geometry" />
+          <mxGeometry x="122" y="345" width="32" height="36" as="geometry" />
         </mxCell>
         <mxCell id="lbl_bronze_lh" value="&lt;b style='font-size:8.5px;color:#0F172A;'&gt;Bronze&lt;br/&gt;Lakehouse&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="124" y="385" width="48" height="24" as="geometry" />
+          <mxGeometry x="114" y="385" width="48" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="icon_feature_store" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:git-graph.svg?color=%232563EB' width='22' height='22'/&gt;&lt;br/&gt;&lt;b style='font-size:8.5px;color:#0F172A;'&gt;Feature&lt;br/&gt;Store&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="175" y="345" width="44" height="48" as="geometry" />
+        <mxCell id="icon_feature_store" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:git-graph.svg?color=%232563EB' width='24' height='24'/&gt;&lt;br/&gt;&lt;b style='font-size:8.5px;color:#0F172A;'&gt;Feature&lt;br/&gt;Store&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="168" y="345" width="48" height="50" as="geometry" />
         </mxCell>
 
         <!-- Connecting Arrows for Ingestion -->
-        <mxCell id="arr_src_to_ingest1" value="ELT/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9;fontStyle=1;align=center;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="63" y="300" /><mxPoint x="120" y="210" /></mxGeometry>
+        <mxCell id="arr_src_to_ingest1" value="ELT/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_ingest_top">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="arr_src_to_ingest2" value="ELT/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9;fontStyle=1;align=center;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="63" y="380" /><mxPoint x="120" y="380" /></mxGeometry>
+        <mxCell id="arr_src_to_ingest2" value="ELT/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=9;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_ingest_bot">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="arr_top_to_bot_ingest" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="172" y="260" /><mxPoint x="172" y="325" /></mxGeometry>
-        </mxCell>
+        <mxCell id="arr_top_to_bot_ingest" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_ingest_top" target="box_ingest_bot"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="arr_ingest_to_pillar" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_ingest_bot" target="pillar_mlops"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- Vertical Pillar: MLOps & Feature Eng. -->
         <mxCell id="pillar_mlops" value="Pillar: MLOps &amp;amp; Feature Eng. (Operational Excellence)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;fontStyle=1;fontSize=12;direction=south;horizontal=0;spacing=6;" vertex="1" parent="1">
           <mxGeometry x="245" y="165" width="34" height="440" as="geometry" />
         </mxCell>
+
+        <!-- Connector: Pillar to Vertex Pipelines -->
+        <mxCell id="arr_pillar_to_vertex" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="pillar_mlops" target="box_vertex_pipelines"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- CENTER ZONE: PURPOSE: MODEL PIPELINES (MLOps Orchestration) -->
         <mxCell id="box_pipelines_outer" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
@@ -7219,6 +7225,10 @@ export function getExactDataAiPipelineWbsXml(): string {
           <mxGeometry x="495" y="445" width="50" height="40" as="geometry" />
         </mxCell>
 
+        <!-- Horizontal Connectors inside Vertex Pipelines -->
+        <mxCell id="arr_fr_to_ds" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_feature_retrieval" target="col_data_splitting"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="arr_ds_to_mt" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_data_splitting" target="col_model_training"><mxGeometry relative="1" as="geometry" /></mxCell>
+
         <mxCell id="lbl_model_eval" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Model&lt;br/&gt;Evaluation&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="480" y="520" width="80" height="24" as="geometry" />
         </mxCell>
@@ -7251,6 +7261,9 @@ export function getExactDataAiPipelineWbsXml(): string {
           <mxGeometry x="565" y="445" width="125" height="125" as="geometry" />
         </mxCell>
 
+        <!-- Connector: Model Training to Model Registry -->
+        <mxCell id="arr_mt_to_mr" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_model_training" target="box_model_registry"><mxGeometry relative="1" as="geometry" /></mxCell>
+
         <!-- Vertical ACTIVE DATA CONTROL PLANE bar -->
         <mxCell id="bar_adcp" value="ACTIVE DATA CONTROL PLANE" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1;fontSize=10;fontStyle=1;fontColor=#1E3A8A;direction=south;horizontal=0;spacing=4;" vertex="1" parent="1">
           <mxGeometry x="710" y="190" width="25" height="390" as="geometry" />
@@ -7269,6 +7282,9 @@ export function getExactDataAiPipelineWbsXml(): string {
         <mxCell id="lbl_md_bot" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Model&lt;br/&gt;Deployment&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="748" y="445" width="98" height="30" as="geometry" />
         </mxCell>
+
+        <!-- Connector: Registry to Deployment -->
+        <mxCell id="arr_mr_to_md" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_model_registry" target="box_model_deployment"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- Governance Line -->
         <mxCell id="line_gov_dashed" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#EF4444;" edge="1" parent="1">
@@ -7300,6 +7316,9 @@ export function getExactDataAiPipelineWbsXml(): string {
         <mxCell id="c_data_sci" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%230284C7' width='28' height='28'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Data&lt;br/&gt;Scientist&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="935" y="520" width="65" height="50" as="geometry" />
         </mxCell>
+
+        <!-- Connector: Deployment to Consumption -->
+        <mxCell id="arr_md_to_consumption" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_model_deployment" target="box_consumption"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- BOTTOM LEFT COMPLIANCE BADGES -->
         <mxCell id="logo_gcp_comp" value="" style="image;html=1;image=https://api.iconify.design/logos:google-cloud.svg;" vertex="1" parent="1">
@@ -7374,125 +7393,134 @@ export function getExactGcpDataLakehouseWbsXml(): string {
 
         <!-- INGESTION: AWS S3 & Data Transfer Service (Yellow Containers) -->
         <mxCell id="box_prereq_s3" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="115" y="165" width="125" height="110" as="geometry" />
+          <mxGeometry x="110" y="165" width="125" height="110" as="geometry" />
         </mxCell>
         <mxCell id="lbl_prereq_s3" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Prerequisite:&lt;br/&gt;4. AWS Data Lake&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="118" y="168" width="120" height="26" as="geometry" />
+          <mxGeometry x="112" y="168" width="120" height="26" as="geometry" />
         </mxCell>
         <mxCell id="icon_aws_s3_top" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:aws-s3.svg' width='26' height='26'/&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;AWS&lt;br/&gt;S3&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="125" y="202" width="45" height="48" as="geometry" />
+          <mxGeometry x="118" y="202" width="45" height="48" as="geometry" />
         </mxCell>
         <mxCell id="icon_gcs_top" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='14' height='14'/&gt;&lt;/div&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;GCS&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="185" y="202" width="45" height="48" as="geometry" />
+          <mxGeometry x="178" y="202" width="45" height="48" as="geometry" />
         </mxCell>
         <mxCell id="arr_s3_to_gcs" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="icon_aws_s3_top" target="icon_gcs_top"><mxGeometry relative="1" as="geometry"/></mxCell>
 
         <!-- Bottom Yellow Box -->
         <mxCell id="box_s3_dts" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="115" y="325" width="125" height="110" as="geometry" />
+          <mxGeometry x="110" y="325" width="125" height="110" as="geometry" />
         </mxCell>
         <mxCell id="icon_aws_s3_bot" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/logos:aws-s3.svg' width='26' height='26'/&gt;&lt;br/&gt;&lt;span style='font-size:8.5px;font-weight:700;color:#0F172A;'&gt;AWS&lt;br/&gt;S3&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="125" y="345" width="45" height="48" as="geometry" />
+          <mxGeometry x="118" y="345" width="45" height="48" as="geometry" />
         </mxCell>
         <mxCell id="icon_dts_bot" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:database-zap.svg?color=%232563EB' width='24' height='24'/&gt;&lt;br/&gt;&lt;span style='font-size:8px;font-weight:700;color:#0F172A;'&gt;Data&lt;br/&gt;Transfer&lt;br/&gt;Service&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="180" y="340" width="55" height="55" as="geometry" />
+          <mxGeometry x="172" y="340" width="55" height="55" as="geometry" />
         </mxCell>
 
         <!-- Connecting Arrows for Ingestion -->
-        <mxCell id="arr_src_to_s3_bot" value="ELT/Batch/&lt;br/&gt;Streaming" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=8.5;fontStyle=1;align=center;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="63" y="380" /><mxPoint x="115" y="380" /></mxGeometry>
+        <mxCell id="arr_src_to_s3_top" value="ELT/Batch/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=8.5;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_prereq_s3">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="arr_top_s3_to_bot" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="178" y="275" /><mxPoint x="178" y="325" /></mxGeometry>
+        <mxCell id="arr_src_to_s3_bot" value="ELT/Batch/&lt;br/&gt;Streaming" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;fontSize=8.5;fontStyle=1;align=center;" edge="1" parent="1" source="box_sources" target="box_s3_dts">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="arr_top_s3_to_bot" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_prereq_s3" target="box_s3_dts"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="arr_dts_to_pillar" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_s3_dts" target="pillar_storage"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- Vertical Pillar: Data Storage & Lakehouse -->
         <mxCell id="pillar_storage" value="Pillar: Data Storage &amp;amp; Lakehouse (Reliability)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;fontStyle=1;fontSize=12;direction=south;horizontal=0;spacing=6;" vertex="1" parent="1">
-          <mxGeometry x="255" y="165" width="34" height="440" as="geometry" />
+          <mxGeometry x="245" y="165" width="34" height="440" as="geometry" />
         </mxCell>
+
+        <!-- Connector: Pillar to GCS Container -->
+        <mxCell id="arr_pillar_to_gcs" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="pillar_storage" target="box_gcs_container"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- CENTER ZONE: PURPOSE: MULTI-TIER OBJECT STORAGE, CATALOGING -->
         <mxCell id="box_lakehouse_outer" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="305" y="165" width="460" height="440" as="geometry" />
+          <mxGeometry x="295" y="165" width="460" height="440" as="geometry" />
         </mxCell>
         <mxCell id="lbl_lakehouse_top" value="&lt;b style='font-size:11.5px;color:#0F172A;'&gt;Purpose: Multi-tier object storage, cataloging&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="315" y="168" width="320" height="18" as="geometry" />
+          <mxGeometry x="305" y="168" width="320" height="18" as="geometry" />
         </mxCell>
 
         <!-- Cloud Storage (GCS) Container -->
         <mxCell id="box_gcs_container" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="315" y="190" width="265" height="375" as="geometry" />
+          <mxGeometry x="305" y="190" width="265" height="375" as="geometry" />
         </mxCell>
         <mxCell id="gcs_title" value="&lt;div style='text-align:center;'&gt;&lt;span style='background:#2563EB;color:#FFFFFF;border-radius:6px;padding:1px 5px;font-size:9.5px;font-weight:bold;margin-right:4px;'&gt;≡&lt;/span&gt;&lt;b style='font-size:12px;color:#000000;'&gt;Cloud Storage (GCS)&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="325" y="196" width="245" height="32" as="geometry" />
+          <mxGeometry x="315" y="196" width="245" height="32" as="geometry" />
         </mxCell>
 
         <!-- 3 Vertical Columns inside GCS -->
         <!-- Col 1: Raw Zone -->
         <mxCell id="col_raw_zone" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="322" y="235" width="75" height="270" as="geometry" />
+          <mxGeometry x="312" y="235" width="75" height="270" as="geometry" />
         </mxCell>
         <mxCell id="lbl_raw_zone_title" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Raw Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;'&gt;(Unstructured,&lt;br/&gt;Cold)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="324" y="240" width="71" height="45" as="geometry" />
+          <mxGeometry x="314" y="240" width="71" height="45" as="geometry" />
         </mxCell>
         <mxCell id="icon_gcs_raw" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9px;font-weight:700;color:#0F172A;'&gt;Cloud&lt;br/&gt;Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="332" y="375" width="55" height="50" as="geometry" />
+          <mxGeometry x="322" y="375" width="55" height="50" as="geometry" />
         </mxCell>
 
         <!-- Col 2: Staging Zone -->
         <mxCell id="col_staging_zone" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="405" y="235" width="75" height="270" as="geometry" />
+          <mxGeometry x="395" y="235" width="75" height="270" as="geometry" />
         </mxCell>
         <mxCell id="lbl_staging_title" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Staging&lt;br/&gt;Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;'&gt;(Semi-&lt;br/&gt;structured, Hot)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="407" y="240" width="71" height="45" as="geometry" />
+          <mxGeometry x="397" y="240" width="71" height="45" as="geometry" />
         </mxCell>
         <mxCell id="icon_gcs_staging" value="&lt;div style='text-align:center;'&gt;&lt;div style='width:28px;height:28px;background:#2563EB;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;'&gt;&lt;img src='https://api.iconify.design/lucide:hard-drive.svg?color=%23FFFFFF' width='16' height='16'/&gt;&lt;/div&gt;&lt;span style='font-size:9px;font-weight:700;color:#0F172A;'&gt;Cloud&lt;br/&gt;Storage&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="415" y="375" width="55" height="50" as="geometry" />
+          <mxGeometry x="405" y="375" width="55" height="50" as="geometry" />
         </mxCell>
         <mxCell id="icon_red_bucket_stg" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#DC2626;strokeColor=#991B1B;" vertex="1" parent="1">
-          <mxGeometry x="427" y="450" width="30" height="34" as="geometry" />
+          <mxGeometry x="417" y="450" width="30" height="34" as="geometry" />
         </mxCell>
 
         <!-- Col 3: Curated Zone -->
         <mxCell id="col_curated_zone" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="488" y="235" width="85" height="270" as="geometry" />
+          <mxGeometry x="478" y="235" width="85" height="270" as="geometry" />
         </mxCell>
         <mxCell id="lbl_curated_title" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Curated Zone&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#475569;'&gt;(Structured,&lt;br/&gt;Datasets)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="490" y="240" width="81" height="40" as="geometry" />
+          <mxGeometry x="480" y="240" width="81" height="40" as="geometry" />
         </mxCell>
         <mxCell id="icon_curated_doc" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:file-text.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="510" y="295" width="40" height="30" as="geometry" />
+          <mxGeometry x="500" y="295" width="40" height="30" as="geometry" />
         </mxCell>
         <mxCell id="icon_curated_tables1" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:table.svg?color=%232563EB' width='32' height='32'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="505" y="375" width="50" height="40" as="geometry" />
+          <mxGeometry x="495" y="375" width="50" height="40" as="geometry" />
         </mxCell>
         <mxCell id="icon_curated_tables2" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:table.svg?color=%232563EB' width='32' height='32'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="505" y="445" width="50" height="40" as="geometry" />
+          <mxGeometry x="495" y="445" width="50" height="40" as="geometry" />
         </mxCell>
+
+        <!-- Horizontal Connectors inside GCS -->
+        <mxCell id="arr_raw_to_staging" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_raw_zone" target="col_staging_zone"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="arr_staging_to_curated" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=4;" edge="1" parent="1" source="col_staging_zone" target="col_curated_zone"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- Dataplex Card (Top Right of Center) -->
         <mxCell id="box_dataplex" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="595" y="190" width="105" height="195" as="geometry" />
+          <mxGeometry x="585" y="190" width="105" height="195" as="geometry" />
         </mxCell>
         <mxCell id="lbl_dataplex_top" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:network.svg?color=%232563EB' width='22' height='22'/&gt;&lt;br/&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Dataplex&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="598" y="195" width="98" height="42" as="geometry" />
+          <mxGeometry x="588" y="195" width="98" height="42" as="geometry" />
         </mxCell>
         <mxCell id="lbl_dp_search" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:9px;color:#475569;'&gt;search&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:search.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="600" y="245" width="95" height="42" as="geometry" />
+          <mxGeometry x="590" y="245" width="95" height="42" as="geometry" />
         </mxCell>
         <mxCell id="lbl_dp_lineage" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:9px;color:#475569;'&gt;lineage&lt;/span&gt;&lt;br/&gt;&lt;img src='https://api.iconify.design/lucide:git-graph.svg?color=%232563EB' width='24' height='24'/&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="600" y="300" width="95" height="45" as="geometry" />
+          <mxGeometry x="590" y="300" width="95" height="45" as="geometry" />
         </mxCell>
 
         <!-- Prerequisite: Dimensional Data Model Card (Bottom Center) -->
         <mxCell id="box_prereq_dim_model" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FACC15;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="570" y="415" width="145" height="150" as="geometry" />
+          <mxGeometry x="560" y="415" width="145" height="150" as="geometry" />
         </mxCell>
         <mxCell id="lbl_pdm_title" value="&lt;b style='font-size:10.5px;color:#0F172A;'&gt;Prerequisite:&lt;br/&gt;Dimensional Data Model&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="575" y="420" width="135" height="28" as="geometry" />
+          <mxGeometry x="565" y="420" width="135" height="28" as="geometry" />
         </mxCell>
         <mxCell id="star_schema_graphic" value="&lt;table style='width:100%;font-size:7.5px;'&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td style='background:#FEE2E2;border:1px solid #EF4444;text-align:center;padding:1px;'&gt;Facts&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='background:#F1F5F9;border:1px solid #94A3B8;text-align:center;padding:1px;'&gt;Facts&lt;/td&gt;&lt;td style='text-align:center;'&gt;&lt;span style='color:#EAB308;font-size:18px;'&gt;★&lt;/span&gt;&lt;/td&gt;&lt;td style='background:#DBEAFE;border:1px solid #3B82F6;text-align:center;padding:1px;'&gt;Dimension&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='background:#DCFCE7;border:1px solid #16A34A;text-align:center;padding:1px;'&gt;Dimension&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td style='background:#DCFCE7;border:1px solid #16A34A;text-align:center;padding:1px;'&gt;Dimension&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="575" y="455" width="135" height="95" as="geometry" />
+          <mxGeometry x="565" y="455" width="135" height="95" as="geometry" />
         </mxCell>
 
         <!-- BigQuery & BigQuery Omni Container -->
@@ -7506,15 +7534,17 @@ export function getExactGcpDataLakehouseWbsXml(): string {
           <mxGeometry x="750" y="340" width="90" height="95" as="geometry" />
         </mxCell>
 
+        <!-- Connector: Curated Zone & Dim Model to BigQuery -->
+        <mxCell id="arr_curated_to_bq" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="col_curated_zone" target="box_bigquery_omni"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="arr_dim_to_bq" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_prereq_dim_model" target="box_bigquery_omni"><mxGeometry relative="1" as="geometry" /></mxCell>
+
         <!-- Feedback loop from BigQuery to Raw Zone -->
-        <mxCell id="arr_bq_loop_to_raw" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1">
+        <mxCell id="arr_bq_loop_to_raw" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_bigquery_omni" target="col_raw_zone">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="795" y="605" />
-              <mxPoint x="360" y="605" />
+              <mxPoint x="350" y="605" />
             </Array>
-            <mxPoint x="795" y="580" />
-            <mxPoint x="360" y="565" />
           </mxGeometry>
         </mxCell>
 
@@ -7545,6 +7575,9 @@ export function getExactGcpDataLakehouseWbsXml(): string {
         <mxCell id="c_analysts" value="&lt;div style='text-align:center;'&gt;&lt;img src='https://api.iconify.design/lucide:user-round.svg?color=%230284C7' width='28' height='28'/&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Data&lt;br/&gt;Analysts&lt;/b&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="960" y="500" width="65" height="50" as="geometry" />
         </mxCell>
+
+        <!-- Connector: BigQuery to Consumption -->
+        <mxCell id="arr_bq_to_consumption" value="" style="edgeStyle=none;html=1;strokeColor=#1E293B;strokeWidth=1.5;endArrow=classic;endSize=5;" edge="1" parent="1" source="box_bigquery_omni" target="box_consumption"><mxGeometry relative="1" as="geometry" /></mxCell>
 
         <!-- BOTTOM LEFT COMPLIANCE BADGES -->
         <mxCell id="logo_gcp_comp" value="" style="image;html=1;image=https://api.iconify.design/logos:google-cloud.svg;" vertex="1" parent="1">
