@@ -409,6 +409,26 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "AI Architects, Agent Engineers, Compliance Officers",
     targetOutcomes: "Multi-Agent Routing, 21 CFR Part 11 Compliance, Dedicated Grounding",
     desc: "Hub-and-Spoke agent configuration map illustrating parent dispatcher hub, 3 domain spokes, UI matrix, and audit ledger."
+  },
+  unified_data_governance: {
+    id: "unified_data_governance",
+    title: "WBS 3.1.4: Unified Data Governance & Access Control Architecture (To-Be State)",
+    category: "Security & Governance",
+    useCase: "UNIFIED DATA GOVERNANCE & ACCESS CONTROL (WBS 3.1.4)",
+    businessUseCase: "WBS 3.1.4: Enterprise Data Governance and Access Control Architecture across 4 horizontal zones: Top Zone Strategy & Governance Interface (CDO, Data Stewards, Collibra Data Intelligence Cloud with Business Glossary, Policy Registry, and Stewardship Dashboards); Zone Two Unified Control Plane Orchestration (Dataplex Unified Control Plane with Active Data Control Plane, Dataplex Data Catalog metadata sync, Data Profiling & Quality, and Attribute-based Access Control ABAC Enforcement Engine); Third Zone Enforced Technical Data Tier (BigQuery, Cloud Storage Data Lakes, Dataflow Pipelines Lineage Indexing, Dataproc Processing, Vertex AI Model Governance); and Bottom Zone Outcomes & Compliance Reporting (CDO Executive Reporting Dashboard with KPI metrics, GDPR Compliance Guardrails, HIPAA Data Masking & Anonymization, GxP Audit Trail & Validation, Data Quality Scorecards).",
+    primaryActors: "Chief Data Officer (CDO), Data Stewards, Lead Data Architects, Compliance Officers, Security Engineers",
+    targetOutcomes: "100% ABAC Access Policy Enforcement, Automated Metadata Synchronization with Collibra, End-to-End Column/Row Level Lineage Indexing, Real-Time Executive Compliance Dashboards, Full GDPR/GxP/HIPAA Audit Readiness",
+    desc: "WBS 3.1.4 Unified Data Governance blueprint mapping Collibra strategy, Dataplex active control plane, ABAC enforcement across Modern Data Stack, and compliance scorecards."
+  },
+  tech_unified_data_governance: {
+    id: "unified_data_governance",
+    title: "Unified Data Governance & Access Control (WBS 3.1.4)",
+    category: "Security & Governance",
+    useCase: "UNIFIED DATA GOVERNANCE & ACCESS CONTROL (WBS 3.1.4)",
+    businessUseCase: "Unified enterprise data governance architecture connecting Collibra strategy layer to Dataplex ABAC control plane and technical storage tiers.",
+    primaryActors: "CDO, Data Stewards, Data Architects, Compliance Officers",
+    targetOutcomes: "ABAC Enforcement, Metadata Sync, GDPR/GxP/HIPAA Compliance",
+    desc: "Data governance and ABAC access control blueprint mapping Collibra, Dataplex, Modern Data Stack, and compliance dashboards."
   }
 };
 

@@ -419,6 +419,27 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Hub-and-Spoke Agent Config Map: Orchestrator Hub -> Intent Router -> 3 Domain Spokes (Support, Fulfillment, Knowledge) -> Logical UI Matrix -> HITL Gate -> 21 CFR Part 11 Audit Ledger."
   },
   {
+    id: "unified_data_governance",
+    name: "Unified Data Governance & Access Control (WBS 3.1.4)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Blueprint (WBS 3.1.4)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to design enterprise data governance, active metadata management, and Attribute-Based Access Control (ABAC) across Collibra, Dataplex, BigQuery, GCS Data Lakes, Dataflow, Dataproc, and Vertex AI with compliance scorecards (GDPR, HIPAA, GxP).",
+    bestFor: [
+      "WBS 3.1.4 Unified Data Governance & Access Control Architecture (To-Be State)",
+      "Top Zone Strategy & Governance Interface (CDO, Data Stewards, Collibra Data Intelligence Cloud with Business Glossary, Policy Registry, Stewardship Dashboards)",
+      "Zone Two Unified Control Plane Orchestration (Dataplex Unified Control Plane, Active Data Control Plane, Dataplex Data Catalog metadata sync, Data Profiling & Quality, ABAC Enforcement Engine)",
+      "Third Zone Enforced Technical Data Tier (BigQuery ABAC, Cloud Storage Data Lakes ABAC, Dataflow Pipeline Lineage Indexing, Dataproc Processing ABAC, Vertex AI Model Governance ABAC)",
+      "Bottom Zone Outcomes & Compliance Reporting (CDO Executive Reporting Dashboard with KPI metrics, GDPR Compliance Guardrails, HIPAA Data Masking & Anonymization, GxP Audit Trail & Validation, Data Quality Scorecards)",
+      "End-to-end policy flow directives, automated metadata synchronization, and bidirectional data lineage tracking"
+    ],
+    keyTech: ["Collibra Data Intelligence Cloud", "Google Cloud Dataplex", "Dataplex Data Catalog", "Attribute-Based Access Control (ABAC)", "BigQuery", "Cloud Storage", "Cloud Dataflow", "Cloud Dataproc", "Vertex AI", "Looker Reporting", "GDPR Guardrails", "HIPAA Masking", "GxP Validation"],
+    thumbnail: "/templates/unified_data_governance.png",
+    promptSummary: "Unified Data Governance Architecture: CDO & Stewards -> Collibra Strategy -> Dataplex ABAC Engine -> Modern Data Stack (BigQuery, GCS, Dataflow, Dataproc, Vertex AI) -> Executive Compliance Dashboards (GDPR, HIPAA, GxP)."
+  },
+  {
     id: "secure_deployment_map",
     name: "Secure Deployment Topology Map",
     categoryId: "cloud_infra",

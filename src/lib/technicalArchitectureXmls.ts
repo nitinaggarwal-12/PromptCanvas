@@ -6,7 +6,7 @@
  * - Dedicated orthogonal waypoint routing corridors (y = 225, 335, 480, 595)
  * - Pure White Label Background Text Pills for 100% legibility
  */
-import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml } from './newEnterpriseReferenceXmls';
+import { getExactServerlessGcpReferenceXml, getExactMultiRegionDrReferenceXml, getExactLegacyDependencyMapXml, getExactSixRsMigrationMatrixXml, getExactHybridStranglerTransitionXml, getExactCloudFinopsChargebackXml, getExactAiCoeOperatingModelXml, getExactMcpContextGatewayXml, getExactLogicalAiConfigTenantXml, getExactHubAndSpokeAgentConfigXml, getExactUnifiedDataGovernanceXml } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
 const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
@@ -37,6 +37,10 @@ const TECH_XML_LOGICAL_AI_CONFIG_TENANT = getExactLogicalAiConfigTenantXml();
 
 // 1.9 WBS 2.2.2 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)
 const TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG = getExactHubAndSpokeAgentConfigXml();
+
+// 1.10 WBS 3.1.4: Unified Data Governance & Access Control Architecture (To-Be State)
+const TECH_XML_UNIFIED_DATA_GOVERNANCE = getExactUnifiedDataGovernanceXml();
+
 
 
 
@@ -1409,6 +1413,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('hub_and_spoke') || id.includes('hub_spoke') || id === 'hub_and_spoke_agent_config') {
     return TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG;
   }
+  if (id.includes('unified_data_governance') || id.includes('data_governance') || id === 'unified_data_governance') {
+    return TECH_XML_UNIFIED_DATA_GOVERNANCE;
+  }
   if (id.includes('legacy') || id.includes('dependency_map') || id === 'legacy_dependency_map') {
     return TECH_XML_LEGACY_DEPENDENCY_MAP;
   }
@@ -1432,6 +1439,7 @@ export {
   TECH_XML_MCP_CONTEXT_GATEWAY,
   TECH_XML_LOGICAL_AI_CONFIG_TENANT,
   TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG,
+  TECH_XML_UNIFIED_DATA_GOVERNANCE,
   TECH_XML_STREAMING_ANALYTICS,
   TECH_XML_MICROSERVICES_AWS,
   TECH_XML_DATA_LAKEHOUSE,

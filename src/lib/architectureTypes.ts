@@ -237,6 +237,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 2.2.2 Hub-and-Spoke Agent Configuration Map with Orchestrator Parent Agent Hub, 3 domain sub-agents (Support, Fulfillment, Knowledge), Logical UI Matrix, HITL Gate, and 21 CFR Part 11 Audit Trail.",
     prompt: "Act as an Enterprise AI Solutions Architect. Design a production-grade WBS 2.2.2 Hub-and-Spoke Agent Configuration Map blueprint. Include: Workspace X (Tenant Y - Production Environment) -> 3 Sub-Agents / Spokes (Customer Support with Zendesk API & BigQuery/Vector Grounding, Fulfillment SA with SAP ERP API & Cloud Storage Grounding, Knowledge Base SA with GCS PDF/Doc Grounding) -> Orchestrator (Parent Agent) Hub (General Config Gemini 1.5 Pro, System Instructions, Context, Memory TTL; Multi-Agent Router / Dispatcher Logic rules; Shared Memory & State; Vertex AI Agent Runtime; 21 CFR Part 11 Compliance Gate) -> Logical UI Configuration Matrix (Prompt editors, Rule editors, Knowledge Source selectors, API Config panels) -> Logical UI Config Management Console -> Human-in-the-Loop (HITL) Gate -> 21 CFR Part 11 Immutable Audit Trail & E-Signature Ledger -> Persona Dashboards (AI Architect, W&T Arch, Agent Economic & Runtime Metrics) -> Legend."
+  },
+  {
+    id: "unified_data_governance",
+    name: "Unified Data Governance & Access Control (WBS 3.1.4)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 3.1.4 Unified Data Governance & Access Control Architecture across 4 horizontal tiers: Collibra Strategy, Dataplex ABAC Engine, Modern Data Stack, and Executive Compliance Scorecards.",
+    prompt: "Act as a Principal Enterprise Data Architect. Design a production-grade WBS 3.1.4 Unified Data Governance & Access Control Architecture (To-Be State) blueprint. Include: 4 Horizontal Zones (Top Zone Strategy & Governance Interface with CDO, Data Stewards, Collibra Data Intelligence Cloud; Zone Two Unified Control Plane Orchestration with Dataplex Unified Control Plane, Active Data Control Plane, Dataplex Data Catalog, Data Profiling & Quality, ABAC Enforcement Engine; Third Zone Enforced Technical Data Tier with BigQuery, Cloud Storage, Dataflow, Dataproc, Vertex AI; Bottom Zone Outcomes & Compliance Reporting with CDO Reporting Dashboard, GDPR Guardrails, HIPAA Data Masking, GxP Audit Trail, Data Quality Scorecards) -> Legend."
   }
 ];
 
@@ -258,6 +265,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('ai_coe') || id.includes('operating_model') || id === 'ai_coe_operating_model') return 'ai_coe_operating_model';
   if (id.includes('mcp') || id.includes('context_gateway') || id === 'mcp_context_gateway') return 'mcp_context_gateway';
   if (id.includes('hub_and_spoke') || id.includes('hub_spoke') || id === 'hub_and_spoke_agent_config') return 'hub_and_spoke_agent_config';
+  if (id.includes('unified_data_governance') || id.includes('data_governance') || id === 'unified_data_governance') return 'unified_data_governance';
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_dependency_map';
   return id;
@@ -332,6 +340,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'hub_and_spoke_agent_config') {
     const { getExactHubAndSpokeAgentConfigXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactHubAndSpokeAgentConfigXml();
+  } else if (id === 'unified_data_governance') {
+    const { getExactUnifiedDataGovernanceXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactUnifiedDataGovernanceXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
@@ -357,6 +368,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     id === 'mcp_context_gateway' ||
     id === 'logical_ai_config_tenant' ||
     id === 'hub_and_spoke_agent_config' ||
+    id === 'unified_data_governance' ||
     id.includes('agent_harness')
   );
 
