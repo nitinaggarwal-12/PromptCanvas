@@ -707,16 +707,6 @@ export function restoreDetailedView(xmlInput: string, skipLayout: boolean = fals
  * Prevents generic boilerplate titles in technical design documents.
  */
 export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPrompt?: string): string {
-  if (
-    xml.includes('id="c4_system_context"') ||
-    xml.includes('id="modern_data_stack"') ||
-    xml.includes('id="event_driven_eda"') ||
-    xml.includes('id="gcp_multi_region_dr_case_b"') ||
-    xml.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR') ||
-    xml.includes('id="title_banner"')
-  ) {
-    return xml;
-  }
   if (!xml || typeof xml !== 'string') return xml;
 
   let topic = useCaseTitle ? useCaseTitle.trim() : '';

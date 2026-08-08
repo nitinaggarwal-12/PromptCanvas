@@ -3652,7 +3652,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       archType.includes('gov_hitl')
     );
 
-    let baseXml = customXml || (isFlagship ? getDefaultXmlForArchitecture(archType) : null) || (selectedArchType && selectedArchType !== activeDiagram?.architecture_type ? getDefaultXmlForArchitecture(selectedArchType) : null) || displayedVersion?.xml_content || activeVersion?.xml_content || getDefaultXmlForArchitecture(archType) || '';
+    let baseXml = customXml || displayedVersion?.xml_content || activeVersion?.xml_content || (selectedArchType && selectedArchType !== activeDiagram?.architecture_type ? getDefaultXmlForArchitecture(selectedArchType) : null) || getDefaultXmlForArchitecture(archType) || '';
 
 
     if (!isFlagship) {

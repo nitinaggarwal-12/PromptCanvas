@@ -6,6 +6,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
+import { customizeDiagramTemplateWithGemini } from '@/lib/geminiDiagramCustomizer';
 import { tryCompileJsonOrFallback, compileSpecToDrawioXml, getBenchmarkItacsSpec } from '@/lib/diagramCompiler';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { isLayoutEngineV2Enabled } from '@/lib/featureFlags';
@@ -260,19 +261,34 @@ export async function POST(request: Request) {
           // High-confidence template match
           const templateXml = getDefaultXmlForArchitecture(classification.selectedType, prompt, prompt);
           if (templateXml) {
-            const flavoredXml = injectUseCaseFlavor(templateXml, prompt);
-            const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(flavoredXml);
+            let finalXml = templateXml;
+            let finalReasoning = classification.reasoning;
+            let finalBUsecase = `Pristine ${classification.selectedType} architecture tailored for "${prompt}".`;
+            let finalTUsecase = `Zero-collision 2D corridor layout with side-by-side executive dashboard and domain telemetry.`;
+
+            try {
+              console.log(`[Intent Router Gemini Customizer] Customizing ${classification.selectedType} for prompt: "${prompt.slice(0, 60)}"...`);
+              const customized = await customizeDiagramTemplateWithGemini(templateXml, prompt, classification.selectedType);
+              finalXml = customized.xml;
+              finalReasoning = customized.reasoning;
+              finalBUsecase = customized.businessUsecase;
+              finalTUsecase = customized.technicalUsecase;
+            } catch (custErr) {
+              console.warn('[Intent Router Gemini Customizer Fallback]', custErr);
+              const flavoredXml = injectUseCaseFlavor(templateXml, prompt);
+              finalXml = preflightVerifyAndHealXmlAcrossAll6Audits(flavoredXml, classification.selectedType);
+            }
 
             const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
             const { isPrivate, is_private } = body;
             const { diagram, version } = await createDiagram(
               diagramName,
-              healedXml,
+              finalXml,
               `Intent Classifier: "${prompt.slice(0, 40)}"`,
               prompt,
-              classification.reasoning,
-              'Intent Router template classification',
-              'Pristine master reference layout backbone',
+              finalReasoning,
+              finalBUsecase,
+              finalTUsecase,
               user?.id || null,
               classification.selectedType,
               Boolean(isPrivate ?? is_private)
@@ -523,11 +539,20 @@ ${prompt}
           technicalUsecase = parsed.technicalUsecase;
         }
       } else if (templateXmlBackbone) {
-        console.log(`[Decided Template Backbone] Using pristine layout structure for decided template (${effectiveArchType}) and prompt: "${prompt.slice(0, 60)}"...`);
-        xml = injectUseCaseFlavor(templateXmlBackbone, prompt, prompt);
-        reasoning = `Architected using decided ${effectiveArchType} structural layout backbone tailored strictly to "${prompt}".`;
-        businessUsecase = `Pristine ${effectiveArchType} architecture tailored for "${prompt}".`;
-        technicalUsecase = `Zero-collision 2D corridor layout with side-by-side executive dashboard and domain telemetry.`;
+        console.log(`[Gemini Template Customization] Live customizing pristine layout for (${effectiveArchType}) and prompt: "${prompt.slice(0, 60)}"...`);
+        try {
+          const customized = await customizeDiagramTemplateWithGemini(templateXmlBackbone, prompt, effectiveArchType);
+          xml = customized.xml;
+          reasoning = customized.reasoning;
+          businessUsecase = customized.businessUsecase;
+          technicalUsecase = customized.technicalUsecase;
+        } catch (customErr) {
+          console.warn('[Gemini Customizer Fallback] Falling back to algorithmic flavor injection:', customErr);
+          xml = injectUseCaseFlavor(templateXmlBackbone, prompt, prompt);
+          reasoning = `Architected using decided ${effectiveArchType} structural layout backbone tailored to "${prompt}".`;
+          businessUsecase = `Pristine ${effectiveArchType} architecture tailored for "${prompt}".`;
+          technicalUsecase = `Zero-collision 2D corridor layout with side-by-side executive dashboard and domain telemetry.`;
+        }
       } else {
         console.log(`[Gemini LLM Generation] Generating dynamic 2D architecture for new canvas using prompt: "${prompt.slice(0, 60)}"...`);
         
