@@ -1026,7 +1026,8 @@ export function getTechnicalArchitectureXml(archId: string): string {
     return TECH_XML_C4_SYSTEM_CONTEXT;
   }
   if (id.includes('modern_data_stack') || id.includes('cdc') || id.includes('reverse_etl') || id.includes('fivetran')) {
-    return TECH_XML_MODERN_DATA_STACK;
+    const { getExactModernDataStackWbsXml } = require('./newEnterpriseReferenceXmls');
+    return getExactModernDataStackWbsXml();
   }
   if (id.includes('event_driven') || id.includes('eda') || id.includes('kafka_mesh')) {
     return TECH_XML_EVENT_DRIVEN_EDA;
@@ -1040,8 +1041,9 @@ export function getTechnicalArchitectureXml(archId: string): string {
   if (id.includes('zero_trust') || id.includes('mesh') || id === 'zero_trust_mesh' || id.includes('microservices') || id.includes('kubernetes')) {
     return getExactZeroTrustMeshXml();
   }
-  if (id.includes('lakehouse') || id.includes('data_lakehouse')) {
-    return getExactDataLakehouseXml();
+  if (id.includes('lakehouse') || id.includes('data_lakehouse') || id === 'tech_data_lakehouse_gcp') {
+    const { getExactGcpDataLakehouseWbsXml } = require('./newEnterpriseReferenceXmls');
+    return getExactGcpDataLakehouseWbsXml();
   }
   if (id.includes('rag') || id.includes('vector_search')) {
     return getExactAgenticRagWidescreenXml();

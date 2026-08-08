@@ -314,8 +314,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactAgenticRagWidescreenXml();
   } else if (id === 'sequence_diagram') {
     xml = getExactSequenceDiagramReferenceXml();
-  } else if (id === 'data_ai_pipeline') {
-    xml = getExactDataAiPipelineReferenceXml();
+  } else if (id === 'data_ai_pipeline' || id.includes('data_ai')) {
+    const { getExactDataAiPipelineWbsXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactDataAiPipelineWbsXml();
   } else if (id === 'secure_deployment_map' || id.includes('secure_deployment') || id.includes('zero_trust')) {
     const { getExactSecureDeploymentMapWidescreenXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactSecureDeploymentMapWidescreenXml();
@@ -374,9 +375,12 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'tech_ai_trism_guardrails' || id === 'ai_trism_guardrails') {
     const { getExactAiTrismGuardrailsXml } = require('./newEnterpriseReferenceXmls');
     xml = getExactAiTrismGuardrailsXml();
-  } else if (id === 'tech_micro_frontends' || id === 'micro_frontends_ui') {
-    const { getExactMicroFrontendsXml } = require('./newEnterpriseReferenceXmls');
-    xml = getExactMicroFrontendsXml();
+  } else if (id === 'tech_modern_data_stack' || id.includes('modern_data_stack')) {
+    const { getExactModernDataStackWbsXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactModernDataStackWbsXml();
+  } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
+    const { getExactGcpDataLakehouseWbsXml } = require('./newEnterpriseReferenceXmls');
+    xml = getExactGcpDataLakehouseWbsXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
