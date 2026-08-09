@@ -1484,10 +1484,10 @@ function WorkspaceContent() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const diagramId = params.get('diagram');
-    if (diagramId && !activeDiagram && !restrictedState) {
+    if (diagramId && (!activeDiagram || activeDiagram.id !== diagramId) && !restrictedState) {
       loadDiagramDetails(diagramId);
     }
-  }, [activeDiagram, restrictedState, loadDiagramDetails]);
+  }, [searchParams, activeDiagram, restrictedState, loadDiagramDetails]);
 
   // Auto-select diagram when visiting Audit tab if none is selected
   useEffect(() => {
