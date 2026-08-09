@@ -11,13 +11,13 @@ export interface CustomizationResult {
   technicalUsecase: string;
 }
 
-function getAiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY || '';
+function getAiClient(customKey?: string): GoogleGenAI {
+  const apiKey = customKey || process.env.GEMINI_API_KEY || '';
   return new GoogleGenAI({ apiKey });
 }
 
 /**
- * 🧠 Live Gemini-Powered Structured AST Diagram Customizer
+ * 🧠 Live Gemini-Powered Structured AST Diagram Customizer (Gemini 3.1 Pro Enforced)
  * Takes a collision-free Draw.io XML template backbone and prompts Gemini to return
  * a strictly validated JSON mapping of domain-specific titles, subtitles, and badges.
  * Injects the semantic content directly into the exact template nodes, guaranteeing
@@ -26,9 +26,10 @@ function getAiClient(): GoogleGenAI {
 export async function customizeDiagramTemplateWithGemini(
   templateXml: string,
   userPrompt: string,
-  architectureType: string = 'conceptual_diagram'
+  architectureType: string = 'conceptual_diagram',
+  userApiKey?: string
 ): Promise<CustomizationResult> {
-  const modelName = process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash';
+  const modelName = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID || 'gemini-3.1-pro-preview';
 
   if (!templateXml || typeof templateXml !== 'string') {
     throw new Error('Template XML is empty or invalid');
@@ -93,7 +94,7 @@ OUTPUT JSON SCHEMA:
 
   try {
     console.log(`[Gemini Customizer] Calling ${modelName} with Structured AST for prompt: "${userPrompt.slice(0, 60)}"...`);
-    const ai = getAiClient();
+    const ai = getAiClient(userApiKey);
     const response = await ai.models.generateContent({
       model: modelName,
       contents: `### TARGET ENTERPRISE USE-CASE PROMPT:

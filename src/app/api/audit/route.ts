@@ -5,6 +5,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
+import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 
 const ai = new GoogleGenAI({});
 
@@ -502,7 +503,7 @@ Respond strictly in JSON matching the schema provided:
 
       if (lockAcquired) {
         const response = await ai.models.generateContent({
-          model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+          model: GEMINI_MODEL_ID,
           contents: multimodalContents,
           config: {
             systemInstruction,

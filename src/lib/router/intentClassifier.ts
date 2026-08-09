@@ -4,7 +4,7 @@ import { ARCHITECTURE_TYPES } from '@/lib/architectureTypes';
 import { buildIntentClassificationPrompt } from '@/prompts/classifyIntent';
 
 export const CLASSIFIER_TIMEOUT_MS = 2500;
-export const CLASSIFIER_MODEL_ID = process.env.INTENT_CLASSIFIER_MODEL || 'gemini-3.5-flash-lite';
+export const CLASSIFIER_MODEL_ID = process.env.INTENT_CLASSIFIER_MODEL || process.env.GEMINI_MODEL_ID || 'gemini-3.1-pro-preview';
 
 export const IntentClassificationSchema = z.object({
   selectedType: z.string().nullable(),

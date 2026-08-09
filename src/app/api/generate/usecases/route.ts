@@ -3,6 +3,7 @@ import { GoogleGenAI } from '@google/genai';
 import { getDiagramVersion, updateDiagramVersionUseCases } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
+import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 
 const ai = new GoogleGenAI({});
 
@@ -126,7 +127,7 @@ ${version.xml_content}
 
     console.log(`Generating in-place metadata for version ${versionId}...`);
     const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+      model: GEMINI_MODEL_ID,
       contents: contents,
     });
 

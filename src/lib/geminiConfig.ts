@@ -1,50 +1,17 @@
-export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash';
+export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || 'gemini-3.1-pro-preview';
 
 export type ModelTier = 'lite' | 'medium' | 'pro';
 
 /**
- * 🧠 Smart 3-Tier Model Allocation Engine (Gemini 3.x Enforced)
- * - Lite: Fast, low-latency Gemini 3.6 Flash model for quick edits & UI transforms
- * - Medium (Flash): Balanced Gemini 3.6 Flash model for standard technical architectures & sequence flows
- * - Pro: High-reasoning Gemini 3.6 Pro model for complex multi-tier enterprise systems & stateful agent graphs
+ * 🧠 Unified Gemini 3.1 Pro Architectural Engine
+ * - Enforces Gemini 3.1 Pro across all tiers, generation calls, audits, and pipeline synthesis.
  */
-export function getGeminiModel(tier: ModelTier = 'medium'): string {
-  switch (tier) {
-    case 'lite':
-      return process.env.GEMINI_LITE_MODEL_ID || 'gemini-3.6-flash';
-    case 'pro':
-      return process.env.GEMINI_PRO_MODEL_ID || 'gemini-3.6-pro';
-    case 'medium':
-    default:
-      return process.env.GEMINI_FLASH_MODEL_ID || 'gemini-3.6-flash';
-  }
+export function getGeminiModel(tier: ModelTier = 'pro'): string {
+  return process.env.GEMINI_PRO_MODEL_ID || process.env.GEMINI_MODEL_ID || 'gemini-3.1-pro-preview';
 }
 
 export function getGeminiModelForArchitecture(archId?: string): string {
-  const PRO_ARCHITECTURES = [
-    'agentic_rag',
-    'unified_system_view',
-    'secure_deployment_map',
-    'tech_multi_agent_langgraph',
-    'tech_multi_region_dr',
-    'tech_agent_harness_runtime',
-    'business_agent_gov_hitl',
-    'business_agent_governance_hitl'
-  ];
-
-  const LITE_ARCHITECTURES = [
-    'conceptual_diagram'
-  ];
-
-  if (archId && PRO_ARCHITECTURES.includes(archId)) {
-    return getGeminiModel('pro');
-  }
-
-  if (archId && LITE_ARCHITECTURES.includes(archId)) {
-    return getGeminiModel('lite');
-  }
-
-  return getGeminiModel('medium');
+  return getGeminiModel('pro');
 }
 
 export type GenConfigKind = 'generate' | 'edit' | 'repair' | 'audit' | 'narrative';

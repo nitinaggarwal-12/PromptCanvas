@@ -4,7 +4,7 @@ export interface ByokConnectionProfile {
   id: string;
   name: string;
   apiKey: string;
-  model: 'gemini-3.6-pro' | 'gemini-3.6-ultra' | 'gemini-3.6-flash';
+  model: 'gemini-3.1-pro-preview' | 'gemini-3.6-pro' | 'gemini-2.5-pro';
   lastTestedLatencyMs?: number;
   status: 'verified' | 'untested' | 'error';
 }
@@ -289,9 +289,9 @@ function WorkspaceContent() {
   const [byokProfiles, setByokProfiles] = useState<ByokConnectionProfile[]>([
     {
       id: 'default_prod',
-      name: 'Enterprise Production (Gemini 3.6 Pro)',
+      name: 'Enterprise Production (Gemini 3.1 Pro)',
       apiKey: '',
-      model: 'gemini-3.6-pro',
+      model: 'gemini-3.1-pro-preview',
       status: 'untested'
     }
   ]);
@@ -299,7 +299,7 @@ function WorkspaceContent() {
   const [isByokModalOpen, setIsByokModalOpen] = useState<boolean>(false);
   const [newProfileName, setNewProfileName] = useState<string>('');
   const [newProfileKey, setNewProfileKey] = useState<string>('');
-  const [newProfileModel, setNewProfileModel] = useState<'gemini-3.6-pro' | 'gemini-3.6-ultra' | 'gemini-3.6-flash'>('gemini-3.6-pro');
+  const [newProfileModel, setNewProfileModel] = useState<'gemini-3.1-pro-preview' | 'gemini-3.6-pro' | 'gemini-2.5-pro'>('gemini-3.1-pro-preview');
   const [byokTestStatus, setByokTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
   const [byokLatencyMs, setByokLatencyMs] = useState<number | null>(null);
 
@@ -3206,15 +3206,11 @@ function WorkspaceContent() {
                     <Sparkles className="w-4 h-4 text-teal-400" />
                   </div>
                   <select
-                    defaultValue="gemini-3.6-flash"
+                    defaultValue="gemini-3.1-pro-preview"
                     className="w-full bg-slate-900 border border-slate-700 hover:border-teal-500/50 text-slate-100 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
                   >
-                    <option value="gemini-3.6-pro">🚀 Gemini 3.6 Pro (Flagship Architectural Synthesis &amp; Reasoning)</option>
-                    <option value="gemini-3.6-flash">⚡ Gemini 3.6 Flash (Sub-Second Low-Latency Telemetry &amp; Speed)</option>
-                    <option value="gemini-3.6-ultra">🔬 Gemini 3.6 Ultra-Deep (Stateful Graph Reasoning &amp; Terraform Verification)</option>
-                    <option value="gemini-3.6-vision">🎯 Gemini 3.6 Enterprise Vision (Diagram AST OCR &amp; Inspection)</option>
-                    <option value="gemini-3.6-pro">🧠 Gemini 3.6 Pro (Legacy Deep Architecture Eval)</option>
-                    <option value="gemini-3.6-flash">⚡ Gemini 3.6 Flash (Legacy Speed Iteration)</option>
+                    <option value="gemini-3.1-pro-preview">🚀 Gemini 3.1 Pro (Flagship Architectural Synthesis &amp; Reasoning)</option>
+                    <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (Enterprise Fallback Reasoning)</option>
                   </select>
                   <p className="text-[11px] text-slate-400">Controls inference latency &amp; multi-tier reasoning depth.</p>
                 </div>
@@ -7561,9 +7557,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setNewProfileModel(e.target.value as any)}
                       className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-400"
                     >
-                      <option value="gemini-3.6-pro">Gemini 3.6 Pro (Recommended)</option>
-                      <option value="gemini-3.6-ultra">Gemini 3.6 Ultra-Deep</option>
-                      <option value="gemini-3.6-flash">Gemini 3.6 Flash (Fast)</option>
+                      <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro (Recommended - Flagship Architecture)</option>
+                      <option value="gemini-2.5-pro">Gemini 2.5 Pro (Enterprise Fallback)</option>
                     </select>
                   </div>
                 </div>

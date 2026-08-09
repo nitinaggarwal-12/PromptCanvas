@@ -6,6 +6,8 @@ import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 
 const ai = new GoogleGenAI({});
 
+import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+
 const TERRAFORM_GCP_SYSTEM_PROMPT = `
 You are an expert Principal Google Cloud Infrastructure Engineer and HashiCorp Terraform Specialist.
 Analyze the provided Draw.io XML architecture diagram and convert all GCP components, subnets, databases, compute services, load balancers, and security configurations into valid, production-ready HashiCorp HCL Terraform code for Google Cloud Platform.
@@ -48,7 +50,7 @@ export async function POST(request: Request) {
     }
 
     const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+      model: GEMINI_MODEL_ID,
       contents: [
         { text: `Here is the Draw.io XML of the GCP architecture to convert to Terraform HCL:\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },
       ],

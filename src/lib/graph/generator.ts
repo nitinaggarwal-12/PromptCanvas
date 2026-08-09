@@ -5,10 +5,11 @@ import {
 } from './schema';
 import { GENERATE_GRAPH_SYSTEM_PROMPT } from '../../prompts/generateGraph';
 import { EDIT_GRAPH_SYSTEM_PROMPT, buildEditGraphPrompt } from '../../prompts/editGraph';
+import { GEMINI_MODEL_ID } from '../geminiConfig';
 
 export async function generateLogicalGraph(
   userPrompt: string,
-  modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+  modelId: string = GEMINI_MODEL_ID,
   aiClient?: GoogleGenAI
 ): Promise<ArchitectureGraph> {
   const ai = aiClient || new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -119,7 +120,7 @@ export async function generateLogicalGraph(
 export async function editLogicalGraph(
   currentGraph: ArchitectureGraph,
   userChangePrompt: string,
-  modelId: string = process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+  modelId: string = GEMINI_MODEL_ID,
   aiClient?: GoogleGenAI
 ): Promise<ArchitectureGraph> {
   const ai = aiClient || new GoogleGenAI({});

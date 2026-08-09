@@ -6,6 +6,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
+import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 
 const ai = new GoogleGenAI({});
 
@@ -55,7 +56,7 @@ ${remediationInstructions}
 `;
 
       const response = await ai.models.generateContent({
-        model: process.env.GEMINI_MODEL_ID || 'gemini-3.6-flash',
+        model: GEMINI_MODEL_ID,
         contents: [
           { text: `Here is the current Draw.io XML:\n\n${currentXml}` },
         ],
