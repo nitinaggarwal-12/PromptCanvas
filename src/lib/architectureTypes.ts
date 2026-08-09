@@ -475,5 +475,5 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, id);
   }
 
-  return xml || null;
+  return xml ? xml.replace(/&amp;amp;/g, '&amp;').replace(/&amp;quot;/g, '&quot;').replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;') : null;
 }

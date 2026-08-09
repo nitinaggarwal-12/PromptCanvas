@@ -46,37 +46,37 @@ export async function executeUnifiedDiagramPipeline(
     baseTemplateXml = getDefaultXmlForArchitecture('conceptual_diagram', prompt, prompt);
   }
 
-  // 2. Determine target XML to customize (existing version XML if refining, or base reference template)
+  // 2. Determine target XML to customize (existing version XML if refining same architecture, or base reference template)
   let targetXml = req.existingXml || baseTemplateXml;
   let existingPrompt = prompt;
 
   if (diagramId && !req.existingXml) {
     const latestVersion = await getLatestDiagramVersion(diagramId, effectiveArchType);
-    if (latestVersion && latestVersion.xml_content) {
+    if (latestVersion && latestVersion.xml_content && (latestVersion.architecture_type || 'conceptual_diagram') === effectiveArchType) {
       targetXml = latestVersion.xml_content;
       existingPrompt = latestVersion.prompt || prompt;
+    } else {
+      targetXml = baseTemplateXml;
     }
   }
 
-  const isFlagshipBlueprint = effectiveArchType.includes('agent_harness') || 
-    effectiveArchType.includes('modern_data_stack') || 
-    effectiveArchType.includes('data_ai') || 
-    effectiveArchType.includes('lakehouse') || 
-    effectiveArchType.includes('hitl') || 
-    effectiveArchType.includes('golive') || 
-    effectiveArchType === 'tech_modern_data_stack' || 
-    effectiveArchType === 'data_ai_pipeline' || 
-    effectiveArchType === 'tech_data_lakehouse_gcp' || 
-    effectiveArchType === 'business_agent_gov_hitl' || 
-    effectiveArchType === 'golive_warroom_runbook';
+  const cleanPrompt = (prompt || '').trim();
+  const isTrivialPrompt = !cleanPrompt || 
+    cleanPrompt.length < 5 || 
+    /^nitin\s*\d*$/i.test(cleanPrompt) || 
+    /^canvas\s*\d*$/i.test(cleanPrompt) || 
+    /^default$/i.test(cleanPrompt) ||
+    cleanPrompt === effectiveArchType ||
+    cleanPrompt.startsWith('WBS') ||
+    cleanPrompt.includes('Blueprint ID');
 
   let customResult: CustomizationResult;
-  if (isFlagshipBlueprint && (!prompt || prompt === effectiveArchType || prompt.includes('Blueprint ID') || prompt.includes('WBS') || prompt.includes('Human-in-the-Loop'))) {
+  if (isTrivialPrompt) {
     customResult = {
       xml: baseTemplateXml || '',
-      reasoning: `High-craft reference architecture blueprint for ${effectiveArchType}.`,
-      businessUsecase: `Exact reference blueprint specification.`,
-      technicalUsecase: `Zero-collision calibrated widescreen 2D layout.`
+      reasoning: `Master Reference Architecture Blueprint for ${effectiveArchType}.`,
+      businessUsecase: `Canonical enterprise architecture model for ${effectiveArchType}.`,
+      technicalUsecase: `Zero-collision calibrated widescreen 1400x800 2D layout.`
     };
   } else {
     // 3. Prompt Gemini with Structured AST Schema to customize domain entities & text

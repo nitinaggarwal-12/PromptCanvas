@@ -389,47 +389,57 @@ function isPreservedCustomLayout(xml: string): boolean {
   if (!xml || typeof xml !== 'string') return false;
   const lower = xml.toLowerCase();
   return (
-    lower.includes('col_ingestion') ||
-    lower.includes('col_processing') ||
-    lower.includes('col_delivery') ||
-    lower.includes('out_1') ||
-    lower.includes('out_2') ||
-    lower.includes('out_3') ||
-    lower.includes('exec_dash') ||
-    lower.includes('core_platform') ||
-    lower.includes('promptcanvas-layoutenginev2') ||
+    lower.includes('col_') ||
+    lower.includes('hdr_') ||
+    lower.includes('wbs') ||
+    lower.includes('frame_') ||
+    lower.includes('pagewidth="1400"') ||
+    lower.includes('pagewidth="1080"') ||
+    lower.includes('mcp') ||
+    lower.includes('hub_and_spoke') ||
+    lower.includes('hub_spoke') ||
+    lower.includes('logical_ai') ||
+    lower.includes('tenant') ||
+    lower.includes('governance') ||
+    lower.includes('dataops') ||
+    lower.includes('sre') ||
+    lower.includes('observability') ||
+    lower.includes('sovereign') ||
+    lower.includes('data_residency') ||
+    lower.includes('federated') ||
+    lower.includes('iam_sso') ||
+    lower.includes('trism') ||
+    lower.includes('guardrail') ||
+    lower.includes('micro_frontend') ||
+    lower.includes('fintech') ||
+    lower.includes('genomics') ||
+    lower.includes('supply_chain') ||
+    lower.includes('eval_safety') ||
+    lower.includes('agentic_mesh') ||
+    lower.includes('six_rs') ||
+    lower.includes('hybrid_strangler') ||
+    lower.includes('finops') ||
+    lower.includes('chargeback') ||
+    lower.includes('ai_coe') ||
+    lower.includes('operating_model') ||
     lower.includes('conceptual_diagram') ||
-    lower.includes('ingestion portal') ||
-    lower.includes('oncology data portal') ||
-    lower.includes('itacs_conceptual') ||
-    lower.includes('integrated insights hub') ||
-    lower.includes('merck') ||
-    lower.includes('keytruda') ||
-    lower.includes('demand forecasting') ||
-    lower.includes('dim_patient') ||
-    lower.includes('sub-schema') ||
-    lower.includes('etl_system_data_sources') ||
-    lower.includes('agentic_rag') ||
-    lower.includes('cognitive architecture') ||
-    lower.includes('react loop') ||
     lower.includes('sequence_diagram') ||
-    lower.includes('macro sequence') ||
-    lower.includes('governance_state_machine') ||
-    lower.includes('unified_governance') ||
+    lower.includes('agentic_rag') ||
     lower.includes('secure_deployment_map') ||
     lower.includes('unified_system_view') ||
     lower.includes('devops_cicd_pipeline') ||
     lower.includes('data_ai_pipeline') ||
-    lower.includes('eval_safety_benchmarking') ||
-    lower.includes('vertex-ai-eval-flow') ||
-    lower.includes('hitl-agent-gov') ||
-    lower.includes('multi-agent-langgraph') ||
-    lower.includes('agent_governance') ||
+    lower.includes('lakehouse') ||
+    lower.includes('modern_data_stack') ||
+    lower.includes('event_driven_eda') ||
+    lower.includes('golive_warroom') ||
+    lower.includes('agent_harness') ||
     lower.includes('langgraph') ||
-    lower.includes('monitex') ||
-    xml.includes('governance_state_machine_compiled') ||
-    xml.includes('itacs_conceptual_compiled') ||
-    xml.includes('tech_')
+    lower.includes('hitl') ||
+    lower.includes('c4_system_context') ||
+    lower.includes('erd') ||
+    lower.includes('tech_') ||
+    xml.includes('<mxGraphModel')
   );
 }
 

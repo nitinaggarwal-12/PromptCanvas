@@ -82,12 +82,23 @@ export function checkDiagramStaleness(
     }
   }
 
+  // Check for corrupted double-escaped tags
+  if (currentXml.includes('&amp;lt;span') || currentXml.includes('&amp;quot;') || currentXml.includes('&amp;lt;table')) {
+    return {
+      isStale: true,
+      reason: 'Contains legacy escaped HTML tags. Click Update Template to load clean Master Template.',
+      templateName: archType,
+      lastTemplateUpdate: MASTER_UPDATE_TIMESTAMP,
+      hasCustomPrompt: Boolean(diagram.prompt || latestVersion?.prompt)
+    };
+  }
+
   // 3. Generic timestamp check against master template updates
   const diagramUpdatedAt = new Date(diagram.updated_at || latestVersion?.created_at || 0).getTime();
   const masterUpdateTime = new Date(MASTER_UPDATE_TIMESTAMP).getTime();
 
   // If the diagram was created before the latest master template lock and lacks master template comment
-  if (diagramUpdatedAt < masterUpdateTime && !comment.includes('Force Refreshed')) {
+  if (diagramUpdatedAt < masterUpdateTime && !comment.includes('Force Refreshed') && !comment.includes('Master Template Live API') && !comment.includes('Master Reference Blueprint')) {
     return {
       isStale: true,
       reason: 'Canonical Master Template has been updated in codebase. Click to force refresh via Live API.',

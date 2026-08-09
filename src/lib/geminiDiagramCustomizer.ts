@@ -34,6 +34,24 @@ export async function customizeDiagramTemplateWithGemini(
     throw new Error('Template XML is empty or invalid');
   }
 
+  const cleanPrompt = (userPrompt || '').trim();
+  const isTrivialPrompt = !cleanPrompt || 
+    cleanPrompt.length < 5 || 
+    /^nitin\s*\d*$/i.test(cleanPrompt) || 
+    /^canvas\s*\d*$/i.test(cleanPrompt) || 
+    /^default$/i.test(cleanPrompt) ||
+    cleanPrompt === architectureType ||
+    cleanPrompt.startsWith('WBS');
+
+  if (isTrivialPrompt) {
+    return {
+      xml: templateXml,
+      reasoning: `Loaded pristine reference architecture blueprint for ${architectureType}.`,
+      businessUsecase: `Canonical enterprise architecture model for ${architectureType}.`,
+      technicalUsecase: `Calibrated widescreen 1400x800 zero-collision 2D layout.`
+    };
+  }
+
   // 1. Extract all node IDs and current text from templateXml
   const nodeMatches = templateXml.matchAll(/<mxCell\s+id="([^"]+)"\s+value="([^"]*)"/gi);
   const nodesToCustomize: Array<{ id: string; currentVal: string }> = [];
@@ -133,7 +151,7 @@ ${JSON.stringify(nodesToCustomize, null, 2)}`,
           const logoUrl = logoMatch ? logoMatch[1] : 'https://api.iconify.design/logos:google-cloud.svg';
           const title = custom.title || 'Enterprise Service';
           const subtitle = custom.subtitle || '';
-          const badgeHtml = custom.badge ? ` &lt;span style=&quot;font-size:9px;background:#DCFCE7;color:#15803D;padding:2px 6px;border-radius:4px;font-weight:bold;&quot;&gt;${escapeXmlText(custom.badge)}&lt;/span&gt;` : '';
+          const badgeHtml = custom.badge ? ` <span style="font-size:9px;background:#DCFCE7;color:#15803D;padding:2px 6px;border-radius:4px;font-weight:bold;">${custom.badge}</span>` : '';
 
           const rawHtml = `<table style="width:100%;"><tr><td style="width:38px;"><img src="${logoUrl}" width="28" height="28"/></td><td><b style="font-size:13px;color:#0F172A;">${title}</b>${badgeHtml}<br/><span style="font-size:10px;color:#334155;">${subtitle}</span></td></tr></table>`;
           const encodedHtml = rawHtml
