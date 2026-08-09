@@ -35,6 +35,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     archType === 'federated_iam_sso' ||
     archType === 'tech_ai_trism_guardrails' ||
     archType === 'tech_micro_frontends' ||
+    archType === 'tech_fintech_payments' ||
+    archType === 'tech_genomics_clinical' ||
+    archType === 'tech_supply_chain' ||
+    archType === 'tech_eval_safety' ||
+    archType === 'tech_agentic_mesh' ||
     archType === 'data_ai_pipeline' ||
     archType === 'tech_data_lakehouse_gcp' ||
     archType === 'tech_modern_data_stack' ||

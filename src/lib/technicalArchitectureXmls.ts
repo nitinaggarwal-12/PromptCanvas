@@ -1049,7 +1049,7 @@ export function getTechnicalArchitectureXml(archId: string): string {
     return getExactAgenticRagWidescreenXml();
   }
   if (id.includes('devsecops') || id.includes('cicd')) {
-    return getExactEvalSafetyXml();
+    return TECH_XML_DEVSECOPS_GCP;
   }
   if (id.includes('fintech') || id.includes('payments')) {
     return getExactFintechPaymentsXml();

@@ -42,7 +42,13 @@ import {
   getExactAgenticRagWidescreenXml,
   getExactModernDataStackWbsXml,
   getExactDataAiPipelineWbsXml,
-  getExactGcpDataLakehouseWbsXml
+  getExactGcpDataLakehouseWbsXml,
+  getExactMicroFrontendsXml,
+  getExactFintechPaymentsXml,
+  getExactGenomicsClinicalXml,
+  getExactSupplyChainXml,
+  getExactEvalSafetyXml,
+  getExactAgenticMeshXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -275,6 +281,55 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 5.1.4 Federated IAM & SSO Architecture illustrating 4 horizontal tiers: Client Ingress with SOC 2/HIPAA Global Load Balancer, Federated Identity & SSO Broker (OAuth2, SAML, JWT) with Okta / Google Identity Directory federation, enforced downstream modern stack (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes, Dataplex), and analytics compliance reporting.",
     prompt: "Act as a Principal IAM & Security Solutions Architect. Design a production-grade WBS 5.1.4 Federated IAM & SSO Architecture (To-Be State) blueprint. Include: 4 Horizontal Zones (Top Zone: Access Tier - Client Ingress with External/Internal Users, Data Eng, Vertex AI Agents, Enterprise Applications, External Entry Point / Global Load Balancer SOC 2/HIPAA; Second Zone: Control Tier - Federated IdP Brokerage with OAuth2/SAML/JWT requests, Federated Identity & SSO Broker containing OAuth2/SAML/API Token Adapters, User Attribute Mapping Engine, Token Translation Service, MFA Enforcement, Session Management & Auditing, Cloud IAM Policies, Active Identity Control Plane vertical bar, and Okta / Google Identity Directory with Credentials Validation, Attribute Lookup, Policy Directives; Third Zone: Data Tier - Enforced Modern Stack with GKE Clusters, Cloud Run Services, Cloud SQL Databases, Vertex AI Agents Workload Identity, Data Lakes, Dataplex, and System Element Legend; Fourth Zone: Analytics & Compliance Reporting with Personas IAM Architect, Cloud Infra Lead, CISO, Data Steward, Reporting Cards Authentication Audit Logs, User Access Report, Agent Token Usage, Compliance Checks OAuth2/OIDC, SAML, JWT Token Check, HIPAA Guardrails, Central Logging, and Bottom Right Legend) -> Metadata Table."
+  },
+  {
+    id: "tech_ai_trism_guardrails",
+    name: "AI TRiSM Security Guardrail Pipeline (WBS 4.3.1)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 4.3.1 AI TRiSM (Trust, Risk & Security Management) Guardrail Pipeline for LLM prompt injection defense, PII masking, toxic content filtration, model watermarking, and continuous compliance audit.",
+    prompt: "Act as an AI Security & TRiSM Architect. Design a production-grade WBS 4.3.1 AI TRiSM Security Guardrail Pipeline (To-Be State) blueprint. Include: Ingress Gateway with User / Client Request -> AI TRiSM Pre-Inference Inspection (Prompt Injection Defense, PII Tokenization & Masking, Jailbreak Detection) -> Model Inference Tier with Gemini Pro / Claude 3.5 -> Post-Inference Evaluation (Hallucination Checker, Toxicity Scoring, Policy & Legal Filter, Cryptographic Model Watermarking) -> Actionable Egress & Centralized Audit Trail Log."
+  },
+  {
+    id: "tech_micro_frontends",
+    name: "Micro-Frontend & UI Architecture (WBS 4.2.1)",
+    category: "Backend & Systems Architecture",
+    whenToUse: "WBS 4.2.1 Micro-Frontend & Modular UI Composition Architecture showing host container shell, federated remote module mounting (Module Federation / Webpack 5), isolated state buses, and CDN edge delivery.",
+    prompt: "Act as a Principal Frontend & Systems Architect. Design a production-grade WBS 4.2.1 Micro-Frontend & UI Architecture (To-Be State) blueprint. Include: Client Ingress with CDN Edge & Global Load Balancer -> Core Host Application Shell (Routing, Global Auth & OIDC Context, Shared Design System, Event Bus) -> Remote Federated Micro-Frontend Modules (Billing MFE, Analytics MFE, Agent Workspace MFE, Catalog MFE) -> Backend for Frontend (BFF) Gateway -> Microservices Tier."
+  },
+  {
+    id: "tech_fintech_payments",
+    name: "FinTech Real-Time Payments & ISO 20022 Clearing (WBS 3.2.1)",
+    category: "Data & Lakehouse Architecture",
+    whenToUse: "WBS 3.2.1 FinTech Real-Time Payments Architecture featuring ISO 20022 message transformation, sub-10ms fraud detection, double-entry payment ledger, and Federal Reserve / FedNow settlement rails.",
+    prompt: "Act as a Principal FinTech & Payment Systems Architect. Design a production-grade WBS 3.2.1 FinTech Real-Time Payments & ISO 20022 Clearing blueprint. Include: Payment Ingress -> ISO 20022 Normalization Bus -> Real-Time Fraud & AML Scoring Engine -> Immutable Double-Entry Ledger on Cloud Spanner -> Settlement Rails (FedNow / RTP / SWIFT) -> Regulatory Reporting & AML Audit."
+  },
+  {
+    id: "tech_genomics_clinical",
+    name: "Genomics & Clinical Bioinformatics Pipeline (WBS 3.2.2)",
+    category: "Data & Lakehouse Architecture",
+    whenToUse: "WBS 3.2.2 Clinical Bioinformatics & Genomic Processing Pipeline for FASTQ/BAM ingestion, Nextflow/GATK variant calling, HIPAA compliant GCS data lake, and BigQuery variant analysis.",
+    prompt: "Act as a Lead BioInformatics & Health Data Architect. Design a production-grade WBS 3.2.2 Genomics & Clinical Bioinformatics Pipeline blueprint. Include: Sequencer Ingress (FASTQ) -> Cloud Life Sciences / Nextflow GATK Variant Pipeline -> Multi-Tier HIPAA GCS Lakehouse -> BigQuery Variant DB & Feature Store -> Clinical Decision Support & AI Interpretation."
+  },
+  {
+    id: "tech_supply_chain",
+    name: "Autonomous Supply Chain & Fleet Telemetry (WBS 3.2.3)",
+    category: "Data & Lakehouse Architecture",
+    whenToUse: "WBS 3.2.3 Autonomous Supply Chain & Real-Time IoT Fleet Telemetry Architecture with MQTT edge broker, geospatial stream processing, inventory digital twin, and predictive stockout ML models.",
+    prompt: "Act as a Principal IoT & Supply Chain Solutions Architect. Design a production-grade WBS 3.2.3 Autonomous Supply Chain & Fleet Telemetry blueprint. Include: IoT Telemetry Ingress -> Dataflow Streaming & Geospatial Indexing -> Digital Twin State in Bigtable -> Inventory Optimization & Predictive Stockout Engine -> Operations Dashboard & Driver Dispatch."
+  },
+  {
+    id: "tech_eval_safety",
+    name: "LLM-as-a-Judge AI Safety & Model Evaluation (WBS 4.3.2)",
+    category: "AI & Cognitive Systems",
+    whenToUse: "WBS 4.3.2 Automated AI Safety & Model Evaluation Platform with multi-metric benchmarking (MMLU, GSM8K, HELM), adversarial red-teaming, LLM-as-a-Judge consensus, and safety scorecards.",
+    prompt: "Act as a Principal AI Safety & Evaluation Architect. Design a production-grade WBS 4.3.2 LLM-as-a-Judge AI Safety & Model Evaluation Platform blueprint. Include: Prompt Benchmark Ingress -> Adversarial Red-Teaming Harness -> Multi-Model Parallel Inference -> LLM-as-a-Judge Consensus Jury -> Safety, Toxicity & Truthfulness Scorecards -> Model Promotion Gate."
+  },
+  {
+    id: "tech_agentic_mesh",
+    name: "Decentralized Multi-Agent Swarm / Agentic Mesh (WBS 2.2.3)",
+    category: "AI & Cognitive Systems",
+    whenToUse: "WBS 2.2.3 Decentralized Agentic Mesh with peer-to-peer agent discovery, semantic gossip protocol, distributed capability negotiation, and Byzantine fault-tolerant consensus execution.",
+    prompt: "Act as an Advanced Distributed AI Systems Architect. Design a production-grade WBS 2.2.3 Decentralized Multi-Agent Swarm / Agentic Mesh blueprint. Include: Agent Swarm Ingress -> P2P Agent Registry & Gossip Discovery -> Semantic Capability Router -> Distributed Task Negotiation Protocol -> Byzantine Fault-Tolerant Consensus Execution -> Shared State Ledger."
   }
 ];
 
@@ -306,6 +361,13 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('federated') || id === 'federated_iam_sso') return 'federated_iam_sso';
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
   if (id.includes('legacy') || id.includes('dependency_map')) return 'hybrid_strangler_transition';
+  if (id.includes('trism') || id.includes('guardrail') || id === 'tech_ai_trism_guardrails') return 'tech_ai_trism_guardrails';
+  if (id.includes('micro_frontend') || id.includes('mfe') || id === 'tech_micro_frontends') return 'tech_micro_frontends';
+  if (id.includes('fintech') || id.includes('payments') || id === 'tech_fintech_payments') return 'tech_fintech_payments';
+  if (id.includes('genomics') || id.includes('clinical') || id === 'tech_genomics_clinical') return 'tech_genomics_clinical';
+  if (id.includes('supply_chain') || id.includes('logistics') || id === 'tech_supply_chain') return 'tech_supply_chain';
+  if (id.includes('eval_safety') || id.includes('benchmarking') || id === 'tech_eval_safety') return 'tech_eval_safety';
+  if (id.includes('agentic_mesh') || id.includes('mesh_swarm') || id === 'tech_agentic_mesh') return 'tech_agentic_mesh';
   return id;
 }
 
@@ -377,8 +439,20 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactDataResidencySovereignMapXml();
   } else if (id === 'federated_iam_sso') {
     xml = getExactFederatedIamSsoXml();
-  } else if (id === 'tech_ai_trism_guardrails' || id === 'ai_trism_guardrails') {
+  } else if (id === 'tech_ai_trism_guardrails' || id.includes('trism')) {
     xml = getExactAiTrismGuardrailsXml();
+  } else if (id === 'tech_micro_frontends' || id.includes('micro_frontend') || id.includes('mfe')) {
+    xml = getExactMicroFrontendsXml();
+  } else if (id === 'tech_fintech_payments' || id.includes('fintech') || id.includes('payments')) {
+    xml = getExactFintechPaymentsXml();
+  } else if (id === 'tech_genomics_clinical' || id.includes('genomics') || id.includes('clinical')) {
+    xml = getExactGenomicsClinicalXml();
+  } else if (id === 'tech_supply_chain' || id.includes('supply_chain') || id.includes('logistics')) {
+    xml = getExactSupplyChainXml();
+  } else if (id === 'tech_eval_safety' || id.includes('eval_safety') || id.includes('benchmarking')) {
+    xml = getExactEvalSafetyXml();
+  } else if (id === 'tech_agentic_mesh' || id.includes('agentic_mesh') || id.includes('mesh_swarm')) {
+    xml = getExactAgenticMeshXml();
   } else if (id === 'tech_modern_data_stack' || id.includes('modern_data_stack')) {
     xml = getExactModernDataStackWbsXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {

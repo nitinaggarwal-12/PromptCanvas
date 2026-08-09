@@ -139,6 +139,46 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Cognitive RAG Architecture: Document Chunking -> Embeddings DB -> Hybrid Retrieval -> LLM Synthesis -> Guardrails."
   },
   {
+    id: "tech_eval_safety",
+    name: "LLM-as-a-Judge AI Safety & Model Evaluation Platform",
+    categoryId: "ai_agentic",
+    categoryName: "AI & Agentic Systems",
+    badge: "Production Blueprint (WBS 4.3.2)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use when establishing automated AI safety benchmarks, toxic content mitigation, adversarial red-teaming, and LLM-as-a-Judge consensus evaluation before model promotion.",
+    bestFor: [
+      "WBS 4.3.2 Automated AI Safety & Model Evaluation Platform",
+      "Multi-model parallel inference benchmarking (MMLU, GSM8K, HELM)",
+      "Adversarial red-teaming & prompt injection robustness testing",
+      "LLM-as-a-Judge consensus jury & toxicity scoring matrices",
+      "Continuous safety scorecard tracking and model promotion gates"
+    ],
+    keyTech: ["LLM-as-a-Judge", "HELM Benchmarks", "Red-Teaming Harness", "Safety Scorecards", "Model Promotion Gate"],
+    thumbnail: "/templates/tech_eval_safety.png",
+    promptSummary: "AI Safety Platform: Benchmark Ingress -> Red-Team Harness -> Parallel Inference -> LLM Consensus -> Safety Scorecards."
+  },
+  {
+    id: "tech_agentic_mesh",
+    name: "Decentralized Multi-Agent Swarm / Agentic Mesh",
+    categoryId: "ai_agentic",
+    categoryName: "AI & Agentic Systems",
+    badge: "Production Blueprint (WBS 2.2.3)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for peer-to-peer autonomous agent meshes requiring decentralized discovery, semantic capability routing, Byzantine fault tolerance, and shared state ledgers.",
+    bestFor: [
+      "WBS 2.2.3 Decentralized Multi-Agent Swarm & Agentic Mesh",
+      "P2P agent discovery and semantic capability gossip protocol",
+      "Distributed task negotiation and contract bidding",
+      "Byzantine fault-tolerant consensus execution",
+      "Shared immutable state ledger and trace observability"
+    ],
+    keyTech: ["Agentic Mesh", "P2P Gossip", "Semantic Router", "BFT Consensus", "Distributed State Ledger"],
+    thumbnail: "/templates/tech_agentic_mesh.png",
+    promptSummary: "Decentralized Agentic Mesh: Swarm Ingress -> P2P Discovery -> Capability Router -> Task Negotiation -> BFT Consensus -> Shared Ledger."
+  },
+  {
     id: "business_agent_gov_hitl",
     name: "Human-in-the-Loop AI Governance",
     categoryId: "ai_agentic",
@@ -648,6 +688,66 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     keyTech: ["Data Ingestion DFD", "Feature Store", "Model Registry", "Inference API", "Serving Endpoints", "Telemetry"],
     thumbnail: "/templates/data_ai_pipeline.png",
     promptSummary: "Data & AI Pipeline: Data Ingestion -> Feature Engineering -> MLOps Lifecycle -> Model Registry -> Serving Analytics."
+  },
+  {
+    id: "tech_fintech_payments",
+    name: "FinTech Real-Time Payments & ISO 20022 Clearing",
+    categoryId: "data_pipelines",
+    categoryName: "Data Pipelines",
+    badge: "Production Blueprint (WBS 3.2.1)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use when designing PCI-DSS compliant real-time payment ledgers, ISO 20022 message transformation, sub-10ms fraud scoring, and FedNow / RTP settlement rails.",
+    bestFor: [
+      "WBS 3.2.1 FinTech Real-Time Payments & ISO 20022 Clearing Architecture",
+      "Sub-10ms AI fraud scoring & anomaly detection on streaming transactions",
+      "Immutable double-entry payment ledger with Cloud Spanner global consistency",
+      "Multi-rail settlement integration (FedNow, RTP, ACH, SWIFT)",
+      "PCI-DSS Level 1 compliance, HSM encryption, and regulatory audit reporting"
+    ],
+    keyTech: ["ISO 20022 Bus", "Cloud Spanner", "Real-Time Fraud Engine", "Double-Entry Ledger", "FedNow / RTP Rails", "PCI-DSS HSM"],
+    thumbnail: "/templates/tech_fintech_payments.png",
+    promptSummary: "FinTech Payments Architecture: Ingress -> ISO 20022 Bus -> Real-Time Fraud Engine -> Double-Entry Ledger -> Settlement Rails."
+  },
+  {
+    id: "tech_genomics_clinical",
+    name: "Genomics & Clinical Bioinformatics Pipeline",
+    categoryId: "data_pipelines",
+    categoryName: "Data Pipelines",
+    badge: "Production Blueprint (WBS 3.2.2)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for high-throughput genomic sequencing pipelines, Nextflow/GATK variant calling workflows, HIPAA compliant multi-tier data lakes, and BigQuery variant analysis.",
+    bestFor: [
+      "WBS 3.2.2 Clinical Bioinformatics & Genomic Processing Pipeline",
+      "Nextflow / GATK variant calling orchestration with Cloud Life Sciences",
+      "HIPAA compliant multi-tier GCS Lakehouse (FASTQ, BAM, VCF tiers)",
+      "BigQuery Variant Store with columnar query acceleration",
+      "Clinical decision support systems & biomarker discovery integration"
+    ],
+    keyTech: ["Nextflow / GATK", "Cloud Life Sciences", "HIPAA GCS Lakehouse", "BigQuery Variant DB", "Biomarker Discovery"],
+    thumbnail: "/templates/tech_genomics_clinical.png",
+    promptSummary: "Genomics Pipeline: Sequencer Ingress -> Nextflow GATK Engine -> HIPAA Lakehouse -> BigQuery Variant DB -> Clinical Decision Support."
+  },
+  {
+    id: "tech_supply_chain",
+    name: "Autonomous Supply Chain & Fleet Telemetry",
+    categoryId: "data_pipelines",
+    categoryName: "Data Pipelines",
+    badge: "Production Blueprint (WBS 3.2.3)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use when architecting real-time IoT fleet telemetry, geospatial stream processing, inventory digital twins, and predictive stockout ML models.",
+    bestFor: [
+      "WBS 3.2.3 Autonomous Supply Chain & Real-Time Fleet Telemetry",
+      "MQTT edge broker ingestion with sub-second geospatial stream indexing",
+      "Digital twin inventory state synchronization on Bigtable / Spanner",
+      "Predictive stockout ML models and cold-chain temperature monitoring",
+      "Automated logistics dispatch, driver routing, and SLA tracking"
+    ],
+    keyTech: ["MQTT Edge Broker", "Dataflow Streaming", "Bigtable Digital Twin", "Predictive Stockout ML", "Fleet Dispatch Engine"],
+    thumbnail: "/templates/tech_supply_chain.png",
+    promptSummary: "Autonomous Supply Chain: IoT Ingress -> Dataflow Streaming -> Bigtable Digital Twin -> Stockout ML -> Dispatch Engine."
   },
 
   // =========================================================================

@@ -10,6 +10,56 @@ export interface ArchitectureMeta {
 }
 
 export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
+  tech_fintech_payments: {
+    id: "tech_fintech_payments",
+    title: "FinTech Real-Time Payments & ISO 20022 Clearing (WBS 3.2.1)",
+    category: "Data & Lakehouse Architecture",
+    useCase: "FINTECH REAL-TIME PAYMENTS (WBS 3.2.1)",
+    businessUseCase: "WBS 3.2.1: PCI-DSS compliant real-time payment processing and ISO 20022 message transformation architecture with sub-10ms AI fraud scoring, immutable double-entry ledger on Cloud Spanner, and FedNow / RTP settlement rails.",
+    primaryActors: "FinTech Architects, Risk & Fraud Engineers, Payment Ops Leads, Compliance Officers",
+    targetOutcomes: "Sub-10ms Real-Time Fraud Scoring, Zero Transaction Loss, Global ACID Spanner Ledger, 100% ISO 20022 & PCI-DSS Compliance",
+    desc: "FinTech Real-Time Payments blueprint mapping ISO 20022 bus, AI fraud engine, Cloud Spanner ledger, and FedNow settlement rails."
+  },
+  tech_genomics_clinical: {
+    id: "tech_genomics_clinical",
+    title: "Genomics & Clinical Bioinformatics Pipeline (WBS 3.2.2)",
+    category: "Data & Lakehouse Architecture",
+    useCase: "CLINICAL BIOINFORMATICS & GENOMICS (WBS 3.2.2)",
+    businessUseCase: "WBS 3.2.2: High-throughput clinical bioinformatics and genomic processing pipeline orchestrating FASTQ ingestion, Nextflow/GATK variant calling via Cloud Life Sciences, HIPAA compliant multi-tier data lakes, and BigQuery variant analysis.",
+    primaryActors: "Bioinformatics Scientists, Clinical Researchers, Health Data Engineers, Compliance Officers",
+    targetOutcomes: "Automated End-to-End Variant Calling, 100% HIPAA Compliance, Petabyte-Scale Genomic Querying, Accelerated Clinical Decision Support",
+    desc: "Genomics and Clinical Bioinformatics blueprint mapping sequencer ingress, Nextflow GATK pipeline, HIPAA data lakehouse, and BigQuery variant store."
+  },
+  tech_supply_chain: {
+    id: "tech_supply_chain",
+    title: "Autonomous Supply Chain & Fleet Telemetry (WBS 3.2.3)",
+    category: "Data & Lakehouse Architecture",
+    useCase: "AUTONOMOUS SUPPLY CHAIN & FLEET TELEMETRY (WBS 3.2.3)",
+    businessUseCase: "WBS 3.2.3: Real-time autonomous supply chain and IoT fleet telemetry architecture with MQTT edge ingestion, geospatial stream indexing via Dataflow, inventory digital twin on Bigtable, and predictive stockout ML models.",
+    primaryActors: "Supply Chain Planners, IoT Platform Architects, Fleet Logistics Leads, Operations Managers",
+    targetOutcomes: "Zero Key Inventory Stockouts, Real-Time Fleet Geospatial Tracking, Sub-Second Telemetry Ingestion, Automated Dispatch Optimization",
+    desc: "Autonomous Supply Chain blueprint illustrating IoT edge brokers, Dataflow streaming, Bigtable digital twin, predictive ML, and fleet dispatch."
+  },
+  tech_eval_safety: {
+    id: "tech_eval_safety",
+    title: "LLM-as-a-Judge AI Safety & Model Evaluation Platform (WBS 4.3.2)",
+    category: "AI & Cognitive Systems",
+    useCase: "AI SAFETY & MODEL EVALUATION (WBS 4.3.2)",
+    businessUseCase: "WBS 4.3.2: Automated AI safety and foundation model evaluation platform conducting benchmark suites (MMLU, GSM8K, HELM), adversarial red-teaming, LLM-as-a-Judge jury consensus, toxicity scoring, and model promotion gating.",
+    primaryActors: "AI Safety Researchers, Model Evaluation Leads, ML Engineers, Governance Officers",
+    targetOutcomes: "Automated Pre-Deployment Model Evaluation, Zero-Toxicity Threshold Enforcement, Multi-Model Consensus Scoring, Standardized Safety Scorecards",
+    desc: "AI Safety and Model Evaluation blueprint mapping benchmark suites, red-teaming harness, parallel inference, LLM-as-a-Judge consensus, and promotion gates."
+  },
+  tech_agentic_mesh: {
+    id: "tech_agentic_mesh",
+    title: "Decentralized Multi-Agent Swarm / Agentic Mesh (WBS 2.2.3)",
+    category: "AI & Cognitive Systems",
+    useCase: "DECENTRALIZED AGENTIC MESH (WBS 2.2.3)",
+    businessUseCase: "WBS 2.2.3: Decentralized multi-agent swarm architecture featuring peer-to-peer agent registry, semantic capability discovery via gossip protocols, distributed contract bidding, Byzantine fault-tolerant consensus, and immutable state ledgers.",
+    primaryActors: "Distributed AI Architects, Multi-Agent System Engineers, Protocol Designers, Platform Leads",
+    targetOutcomes: "Decentralized P2P Agent Coordination, Zero Single Points of Failure, Dynamic Capability Discovery, Byzantine Fault-Tolerant Consensus",
+    desc: "Decentralized Agentic Mesh blueprint illustrating P2P gossip discovery, capability router, contract bidding, and BFT consensus execution."
+  },
   conceptual_diagram: {
     id: "conceptual_diagram",
     title: "Conceptual Diagram",

@@ -52,6 +52,11 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     archType === 'federated_iam_sso' ||
     archType === 'tech_ai_trism_guardrails' ||
     archType === 'tech_micro_frontends' ||
+    archType === 'tech_fintech_payments' ||
+    archType === 'tech_genomics_clinical' ||
+    archType === 'tech_supply_chain' ||
+    archType === 'tech_eval_safety' ||
+    archType === 'tech_agentic_mesh' ||
     inputXml.includes('id="data-ai-pipeline-wbs"') ||
     inputXml.includes('id="gcp-lakehouse-wbs"') ||
     inputXml.includes('id="modern-data-stack-wbs"') ||
