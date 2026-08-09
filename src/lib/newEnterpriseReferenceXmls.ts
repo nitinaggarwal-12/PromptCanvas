@@ -6336,7 +6336,7 @@ export function getExactModernDataStackWbsXml(): string {
     <mxCell id="persona_row" value="&lt;span style='font-size:20px;'&gt;🧑‍💼&lt;/span&gt; &lt;span style='font-size:18px;'&gt;📄🔍&lt;/span&gt; &lt;span style='font-size:20px;'&gt;👩‍💻&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="220" y="80" width="90" height="30" as="geometry"/>
     </mxCell>
-    <mxCell id="box_top_cdc" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;CDC, Bronze/Silver/Gold Lakehouse&lt;/b&gt; &lt;span style='font-size:8px;color:#475569;'&gt;- Change Data Capture (CDC) based medallion architecture mapping from prerequisites tech stack like prerequisites tech context prereqs, prerequisites prerequisites prereqs patreqs prequirements context&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+    <mxCell id="box_top_cdc" value="&lt;b style='font-size:9.5px;color:#0F172A;'&gt;CDC, Bronze/Silver/Gold Lakehouse&lt;/b&gt; &lt;span style='font-size:8px;color:#475569;'&gt;- Change Data Capture (CDC) based medallion architecture streaming raw event logs into bronze, silver, and gold structured data layers for downstream governance and analytics.&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
       <mxGeometry x="325" y="60" width="235" height="75" as="geometry"/>
     </mxCell>
 
@@ -7034,7 +7034,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         </mxCell>
 
         <!-- METADATA CARD (TOP RIGHT) -->
-        <mxCell id="card_meta" value="&lt;div style='font-size:8px;color:#1E293B;line-height:1.2;'&gt;&lt;b&gt;Metadata:&lt;/b&gt;&lt;br/&gt;prerequisites prereqs prepreqs prerequisites&lt;br/&gt;for strategic presentation&lt;br/&gt;governance legibility and no crowding&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
+        <mxCell id="card_meta" value="&lt;div style='font-size:8px;color:#1E293B;line-height:1.2;'&gt;&lt;b&gt;Metadata:&lt;/b&gt;&lt;br/&gt;HITL Decision Matrix&lt;br/&gt;Human-in-the-Loop Governance&lt;br/&gt;Regulatory Compliance Tracking&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;spacing=4;" vertex="1" parent="1">
           <mxGeometry x="750" y="10" width="270" height="48" as="geometry"/>
         </mxCell>
 
@@ -7052,7 +7052,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
           <mxGeometry relative="1" as="geometry"><mxPoint x="95" y="112" as="sourcePoint"/><mxPoint x="125" y="112" as="targetPoint"/></mxGeometry>
         </mxCell>
 
-        <mxCell id="box_ai_agent" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🌀🧠&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;AI Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#64748B;'&gt;(Powered by Gemini Pro)&lt;br/&gt;prerequisites context prereqs&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
+        <mxCell id="box_ai_agent" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🌀🧠&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;AI Agent&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:8px;color:#64748B;'&gt;(Powered by Gemini Pro)&lt;br/&gt;Autonomous LLM Agent&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=4;" vertex="1" parent="1">
           <mxGeometry x="235" y="80" width="145" height="68" as="geometry"/>
         </mxCell>
         <mxCell id="edge_apps_agent" value="&lt;b style='font-size:8px;color:#0F172A;'&gt;WBS 4.2.1&lt;br/&gt;prerequisites&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
@@ -7063,11 +7063,11 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         <mxCell id="box_layer2" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;LAYER 2: HITL Governance &amp;amp; Compliance Control Plane&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="15" y="185" width="460" height="210" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_layer2_wbs" value="&lt;div style='text-align:right;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;WBS 4.1.2&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites prereqs pattern prerequisites context&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=right;verticalAlign=top;" vertex="1" parent="1">
+        <mxCell id="lbl_layer2_wbs" value="&lt;div style='text-align:right;'&gt;&lt;b style='font-size:9px;color:#0F172A;'&gt;WBS 4.1.2&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;Confidence Evaluation Pipeline&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=right;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="240" y="190" width="225" height="25" as="geometry"/>
         </mxCell>
 
-        <mxCell id="box_proposed_decision" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:20px;'&gt;📄📈&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Proposed Decision&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;proposes context prerequisites&lt;br/&gt;prereqs context prereqs&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+        <mxCell id="box_proposed_decision" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:20px;'&gt;📄📈&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Proposed Decision&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;Action recommendation&lt;br/&gt;with confidence score&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
           <mxGeometry x="30" y="235" width="125" height="70" as="geometry"/>
         </mxCell>
 
@@ -7084,7 +7084,7 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         </mxCell>
 
         <!-- HIGH CONFIDENCE PATH -> ACTION -->
-        <mxCell id="box_action" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🖥️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Action&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;executing prerequisites&lt;br/&gt;deciding context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
+        <mxCell id="box_action" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:22px;'&gt;🖥️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#0F172A;'&gt;Action&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7.5px;color:#64748B;'&gt;Autonomous execution&lt;br/&gt;system dispatch&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;spacing=3;" vertex="1" parent="1">
           <mxGeometry x="355" y="235" width="105" height="70" as="geometry"/>
         </mxCell>
         <mxCell id="edge_high_conf" value="&lt;b style='font-size:8.5px;color:#16A34A;'&gt;HIGH CONFIDENCE / ROUTINE ACTION&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;b style='font-size:9px;color:#16A34A;'&gt;YES&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;" edge="1" parent="1">
@@ -7103,12 +7103,12 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         </mxCell>
 
         <!-- LAYER 3: HUMAN INTERVENTION & REGULATORY OVERRIDE (RIGHT COLUMN) -->
-        <mxCell id="box_layer3" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;LAYER 3: Human Intervention &amp;amp; Regulatory Override&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites pattern prereqs prereqs prereqs pattern context context prerequisites context.&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="box_layer3" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;LAYER 3: Human Intervention &amp;amp; Regulatory Override&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;Human oversight, risk intervention, audit trails, and multi-jurisdictional compliance frameworks.&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="490" y="60" width="530" height="335" as="geometry"/>
         </mxCell>
 
         <!-- HITL REVIEW PORTAL (TOP LEFT OF LAYER 3) -->
-        <mxCell id="box_hitl_portal" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:16px;'&gt;⚠️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#DC2626;'&gt;HITL Review Portal&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites purpose&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;spacing=2;" vertex="1" parent="1">
+        <mxCell id="box_hitl_portal" value="&lt;div style='text-align:center;'&gt;&lt;span style='font-size:16px;'&gt;⚠️&lt;/span&gt;&lt;br/&gt;&lt;b style='font-size:9.5px;color:#DC2626;'&gt;HITL Review Portal&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;Exception review&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;spacing=2;" vertex="1" parent="1">
           <mxGeometry x="505" y="90" width="115" height="42" as="geometry"/>
         </mxCell>
         <mxCell id="edge_alert_to_hitl" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=classic;" edge="1" parent="1">
@@ -7130,14 +7130,14 @@ export function getExactAgentGovernanceHitlReferenceXml(): string {
         </mxCell>
 
         <!-- 3 COMPLIANCE COLUMNS -->
-        <mxCell id="col_eu_ai" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;EU AI Act&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites purpose prereqs&lt;br/&gt;prerequisites context prereqs&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;EU AI Act&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="col_eu_ai" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;EU AI Act&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;High-risk AI systems&lt;br/&gt;Conformity assessment&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;EU AI Act&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="505" y="145" width="115" height="235" as="geometry"/>
         </mxCell>
 
-        <mxCell id="col_21cfr" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;21 CFR Part 11&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites EMA/GxP context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="col_21cfr" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;21 CFR Part 11&lt;br/&gt;Compliance&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;Electronic records &amp; audit trails&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="630" y="145" width="165" height="235" as="geometry"/>
         </mxCell>
-        <mxCell id="box_auth" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Authentication&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;prerequisites context&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;spacing=3;" vertex="1" parent="1">
+        <mxCell id="box_auth" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#0F172A;'&gt;Authentication&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:7px;color:#64748B;'&gt;OAuth2 &amp; MFA&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;spacing=3;" vertex="1" parent="1">
           <mxGeometry x="640" y="210" width="85" height="40" as="geometry"/>
         </mxCell>
         <mxCell id="box_kms" value="&lt;div style='text-align:center;'&gt;&lt;b style='font-size:9.5px;color:#1E40AF;'&gt;KMS&lt;br/&gt;Encrypted&lt;br/&gt;Override&lt;br/&gt;Signature&lt;/b&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;spacing=2;" vertex="1" parent="1">
