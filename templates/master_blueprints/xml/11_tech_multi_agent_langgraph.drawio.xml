@@ -1,0 +1,43 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="gcp_langgraph_dag" name="Flagship Stateful Multi-Agent Orchestration Engine (LangGraph DAG)">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="l1" value="🌐 &lt;b&gt;[1] Multimodal User Ingress (2M+ Tokens)&lt;/b&gt;&lt;br&gt;&lt;i&gt;WebRTC Voice, Vision, &amp; System Prompt Caching&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="l2" value="🧠 &lt;b&gt;[2] Master Supervisor Directed Graph Agent&lt;/b&gt;&lt;br&gt;&lt;i&gt;LangGraph DAG State Machine &amp; Checkpoint Store&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="270" width="280" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="l3" value="🤖 &lt;b&gt;[3] Research &amp; Vector Retrieval Agent&lt;/b&gt;&lt;br&gt;&lt;i&gt;pgvector Long-Term Memory &amp; Semantic Grounding&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="560" y="100" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="l4" value="💻 &lt;b&gt;[4] Sandboxed Code &amp; GUI Computer Use Agent&lt;/b&gt;&lt;br&gt;&lt;i&gt;gRPC Tool Gateway &amp; OS Execution Kernel&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FAF5FF;strokeColor=#7C3AED;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="560" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="l5" value="🛡️ &lt;b&gt;[5] Safety Critic &amp; HITL Approval Gate&lt;/b&gt;&lt;br&gt;&lt;i&gt;Human Interrupt Approval (requires_action Gate)&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="100" width="280" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="l6" value="⚡ &lt;b&gt;[6] Grounded Enterprise Response Synthesizer&lt;/b&gt;&lt;br&gt;&lt;i&gt;Distributed Trace Observability &amp; Audit Log&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="280" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="el1" value="1. User Prompt + Ephemeral Prompt Cache" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="l1" target="l2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="el2" value="2. Supervisor Routes Research Sub-Goal" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="l2" target="l3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="el3" value="3. Parallel Code/GUI Tool Execution" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="l3" target="l4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="el4" value="4. State Machine Verification &amp; HITL Gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="l4" target="l5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="el5" value="5. Approved Grounded Synthesis" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="l5" target="l6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

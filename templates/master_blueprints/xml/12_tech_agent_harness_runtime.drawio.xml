@@ -1,0 +1,34 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="agent_harness_runtime" name="Enterprise Agent Harness Runtime Architecture">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title_harness" value="&lt;b style=&quot;font-size:22px;color:#0F172A;&quot;&gt;Enterprise Agent Harness Runtime Architecture&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;color:#475569;&quot;&gt;Autonomous Loop Execution, Dynamic Tool Invocation, Cryptographic HITL Approval &amp; State Persistence&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="100" y="20" width="1600" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_ingress_harness" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;[1] Ingress &amp; Auth Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#334155;&quot;&gt;Cloud Armor + IAM JWT OIDC Token Vault&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="100" y="120" width="300" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_harness_core" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;[2] Autonomous Agent Execution Harness&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#334155;&quot;&gt;Self-Correction Loop • Step-by-Step Reasoner • Gemini 3.1 Pro&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="480" y="120" width="380" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_sandbox_kernel" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;[3] Sandboxed Tool Execution Kernel&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#334155;&quot;&gt;gVisor Container Isolation • Sub-15ms Python/SQL Execution&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="940" y="120" width="350" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_hitl_harness" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;[4] HITL Cryptographic Approval Gate&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#334155;&quot;&gt;Stateful requires_action Interrupt &amp; Audit Trail&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="95" width="320" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_h1" value="1. Authenticated Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontStyle=1;fontSize=10;" edge="1" parent="1" source="box_ingress_harness" target="box_harness_core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_h2" value="2. Invoke Tool (gRPC)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontStyle=1;fontSize=10;" edge="1" parent="1" source="box_harness_core" target="box_sandbox_kernel">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_h3" value="3. Verify Output / Policy" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontStyle=1;fontSize=10;" edge="1" parent="1" source="box_sandbox_kernel" target="box_hitl_harness">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
