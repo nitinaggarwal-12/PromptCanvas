@@ -160,24 +160,24 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_agentic_mesh",
-    name: "Google Cloud Private Service Connect (PSC) & Zero-Trust Mesh",
+    name: "Hybrid Multi-Cloud Networking & Gemini Enterprise",
     categoryId: "cloud_infra",
     categoryName: "Cloud Infrastructure & Networking",
     badge: "Production Blueprint (WBS 5.5.1)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for multi-project Google Cloud network architectures requiring Private Service Connect (PSC), 100G Dedicated Interconnect, PSC NAT Subnet (SNAT), PROXY Protocol v2, and VPC-SC perimeter protection.",
+    whenToUse: "Use for multi-cloud enterprise architectures requiring 100G Dedicated Interconnect, Partner Interconnect, Cloud VPN, Cross-Cloud Interconnect for AWS, Network Connectivity Center (NCC) BGP routing, and Gemini Enterprise AIOps.",
     bestFor: [
-      "WBS 5.5.1 Google Cloud Private Service Connect (PSC) & Zero-Trust Mesh",
-      "Dedicated Cloud Interconnect 100G with dual BGP Cloud Router peering (ASN 16550)",
-      "Cross-VPC PSC Consumer Forwarding Rules to Producer Service Attachments",
-      "Dedicated PSC NAT Subnet (192.168.10.0/24) eliminating CIDR collisions",
-      "PROXY Protocol v2 header preservation for real client IP visibility",
-      "Internal L7 Envoy Load Balancer & VPC Service Controls (VPC-SC) perimeter"
+      "WBS 5.5.1 Hybrid Multi-Cloud Networking & Gemini Enterprise",
+      "Dedicated Cloud Interconnect 100G with BGP ASN Peering (16550, 65001, 64512)",
+      "Network Connectivity Center (NCC) Multi-Spoke Hub-and-Spoke Mesh",
+      "Direct 100G Cloud-to-Cloud Demarc with AWS Direct Connect Gateway",
+      "Gemini Enterprise Autonomous BGP Flap Damping & AIOps Orchestration",
+      "VPC Service Controls (VPC-SC) Perimeter & Anthos Istio mTLS 1.3"
     ],
-    keyTech: ["Private Service Connect (PSC)", "Dedicated Interconnect 100G", "BGP Cloud Router", "PSC NAT Subnet (SNAT)", "PROXY Protocol v2", "VPC-SC Perimeter", "Vertex AI Gemini 3.1 Pro"],
+    keyTech: ["Dedicated Interconnect 100G", "Cross-Cloud Interconnect", "NCC BGP Hub", "Gemini Enterprise AIOps", "AWS Direct Connect", "VPC-SC Perimeter", "Vertex AI"],
     thumbnail: "/templates/tech_agentic_mesh.png",
-    promptSummary: "Google Cloud PSC Mesh: 100G Interconnect -> Consumer Spoke VPC -> Cloud DNS -> PSC Endpoint -> Andromeda SDN Fabric -> Producer L7 ILB -> VPC-SC Perimeter."
+    promptSummary: "Hybrid Multi-Cloud: 100G Interconnect -> On-Prem Data Center -> GCP Global Network PoPs -> NCC BGP Hub -> AWS Direct Connect -> Gemini Enterprise AIOps."
   },
   {
     id: "business_agent_gov_hitl",

@@ -342,10 +342,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_agentic_mesh",
-    name: "Google Cloud Private Service Connect (PSC) & Zero-Trust Mesh (WBS 5.5.1)",
+    name: "Hybrid Multi-Cloud Networking & Gemini Enterprise (WBS 5.5.1)",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "WBS 5.5.1 Google Cloud Private Service Connect (PSC) & Zero-Trust Networking Architecture with 100G Dedicated Cloud Interconnect, BGP Cloud Router, Cross-VPC PSC Endpoints, Dedicated PSC NAT Subnets, PROXY Protocol v2, and VPC-SC Perimeters.",
-    prompt: "Act as a Principal Google Cloud Networking & Security Architect. Design a production-grade WBS 5.5.1 Google Cloud Private Service Connect (PSC) & Zero-Trust Private Mesh blueprint. Include: On-Premises & Multi-Cloud Ingress (100G Dedicated Cloud Interconnect, BGP Cloud Router, HA VPN, Cloud Armor) -> Consumer Hub VPC (Private GKE Cluster, Cloud DNS Private Zone, PSC Endpoints for Google APIs & Producer Services) -> Google Andromeda SDN & PSC Fabric (Service Attachment, Dedicated PSC NAT Subnet 192.168.10.0/24, PROXY Protocol v2 Header, Network Analyzer) -> Producer AI Hub VPC (Internal L7 ILB, GKE Multi-Agent Pods, Vertex AI Gemini 3.1 Pro Private Endpoint, VPC-SC Perimeter, Cloud KMS HSM)."
+    whenToUse: "WBS 5.5.1 Google Cloud Hybrid Multi-Cloud Networking Architecture with 100G Dedicated Interconnect, Partner Interconnect, Cloud VPN, Cross-Cloud Interconnect for AWS, Network Connectivity Center (NCC) BGP Routing, and Gemini Enterprise AIOps.",
+    prompt: "Act as a Principal Google Cloud Networking & AI Infrastructure Architect. Design a production-grade WBS 5.5.1 Hybrid Multi-Cloud Networking & Gemini Enterprise reference blueprint. Include: On-Premises / Private Cloud (Tier IV Data Center, BGP ASN 65001, BFD 300ms, VMware Servers, Gemini on GDC Hosted) -> Google Cloud Global Network (187+ Anycast PoPs, Cloud CDN, Global L7 Load Balancing) -> Region us-central1 VPC (GKE Autopilot, Compute Engine, Cloud SQL PSA, Gemini Enterprise AIOps) -> AWS Cloud us-east-1 (EKS, EC2, ECS, Aurora RDS, DX Gateway ASN 64512) -> Direct 100G Cross-Cloud Interconnect & Bottom Routing Telemetry Matrix."
   }
 ];
 

@@ -52,13 +52,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_agentic_mesh: {
     id: "tech_agentic_mesh",
-    title: "Google Cloud Private Service Connect (PSC) & Zero-Trust Mesh (WBS 5.5.1)",
+    title: "Hybrid Multi-Cloud Networking & Gemini Enterprise (WBS 5.5.1)",
     category: "Cloud Infrastructure & Networking",
-    useCase: "GOOGLE CLOUD PSC & ZERO-TRUST MESH (WBS 5.5.1)",
-    businessUseCase: "WBS 5.5.1: Multi-project Google Cloud Private Service Connect (PSC) and Zero-Trust Networking reference architecture featuring 100G Dedicated Cloud Interconnect, BGP Cloud Router, Cross-Project PSC Endpoints, Dedicated PSC NAT Subnet (SNAT), PROXY Protocol v2 Header Engine, Andromeda SDN transit, Internal L7 Envoy Load Balancer, and VPC-SC perimeter.",
-    primaryActors: "Cloud Network Architects, Principal Infrastructure Engineers, Security Leads, Site Reliability Engineers",
-    targetOutcomes: "100% Private Cross-Project Transit (0.0.0.0/0 Blocked), Zero CIDR Overlap Collisions via SNAT, Real Client IP Visibility via PROXY Protocol v2, VPC-SC Zero Data Exfiltration Enforcement",
-    desc: "Google Cloud Private Service Connect (PSC) and Zero-Trust Mesh blueprint illustrating Dedicated Cloud Interconnect, BGP Cloud Router, PSC Consumer Forwarding Rules, PSC NAT Subnet, PROXY Protocol v2, and VPC-SC perimeter."
+    useCase: "HYBRID MULTI-CLOUD NETWORKING & GEMINI ENTERPRISE (WBS 5.5.1)",
+    businessUseCase: "WBS 5.5.1: Production-grade Google Cloud reference architecture for Hybrid Multi-Cloud Networking featuring 100G Dedicated Interconnect, Partner Interconnect, Cloud VPN, Cross-Cloud Interconnect for AWS, Network Connectivity Center (NCC) hub-and-spoke BGP routing, and Gemini Enterprise AI Operations.",
+    primaryActors: "Principal Cloud Network Architects, Multi-Cloud Infrastructure Leads, Network Security Engineers, Site Reliability Engineers",
+    targetOutcomes: "Sub-2ms Multi-Cloud Line-Rate Transit, Sub-Second BFD Failover (300ms), 100% Private RFC 1918 Transit, Autonomous BGP Flap Damping with Gemini AIOps",
+    desc: "Official Google Cloud Hybrid Multi-Cloud reference architecture illustrating On-Premises Interconnect, Global Network PoPs, VPC Network Subnets, AWS VPC Peering, and Gemini Enterprise AIOps."
   },
   conceptual_diagram: {
     id: "conceptual_diagram",
