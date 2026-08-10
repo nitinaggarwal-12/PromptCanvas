@@ -1,0 +1,241 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="eval_safety" name="WBS 5.4.1: AI Safety &amp; Red-Teaming Benchmarking Suite">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- TOP TITLE BANNER -->
+        <mxCell id="main_title_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="600" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;WBS 5.4.1: AI Safety &amp; Red-Teaming Suite&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13.5px;color:#334155;&quot;&gt;(Constitutional AI Judges, Model Armor API &amp; Automated CI/CD Gates)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="20" width="570" height="56" as="geometry"/>
+        </mxCell>
+
+        <!-- TOP RIGHT METADATA TABLE -->
+        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;width:34%;&quot;&gt;Diagram Name:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;width:66%;&quot;&gt;AI Safety &amp; Red-Teaming Suite&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;GCAF Pillar:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Industry Solutions &amp; Domain Accelerators&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Architecture State:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;To-Be&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Persona (Creator):&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;1. AI Safety &amp; Governance Architect&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Target Audience:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Red-Team Leads, AI Ethicists, Model Ops&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Effort:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;High&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Tech Stack:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Model Armor, Vertex AI Eval, BigQuery, Looker&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Classification:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;AI Governance &amp; Red-Teaming&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Blueprint ID:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;font-family:monospace;color:#DC2626;font-weight:bold;&quot;&gt;tech_eval_safety_gcp&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- LEFT TIER: RED-TEAMING & ATTACK INGRESS (x = 30 .. 330) -->
+        <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_ingress_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#DC2626;&quot;&gt;RED-TEAMING &amp; ADVERSARIAL ATTACK TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 1: Adversarial Red-Teaming Fuzzer -->
+        <mxCell id="node_red_fuzzer" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Adversarial Red-Team Fuzzer&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Automated multi-turn jailbreak attempts&lt;br&gt;Prompt injection attack dataset library (100k+ tests)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 2: Model Armor API & Prompt Shield -->
+        <mxCell id="node_model_armor" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Model Armor API &amp; Prompt Shield&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Pre-LLM toxic token sanitization&lt;br&gt;PII redaction, zero-day jailbreak filter&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="310" width="260" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 3: Shadow Canary Deployment Gateway -->
+        <mxCell id="node_canary_gate" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Shadow Canary Safety Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Mirrored production traffic evaluation&lt;br&gt;A/B model safety regression tracking&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="450" width="260" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 4: Hallucination Trap Engine -->
+        <mxCell id="node_hallucination_trap" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Grounding &amp; Factuality Verifier&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Vertex AI Search retrieval cross-check&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="590" width="260" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona AI Safety Architect Bottom Left -->
+        <mxCell id="persona_safety_arch" value="🛡️&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;AI Safety Architect&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Alignment Lead)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="95" y="715" width="170" height="65" as="geometry"/>
+        </mxCell>
+
+
+        <!-- CENTER TIER: CONSTITUTIONAL EVALUATION & BENCHMARKING (x = 370 .. 790) -->
+        <mxCell id="box_eval" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_eval_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#2563EB;&quot;&gt;CONSTITUTIONAL AI &amp; AUTOMATED BENCHMARK TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="390" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 5: Vertex AI Constitutional Judge Models -->
+        <mxCell id="node_constitutional_judge" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Constitutional Judge Models&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Gemini 1.5 Pro multi-agent constitutional alignment judges&lt;br&gt;• Automated critique &amp; revision scoring across 50 ethical principles&lt;br&gt;• Sub-second latency rubric-based evaluation scores&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="175" width="360" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 6: Automated Safety Benchmark Suite -->
+        <mxCell id="node_benchmarks" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Automated Safety Benchmark Suite&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• HELM, TruthfulQA, ToxiGen &amp; BOLD automated harness&lt;br&gt;• Real-time toxicity, bias &amp; hate speech vector metrics&lt;br&gt;• Automated pass/fail classification against SLA thresholds&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="320" width="360" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 7: Model Drift & Safety Regression Detector -->
+        <mxCell id="node_drift_detector" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Model Drift &amp; Safety Regression Detector&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Statistical Kolmogorov-Smirnov test for alignment drift&lt;br&gt;• Instant alerting on emergent unsafe token distributions&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="475" width="360" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 8: BigQuery Safety Compliance Vault -->
+        <mxCell id="node_bq_safety" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;BigQuery Safety Compliance Vault&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Immutable evaluation runs, red-team logs &amp; model cards&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="625" width="360" height="90" as="geometry"/>
+        </mxCell>
+
+
+        <!-- RIGHT TIER: GATEKEEPER, KILL-SWITCH & GOVERNANCE (x = 830 .. 1560) -->
+        <mxCell id="box_governance" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_governance_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#7C3AED;&quot;&gt;CI/CD SAFETY GATEKEEPER &amp; ETHICS GOVERNANCE TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="835" y="280" width="720" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Automated CI/CD Safety Gatekeeper -->
+        <mxCell id="node_safety_gatekeeper" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;Automated CI/CD Safety Gatekeeper&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Hard release blocker: Prevents deployment if safety score &lt; 99.8%&lt;br&gt;• Enforces binary authorization &amp; attestations in artifact registry&lt;br&gt;• Automated rollback triggered on production canary violation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="860" y="325" width="430" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- Emergency Kill-Switch & IR Automation -->
+        <mxCell id="node_killswitch" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Emergency Kill-Switch &amp; IR&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Instant endpoint traffic draining,&lt;br&gt;fallback to deterministic rule engine&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="480" width="280" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Looker AI Governance & EU AI Act Cockpit -->
+        <mxCell id="node_looker_governance" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Looker AI Ethics Cockpit&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;EU AI Act compliance reporting,&lt;br&gt;bias &amp; fairness audit scorecards&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="480" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Lead Red-Team Tester -->
+        <mxCell id="persona_redteam_lead" value="🕵️‍♂️&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Red-Team Pen Tester&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Jailbreak Specialist)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="890" y="615" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona AI Ethics Lead -->
+        <mxCell id="persona_ethics_lead" value="📋&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;AI Ethics &amp; Compliance Lead&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(EU AI Act Auditor)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="615" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+
+        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+
+        <!-- 1. Red Fuzzer -> Model Armor -->
+        <mxCell id="e_fuzzer_armor" value="Adversarial Attack Payloads" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_red_fuzzer" target="node_model_armor">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Model Armor -> Canary Gate -->
+        <mxCell id="e_armor_canary" value="Sanitized Attack Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_model_armor" target="node_canary_gate">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Canary Gate -> Constitutional Judge -->
+        <mxCell id="e_canary_judge" value="Evaluation Ingress&lt;br&gt;Pipeline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="495" as="sourcePoint"/>
+            <mxPoint x="395" y="230" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="345" y="495"/>
+              <mxPoint x="345" y="230"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Judge -> Benchmarks -->
+        <mxCell id="e_judge_benchmarks" value="Alignment Scoring Matrix" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_constitutional_judge" target="node_benchmarks">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 5. Benchmarks -> Drift Detector -->
+        <mxCell id="e_benchmarks_drift" value="Toxicity Vector Distribution" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_benchmarks" target="node_drift_detector">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 6. Drift Detector -> BigQuery -->
+        <mxCell id="e_drift_bq" value="Persist Evaluation Audit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_drift_detector" target="node_bq_safety">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 7. Judge / Benchmarks -> Safety Gatekeeper (Direct clean connection) -->
+        <mxCell id="e_eval_gatekeeper" value="Automated Release&lt;br&gt;Policy Attestation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="755" y="375" as="sourcePoint"/>
+            <mxPoint x="860" y="375" as="targetPoint"/>
+            <mxPoint x="0" y="-12" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Safety Gatekeeper -> Emergency Kill-Switch -->
+        <mxCell id="e_gatekeeper_killswitch" value="Automated Circuit Breaker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="990" y="440" as="sourcePoint"/>
+            <mxPoint x="990" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Safety Gatekeeper -> Looker AI Governance -->
+        <mxCell id="e_gatekeeper_looker" value="Governance Scorecards" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1280" y="440" as="sourcePoint"/>
+            <mxPoint x="1280" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM RIGHT LEGEND -->
+        <mxCell id="legend_box" value="&lt;div style=&quot;font-weight:bold;font-size:11px;margin-bottom:4px;color:#0F172A;text-align:left;&quot;&gt;Legend&lt;/div&gt;
+&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;width:24px;&quot;&gt;▢&lt;/td&gt;&lt;td style=&quot;width:40%;&quot;&gt;Evaluation Tier&lt;/td&gt;
+    &lt;td style=&quot;width:24px;&quot;&gt;➔&lt;/td&gt;&lt;td&gt;Attestation Flow&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;⬚&lt;/td&gt;&lt;td&gt;Benchmark Store&lt;/td&gt;
+    &lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;Audit &amp; Metrics&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;👤&lt;/td&gt;&lt;td&gt;Persona&lt;/td&gt;
+    &lt;td&gt;🛡️&lt;/td&gt;&lt;td&gt;Safety Guard&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="720" width="280" height="130" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

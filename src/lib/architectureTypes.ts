@@ -49,7 +49,8 @@ import {
   getExactSupplyChainXml,
   getExactEvalSafetyXml,
   getExactAgenticMeshXml,
-  getExactValueStreamMapXml
+  getExactValueStreamMapXml,
+  getExactAsIsToBeProcessFlowXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -131,6 +132,13 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Executive & Business Strategy",
     whenToUse: "Enterprise AI Architecture & Delivery Value Stream Map (VSM) mapping Lead Time, Process Time (%C/A), Information Plane, Kaizen bursts, and DORA flow efficiency ladder from Prompt Ingestion to Production GitOps.",
     prompt: "Act as an Enterprise Agile & Lean Value Stream Architect. Design a production-grade WBS 1.2.1 Enterprise AI Architecture & Delivery Value Stream Map (VSM). Include: Top Information & Control Plane (Customer Demand, Jira Portfolio Steering, Weekly ARB Committee, SRE Telemetry) -> Core Execution Value Stream Pipeline (Stage 1 Prompt Ingestion, Stage 2 Gemini 3.1 Pro Compilation, Stage 3 AI TRiSM & FinOps, Stage 4 ARB & HITL Sign-Off, Stage 5 GitOps IaC Provisioning) with Queue WIP Triangles and Kaizen Bursts -> Bottom Lead Time & Process Time Ladder with Flow Efficiency Scorecard and VSM Symbology Legend."
+  },
+  {
+    id: "asis_vs_tobe_process_flow",
+    name: "As-Is vs. To-Be Process Flow",
+    category: "Executive & Business Strategy",
+    whenToUse: "Enterprise Modernization Process Flow comparing fragile on-premises monolithic legacy state against Google Cloud real-time Lakehouse and Gemini 3.1 Pro cognitive architecture with Strangler Fig modernization bridge and ROI transformation scorecard.",
+    prompt: "Act as an Enterprise Cloud Modernization & AI Transformation Principal Architect. Design a production-grade WBS 0.1.1 As-Is vs. To-Be Process & Architecture Flow blueprint. Include: Top Zone AS-IS Legacy State (On-Prem VMs/Monolith Ingress, Nightly Informatica Batch ETL, Oracle RDBMS Core, Manual Spreadsheet Review, Static Cognos Reports) -> Center Google Cloud Strangler Fig Modernization Bridge (Apigee API Interceptor & Datastream CDC) -> Bottom Zone TO-BE Target State (Cloud Pub/Sub Ingress, Cloud Dataflow Streaming Pipeline, Gemini 3.1 Pro Reasoning Hub, AI TRiSM & HITL Gate, Cloud Run Serverless Serving, BigQuery Lakehouse, AlloyDB HA, Dataplex ABAC, Cloud KMS) -> Right Panel Executive Transformation Scorecard with 68% OpEx Cut and Year 1 ROI."
   }
 ];
 
@@ -377,6 +385,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('eval_safety') || id.includes('benchmarking') || id === 'tech_eval_safety') return 'tech_eval_safety';
   if (id.includes('agentic_mesh') || id.includes('mesh_swarm') || id === 'tech_agentic_mesh') return 'tech_agentic_mesh';
   if (id.includes('vsm') || id.includes('value_stream') || id === 'value_stream_map') return 'value_stream_map';
+  if (id.includes('as_is') || id.includes('asis') || id.includes('tobe') || id.includes('to_be') || id === 'asis_vs_tobe_process_flow') return 'asis_vs_tobe_process_flow';
   return id;
 }
 
@@ -464,6 +473,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactAgenticMeshXml();
   } else if (id === 'value_stream_map' || id.includes('value_stream') || id.includes('vsm')) {
     xml = getExactValueStreamMapXml();
+  } else if (id === 'asis_vs_tobe_process_flow' || id.includes('asis') || id.includes('as_is') || id.includes('tobe') || id.includes('to_be')) {
+    xml = getExactAsIsToBeProcessFlowXml();
   } else if (id === 'tech_modern_data_stack' || id.includes('modern_data_stack')) {
     xml = getExactModernDataStackWbsXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
@@ -476,7 +487,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
 
   const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
-  const isFlagshipBlueprint = id.includes('agent_harness') || id.includes('modern_data_stack') || id.includes('data_ai') || id.includes('lakehouse') || id.includes('hitl') || id.includes('golive') || id.includes('value_stream') || id.includes('vsm') || id === 'value_stream_map' || id === 'tech_modern_data_stack' || id === 'data_ai_pipeline' || id === 'tech_data_lakehouse_gcp' || id === 'business_agent_gov_hitl' || id === 'golive_warroom_runbook';
+  const isFlagshipBlueprint = id.includes('agent_harness') || id.includes('modern_data_stack') || id.includes('data_ai') || id.includes('lakehouse') || id.includes('hitl') || id.includes('golive') || id.includes('value_stream') || id.includes('vsm') || id.includes('asis') || id.includes('tobe') || id === 'value_stream_map' || id === 'asis_vs_tobe_process_flow' || id === 'tech_modern_data_stack' || id === 'data_ai_pipeline' || id === 'tech_data_lakehouse_gcp' || id === 'business_agent_gov_hitl' || id === 'golive_warroom_runbook';
 
   // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor
   if (hasCustomUserPrompt && !isFlagshipBlueprint) {

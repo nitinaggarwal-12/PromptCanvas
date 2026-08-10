@@ -1,0 +1,34 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="modern_data_stack" name="WBS 3.1.1: Modern Data Stack Architecture">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title_mds" value="&lt;b style=&quot;font-size:20px;color:#0F172A;&quot;&gt;WBS 3.1.1: Modern Data Stack &amp; Lakehouse Architecture&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;color:#334155;&quot;&gt;Fivetran CDC, dbt Core Transformations, BigQuery Governed Lakehouse, &amp; Looker Studio Semantic Layer&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="100" y="20" width="1400" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="mds_ing" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;[1] Ingestion Layer (CDC)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#334155;&quot;&gt;Fivetran + Kafka Event Connectors&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="100" y="120" width="280" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="mds_raw" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;[2] Bronze Raw Lakehouse (GCS)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#334155;&quot;&gt;Immutable Cloud Storage (Parquet / Iceberg)&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#EFF6FF;strokeColor=#2563EB;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="460" y="115" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="mds_dbt" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;[3] Transformation Layer (dbt)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#334155;&quot;&gt;dbt DAG Models • Silver / Gold Tables&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="820" y="120" width="280" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="mds_bi" value="&lt;b style=&quot;font-size:15px;color:#0F172A;&quot;&gt;[4] Semantic &amp; BI Layer&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#334155;&quot;&gt;Looker Studio • ThoughtSpot • Real-Time Dashboards&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="120" width="280" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_mds1" value="1. Micro-batch Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mds_ing" target="mds_raw">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_mds2" value="2. dbt Transform" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mds_raw" target="mds_dbt">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_mds3" value="3. Semantic Query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontStyle=1;fontSize=10;" edge="1" parent="1" source="mds_dbt" target="mds_bi">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
