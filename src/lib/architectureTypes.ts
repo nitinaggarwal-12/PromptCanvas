@@ -342,10 +342,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_agentic_mesh",
-    name: "Decentralized Multi-Agent Swarm / Agentic Mesh (WBS 2.2.3)",
-    category: "AI & Cognitive Systems",
-    whenToUse: "WBS 2.2.3 Decentralized Agentic Mesh with peer-to-peer agent discovery, semantic gossip protocol, distributed capability negotiation, and Byzantine fault-tolerant consensus execution.",
-    prompt: "Act as an Advanced Distributed AI Systems Architect. Design a production-grade WBS 2.2.3 Decentralized Multi-Agent Swarm / Agentic Mesh blueprint. Include: Agent Swarm Ingress -> P2P Agent Registry & Gossip Discovery -> Semantic Capability Router -> Distributed Task Negotiation Protocol -> Byzantine Fault-Tolerant Consensus Execution -> Shared State Ledger."
+    name: "Google Cloud Private Service Connect (PSC) & Zero-Trust Mesh (WBS 5.5.1)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "WBS 5.5.1 Google Cloud Private Service Connect (PSC) & Zero-Trust Networking Architecture with 100G Dedicated Cloud Interconnect, BGP Cloud Router, Cross-VPC PSC Endpoints, Dedicated PSC NAT Subnets, PROXY Protocol v2, and VPC-SC Perimeters.",
+    prompt: "Act as a Principal Google Cloud Networking & Security Architect. Design a production-grade WBS 5.5.1 Google Cloud Private Service Connect (PSC) & Zero-Trust Private Mesh blueprint. Include: On-Premises & Multi-Cloud Ingress (100G Dedicated Cloud Interconnect, BGP Cloud Router, HA VPN, Cloud Armor) -> Consumer Hub VPC (Private GKE Cluster, Cloud DNS Private Zone, PSC Endpoints for Google APIs & Producer Services) -> Google Andromeda SDN & PSC Fabric (Service Attachment, Dedicated PSC NAT Subnet 192.168.10.0/24, PROXY Protocol v2 Header, Network Analyzer) -> Producer AI Hub VPC (Internal L7 ILB, GKE Multi-Agent Pods, Vertex AI Gemini 3.1 Pro Private Endpoint, VPC-SC Perimeter, Cloud KMS HSM)."
   }
 ];
 
@@ -487,7 +487,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
 
   const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
-  const isFlagshipBlueprint = id.includes('agent_harness') || id.includes('modern_data_stack') || id.includes('data_ai') || id.includes('lakehouse') || id.includes('hitl') || id.includes('golive') || id.includes('value_stream') || id.includes('vsm') || id.includes('asis') || id.includes('tobe') || id === 'value_stream_map' || id === 'asis_vs_tobe_process_flow' || id === 'tech_modern_data_stack' || id === 'data_ai_pipeline' || id === 'tech_data_lakehouse_gcp' || id === 'business_agent_gov_hitl' || id === 'golive_warroom_runbook';
+  const isFlagshipBlueprint = id.includes('agent_harness') || id.includes('modern_data_stack') || id.includes('data_ai') || id.includes('lakehouse') || id.includes('hitl') || id.includes('golive') || id.includes('value_stream') || id.includes('vsm') || id.includes('asis') || id.includes('tobe') || id.includes('agentic_mesh') || id === 'tech_agentic_mesh' || id === 'value_stream_map' || id === 'asis_vs_tobe_process_flow' || id === 'tech_modern_data_stack' || id === 'data_ai_pipeline' || id === 'tech_data_lakehouse_gcp' || id === 'business_agent_gov_hitl' || id === 'golive_warroom_runbook';
 
   // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor
   if (hasCustomUserPrompt && !isFlagshipBlueprint) {

@@ -1,5 +1,3 @@
-export function buildAgenticMeshXml(): string {
-  return `
 <mxfile host="app.diagrams.net" modified="2026-08-10T17:30:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="gcp_psc_networking_mesh" name="WBS 5.5.1: Google Cloud Private Service Connect (PSC) &amp; Networking Architecture">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
@@ -240,5 +238,3 @@ export function buildAgenticMeshXml(): string {
     </mxGraphModel>
   </diagram>
 </mxfile>
-  `.trim();
-}
