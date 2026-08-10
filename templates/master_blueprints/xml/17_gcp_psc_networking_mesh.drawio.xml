@@ -1,236 +1,282 @@
-<mxfile host="app.diagrams.net" modified="2026-08-10T17:30:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="gcp_psc_networking_mesh" name="WBS 5.5.1: Google Cloud Private Service Connect (PSC) &amp; Networking Architecture">
+<mxfile host="app.diagrams.net" modified="2026-08-10T17:55:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="gcp_psc_networking_mesh" name="Standard Google Cloud Private Service Connect (PSC) Architecture">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- FULL CANVAS FRAME -->
-        <mxCell id="frame_psc_mesh" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+        <!-- CANVAS FRAME -->
+        <mxCell id="canvas_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="0" y="0" width="1560" height="920" as="geometry" />
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- TOP TITLE & GCAF HEADER BANNER (Full Width: X: 20 to 1540) -->
+        <!-- TOP HEADER: GOOGLE CLOUD STANDARD ARCHITECTURE TITLE BANNER -->
         <!-- ========================================================================= -->
-        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:15px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;WBS 5.5.1: Google Cloud Private Service Connect (PSC) &amp;amp; Enterprise Zero-Trust Mesh&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:normal;&quot;&gt;Dedicated Cloud Interconnect 100G • BGP Cloud Router • Cross-VPC PSC Endpoints • PSC NAT Subnet • PROXY Protocol v2 • VPC-SC&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=16;" vertex="1" parent="1">
-          <mxGeometry x="20" y="15" width="860" height="56" as="geometry" />
+        <mxCell id="hdr_title" value="&lt;div style=&quot;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:15px;color:#1A73E8;font-family:Google Sans,Roboto,sans-serif;&quot;&gt;Google Cloud Reference Architecture: Private Service Connect (PSC) &amp;amp; Zero-Trust Networking&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11.5px;color:#3C4043;font-weight:normal;&quot;&gt;Dedicated Cloud Interconnect 100G • BGP Cloud Router • PSC Forwarding Rules • PSC NAT Subnet (SNAT) • PROXY Protocol v2 • VPC-SC&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1A73E8;strokeWidth=1.5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="15" width="940" height="54" as="geometry" />
         </mxCell>
 
-        <mxCell id="hdr_box_metrics" value="&lt;div style=&quot;font-size:11px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;line-height:1.4;&quot;&gt;&lt;b style=&quot;color:#0284C7;&quot;&gt;Bandwidth:&lt;/b&gt; 100Gbps Line-Rate &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#16A34A;&quot;&gt;Egress:&lt;/b&gt; 100% Private (0.0.0.0/0 Blocked) &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#7C3AED;&quot;&gt;SLA:&lt;/b&gt; 99.99% Multi-Zone&lt;br&gt;&lt;span style=&quot;background:#E0F2FE;color:#0369A1;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:9.5px;&quot;&gt;Cross-VPC Latency: &amp;lt; 1.2ms&lt;/span&gt; &lt;span style=&quot;background:#DCFCE7;color:#15803D;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:9.5px;&quot;&gt;SNAT Isolation: 192.168.10.0/24&lt;/span&gt; &lt;span style=&quot;background:#F3E8FF;color:#6B21A8;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:9.5px;&quot;&gt;VPC-SC Perimeter Enforced&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;fillColor=#F8FAFC;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="890" y="15" width="650" height="56" as="geometry" />
+        <mxCell id="hdr_tags" value="&lt;div style=&quot;font-size:10.5px;color:#202124;font-family:Roboto,sans-serif;line-height:1.4;&quot;&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;Topology:&lt;/b&gt; Hub &amp;amp; Spoke PSC &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#188038;&quot;&gt;Line-Rate:&lt;/b&gt; 100 Gbps &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#D93025;&quot;&gt;Egress:&lt;/b&gt; 0.0.0.0/0 Blocked&lt;br&gt;&lt;span style=&quot;background:#E8F0FE;color:#1A73E8;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:9.5px;&quot;&gt;Region: us-central1&lt;/span&gt; &lt;span style=&quot;background:#E6F4EA;color:#137333;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:9.5px;&quot;&gt;SNAT: 192.168.10.0/24&lt;/span&gt; &lt;span style=&quot;background:#FCE8E6;color:#C5221F;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:9.5px;&quot;&gt;VPC-SC Enforced&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#DADCE0;strokeWidth=1;fillColor=#F8F9FA;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="970" y="15" width="570" height="54" as="geometry" />
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- COLUMN 1: HYBRID INGRESS & CLOUD INTERCONNECT (X: 20 to X: 350, Width: 330) -->
+        <!-- ZONE A: ON-PREMISES / HYBRID INGRESS (X: 20, Width: 245) -->
         <!-- ========================================================================= -->
-        <mxCell id="col1_tab" value="&lt;b style=&quot;font-size:12px;color:#1E3A8A;&quot;&gt;HYBRID INGRESS &amp;amp; INTERCONNECT&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#3B82F6;&quot;&gt;On-Prem &amp;amp; Multi-Cloud Outposts&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="20" y="85" width="330" height="35" as="geometry" />
+        <mxCell id="zone_onprem_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#5F6368;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="245" height="740" as="geometry" />
+        </mxCell>
+        <mxCell id="zone_onprem_lbl" value="&lt;b style=&quot;font-size:11.5px;color:#202124;&quot;&gt;🏢 Corporate On-Premises DC&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#5F6368;&quot;&gt;CIDR: 10.200.0.0/16 • Dual BGP ASN 65001&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8EAED;strokeColor=#5F6368;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="245" height="34" as="geometry" />
         </mxCell>
 
-        <mxCell id="col1_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="20" y="120" width="330" height="695" as="geometry" />
+        <!-- Node A1: Enterprise Client Workstations -->
+        <mxCell id="node_onprem_clients" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:laptop.svg&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Enterprise Client Workloads&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#5F6368;&quot;&gt;Corp Apps &amp;amp; Developer Terminals&lt;br&gt;Subnet: 10.200.10.0/24&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BDC1C6;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="125" width="225" height="78" as="geometry" />
         </mxCell>
 
-        <!-- Node 1: Customer Premises Edge Gateway -->
-        <mxCell id="node_cpe_gateway" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:server.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;On-Premises Core DC / CPE&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;Dual BGP Routers • ASN 65001&lt;br&gt;Active-Active ECMP Links (10.200.0.0/16)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="35" y="135" width="300" height="95" as="geometry" />
+        <!-- Node A2: Customer Edge BGP Router -->
+        <mxCell id="node_onprem_cpe" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:router.svg&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Customer Edge BGP Router (CPE)&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#1A73E8;font-weight:bold;&quot;&gt;BGP ASN 65001 • Active-Active ECMP&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Sub-second BFD Link Failure Detection&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="225" width="225" height="82" as="geometry" />
         </mxCell>
 
-        <!-- Node 2: Dedicated 100G Cloud Interconnect -->
-        <mxCell id="node_interconnect" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:zap.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Dedicated Cloud Interconnect 100G&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#1D4ED8;font-weight:bold;&quot;&gt;Dual-Link Metro Edge PoP (99.99% SLA)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;IEEE 802.1Q VLAN Attachment (VLAN 101/102)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="35" y="270" width="300" height="100" as="geometry" />
+        <!-- Node A3: Dedicated Cloud Interconnect -->
+        <mxCell id="node_interconnect_pop" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:zap.svg&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#1A73E8;padding-top:2px;&quot;&gt;Dedicated Cloud Interconnect 100G&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#188038;font-weight:bold;&quot;&gt;Google Colocation Metro Edge PoP&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Dual 100Gbps Physical Demarc Links&lt;br&gt;802.1Q VLAN Attachment (VLAN 101/102)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#1A73E8;strokeWidth=2;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="335" width="225" height="98" as="geometry" />
         </mxCell>
 
-        <!-- Node 3: Cloud Router & BGP Gateway -->
-        <mxCell id="node_cloud_router" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:router.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Cloud Router &amp;amp; BGP Gateway&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;Google ASN 16550 • Dynamic Route Peering&lt;br&gt;Sub-second BFD Link Fault Detection&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="35" y="410" width="300" height="95" as="geometry" />
+        <!-- Node A4: Backup HA Cloud VPN -->
+        <mxCell id="node_onprem_vpn" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;HA Cloud VPN (Backup Gateway)&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;IPSec AES-256 GCM • Dual Tunnels&lt;br&gt;Dynamic Failover Path (SLA 99.99%)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#80868B;strokeWidth=1;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="460" width="225" height="78" as="geometry" />
         </mxCell>
 
-        <!-- Node 4: HA Cloud VPN (Failover Tunnel) -->
-        <mxCell id="node_cloud_vpn" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;HA Cloud VPN (Backup Gateway)&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;IPSec AES-256 GCM • Dual Tunnels&lt;br&gt;Automatic Seamless Failover Path&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="35" y="545" width="300" height="95" as="geometry" />
+        <!-- Node A5: Cloud Armor Edge Filter -->
+        <mxCell id="node_onprem_armor" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#137333;padding-top:2px;&quot;&gt;Cloud Armor Enterprise Edge&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#202124;&quot;&gt;L7 DDoS Mitigation • WAF Rules&lt;br&gt;Adaptive Rate Limiting &amp;amp; Threat Intel&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#188038;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="565" width="225" height="78" as="geometry" />
         </mxCell>
 
-        <!-- Node 5: Cloud Armor Ingress Perimeter -->
-        <mxCell id="node_armor_edge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Cloud Armor Edge Protection&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#15803D;font-weight:bold;&quot;&gt;L7 DDoS Mitigation • WAF OWASP Top 10&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Adaptive Rate Limiting &amp;amp; Bot Management&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="35" y="680" width="300" height="100" as="geometry" />
+        <!-- Node A6: On-Prem Security Token Service -->
+        <mxCell id="node_onprem_idp" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:key.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Corporate Identity Provider (IdP)&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;SAML 2.0 / OIDC Federated Auth&lt;br&gt;IAM Workload Identity Federation&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BDC1C6;strokeWidth=1;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="665" width="225" height="78" as="geometry" />
         </mxCell>
 
-        <!-- Col 1 Connectors -->
-        <mxCell id="edge_cpe_interconnect" value="Dedicated 100G Fiber" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;fontColor=#1D4ED8;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;" edge="1" parent="1" source="node_cpe_gateway" target="node_interconnect">
+        <!-- On-Prem Internal Connectors -->
+        <mxCell id="edge_client_cpe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=1.5;" edge="1" parent="1" source="node_onprem_clients" target="node_onprem_cpe">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_interconnect_router" value="BGP Multi-Path (ECMP)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;fontColor=#1D4ED8;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;" edge="1" parent="1" source="node_interconnect" target="node_cloud_router">
+        <mxCell id="edge_cpe_pop" value="100G Fiber Cross-Connect" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=2;fontColor=#1A73E8;fontSize=8.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#DADCE0;" edge="1" parent="1" source="node_onprem_cpe" target="node_interconnect_pop">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_router_vpn" value="Automated Failover" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.5;dashed=1;fontColor=#475569;fontSize=9;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="node_cloud_router" target="node_cloud_vpn">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- COLUMN 2: CONSUMER VPC NETWORK (X: 370 to X: 730, Width: 360) -->
-        <!-- ========================================================================= -->
-        <mxCell id="col2_tab" value="&lt;b style=&quot;font-size:12px;color:#15803D;&quot;&gt;CONSUMER HUB VPC (10.100.0.0/16)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#16A34A;&quot;&gt;Private Workloads &amp;amp; PSC Forwarding Rules&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="370" y="85" width="360" height="35" as="geometry" />
-        </mxCell>
-
-        <mxCell id="col2_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7FDF9;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="370" y="120" width="360" height="695" as="geometry" />
-        </mxCell>
-
-        <!-- Node 6: Private GKE Enterprise Cluster -->
-        <mxCell id="node_consumer_gke" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:boxes.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;GKE Enterprise Private Cluster&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#15803D;font-weight:bold;&quot;&gt;Subnet: 10.100.20.0/24 (Private Nodes)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Anthos Service Mesh • Envoy Sidecars • mTLS 1.3&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=2;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="385" y="135" width="330" height="110" as="geometry" />
-        </mxCell>
-
-        <!-- Node 7: Cloud DNS Private Managed Zone -->
-        <mxCell id="node_consumer_dns" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:globe.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Cloud DNS Private Zone&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#0369A1;font-weight:bold;&quot;&gt;*.psc.enterprise.internal&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Response Policy Inbound Forwarding VIP: 10.100.10.2&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="385" y="275" width="330" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Node 8: PSC Consumer Forwarding Rule (Google APIs) -->
-        <mxCell id="node_psc_endpoint_apis" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:link.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;PSC Endpoint: Google APIs VIP&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#0284C7;font-weight:bold;&quot;&gt;IP: 10.100.10.15 (all-apis bundle)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Private Vertex AI Gemini 3.1 Pro &amp;amp; BigQuery&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="385" y="410" width="330" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Node 9: PSC Consumer Forwarding Rule (Service Attachment) -->
-        <mxCell id="node_psc_endpoint_producer" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:network.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;PSC Consumer Forwarding Rule&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7C3AED;font-weight:bold;&quot;&gt;VIP: 10.100.10.50 (Port 443 TCP)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Target: projects/ai-prod/serviceAttachments/sa-agent&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="385" y="545" width="330" height="100" as="geometry" />
-        </mxCell>
-
-        <!-- Node 10: Private Egress Security Policy Strip -->
-        <mxCell id="node_consumer_policy" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#166534;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;🛡️ Zero-Public IP Policy:&lt;/b&gt; 0.0.0.0/0 route denied • No Cloud NAT • Private Service Connect exclusive routing • IAM Workload Identity Federated Tokens&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="385" y="680" width="330" height="100" as="geometry" />
-        </mxCell>
-
-        <!-- Col 2 Connectors (Clean Sequential Pipeline) -->
-        <mxCell id="edge_gke_dns" value="1. Internal DNS Query (*.psc.enterprise.internal)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=2;fontColor=#0369A1;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" edge="1" parent="1" source="node_consumer_gke" target="node_consumer_dns">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_dns_apis" value="2. Resolve Google APIs (10.100.10.15)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=2;fontColor=#0369A1;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" edge="1" parent="1" source="node_consumer_dns" target="node_psc_endpoint_apis">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_apis_producer" value="3. Forward In-VPC Producer Route (10.100.10.50)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2;fontColor=#6B21A8;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#DDD6FE;" edge="1" parent="1" source="node_psc_endpoint_apis" target="node_psc_endpoint_producer">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- COLUMN 3: ANDROMEDA SDN & PSC FABRIC (X: 750 to X: 1120, Width: 370) -->
-        <!-- ========================================================================= -->
-        <mxCell id="col3_tab" value="&lt;b style=&quot;font-size:12px;color:#7C3AED;&quot;&gt;ANDROMEDA SDN &amp;amp; PSC FABRIC&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#9333EA;&quot;&gt;Zero-Trust Cross-Project Private Tunneling&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="750" y="85" width="370" height="35" as="geometry" />
-        </mxCell>
-
-        <mxCell id="col3_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCFAFF;strokeColor=#DDD6FE;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="750" y="120" width="370" height="695" as="geometry" />
-        </mxCell>
-
-        <!-- Node 11: PSC Service Attachment Specification -->
-        <mxCell id="node_service_attachment" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-alert.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;PSC Service Attachment&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7C3AED;font-weight:bold;&quot;&gt;sa-agent-service (us-central1)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Accept Mode: AUTOMATIC / Project Allowlist&lt;br&gt;Max Connections Limit: 10,000 Concurrent&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="765" y="135" width="340" height="110" as="geometry" />
-        </mxCell>
-
-        <!-- Node 12: Dedicated PSC NAT Subnet -->
-        <mxCell id="node_psc_nat_subnet" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:repeat.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Dedicated PSC NAT Subnet&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#C026D3;font-weight:bold;&quot;&gt;CIDR: 192.168.10.0/24 (purpose: PSC)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Automated Source NAT (SNAT) • Eliminates IP Collisions&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FDF4FF;strokeColor=#C026D3;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="765" y="275" width="340" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Node 13: PROXY Protocol v2 Injection Engine -->
-        <mxCell id="node_proxy_protocol" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-text.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;PROXY Protocol v2 Header Engine&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#1E293B;font-weight:bold;&quot;&gt;Preserves Client IP &amp;amp; Consumer Project ID&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Transparent Zero-Trust RBAC &amp;amp; Audit Verification&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="765" y="410" width="340" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Node 14: Google Andromeda Virtualization Bus -->
-        <mxCell id="node_andromeda_bus" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:cpu.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Google Andromeda Hypervisor Fabric&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;Hardware-Accelerated Packet Encapsulation&lt;br&gt;Line-Rate 100Gbps Throughput • Sub-1.2ms Latency&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="765" y="545" width="340" height="100" as="geometry" />
-        </mxCell>
-
-        <!-- Node 15: Network Analyzer Telemetry Strip -->
-        <mxCell id="node_network_analyzer" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#6B21A8;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;📊 Network Analyzer:&lt;/b&gt; Automated VPC route verification • Real-time PSC health probe • Zero packet drop detection • Firewall policy validation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="765" y="680" width="340" height="100" as="geometry" />
-        </mxCell>
-
-        <!-- Cross-Plane Connectors: Consumer -> PSC Fabric (Dedicated Channel at X:740) -->
-        <mxCell id="edge_psc_tunnel" value="Cross-VPC Private Tunnel&lt;br&gt;(Zero Public IPs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#6B21A8;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#DDD6FE;" edge="1" parent="1" source="node_psc_endpoint_producer" target="node_service_attachment">
+        <mxCell id="edge_cpe_vpn" value="Auto-Failover" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#80868B;strokeWidth=1;dashed=1;fontColor=#5F6368;fontSize=8;align=center;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_onprem_cpe" target="node_onprem_vpn">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="740" y="595" />
-              <mxPoint x="740" y="190" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <mxCell id="edge_sa_nat" value="Source NAT Allocation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C026D3;strokeWidth=1.5;fontColor=#A21CAF;fontSize=9;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#F5D0FE;" edge="1" parent="1" source="node_service_attachment" target="node_psc_nat_subnet">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_nat_proxy" value="Inject PROXY v2 Header" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.5;fontColor=#475569;fontSize=9;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="node_psc_nat_subnet" target="node_proxy_protocol">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- COLUMN 4: PRODUCER VPC & MANAGED AI MESH (X: 1140 to X: 1540, Width: 400) -->
-        <!-- ========================================================================= -->
-        <mxCell id="col4_tab" value="&lt;b style=&quot;font-size:12px;color:#0369A1;&quot;&gt;PRODUCER AI HUB VPC (172.16.0.0/16)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#0284C7;&quot;&gt;Internal L7 ILB &amp;amp; Gemini 3.1 Pro Engine&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="85" width="400" height="35" as="geometry" />
-        </mxCell>
-
-        <mxCell id="col4_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#BAE6FD;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="120" width="400" height="695" as="geometry" />
-        </mxCell>
-
-        <!-- Node 16: Internal Application Load Balancer (L7 Envoy ILB) -->
-        <mxCell id="node_producer_ilb" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:layers.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Internal Application Load Balancer (ILB)&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#0284C7;font-weight:bold;&quot;&gt;VIP: 192.168.10.5 (PSC NAT Subnet)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Envoy L7 Proxy • URL Map Routing • Health Checks (/healthz)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="135" width="370" height="110" as="geometry" />
-        </mxCell>
-
-        <!-- Node 17: Producer GKE Multi-Agent Pods -->
-        <mxCell id="node_producer_agents" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:bot.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Producer GKE Agent Mesh Pods&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#15803D;font-weight:bold;&quot;&gt;Subnet: 172.16.20.0/24 (Isolated Backend)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;LangGraph State Machine • Tool Execution Workers&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="275" width="370" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Node 18: Vertex AI Gemini 3.1 Pro Engine -->
-        <mxCell id="node_vertex_gemini" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:sparkles.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Vertex AI Gemini 3.1 Pro Reasoning Core&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#0284C7;font-weight:bold;&quot;&gt;Private Model Endpoint VIP: 172.16.10.100&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Vertex AI Vector Search • 2M Context Window&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="410" width="370" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Node 19: VPC Service Controls Security Perimeter -->
-        <mxCell id="node_vpc_sc_perimeter" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;VPC Service Controls (VPC-SC) Perimeter&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#991B1B;font-weight:bold;&quot;&gt;accessPolicies/corp/servicePerimeters/ai_sec&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Zero Data Exfiltration • Ingress/Egress Cryptographic Policy&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="545" width="370" height="100" as="geometry" />
-        </mxCell>
-
-        <!-- Node 20: Cloud KMS HSM Key Vault -->
-        <mxCell id="node_cloud_kms_hsm" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;🔐 Cloud KMS CMEK Hardware HSM:&lt;/b&gt; Envelope encryption for embeddings &amp;amp; caches • Automated CA certificate rotation • FIPS 140-3 Level 3 Root Keys&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="680" width="370" height="100" as="geometry" />
-        </mxCell>
-
-        <!-- Cross-Plane Connectors: PSC Fabric -> Producer ILB -->
-        <mxCell id="edge_sa_ilb" value="Forward to L7 ILB VIP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=2.5;fontColor=#0369A1;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" edge="1" parent="1" source="node_service_attachment" target="node_producer_ilb">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <mxCell id="edge_ilb_agents" value="Round-Robin Dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2;fontColor=#15803D;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;" edge="1" parent="1" source="node_producer_ilb" target="node_producer_agents">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <mxCell id="edge_agents_gemini" value="Private Vertex AI Reasoning (gRPC)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;fontColor=#1D4ED8;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;" edge="1" parent="1" source="node_producer_agents" target="node_vertex_gemini">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- Hybrid Ingress to Consumer Hub Connector (Dedicated Channel at X:355) -->
-        <mxCell id="edge_router_consumer" value="100G Private Transit&lt;br&gt;(BGP ASN 16550)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2.5;fontColor=#1D4ED8;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;" edge="1" parent="1" source="node_cloud_router" target="node_consumer_gke">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="355" y="457" />
-              <mxPoint x="355" y="190" />
+              <mxPoint x="12" y="266" />
+              <mxPoint x="12" y="499" />
             </Array>
           </mxGeometry>
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- BOTTOM TECHNICAL ANCHOR STRIP (Full Width: X: 20 to 1540) -->
+        <!-- ZONE B: GOOGLE CLOUD REGION US-CENTRAL1 (X: 300 to X: 1540, Width: 1240) -->
         <!-- ========================================================================= -->
-        <mxCell id="strip_bottom_tech" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0284C7;&quot;&gt;🌐 Google Cloud Enterprise Networking Blueprint:&lt;/b&gt; 100% Private cross-project communication via Private Service Connect (PSC) • Zero CIDR overlap collisions via PSC NAT subnet SNAT translation • Full client IP visibility through PROXY Protocol v2 • VPC-SC perimeter locks down data exfiltration.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="zone_gcp_region" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FBFF;strokeColor=#4285F4;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="1240" height="740" as="geometry" />
+        </mxCell>
+        <mxCell id="zone_gcp_region_lbl" value="&lt;b style=&quot;font-size:12.5px;color:#1A73E8;&quot;&gt;☁️ Google Cloud Platform — Region: us-central1 (Iowa)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#5F6368;&quot;&gt;Multi-Project Shared VPC Topology &amp;amp; Andromeda Software-Defined Network (SDN) Fabric&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#4285F4;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="1240" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- CONTAINER 1: CONSUMER SPOKE VPC (X: 315 to X: 675, Width: 360) -->
+        <!-- ========================================================================= -->
+        <mxCell id="vpc_consumer_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#188038;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="315" y="125" width="360" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="vpc_consumer_chip" value="&lt;b style=&quot;font-size:11px;color:#137333;&quot;&gt;VPC Network: vpc-consumer-spoke (10.100.0.0/16)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#5F6368;&quot;&gt;projects/corp-consumer-prod • Spoke Routing Domain&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#188038;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="315" y="125" width="360" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Node B1: Cloud Router in Consumer VPC -->
+        <mxCell id="node_consumer_router" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:router.svg&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#202124;&quot;&gt;Cloud Router (BGP Gateway)&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#1A73E8;font-weight:bold;&quot;&gt;Google ASN 16550 • Peering: 169.254.0.1/30&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Dynamic Custom Route Advertisements&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="325" y="165" width="340" height="74" as="geometry" />
+        </mxCell>
+
+        <!-- Subnet 1: GKE Private Cluster Nodes -->
+        <mxCell id="subnet_gke_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FBFF;strokeColor=#8AB4F8;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="325" y="248" width="340" height="152" as="geometry" />
+        </mxCell>
+        <mxCell id="subnet_gke_badge" value="&lt;b style=&quot;color:#1A73E8;font-size:9px;&quot;&gt;Subnet: sb-workloads (10.100.20.0/24)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#8AB4F8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="325" y="248" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Node B2: GKE Private Cluster Workloads -->
+        <mxCell id="node_gke_workloads" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:boxes.svg&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;GKE Enterprise Private Cluster&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#137333;font-weight:bold;&quot;&gt;Private Nodes (10.100.20.10..50) • Zero Public IPs&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Anthos Service Mesh • Envoy Sidecars • mTLS 1.3&lt;br&gt;Workload Identity Federated Service Accounts&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#188038;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="335" y="272" width="320" height="118" as="geometry" />
+        </mxCell>
+
+        <!-- Subnet 2: PSC Consumer Endpoints Subnet -->
+        <mxCell id="subnet_psc_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="325" y="410" width="340" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="subnet_psc_badge" value="&lt;b style=&quot;color:#5F6368;font-size:9px;&quot;&gt;Subnet: sb-psc-endpoints (10.100.10.0/24)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8EAED;strokeColor=#DADCE0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="325" y="410" width="230" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Node B3: Cloud DNS Private Managed Zone -->
+        <mxCell id="node_consumer_dns" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:globe.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#202124;&quot;&gt;Cloud DNS Private Zone (*.psc.enterprise.internal)&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#1A73E8;font-weight:bold;&quot;&gt;Inbound Forwarding Policy VIP: 10.100.10.2&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Resolves Producer Services &amp;amp; Google APIs to Internal VIPs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="335" y="434" width="320" height="74" as="geometry" />
+        </mxCell>
+
+        <!-- Node B4: PSC Endpoint 1 (Google APIs) -->
+        <mxCell id="node_psc_apis_vip" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:link.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#1A73E8;&quot;&gt;PSC Consumer Endpoint (Google APIs)&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#202124;font-weight:bold;&quot;&gt;Forwarding Rule VIP: 10.100.10.15&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Target: all-apis bundle (Vertex AI Gemini, BigQuery, GCS)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="335" y="516" width="320" height="74" as="geometry" />
+        </mxCell>
+
+        <!-- Node B5: PSC Endpoint 2 (Producer AI Service) -->
+        <mxCell id="node_psc_producer_vip" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:network.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#7C3AED;&quot;&gt;PSC Consumer Endpoint (AI Producer Service)&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#202124;font-weight:bold;&quot;&gt;Forwarding Rule VIP: 10.100.10.50 (Port 443 TCP)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Target: projects/managed-ai-prod/.../sa-agent-service&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=2;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="335" y="598" width="320" height="82" as="geometry" />
+        </mxCell>
+
+        <!-- Node B6: Consumer Security Policy -->
+        <mxCell id="node_consumer_sec_policy" value="&lt;span style=&quot;font-size:8.5px;color:#137333;&quot;&gt;&lt;b&gt;🔒 Consumer Security Policy:&lt;/b&gt; Default Internet Gateway Denied (0.0.0.0/0) • No Cloud NAT • 100% Private Egress via PSC Forwarding Rules&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#188038;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="325" y="700" width="340" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Interconnect to Consumer Router Edge (Dedicated Channel at X:280) -->
+        <mxCell id="edge_pop_to_crouter" value="100G BGP&lt;br&gt;(ASN 16550)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=2.5;fontColor=#1A73E8;fontSize=8.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#DADCE0;" edge="1" parent="1" source="node_interconnect_pop" target="node_consumer_router">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="285" y="384" />
+              <mxPoint x="285" y="202" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Consumer Internal Flow Connectors -->
+        <mxCell id="edge_crouter_to_gke" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#188038;strokeWidth=1.5;" edge="1" parent="1" source="node_consumer_router" target="node_gke_workloads">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_gke_to_dns" value="① DNS Resolve (*.psc.enterprise.internal)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=1.5;fontColor=#1A73E8;fontSize=8;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" edge="1" parent="1" source="node_gke_workloads" target="node_consumer_dns">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dns_to_apis" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=1.5;" edge="1" parent="1" source="node_consumer_dns" target="node_psc_apis_vip">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_apis_to_producer" value="② In-VPC Producer Route (VIP 10.100.10.50)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;fontColor=#6B21A8;fontSize=8;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#DDD6FE;" edge="1" parent="1" source="node_psc_apis_vip" target="node_psc_producer_vip">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- CONTAINER 2: GOOGLE ANDROMEDA SDN PSC BACKBONE (X: 695 to X: 1045, Width: 350) -->
+        <!-- ========================================================================= -->
+        <mxCell id="andromeda_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCFAFF;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="695" y="125" width="350" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="andromeda_chip" value="&lt;b style=&quot;font-size:11px;color:#6B21A8;&quot;&gt;Google Andromeda SDN &amp;amp; PSC Fabric&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#5F6368;&quot;&gt;Cross-Project Hypervisor Transit (Zero Public IPs)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="695" y="125" width="350" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Node C1: PSC Service Attachment -->
+        <mxCell id="node_service_attachment" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-alert.svg&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#7C3AED;padding-top:2px;&quot;&gt;PSC Service Attachment&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#202124;font-weight:bold;&quot;&gt;sa-agent-service (us-central1)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Accept Mode: AUTOMATIC / Project Allowlist&lt;br&gt;Connection Limit: 10,000 Concurrent Flows&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="710" y="165" width="320" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Node C2: Dedicated PSC NAT Subnet (SNAT) -->
+        <mxCell id="node_psc_nat_subnet" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:repeat.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#C026D3;padding-top:2px;&quot;&gt;Dedicated PSC NAT Subnet (SNAT)&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#202124;font-weight:bold;&quot;&gt;Subnet: sb-psc-nat (192.168.10.0/24)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;purpose = PRIVATE_SERVICE_CONNECT&lt;br&gt;Translates Consumer IP • Prevents CIDR Overlaps&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FDF4FF;strokeColor=#C026D3;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="710" y="275" width="320" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Node C3: PROXY Protocol v2 Header Engine -->
+        <mxCell id="node_proxy_v2" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-text.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;PROXY Protocol v2 Header Engine&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#1A73E8;font-weight:bold;&quot;&gt;Preserves Client Real IP (10.100.20.x)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Transfers Consumer Project ID &amp;amp; Network URI&lt;br&gt;Zero-Trust RBAC &amp;amp; Audit Verification&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BDC1C6;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="710" y="385" width="320" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Node C4: Google Andromeda Hypervisor Mesh -->
+        <mxCell id="node_andromeda_core" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:cpu.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#7C3AED;padding-top:2px;&quot;&gt;Google Andromeda Hypervisor Fabric&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#202124;&quot;&gt;Hardware-Accelerated Packet Encapsulation&lt;br&gt;Line-Rate 100Gbps Throughput • Sub-1.2ms Latency&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="710" y="495" width="320" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Node C5: Network Analyzer Telemetry -->
+        <mxCell id="node_net_analyzer" value="&lt;span style=&quot;font-size:8.5px;color:#6B21A8;&quot;&gt;&lt;b&gt;📊 Network Analyzer:&lt;/b&gt; Continuous VPC route verification • Real-time PSC health probe • Zero packet drop detection • Firewall policy validation&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7C3AED;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="710" y="595" width="320" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Cross-Project PSC Tunnel from Consumer to Service Attachment (Dedicated Channel at X:685) -->
+        <mxCell id="edge_psc_tunnel" value="③ Cross-Project PSC Transit&lt;br&gt;(Andromeda Tunnel)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2.5;fontColor=#6B21A8;fontSize=9;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#DDD6FE;" edge="1" parent="1" source="node_psc_producer_vip" target="node_service_attachment">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="685" y="639" />
+              <mxPoint x="685" y="212" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge_sa_to_nat" value="④ Allocate SNAT IP (192.168.10.x)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C026D3;strokeWidth=1.5;fontColor=#A21CAF;fontSize=8;align=center;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_service_attachment" target="node_psc_nat_subnet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_nat_to_proxy" value="Inject PROXY v2 Header" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5F6368;strokeWidth=1.5;fontColor=#3C4043;fontSize=8;align=center;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_psc_nat_subnet" target="node_proxy_v2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- CONTAINER 3: PRODUCER AI HUB VPC WITH VPC-SC PERIMETER (X: 1065 to X: 1525, Width: 460) -->
+        <!-- ========================================================================= -->
+        <mxCell id="vpc_producer_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="125" width="460" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="vpc_producer_chip" value="&lt;b style=&quot;font-size:11px;color:#1A73E8;&quot;&gt;VPC Network: vpc-producer-hub (172.16.0.0/16)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#5F6368;&quot;&gt;projects/managed-ai-prod • Protected by VPC Service Controls (VPC-SC)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#1A73E8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="125" width="460" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Node D1: Internal Application Load Balancer (ILB) -->
+        <mxCell id="node_producer_ilb" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:layers.svg&quot; width=&quot;20&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#1A73E8;padding-top:2px;&quot;&gt;Internal Application Load Balancer (Envoy L7 ILB)&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#202124;font-weight:bold;&quot;&gt;Forwarding Rule VIP: 192.168.10.5 (PSC NAT Subnet)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;URL Map Routing (/v1/chat, /v1/embeddings) • Health Checks (/healthz TCP 8000)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=2;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="165" width="430" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Subnet 3: Producer Backend Subnet -->
+        <mxCell id="subnet_ai_cont" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FBFF;strokeColor=#8AB4F8;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="275" width="430" height="235" as="geometry" />
+        </mxCell>
+        <mxCell id="subnet_ai_badge" value="&lt;b style=&quot;color:#1A73E8;font-size:9px;&quot;&gt;Subnet: sb-ai-backend (172.16.20.0/24)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#8AB4F8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="275" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Node D2: Producer GKE Multi-Agent Pods -->
+        <mxCell id="node_producer_agents" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:bot.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#137333;padding-top:2px;&quot;&gt;Producer GKE Agent Mesh Pods&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#202124;font-weight:bold;&quot;&gt;LangGraph State Machines • Tool Execution Workers&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Subnet Pod IPs: 172.16.20.10..50 • Local pgvector Semantic Cache&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#188038;strokeWidth=1.5;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="302" width="400" height="88" as="geometry" />
+        </mxCell>
+
+        <!-- Node D3: Vertex AI Gemini 3.1 Pro Reasoning Core -->
+        <mxCell id="node_vertex_gemini" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:sparkles.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#1A73E8;padding-top:2px;&quot;&gt;Vertex AI Gemini 3.1 Pro Reasoning Core&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#137333;font-weight:bold;&quot;&gt;Private Model Endpoint VIP: 172.16.10.100 (Direct gRPC)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;2M Context Window • Vertex AI Vector Search Grounding&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=2;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="405" width="400" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Node D4: VPC Service Controls (VPC-SC) Perimeter Banner -->
+        <mxCell id="node_vpc_sc_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg&quot; width=&quot;18&quot; height=&quot;18&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#C5221F;padding-top:2px;&quot;&gt;VPC Service Controls (VPC-SC) Security Perimeter&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#202124;font-weight:bold;&quot;&gt;accessPolicies/corp/servicePerimeters/ai_secure_boundary&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;&quot;&gt;Zero Data Exfiltration Policy • Context-Aware IAM Identity Conditions&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=#D93025;strokeWidth=2;align=center;verticalAlign=top;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="525" width="430" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Node D5: Cloud KMS CMEK Hardware HSM Key Vault -->
+        <mxCell id="node_cloud_kms" value="&lt;span style=&quot;font-size:8.5px;color:#B06000;&quot;&gt;&lt;b&gt;🔐 Cloud KMS CMEK Hardware HSM:&lt;/b&gt; Envelope encryption for embeddings &amp;amp; model cache • Automated CA certificate rotation • FIPS 140-3 Level 3 Root Keys&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#F9AB00;strokeWidth=1;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="630" width="430" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Producer Cross-Connectors -->
+        <mxCell id="edge_sa_to_ilb" value="⑤ Forward to L7 ILB VIP (192.168.10.5)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=2.5;fontColor=#1A73E8;fontSize=8.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#DADCE0;" edge="1" parent="1" source="node_service_attachment" target="node_producer_ilb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ilb_to_agents" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#188038;strokeWidth=1.5;" edge="1" parent="1" source="node_producer_ilb" target="node_producer_agents">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_agents_to_gemini" value="⑥ Private Vertex AI Reasoning (gRPC)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=2;fontColor=#1A73E8;fontSize=8.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#DADCE0;" edge="1" parent="1" source="node_producer_agents" target="node_vertex_gemini">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- BOTTOM FLOW LIFECYCLE STRIP (Full Width: X: 20 to 1540) -->
+        <!-- ========================================================================= -->
+        <mxCell id="strip_flow_steps" value="&lt;table style=&quot;width:100%;font-size:10px;color:#202124;font-family:Roboto,sans-serif;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;🌐 End-to-End PSC Packet Flow:&lt;/b&gt; &lt;b style=&quot;color:#1A73E8;&quot;&gt;①&lt;/b&gt; Client query initiates from On-Prem / GKE Pod &amp;nbsp;➔&amp;nbsp; &lt;b style=&quot;color:#1A73E8;&quot;&gt;②&lt;/b&gt; Cloud DNS resolves to Consumer PSC VIP 10.100.10.50 &amp;nbsp;➔&amp;nbsp; &lt;b style=&quot;color:#7C3AED;&quot;&gt;③&lt;/b&gt; Andromeda encapsulates into cross-project PSC tunnel &amp;nbsp;➔&amp;nbsp; &lt;b style=&quot;color:#C026D3;&quot;&gt;④&lt;/b&gt; Service Attachment allocates SNAT IP &amp;amp; PROXY v2 header &amp;nbsp;➔&amp;nbsp; &lt;b style=&quot;color:#1A73E8;&quot;&gt;⑤&lt;/b&gt; L7 ILB dispatches to GKE Agent Pods &amp;nbsp;➔&amp;nbsp; &lt;b style=&quot;color:#188038;&quot;&gt;⑥&lt;/b&gt; Vertex AI processes private reasoning with 0.0.0.0/0 blocked.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#BDC1C6;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="20" y="830" width="1520" height="38" as="geometry" />
         </mxCell>
 
