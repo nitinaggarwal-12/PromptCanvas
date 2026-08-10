@@ -1,3 +1,5 @@
+export function buildHybridMultiCloudXml(): string {
+  return `
 <mxfile host="app.diagrams.net" modified="2026-08-10T18:25:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="hybrid_multicloud_networking" name="Hybrid Multi-Cloud Networking &amp; Gemini Enterprise">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
@@ -425,3 +427,5 @@
     </mxGraphModel>
   </diagram>
 </mxfile>
+  `.trim();
+}
