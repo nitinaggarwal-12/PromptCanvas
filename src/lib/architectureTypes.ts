@@ -21,9 +21,6 @@ import {
 import { injectUseCaseFlavor } from './diagramCleaner';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
 import {
-  getExactMultiAgentLangGraphReferenceXml,
-  getExactAgentHarnessRuntimeReferenceXml,
-  getExactAgentGovernanceHitlReferenceXml,
   getExactSixRsMigrationMatrixXml,
   getExactHybridStranglerTransitionXml,
   getExactCloudFinopsChargebackXml,
@@ -40,8 +37,6 @@ import {
   getExactAiTrismGuardrailsXml,
   getExactSecureDeploymentMapWidescreenXml,
   getExactAgenticRagWidescreenXml,
-  getExactModernDataStackWbsXml,
-  getExactDataAiPipelineWbsXml,
   getExactGcpDataLakehouseWbsXml,
   getExactMicroFrontendsXml,
   getExactFintechPaymentsXml,
@@ -78,13 +73,6 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Total Unified System View:\n- Plan & Data Foundation: Enterprise architecture planning, data vetting, and schema lineage.\n- Development & AI Lifecycle: Data engineering DFD, feature store, model development, and governance.\n- Cognitive Architecture & Deployment: Secure VPC network, agent orchestrator, tool endpoints, and observability."
   },
   {
-    id: "business_agent_gov_hitl",
-    name: "Human-in-the-Loop AI Governance",
-    category: "Executive & Business Strategy",
-    whenToUse: "Executive workflow showing autonomous agent decision tiers, multi-dimensional risk matrix, confidence escalation rules (>=95%, 75-94%, <75%), and mandatory human sign-off gates",
-    prompt: "Human-in-the-Loop Autonomous AI Agent Governance Lifecycle:\n- Tier 1: Multimodal Ingress & Constitutional HHH Safety Gate\n- Tier 2: Run State Machine & Confidence Escalation (>=95% Fast Path, 75-94% Supervisor AI Cross-Verification, <75% Mandatory HITL Escalation Router)\n- Tier 3: Human-in-the-Loop (HITL) Review Workbench & Cryptographic Sign-Off Certificate\n- Tier 4: Autonomous GUI Computer Use OS, Immutable Regulatory Audit Ledger & RLHF Fine-Tuning Feedback Loop"
-  },
-  {
     id: "erd",
     name: "Dimensional Data Model - ERD",
     category: "Data & Lakehouse Architecture",
@@ -104,13 +92,6 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Backend & Systems Architecture",
     whenToUse: "Micro UML sequence diagram detailing step-by-step API execution, PII checks, and ReAct loops",
     prompt: "Act as an API Chief Architect and Backend Systems Engineer. Design a chronologically exact, step-by-step Micro Dynamic Sequence Diagram (Execution Loop) for an Agentic RAG ecosystem. It should include: standard UML Sequence lifelines (rectangles on dashed lines), light cream background theme, synchronous solid arrows for API calls, dashed return arrows for context observations, and callout badges for PII/Ethical sourcing checks, ReAct Thought/Action loops, and IAM private access VPC-SC enforcement."
-  },
-  {
-    id: "data_ai_pipeline",
-    name: "Data & AI Pipeline",
-    category: "Data & Lakehouse Architecture",
-    whenToUse: "Data & AI Pipeline combining DFD data ingestion, feature engineering, MLOps lifecycle, and serving",
-    prompt: "Enterprise Data & AI Pipeline:\n- Data Ingestion (DFD): Multi-channel raw data ingestion and Cloud Lakehouse storage.\n- Feature Engineering: Automated pipeline transformations and Model-Ready Feature Store.\n- MLOps Lifecycle: Continuous model training, registry, inference API endpoints, and monitoring.\n- Serving & Analytics: Dashboards, Mobile/Web API serving, and telemetry analytics."
   },
   {
     id: "secure_deployment_map",
@@ -144,33 +125,11 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
 
 export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   {
-    id: "tech_multi_agent_langgraph",
-    name: "LangGraph Stateful Multi-Agent DAG",
-    category: "AI & Cognitive Systems",
-    whenToUse: "Flagship stateful Directed Acyclic Graph (DAG) multi-agent orchestration engine featuring Master Supervisor Router, parallel worker cluster, sandboxed code execution, human-in-the-loop gates, and pgvector long-term memory store",
-    prompt: "Flagship Stateful Directed Acyclic Graph (DAG) Multi-Agent Orchestration Platform:\n- Tier 1: Multimodal WebRTC / 2M+ Token Long-Context Ingress, Master Directed Graph Supervisor Agent & Run State Machine Checkpoint Store\n- Tier 2: Specialized Autonomous Worker Cluster (Research & Grounding Agent, Code/SQL/GUI Synthesis Agent, Verification & Safety Critic Agent) with Hierarchical Peer Hand-off Routines\n- Tier 3: Parallel Sandboxed Code Execution Kernel, Autonomous GUI OS Computer Use Container, gRPC/REST Tool Call Gateway & Long-Term Vector Memory with Ephemeral System Prompt Caching (90% Cost Cut)\n- Tier 4: Run Lifecycle Human Interrupt Approval Gate (requires_action), Final Grounded Response Synthesizer & Distributed Trace Observability"
-  },
-  {
-    id: "tech_agent_harness_runtime",
-    name: "Enterprise Agent Harness Runtime Platform",
-    category: "AI & Cognitive Systems",
-    whenToUse: "Production enterprise AI agent harness platform featuring LiteLLM routing, MCP protocol, hierarchical memory, context compactor, zero-trust IAM, 6-step sandboxed graph engine (gVisor/E2B), and continuous evaluation",
-    previewImage: "/templates/agent_harness_runtime_enhanced.png",
-    prompt: "Enterprise Agent Harness Runtime Platform: Multi-Modal Ingress & Routing Gateway, MicroVM Sandboxed Code Execution Kernel, Capability-Scoped MCP Tool Gateway, Ephemeral KV Prefix Caching, and Continuous Evaluation / Self-Healing Kernel."
-  },
-  {
     id: "tech_data_lakehouse_gcp",
     name: "GCP Enterprise Data Lakehouse",
     category: "Data & Lakehouse Architecture",
     whenToUse: "Data Lakehouse architecture on GCP using Cloud Storage BigLake tiers, Dataproc Spark ETL, BigQuery partitioned marts, and Looker BI",
     prompt: "Act as a GCP Data Platform Architect. Design a modern technical Data Lakehouse architecture on Google Cloud. Include: Data ingestion via Cloud Pub/Sub and Storage Transfer Service, landing zones in Cloud Storage (Raw, Clean, Curated tiers), automated schema discovery via BigLake and Dataplex Data Catalog, serverless SQL querying via BigQuery, and enterprise data governance with Cloud IAM and CMEK."
-  },
-  {
-    id: "tech_modern_data_stack",
-    name: "Modern Data Stack Architecture",
-    category: "Data & Lakehouse Architecture",
-    whenToUse: "Modern analytics engineering pipeline combining Debezium CDC, automated Data Contracts quality gates, dbt Silver/Gold marts, and Reverse ETL back to CRM",
-    prompt: "Modern Data Stack with CDC & Reverse ETL: Production OLTP PostgreSQL -> Debezium CDC -> Data Contracts & Quality Gate -> dbt Core Silver/Gold Marts -> Looker BI & Reverse ETL Engine (Hightouch/Census) syncing to Salesforce."
   },
   {
     id: "tech_streaming_analytics",
@@ -358,8 +317,9 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (!archId) return 'conceptual_diagram';
   const id = archId.toLowerCase().trim();
   if (id === 'tech_cicd_pipeline' || id === 'tech_cicd') return 'devops_cicd_pipeline';
-  if (id === 'tech_rag_gcp' || id === 'rag_gcp' || id === 'ai_rag') return 'agentic_rag';
-  if (id === 'business_agent_governance_hitl' || id === 'business_agent_gov_hitl') return 'business_agent_gov_hitl';
+  if (id === 'business_agent_governance_hitl' || id === 'business_agent_gov_hitl') return 'tech_ai_trism_guardrails';
+  if (id === 'tech_multi_agent_langgraph' || id === 'tech_agent_harness_runtime') return 'tech_agentic_mesh';
+  if (id === 'data_ai_pipeline' || id === 'tech_modern_data_stack') return 'tech_data_lakehouse_gcp';
   if (id === 'tech_data_lakehouse' || id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse') return 'tech_data_lakehouse_gcp';
   if (id === 'tech_microservices_aws' || id === 'tech_microservices_gcp' || id === 'k8s_mesh' || id === 'zero_trust_mesh' || id.includes('zero_trust')) return 'secure_deployment_map';
   if (id === 'tech_event_driven_aws' || id === 'tech_event_driven_eda' || id === 'event_driven_aws') return 'tech_event_driven_eda';
@@ -417,20 +377,12 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactAgenticRagWidescreenXml();
   } else if (id === 'sequence_diagram') {
     xml = getExactSequenceDiagramReferenceXml();
-  } else if (id === 'data_ai_pipeline' || id.includes('data_ai')) {
-    xml = getExactDataAiPipelineWbsXml();
   } else if (id === 'secure_deployment_map' || id.includes('secure_deployment') || id.includes('zero_trust')) {
     xml = getExactSecureDeploymentMapWidescreenXml();
   } else if (id === 'devops_cicd_pipeline') {
     xml = getExactDevopsCicdPipelineReferenceXml();
   } else if (id === 'unified_system_view') {
     xml = getExactUnifiedSystemViewReferenceXml();
-  } else if (id === 'business_agent_gov_hitl' || id.includes('agent_governance') || id.includes('gov_hitl')) {
-    xml = getExactAgentGovernanceHitlReferenceXml();
-  } else if (id === 'tech_multi_agent_langgraph' || id.includes('langgraph')) {
-    xml = getExactMultiAgentLangGraphReferenceXml();
-  } else if (id === 'tech_agent_harness_runtime' || id.includes('agent_harness') || id.includes('agent_runtime')) {
-    xml = getExactAgentHarnessRuntimeReferenceXml();
   } else if (id === 'six_rs_migration_matrix') {
     xml = getExactSixRsMigrationMatrixXml();
   } else if (id === 'hybrid_strangler_transition') {
@@ -475,8 +427,6 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactValueStreamMapXml();
   } else if (id === 'asis_vs_tobe_process_flow' || id.includes('asis') || id.includes('as_is') || id.includes('tobe') || id.includes('to_be')) {
     xml = getExactAsIsToBeProcessFlowXml();
-  } else if (id === 'tech_modern_data_stack' || id.includes('modern_data_stack')) {
-    xml = getExactModernDataStackWbsXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
     xml = getExactGcpDataLakehouseWbsXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
@@ -487,7 +437,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
 
   const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
-  const isFlagshipBlueprint = id.includes('agent_harness') || id.includes('modern_data_stack') || id.includes('data_ai') || id.includes('lakehouse') || id.includes('hitl') || id.includes('golive') || id.includes('value_stream') || id.includes('vsm') || id.includes('asis') || id.includes('tobe') || id.includes('agentic_mesh') || id === 'tech_agentic_mesh' || id === 'value_stream_map' || id === 'asis_vs_tobe_process_flow' || id === 'tech_modern_data_stack' || id === 'data_ai_pipeline' || id === 'tech_data_lakehouse_gcp' || id === 'business_agent_gov_hitl' || id === 'golive_warroom_runbook';
+  const isFlagshipBlueprint = id.includes('lakehouse') || id.includes('golive') || id.includes('value_stream') || id.includes('vsm') || id.includes('asis') || id.includes('tobe') || id.includes('agentic_mesh') || id === 'tech_agentic_mesh' || id === 'value_stream_map' || id === 'asis_vs_tobe_process_flow' || id === 'tech_data_lakehouse_gcp' || id === 'golive_warroom_runbook' || id === 'federated_iam_sso';
 
   // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor
   if (hasCustomUserPrompt && !isFlagshipBlueprint) {

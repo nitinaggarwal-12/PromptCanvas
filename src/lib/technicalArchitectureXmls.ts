@@ -7,7 +7,6 @@
  * - Pure White Label Background Text Pills for 100% legibility
  */
 import { 
-  getExactMultiAgentLangGraphReferenceXml,
   getExactServerlessGcpReferenceXml, 
   getExactMultiRegionDrReferenceXml, 
   getExactSixRsMigrationMatrixXml, 
@@ -1026,14 +1025,14 @@ export function getTechnicalArchitectureXml(archId: string): string {
     return TECH_XML_C4_SYSTEM_CONTEXT;
   }
   if (id.includes('modern_data_stack') || id.includes('cdc') || id.includes('reverse_etl') || id.includes('fivetran')) {
-    const { getExactModernDataStackWbsXml } = require('./newEnterpriseReferenceXmls');
-    return getExactModernDataStackWbsXml();
+    const { getExactGcpDataLakehouseWbsXml } = require('./newEnterpriseReferenceXmls');
+    return getExactGcpDataLakehouseWbsXml();
   }
   if (id.includes('event_driven') || id.includes('eda') || id.includes('kafka_mesh')) {
     return TECH_XML_EVENT_DRIVEN_EDA;
   }
   if (id.includes('multi_agent') || id.includes('langgraph')) {
-    return getExactMultiAgentLangGraphReferenceXml();
+    return getExactAgenticMeshXml();
   }
   if (id.includes('streaming') || id.includes('telemetry') || id.includes('iot')) {
     return getExactStreamingAnalyticsXml();

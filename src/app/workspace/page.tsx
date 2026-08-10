@@ -65,10 +65,12 @@ import {
   Globe,
   RefreshCw,
   DollarSign,
-  ClipboardList
+  ClipboardList,
+  Star
 } from 'lucide-react';
 import { CloudCostModal } from '@/components/workspace/CloudCostModal';
 import { ArchitectureCodeViewerModal } from '@/components/workspace/ArchitectureCodeViewerModal';
+import { SetMasterTemplateModal } from '@/components/workspace/SetMasterTemplateModal';
 import { estimateCloudArchitectureCost } from '@/lib/cost/cloudCostEstimator';
 import { exportPythonDiagramsScript, exportD2LangScript } from '@/lib/export/architectureAsCodeExporter';
 import { DiagramNodeItem, parseXmlNodesAndEdges, formatRelativeTime } from '@/lib/graph/xmlNodesParser';
@@ -92,7 +94,7 @@ import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { ExecutiveStrategicSummaryModal } from '@/components/ExecutiveStrategicSummaryModal';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
-import { getExactMultiAgentLangGraphReferenceXml } from '@/lib/newEnterpriseReferenceXmls';
+import { getExactAgenticMeshXml } from '@/lib/newEnterpriseReferenceXmls';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
@@ -1120,6 +1122,7 @@ function WorkspaceContent() {
   const [isTerraformModalOpen, setIsTerraformModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isSetMasterModalOpen, setIsSetMasterModalOpen] = useState(false);
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [isCodeViewerOpen, setIsCodeViewerOpen] = useState(false);
   const [codeViewerFormat, setCodeViewerFormat] = useState<'python' | 'd2'>('python');
@@ -2293,13 +2296,13 @@ function WorkspaceContent() {
     ];
 
     const personaRelevantIds: Record<string, string[]> = {
-      executive: ['conceptual_diagram', 'unified_system_view', 'business_agent_gov_hitl', 'business_agent_governance_hitl', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
-      fintech: ['erd', 'data_ai_pipeline', 'secure_deployment_map', 'tech_streaming_analytics', 'tech_c4_system_context', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
-      legal: ['business_agent_gov_hitl', 'business_agent_governance_hitl', 'secure_deployment_map', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
-      architect: ['conceptual_diagram', 'unified_system_view', 'secure_deployment_map', 'tech_serverless_gcp', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_modern_data_stack', 'tech_event_driven_eda', 'tech_agent_harness_runtime'],
-      devops: ['sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_eda'],
-      security: ['secure_deployment_map', 'business_agent_gov_hitl', 'business_agent_governance_hitl', 'tech_c4_system_context', 'tech_agent_harness_runtime'],
-      data: ['erd', 'agentic_rag', 'data_ai_pipeline', 'tech_multi_agent_langgraph', 'tech_streaming_analytics', 'tech_data_lakehouse_gcp', 'tech_modern_data_stack', 'tech_agent_harness_runtime']
+      executive: ['conceptual_diagram', 'unified_system_view', 'value_stream_map', 'asis_vs_tobe_process_flow', 'six_rs_migration_matrix', 'cloud_finops_chargeback', 'ai_coe_operating_model', 'tech_c4_system_context', 'tech_event_driven_eda'],
+      fintech: ['erd', 'tech_fintech_payments', 'secure_deployment_map', 'tech_streaming_analytics', 'tech_c4_system_context', 'tech_event_driven_eda'],
+      legal: ['data_residency_sovereign_map', 'federated_iam_sso', 'tech_ai_trism_guardrails', 'secure_deployment_map', 'tech_c4_system_context'],
+      architect: ['conceptual_diagram', 'unified_system_view', 'federated_iam_sso', 'tech_agentic_mesh', 'secure_deployment_map', 'tech_serverless_gcp', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_event_driven_eda', 'hybrid_strangler_transition'],
+      devops: ['sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_eda', 'enterprise_sre_observability', 'golive_warroom_runbook'],
+      security: ['secure_deployment_map', 'federated_iam_sso', 'data_residency_sovereign_map', 'tech_ai_trism_guardrails', 'tech_c4_system_context'],
+      data: ['erd', 'agentic_rag', 'tech_streaming_analytics', 'tech_data_lakehouse_gcp', 'tech_genomics_clinical', 'unified_data_governance', 'dataops_anomaly_detection']
     };
 
     function getPersonaBadge(id: string) {
@@ -4806,10 +4809,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                                 desc: 'McKinsey Boardroom Blueprint • Zero-Trust & Microservices'
                               },
                               {
-                                id: 'tech_modern_data_stack',
+                                id: 'federated_iam_sso',
                                 num: '12',
-                                name: '12. Modern Data Stack Architecture (CDC, Medallion & Reverse ETL)',
-                                desc: 'McKinsey Boardroom Blueprint • Fivetran, dbt Core & BigQuery'
+                                name: '12. Google Cloud Federated IAM & SSO Zero-Trust Architecture',
+                                desc: 'Google Cloud Master Blueprint • Cloud Identity, IAP & Workload Identity'
                               },
                               {
                                 id: 'tech_event_driven_eda',
@@ -5365,7 +5368,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
 
               {isAssistantOpen && activeDiagram && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-1">
                   {/* Export & DaC Studio */}
                   <button
                     type="button"
@@ -5375,6 +5378,17 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   >
                     <Download className="w-3.5 h-3.5 text-teal-400" />
                     <span>{t.exportStudio}</span>
+                  </button>
+
+                  {/* Set as Master Template */}
+                  <button
+                    type="button"
+                    onClick={() => setIsSetMasterModalOpen(true)}
+                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/50 text-amber-300 text-[11px] font-extrabold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                    title="Promote or save active diagram as the Master Template"
+                  >
+                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    <span>Set Master</span>
                   </button>
 
                   {/* Cloud Cost Estimator */}
@@ -5545,24 +5559,33 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         );
                       })()}
 
-                      <div className="pt-2 flex gap-1.5">
+                      <div className="pt-2 flex flex-wrap gap-1.5">
                         {displayedVersion.ai_reasoning && (
                           <button
                             onClick={() => {
                               setInspectVersion(displayedVersion);
                               setIsInspectModalOpen(true);
                             }}
-                            className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-[9px] font-bold transition-all cursor-pointer"
+                            className="flex-1 min-w-[90px] flex items-center justify-center gap-1 py-1 px-2 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-[9px] font-bold transition-all cursor-pointer"
                           >
                             <Sparkles className="w-3.5 h-3.5" />
                             <span>Inspect Plan</span>
                           </button>
                         )}
+
+                        <button
+                          onClick={() => setIsSetMasterModalOpen(true)}
+                          className="flex-1 min-w-[110px] flex items-center justify-center gap-1 py-1 px-2 rounded bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 text-[9px] font-extrabold transition-all cursor-pointer shadow-sm"
+                          title="Set this version as the official master template"
+                        >
+                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          <span>Set as Master</span>
+                        </button>
                         
                         {previewVersion && (
                           <button
                             onClick={() => handleRestoreVersion(previewVersion)}
-                            className="flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[9px] font-bold transition-all cursor-pointer"
+                            className="flex-1 min-w-[90px] flex items-center justify-center gap-1 py-1 px-2 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[9px] font-bold transition-all cursor-pointer"
                           >
                             <RotateCcw className="w-3 h-3" />
                             <span>Restore version</span>
@@ -5598,6 +5621,19 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                               : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border'
                           }`}>
                             {msg.text}
+
+                            {msg.sender === 'ai' && (msg.versionNumber || activeDiagram) && (
+                              <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center gap-2">
+                                <button
+                                  onClick={() => setIsSetMasterModalOpen(true)}
+                                  className="flex items-center gap-1 text-[10px] font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                                  title="Promote or save this active version as the Master Template"
+                                >
+                                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                  <span>⭐ Set as Master Template</span>
+                                </button>
+                              </div>
+                            )}
                           </div>
                           <span className="text-[10px] text-slate-500 mt-1 px-1">
                             {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
@@ -5739,6 +5775,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                           title="Open Page 2: Executive Strategic Playbook & Governance Profile Table"
                         >
                           <span>🏆 Page 2: Executive Playbook Table</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsSetMasterModalOpen(true)}
+                          className="px-3 py-1 rounded-lg text-xs font-black bg-gradient-to-r from-amber-500/30 via-yellow-500/30 to-amber-600/30 hover:from-amber-500 hover:to-yellow-400 text-amber-300 hover:text-slate-950 border border-amber-500/60 hover:border-transparent transition-all flex items-center gap-1.5 cursor-pointer shadow-lg hover:scale-[1.03]"
+                          title="Promote or save this active diagram and layout as an official Master Template"
+                        >
+                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                          <span>⭐ Set as Master Template</span>
                         </button>
                         <button
                           type="button"
@@ -6771,6 +6816,22 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         auditScore={auditScore}
       />
 
+      {/* Set as Master Template Modal */}
+      <SetMasterTemplateModal
+        isOpen={isSetMasterModalOpen}
+        onClose={() => setIsSetMasterModalOpen(false)}
+        currentXml={displayedVersion?.xml_content || activeVersion?.xml_content || ''}
+        currentDiagramName={activeDiagram?.name || 'New Master Architecture'}
+        currentArchId={activeDiagram?.architecture_type || undefined}
+        onSuccess={(template) => {
+          setForceRefreshToast({
+            message: `⭐ "${template.name}" successfully published as Master Template!`,
+            type: 'success'
+          });
+          setTimeout(() => setForceRefreshToast(null), 5000);
+        }}
+      />
+
       {/* Document Composer Modal (PRD, SDD, FDD, Threat Model) */}
       <ComposeModal
         isOpen={isComposeOpen}
@@ -7349,10 +7410,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     const target = e.currentTarget;
                     const xmlToLoad =
                       leftVersionSelection === 'v1_initial'
-                        ? getExactMultiAgentLangGraphReferenceXml().replace('w="280"', 'w="480"')
+                        ? getExactAgenticMeshXml().replace('w="280"', 'w="480"')
                         : leftVersionSelection === 'v2_current'
-                        ? getExactMultiAgentLangGraphReferenceXml()
-                        : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === leftVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
+                        ? getExactAgenticMeshXml()
+                        : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === leftVersionSelection)?.xml_content || getExactAgenticMeshXml();
                     setTimeout(() => {
                       try {
                         target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: sanitizeDrawioXmlAttributes(xmlToLoad), fit: true }), '*');
@@ -7408,10 +7469,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     const target = e.currentTarget;
                     const xmlToLoad =
                       rightVersionSelection === 'v1_initial'
-                        ? getExactMultiAgentLangGraphReferenceXml().replace('w="280"', 'w="480"')
+                        ? getExactAgenticMeshXml().replace('w="280"', 'w="480"')
                         : rightVersionSelection === 'v2_current'
-                        ? getExactMultiAgentLangGraphReferenceXml()
-                        : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === rightVersionSelection)?.xml_content || getExactMultiAgentLangGraphReferenceXml();
+                        ? getExactAgenticMeshXml()
+                        : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === rightVersionSelection)?.xml_content || getExactAgenticMeshXml();
                     setTimeout(() => {
                       try {
                         target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: sanitizeDrawioXmlAttributes(xmlToLoad), fit: true }), '*');
@@ -7448,7 +7509,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           // Immediately compile & apply user-specific domain workflow nodes onto the active canvas
           try {
             const selectedXml = data.archType ? getDefaultXmlForArchitecture(data.archType) : null;
-            const baseXml = selectedXml || (activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactMultiAgentLangGraphReferenceXml();
+            const baseXml = selectedXml || (activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactAgenticMeshXml();
             if (data.archType) {
               setSelectedArchType(data.archType);
             }
@@ -7478,7 +7539,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         onClose={() => setIsExecutiveSummaryOpen(false)}
         diagramTitle={activeDiagram?.name && !activeDiagram.name.match(/^\d+\./) ? activeDiagram.name : 'PromptCanvas: Universal Enterprise AI Architecture Compiler'}
         architectureType={selectedArchType}
-        xmlContent={(activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactMultiAgentLangGraphReferenceXml()}
+        xmlContent={(activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactAgenticMeshXml()}
       />
 
       {/* BYOK MULTI-CONNECTION ENTERPRISE VAULT & HEALTH MONITOR MODAL */}

@@ -80,26 +80,6 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     targetOutcomes: "Complete Architectural Alignment, Single Blueprint for Training & Onboarding, Risk Reduction",
     desc: "Total integrated architecture consolidating data foundation, AI lifecycle, topology, and governance."
   },
-  business_agent_gov_hitl: {
-    id: "business_agent_gov_hitl",
-    title: "Human-in-the-Loop AI Governance",
-    category: "Executive & Business Strategy",
-    useCase: "ENTERPRISE AI RISK & GOVERNANCE",
-    businessUseCase: "Confidence-tiered autonomous agent escalation flow with supervisory cross-verification, human sign-off workbenches, and cryptographic audit certificates.",
-    primaryActors: "AI Ethics Board, Compliance Officers, Lead Architects",
-    targetOutcomes: "100% Audit Readiness, Zero Unsupervised Failures, Regulatory Compliance (EU AI Act)",
-    desc: "Human-in-the-Loop governance state machine with confidence escalation and cryptographic sign-off."
-  },
-  business_agent_governance_hitl: {
-    id: "business_agent_gov_hitl",
-    title: "Human-in-the-Loop AI Governance",
-    category: "Executive & Business Strategy",
-    useCase: "ENTERPRISE AI RISK & GOVERNANCE",
-    businessUseCase: "Confidence-tiered autonomous agent escalation flow with supervisory cross-verification, human sign-off workbenches, and cryptographic audit certificates.",
-    primaryActors: "AI Ethics Board, Compliance Officers, Lead Architects",
-    targetOutcomes: "100% Audit Readiness, Zero Unsupervised Failures, Regulatory Compliance (EU AI Act)",
-    desc: "Human-in-the-Loop governance state machine with confidence escalation and cryptographic sign-off."
-  },
   erd: {
     id: "erd",
     title: "Dimensional Data Model - ERD",
@@ -130,16 +110,6 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     targetOutcomes: "Sub-Second Latency Enforcement, VPC-SC Zero-Trust Compliance, End-to-End Audit Traceability",
     desc: "Chronological API execution flow illustrating agent reasoning, context retrieval, and VPC security checks."
   },
-  data_ai_pipeline: {
-    id: "data_ai_pipeline",
-    title: "Data & AI Pipeline",
-    category: "Data & Lakehouse Architecture",
-    useCase: "ENTERPRISE DATA & AI PLATFORM",
-    businessUseCase: "Unified Data Flow Diagram (DFD) and MLOps pipeline transforming raw unstructured data into feature stores, model training loops, and automated reports.",
-    primaryActors: "Data Engineers, ML Engineers, Data Scientists",
-    targetOutcomes: "Automated Data Ingestion, Managed Feature Store Lineage, Continuous Model Retraining",
-    desc: "Integrates raw data ingestion (DFD), dbt feature engineering, managed feature store, and MLOps lifecycle."
-  },
   secure_deployment_map: {
     id: "secure_deployment_map",
     title: "Secure Deployment Topology Map",
@@ -160,26 +130,6 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     targetOutcomes: "Zero-Downtime Canary Rollouts, Automated Vulnerability Scanning, Infrastructure-as-Code Governance",
     desc: "Polyrepo GitOps workflow integrating unit tests, vulnerability scanning, Terraform deployment, and canary checks."
   },
-  tech_multi_agent_langgraph: {
-    id: "tech_multi_agent_langgraph",
-    title: "LangGraph Stateful Multi-Agent DAG",
-    category: "AI & Cognitive Systems",
-    useCase: "MULTI-AGENT AUTONOMOUS PLATFORM",
-    businessUseCase: "Master supervisor DAG orchestrator routing tasks to parallel worker clusters with sandboxed code execution, human approval gates, and state checkpoints.",
-    primaryActors: "AI Systems Engineers, Autonomous Agent Developers, Platform Architects",
-    targetOutcomes: "Parallel Execution Throughput, Deterministic State Persistence, Safe Sandboxed Execution",
-    desc: "Stateful Directed Graph multi-agent architecture with sandboxed kernel and checkpoint store."
-  },
-  tech_agent_harness_runtime: {
-    id: "tech_agent_harness_runtime",
-    title: "Enterprise Agent Runtime Platform",
-    category: "AI & Cognitive Systems",
-    useCase: "AGENT HARNESS RUNTIME KERNEL",
-    businessUseCase: "Production enterprise AI agent harness runtime platform combining LiteLLM router, MCP tool protocol, gVisor/E2B sandboxed code execution, context compactor, OTel tracing, and self-healing reflection loops.",
-    primaryActors: "AI Chief Architects, Platform Infrastructure Engineers, CISO & Compliance Officers",
-    targetOutcomes: "Isolated Untrusted Code Execution, 90% Cost Cut via Prompt Caching, SOC2/HIPAA Audit Attestation",
-    desc: "Production multi-agent execution harness featuring isolated microVMs, zero-trust IAM, and self-healing error reflection."
-  },
   tech_data_lakehouse_gcp: {
     id: "tech_data_lakehouse_gcp",
     title: "GCP Enterprise Data Lakehouse",
@@ -199,16 +149,6 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Data Platform Architects, Data Scientists, Data Engineers",
     targetOutcomes: "Cost-Optimized Storage Tiers, Serverless BigQuery SQL Analytics, Centralized Dataplex Governance",
     desc: "Multi-tier Cloud Storage data landing zones, BigLake tables, and BigQuery partitioned analytics."
-  },
-  tech_modern_data_stack: {
-    id: "tech_modern_data_stack",
-    title: "Modern Data Stack Architecture",
-    category: "Data & Lakehouse Architecture",
-    useCase: "MODERN DATA PLATFORM",
-    businessUseCase: "Real-time Change Data Capture (Debezium), automated Data Contracts schema validation, dbt dimensional modeling, and Reverse ETL back to operational systems.",
-    primaryActors: "Analytics Engineers, Data Architects, BI Leads",
-    targetOutcomes: "Sub-Minute Data Freshness, 100% Schema Contract Enforcement, Automated Reverse ETL Syncing",
-    desc: "Modern data platform combining PostgreSQL CDC, Data Contracts, dbt Gold marts, and Reverse ETL."
   },
   tech_streaming_analytics: {
     id: "tech_streaming_analytics",

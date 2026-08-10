@@ -85,43 +85,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // 1. AI & AGENTIC SYSTEMS ARCHITECTURE
   // =========================================================================
   {
-    id: "tech_agent_harness_runtime",
-    name: "Enterprise Agent Runtime Platform",
-    categoryId: "ai_agentic",
-    categoryName: "AI & Agentic Systems",
-    badge: "Production Blueprint",
-    isFlagship: true,
-    isNew: true,
-    whenToUse: "Use when deploying production AI agents that require isolated code execution (gVisor/E2B), prompt caching, zero-trust IAM, OTel tracing, and self-healing reflection loops.",
-    bestFor: [
-      "Enterprise autonomous agent runtimes",
-      "Sandboxed Python/Bash execution security",
-      "Prefix token caching (slashes cost by 90%)",
-      "SOC2, HIPAA & EU AI Act compliance ledgers"
-    ],
-    keyTech: ["LiteLLM", "MCP Protocol", "gVisor / E2B", "Temporal", "Redis KV Cache", "PostgreSQL", "NeMo Guardrails"],
-    thumbnail: "/templates/agent_harness_runtime_enhanced.png",
-    promptSummary: "Production Agent Harness: Ingress -> 3x4 Middleware Matrix -> Sandboxed Kernel Directed Graph -> External Egress."
-  },
-  {
-    id: "tech_multi_agent_langgraph",
-    name: "LangGraph Stateful Multi-Agent DAG",
-    categoryId: "ai_agentic",
-    categoryName: "AI & Agentic Systems",
-    badge: "Flagship Blueprint",
-    isFlagship: true,
-    whenToUse: "Use for multi-agent systems with hierarchical delegation, parallel specialized worker clusters (Coder, Researcher, Critic), and stateful checkpoint persistence.",
-    bestFor: [
-      "Supervisor-Worker multi-agent patterns",
-      "LangGraph / GraphFlow DAG state management",
-      "Human-in-the-loop interrupt gates (requires_action)",
-      "Long-context multimodal WebRTC ingress"
-    ],
-    keyTech: ["LangGraph", "pgvector", "Claude 3.5 Sonnet", "GPT-4o", "Supervisor Agent", "OTel Traces"],
-    thumbnail: "/templates/tech_multi_agent_langgraph.png",
-    promptSummary: "Stateful DAG Multi-Agent Platform: Ingress -> Supervisor Router -> Specialized Worker Swarm -> Sandboxed Kernel -> Checkpoint Store."
-  },
-  {
     id: "agentic_rag",
     name: "Cognitive Architecture / Agentic RAG",
     categoryId: "ai_agentic",
@@ -178,24 +141,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     keyTech: ["Dedicated Interconnect 100G", "Cross-Cloud Interconnect", "NCC BGP Hub", "Gemini Enterprise AIOps", "AWS Direct Connect", "VPC-SC Perimeter", "Vertex AI"],
     thumbnail: "/templates/tech_agentic_mesh.png",
     promptSummary: "Hybrid Multi-Cloud: 100G Interconnect -> On-Prem Data Center -> GCP Global Network PoPs -> NCC BGP Hub -> AWS Direct Connect -> Gemini Enterprise AIOps."
-  },
-  {
-    id: "business_agent_gov_hitl",
-    name: "Human-in-the-Loop AI Governance",
-    categoryId: "ai_agentic",
-    categoryName: "AI & Agentic Systems",
-    badge: "Governance Standard",
-    isFlagship: true,
-    whenToUse: "Use when establishing enterprise AI risk management, confidence-based escalation thresholds (>=95% fast path, 75-94% supervisor check, <75% human approval), and regulatory sign-off.",
-    bestFor: [
-      "Regulated enterprise AI compliance",
-      "Confidence-tiered decision escalation",
-      "Human reviewer review workbench",
-      "Cryptographic sign-off certificates"
-    ],
-    keyTech: ["HITL Reviewer UI", "Confidence Router", "Constitutional AI", "Immutable Audit Trail", "RLHF Loop"],
-    thumbnail: "/templates/business_agent_governance_hitl.png",
-    promptSummary: "Agent Governance Lifecycle: Multimodal Ingress -> Confidence Escalation -> HITL Review Workbench -> Regulatory Ledger."
   },
 
   // =========================================================================
@@ -603,24 +548,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // 3. MODERN DATA & ANALYTICS PIPELINES
   // =========================================================================
   {
-    id: "tech_modern_data_stack",
-    name: "Modern Data Stack Architecture",
-    categoryId: "data_pipelines",
-    categoryName: "Data Pipelines",
-    badge: "Analytics Engineering",
-    isFlagship: true,
-    whenToUse: "Use when building modern analytics engineering pipelines with Change Data Capture (Debezium/Fivetran), automated Data Contracts quality gates, dbt marts, and Reverse ETL.",
-    bestFor: [
-      "Debezium real-time CDC from PostgreSQL",
-      "Automated Data Contracts schema enforcement",
-      "dbt Core Silver/Gold dimensional modeling",
-      "Reverse ETL syncing insights back to operational systems"
-    ],
-    keyTech: ["Debezium CDC", "Data Contracts", "dbt Core", "Snowflake / BigQuery", "Hightouch / Census", "Looker BI"],
-    thumbnail: "/templates/tech_modern_data_stack.png",
-    promptSummary: "Modern Data Stack: OLTP Postgres -> Debezium CDC -> Data Contracts Gate -> dbt Gold Marts -> Reverse ETL to CRM."
-  },
-  {
     id: "tech_streaming_analytics",
     name: "Real-Time Streaming Analytics",
     categoryId: "data_pipelines",
@@ -670,23 +597,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     keyTech: ["Fact Tables", "Dimension Tables", "PostgreSQL", "Snowflake", "Cardinality (1:N)", "Foreign Keys"],
     thumbnail: "/templates/erd.png",
     promptSummary: "Dimensional Data Model: Fact Tables, Dimension Tables, Foreign Key Relationships, Data Types, and Explicit Cardinality."
-  },
-  {
-    id: "data_ai_pipeline",
-    name: "Data & AI Pipeline",
-    categoryId: "data_pipelines",
-    categoryName: "Data Pipelines",
-    badge: "MLOps Lifecycle",
-    whenToUse: "Use when visualizing the complete data flow from multi-channel raw data ingestion, feature engineering, model training registry, to inference serving and telemetry.",
-    bestFor: [
-      "End-to-end dataflow diagrams (DFD)",
-      "Feature store ingestion & transformation",
-      "MLOps model training & registry promotion",
-      "Inference API serving and telemetry logging"
-    ],
-    keyTech: ["Data Ingestion DFD", "Feature Store", "Model Registry", "Inference API", "Serving Endpoints", "Telemetry"],
-    thumbnail: "/templates/data_ai_pipeline.png",
-    promptSummary: "Data & AI Pipeline: Data Ingestion -> Feature Engineering -> MLOps Lifecycle -> Model Registry -> Serving Analytics."
   },
   {
     id: "tech_fintech_payments",
