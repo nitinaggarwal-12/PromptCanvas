@@ -1,0 +1,279 @@
+/**
+ * 🏛️ MASTER BLUEPRINT 3: WBS 3.1.4 UNIFIED DATA GOVERNANCE & ACCESS CONTROL ARCHITECTURE
+ * Pixel-Perfect Replica of WBS 3.1.4 Unified Data Governance & Access Control Architecture (To-Be State)
+ */
+
+export function buildUnifiedDataGovernanceXml(): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="unified_data_governance" name="WBS 3.1.4: Unified Data Governance &amp; Access Control Architecture">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1620" pageHeight="950" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- MAIN TITLE (TOP LEFT) -->
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:24px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 3.1.4: Unified Data Governance &amp;amp; Access Control Architecture (To-Be State)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="1150" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== LEFT TIER SIDEBAR BARS ==================== -->
+        <!-- Tier 1 Sidebar -->
+        <mxCell id="tier1_bar" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Top Zone:&lt;br&gt;Strategy &amp;amp; Governance&lt;br&gt;Interface&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="70" width="180" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Tier 2 Sidebar -->
+        <mxCell id="tier2_bar" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Zone Two:&lt;br&gt;Unified Control Plane&lt;br&gt;Orchestration&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="226" width="180" height="156" as="geometry"/>
+        </mxCell>
+
+        <!-- Tier 3 Sidebar -->
+        <mxCell id="tier3_bar" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Third Zone:&lt;br&gt;Enforced Technical&lt;br&gt;Data Tier -&lt;br&gt;Modern Data Stack&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="388" width="180" height="156" as="geometry"/>
+        </mxCell>
+
+        <!-- Tier 4 Sidebar -->
+        <mxCell id="tier4_bar" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Bottom Zone:&lt;br&gt;Outcomes &amp;amp; Compliance&lt;br&gt;Reporting&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="550" width="180" height="180" as="geometry"/>
+        </mxCell>
+
+        <!-- Horizontal Tier Dividers -->
+        <mxCell id="div_t1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;endArrow=none;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="20" y="223" as="sourcePoint"/><mxPoint x="1450" y="223" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="div_t2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;endArrow=none;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="20" y="385" as="sourcePoint"/><mxPoint x="1450" y="385" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="div_t3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;endArrow=none;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="20" y="547" as="sourcePoint"/><mxPoint x="1450" y="547" as="targetPoint"/></mxGeometry></mxCell>
+
+
+        <!-- ==================== TOP ZONE: STRATEGY & GOVERNANCE INTERFACE ==================== -->
+        <!-- CDO Actor (Top) -->
+        <mxCell id="act_top_cdo" value="&lt;font style=&quot;font-size:22px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;CDO&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;🏛️&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="220" y="90" width="60" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Data Stewards Actor -->
+        <mxCell id="act_stewards" value="&lt;font style=&quot;font-size:22px;&quot;&gt;👥&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Data&lt;br&gt;Stewards&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="290" y="100" width="70" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Collibra Container -->
+        <mxCell id="box_collibra_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="70" width="490" height="135" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_collibra_title" value="&lt;font style=&quot;font-size:16px;&quot;&gt;❇️&lt;/font&gt;&amp;nbsp;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Collibra Data Intelligence Cloud&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="380" y="76" width="490" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Collibra 3 Sub-Cards -->
+        <mxCell id="collibra_card1" value="&lt;font style=&quot;font-size:18px;&quot;&gt;📝&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Business Glossary&lt;br&gt;Definition&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="395" y="104" width="140" height="88" as="geometry"/>
+        </mxCell>
+        <mxCell id="collibra_card2" value="&lt;font style=&quot;font-size:18px;&quot;&gt;📋&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Policy Registry &amp;amp;&lt;br&gt;Workflow Management&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="550" y="104" width="150" height="88" as="geometry"/>
+        </mxCell>
+        <mxCell id="collibra_card3" value="&lt;font style=&quot;font-size:18px;&quot;&gt;📊&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Stewardship&lt;br&gt;Dashboards&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="715" y="104" width="140" height="88" as="geometry"/>
+        </mxCell>
+
+        <!-- Top Right Metadata Table -->
+        <mxCell id="box_top_meta_table" value="&lt;table style=&quot;font-size:9px;color:#0F172A;width:100%;border-collapse:collapse;&quot; border=&quot;1&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:3px 6px;&quot;&gt;&lt;b&gt;GCAF Pillar&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;&quot;&gt;Security, Privacy &amp;amp; Compliance&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:3px 6px;&quot;&gt;&lt;b&gt;Phase&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;&quot;&gt;Project Plan Foundation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:3px 6px;&quot;&gt;&lt;b&gt;Persona (Creator)&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;&quot;&gt;3. Data Architect&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:3px 6px;&quot;&gt;&lt;b&gt;Target Audience&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;&quot;&gt;Data Stewards, CDO&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:3px 6px;&quot;&gt;&lt;b&gt;Compliance&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;&quot;&gt;GDPR, GxP, HIPAA&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:3px 6px;&quot;&gt;&lt;b&gt;Update Freq&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;&quot;&gt;Continuously&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="930" y="70" width="340" height="135" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== ZONE TWO: UNIFIED CONTROL PLANE ORCHESTRATION ==================== -->
+        <mxCell id="box_dataplex_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="320" y="240" width="650" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_dataplex_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Dataplex Unified Control Plane&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="244" width="650" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Right Vertical Pill: ACTIVE DATA CONTROL PLANE -->
+        <mxCell id="pill_active_control" value="&lt;b style=&quot;font-size:9px;color:#334155;writing-mode:vertical-rl;&quot;&gt;ACTIVE DATA CONTROL PLANE&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="980" y="240" width="28" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Dataplex Sub-Cards Top Row -->
+        <mxCell id="dp_catalog" value="&lt;font style=&quot;font-size:16px;&quot;&gt;🌐&lt;/font&gt;&amp;nbsp;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Dataplex Data Catalog&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;(Metadata Sync with Collibra)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="335" y="268" width="290" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="dp_profiling" value="&lt;font style=&quot;font-size:16px;&quot;&gt;📑🔍&lt;/font&gt;&amp;nbsp;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Dataplex Data Profiling &amp;amp; Quality&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="640" y="268" width="315" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Dataplex Bottom Row: ABAC Engine -->
+        <mxCell id="dp_abac_engine" value="&lt;font style=&quot;font-size:16px;&quot;&gt;⚙️&lt;/font&gt;&amp;nbsp;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Attribute-based Access Control (ABAC) Enforcement Engine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="335" y="318" width="620" height="38" as="geometry"/>
+        </mxCell>
+
+        <!-- Edge Collibra -> Dataplex -->
+        <mxCell id="edge_collibra_to_dataplex" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Policy Definition&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;align=center;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="625" y="205" as="sourcePoint"/><mxPoint x="625" y="240" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== THIRD ZONE: ENFORCED TECHNICAL DATA TIER ==================== -->
+        <!-- 1. BigQuery -->
+        <mxCell id="box_bq" value="&lt;font style=&quot;font-size:22px;&quot;&gt;🔍&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;BigQuery&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;(Enforced ABAC)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="330" y="420" width="130" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Cloud Storage -->
+        <mxCell id="box_gcs" value="&lt;font style=&quot;font-size:22px;&quot;&gt;🗄️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Cloud Storage&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;(Data Lakes,&lt;br&gt;Enforced ABAC)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="475" y="420" width="130" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Dataflow -->
+        <mxCell id="box_dataflow" value="&lt;font style=&quot;font-size:22px;&quot;&gt;⚡&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Dataflow&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;(Pipelines,&lt;br&gt;Lineage Indexing)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="620" y="420" width="130" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. Dataproc -->
+        <mxCell id="box_dataproc" value="&lt;font style=&quot;font-size:22px;&quot;&gt;⚙️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Dataproc&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;(Data Processing,&lt;br&gt;Enforced ABAC)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="765" y="420" width="130" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- 5. Vertex AI -->
+        <mxCell id="box_vertex" value="&lt;font style=&quot;font-size:22px;&quot;&gt;🧠&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Vertex AI&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;(Model Governance,&lt;br&gt;Enforced ABAC)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="910" y="420" width="130" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Left Routing: Data Lineage from BQ/GCS/Dataflow into Dataplex -->
+        <mxCell id="lbl_data_lineage" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Data Lineage&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="380" width="80" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_lineage_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="390" y="420" as="sourcePoint"/><mxPoint x="390" y="370" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_lineage_gcs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="535" y="420" as="sourcePoint"/><mxPoint x="535" y="370" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_lineage_dataflow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="650" y="420" as="sourcePoint"/><mxPoint x="650" y="370" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Right Routing: ACCESS CONTROL ENFORCED from Dataplex into Dataproc & Vertex AI -->
+        <mxCell id="lbl_access_enforced" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;ACCESS CONTROL ENFORCED&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="720" y="380" width="180" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_abac_dataproc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="815" y="370" as="sourcePoint"/><mxPoint x="815" y="420" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_abac_vertex" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="975" y="370" as="sourcePoint"/><mxPoint x="975" y="420" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== BOTTOM ZONE: OUTCOMES & COMPLIANCE REPORTING ==================== -->
+        <!-- CDO (Bottom Left) -->
+        <mxCell id="act_bot_cdo" value="&lt;font style=&quot;font-size:22px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;CDO&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="220" y="600" width="60" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Vertical Flow CDO Top -> CDO Bottom -->
+        <mxCell id="edge_cdo_top_to_bot" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Policy Directives&lt;br&gt;&amp;amp; Metadata Sync&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="250" y="180" as="sourcePoint"/><mxPoint x="250" y="600" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- CDO to Reporting Dashboard -->
+        <mxCell id="edge_cdo_to_dash" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="280" y="630" as="sourcePoint"/><mxPoint x="310" y="630" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Flow from BigQuery / GCS to Reporting Dashboard -->
+        <mxCell id="edge_data_to_dash" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="390" y="520" as="sourcePoint"/><mxPoint x="390" y="570" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="edge_gcs_to_dash" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="540" y="520" as="sourcePoint"/><mxPoint x="430" y="570" as="targetPoint"/><Array as="points"><mxPoint x="540" y="540"/><mxPoint x="430" y="540"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 1. Reporting Dashboard -->
+        <mxCell id="box_rep_dash" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="310" y="570" width="165" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="dash_inner_ui" value="&lt;div style=&quot;font-size:7px;color:#334155;background:#1E293B;color:#FFF;padding:2px 4px;border-radius:2px;&quot;&gt;&lt;b&gt;Executive Dashboard&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;justify-content:space-between;margin-top:4px;font-size:7.5px;&quot;&gt;&lt;span&gt;🎯 &lt;b&gt;1294&lt;/b&gt;&lt;/span&gt;&lt;span&gt;🛡️ &lt;b&gt;155&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;height:24px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:2px;display:flex;align-items:center;justify-content:center;&quot;&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;📈 📊 🟢&lt;/font&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="314" y="574" width="157" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_rep_dash" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Reporting Dashboard&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="310" y="684" width="165" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. GDPR Compliance Guardrails -->
+        <mxCell id="box_gdpr" value="&lt;font style=&quot;font-size:24px;&quot;&gt;🛡️🔒&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;GDPR&lt;br&gt;Compliance&lt;br&gt;Guardrails&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="490" y="580" width="105" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. HIPAA Data Masking & Anonymization -->
+        <mxCell id="box_hipaa" value="&lt;font style=&quot;font-size:24px;&quot;&gt;⚕️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;HIPAA Data&lt;br&gt;Masking &amp;amp;&lt;br&gt;Anonymization&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="615" y="580" width="115" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. GxP Audit Trail & Validation -->
+        <mxCell id="box_gxp" value="&lt;font style=&quot;font-size:24px;&quot;&gt;📋✅&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;GxP Audit Trail&lt;br&gt;&amp;amp; Validation&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="750" y="580" width="110" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- 5. Data Quality Scorecards -->
+        <mxCell id="box_dq_score" value="&lt;font style=&quot;font-size:24px;&quot;&gt;📊📑&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Data Quality&lt;br&gt;Scorecards&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="880" y="580" width="105" height="90" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== BOTTOM RIGHT: LEGEND ==================== -->
+        <mxCell id="box_legend" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="560" width="255" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_legend_title" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Legend&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="564" width="255" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend Left Icons -->
+        <mxCell id="leg_ico_collibra" value="&lt;font style=&quot;font-size:16px;&quot;&gt;❇️&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="584" width="30" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_ico_sync" value="&lt;font style=&quot;font-size:16px;&quot;&gt;🔄&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="618" width="30" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_ico_gear" value="&lt;font style=&quot;font-size:16px;&quot;&gt;⚙️&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="652" width="30" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend Flows -->
+        <!-- Policy Flow -->
+        <mxCell id="leg_arr_policy" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1075" y="594" as="sourcePoint"/><mxPoint x="1125" y="594" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_lbl_policy" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Policy Flow&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="584" width="125" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Metadata Sync -->
+        <mxCell id="leg_arr_sync" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=block;startFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1075" y="622" as="sourcePoint"/><mxPoint x="1125" y="622" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_lbl_sync" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Metadata Sync&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="612" width="125" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ABAC Enforcement -->
+        <mxCell id="leg_arr_abac" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1075" y="650" as="sourcePoint"/><mxPoint x="1125" y="650" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_lbl_abac" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;ABAC Enforcement&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="640" width="125" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Data Lineage -->
+        <mxCell id="leg_arr_lineage" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1075" y="678" as="sourcePoint"/><mxPoint x="1125" y="678" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_lbl_lineage" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Data Lineage&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="668" width="125" height="20" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}

@@ -1,0 +1,246 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
+export function buildGenomicsClinicalXml(): string {
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="genomics_clinical" name="WBS 5.2.1: Genomics &amp; HIPAA Clinical Bioinformatics Pipeline">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- TOP TITLE BANNER -->
+        <mxCell id="main_title_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="600" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;WBS 5.2.1: Genomics &amp;amp; HIPAA Clinical Pipeline&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13.5px;color:#334155;&quot;&gt;(GATK Variant Calling, BigQuery Multi-Omics &amp;amp; Hail AI Analytics)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="20" width="570" height="56" as="geometry"/>
+        </mxCell>
+
+        <!-- TOP RIGHT METADATA TABLE -->
+        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;width:34%;&quot;&gt;Diagram Name:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;width:66%;&quot;&gt;Genomics &amp;amp; HIPAA Bioinformatics&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;GCAF Pillar:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Industry Solutions &amp;amp; Domain Accelerators&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Architecture State:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;To-Be&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Persona (Creator):&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;1. Bioinformatics Cloud Architect&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Target Audience:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Computational Biologists, HIPAA Officers&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Effort:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;High&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Tech Stack:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;GKE Spot, GATK, Cloud Storage CMEK, BigQuery, Hail&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Classification:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;HIPAA Multi-Omics Platform&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Blueprint ID:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;font-family:monospace;color:#16A34A;font-weight:bold;&quot;&gt;tech_genomics_clinical_gcp&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- LEFT TIER: CLINICAL INGRESS & BAA CMEK STORAGE (x = 30 .. 330) -->
+        <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_ingress_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#16A34A;&quot;&gt;CLINICAL INGRESS &amp;amp; HIPAA BAA STORAGE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 1: Illumina Sequencers & LIMS -->
+        <mxCell id="node_illumina" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Illumina Sequencers &amp;amp; LIMS&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;NovaSeq 6000 FastQ streaming ingestion&lt;br&gt;Hospital LIMS sample manifest metadata&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 2: HIPAA BAA CMEK Encrypted Cloud Storage -->
+        <mxCell id="node_hipaa_gcs" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;HIPAA BAA Raw Genomic Bucket&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;FIPS 140-2 Level 3 CMEK Envelope Encryption&lt;br&gt;Bucket Lock WORM immutability for clinical audits&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="310" width="260" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 3: Cloud Functions Event-Driven Workflow Dispatcher -->
+        <mxCell id="node_cf_dispatch" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Automated Workflow Trigger&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Eventarc triggers Nextflow / WDL pipeline&lt;br&gt;Auto-spawns GKE Spot batch worker nodes&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="455" width="260" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 4: PHI De-Identification Engine -->
+        <mxCell id="node_deid" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Cloud DLP (PHI De-Identification)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Automated patient MRN redaction &amp;amp; pseudonymization&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="590" width="260" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Bio Architect Bottom Left -->
+        <mxCell id="persona_bio_arch" value="🧬&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Bioinformatics Architect&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(HIPAA Pipeline Lead)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="95" y="715" width="170" height="65" as="geometry"/>
+        </mxCell>
+
+
+        <!-- CENTER TIER: GATK VARIANT CALLING & BIGQUERY MULTI-OMICS (x = 370 .. 790) -->
+        <mxCell id="box_gatk" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_gatk_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#2563EB;&quot;&gt;GATK SECONDARY ANALYSIS &amp;amp; BIGQUERY MULTI-OMICS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="390" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 5: GKE Spot GATK Variant Callers -->
+        <mxCell id="node_gatk_compute" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;GKE Spot GATK Variant Calling Workers&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• BWA-MEM aligner &amp;amp; Picard MarkDuplicates on spot instances&lt;br&gt;• GATK HaplotypeCaller generating gVCF variant maps&lt;br&gt;• 70% cloud compute cost savings via spot preemption&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="175" width="360" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 6: Cloud Life Sciences API & Cromwell Runner -->
+        <mxCell id="node_cromwell" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud Life Sciences Workflow Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Cromwell / Nextflow containerized task dispatch&lt;br&gt;• Automatic task retry &amp;amp; intermediate storage caching&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="325" width="360" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 7: BigQuery Multi-Omics Genomic Lake -->
+        <mxCell id="node_bq_genomics" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;BigQuery Multi-Omics Variant Lakehouse&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Billions of partitioned genomic variants (SNVs, InDels, CNVs)&lt;br&gt;• Sub-second SQL queries across whole-genome cohorts&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="475" width="360" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 8: Cloud KMS CMEK Key Management -->
+        <mxCell id="node_kms_hipaa" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud KMS HSM Key Enclave&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• HIPAA &amp;amp; BAA compliant key rotation policies&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="625" width="360" height="90" as="geometry"/>
+        </mxCell>
+
+
+        <!-- RIGHT TIER: HAIL AI, PHARMACOGENOMICS & EHR (x = 830 .. 1560) -->
+        <mxCell id="box_tertiary" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_tertiary_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#7C3AED;&quot;&gt;HAIL AI PHARMACOGENOMICS &amp;amp; CLINICAL EHR INTEGRATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="835" y="280" width="720" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Hail / Dataproc Population Genomics -->
+        <mxCell id="node_hail_ai" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;Hail on Cloud Dataproc (GWAS &amp;amp; Deep Learning)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Large-scale Genome-Wide Association Studies (GWAS)&lt;br&gt;• Polygenic risk score (PRS) computation &amp;amp; clinical drug matching&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="850" y="325" width="440" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Healthcare API (FHIR / HL7) -->
+        <mxCell id="node_fhir_api" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Cloud Healthcare FHIR API&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Direct Epic &amp;amp; Cerner EHR chart integration&lt;br&gt;HL7 v2 to FHIR R4 clinical transformation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="480" width="280" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Looker Clinical Genomic Insights -->
+        <mxCell id="node_looker_genomics" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Looker Clinical Insights Studio&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Interactive oncogenomic dashboards,&lt;br&gt;tumor mutation burden (TMB) reports&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="480" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Principal Geneticist -->
+        <mxCell id="persona_geneticist" value="🔬&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Principal Geneticist&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Variant Discovery Lead)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="890" y="615" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona HIPAA Compliance Officer -->
+        <mxCell id="persona_hipaa_officer" value="📋&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;HIPAA Privacy Officer&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(BAA &amp;amp; Audit Verification)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="615" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+
+        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+
+        <!-- 1. Illumina -> HIPAA GCS -->
+        <mxCell id="e_illumina_gcs" value="Raw FastQ Streaming Upload" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_illumina" target="node_hipaa_gcs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. HIPAA GCS -> CF Dispatch -->
+        <mxCell id="e_gcs_cf" value="Eventarc Finalize Event" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_hipaa_gcs" target="node_cf_dispatch">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. CF Dispatch -> GATK Compute -->
+        <mxCell id="e_cf_gatk" value="Spawn GATK Pipeline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="495" as="sourcePoint"/>
+            <mxPoint x="395" y="230" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="345" y="495"/>
+              <mxPoint x="345" y="230"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. GATK -> Cromwell Engine -->
+        <mxCell id="e_gatk_cromwell" value="WDL Secondary Execution" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_gatk_compute" target="node_cromwell">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 5. Cromwell -> BigQuery -->
+        <mxCell id="e_cromwell_bq" value="gVCF Variant Ingestion" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_cromwell" target="node_bq_genomics">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 6. BigQuery -> KMS -->
+        <mxCell id="e_bq_kms" value="CMEK Key Wrap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_bq_genomics" target="node_kms_hipaa">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 7. GATK / BQ -> Hail AI (Direct clean connection) -->
+        <mxCell id="e_bq_hail" value="Cohort SQL &amp;amp; VDS Matrix Scan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="755" y="375" as="sourcePoint"/>
+            <mxPoint x="850" y="375" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Hail AI -> FHIR API -->
+        <mxCell id="e_hail_fhir" value="Clinical Decision Support (CDS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="990" y="440" as="sourcePoint"/>
+            <mxPoint x="990" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Hail AI -> Looker -->
+        <mxCell id="e_hail_looker" value="Polygenic Risk Reports" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1280" y="440" as="sourcePoint"/>
+            <mxPoint x="1280" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM RIGHT LEGEND -->
+        <mxCell id="legend_box" value="&lt;div style=&quot;font-weight:bold;font-size:11px;margin-bottom:4px;color:#0F172A;text-align:left;&quot;&gt;Legend&lt;/div&gt;
+&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;width:24px;&quot;&gt;▢&lt;/td&gt;&lt;td style=&quot;width:40%;&quot;&gt;HIPAA Tier&lt;/td&gt;
+    &lt;td style=&quot;width:24px;&quot;&gt;➔&lt;/td&gt;&lt;td&gt;Genomic Stream&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;⬚&lt;/td&gt;&lt;td&gt;Multi-Omics Lake&lt;/td&gt;
+    &lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;EHR / FHIR Sync&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;👤&lt;/td&gt;&lt;td&gt;Persona&lt;/td&gt;
+    &lt;td&gt;🧬&lt;/td&gt;&lt;td&gt;BAA Protected&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="720" width="280" height="130" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}

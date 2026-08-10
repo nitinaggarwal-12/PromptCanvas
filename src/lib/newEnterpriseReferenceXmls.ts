@@ -4,30 +4,30 @@
  * 100% Authentic Google Cloud Well-Architected & Enterprise-Certified Blueprints
  */
 
-import { buildEnterpriseSreObservabilityXml } from '../../scratch/master_builder_enterprise_sre';
-import { buildAiTrismGuardrailsXml } from '../../scratch/master_builder_ai_trism';
-import { buildMicroFrontendsXml } from '../../scratch/master_builder_micro_frontends';
-import { buildFederatedIamSsoXml } from '../../scratch/master_builder_federated_iam';
-import { buildDataResidencySovereignMapXml } from '../../scratch/master_builder_data_residency';
-import { buildDataOpsAnomalyDetectionXml } from '../../scratch/master_builder_dataops_anomaly';
-import { buildUnifiedDataGovernanceXml } from '../../scratch/master_builder_unified_data_governance';
-import { buildLogicalAiConfigTenantXml } from '../../scratch/master_builder_logical_ai_config';
-import { buildHubAndSpokeAgentConfigXml } from '../../scratch/master_builder_hub_spoke_agent';
-import { buildPristineAiCoeXml } from '../../scratch/master_builder_ai_coe';
-import { buildMcpContextGatewayXml } from '../../scratch/master_builder_mcp_gateway';
-import { build6RsMigrationMatrixXml } from '../../scratch/master_builder_6rs';
-import { buildGoLiveWarRoomRunbookXml } from '../../scratch/master_builder_golive_warroom';
-import { buildPristineStranglerFigXml } from '../../scratch/master_builder_strangler';
-import { buildPristineFinopsXml } from '../../scratch/master_builder_finops';
-import { buildFintechPaymentsXml } from '../../scratch/build_master_fintech_payments';
-import { buildGenomicsClinicalXml } from '../../scratch/build_master_genomics_clinical';
-import { buildSupplyChainXml } from '../../scratch/build_master_supply_chain';
-import { buildEvalSafetyXml } from '../../scratch/build_master_eval_safety';
-import { buildAgenticMeshXml } from '../../scratch/build_master_agentic_mesh';
-import { buildStreamingAnalyticsXml } from '../../scratch/build_master_streaming_analytics';
-import { buildZeroTrustMeshXml } from '../../scratch/build_master_zero_trust_mesh';
-import { buildCompleteWellArchitectedGcpDrMasterXml } from '../../scratch/master_builder';
-import { buildDataLakehouseXml } from '../../scratch/build_master_data_lakehouse';
+import { buildEnterpriseSreObservabilityXml } from './masterBuilders/master_builder_enterprise_sre';
+import { buildAiTrismGuardrailsXml } from './masterBuilders/master_builder_ai_trism';
+import { buildMicroFrontendsXml } from './masterBuilders/master_builder_micro_frontends';
+import { buildFederatedIamSsoXml } from './masterBuilders/master_builder_federated_iam';
+import { buildDataResidencySovereignMapXml } from './masterBuilders/master_builder_data_residency';
+import { buildDataOpsAnomalyDetectionXml } from './masterBuilders/master_builder_dataops_anomaly';
+import { buildUnifiedDataGovernanceXml } from './masterBuilders/master_builder_unified_data_governance';
+import { buildLogicalAiConfigTenantXml } from './masterBuilders/master_builder_logical_ai_config';
+import { buildHubAndSpokeAgentConfigXml } from './masterBuilders/master_builder_hub_spoke_agent';
+import { buildPristineAiCoeXml } from './masterBuilders/master_builder_ai_coe';
+import { buildMcpContextGatewayXml } from './masterBuilders/master_builder_mcp_gateway';
+import { build6RsMigrationMatrixXml } from './masterBuilders/master_builder_6rs';
+import { buildGoLiveWarRoomRunbookXml } from './masterBuilders/master_builder_golive_warroom';
+import { buildPristineStranglerFigXml } from './masterBuilders/master_builder_strangler';
+import { buildPristineFinopsXml } from './masterBuilders/master_builder_finops';
+import { buildFintechPaymentsXml } from './masterBuilders/build_master_fintech_payments';
+import { buildGenomicsClinicalXml } from './masterBuilders/build_master_genomics_clinical';
+import { buildSupplyChainXml } from './masterBuilders/build_master_supply_chain';
+import { buildEvalSafetyXml } from './masterBuilders/build_master_eval_safety';
+import { buildAgenticMeshXml } from './masterBuilders/build_master_agentic_mesh';
+import { buildStreamingAnalyticsXml } from './masterBuilders/build_master_streaming_analytics';
+import { buildZeroTrustMeshXml } from './masterBuilders/build_master_zero_trust_mesh';
+import { buildCompleteWellArchitectedGcpDrMasterXml } from './masterBuilders/master_builder';
+import { buildDataLakehouseXml } from './masterBuilders/build_master_data_lakehouse';
 import { buildValueStreamMapXml } from './masterBuilders/master_builder_vsm';
 import { buildAsIsToBeProcessFlowXml } from './masterBuilders/master_builder_asis_tobe';
 

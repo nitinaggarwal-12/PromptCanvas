@@ -1,0 +1,246 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
+export function buildFintechPaymentsXml(): string {
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="fintech_payments" name="WBS 5.1.1: FinTech Real-Time Payments Architecture">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- TOP TITLE BANNER -->
+        <mxCell id="main_title_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="600" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;WBS 5.1.1: FinTech Real-Time Payments &amp;amp; Fraud Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13.5px;color:#334155;&quot;&gt;(Cloud Spanner Atomic Ledger, Vertex AI &amp;lt;15ms Fraud Predictor &amp;amp; ISO 20022)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="20" width="570" height="56" as="geometry"/>
+        </mxCell>
+
+        <!-- TOP RIGHT METADATA TABLE -->
+        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;width:34%;&quot;&gt;Diagram Name:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;width:66%;&quot;&gt;FinTech Real-Time Payments&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;GCAF Pillar:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Industry Solutions &amp;amp; Domain Accelerators&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Architecture State:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;To-Be&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Persona (Creator):&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;1. FinTech Platform Architect&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Target Audience:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Payments Engs, Risk &amp;amp; Compliance Leads&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Effort:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;High&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Tech Stack:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Spanner, Vertex AI, Pub/Sub, HSM, BigQuery&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Classification:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;PCI-DSS Payment Core&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Blueprint ID:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;font-family:monospace;color:#0284C7;font-weight:bold;&quot;&gt;tech_fintech_payments_gcp&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- LEFT TIER: PAYMENT INGRESS & PCI-DSS TOKEN ENCLAVE (x = 30 .. 330) -->
+        <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_ingress_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#0284C7;&quot;&gt;PCI-DSS INGRESS &amp;amp; TOKEN ENCLAVE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 1: Cardholder & POS Terminals -->
+        <mxCell id="node_terminals" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;POS, Mobile &amp;amp; E-Commerce Ingress&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;ISO 8583 / JSON REST (50k tx/sec)&lt;br&gt;mTLS 1.3 + Idempotency Key Headers&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 2: PCI-DSS Token Vault & Cloud HSM -->
+        <mxCell id="node_token_vault" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;PCI-DSS Token Vault &amp;amp; Cloud HSM&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;FIPS 140-2 Level 3 Key Management&lt;br&gt;Zero-raw PAN storage: Surrogate Token generation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="310" width="260" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 3: Cloud Armor Anti-Bot WAF -->
+        <mxCell id="node_armor_waf" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Cloud Armor Anti-Carding WAF&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Automated credential stuffing defense&lt;br&gt;Rate-limiting per BIN &amp;amp; IP velocity filters&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="450" width="260" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 4: Ingress Replay Trap -->
+        <mxCell id="node_replay_trap" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Idempotency Redis Deduplication&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Sub-millisecond duplicate tx rejection&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="590" width="260" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Payments Architect Bottom Left -->
+        <mxCell id="persona_pay_arch" value="💳&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Payments Architect&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(PCI-DSS Core Lead)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="95" y="715" width="170" height="65" as="geometry"/>
+        </mxCell>
+
+
+        <!-- CENTER TIER: TRANSACTION LEDGER & AI FRAUD ENGINE (x = 370 .. 790) -->
+        <mxCell id="box_ledger" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_ledger_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#16A34A;&quot;&gt;ATOMIC SPANNER LEDGER &amp;amp; REAL-TIME FRAUD AI TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="390" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 5: Cloud Spanner Multi-Region Active-Active Ledger -->
+        <mxCell id="node_spanner" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud Spanner Multi-Region Active Ledger&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Strict Serializable ACID transactions (TrueTime technology)&lt;br&gt;• 99.999% SLA across multi-region synchronous dual-write&lt;br&gt;• Immutable double-entry balance journals&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="175" width="360" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 6: Vertex AI Low-Latency Online Fraud Predictor -->
+        <mxCell id="node_fraud_ai" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Real-Time Fraud Predictor (&amp;lt;12ms)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• XGBoost + Graph Neural Network anomaly score model&lt;br&gt;• Dynamic risk decision: APPROVE / CHALLENGE (3DS) / DECLINE&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="325" width="360" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 7: Vertex AI Feature Store (Online) -->
+        <mxCell id="node_feature_store" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Feature Store (Sub-5ms Online Sync)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Real-time card velocity, device fingerprint &amp;amp; geo-entropy metrics&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="475" width="360" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 8: Cloud Pub/Sub Settlement Event Bus -->
+        <mxCell id="node_pubsub_settle" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud Pub/Sub Transaction Event Stream&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Guaranteed at-least-once delivery for downstream clearing&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="615" width="360" height="80" as="geometry"/>
+        </mxCell>
+
+
+        <!-- RIGHT TIER: CLEARING, SETTLEMENT & REGULATORY AUDIT (x = 830 .. 1560) -->
+        <mxCell id="box_clearing" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_clearing_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#7C3AED;&quot;&gt;ISO 20022 CLEARING, SETTLEMENT &amp;amp; REGULATORY AUDIT TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="835" y="280" width="720" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- ISO 20022 Clearing Engine -->
+        <mxCell id="node_iso_clearing" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;ISO 20022 Clearing &amp;amp; Settlement Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• FedNow, SEPA Instant &amp;amp; SWIFT payment rails integration&lt;br&gt;• Automated pacs.008 credit transfer message formatting&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="850" y="325" width="440" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- BigQuery Financial Compliance Vault -->
+        <mxCell id="node_bigquery_vault" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;BigQuery WORM Compliance Vault&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;7-year immutable ledger retention,&lt;br&gt;FinCEN AML &amp;amp; SOX regulatory SQL reporting&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="480" width="280" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Looker Fraud Operations Cockpit -->
+        <mxCell id="node_looker_fraud" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Looker Fraud Cockpit &amp;amp; Alerts&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Real-time fraud analysts triage queue,&lt;br&gt;suspicious activity reports (SAR)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="480" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Risk Lead -->
+        <mxCell id="persona_risk" value="🕵️‍♂️&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Fraud &amp;amp; Risk Lead&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(SAR &amp;amp; Triage Ops)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="890" y="615" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Compliance Lead -->
+        <mxCell id="persona_fin_compliance" value="📋&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;FinCEN Compliance Lead&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Regulatory Audit)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="615" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+
+        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+
+        <!-- 1. Terminals -> Token Vault -->
+        <mxCell id="e_term_vault" value="ISO 8583 Authorization" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_terminals" target="node_token_vault">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Token Vault -> Armor WAF -->
+        <mxCell id="e_vault_waf" value="Tokenized Payload" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_token_vault" target="node_armor_waf">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Armor WAF -> Spanner Ledger -->
+        <mxCell id="e_waf_spanner" value="ACID Tx Hold Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="495" as="sourcePoint"/>
+            <mxPoint x="395" y="230" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="345" y="495"/>
+              <mxPoint x="345" y="230"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Spanner -> Fraud AI -->
+        <mxCell id="e_spanner_fraud" value="Online Scoring Call (&amp;lt;12ms)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_spanner" target="node_fraud_ai">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 5. Fraud AI -> Feature Store -->
+        <mxCell id="e_fraud_fs" value="Sub-5ms Feature Lookup" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_fraud_ai" target="node_feature_store">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 6. Feature Store -> Pub/Sub Settle -->
+        <mxCell id="e_fs_pubsub" value="Authorized Settlement Events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_feature_store" target="node_pubsub_settle">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 7. Fraud AI -> Looker Fraud Cockpit (Direct clean connection) -->
+        <mxCell id="e_fraud_looker" value="Real-Time Suspicious Flags" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="755" y="375" as="sourcePoint"/>
+            <mxPoint x="850" y="375" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Clearing -> BigQuery Vault -->
+        <mxCell id="e_clearing_bq" value="Settled Journal Export" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="990" y="440" as="sourcePoint"/>
+            <mxPoint x="990" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Clearing -> Looker -->
+        <mxCell id="e_clearing_looker" value="Real-Time Clearing KPIs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1280" y="440" as="sourcePoint"/>
+            <mxPoint x="1280" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM RIGHT LEGEND -->
+        <mxCell id="legend_box" value="&lt;div style=&quot;font-weight:bold;font-size:11px;margin-bottom:4px;color:#0F172A;text-align:left;&quot;&gt;Legend&lt;/div&gt;
+&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;width:24px;&quot;&gt;▢&lt;/td&gt;&lt;td style=&quot;width:40%;&quot;&gt;Payment Tier&lt;/td&gt;
+    &lt;td style=&quot;width:24px;&quot;&gt;➔&lt;/td&gt;&lt;td&gt;Synchronous Flow&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;⬚&lt;/td&gt;&lt;td&gt;Spanner / Vault&lt;/td&gt;
+    &lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;Async Settlement&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;👤&lt;/td&gt;&lt;td&gt;Persona&lt;/td&gt;
+    &lt;td&gt;🛡️&lt;/td&gt;&lt;td&gt;PCI-DSS Guard&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="720" width="280" height="130" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`.trim();
+}

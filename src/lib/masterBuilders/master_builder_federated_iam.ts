@@ -1,0 +1,461 @@
+/**
+ * 🎨 Master XML Builder: WBS 5.1.4 Federated IAM & SSO Architecture (To-Be State)
+ * 100% exact replica of media_1786178497958.png
+ */
+
+export function buildFederatedIamSsoXml(): string {
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="federated_iam_sso" name="WBS 5.1.4: Federated IAM &amp; SSO Architecture (To-Be State)">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ========================================================================= -->
+        <!-- TOP MAIN TITLE BANNER & METADATA TABLE                                    -->
+        <!-- ========================================================================= -->
+        <mxCell id="main_title" value="WBS 5.1.4: Federated IAM &amp; SSO Architecture (To-Be State)" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1020" height="38" as="geometry"/>
+        </mxCell>
+
+        <!-- TOP RIGHT METADATA TABLE -->
+        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;width:26%;&quot;&gt;GCAF Pillar&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;width:74%;&quot; colspan=&quot;3&quot;&gt;Security, Privacy &amp;amp; Compliance&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Phase&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot; colspan=&quot;3&quot;&gt;Project Plan Infra Provisioning&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Creator&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot; colspan=&quot;3&quot;&gt;4. Cloud Infra&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Target Audience&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;IAM Architects&lt;/td&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;width:16%;&quot;&gt;Effort:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;width:16%;&quot;&gt;High&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Tech Stack&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot; colspan=&quot;3&quot;&gt;Google Identity, Okta&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Compliance&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;HIPAA&lt;/td&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Usage:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;High&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Update Freq&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Annually&lt;/td&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Usage:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;High&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Purpose&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot; colspan=&quot;3&quot;&gt;OAuth2/OIDC, SAML, JWT validation; human/agent authentication&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;background:#F8FAFC;&quot;&gt;Blueprint ID&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;font-family:monospace;&quot; colspan=&quot;3&quot;&gt;federated_iam_sso&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="48" width="480" height="162" as="geometry"/>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- HORIZONTAL ZONE BACKGROUND BORDERS & SEPARATORS                           -->
+        <!-- ========================================================================= -->
+        <mxCell id="zone1_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;strokeDashed=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="48" width="1025" height="162" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone2_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;strokeDashed=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="218" width="1520" height="165" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone3_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;strokeDashed=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="390" width="1520" height="155" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone4_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;strokeDashed=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="552" width="1520" height="175" as="geometry"/>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- ZONE 1: TOP ZONE - ACCESS TIER (CLIENT INGRESS)                           -->
+        <!-- ========================================================================= -->
+        <mxCell id="z1_label" value="&lt;b style=&quot;font-size:14px;&quot;&gt;Top Zone:&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;Access Tier -&lt;br&gt;Client Ingress&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="48" width="180" height="162" as="geometry"/>
+        </mxCell>
+
+        <!-- PERSONAS & AGENTS IN ZONE 1 -->
+        <mxCell id="user_ext" value="👤&lt;br&gt;&lt;b&gt;External Users&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;(Human)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="235" y="56" width="95" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="user_int" value="👥&lt;br&gt;&lt;b&gt;Internal Users&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;(Human)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="345" y="56" width="95" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="user_dataeng" value="👨‍💻&lt;br&gt;&lt;b&gt;Data Eng&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="235" y="132" width="95" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="user_vertex_agent" value="🤖&lt;br&gt;&lt;b&gt;Vertex AI Agents&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;(prerequisite)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="340" y="132" width="115" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ENTERPRISE APPLICATIONS CONTAINER -->
+        <mxCell id="app_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="475" y="58" width="155" height="142" as="geometry"/>
+        </mxCell>
+        <mxCell id="app_icon" value="💻📱" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="512" y="65" width="80" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="app_text" value="&lt;b style=&quot;font-size:12px;color:#1E3A8A;&quot;&gt;Enterprise&lt;br&gt;Applications&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;(Mobile, Web,&lt;br&gt;API Clients)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="480" y="98" width="145" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ARROWS INTO ENTERPRISE APPS -->
+        <mxCell id="e_user_ext_int" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="user_ext" target="user_int">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_user_int_app" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="user_int" target="app_container">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_user_agent_app" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="user_vertex_agent" target="app_container">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- EXTERNAL ENTRY POINT / GLOBAL LOAD BALANCER -->
+        <mxCell id="entry_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="740" y="58" width="230" height="142" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_soc2" value="&lt;b style=&quot;color:#FFFFFF;font-size:9px;&quot;&gt;SOC 2&lt;br&gt;HIPAA&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="815" y="66" width="44" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_soc2a" value="&lt;b style=&quot;color:#FFFFFF;font-size:9px;&quot;&gt;SOC 2A&lt;br&gt;HIPAA&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="868" y="66" width="44" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="entry_icon" value="🌐" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="748" y="122" width="40" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="entry_text" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;External Entry Point /&lt;br&gt;Global Load Balancer&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;Compliant&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="792" y="118" width="165" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_app_entry" value="Auth Request&lt;br&gt;via HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontColor=#0F172A;fontSize=10;fontStyle=1;" edge="1" parent="1" source="app_container" target="entry_container">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- DASHED INTEGRATED LOGGING FROM ENTRY POINT -->
+        <mxCell id="e_entry_logging" value="Integrated Logging" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;strokeDashed=1;endArrow=classic;fontSize=9;fontColor=#475569;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="855" y="200" as="sourcePoint"/>
+            <mxPoint x="670" y="225" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- ZONE 2: SECOND ZONE - CONTROL TIER (FEDERATED IDP BROKERAGE)              -->
+        <!-- ========================================================================= -->
+        <mxCell id="z2_label" value="&lt;b style=&quot;font-size:14px;&quot;&gt;Second Zone:&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;Control Tier -&lt;br&gt;Federated IdP Brokerage&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="218" width="180" height="165" as="geometry"/>
+        </mxCell>
+
+        <!-- LEFT REQUEST LABELS IN ZONE 2 -->
+        <mxCell id="lbl_req_oauth" value="OAuth2/OIDC&lt;br&gt;Request (JSON)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
+          <mxGeometry x="235" y="232" width="120" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_req_saml" value="SAML Request&lt;br&gt;(XML)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
+          <mxGeometry x="235" y="282" width="120" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_req_jwt" value="JWT Token Exchange&lt;br&gt;(API calls)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
+          <mxGeometry x="230" y="332" width="130" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- FEDERATED IDENTITY & SSO BROKER CONTAINER -->
+        <mxCell id="broker_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="380" y="228" width="460" height="145" as="geometry"/>
+        </mxCell>
+        <mxCell id="broker_header" value="&lt;b style=&quot;font-size:12px;color:#1E3A8A;&quot;&gt;Federated Identity &amp;amp; SSO Broker&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;(Node.js/Python) - Apigee/GCP Services&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="390" y="230" width="440" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- ADAPTER STACK INSIDE BROKER -->
+        <mxCell id="ad_oauth" value="OAuth2&lt;br&gt;Adapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="390" y="263" width="95" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="ad_saml" value="SAML Adapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="390" y="298" width="95" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="ad_api" value="API Token&lt;br&gt;Adapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="390" y="333" width="95" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- ENGINE COMPONENTS INSIDE BROKER -->
+        <mxCell id="eng_mapping" value="User Attribute Mapping Engine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="500" y="263" width="195" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="eng_token_trans" value="Token Translation Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="500" y="290" width="195" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="eng_mfa" value="MFA Enforcement 🔒" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="500" y="317" width="195" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="eng_session" value="Session Management &amp;amp; Auditing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="500" y="344" width="195" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- CLOUD IAM POLICIES INSIDE BROKER -->
+        <mxCell id="iam_policies_box" value="☁️&lt;br&gt;&lt;b style=&quot;font-size:11px;&quot;&gt;Cloud IAM&lt;br&gt;Policies&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Custom Roles &amp;amp;&lt;br&gt;Service Accounts)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="710" y="263" width="120" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- ARROWS INTO BROKER ADAPTERS -->
+        <mxCell id="e_req_oauth" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="lbl_req_oauth" target="ad_oauth">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_req_saml" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="lbl_req_saml" target="ad_saml">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_req_jwt" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="lbl_req_jwt" target="ad_api">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- VERTICAL ACTIVE IDENTITY CONTROL PLANE BAR -->
+        <mxCell id="ctrl_plane_bar" value="&lt;div style=&quot;writing-mode:vertical-rl;transform:rotate(180deg);font-size:9.5px;font-weight:bold;color:#0F172A;letter-spacing:1px;&quot;&gt;ACTIVE IDENTITY CONTROL PLANE&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="235" width="28" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- OKTA / GOOGLE IDENTITY DIRECTORY -->
+        <mxCell id="okta_box" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;OKTA / Google&lt;br&gt;Identity Directory&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;(Federated User Repository)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="248" width="210" height="105" as="geometry"/>
+        </mxCell>
+
+        <!-- CONNECTORS BETWEEN BROKER AND OKTA -->
+        <mxCell id="e_cred_val" value="Credentials Validation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;fontSize=10;fontColor=#0F172A;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="263" as="sourcePoint"/>
+            <mxPoint x="1100" y="263" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_attr_lookup" value="Attribute Lookup" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;fontSize=10;fontColor=#0F172A;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="298" as="sourcePoint"/>
+            <mxPoint x="1100" y="298" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pol_direct" value="Policy Directives" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;fontSize=10;fontColor=#0F172A;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="333" as="sourcePoint"/>
+            <mxPoint x="1100" y="333" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- ZONE 3: THIRD ZONE - DATA TIER (ENFORCED MODERN STACK)                    -->
+        <!-- ========================================================================= -->
+        <mxCell id="z3_label" value="&lt;b style=&quot;font-size:14px;&quot;&gt;Third Zone:&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;Data Tier -&lt;br&gt;Enforced Modern Stack&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="390" width="180" height="155" as="geometry"/>
+        </mxCell>
+
+        <!-- 5 WORKLOAD CARDS IN ZONE 3 -->
+        <!-- 1. GKE Clusters -->
+        <mxCell id="card_gke" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="270" y="405" width="115" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_gke" value="☸️" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;align=center;verticalAlign=middle;fontSize=18;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="310" y="412" width="35" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="text_gke" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;GKE Clusters&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Enterprise Apps,&lt;br&gt;Enforced IAM Roles)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="272" y="450" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Cloud Run Services -->
+        <mxCell id="card_run" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="395" y="405" width="115" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_run" value="⚡" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;align=center;verticalAlign=middle;fontSize=18;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="435" y="412" width="35" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="text_run" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Cloud Run&lt;br&gt;Services&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Microservices,&lt;br&gt;Enforced IAM Roles)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="397" y="450" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Cloud SQL Databases -->
+        <mxCell id="card_sql" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="520" y="405" width="115" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_sql" value="🛢️" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;align=center;verticalAlign=middle;fontSize=18;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="560" y="412" width="35" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="text_sql" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Cloud SQL&lt;br&gt;Databases&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Enforced IAM Roles)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="522" y="450" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. Vertex AI Agents -->
+        <mxCell id="card_vertex" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="645" y="405" width="130" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_vertex" value="🤖" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;align=center;verticalAlign=middle;fontSize=18;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="692" y="412" width="35" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="text_vertex" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Vertex AI Agents&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Human/Agent&lt;br&gt;Authentication with&lt;br&gt;Workload Identity Fed)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="647" y="450" width="125" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 5. Data Lakes -->
+        <mxCell id="card_datalakes" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="785" y="405" width="120" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="icon_datalakes" value="🗄️" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;align=center;verticalAlign=middle;fontSize=18;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="827" y="412" width="35" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="text_datalakes" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Data Lakes&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(BigQuery/GCS,&lt;br&gt;Enforced IAM Roles)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="787" y="450" width="115" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- 6. Dataplex -->
+        <mxCell id="box_dataplex" value="💠&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Dataplex&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="930" y="415" width="85" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- ENFORCEMENT & LINEAGE CONNECTORS FROM BROKER -->
+        <mxCell id="e_lineage" value="Data Lineage, Indexing" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=10;fontColor=#0F172A;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="broker_container" target="card_gke">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="388"/>
+              <mxPoint x="327" y="388"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_access_ctrl" value="Access Control Enforced" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=10;fontColor=#0F172A;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="broker_container" target="card_vertex">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_integrated_logging_dataplex" value="Integrated Logging" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;strokeDashed=1;endArrow=classic;fontSize=9;fontColor=#475569;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="broker_container" target="box_dataplex">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="388"/>
+              <mxPoint x="972" y="388"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SYSTEM ELEMENT LEGEND (TOP RIGHT OF ZONE 3) -->
+        <mxCell id="mini_legend_box" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr&gt;&lt;td style=&quot;width:24px;&quot;&gt;🟦&lt;/td&gt;&lt;td&gt;System boundary&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;◻️&lt;/td&gt;&lt;td&gt;System Component&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;🛢️&lt;/td&gt;&lt;td&gt;Google Cloud Service Database&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;➔&lt;/td&gt;&lt;td&gt;Solid Access Flow (HTTPS)&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;Dashed Logging &amp;amp; Audit Flow&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;🔵&lt;/td&gt;&lt;td&gt;Blue Token Exchange Flow&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;🔴&lt;/td&gt;&lt;td&gt;Red Compliance Check&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="405" width="240" height="125" as="geometry"/>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- ZONE 4: FOURTH ZONE - ANALYTICS & COMPLIANCE REPORTING                    -->
+        <!-- ========================================================================= -->
+        <mxCell id="z4_label" value="&lt;b style=&quot;font-size:14px;&quot;&gt;Fourth Zone:&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;Analytics &amp;amp; Compliance&lt;br&gt;Reporting&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="552" width="180" height="175" as="geometry"/>
+        </mxCell>
+
+        <!-- PERSONAS IN ZONE 4 -->
+        <mxCell id="p_iam_arch" value="👤&lt;br&gt;&lt;b&gt;IAM&lt;br&gt;Architect&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="225" y="565" width="55" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="p_infra_lead" value="👥&lt;br&gt;&lt;b&gt;Cloud&lt;br&gt;Infra Lead&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="285" y="565" width="60" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="p_ciso" value="🛡️&lt;br&gt;&lt;b&gt;CISO&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="225" y="642" width="55" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="p_data_steward" value="👨‍💼&lt;br&gt;&lt;b&gt;Data&lt;br&gt;Steward&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="285" y="642" width="60" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- REPORTING CARDS IN ZONE 4 -->
+        <!-- Card 1: Auth Audit Logs -->
+        <mxCell id="rep_card1" value="&lt;div style=&quot;border:1px solid #CBD5E1;border-radius:4px;padding:3px;background:#F8FAFC;&quot;&gt;
+  &lt;div style=&quot;display:flex;justify-content:space-between;font-size:8px;font-weight:bold;color:#0284C7;margin-bottom:2px;&quot;&gt;
+    &lt;span&gt;📊 1234&lt;/span&gt;&lt;span&gt;105&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div style=&quot;height:18px;background:#E2E8F0;border-radius:2px;display:flex;align-items:flex-end;padding:1px;&quot;&gt;
+    &lt;div style=&quot;width:20%;height:60%;background:#0284C7;margin-right:2px;&quot;&gt;&lt;/div&gt;
+    &lt;div style=&quot;width:20%;height:90%;background:#10B981;margin-right:2px;&quot;&gt;&lt;/div&gt;
+    &lt;div style=&quot;width:20%;height:40%;background:#0284C7;margin-right:2px;&quot;&gt;&lt;/div&gt;
+    &lt;div style=&quot;width:20%;height:100%;background:#10B981;&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div style=&quot;margin-top:4px;&quot;&gt;
+  &lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Authentication&lt;br&gt;Audit Logs&lt;/b&gt;&lt;br&gt;
+  &lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(JWT validation)&lt;/span&gt;
+&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="360" y="565" width="115" height="145" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 2: User Access Report -->
+        <mxCell id="rep_card2" value="&lt;div style=&quot;font-size:24px;margin-bottom:4px;&quot;&gt;📋&lt;/div&gt;
+&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;User Access&lt;br&gt;Report&lt;/b&gt;&lt;br&gt;
+&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(SAML/OIDC usage)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="490" y="565" width="110" height="145" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 3: Agent Token Usage -->
+        <mxCell id="rep_card3" value="&lt;div style=&quot;font-size:24px;margin-bottom:4px;&quot;&gt;🔑&lt;/div&gt;
+&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Agent Token&lt;br&gt;Usage and&lt;/b&gt;&lt;br&gt;
+&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Federation Checks&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="615" y="565" width="110" height="145" as="geometry"/>
+        </mxCell>
+
+        <!-- VERTICAL DOTTED SEPARATOR -->
+        <mxCell id="sep_v1" value="" style="endArrow=none;strokeWidth=1.5;strokeColor=#94A3B8;strokeDashed=1;html=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="560" as="sourcePoint"/>
+            <mxPoint x="745" y="715" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- COMPLIANCE CHECKS & BADGES IN ZONE 4 -->
+        <mxCell id="chk_oauth" value="🌐&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;OAuth2/OIDC&lt;br&gt;validation&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="760" y="585" width="85" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="chk_saml" value="📑&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;SAML&lt;br&gt;Assertion&lt;br&gt;Check&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="855" y="585" width="85" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="chk_jwt" value="🛠️&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;JWT Token&lt;br&gt;Check&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#DC2626;&quot;&gt;(Signature &amp;amp; Expiry)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="950" y="585" width="95" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="chk_hipaa" value="🔒&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;HIPAA&lt;br&gt;Compliance&lt;br&gt;Guardrails&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1055" y="585" width="85" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- CONNECTOR FROM DATAPLEX TO HIPAA COMPLIANCE -->
+        <mxCell id="e_central_logging" value="Central Logging" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;strokeDashed=1;endArrow=classic;fontSize=9;fontColor=#475569;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="972" y="500" as="sourcePoint"/>
+            <mxPoint x="1098" y="585" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="972" y="540"/>
+              <mxPoint x="1098" y="540"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM RIGHT LEGEND IN ZONE 4 -->
+        <mxCell id="bottom_legend_box" value="&lt;div style=&quot;font-weight:bold;font-size:11px;margin-bottom:4px;color:#0F172A;text-align:center;&quot;&gt;Legend&lt;/div&gt;
+&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr&gt;&lt;td style=&quot;width:25px;&quot;&gt;➔&lt;/td&gt;&lt;td&gt;System boundary&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;Third-Party System&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;🛢️&lt;/td&gt;&lt;td&gt;Database&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;🛡️&lt;/td&gt;&lt;td&gt;Compliance Logo&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="565" width="220" height="145" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
