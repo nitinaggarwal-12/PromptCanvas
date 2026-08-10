@@ -280,10 +280,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_genomics_clinical",
-    name: "Genomics & Clinical Bioinformatics Pipeline (WBS 3.2.2)",
+    name: "Pharma-Specific Genomics & Drug Discovery Pipeline with Agentic AI",
     category: "Data & Lakehouse Architecture",
-    whenToUse: "WBS 3.2.2 Clinical Bioinformatics & Genomic Processing Pipeline for FASTQ/BAM ingestion, Nextflow/GATK variant calling, HIPAA compliant GCS data lake, and BigQuery variant analysis.",
-    prompt: "Act as a Lead BioInformatics & Health Data Architect. Design a production-grade WBS 3.2.2 Genomics & Clinical Bioinformatics Pipeline blueprint. Include: Sequencer Ingress (FASTQ) -> Cloud Life Sciences / Nextflow GATK Variant Pipeline -> Multi-Tier HIPAA GCS Lakehouse -> BigQuery Variant DB & Feature Store -> Clinical Decision Support & AI Interpretation."
+    whenToUse: "Refactored Google Native Pharma-Specific Genomics & Drug Discovery Pipeline featuring AlphaFold Pro Differentiable Protein Design, GKE Spot & TPU Clusters, Gemini Drug-Discovery Specialized Models, and transitive PSC connectivity.",
+    prompt: "Act as a Lead BioInformatics & AI Pharma Architect. Design a production-grade Pharma-Specific Genomics & Drug Discovery Pipeline blueprint. Include: On-Prem Sequencers & FASTQ -> Gemini Data Prep -> AlphaFold Pro Differentiable Protein Design -> GKE TPU Cluster & CMEK Lakehouse -> Gemini Drug-Discovery Models -> PSC Transitive Routing -> Google Cloud Managed Services (BigQuery, Vertex AI, Genomics AI, Looker Studio)."
   },
   {
     id: "tech_supply_chain",

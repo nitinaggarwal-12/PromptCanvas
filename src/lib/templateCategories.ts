@@ -620,23 +620,23 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_genomics_clinical",
-    name: "Genomics & Clinical Bioinformatics Pipeline",
+    name: "Pharma-Specific Genomics & Drug Discovery Pipeline",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
-    badge: "Production Blueprint (WBS 3.2.2)",
+    badge: "Master Blueprint (Verified)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for high-throughput genomic sequencing pipelines, Nextflow/GATK variant calling workflows, HIPAA compliant multi-tier data lakes, and BigQuery variant analysis.",
+    whenToUse: "Use for pharma and biotech workflows involving AlphaFold protein structure design, GKE TPU compute clusters, CMEK data lakes, and Gemini Drug Discovery models.",
     bestFor: [
-      "WBS 3.2.2 Clinical Bioinformatics & Genomic Processing Pipeline",
-      "Nextflow / GATK variant calling orchestration with Cloud Life Sciences",
-      "HIPAA compliant multi-tier GCS Lakehouse (FASTQ, BAM, VCF tiers)",
-      "BigQuery Variant Store with columnar query acceleration",
-      "Clinical decision support systems & biomarker discovery integration"
+      "AlphaFold Pro & Differentiable Protein Design with 3D folding structures",
+      "GKE Spot & TPU Compute Clusters for GATK variant calling & auto-tuning",
+      "CMEK-Encrypted Data Lakes with Cloud SQL & BigQuery clinical trial optimizers",
+      "Gemini Drug-Discovery Specialized Models (Pro, Ultra, Specialized-Bio)",
+      "Transitive PSC routing to Google Managed Services (BigQuery, Vertex AI, Genomics AI, Looker Studio)"
     ],
-    keyTech: ["Nextflow / GATK", "Cloud Life Sciences", "HIPAA GCS Lakehouse", "BigQuery Variant DB", "Biomarker Discovery"],
+    keyTech: ["AlphaFold Pro", "Gemini Bio Models", "GKE TPU Clusters", "CMEK Data Lake", "BigQuery Omics", "PSC Managed Services"],
     thumbnail: "/templates/tech_genomics_clinical.png",
-    promptSummary: "Genomics Pipeline: Sequencer Ingress -> Nextflow GATK Engine -> HIPAA Lakehouse -> BigQuery Variant DB -> Clinical Decision Support."
+    promptSummary: "Pharma Genomics Pipeline: On-Prem FASTQ -> AlphaFold Pro Design -> GKE TPU Cluster -> Gemini Drug-Discovery Platform -> PSC Managed Services."
   },
   {
     id: "tech_supply_chain",

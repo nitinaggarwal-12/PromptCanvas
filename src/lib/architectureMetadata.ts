@@ -22,13 +22,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_genomics_clinical: {
     id: "tech_genomics_clinical",
-    title: "Genomics & Clinical Bioinformatics Pipeline (WBS 3.2.2)",
+    title: "Pharma-Specific Genomics & Drug Discovery Pipeline with Agentic AI",
     category: "Data & Lakehouse Architecture",
-    useCase: "CLINICAL BIOINFORMATICS & GENOMICS (WBS 3.2.2)",
-    businessUseCase: "WBS 3.2.2: High-throughput clinical bioinformatics and genomic processing pipeline orchestrating FASTQ ingestion, Nextflow/GATK variant calling via Cloud Life Sciences, HIPAA compliant multi-tier data lakes, and BigQuery variant analysis.",
-    primaryActors: "Bioinformatics Scientists, Clinical Researchers, Health Data Engineers, Compliance Officers",
-    targetOutcomes: "Automated End-to-End Variant Calling, 100% HIPAA Compliance, Petabyte-Scale Genomic Querying, Accelerated Clinical Decision Support",
-    desc: "Genomics and Clinical Bioinformatics blueprint mapping sequencer ingress, Nextflow GATK pipeline, HIPAA data lakehouse, and BigQuery variant store."
+    useCase: "PHARMA GENOMICS & DRUG DISCOVERY PIPELINE (AGENTIC AI & GEMINI)",
+    businessUseCase: "Refactored Google Native Pharma-Specific Genomics & Drug Discovery Pipeline featuring AlphaFold Pro Differentiable Protein Design, GKE Spot & TPU Compute Clusters (GATK variant calling), Gemini Drug-Discovery Specialized Models, and transitive PSC managed connectivity.",
+    primaryActors: "Bioinformatics Scientists, Drug Discovery Researchers, Molecular Biologists, Clinical AI Engineers",
+    targetOutcomes: "Accelerated In-Silico Protein Folding, High-Throughput AlphaFold Simulations, Secure CMEK Encrypted Data Lake, Transitive PSC Managed Services Access",
+    desc: "Pharma-Specific Genomics & Drug Discovery pipeline mapping sequence analyzers, AlphaFold Pro design, GKE TPU clusters, Gemini drug-discovery models, and BigQuery omics analytics."
   },
   tech_supply_chain: {
     id: "tech_supply_chain",
