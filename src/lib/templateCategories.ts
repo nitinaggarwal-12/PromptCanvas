@@ -160,23 +160,24 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_agentic_mesh",
-    name: "Decentralized Multi-Agent Swarm / Agentic Mesh",
-    categoryId: "ai_agentic",
-    categoryName: "AI & Agentic Systems",
-    badge: "Production Blueprint (WBS 2.2.3)",
+    name: "Google Cloud Private Service Connect (PSC) & Zero-Trust Mesh",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud Infrastructure & Networking",
+    badge: "Production Blueprint (WBS 5.5.1)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for peer-to-peer autonomous agent meshes requiring decentralized discovery, semantic capability routing, Byzantine fault tolerance, and shared state ledgers.",
+    whenToUse: "Use for multi-project Google Cloud network architectures requiring Private Service Connect (PSC), 100G Dedicated Interconnect, PSC NAT Subnet (SNAT), PROXY Protocol v2, and VPC-SC perimeter protection.",
     bestFor: [
-      "WBS 2.2.3 Decentralized Multi-Agent Swarm & Agentic Mesh",
-      "P2P agent discovery and semantic capability gossip protocol",
-      "Distributed task negotiation and contract bidding",
-      "Byzantine fault-tolerant consensus execution",
-      "Shared immutable state ledger and trace observability"
+      "WBS 5.5.1 Google Cloud Private Service Connect (PSC) & Zero-Trust Mesh",
+      "Dedicated Cloud Interconnect 100G with dual BGP Cloud Router peering (ASN 16550)",
+      "Cross-VPC PSC Consumer Forwarding Rules to Producer Service Attachments",
+      "Dedicated PSC NAT Subnet (192.168.10.0/24) eliminating CIDR collisions",
+      "PROXY Protocol v2 header preservation for real client IP visibility",
+      "Internal L7 Envoy Load Balancer & VPC Service Controls (VPC-SC) perimeter"
     ],
-    keyTech: ["Agentic Mesh", "P2P Gossip", "Semantic Router", "BFT Consensus", "Distributed State Ledger"],
+    keyTech: ["Private Service Connect (PSC)", "Dedicated Interconnect 100G", "BGP Cloud Router", "PSC NAT Subnet (SNAT)", "PROXY Protocol v2", "VPC-SC Perimeter", "Vertex AI Gemini 3.1 Pro"],
     thumbnail: "/templates/tech_agentic_mesh.png",
-    promptSummary: "Decentralized Agentic Mesh: Swarm Ingress -> P2P Discovery -> Capability Router -> Task Negotiation -> BFT Consensus -> Shared Ledger."
+    promptSummary: "Google Cloud PSC Mesh: 100G Interconnect -> Consumer Spoke VPC -> Cloud DNS -> PSC Endpoint -> Andromeda SDN Fabric -> Producer L7 ILB -> VPC-SC Perimeter."
   },
   {
     id: "business_agent_gov_hitl",

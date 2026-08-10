@@ -52,13 +52,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_agentic_mesh: {
     id: "tech_agentic_mesh",
-    title: "Decentralized Multi-Agent Swarm / Agentic Mesh (WBS 2.2.3)",
-    category: "AI & Cognitive Systems",
-    useCase: "DECENTRALIZED AGENTIC MESH (WBS 2.2.3)",
-    businessUseCase: "WBS 2.2.3: Decentralized multi-agent swarm architecture featuring peer-to-peer agent registry, semantic capability discovery via gossip protocols, distributed contract bidding, Byzantine fault-tolerant consensus, and immutable state ledgers.",
-    primaryActors: "Distributed AI Architects, Multi-Agent System Engineers, Protocol Designers, Platform Leads",
-    targetOutcomes: "Decentralized P2P Agent Coordination, Zero Single Points of Failure, Dynamic Capability Discovery, Byzantine Fault-Tolerant Consensus",
-    desc: "Decentralized Agentic Mesh blueprint illustrating P2P gossip discovery, capability router, contract bidding, and BFT consensus execution."
+    title: "Google Cloud Private Service Connect (PSC) & Zero-Trust Mesh (WBS 5.5.1)",
+    category: "Cloud Infrastructure & Networking",
+    useCase: "GOOGLE CLOUD PSC & ZERO-TRUST MESH (WBS 5.5.1)",
+    businessUseCase: "WBS 5.5.1: Multi-project Google Cloud Private Service Connect (PSC) and Zero-Trust Networking reference architecture featuring 100G Dedicated Cloud Interconnect, BGP Cloud Router, Cross-Project PSC Endpoints, Dedicated PSC NAT Subnet (SNAT), PROXY Protocol v2 Header Engine, Andromeda SDN transit, Internal L7 Envoy Load Balancer, and VPC-SC perimeter.",
+    primaryActors: "Cloud Network Architects, Principal Infrastructure Engineers, Security Leads, Site Reliability Engineers",
+    targetOutcomes: "100% Private Cross-Project Transit (0.0.0.0/0 Blocked), Zero CIDR Overlap Collisions via SNAT, Real Client IP Visibility via PROXY Protocol v2, VPC-SC Zero Data Exfiltration Enforcement",
+    desc: "Google Cloud Private Service Connect (PSC) and Zero-Trust Mesh blueprint illustrating Dedicated Cloud Interconnect, BGP Cloud Router, PSC Consumer Forwarding Rules, PSC NAT Subnet, PROXY Protocol v2, and VPC-SC perimeter."
   },
   conceptual_diagram: {
     id: "conceptual_diagram",
