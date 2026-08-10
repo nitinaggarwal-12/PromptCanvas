@@ -513,26 +513,24 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "federated_iam_sso",
-    name: "Federated IAM & SSO Architecture (WBS 5.1.4)",
+    name: "Google Cloud Federated IAM, SSO & Zero-Trust Workload Identity",
     categoryId: "cloud_infra",
-    categoryName: "Cloud & Infrastructure",
+    categoryName: "Identity, Access & Zero-Trust",
     badge: "Master Blueprint (WBS 5.1.4)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use to design multi-protocol federated identity brokerages, SSO integrations (OAuth2/OIDC, SAML, JWT), Okta/Google Identity user federation, and enforced downstream workload access (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes, Dataplex).",
+    whenToUse: "Use for enterprise Google Cloud zero-trust architectures requiring Active Directory/Okta federation, Cloud Identity (IdP Core), BeyondCorp Context-Aware Access, Identity-Aware Proxy (IAP) ingress, Cloud IAM fine-grained RBAC, and GKE Workload Identity Federation.",
     bestFor: [
-      "WBS 5.1.4 Federated IAM & SSO Architecture (To-Be State, Infra Provisioning Phase)",
-      "Client Ingress with SOC 2 / HIPAA Compliant Global Load Balancing",
-      "Federated Identity & SSO Broker (Apigee / GCP Services) supporting OAuth2, SAML, and API Token Adapters",
-      "Attribute Mapping Engine, Token Translation Service, MFA Enforcement, and Session Auditing",
-      "Active Identity Control Plane communicating with Okta / Google Identity Directory",
-      "Enforced downstream IAM access across GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes, and Dataplex",
-      "Analytics & Compliance Reporting with Authentication Audit Logs, User Access Reports, and Agent Token Federation checks",
-      "HIPAA and SOC 2 Type II compliance guardrails"
+      "WBS 5.1.4 Google Cloud Federated IAM & SSO Reference Architecture",
+      "External Federated IdP: Active Directory / Okta with SAML 2.0 and OIDC Federation",
+      "Cloud Identity (IdP Core) directory sync and MFA/Security Key enforcement",
+      "BeyondCorp Enterprise: Real-time Device Context (MDM/Endpoint) and Network Context (IP/Geo)",
+      "Zero-Trust Ingress: Identity-Aware Proxy (IAP) with signed JWT header assertions (No VPN)",
+      "Workload Identity Federation: KSA-to-GSA OIDC short-lived credential exchange for GKE, Cloud Storage & BigQuery"
     ],
-    keyTech: ["Google Identity", "Okta", "OAuth2 / OIDC", "SAML 2.0", "JWT Token Exchange", "Apigee", "Cloud IAM", "Vertex AI Agents", "Dataplex", "HIPAA & SOC 2"],
+    keyTech: ["Cloud Identity", "Identity-Aware Proxy (IAP)", "BeyondCorp Enterprise", "Access Context Manager", "Workload Identity", "Cloud IAM", "GKE", "BigQuery", "Cloud Storage"],
     thumbnail: "/templates/federated_iam_sso.png",
-    promptSummary: "Federated IAM & SSO Architecture: Client Ingress -> Federated Identity & SSO Broker (OAuth2, SAML, JWT) <-> Okta / Google Identity Directory -> Enforced Workloads (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes) -> Analytics & HIPAA Compliance Reporting."
+    promptSummary: "Federated IAM & Zero-Trust: Active Directory/Okta -> Cloud Identity -> BeyondCorp Context Engine -> IAP Ingress -> App Engine / Cloud Run / Compute Engine -> GKE Workload Identity -> BigQuery & Cloud Storage."
   },
   {
     id: "tech_ai_trism_guardrails",

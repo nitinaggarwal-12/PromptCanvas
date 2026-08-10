@@ -512,23 +512,23 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   federated_iam_sso: {
     id: "federated_iam_sso",
-    title: "WBS 5.1.4: Federated IAM & SSO Architecture (To-Be State)",
-    category: "Security & Governance",
-    useCase: "FEDERATED IAM & SSO ARCHITECTURE (WBS 5.1.4)",
-    businessUseCase: "WBS 5.1.4: Enterprise Federated IAM & Single Sign-On (SSO) Architecture establishing a unified identity control plane across client ingress, broker adapters (OAuth2/OIDC, SAML, JWT Token Exchange), enterprise user directory federation (Okta / Google Identity), and enforced downstream workload access (GKE, Cloud Run, Cloud SQL, Vertex AI Agents, Data Lakes, Dataplex) with automated audit reporting and HIPAA compliance guardrails.",
-    primaryActors: "IAM Architects, Cloud Infra Leads, Chief Information Security Officers (CISOs), Data Stewards, Security Engineers",
-    targetOutcomes: "Zero-Trust Identity Federation, Sub-100ms Token Translation, 100% HIPAA & SOC 2 Compliance Auditability, Enforced Least-Privilege IAM",
-    desc: "WBS 5.1.4 Federated IAM & SSO blueprint illustrating multi-protocol broker adapters, Okta/Google Identity federation, downstream workload enforcement, and compliance reporting."
+    title: "Google Cloud Federated IAM, SSO & Zero-Trust Workload Identity (WBS 5.1.4)",
+    category: "Identity, Access & Zero-Trust",
+    useCase: "GOOGLE CLOUD FEDERATED IAM, SSO & ZERO-TRUST WORKLOAD IDENTITY (WBS 5.1.4)",
+    businessUseCase: "WBS 5.1.4: Enterprise Google Cloud Federated IAM & Single Sign-On (SSO) reference architecture featuring Google Cloud Directory Sync (GCDS), Cloud Identity IdP Core, Identity-Aware Proxy (IAP) zero-trust ingress, BeyondCorp Enterprise Context-Aware Access (ACM device/network signals), Cloud IAM fine-grained RBAC, and Workload Identity Federation (KSA-to-GSA OIDC credential exchange for GKE, Cloud Storage, and BigQuery).",
+    primaryActors: "Principal IAM Architects, Chief Information Security Officers (CISOs), Cloud Security Engineers, Multi-Cloud Infrastructure Leads",
+    targetOutcomes: "Zero-Trust Access Control (0% VPN Overhead), Real-Time Device & Network Signal Evaluation, 100% Elimination of Long-Lived Service Account Keys via Workload Identity, Centralized SAML 2.0 / OIDC Federation",
+    desc: "Official Google Cloud Federated IAM & SSO blueprint illustrating Active Directory/Okta federation, Cloud Identity, BeyondCorp Context-Aware Access, Identity-Aware Proxy (IAP), and GKE Workload Identity."
   },
   tech_federated_iam: {
     id: "federated_iam_sso",
-    title: "Federated IAM & SSO Architecture (WBS 5.1.4)",
-    category: "Security & Governance",
-    useCase: "FEDERATED IAM & SSO ARCHITECTURE (WBS 5.1.4)",
-    businessUseCase: "Enterprise Federated Identity and SSO architecture connecting multi-protocol ingress, central IdP brokerage, federated user directories, and modern cloud workloads.",
-    primaryActors: "IAM Architects, CISOs, Cloud Infra Leads, Data Stewards",
-    targetOutcomes: "Centralized Identity Management, Multi-Protocol Support, Workload Identity Federation",
-    desc: "Federated IAM and SSO blueprint illustrating broker adapters, identity control plane, and compliance audit reporting."
+    title: "Google Cloud Federated IAM, SSO & Zero-Trust Workload Identity (WBS 5.1.4)",
+    category: "Identity, Access & Zero-Trust",
+    useCase: "GOOGLE CLOUD FEDERATED IAM, SSO & ZERO-TRUST WORKLOAD IDENTITY (WBS 5.1.4)",
+    businessUseCase: "Enterprise Google Cloud Federated Identity, BeyondCorp Zero-Trust Ingress, and Workload Identity Federation architecture.",
+    primaryActors: "Principal IAM Architects, CISOs, Cloud Security Engineers",
+    targetOutcomes: "Zero-Trust Perimeter Enforcement, Device/Network Context Checking, Cryptographic Workload Identity",
+    desc: "Google Cloud Federated IAM, BeyondCorp Context-Aware Access, and GKE Workload Identity blueprint."
   },
   tech_ai_trism_guardrails: {
     id: "tech_ai_trism_guardrails",
