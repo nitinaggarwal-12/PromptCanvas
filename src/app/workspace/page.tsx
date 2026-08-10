@@ -378,9 +378,40 @@ function WorkspaceContent() {
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
   const [templateCategoryFilter, setTemplateCategoryFilter] = useState<'all' | 'business' | 'technical'>('all');
   const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
+  const [previewModalTemplateId, setPreviewModalTemplateId] = useState<string | null>(null);
+  const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null);
+  const [previewModalTheme, setPreviewModalTheme] = useState<'light' | 'dark'>('light');
   const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
   const [isExecutiveSummaryOpen, setIsExecutiveSummaryOpen] = useState(false);
   const [isPlaybookModalOpen, setIsPlaybookModalOpen] = useState(false);
+
+  // Global Keyboard Navigation for Master Template Preview Carousel
+  useEffect(() => {
+    if (!previewModalTemplateId) return;
+    const allTemplates = [
+      ...BUSINESS_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'business' as const })),
+      ...TECHNICAL_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'technical' as const }))
+    ];
+    function handlePreviewKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setPreviewModalTemplateId(null);
+      } else if (e.key === 'ArrowLeft') {
+        const idx = allTemplates.findIndex(t => t.id === previewModalTemplateId);
+        if (idx !== -1) {
+          const prevIdx = (idx - 1 + allTemplates.length) % allTemplates.length;
+          setPreviewModalTemplateId(allTemplates[prevIdx].id);
+        }
+      } else if (e.key === 'ArrowRight') {
+        const idx = allTemplates.findIndex(t => t.id === previewModalTemplateId);
+        if (idx !== -1) {
+          const nextIdx = (idx + 1) % allTemplates.length;
+          setPreviewModalTemplateId(allTemplates[nextIdx].id);
+        }
+      }
+    }
+    window.addEventListener('keydown', handlePreviewKeyDown);
+    return () => window.removeEventListener('keydown', handlePreviewKeyDown);
+  }, [previewModalTemplateId]);
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -2343,7 +2374,7 @@ function WorkspaceContent() {
                     templateCategoryFilter === 'business' ? 'bg-teal-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  🏢 Business Architectures ({BUSINESS_ARCHITECTURE_TYPES.length})
+                  🏢 Business ({BUSINESS_ARCHITECTURE_TYPES.length})
                 </button>
                 <button
                   type="button"
@@ -2352,9 +2383,20 @@ function WorkspaceContent() {
                     templateCategoryFilter === 'technical' ? 'bg-indigo-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  ⚙️ Technical Cloud Stacks ({TECHNICAL_ARCHITECTURE_TYPES.length})
+                  ⚙️ Technical ({TECHNICAL_ARCHITECTURE_TYPES.length})
                 </button>
               </div>
+
+              {/* Master Template Carousel Preview Button */}
+              <button
+                type="button"
+                onClick={() => setPreviewModalTemplateId(filteredTemplates[0]?.id || allTemplates[0]?.id)}
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-teal-500/20 flex items-center gap-2 transition-all cursor-pointer hover:scale-[1.02]"
+                title="Browse All 40 Master Blueprints in High-Res Carousel (Back / Forward controls)"
+              >
+                <Eye className="w-4 h-4" />
+                <span>Preview All Blueprints</span>
+              </button>
             </div>
           </div>
 
@@ -2365,41 +2407,75 @@ function WorkspaceContent() {
                 ? 'bg-teal-500/10 text-teal-400 border-teal-500/30'
                 : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
               const personaBadge = getPersonaBadge(t.id);
+              const isHovered = hoveredTemplateId === t.id;
 
               return (
-                <div key={t.id} className="glass-panel border-panel-border/50 hover:border-teal-500/40 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01]">
+                <div 
+                  key={t.id} 
+                  onMouseEnter={() => setHoveredTemplateId(t.id)}
+                  onMouseLeave={() => setHoveredTemplateId(null)}
+                  className={`glass-panel border-panel-border/50 hover:border-teal-500/40 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01] relative ${
+                    isHovered ? 'ring-1 ring-teal-500/30 bg-slate-900/90' : ''
+                  }`}
+                >
                   <div>
                     <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3">
                       <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badgeColor}`}>
                         {isBusiness ? '🏢 BUSINESS' : '⚙️ TECHNICAL'}
                       </span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${personaBadge.color}`}>
-                        {personaBadge.label}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${personaBadge.color}`}>
+                          {personaBadge.label}
+                        </span>
+                        {/* Eye Preview Button on Card */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPreviewModalTemplateId(t.id);
+                          }}
+                          className="p-1 rounded-md bg-slate-800/80 hover:bg-teal-500/20 text-slate-400 hover:text-teal-300 border border-slate-700/60 hover:border-teal-500/50 transition-all cursor-pointer"
+                          title={`Quick Preview Master Template: ${t.name}`}
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
-                    <h3 className="font-extrabold text-sm text-white group-hover:text-teal-accent transition-colors mb-2">
-                      {t.name}
+                    <h3 className="font-extrabold text-sm text-white group-hover:text-teal-accent transition-colors mb-2 flex items-center justify-between">
+                      <span>{t.name}</span>
                     </h3>
                     <p className="text-xs text-slate-400 line-clamp-4 leading-relaxed mb-4">
                       {t.prompt}
                     </p>
                   </div>
-                  <button
-                    onClick={() => {
-                      setCurrentTab('editor');
-                      handleArchitectureSwitch(t.id);
-                      if (typeof window !== 'undefined') {
-                        const params = new URLSearchParams(window.location.search);
-                        params.delete('tab');
-                        const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
-                        window.history.replaceState({}, '', newUrl);
-                      }
-                    }}
-                    className="w-full py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <span>Use Blueprint →</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-panel-border/30">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewModalTemplateId(t.id)}
+                      className="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-all border border-slate-700 flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                      title="Preview Master Template without opening canvas"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-teal-400" />
+                      <span>Preview</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCurrentTab('editor');
+                        handleArchitectureSwitch(t.id);
+                        if (typeof window !== 'undefined') {
+                          const params = new URLSearchParams(window.location.search);
+                          params.delete('tab');
+                          const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+                          window.history.replaceState({}, '', newUrl);
+                        }
+                      }}
+                      className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span>Use Blueprint →</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               );
             })}
@@ -7593,6 +7669,150 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           <span className="text-xs font-black text-teal-300 tracking-wide">{aiStepTelemetry}</span>
         </div>
       )}
+      {/* ========================================================================= */}
+      {/* 🏛️ MASTER TEMPLATE CAROUSEL PREVIEW MODAL (AGNOSTIC OF ACTIVE CANVAS) */}
+      {/* ========================================================================= */}
+      {previewModalTemplateId && (() => {
+        const allTemplates = [
+          ...BUSINESS_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'business' as const })),
+          ...TECHNICAL_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'technical' as const }))
+        ];
+        const currentIdx = allTemplates.findIndex(t => t.id === previewModalTemplateId);
+        const currentTemplate = allTemplates[currentIdx !== -1 ? currentIdx : 0];
+        const masterXml = getDefaultXmlForArchitecture(currentTemplate.id) || '';
+        const isBusiness = currentTemplate.category === 'business';
+
+        const handlePrev = () => {
+          const prevIdx = (currentIdx - 1 + allTemplates.length) % allTemplates.length;
+          setPreviewModalTemplateId(allTemplates[prevIdx].id);
+        };
+
+        const handleNext = () => {
+          const nextIdx = (currentIdx + 1) % allTemplates.length;
+          setPreviewModalTemplateId(allTemplates[nextIdx].id);
+        };
+
+        return (
+          <div className="fixed inset-0 z-[1000] bg-slate-950/90 backdrop-blur-md flex flex-col w-screen h-screen overflow-hidden p-2 md:p-5 animate-fade-in select-none">
+            {/* Header Control Toolbar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 rounded-2xl border border-teal-500/40 bg-[#0B0F19] shadow-2xl shrink-0">
+              {/* Left: Template Identity & Index Badge */}
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400 shrink-0">
+                  <Eye className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border ${
+                      isBusiness ? 'bg-teal-500/10 text-teal-400 border-teal-500/30' : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30'
+                    }`}>
+                      {isBusiness ? '🏢 BUSINESS ARCHITECTURE' : '⚙️ TECHNICAL CLOUD STACK'}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px] font-bold border border-slate-700">
+                      Blueprint {currentIdx + 1} of {allTemplates.length}
+                    </span>
+                  </div>
+                  <h2 className="text-sm md:text-base font-extrabold text-white mt-0.5 truncate">
+                    {currentTemplate.name}
+                  </h2>
+                </div>
+              </div>
+
+              {/* Center: Back & Forward Carousel Navigation */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs border border-slate-700 transition-all cursor-pointer shadow-sm"
+                  title="Previous Blueprint (Left Arrow Key)"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Prev</span>
+                </button>
+
+                {/* Direct Dropdown Switcher */}
+                <select
+                  value={currentTemplate.id}
+                  onChange={(e) => setPreviewModalTemplateId(e.target.value)}
+                  className="bg-slate-900 border border-teal-500/40 text-teal-300 font-bold text-xs rounded-xl px-3 py-1.5 outline-none cursor-pointer max-w-[280px] truncate"
+                >
+                  <optgroup label="🏢 BUSINESS ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
+                    {BUSINESS_ARCHITECTURE_TYPES.map((t, idx) => (
+                      <option key={t.id} value={t.id}>
+                        {idx + 1}. {t.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="⚙️ TECHNICAL CLOUD STACKS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
+                    {TECHNICAL_ARCHITECTURE_TYPES.map((t, idx) => (
+                      <option key={t.id} value={t.id}>
+                        {BUSINESS_ARCHITECTURE_TYPES.length + idx + 1}. {t.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
+
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs border border-slate-700 transition-all cursor-pointer shadow-sm"
+                  title="Next Blueprint (Right Arrow Key)"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Right: Theme Toggle, Load Blueprint & Close */}
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setPreviewModalTheme(t => t === 'light' ? 'dark' : 'light')}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all cursor-pointer"
+                  title="Toggle Light / Dark Preview Theme"
+                >
+                  {previewModalTheme === 'light' ? '☀️ Light' : '🌙 Dark'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentTab('editor');
+                    handleArchitectureSwitch(currentTemplate.id);
+                    setPreviewModalTemplateId(null);
+                  }}
+                  className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-teal-500/20 flex items-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02]"
+                >
+                  <span>Use Blueprint</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPreviewModalTemplateId(null)}
+                  className="p-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 transition-all cursor-pointer"
+                  title="Close Master Preview (Escape)"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Main Preview Canvas Viewport */}
+            <div className="flex-1 rounded-2xl border border-slate-800 bg-white dark:bg-slate-950 overflow-hidden relative mt-3 shadow-2xl flex items-center justify-center p-2 min-h-0">
+              <DiagramViewer
+                key={`master_preview_${currentTemplate.id}_${previewModalTheme}`}
+                xml={masterXml}
+                diagramType={currentTemplate.id}
+                bgTheme={previewModalTheme}
+                useCaseName={currentTemplate.name}
+                aspectRatioId="16:9"
+              />
+            </div>
+          </div>
+        );
+      })()}
+
       {forceRefreshToast && (
         <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-2xl border flex items-center gap-2.5 text-xs font-bold transition-all animate-bounce ${
           forceRefreshToast.type === 'success'
