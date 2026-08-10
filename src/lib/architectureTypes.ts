@@ -48,7 +48,8 @@ import {
   getExactGenomicsClinicalXml,
   getExactSupplyChainXml,
   getExactEvalSafetyXml,
-  getExactAgenticMeshXml
+  getExactAgenticMeshXml,
+  getExactValueStreamMapXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -123,6 +124,13 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "DevSecOps & Platform Engineering",
     whenToUse: "Enterprise DevSecOps polyrepo CI/CD pipeline spanning Plan, Git Source, 3-track CI/CD, and promotion",
     prompt: "Enterprise DevSecOps Polyrepo CI/CD Pipeline:\n- Plan & Govern: Data modeling and architectural governance.\n- Git Source & IaC: Polyrepo source control with automated PR protection rules.\n- 3-Track CI/CD: Data Engineering, Application Code, and MLOps build & test tracks.\n- Evaluation & Promotion: Automated quality gates, human-in-the-loop approval, and canary deployment."
+  },
+  {
+    id: "value_stream_map",
+    name: "Value Stream Map (VSM) - AI Delivery",
+    category: "Executive & Business Strategy",
+    whenToUse: "Enterprise AI Architecture & Delivery Value Stream Map (VSM) mapping Lead Time, Process Time (%C/A), Information Plane, Kaizen bursts, and DORA flow efficiency ladder from Prompt Ingestion to Production GitOps.",
+    prompt: "Act as an Enterprise Agile & Lean Value Stream Architect. Design a production-grade WBS 1.2.1 Enterprise AI Architecture & Delivery Value Stream Map (VSM). Include: Top Information & Control Plane (Customer Demand, Jira Portfolio Steering, Weekly ARB Committee, SRE Telemetry) -> Core Execution Value Stream Pipeline (Stage 1 Prompt Ingestion, Stage 2 Gemini 3.1 Pro Compilation, Stage 3 AI TRiSM & FinOps, Stage 4 ARB & HITL Sign-Off, Stage 5 GitOps IaC Provisioning) with Queue WIP Triangles and Kaizen Bursts -> Bottom Lead Time & Process Time Ladder with Flow Efficiency Scorecard and VSM Symbology Legend."
   }
 ];
 
@@ -368,6 +376,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('supply_chain') || id.includes('logistics') || id === 'tech_supply_chain') return 'tech_supply_chain';
   if (id.includes('eval_safety') || id.includes('benchmarking') || id === 'tech_eval_safety') return 'tech_eval_safety';
   if (id.includes('agentic_mesh') || id.includes('mesh_swarm') || id === 'tech_agentic_mesh') return 'tech_agentic_mesh';
+  if (id.includes('vsm') || id.includes('value_stream') || id === 'value_stream_map') return 'value_stream_map';
   return id;
 }
 
@@ -453,6 +462,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactEvalSafetyXml();
   } else if (id === 'tech_agentic_mesh' || id.includes('agentic_mesh') || id.includes('mesh_swarm')) {
     xml = getExactAgenticMeshXml();
+  } else if (id === 'value_stream_map' || id.includes('value_stream') || id.includes('vsm')) {
+    xml = getExactValueStreamMapXml();
   } else if (id === 'tech_modern_data_stack' || id.includes('modern_data_stack')) {
     xml = getExactModernDataStackWbsXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
