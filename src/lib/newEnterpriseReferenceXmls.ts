@@ -21,6 +21,7 @@ import { buildPristineStranglerFigXml } from './masterBuilders/master_builder_st
 import { buildPristineFinopsXml } from './masterBuilders/master_builder_finops';
 import { buildFintechPaymentsXml } from './masterBuilders/build_master_fintech_payments';
 import { buildGenomicsClinicalXml } from './masterBuilders/build_master_genomics_clinical';
+import { buildMultimodalIngestionXml } from './masterBuilders/build_master_multimodal_ingestion';
 import { buildSupplyChainXml } from './masterBuilders/build_master_supply_chain';
 import { buildEvalSafetyXml } from './masterBuilders/build_master_eval_safety';
 import { buildAgenticMeshXml } from './masterBuilders/build_master_agentic_mesh';
@@ -112,6 +113,10 @@ export function getExactFintechPaymentsXml(): string {
 
 export function getExactGenomicsClinicalXml(): string {
   return buildGenomicsClinicalXml();
+}
+
+export function getExactMultimodalIngestionXml(): string {
+  return buildMultimodalIngestionXml();
 }
 
 export function getExactSupplyChainXml(): string {

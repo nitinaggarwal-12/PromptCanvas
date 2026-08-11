@@ -440,6 +440,16 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     targetOutcomes: "Zero Regional Capacity Exhaustion, Sub-Second Token Rate Limiting, 100% Granular Token/Compute FinOps Chargeback, SRE Quota & Inference Health Monitoring",
     desc: "Comprehensive topology for LLM capacity and quota management mapping Edge API gateways, Redis rate-limiting caches, cross-region load balancers, multi-region GKE inference clusters, FinOps reporting, and SRE dashboards."
   },
+  tech_multimodal_ingestion: {
+    id: "tech_multimodal_ingestion",
+    title: "P4-DAT-P-09: Agentic Multi-Modal Ingestion Flow",
+    category: "Data & AI Architecture",
+    useCase: "GOOGLE CLOUD END-TO-END ARCHITECTURE: AGENTIC MULTI-MODAL INGESTION FLOW (P4-DAT-P-09)",
+    businessUseCase: "Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow powered by Gemini Platform and Google Earth App (GE App): Multi-Modal Input Sources (User Application Custom Client, Google Earth App GE App, 4 channels: Text/Docs, Voice/Audio, Image/Video, Geo-Spatial), Capture & Multi-Modal Processing GCP Services (Cloud Storage GCS, Speech-to-Text API, Vertex AI Vision API & Video Intelligence API, Google Maps Platform APIs), Gemini-Powered Agentic Orchestrator (Orchestration Agent powered by Gemini 1.5 Pro, Planning & Reasoning, Function Calling Tooling, Vertex AI Embedding API, Vertex AI Vector Search, Multimodal Semantic Search, Multimodal Gemini Reasoning Engine), and Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph Storage, Automated Insights & Reports, Alerting & Notifications Cloud Functions, GE App Annotations & Visualizations) with Platform Governance & Monitoring (IAM, Vertex AI Model Monitoring, Cloud Logging).",
+    primaryActors: "Principal AI Architects, Data Engineers, Geospatial Analysts, Multimodal ML Engineers",
+    targetOutcomes: "Zero-Data-Loss Multimodal Ingestion, Sub-Second Semantic Search, Agentic Context Retrieval, Real-Time Geo-Spatial Annotations",
+    desc: "Agentic multi-modal ingestion flow blueprint mapping Custom Clients, GE App, multi-modal GCP processing APIs, Gemini Agentic Orchestrator, BigQuery Knowledge Base, and automated alerting."
+  },
   data_residency_sovereign_map: {
     id: "data_residency_sovereign_map",
     title: "WBS 5.1.6: Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase)",

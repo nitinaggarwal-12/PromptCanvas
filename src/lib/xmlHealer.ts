@@ -55,6 +55,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     archType === 'tech_ai_trism_guardrails' ||
     archType === 'tech_micro_frontends' ||
     archType === 'tech_fintech_payments' ||
+    archType === 'tech_multimodal_ingestion' ||
+    Boolean(archType && (archType.includes('multimodal_ingestion') || archType.includes('multimodal'))) ||
+    inputXml.includes('agentic_multimodal_ingestion') ||
+    inputXml.includes('Multi-Modal Ingestion Flow') ||
     archType === 'tech_genomics_clinical' ||
     archType === 'tech_supply_chain' ||
     archType === 'tech_eval_safety' ||

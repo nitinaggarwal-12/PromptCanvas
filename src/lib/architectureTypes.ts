@@ -41,6 +41,7 @@ import {
   getExactMicroFrontendsXml,
   getExactFintechPaymentsXml,
   getExactGenomicsClinicalXml,
+  getExactMultimodalIngestionXml,
   getExactSupplyChainXml,
   getExactEvalSafetyXml,
   getExactAgenticMeshXml,
@@ -290,10 +291,17 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Act as a Principal FinTech & Payment Systems Architect. Design a production-grade WBS 3.2.1 FinTech Real-Time Payments & ISO 20022 Clearing blueprint. Include: Payment Ingress -> ISO 20022 Normalization Bus -> Real-Time Fraud & AML Scoring Engine -> Immutable Double-Entry Ledger on Cloud Spanner -> Settlement Rails (FedNow / RTP / SWIFT) -> Regulatory Reporting & AML Audit."
   },
   {
+    id: "tech_multimodal_ingestion",
+    name: "P4-DAT-P-09: Agentic Multi-Modal Ingestion Flow",
+    category: "Data & Lakehouse Architecture",
+    whenToUse: "P4-DAT-P-09 Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow powered by Gemini Platform and Google Earth App (GE App): Custom Clients, multi-modal capture (Text/Docs, Voice/Audio, Image/Video, Geo-Spatial), GCP Services (GCS, STT API, Vision/Video Intelligence, Maps APIs), Gemini-Powered Agentic Orchestrator (Orchestration Agent, Embedding API, Vector Search, Semantic Search, Reasoning Engine), and Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph, Automated Insights, Alerting Cloud Functions, GE App Visualizations).",
+    prompt: "Act as a Principal Multimodal AI & Data Solutions Architect. Design a production-grade Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow blueprint. Include: Left Platform Governance & Monitoring rotated strip; Column 1 Multi-Modal Input Sources & User Applications (User Application Custom Client, Google Earth App GE App, 4 channels: Text/Docs, Voice/Audio, Image/Video, Geo-Spatial); Column 2 Capture & Multi-Modal Processing GCP Services (Cloud Storage GCS, Speech-to-Text API, Vertex AI Vision API & Video Intelligence API, Google Maps Platform APIs); Column 3 Gemini-Powered Agentic Orchestrator Vertex AI (Orchestration Agent powered by Gemini 1.5 Pro, Agentic Planning & Reasoning, Function Calling Tooling, Vertex AI Embedding API, Vertex AI Vector Search, Multimodal Semantic Search, Multimodal Gemini Reasoning Engine, agent context feedback); Column 4 Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph Storage, Automated Insights & Reports, Alerting & Notifications Cloud Functions, GE App Annotations & Visualizations); Bottom Platform Governance & Monitoring (IAM, Vertex AI Model Monitoring, Cloud Logging)."
+  },
+  {
     id: "tech_genomics_clinical",
     name: "Pharma-Specific Genomics & Drug Discovery Pipeline with Agentic AI",
-    category: "Data & Lakehouse Architecture",
-    whenToUse: "Refactored Google Native Pharma-Specific Genomics & Drug Discovery Pipeline featuring AlphaFold Pro Differentiable Protein Design, GKE Spot & TPU Clusters, Gemini Drug-Discovery Specialized Models, and transitive PSC connectivity.",
+    category: "Industry Specialized Solutions",
+    whenToUse: "Industry-Specific Google Native Pharma Genomics & Drug Discovery Pipeline featuring AlphaFold Pro Differentiable Protein Design, GKE Spot & TPU Clusters, Gemini Drug-Discovery Specialized Models, and transitive PSC connectivity.",
     prompt: "Act as a Lead BioInformatics & AI Pharma Architect. Design a production-grade Pharma-Specific Genomics & Drug Discovery Pipeline blueprint. Include: On-Prem Sequencers & FASTQ -> Gemini Data Prep -> AlphaFold Pro Differentiable Protein Design -> GKE TPU Cluster & CMEK Lakehouse -> Gemini Drug-Discovery Models -> PSC Transitive Routing -> Google Cloud Managed Services (BigQuery, Vertex AI, Genomics AI, Looker Studio)."
   },
   {
@@ -349,8 +357,9 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.startsWith('p4-gov-l-05') || id === 'p4-gov-l-05') return 'tech_ai_trism_guardrails';
   if (id.startsWith('p4-gov-p-06') || id === 'p4-gov-p-06') return 'devops_cicd_pipeline';
   if (id.startsWith('p4-app-l-07') || id === 'p4-app-l-07') return 'tech_event_driven_eda';
-  if (id.startsWith('p4-app-l-08') || id === 'p4-app-l-08') return 'tech_serverless_gcp';
-  if (id.startsWith('p4-dat-p-09') || id === 'p4-dat-p-09') return 'tech_genomics_clinical';
+  if (id.startsWith('p4-dat-p-09') || id === 'p4-dat-p-09') return 'tech_multimodal_ingestion';
+  if (id.includes('multimodal_ingestion') || id.includes('multimodal') || id === 'tech_multimodal_ingestion') return 'tech_multimodal_ingestion';
+  if (id.includes('genomics') || id.includes('clinical') || id === 'tech_genomics_clinical') return 'tech_genomics_clinical';
   if (id.startsWith('p4-dat-p-10') || id === 'p4-dat-p-10') return 'tech_streaming_analytics';
   if (id.startsWith('p5-app-l-01') || id === 'p5-app-l-01') return 'six_rs_migration_matrix';
   if (id.startsWith('p5-sec-p-02') || id === 'p5-sec-p-02') return 'enterprise_sre_observability';
@@ -461,6 +470,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactMicroFrontendsXml();
   } else if (id === 'tech_fintech_payments' || id.includes('fintech') || id.includes('payments')) {
     xml = getExactFintechPaymentsXml();
+  } else if (id === 'tech_multimodal_ingestion' || id.includes('multimodal') || id === 'p4-dat-p-09') {
+    xml = getExactMultimodalIngestionXml();
   } else if (id === 'tech_genomics_clinical' || id.includes('genomics') || id.includes('clinical')) {
     xml = getExactGenomicsClinicalXml();
   } else if (id === 'tech_supply_chain' || id.includes('supply_chain') || id.includes('logistics')) {
