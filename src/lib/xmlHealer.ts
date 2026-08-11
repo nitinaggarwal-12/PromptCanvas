@@ -79,6 +79,9 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('id="supply_chain"') ||
     inputXml.includes('tech_supply_chain') ||
     inputXml.includes('id="modern_data_stack"') ||
+    inputXml.includes('modern_data_stack_lakehouse') ||
+    inputXml.includes('Modern Data Stack') ||
+    inputXml.includes('GCP Enterprise Data Lakehouse') ||
     inputXml.includes('id="event_driven_eda"')
   );
 
