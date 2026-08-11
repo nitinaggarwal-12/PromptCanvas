@@ -61,6 +61,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     Boolean(archType && archType.includes('streaming')) ||
     inputXml.includes('real_time_streaming') ||
     inputXml.includes('streaming_analytics') ||
+    archType === 'tech_llmops_lifecycle' ||
+    Boolean(archType && (archType.includes('llmops') || archType.includes('prompt_config'))) ||
+    inputXml.includes('llmops_prompt_config_lifecycle') ||
+    inputXml.includes('LLMOps Prompt') ||
     inputXml.includes('id="data-ai-pipeline-wbs"') ||
     inputXml.includes('id="gcp-lakehouse-wbs"') ||
     inputXml.includes('id="modern-data-stack-wbs"') ||

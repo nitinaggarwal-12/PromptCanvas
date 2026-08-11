@@ -46,7 +46,8 @@ import {
   getExactAgenticMeshXml,
   getExactValueStreamMapXml,
   getExactAsIsToBeProcessFlowXml,
-  getExactStreamingAnalyticsXml
+  getExactStreamingAnalyticsXml,
+  getExactLlmopsLifecycleXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -347,7 +348,8 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.startsWith('p5-gov-p-03') || id === 'p5-gov-p-03') return 'golive_warroom_runbook';
   if (id.startsWith('p5-gov-l-04') || id === 'p5-gov-l-04') return 'enterprise_sre_observability';
   if (id.startsWith('p5-ai-l-05') || id === 'p5-ai-l-05') return 'ai_coe_operating_model';
-  if (id.startsWith('p5-ai-p-07') || id === 'p5-ai-p-07') return 'tech_eval_safety';
+  if (id.startsWith('p5-ai-p-07') || id === 'p5-ai-p-07') return 'tech_llmops_lifecycle';
+  if (id.includes('llmops') || id.includes('prompt_config') || id === 'tech_llmops_lifecycle') return 'tech_llmops_lifecycle';
   if (id.startsWith('p5-dat-p-08') || id === 'p5-dat-p-08') return 'dataops_anomaly_detection';
   if (id.startsWith('p5-gov-p-09') || id === 'p5-gov-p-09') return 'tech_multi_region_dr';
 
@@ -464,6 +466,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactAsIsToBeProcessFlowXml();
   } else if (id === 'tech_streaming_analytics' || id.includes('streaming') || id === 'streaming_pipeline') {
     xml = getExactStreamingAnalyticsXml();
+  } else if (id === 'tech_llmops_lifecycle' || id.includes('llmops') || id.includes('prompt_config') || id === 'p5-ai-p-07') {
+    xml = getExactLlmopsLifecycleXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
     xml = getExactGcpDataLakehouseWbsXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {

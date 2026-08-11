@@ -1,4 +1,5 @@
-<mxfile host="embed.diagrams.net">
+export function buildLlmopsLifecycleXml(): string {
+  return `<mxfile host="embed.diagrams.net">
   <diagram id="llmops_prompt_config_lifecycle" name="LLMOps Prompt Configuration Lifecycle (P5-AI-P-07)">
     <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1180" pageHeight="600" background="#FFFFFF" math="0" shadow="0">
       <root>
@@ -239,4 +240,5 @@
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>
+</mxfile>`;
+}

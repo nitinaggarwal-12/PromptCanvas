@@ -25,6 +25,7 @@ import { buildSupplyChainXml } from './masterBuilders/build_master_supply_chain'
 import { buildEvalSafetyXml } from './masterBuilders/build_master_eval_safety';
 import { buildAgenticMeshXml } from './masterBuilders/build_master_agentic_mesh';
 import { buildStreamingAnalyticsXml } from './masterBuilders/build_master_streaming_analytics';
+import { buildLlmopsLifecycleXml } from './masterBuilders/build_master_llmops_lifecycle';
 import { buildZeroTrustMeshXml } from './masterBuilders/build_master_zero_trust_mesh';
 import { buildCompleteWellArchitectedGcpDrMasterXml } from './masterBuilders/master_builder';
 import { buildDataLakehouseXml } from './masterBuilders/build_master_data_lakehouse';
@@ -125,6 +126,10 @@ export function getExactAgenticMeshXml(): string {
 
 export function getExactStreamingAnalyticsXml(): string {
   return buildStreamingAnalyticsXml();
+}
+
+export function getExactLlmopsLifecycleXml(): string {
+  return buildLlmopsLifecycleXml();
 }
 
 export function getExactZeroTrustMeshXml(): string {
