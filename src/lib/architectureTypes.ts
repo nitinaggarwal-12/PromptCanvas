@@ -50,7 +50,8 @@ import {
   getExactStreamingAnalyticsXml,
   getExactLlmopsLifecycleXml,
   getExactLlmCapacityQuotaXml,
-  getExactIncidentTriageSreXml
+  getExactIncidentTriageSreXml,
+  getExactServerlessGcpReferenceXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -159,10 +160,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_serverless_gcp",
-    name: "Serverless Web Application - GCP",
+    name: "P4-APP-L-08: Serverless EDA Architecture",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "Official GCP serverless web application architecture using Cloud Run, Cloud Functions, API Gateway, Pub/Sub, Workflows, Firestore, and Memorystore",
-    prompt: "Act as a GCP Principal Cloud Architect. Design a production-grade serverless web application architecture on Google Cloud. Include: Global Cloud Load Balancing with SSL & Cloud CDN, API Gateway with Identity-Aware Proxy (IAP) auth, Cloud Run microservices with zero-cold-start tuning, Cloud Functions for event-driven image processing, Cloud Pub/Sub with dead-letter queue, Cloud Workflows multi-step orchestration, Cloud Firestore auto-sharded document DB, Memorystore for Redis sub-millisecond cache, Cloud Storage (GCS), and Google Cloud Operations Suite with complete Terraform IaC and IAM least-privilege matrix."
+    whenToUse: "P4-APP-L-08 Serverless Event-Driven Architecture (EDA): End-to-End GE App Integration powered by Google Cloud (GCP), Gemini Platform, and GE App. Features GE App/IoT industrial sensors, Cloud Load Balancing/CDN, Cloud Run ingestion, Pub/Sub event bus, Vertex AI Gemini Platform (Predictive Maintenance & Root Cause Analysis), Cloud Bigtable time-series data, Cloud SQL metadata, BigQuery data analytics lake, Looker reporting, BigQuery ML, and automated Cloud Tasks & Notification Services.",
+    prompt: "Act as a Principal Serverless & Event-Driven Systems Architect. Design a production-grade P4-APP-L-08 Serverless EDA Architecture: End-to-End GE App Integration blueprint powered by Google Cloud (GCP), Gemini Platform, and GE App. Include: Column 1 External Sources & Event Triggers (GE App / User Devices with telemetry & user actions, IoT Industrial Sensors with real-time event streaming, Cloud Load Balancing / Cloud CDN); Column 2 Ingestion (Cloud Run Ingestion Microservice performing light validation and enrichment); Column 3 Distributed Asynchronous Messaging (Pub/Sub Topics and Subscriptions with User Action Event); Column 4 Processing (Cloud Run Telemetry Analysis, Cloud Functions Validate Event, Cloud Run Anomaly Interpretation, Cloud Functions Route Action); Column 5 Vertex AI Platform & Gemini (Gemini Model Family Pro/Ultra, Predictive Maintenance Analysis, Root Cause Analysis, Natural Language Insight Generation, Maintenance Order trigger); Column 6 Decision Executed & Storage (Cloud Run decision executor, Cloud Bigtable time-series data, Cloud SQL metadata, BigQuery data analytics lake, Cloud Tasks managing external actions, Pub/Sub egress); Column 7 Actions & Visibility (Looker Visual Insights & BI Reporting with charts mockup, BigQuery ML / Vertex AI ML, External APIs Vendor Systems/Work Order/ERP, Notification Services push alerts) -> Google Cloud + Gemini footer."
   },
   {
     id: "tech_multi_region_dr",
@@ -399,6 +400,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('supply_chain') || id.includes('logistics') || id === 'tech_supply_chain') return 'tech_supply_chain';
   if (id.includes('eval_safety') || id.includes('benchmarking') || id === 'tech_eval_safety') return 'tech_eval_safety';
   if (id.includes('agentic_mesh') || id.includes('mesh_swarm') || id === 'tech_agentic_mesh') return 'tech_agentic_mesh';
+  if (id.includes('serverless') || id === 'tech_serverless_gcp' || id.includes('p4-app-l-08')) return 'tech_serverless_gcp';
   if (id.includes('vsm') || id.includes('value_stream') || id === 'value_stream_map') return 'value_stream_map';
   if (id.includes('as_is') || id.includes('asis') || id.includes('tobe') || id.includes('to_be') || id === 'asis_vs_tobe_process_flow') return 'asis_vs_tobe_process_flow';
   return id;
@@ -494,6 +496,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactIncidentTriageSreXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
     xml = getExactGcpDataLakehouseWbsXml();
+  } else if (id === 'tech_serverless_gcp' || id === 'serverless_gcp' || id.includes('serverless') || id === 'p4-app-l-08') {
+    xml = getExactServerlessGcpReferenceXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {

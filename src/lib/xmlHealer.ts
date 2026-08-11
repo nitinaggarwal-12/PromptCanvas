@@ -59,6 +59,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     Boolean(archType && (archType.includes('multimodal_ingestion') || archType.includes('multimodal'))) ||
     inputXml.includes('agentic_multimodal_ingestion') ||
     inputXml.includes('Multi-Modal Ingestion Flow') ||
+    archType === 'tech_serverless_gcp' ||
+    Boolean(archType && (archType.includes('serverless') || archType.includes('p4-app-l-08'))) ||
+    inputXml.includes('serverless_eda_architecture') ||
+    inputXml.includes('SERVERLESS EDA ARCHITECTURE') ||
     archType === 'tech_genomics_clinical' ||
     archType === 'tech_supply_chain' ||
     archType === 'tech_eval_safety' ||

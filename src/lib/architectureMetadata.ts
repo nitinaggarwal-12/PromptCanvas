@@ -201,13 +201,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_serverless_gcp: {
     id: "tech_serverless_gcp",
-    title: "Serverless Web Application - GCP",
+    title: "P4-APP-L-08: Serverless EDA Architecture",
     category: "Cloud Infrastructure & Networking",
-    useCase: "GCP CLOUD PLATFORM",
-    businessUseCase: "Production serverless web application on Google Cloud providing elastic API entry, asynchronous event ingestion, multi-step orchestration, and sub-millisecond in-memory caching.",
-    primaryActors: "Cloud Technical Architects, Web App Developers, DevOps & SREs",
-    targetOutcomes: "99.99% Availability, Auto-Scaling from 0 to 1000 Requests, Zero Infrastructure Management Overhead",
-    desc: "Official GCP serverless reference architecture featuring Global Cloud Load Balancing, API Gateway, IAP, Cloud Run, Cloud Functions, Pub/Sub, Cloud Workflows, Firestore, Memorystore for Redis, and Cloud Operations Suite."
+    useCase: "SERVERLESS EDA ARCHITECTURE: END-TO-END GE APP INTEGRATION (P4-APP-L-08)",
+    businessUseCase: "P4-APP-L-08: Production serverless Event-Driven Architecture (EDA) integrating GE App mobile clients and IoT Industrial Sensors with Cloud Load Balancing, Cloud Run Ingestion microservice, distributed Pub/Sub asynchronous event bus, Vertex AI Gemini Platform (Predictive Maintenance & Root Cause Analysis), Cloud Bigtable time-series data, Cloud SQL metadata, BigQuery data analytics lake, Looker visual insights, BigQuery ML, and automated external API actions via Cloud Tasks and Notification Services.",
+    primaryActors: "Event-Driven Architects, IoT Solutions Engineers, Cloud Platform Leads, Predictive Maintenance Specialists, SREs",
+    targetOutcomes: "Sub-100ms Event Ingestion, Real-Time Anomaly Interpretation via Gemini, Zero-Loss Event Fan-Out, Automated Work Order Dispatch, 99.99% Serverless Availability",
+    desc: "Serverless Event-Driven Architecture (EDA) blueprint mapping GE App/IoT ingress, Cloud Run ingestion, Pub/Sub messaging bus, Gemini Platform reasoning, Cloud Bigtable, BigQuery, Looker reporting, and automated Cloud Tasks actions."
   },
   tech_multi_region_dr: {
     id: "tech_multi_region_dr",

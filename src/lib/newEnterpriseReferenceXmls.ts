@@ -34,6 +34,7 @@ import { buildCompleteWellArchitectedGcpDrMasterXml } from './masterBuilders/mas
 import { buildDataLakehouseXml } from './masterBuilders/build_master_data_lakehouse';
 import { buildValueStreamMapXml } from './masterBuilders/master_builder_vsm';
 import { buildAsIsToBeProcessFlowXml } from './masterBuilders/master_builder_asis_tobe';
+import { buildServerlessEdaXml } from './masterBuilders/build_master_serverless_eda';
 
 const SVG_GCP_LOGO = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E";
 const SVG_CYLINDER_3D_RED = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2070%22%20width%3D%2238%22%20height%3D%2244%22%3E%3Cpath%20d%3D%22M5%2C15%20L5%2C50%20C5%2C60%2055%2C60%2055%2C50%20L55%2C15%20Z%22%20fill%3D%22%23EF4444%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%222%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2250%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%23DC2626%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2215%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%23F87171%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E";
@@ -272,69 +273,7 @@ export function getExactAgenticRagWidescreenXml(): string {
 }
 
 export function getExactServerlessGcpReferenceXml(): string {
-  return `<mxfile host="embed.diagrams.net">
-  <diagram id="gcp_serverless_arch" name="GCP Production Serverless Web Application Architecture">
-    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="n1" value="🌐 &lt;b&gt;[1] Cloud Armor &amp; Global External HTTPS LB&lt;/b&gt;&lt;br&gt;&lt;i&gt;WAF Rules, TLS 1.3 Termination &amp; Cloud CDN&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="100" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="n2" value="🚀 &lt;b&gt;[2] Cloud Run Fully-Managed Microservices&lt;/b&gt;&lt;br&gt;&lt;i&gt;Direct Serverless VPC Access (10.128.0.0/28)&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="270" width="280" height="95" as="geometry"/>
-        </mxCell>
-        <mxCell id="n3" value="⚡ &lt;b&gt;[3] Cloud Tasks &amp; Pub/Sub Async Engine&lt;/b&gt;&lt;br&gt;&lt;i&gt;Exponential Backoff &amp; Dead-Letter Queue (DLQ)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FAF5FF;strokeColor=#7C3AED;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="460" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="n4" value="🛢️ &lt;b&gt;[4] Cloud SQL PostgreSQL (Private IP Only)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Regional High-Availability &amp; Automated PITR&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="100" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="n5" value="⚡ &lt;b&gt;[5] Memorystore for Redis (In-Memory Cache)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Sub-ms Response Times &amp; Rate Limiting Tier&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="280" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="n6" value="🪣 &lt;b&gt;[6] Cloud Storage Multi-Region CMEK Bucket&lt;/b&gt;&lt;br&gt;&lt;i&gt;Immutable WORM Retention &amp; Signed URLs&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="460" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="n7" value="🔐 &lt;b&gt;[7] Secret Manager &amp; Cloud KMS HSM&lt;/b&gt;&lt;br&gt;&lt;i&gt;Automatic 90-day Rotation &amp; VPC-SC Perimeter&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="100" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="n8" value="📊 &lt;b&gt;[8] Cloud Operations (Monitoring/Logging)&lt;/b&gt;&lt;br&gt;&lt;i&gt;OpenTelemetry Traces, SLI/SLO Error Budgets&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="280" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="n9" value="🧠 &lt;b&gt;[9] Vertex AI Gemini Enterprise Integration&lt;/b&gt;&lt;br&gt;&lt;i&gt;Private Service Connect Ingress (Zero Internet)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="460" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="e1" value="1. Filtered HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n1" target="n2">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e2" value="2. Serverless VPC Access" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n2" target="n4">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="240" y="225"/>
-              <mxPoint x="480" y="225"/>
-              <mxPoint x="480" y="135"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e3" value="3. Async Event Push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n2" target="n3">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e4" value="4. Cache Read/Write" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n2" target="n5">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e5" value="5. Private API PSC Call" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n4" target="n9">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="940" y="135"/>
-              <mxPoint x="940" y="495"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+  return buildServerlessEdaXml();
 }
 
 export function getExactValueStreamMapXml(): string {

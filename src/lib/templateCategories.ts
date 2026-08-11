@@ -157,20 +157,27 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // =========================================================================
   {
     id: "tech_serverless_gcp",
-    name: "Serverless Web Application - GCP",
+    name: "P4-APP-L-08: Serverless EDA Architecture",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
-    badge: "Cloud Reference",
-    whenToUse: "Use for high-traffic serverless web applications on Google Cloud using Cloud Run, Cloud Armor WAF, Serverless VPC Connectors, and Cloud SQL HA.",
+    badge: "Canonical Master (P4-APP-L-08)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for robust serverless Event-Driven Architecture (EDA) integrating GE App mobile clients and IoT Industrial Sensors with Cloud Load Balancing, Cloud Run Ingestion, Pub/Sub event bus, Vertex AI Gemini Platform, Cloud Bigtable, BigQuery, and automated Cloud Tasks actions.",
     bestFor: [
-      "Serverless container microservices",
-      "Cloud Armor WAF (SQLi/XSS & Rate Limiting)",
-      "Private Google Access & Serverless VPC connectors",
-      "Cloud SQL High-Availability PostgreSQL"
+      "P4-APP-L-08 Canonical Master Blueprint (Platform Engineering Phase)",
+      "GE App mobile user devices & IoT Industrial Sensors ingress",
+      "Cloud Load Balancing / Cloud CDN edge traffic management",
+      "Cloud Run Ingestion microservice performing light validation and enrichment",
+      "Pub/Sub distributed asynchronous event bus (Topics & Subscriptions)",
+      "Vertex AI Gemini Platform for Predictive Maintenance, Anomaly Interpretation & Root Cause Analysis",
+      "Cloud Bigtable time-series IoT data & Cloud SQL transactional metadata",
+      "BigQuery data analytics lake & Looker BI reporting visual insights",
+      "Cloud Tasks external action orchestration & Notification Services push alerts"
     ],
-    keyTech: ["Google Cloud Run", "Cloud Armor WAF", "Cloud CDN", "Serverless VPC Access", "Cloud SQL HA", "Cloud Storage"],
+    keyTech: ["Cloud Run", "Pub/Sub", "Vertex AI Gemini", "Cloud Bigtable", "Cloud SQL", "BigQuery", "Looker", "Cloud Tasks", "GE App"],
     thumbnail: "/templates/tech_serverless_gcp.png",
-    promptSummary: "GCP Serverless Architecture: Cloud DNS -> Cloud Armor WAF -> Cloud Run UI/API -> VPC Connector -> Cloud SQL HA."
+    promptSummary: "Serverless EDA Architecture: GE App & IoT Sensors -> Cloud Load Balancing -> Cloud Run Ingestion -> Pub/Sub Event Bus -> Event Processing -> Vertex AI Gemini Platform -> Bigtable / Cloud SQL / BigQuery -> Looker & Cloud Tasks."
   },
   {
     id: "tech_multi_region_dr",

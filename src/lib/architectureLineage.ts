@@ -309,16 +309,16 @@ export const BLUEPRINT_LINEAGE_REGISTRY: Record<string, BlueprintLineage> = {
   },
   "tech_serverless_gcp": {
     uniqueId: "P4-APP-L-08",
-    canonicalWbsId: "P4-APP-L-08_tech_serverless_gcp",
+    canonicalWbsId: "P4-APP-L-08_serverless_eda_architecture",
     canonicalArchId: "tech_serverless_gcp",
-    name: "Google Cloud Serverless Microservices Platform",
+    name: "Serverless EDA Architecture",
     phaseId: "P4",
     phaseTitle: "Phase 4: Platform Engineering, Mesh & Real-Time Intelligence",
     layer: "Logical",
     layerCode: "-L-",
-    domain: "Serverless & Microservices",
+    domain: "Cloud Run serverless microservices, Eventarc triggers, Cloud Tasks queues, and Firestore / MemoryStore cache.",
     isIndustrySpecialized: false,
-    lineageBreadcrumb: ["Phase 4: Platform Engineering", "Logical Layer (-L-)", "Serverless & Microservices", "P4-APP-L-08"]
+    lineageBreadcrumb: ["Phase 4: Platform Engineering", "Logical Layer (-L-)", "Serverless EDA Architecture", "P4-APP-L-08"]
   },
   "tech_multimodal_ingestion": {
     uniqueId: "P4-DAT-P-09",
