@@ -68,6 +68,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('id="c4_system_context"') ||
     inputXml.includes('id="pharma_genomics_pipeline"') ||
     inputXml.includes('pharma_genomics') ||
+    inputXml.includes('id="supply_chain"') ||
+    inputXml.includes('tech_supply_chain') ||
     inputXml.includes('id="modern_data_stack"') ||
     inputXml.includes('id="event_driven_eda"')
   );

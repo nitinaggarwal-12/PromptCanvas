@@ -1,246 +1,335 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 export function buildSupplyChainXml(): string {
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="supply_chain" name="WBS 5.3.1: Global Supply Chain Real-Time Logistics &amp; Digital Twin">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="supply_chain" name="WBS 5.3.1: Supply Chain Logistics &amp; Digital Twin with Gemini Enterprise &amp; Spanner Graph">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="940" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- TOP TITLE BANNER -->
-        <mxCell id="main_title_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="16" width="600" height="64" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;WBS 5.3.1: Supply Chain Logistics &amp;amp; Digital Twin&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13.5px;color:#334155;&quot;&gt;(Cloud Dataflow Simulation, Spanner Graph &amp;amp; Vertex AI ETA Forecaster)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="20" width="570" height="56" as="geometry"/>
-        </mxCell>
-
-        <!-- TOP RIGHT METADATA TABLE -->
-        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;width:34%;&quot;&gt;Diagram Name:&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;width:66%;&quot;&gt;Supply Chain &amp;amp; Digital Twin&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;GCAF Pillar:&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Industry Solutions &amp;amp; Domain Accelerators&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Architecture State:&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;&quot;&gt;To-Be&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Persona (Creator):&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;&quot;&gt;1. Supply Chain Architect&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Target Audience:&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Logistics Ops, Fleet Leads, ERP Engs&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Effort:&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;&quot;&gt;High&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Tech Stack:&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Pub/Sub, Dataflow, Spanner Graph, Vertex AI, BigQuery&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Classification:&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Real-Time Digital Twin&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Blueprint ID:&lt;/td&gt;
-    &lt;td style=&quot;padding:3px 6px;font-family:monospace;color:#D97706;font-weight:bold;&quot;&gt;tech_supply_chain_gcp&lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
+        <!-- ========================================================================= -->
+        <!-- 1. TOP MAIN HEADER BANNER                                                 -->
+        <!-- ========================================================================= -->
+        <mxCell id="main_title_banner" value="&lt;b style=&quot;font-size:16px;letter-spacing:0.2px;color:#0F172A;&quot;&gt;WBS 5.3.1: Autonomous Supply Chain Logistics &amp;amp; Real-Time Digital Twin with Gemini Enterprise &amp;amp; Spanner Graph&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="14" width="1500" height="42" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT TIER: FLEET TELEMETRY & IOT INGRESS (x = 30 .. 330) -->
-        <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
+        <!-- ========================================================================= -->
+        <!-- 2. ZONE 1: FLEET TELEMETRY & EDGE INGRESS TIER (x = 30 .. 340)             -->
+        <!-- ========================================================================= -->
+        <mxCell id="lbl_ingress_hdr" value="&lt;div style=&quot;display:flex;align-items:center;gap:5px;&quot;&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;📡&lt;/span&gt; &lt;b style=&quot;font-size:12px;color:#B45309;&quot;&gt;FLEET TELEMETRY &amp;amp; IOT INGRESS TIER&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="290" height="24" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_ingress_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#D97706;&quot;&gt;FLEET TELEMETRY &amp;amp; IOT INGRESS TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Node 1: Fleet GPS & RFID Sensors -->
-        <mxCell id="node_telemetry_sources" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Fleet GPS, Port &amp;amp; RFID Telemetry&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;500k global containers &amp;amp; delivery vehicles&lt;br&gt;Real-time GPS coordinates, temp &amp;amp; shock sensors&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
+        <mxCell id="box_ingress" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="88" width="310" height="660" as="geometry"/>
         </mxCell>
 
-        <!-- Node 2: Cloud Pub/Sub High-Throughput Stream -->
-        <mxCell id="node_pubsub_iot" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Cloud Pub/Sub Fleet Event Bus&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Millions of events/sec streaming buffer&lt;br&gt;Dynamic schema validation &amp;amp; dead-letter routing&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="50" y="310" width="260" height="85" as="geometry"/>
+        <!-- Node 1: Fleet GPS, Port & RFID Telemetry -->
+        <mxCell id="node_telemetry_sources" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:36px;font-size:24px;vertical-align:middle;text-align:center;&quot;&gt;🚛&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Fleet GPS, Port &amp;amp; RFID Telemetry&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;500k+ Global Containers &amp;amp; Connected Fleet&lt;br&gt;Real-Time GPS, Temp, Shock &amp;amp; Tilt Telemetry&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="110" width="280" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Node 3: Geofence & Delay Anomaly Trap -->
-        <mxCell id="node_geofence_trap" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Geofence &amp;amp; Delay Trap Filter&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Detects port bottlenecks, dwell time spikes,&lt;br&gt;&amp;amp; cold-chain temperature excursions&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="50" y="450" width="260" height="90" as="geometry"/>
+        <!-- Node 2: Cloud Pub/Sub Fleet Event Bus -->
+        <mxCell id="node_pubsub_iot" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:36px;font-size:24px;vertical-align:middle;text-align:center;&quot;&gt;⚡&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Cloud Pub/Sub Fleet Event Bus&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Millions of events/sec streaming buffer&lt;br&gt;Dynamic schema validation &amp;amp; dead-letter DLQ&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="240" width="280" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Node 4: Edge Sensor Token Validator -->
-        <mxCell id="node_edge_token" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;mTLS Device Authenticator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Hardware TPM certificate verification&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="50" y="590" width="260" height="75" as="geometry"/>
+        <!-- Node 3: Geofence & Delay Trap Filter -->
+        <mxCell id="node_geofence_trap" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:36px;font-size:24px;vertical-align:middle;text-align:center;&quot;&gt;⏱️&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Geofence &amp;amp; Delay Trap Filter&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Detects port bottlenecks, dwell time spikes,&lt;br&gt;&amp;amp; cold-chain temperature excursions&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="370" width="280" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Persona Supply Chain Architect Bottom Left -->
-        <mxCell id="persona_sc_arch" value="🚚&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Supply Chain Architect&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Digital Twin Lead)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
-          <mxGeometry x="95" y="715" width="170" height="65" as="geometry"/>
+        <!-- Node 4: mTLS & Device Authenticator -->
+        <mxCell id="node_edge_token" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:36px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;🔒&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;mTLS Device Authenticator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#16A34A;font-weight:bold;&quot;&gt;Hardware TPM certificate verification&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="500" width="280" height="75" as="geometry"/>
         </mxCell>
 
-
-        <!-- CENTER TIER: DIGITAL TWIN SIMULATION & INVENTORY GRAPH (x = 370 .. 790) -->
-        <mxCell id="box_simulation" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
+        <!-- Persona Supply Chain Architect -->
+        <mxCell id="persona_sc_arch" value="&lt;div style=&quot;font-size:26px;&quot;&gt;🚚&lt;/div&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Supply Chain Architect&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;(Digital Twin Lead)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="90" y="605" width="190" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_simulation_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#2563EB;&quot;&gt;DATAFLOW DIGITAL TWIN &amp;amp; SPANNER GRAPH TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="380" y="130" width="390" height="25" as="geometry"/>
+
+        <!-- Connectors inside Ingress Tier -->
+        <mxCell id="e_telem_pubsub" value="MQTT / Cellular Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_telemetry_sources" target="node_pubsub_iot">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_pubsub_geofence" value="Real-Time Telemetry Events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_pubsub_iot" target="node_geofence_trap">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_token_pubsub" value="mTLS Verified" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;fontSize=8;fontColor=#16A34A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_edge_token" target="node_geofence_trap">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- 3. ZONE 2: DIGITAL TWIN SIMULATION & SPANNER GRAPH TIER (x = 360 .. 830)   -->
+        <!-- ========================================================================= -->
+        <mxCell id="lbl_simulation_hdr" value="&lt;div style=&quot;display:flex;align-items:center;gap:5px;&quot;&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;🌊&lt;/span&gt; &lt;b style=&quot;font-size:12px;color:#1D4ED8;&quot;&gt;DATAFLOW DIGITAL TWIN &amp;amp; SPANNER GRAPH TIER&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="370" y="60" width="450" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_simulation" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="360" y="88" width="470" height="660" as="geometry"/>
         </mxCell>
 
         <!-- Node 5: Cloud Dataflow Digital Twin Simulation Engine -->
-        <mxCell id="node_dataflow_twin" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud Dataflow Digital Twin Simulation Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Apache Beam stateful stream processing with sliding session windows&lt;br&gt;• Real-time graph node state mutations across supply chain network&lt;br&gt;• Sub-second latency for dynamic supply re-balancing&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="395" y="175" width="360" height="110" as="geometry"/>
+        <mxCell id="node_dataflow_twin" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;font-size:26px;vertical-align:middle;text-align:center;&quot;&gt;🌊&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud Dataflow Digital Twin Simulation Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;• Apache Beam stateful stream processing with sliding session windows&lt;br&gt;• Real-time graph node state mutations across global supply network&lt;br&gt;• Sub-second latency for dynamic supply &amp;amp; capacity re-balancing&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="375" y="110" width="440" height="95" as="geometry"/>
         </mxCell>
 
         <!-- Node 6: Cloud Spanner Multi-Region Global Inventory Graph -->
-        <mxCell id="node_spanner_graph" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud Spanner Multi-Region Global Inventory Graph&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Strict ACID multi-region distributed inventory ledger&lt;br&gt;• Graph queries for complex multi-echelon SKU availability&lt;br&gt;• 99.999% SLA TrueTime atomic allocations&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="395" y="320" width="360" height="115" as="geometry"/>
+        <mxCell id="node_spanner_graph" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;font-size:26px;vertical-align:middle;text-align:center;&quot;&gt;🗄️&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud Spanner Multi-Region Global Inventory Graph&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;• Strict ACID multi-region distributed inventory ledger with Spanner Graph (GQL)&lt;br&gt;• Complex multi-echelon SKU availability &amp;amp; supplier relationship queries&lt;br&gt;• &lt;b style=&quot;color:#16A34A;&quot;&gt;99.999% SLA&lt;/b&gt; TrueTime atomic allocations across global DCs &amp;amp; hubs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="375" y="240" width="440" height="115" as="geometry"/>
         </mxCell>
 
         <!-- Node 7: Vertex AI Demand & ETA Forecasting Engine -->
-        <mxCell id="node_vertex_eta" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Demand &amp;amp; Predictive ETA Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Transformer-based multimodal routing &amp;amp; weather disruption AI&lt;br&gt;• Dynamic ETA predictions updated every 60 seconds&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="395" y="475" width="360" height="100" as="geometry"/>
+        <mxCell id="node_vertex_eta" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;font-size:26px;vertical-align:middle;text-align:center;&quot;&gt;🧠&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Demand &amp;amp; Predictive ETA Forecaster&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;• Transformer-based multimodal routing &amp;amp; weather disruption AI (Gemini)&lt;br&gt;• Dynamic ETA predictions updated every 60 seconds across active routes&lt;br&gt;• Autonomous stockout risk evaluation &amp;amp; rerouting recommendation engine&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#8B5CF6;strokeWidth=2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="375" y="390" width="440" height="100" as="geometry"/>
         </mxCell>
 
-        <!-- Node 8: BigQuery Logistics Data Lake -->
-        <mxCell id="node_bq_logistics" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;BigQuery Logistics Data Lakehouse&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Multi-year carrier performance benchmarks &amp;amp; SLA analytics&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="395" y="625" width="360" height="90" as="geometry"/>
+        <!-- Node 8: BigQuery Logistics Data Lakehouse -->
+        <mxCell id="node_bq_logistics" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;font-size:26px;vertical-align:middle;text-align:center;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;BigQuery Logistics Data Lakehouse &amp;amp; Analytics&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;• Multi-year carrier performance benchmarks, freight rates &amp;amp; SLA analytics&lt;br&gt;• Scope 3 carbon emission calculations &amp;amp; supply chain telemetry warehouse&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="375" y="525" width="440" height="105" as="geometry"/>
         </mxCell>
 
-
-        <!-- RIGHT TIER: CONTROL TOWER, AUTOMATED DISPATCH & ERP (x = 830 .. 1560) -->
-        <mxCell id="box_control" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_control_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#7C3AED;&quot;&gt;LOGISTICS CONTROL TOWER &amp;amp; ENTERPRISE ERP TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="280" width="720" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Logistics Control Tower Command Center -->
-        <mxCell id="node_control_tower" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;Logistics Control Tower Command Cockpit&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Real-time 3D geospatial digital twin visualization of global freight&lt;br&gt;• Automated triage workflow for stalled containers &amp;amp; port strikes&lt;br&gt;• Executive KPI scorecard on inventory velocity &amp;amp; carbon emissions&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="850" y="325" width="440" height="115" as="geometry"/>
-        </mxCell>
-
-        <!-- SAP S/4HANA & Enterprise ERP Bridge -->
-        <mxCell id="node_sap_erp" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;SAP S/4HANA &amp;amp; ERP Bridge&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Automated PO goods receipt sync,&lt;br&gt;financial ledger balance updates&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="850" y="480" width="280" height="90" as="geometry"/>
-        </mxCell>
-
-        <!-- Carrier Bidding & Automated Dispatch Engine -->
-        <mxCell id="node_carrier_dispatch" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Automated Carrier Dispatch API&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Dynamic spot market freight bidding,&lt;br&gt;automated driver dispatch notifications&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1170" y="480" width="220" height="90" as="geometry"/>
-        </mxCell>
-
-        <!-- Persona Global Logistics Director -->
-        <mxCell id="persona_logistics_dir" value="🌐&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Global Logistics Director&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Control Tower Operations)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
-          <mxGeometry x="890" y="615" width="200" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- Persona Inventory Planning Lead -->
-        <mxCell id="persona_inv_lead" value="📊&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Inventory Planning Lead&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(ERP &amp;amp; Stock Rebalancing)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="615" width="200" height="60" as="geometry"/>
-        </mxCell>
-
-
-        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
-
-        <!-- 1. Telemetry -> Pub/Sub -->
-        <mxCell id="e_telem_pubsub" value="MQTT / Cellular Streaming Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_telemetry_sources" target="node_pubsub_iot">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- 2. Pub/Sub -> Geofence Trap -->
-        <mxCell id="e_pubsub_geofence" value="Real-Time Telemetry Events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_pubsub_iot" target="node_geofence_trap">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- 3. Geofence -> Dataflow Simulation -->
-        <mxCell id="e_geofence_dataflow" value="Stream Ingress Pipeline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+        <!-- Connectors inside Simulation Tier -->
+        <mxCell id="e_geofence_dataflow" value="Stream Ingress Pipeline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;fontSize=8.5;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_geofence_trap" target="node_dataflow_twin">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="310" y="495" as="sourcePoint"/>
-            <mxPoint x="395" y="230" as="targetPoint"/>
             <Array as="points">
-              <mxPoint x="345" y="495"/>
-              <mxPoint x="345" y="230"/>
+              <mxPoint x="345" y="412"/>
+              <mxPoint x="345" y="157"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dataflow_spanner" value="Stateful Graph Mutation (GQL)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=8.5;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_dataflow_twin" target="node_spanner_graph">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_spanner_vertex" value="Sub-Second Dynamic Routing Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;fontSize=8.5;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_spanner_graph" target="node_vertex_eta">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_vertex_bq" value="Historical Telemetry &amp;amp; Performance Log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_vertex_eta" target="node_bq_logistics">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- 4. ZONE 3: LOGISTICS CONTROL TOWER & AGENTIC DISPATCH (x = 850 .. 1230)    -->
+        <!-- ========================================================================= -->
+        <mxCell id="lbl_control_hdr" value="&lt;div style=&quot;display:flex;align-items:center;gap:5px;&quot;&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;🗼&lt;/span&gt; &lt;b style=&quot;font-size:12px;color:#7C3AED;&quot;&gt;LOGISTICS CONTROL TOWER &amp;amp; AGENTIC DISPATCH&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="60" width="360" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_control" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="88" width="380" height="660" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 9: Logistics Control Tower Command Cockpit -->
+        <mxCell id="node_control_tower" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:36px;font-size:24px;vertical-align:middle;text-align:center;&quot;&gt;🗼&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Logistics Control Tower 3D Cockpit&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;• Real-time 3D geospatial digital twin visualization of global freight&lt;br&gt;• Automated triage workflow for stalled containers, port strikes &amp;amp; customs&lt;br&gt;• Executive KPI scorecard: inventory velocity &amp;amp; carbon emissions&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="865" y="110" width="350" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 10: SAP S/4HANA & Enterprise ERP Bridge (Left Card) -->
+        <mxCell id="node_sap_erp" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;vertical-align:middle;text-align:center;&quot;&gt;🏢&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;SAP S/4HANA &amp;amp; ERP Bridge&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Automated PO goods receipt sync, ledger balance updates&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="865" y="270" width="170" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Node 11: Automated Carrier Dispatch API (Right Card) -->
+        <mxCell id="node_carrier_dispatch" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;vertical-align:middle;text-align:center;&quot;&gt;⚡&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Automated Carrier Dispatch&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Dynamic spot market bidding &amp;amp; automated re-routing&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="270" width="170" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Personas in Control Tier -->
+        <mxCell id="persona_logistics_dir" value="&lt;div style=&quot;font-size:24px;&quot;&gt;🌐&lt;/div&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Global Logistics Director&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;(Control Tower Operations)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="865" y="390" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="persona_inv_lead" value="&lt;div style=&quot;font-size:24px;&quot;&gt;📊&lt;/div&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Inventory Planning Lead&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;(ERP &amp;amp; Stock Rebalancing)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="390" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Dynamic Exception Triage Engine Box -->
+        <mxCell id="box_triage_engine" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;font-size:16px;&quot;&gt;🤖&lt;/span&gt; &lt;b style=&quot;font-size:10px;color:#581C87;&quot;&gt;Agentic AI Triage &amp;amp; Route Optimizer&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Evaluates carrier SLA breaches, port congestion indexes, and triggers automated re-consignment workflows across global freight networks.&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9333EA;strokeWidth=1.5;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="865" y="475" width="350" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Connectors into Control Tier -->
+        <mxCell id="e_twin_control" value="Real-Time 3D Digital Twin Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=8.5;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_spanner_graph" target="node_control_tower">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="835" y="297"/>
+              <mxPoint x="835" y="165"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_control_sap" value="Automated PO Receipt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;fontSize=8;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_control_tower" target="node_sap_erp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_control_dispatch" value="Dynamic Re-Route" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=8;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_control_tower" target="node_carrier_dispatch">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_dispatch_triage" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9333EA;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="node_carrier_dispatch" target="box_triage_engine">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Closed Loop Agentic Arrow from Triage back to Fleet Ingress -->
+        <mxCell id="e_closed_loop" value="Autonomous Fleet Route Instructions &amp;amp; Optimization Updates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9333EA;strokeWidth=2;dashed=1;endArrow=classic;fontSize=8.5;fontColor=#581C87;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="box_triage_engine" target="node_telemetry_sources">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="660"/>
+              <mxPoint x="185" y="660"/>
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- 4. Dataflow -> Spanner Graph -->
-        <mxCell id="e_dataflow_spanner" value="Stateful Graph Mutation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_dataflow_twin" target="node_spanner_graph">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- ========================================================================= -->
+        <!-- 5. ZONE 4: ENTERPRISE PLAYBOOK & SPECIFICATIONS (x = 1250 .. 1530)         -->
+        <!-- ========================================================================= -->
+        <mxCell id="lbl_playbook_hdr" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;📋&lt;/span&gt; &lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;ENTERPRISE PLAYBOOK MATRIX&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1255" y="60" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;width:38%;&quot;&gt;Diagram Name:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;width:62%;font-weight:bold;&quot;&gt;Supply Chain &amp;amp; Digital Twin&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;GCAF Pillar:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;color:#2563EB;&quot;&gt;Industry Solutions &amp;amp; Accelerators&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;WBS Tag:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;font-family:monospace;font-weight:bold;&quot;&gt;WBS 5.3.1&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;Architecture State:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;color:#16A34A;font-weight:bold;&quot;&gt;To-Be (Target State)&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;Primary Persona:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;&quot;&gt;Supply Chain Architect&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;Target Audience:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;&quot;&gt;Logistics Ops, Fleet, ERP Leads&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;Throughput:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;color:#D97706;font-weight:bold;&quot;&gt;500k+ Assets / Millions/sec&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;Graph Latency:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;color:#2563EB;font-weight:bold;&quot;&gt;Sub-100ms Global GQL&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;Target SLA:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;color:#16A34A;font-weight:bold;&quot;&gt;99.999% Multi-Region HA&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;Core Tech Stack:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;&quot;&gt;Pub/Sub, Dataflow, Spanner Graph, Vertex AI, BigQuery, SAP&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;font-weight:bold;padding:4px 6px;&quot;&gt;Blueprint ID:&lt;/td&gt;
+    &lt;td style=&quot;padding:4px 6px;font-family:monospace;color:#D97706;font-weight:bold;&quot;&gt;tech_supply_chain_gcp&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;overflow=hidden;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="88" width="280" height="270" as="geometry"/>
         </mxCell>
 
-        <!-- 5. Spanner Graph -> Vertex AI -->
-        <mxCell id="e_spanner_vertex" value="Sub-Second Dynamic Routing Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_spanner_graph" target="node_vertex_eta">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- KPI Highlights Box -->
+        <mxCell id="box_kpi_highlights" value="&lt;div style=&quot;font-weight:bold;font-size:10px;margin-bottom:4px;color:#0F172A;text-align:left;&quot;&gt;🎯 Target Business Outcomes&lt;/div&gt;
+&lt;table style=&quot;width:100%;font-size:8px;color:#334155;border-collapse:collapse;&quot;&gt;
+  &lt;tr style=&quot;border-bottom:1px dashed #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;padding:3px 0;&quot;&gt;&lt;b style=&quot;color:#16A34A;&quot;&gt;• Stockout Reduction:&lt;/b&gt; -85% via Proactive Triage&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px dashed #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;padding:3px 0;&quot;&gt;&lt;b style=&quot;color:#2563EB;&quot;&gt;• ETA Accuracy:&lt;/b&gt; 98.4% with Vertex Multimodal AI&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px dashed #CBD5E1;&quot;&gt;
+    &lt;td style=&quot;padding:3px 0;&quot;&gt;&lt;b style=&quot;color:#D97706;&quot;&gt;• Dwell Time Optimization:&lt;/b&gt; -42% Port Bottleneck&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;padding:3px 0;&quot;&gt;&lt;b style=&quot;color:#7C3AED;&quot;&gt;• Carbon Footprint:&lt;/b&gt; -18% Scope 3 Emissions&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="375" width="280" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- 6. Vertex AI -> BigQuery -->
-        <mxCell id="e_vertex_bq" value="Historical Performance Log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_vertex_eta" target="node_bq_logistics">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- Robot Badge with Label -->
+        <mxCell id="badge_robot_control" value="&lt;div style=&quot;font-size:28px;&quot;&gt;🤖&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#581C87;&quot;&gt;Autonomous Agent&lt;br&gt;Dispatch Engine&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="1315" y="515" width="150" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- 7. Dataflow / Spanner -> Control Tower (Direct clean connection) -->
-        <mxCell id="e_twin_control" value="Real-Time 3D Digital Twin Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+        <!-- ========================================================================= -->
+        <!-- 6. BOTTOM 4-STAGE OPERATIONAL PROGRESSION (x = 30 .. 1030)                 -->
+        <!-- ========================================================================= -->
+        <mxCell id="stage_1" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;1. SENSOR TELEMETRY &amp;amp; INGRESS&lt;br&gt;(500K+ ASSETS / PUBSUB)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="765" width="210" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_arrow_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="755" y="375" as="sourcePoint"/>
-            <mxPoint x="850" y="375" as="targetPoint"/>
+            <mxPoint x="245" y="778" as="sourcePoint"/>
+            <mxPoint x="265" y="778" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
-        <!-- 8. Control Tower -> SAP ERP -->
-        <mxCell id="e_control_sap" value="Automated Goods Receipt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+        <mxCell id="stage_2" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;2. DATAFLOW DIGITAL TWIN &amp;amp; SPANNER&lt;br&gt;(STATEFUL GRAPH MUTATIONS)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="270" y="765" width="240" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_arrow_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="990" y="440" as="sourcePoint"/>
-            <mxPoint x="990" y="480" as="targetPoint"/>
+            <mxPoint x="515" y="778" as="sourcePoint"/>
+            <mxPoint x="535" y="778" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
-        <!-- 9. Control Tower -> Carrier Dispatch -->
-        <mxCell id="e_control_dispatch" value="Dynamic Re-Route Dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+        <mxCell id="stage_3" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;3. VERTEX AI PREDICTIVE ETA&lt;br&gt;(MULTIMODAL DISRUPTION AI)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="540" y="765" width="220" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="stage_arrow_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1280" y="440" as="sourcePoint"/>
-            <mxPoint x="1280" y="480" as="targetPoint"/>
+            <mxPoint x="765" y="778" as="sourcePoint"/>
+            <mxPoint x="785" y="778" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
-        <!-- BOTTOM RIGHT LEGEND -->
-        <mxCell id="legend_box" value="&lt;div style=&quot;font-weight:bold;font-size:11px;margin-bottom:4px;color:#0F172A;text-align:left;&quot;&gt;Legend&lt;/div&gt;
-&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+        <mxCell id="stage_4" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;4. CONTROL TOWER &amp;amp; SAP ERP&lt;br&gt;(AUTONOMOUS DISPATCH &amp;amp; TRIAGE)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="790" y="765" width="240" height="26" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_agentic_summary" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Agentic AI closed feedback loop coordinates real-time IoT sensor telemetry with Spanner Graph state mutations and automated carrier dispatch.&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="798" width="1000" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- 7. BOTTOM RIGHT LEGEND (x = 1050 .. 1530)                                 -->
+        <!-- ========================================================================= -->
+        <mxCell id="legend_box" value="&lt;div style=&quot;font-weight:bold;font-size:10px;margin-bottom:3px;color:#0F172A;text-align:left;&quot;&gt;Legend &amp;amp; Stream Taxonomy&lt;/div&gt;
+&lt;table style=&quot;width:100%;font-size:8px;color:#0F172A;font-family:sans-serif;border-collapse:collapse;&quot;&gt;
   &lt;tr&gt;
-    &lt;td style=&quot;width:24px;&quot;&gt;▢&lt;/td&gt;&lt;td style=&quot;width:40%;&quot;&gt;Telemetry Tier&lt;/td&gt;
-    &lt;td style=&quot;width:24px;&quot;&gt;➔&lt;/td&gt;&lt;td&gt;Digital Twin Flow&lt;/td&gt;
+    &lt;td style=&quot;width:24px;color:#0284C7;font-weight:bold;&quot;&gt;—&lt;/td&gt;
+    &lt;td style=&quot;width:38%;&quot;&gt;IoT Ingress Stream&lt;/td&gt;
+    &lt;td style=&quot;width:20px;color:#2563EB;font-weight:bold;&quot;&gt;➔&lt;/td&gt;
+    &lt;td&gt;Digital Twin State Flow&lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-    &lt;td&gt;⬚&lt;/td&gt;&lt;td&gt;Spanner Graph&lt;/td&gt;
-    &lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;ERP Sync&lt;/td&gt;
+    &lt;td style=&quot;color:#16A34A;font-weight:bold;&quot;&gt;🗄️&lt;/td&gt;
+    &lt;td&gt;Spanner Graph Ledger&lt;/td&gt;
+    &lt;td style=&quot;color:#16A34A;font-weight:bold;&quot;&gt;⇢&lt;/td&gt;
+    &lt;td&gt;SAP S/4HANA ERP Sync&lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-    &lt;td&gt;👤&lt;/td&gt;&lt;td&gt;Persona&lt;/td&gt;
-    &lt;td&gt;🚚&lt;/td&gt;&lt;td&gt;Dynamic Dispatch&lt;/td&gt;
+    &lt;td style=&quot;color:#7C3AED;font-weight:bold;&quot;&gt;---&amp;gt;&lt;/td&gt;
+    &lt;td style=&quot;color:#7C3AED;font-weight:bold;&quot;&gt;Agentic Closed Loop&lt;/td&gt;
+    &lt;td style=&quot;color:#D97706;font-weight:bold;&quot;&gt;⚡&lt;/td&gt;
+    &lt;td&gt;Dynamic Carrier Bidding&lt;/td&gt;
   &lt;/tr&gt;
-&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1270" y="720" width="280" height="130" as="geometry"/>
+  &lt;tr&gt;
+    &lt;td style=&quot;color:#16A34A;&quot;&gt;🔒&lt;/td&gt;
+    &lt;td&gt;mTLS Hardware TPM&lt;/td&gt;
+    &lt;td style=&quot;color:#64748B;&quot;&gt;👤&lt;/td&gt;
+    &lt;td&gt;Architecture Persona&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="760" width="480" height="110" as="geometry"/>
         </mxCell>
 
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>
-`.trim();
+</mxfile>`;
 }

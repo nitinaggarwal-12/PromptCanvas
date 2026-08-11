@@ -287,10 +287,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_supply_chain",
-    name: "Autonomous Supply Chain & Fleet Telemetry (WBS 3.2.3)",
+    name: "Autonomous Supply Chain Logistics & Real-Time Digital Twin (WBS 5.3.1)",
     category: "Data & Lakehouse Architecture",
-    whenToUse: "WBS 3.2.3 Autonomous Supply Chain & Real-Time IoT Fleet Telemetry Architecture with MQTT edge broker, geospatial stream processing, inventory digital twin, and predictive stockout ML models.",
-    prompt: "Act as a Principal IoT & Supply Chain Solutions Architect. Design a production-grade WBS 3.2.3 Autonomous Supply Chain & Fleet Telemetry blueprint. Include: IoT Telemetry Ingress -> Dataflow Streaming & Geospatial Indexing -> Digital Twin State in Bigtable -> Inventory Optimization & Predictive Stockout Engine -> Operations Dashboard & Driver Dispatch."
+    whenToUse: "WBS 5.3.1 Autonomous Supply Chain Logistics & Real-Time Digital Twin featuring Cloud Dataflow sliding session window simulation, Cloud Spanner Multi-Region Global Inventory Graph (GQL), Vertex AI predictive ETA forecaster, and SAP S/4HANA ERP Bridge.",
+    prompt: "Act as a Principal Supply Chain & Cloud Solutions Architect. Design a production-grade WBS 5.3.1 Autonomous Supply Chain Logistics & Digital Twin blueprint. Include: 500k+ Fleet Telemetry Ingress -> Cloud Pub/Sub & mTLS TPM -> Cloud Dataflow Sliding Session Window Simulation -> Cloud Spanner Multi-Region Global Inventory Graph (GQL) -> Vertex AI Demand & Multimodal Predictive ETA Engine -> Logistics Control Tower 3D Cockpit -> Automated Carrier Spot Dispatch & SAP S/4HANA ERP Bridge -> BigQuery Logistics Data Lakehouse."
   },
   {
     id: "tech_eval_safety",

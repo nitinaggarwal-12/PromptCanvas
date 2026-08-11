@@ -640,23 +640,24 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_supply_chain",
-    name: "Autonomous Supply Chain & Fleet Telemetry",
+    name: "Autonomous Supply Chain Logistics & Real-Time Digital Twin",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
-    badge: "Production Blueprint (WBS 3.2.3)",
+    badge: "Master Blueprint (Verified)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use when architecting real-time IoT fleet telemetry, geospatial stream processing, inventory digital twins, and predictive stockout ML models.",
+    whenToUse: "Use for enterprise supply chain logistics, IoT fleet telemetry, Dataflow sliding-window simulation, Spanner Graph global inventory ledgers, and automated carrier dispatch.",
     bestFor: [
-      "WBS 3.2.3 Autonomous Supply Chain & Real-Time Fleet Telemetry",
-      "MQTT edge broker ingestion with sub-second geospatial stream indexing",
-      "Digital twin inventory state synchronization on Bigtable / Spanner",
-      "Predictive stockout ML models and cold-chain temperature monitoring",
-      "Automated logistics dispatch, driver routing, and SLA tracking"
+      "WBS 5.3.1 Autonomous Supply Chain & Real-Time Fleet Telemetry",
+      "Cloud Pub/Sub & mTLS edge telemetry ingestion (500k+ assets)",
+      "Cloud Dataflow sliding session window simulation engine",
+      "Cloud Spanner Multi-Region Global Inventory Graph (GQL, 99.999% SLA)",
+      "Vertex AI Multimodal Predictive ETA Forecaster & Weather Disruption AI",
+      "Logistics Control Tower 3D Cockpit, Automated Carrier Dispatch & SAP S/4HANA ERP Bridge"
     ],
-    keyTech: ["MQTT Edge Broker", "Dataflow Streaming", "Bigtable Digital Twin", "Predictive Stockout ML", "Fleet Dispatch Engine"],
+    keyTech: ["Cloud Pub/Sub", "Cloud Dataflow", "Spanner Graph", "Vertex AI ETA", "BigQuery Lakehouse", "SAP S/4HANA", "Control Tower 3D"],
     thumbnail: "/templates/tech_supply_chain.png",
-    promptSummary: "Autonomous Supply Chain: IoT Ingress -> Dataflow Streaming -> Bigtable Digital Twin -> Stockout ML -> Dispatch Engine."
+    promptSummary: "Supply Chain Digital Twin: IoT Ingress -> Dataflow Simulation -> Spanner Graph -> Vertex AI ETA Forecaster -> Control Tower 3D -> Carrier Dispatch & SAP ERP."
   },
 
   // =========================================================================

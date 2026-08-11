@@ -62,6 +62,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       xmlInput.includes('id="c4_system_context"') ||
       xmlInput.includes('id="pharma_genomics_pipeline"') ||
       xmlInput.includes('pharma_genomics') ||
+      xmlInput.includes('id="supply_chain"') ||
+      xmlInput.includes('tech_supply_chain') ||
       xmlInput.includes('id="modern_data_stack"') ||
       xmlInput.includes('id="event_driven_eda"') ||
       xmlInput.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR')

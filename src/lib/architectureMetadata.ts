@@ -32,13 +32,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_supply_chain: {
     id: "tech_supply_chain",
-    title: "Autonomous Supply Chain & Fleet Telemetry (WBS 3.2.3)",
+    title: "Autonomous Supply Chain Logistics & Real-Time Digital Twin",
     category: "Data & Lakehouse Architecture",
-    useCase: "AUTONOMOUS SUPPLY CHAIN & FLEET TELEMETRY (WBS 3.2.3)",
-    businessUseCase: "WBS 3.2.3: Real-time autonomous supply chain and IoT fleet telemetry architecture with MQTT edge ingestion, geospatial stream indexing via Dataflow, inventory digital twin on Bigtable, and predictive stockout ML models.",
-    primaryActors: "Supply Chain Planners, IoT Platform Architects, Fleet Logistics Leads, Operations Managers",
-    targetOutcomes: "Zero Key Inventory Stockouts, Real-Time Fleet Geospatial Tracking, Sub-Second Telemetry Ingestion, Automated Dispatch Optimization",
-    desc: "Autonomous Supply Chain blueprint illustrating IoT edge brokers, Dataflow streaming, Bigtable digital twin, predictive ML, and fleet dispatch."
+    useCase: "AUTONOMOUS SUPPLY CHAIN LOGISTICS & REAL-TIME DIGITAL TWIN (WBS 5.3.1)",
+    businessUseCase: "WBS 5.3.1: Autonomous supply chain logistics and IoT fleet telemetry architecture with Cloud Dataflow sliding session window simulation, Cloud Spanner Multi-Region Global Inventory Graph (GQL), Vertex AI predictive ETA forecaster, and SAP S/4HANA ERP Bridge.",
+    primaryActors: "Supply Chain Solutions Architects, Global Logistics Directors, Inventory Planning Leads, Fleet Operations Engineers",
+    targetOutcomes: "Sub-Second Dynamic Re-Routing, 99.999% Graph Availability, 85% Stockout Reduction, Automated Spot Carrier Dispatch & SAP ERP Sync",
+    desc: "Autonomous Supply Chain & Digital Twin blueprint mapping 500k+ IoT fleet assets, Cloud Dataflow simulation, Spanner Graph global inventory ledger, Vertex AI ETA engine, and 3D Control Tower cockpit."
   },
   tech_eval_safety: {
     id: "tech_eval_safety",
