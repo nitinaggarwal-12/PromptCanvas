@@ -267,7 +267,9 @@
     "layer": "Physical",
     "layerCode": "-P-",
     "domain": "Infrastructure Security",
-    "isIndustrySpecialized": false
+    "isIndustrySpecialized": false,
+    "isFlagship": true,
+    "isMaster": true
   },
   {
     "id": "P4-SEC-P-02_gcp_landing_zone_vpc_map",
@@ -711,7 +713,10 @@
     "domain": "Infrastructure Security",
     "isIndustrySpecialized": false,
     "canonicalId": "secure_deployment_map",
-    "description": "Google Cloud End-to-End Architecture: Secure Deployment Topology Map Integrating GCP, Gemini Platform, and GE App."
+    "description": "Google Cloud End-to-End Architecture: Secure Deployment Topology Map Integrating GCP, Gemini Platform, and GE App.",
+    "diagramId": "P4-SEC-P-01",
+    "isFlagship": true,
+    "isMaster": true
   },
   {
     "index": 9,
