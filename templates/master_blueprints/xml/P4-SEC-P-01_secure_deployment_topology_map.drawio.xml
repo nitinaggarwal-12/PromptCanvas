@@ -9,12 +9,12 @@
         <mxCell id="main_title" value="&lt;b style=&quot;font-size:22px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;Google Cloud End-to-End Architecture: Secure Deployment Topology Map&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="35" y="10" width="850" height="26" as="geometry"/>
         </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Integrating GCP, Gemini Platform, and GE App&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Integrating GCP, Gemini Platform, and GE App — Zero-Trust Software Supply Chain &amp;amp; Production VPC Topology&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="35" y="36" width="850" height="18" as="geometry"/>
         </mxCell>
 
         <!-- Top Right Mini Legend & Cloud Logo -->
-        <mxCell id="top_legend_box" value="&lt;table style=&quot;font-size:8px;color:#334155;line-height:1.2;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;color:#10B981;&quot;&gt;🟩 Google Coder coding&lt;/td&gt;&lt;td style=&quot;padding-left:12px;color:#DC2626;&quot;&gt;🛑 Vulnerability&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;color:#F59E0B;&quot;&gt;🟨 Context authenticated&lt;/td&gt;&lt;td style=&quot;padding-left:12px;color:#2563EB;&quot;&gt;🛡️ Core&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;color:#475569;&quot;&gt;➡️ Secure and authenticated&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+        <mxCell id="top_legend_box" value="&lt;table style=&quot;font-size:8px;color:#334155;line-height:1.2;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;color:#10B981;&quot;&gt;🟩 Google Coder coding&lt;/td&gt;&lt;td style=&quot;padding-left:12px;color:#DC2626;&quot;&gt;🛑 Vulnerability Blocked&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;color:#F59E0B;&quot;&gt;🟨 Context authenticated&lt;/td&gt;&lt;td style=&quot;padding-left:12px;color:#2563EB;&quot;&gt;🛡️ Core Security Gate&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;color:#475569;&quot;&gt;➡️ Secure &amp;amp; Authenticated Flow (mTLS/PSC)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
           <mxGeometry x="960" y="8" width="280" height="46" as="geometry"/>
         </mxCell>
         <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:28px;&quot;&gt;☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -23,7 +23,7 @@
 
 
         <!-- ==================== TOP CONCEPTUAL FLOW BANNER ==================== -->
-        <mxCell id="top_flow_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;" vertex="1" parent="1">
+        <mxCell id="top_flow_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="25" y="60" width="1285" height="60" as="geometry"/>
         </mxCell>
 
@@ -68,16 +68,16 @@
 
         <!-- ==================== OUTER GOOGLE CLOUD PROJECT CONTAINER ==================== -->
         <mxCell id="gcp_project_container" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#D1FAE5;strokeColor=#34D399;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="25" y="130" width="1285" height="565" as="geometry"/>
+          <mxGeometry x="25" y="130" width="1285" height="570" as="geometry"/>
         </mxCell>
-        <mxCell id="gcp_project_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;☁️ Google Cloud Project&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="40" y="135" width="250" height="20" as="geometry"/>
+        <mxCell id="gcp_project_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;☁️ Google Cloud Project (Managed Security Perimeter)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="135" width="400" height="20" as="geometry"/>
         </mxCell>
 
 
         <!-- ==================== SECTION 1: CODE (DEVELOPER WORKSTATION & SCM) ==================== -->
         <mxCell id="sec1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="165" width="175" height="515" as="geometry"/>
+          <mxGeometry x="35" y="165" width="175" height="525" as="geometry"/>
         </mxCell>
         <mxCell id="sec1_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#1E3A8A;&quot;&gt;SECTION 1: CODE&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;font-weight:normal;&quot;&gt;Developer Workstation &amp;amp; SCM&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="40" y="168" width="165" height="26" as="geometry"/>
@@ -88,31 +88,40 @@
 
         <!-- Developer Workstation & Copilot Card -->
         <mxCell id="card_dev_copilot" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;👤 💻 ✨&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;Developer&lt;br&gt;Gemini Code Assist AI&lt;br&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;font-weight:normal;&quot;&gt;(IDE Copilot)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#60A5FA;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="45" y="270" width="115" height="90" as="geometry"/>
+          <mxGeometry x="45" y="225" width="115" height="80" as="geometry"/>
         </mxCell>
 
         <!-- Cloud Source Repositories Node -->
         <mxCell id="card_csr" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;color:#2563EB;&quot;&gt;🌿&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Git Pull&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Cloud Source&lt;br&gt;Repositories)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="125" y="225" width="80" height="55" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="lbl_sast_check" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;SAST &amp;amp; Code&lt;br&gt;Quality Check&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="440" width="115" height="30" as="geometry"/>
+          <mxGeometry x="125" y="315" width="80" height="55" as="geometry"/>
         </mxCell>
 
         <mxCell id="badge_git_push" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Git Push&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;to secure&lt;br&gt;pipeline&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="120" y="325" width="80" height="40" as="geometry"/>
+          <mxGeometry x="120" y="380" width="80" height="35" as="geometry"/>
         </mxCell>
 
         <!-- Lock Badge 1 -->
         <mxCell id="lock1" value="🔒" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontSize=10;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="195" y="340" width="22" height="22" as="geometry"/>
+          <mxGeometry x="195" y="390" width="22" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom Detail Cards in Section 1 to fill canvas -->
+        <mxCell id="card_precommit_hooks" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Pre-Commit Hooks&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Gitleaks Secret Scan&lt;br&gt;&amp;amp; Linter Guardrails&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="45" y="430" width="155" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="card_sast_check_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;SAST &amp;amp; Code Quality Check&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Cryptographic Attestation&lt;br&gt;Signed Commit Hash&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="45" y="515" width="155" height="85" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_sec1_status" value="&lt;span style=&quot;font-size:6px;color:#1E3A8A;font-weight:bold;&quot;&gt;✅ Identity &amp;amp; SCM Gated&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="610" width="155" height="15" as="geometry"/>
         </mxCell>
 
 
         <!-- ==================== SECTION 2: BUILD & GATING (CLOUD BUILD) ==================== -->
         <mxCell id="sec2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="220" y="165" width="200" height="515" as="geometry"/>
+          <mxGeometry x="220" y="165" width="200" height="525" as="geometry"/>
         </mxCell>
         <mxCell id="sec2_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#166534;&quot;&gt;SECTION 2: BUILD &amp;amp; GATING&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;font-weight:normal;&quot;&gt;CI/CD Pipeline (Cloud Build)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="225" y="168" width="190" height="26" as="geometry"/>
@@ -128,42 +137,48 @@
 
         <!-- Branch 1: Container Build & SBOM -->
         <mxCell id="card_cbuild_box" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Container&lt;br&gt;Build&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="300" y="240" width="55" height="35" as="geometry"/>
+          <mxGeometry x="300" y="235" width="55" height="40" as="geometry"/>
         </mxCell>
         <mxCell id="card_sbom_box" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;SBOM&lt;br&gt;Creation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="365" y="240" width="50" height="35" as="geometry"/>
+          <mxGeometry x="365" y="235" width="50" height="40" as="geometry"/>
         </mxCell>
         <mxCell id="e_cb_sbom" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_cbuild_box" target="card_sbom_box"/>
 
         <!-- Branch 2: Gemini SAST -->
         <mxCell id="card_gemini_sast" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;🛡️ ✨&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Gemini-Assisted&lt;br&gt;Static Scan&lt;br&gt;(SAST)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="300" y="300" width="90" height="65" as="geometry"/>
+          <mxGeometry x="300" y="295" width="90" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- Branch 3: DAST & Supply Chain Gating -->
+        <!-- Branch 3: DAST -->
         <mxCell id="card_dast" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Dynamic&lt;br&gt;Analysis (DAST)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="300" y="385" width="90" height="55" as="geometry"/>
+          <mxGeometry x="300" y="380" width="90" height="55" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_supply_gating" value="&lt;b style=&quot;font-size:7px;color:#166534;&quot;&gt;Secure Supply&lt;br&gt;Chain Gating&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="300" y="450" width="90" height="30" as="geometry"/>
+        <!-- Supply Chain Gating Box -->
+        <mxCell id="card_supply_gating" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#166534;&quot;&gt;🛡️ 🔒&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#166534;&quot;&gt;Secure Supply&lt;br&gt;Chain Gating&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;SLSA Level 3/4 Verified&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="235" y="460" width="170" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom Audit Trail in Section 2 to fill canvas -->
+        <mxCell id="card_cosign_attest" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;📜 🔏&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;In-Toto Attestations&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Vulnerability Provenance Log&lt;br&gt;Cosign Keyless Signature&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="235" y="545" width="170" height="70" as="geometry"/>
         </mxCell>
 
         <!-- Connectors Cloud Build -> 3 Gating Branches -->
         <mxCell id="e_cb_b1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="285" y="340" as="sourcePoint"/><mxPoint x="300" y="258" as="targetPoint"/></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="285" y="335" as="sourcePoint"/><mxPoint x="300" y="255" as="targetPoint"/></mxGeometry>
         </mxCell>
         <mxCell id="e_cb_b2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="285" y="352" as="sourcePoint"/><mxPoint x="300" y="332" as="targetPoint"/></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="285" y="347" as="sourcePoint"/><mxPoint x="300" y="327" as="targetPoint"/></mxGeometry>
         </mxCell>
         <mxCell id="e_cb_b3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="285" y="365" as="sourcePoint"/><mxPoint x="300" y="412" as="targetPoint"/></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="285" y="360" as="sourcePoint"/><mxPoint x="300" y="407" as="targetPoint"/></mxGeometry>
         </mxCell>
 
 
         <!-- ==================== SECTION 3: REGISTRY & BINARY AUTHORIZATION ==================== -->
         <mxCell id="sec3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FDE68A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="428" y="165" width="182" height="515" as="geometry"/>
+          <mxGeometry x="428" y="165" width="182" height="525" as="geometry"/>
         </mxCell>
         <mxCell id="sec3_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#92400E;&quot;&gt;SECTION 3: REGISTRY &amp;amp;&lt;br&gt;BINARY AUTHORIZATION&lt;br&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;font-weight:normal;&quot;&gt;Container Artifacts &amp;amp; Signing&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="430" y="168" width="178" height="30" as="geometry"/>
@@ -184,27 +199,36 @@
 
         <!-- Secure Image Registry Container Box -->
         <mxCell id="card_sec_img_reg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;color:#2563EB;&quot;&gt;🛡️ 🔒&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Secure&lt;br&gt;Image&lt;br&gt;Registry&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="445" y="325" width="60" height="75" as="geometry"/>
+          <mxGeometry x="445" y="315" width="60" height="75" as="geometry"/>
         </mxCell>
 
         <!-- Binary Authorization Policy Box & Lock -->
         <mxCell id="card_bin_auth_pol" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Binary&lt;br&gt;Authorization&lt;br&gt;policy&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;🔒&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;Secure Image&lt;br&gt;Promotion&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="515" y="325" width="85" height="75" as="geometry"/>
+          <mxGeometry x="515" y="315" width="85" height="75" as="geometry"/>
         </mxCell>
 
-        <mxCell id="lbl_sec_reg_btm" value="&lt;b style=&quot;font-size:7px;color:#92400E;&quot;&gt;Secure Image&lt;br&gt;Registry&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="430" y="445" width="178" height="24" as="geometry"/>
+        <!-- Bottom Detail Cards in Section 3 to fill canvas -->
+        <mxCell id="card_kms_attestor" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🔑&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud KMS Signer&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Asymmetric Key Signing&lt;br&gt;Attestor Verification Authority&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="438" y="420" width="162" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="card_vuln_db_feed" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#DC2626;&quot;&gt;🛑 📋&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Continuous CVE Feed&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Automated Quarantine &amp;amp;&lt;br&gt;Zero-Day Revocation&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="438" y="510" width="162" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_sec3_status" value="&lt;span style=&quot;font-size:6px;color:#92400E;font-weight:bold;&quot;&gt;✅ Signed &amp;amp; Cryptographically Sealed&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="438" y="605" width="162" height="15" as="geometry"/>
         </mxCell>
 
         <!-- Connectors from Gating into Registry -->
         <mxCell id="e_gating_reg" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="415" y="258" as="sourcePoint"/><mxPoint x="445" y="350" as="targetPoint"/></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="415" y="255" as="sourcePoint"/><mxPoint x="445" y="340" as="targetPoint"/></mxGeometry>
         </mxCell>
         <mxCell id="e_sast_reg" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="390" y="332" as="sourcePoint"/><mxPoint x="445" y="362" as="targetPoint"/></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="390" y="327" as="sourcePoint"/><mxPoint x="445" y="352" as="targetPoint"/></mxGeometry>
         </mxCell>
         <mxCell id="e_dast_reg" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="390" y="412" as="sourcePoint"/><mxPoint x="445" y="375" as="targetPoint"/></mxGeometry>
+          <mxGeometry relative="1" as="geometry"><mxPoint x="390" y="407" as="sourcePoint"/><mxPoint x="445" y="365" as="targetPoint"/></mxGeometry>
         </mxCell>
 
 
@@ -214,47 +238,55 @@
         </mxCell>
 
         <!-- Mini Dev & Staging Environments -->
-        <mxCell id="card_dev_env" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;Development Env:&lt;/b&gt;&lt;br&gt;☸️ &lt;span style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;GKE&lt;/span&gt; ..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="620" y="165" width="95" height="40" as="geometry"/>
+        <mxCell id="card_dev_env" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;Development Env:&lt;/b&gt;&lt;br&gt;☸️ &lt;span style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;GKE Cluster&lt;/span&gt; (Dev)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="620" y="165" width="105" height="40" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_stage_env" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;Staging Environment&lt;/b&gt;&lt;br&gt;☸️ &lt;span style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;GKE&lt;/span&gt; ..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="725" y="165" width="105" height="40" as="geometry"/>
+        <mxCell id="card_stage_env" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;Staging Environment:&lt;/b&gt;&lt;br&gt;☸️ &lt;span style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;GKE Cluster&lt;/span&gt; (Stage)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="735" y="165" width="115" height="40" as="geometry"/>
         </mxCell>
 
         <!-- Promotion Stage 4 Check & Cloud Deploy -->
         <mxCell id="card_stage4_deploy" value="&lt;span style=&quot;font-size:14px;&quot;&gt;🔒&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Stage 4:&lt;br&gt;Binary&lt;br&gt;Authorization&lt;br&gt;Policy Check&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#1E3A8A;&quot;&gt;4: SECURE&lt;br&gt;DEPLOYMENT&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Cloud Deploy)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="615" y="235" width="85" height="120" as="geometry"/>
+          <mxGeometry x="615" y="215" width="95" height="120" as="geometry"/>
         </mxCell>
 
         <!-- Internet Gateways & VPC SC -->
         <mxCell id="card_inet_gw1" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;🌐&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Internet&lt;br&gt;Gateway&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="615" y="375" width="45" height="45" as="geometry"/>
+          <mxGeometry x="615" y="355" width="45" height="45" as="geometry"/>
         </mxCell>
         <mxCell id="card_inet_gw2" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;color:#2563EB;&quot;&gt;☁️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Internet&lt;br&gt;Gateway&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="665" y="375" width="45" height="45" as="geometry"/>
+          <mxGeometry x="665" y="355" width="45" height="45" as="geometry"/>
         </mxCell>
 
         <mxCell id="lbl_vpc_sc" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;VPC Service&lt;br&gt;Controls&lt;br&gt;(VPC SC)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="615" y="425" width="95" height="30" as="geometry"/>
+          <mxGeometry x="615" y="405" width="95" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="card_env_promotion_log" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;🚀&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Deploy&lt;br&gt;Canary Rollout&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;10% -&amp;gt; 50% -&amp;gt; 100%&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="615" y="450" width="95" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="card_approval_gate" value="&lt;b style=&quot;font-size:6px;color:#1E3A8A;&quot;&gt;Release Manager&lt;br&gt;&amp;amp; SecOps Approval&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="615" y="525" width="95" height="35" as="geometry"/>
         </mxCell>
 
 
         <!-- ==================== PRODUCTION ENVIRONMENT CONTAINER ==================== -->
         <mxCell id="prod_env_container" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="715" y="215" width="585" height="465" as="geometry"/>
+          <mxGeometry x="715" y="215" width="585" height="475" as="geometry"/>
         </mxCell>
-        <mxCell id="prod_env_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Production Environment&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="prod_env_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Production Environment (Zero-Trust GKE &amp;amp; Private VPC)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="720" y="218" width="575" height="18" as="geometry"/>
         </mxCell>
 
 
         <!-- ==================== PRODUCTION VPC ==================== -->
         <mxCell id="prod_vpc_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="725" y="240" width="375" height="430" as="geometry"/>
+          <mxGeometry x="725" y="240" width="375" height="440" as="geometry"/>
         </mxCell>
-        <mxCell id="prod_vpc_title" value="&lt;b style=&quot;font-size:9px;color:#1E3A8A;&quot;&gt;PRODUCTION VPC&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="735" y="244" width="150" height="18" as="geometry"/>
+        <mxCell id="prod_vpc_title" value="&lt;b style=&quot;font-size:9px;color:#1E3A8A;&quot;&gt;PRODUCTION VPC (10.100.0.0/16)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="735" y="244" width="220" height="18" as="geometry"/>
         </mxCell>
 
         <!-- External Load Balancer + Cloud Armor WAF -->
@@ -293,7 +325,7 @@
         <mxCell id="gke_cluster_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#60A5FA;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="808" y="360" width="174" height="125" as="geometry"/>
         </mxCell>
-        <mxCell id="gke_cluster_hdr" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;☸️ GKE Cluster&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="gke_cluster_hdr" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;☸️ GKE Autopilot Cluster&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="810" y="362" width="170" height="14" as="geometry"/>
         </mxCell>
 
@@ -315,10 +347,10 @@
 
         <!-- Subnet 3: Data Subnet & Private Service Connect -->
         <mxCell id="data_subnet_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="800" y="505" width="190" height="85" as="geometry"/>
+          <mxGeometry x="800" y="505" width="190" height="165" as="geometry"/>
         </mxCell>
-        <mxCell id="data_subnet_title" value="&lt;b style=&quot;font-size:7px;color:#1E3A8A;&quot;&gt;Data Subnet&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="805" y="508" width="120" height="14" as="geometry"/>
+        <mxCell id="data_subnet_title" value="&lt;b style=&quot;font-size:7px;color:#1E3A8A;&quot;&gt;Data Subnet (CMEK Encrypted)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="805" y="508" width="180" height="14" as="geometry"/>
         </mxCell>
 
         <mxCell id="card_cloudsql" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🗄️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud SQL&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#64748B;&quot;&gt;(Private Database)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
@@ -329,11 +361,16 @@
           <mxGeometry x="930" y="525" width="50" height="55" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e_sql_psc_gcs" value="&lt;span style=&quot;font-size:5px;color:#0F172A;font-weight:bold;&quot;&gt;Private Service&lt;br&gt;Connect&lt;/span&gt;" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+        <mxCell id="e_sql_psc_gcs" value="&lt;span style=&quot;font-size:5px;color:#0F172A;font-weight:bold;&quot;&gt;Private Service Connect&lt;/span&gt;" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="870" y="552" as="sourcePoint"/>
             <mxPoint x="930" y="552" as="targetPoint"/>
           </mxGeometry>
+        </mxCell>
+
+        <!-- Bottom Data Subnet Callout to fill canvas -->
+        <mxCell id="card_data_backup_snap" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;&quot;&gt;💾 🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;font-weight:bold;color:#0F172A;&quot;&gt;Automated Point-in-Time Recovery&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;WORM Storage &amp;amp; Cross-Region Snapshots&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="810" y="590" width="170" height="40" as="geometry"/>
         </mxCell>
 
         <!-- Connectors External LB -> Subnets -->
@@ -382,6 +419,14 @@
 
         <mxCell id="lbl_stage5_title" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Stage 5:&lt;br&gt;Production&lt;br&gt;Security &amp;amp;&lt;br&gt;Compliance&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1135" y="195" width="85" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="card_siem_export" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#2563EB;&quot;&gt;📊 📡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;SIEM &amp;amp; Chronicle&lt;br&gt;Telemetry Ingest&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="535" width="85" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_right_status" value="&lt;span style=&quot;font-size:6px;color:#1E3A8A;font-weight:bold;&quot;&gt;Continuous SecOps&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="605" width="85" height="15" as="geometry"/>
         </mxCell>
 
       </root>

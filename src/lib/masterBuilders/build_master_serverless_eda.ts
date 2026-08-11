@@ -10,14 +10,14 @@ export function buildServerlessEdaXml(): string {
         <mxCell id="main_title" value="&lt;b style=&quot;font-size:22px;color:#0F172A;letter-spacing:-0.3px;&quot;&gt;SERVERLESS EDA ARCHITECTURE: END-TO-END GE APP INTEGRATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="8" width="1300" height="28" as="geometry"/>
         </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Powered by Google Cloud (GCP), Gemini Platform, and GE App&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Powered by Google Cloud (GCP), Gemini Platform, and GE App — Real-Time IoT &amp;amp; Mobile Event Mesh&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="34" width="1300" height="18" as="geometry"/>
         </mxCell>
 
 
         <!-- ==================== COLUMN 1: EXTERNAL SOURCES & EVENT TRIGGERS ==================== -->
         <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="65" width="145" height="525" as="geometry"/>
+          <mxGeometry x="35" y="65" width="145" height="535" as="geometry"/>
         </mxCell>
         <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;letter-spacing:0.3px;&quot;&gt;EXTERNAL SOURCES&lt;br&gt;&amp;amp; EVENT TRIGGERS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="40" y="68" width="135" height="28" as="geometry"/>
@@ -29,8 +29,8 @@ export function buildServerlessEdaXml(): string {
         </mxCell>
 
         <!-- Bottom Card: IoT Industrial Sensors -->
-        <mxCell id="card_iot_sensors" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🏭 🌡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;padding:4px 0;&quot;&gt;🏗️ 📶&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#0F172A;&quot;&gt;IoT Industrial Sensors&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="45" y="325" width="125" height="250" as="geometry"/>
+        <mxCell id="card_iot_sensors" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🏭 🌡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;padding:4px 0;&quot;&gt;🏗️ 📶&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#0F172A;&quot;&gt;IoT Industrial Sensors&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#475569;&quot;&gt;MQTT / OPC-UA Telemetry&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="45" y="310" width="125" height="275" as="geometry"/>
         </mxCell>
 
 
@@ -69,7 +69,7 @@ export function buildServerlessEdaXml(): string {
 
         <!-- ==================== COLUMN 2: INGESTION (CLOUD RUN) ==================== -->
         <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#FECACA;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="280" y="65" width="105" height="525" as="geometry"/>
+          <mxGeometry x="280" y="65" width="105" height="535" as="geometry"/>
         </mxCell>
         <mxCell id="col2_hdr_top" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Ingestion&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="285" y="68" width="95" height="20" as="geometry"/>
@@ -77,10 +77,16 @@ export function buildServerlessEdaXml(): string {
 
         <!-- Cloud Run Ingestion Microservice -->
         <mxCell id="card_crun_ingest" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;color:#2563EB;&quot;&gt;🏃&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Run&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;(Ingestion&lt;br&gt;Microservice)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#64748B;font-weight:normal;&quot;&gt;Performing&lt;br&gt;light validation&lt;br&gt;and enrichment&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="288" y="245" width="90" height="110" as="geometry"/>
+          <mxGeometry x="288" y="225" width="90" height="130" as="geometry"/>
         </mxCell>
+
+        <!-- Lower Ingestion Detail Card to fill vertical space -->
+        <mxCell id="card_ingest_dlq" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🛡️ 📋&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Schema Registry&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Protobuf &amp;amp; JSON&lt;br&gt;Contract Validation&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="288" y="420" width="90" height="85" as="geometry"/>
+        </mxCell>
+
         <mxCell id="col2_hdr_btm" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Ingestion&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="285" y="565" width="95" height="20" as="geometry"/>
+          <mxGeometry x="285" y="575" width="95" height="20" as="geometry"/>
         </mxCell>
 
         <!-- Connector LB -> Cloud Run Ingest -->
@@ -94,30 +100,35 @@ export function buildServerlessEdaXml(): string {
 
         <!-- ==================== COLUMN 3: DISTRIBUTED ASYNC MESSAGING (PUB/SUB) ==================== -->
         <mxCell id="lbl_pubsub_top" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Distributed&lt;br&gt;Asynchronous&lt;br&gt;Messaging&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;(Topics,&lt;br&gt;Subscriptions)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="395" y="145" width="90" height="50" as="geometry"/>
+          <mxGeometry x="395" y="125" width="90" height="50" as="geometry"/>
         </mxCell>
 
         <!-- Pub/Sub Core Bus -->
         <mxCell id="card_pubsub_core" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;color:#2563EB;&quot;&gt;💠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Pub/Sub&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;Asynchronous&lt;br&gt;Messaging&lt;br&gt;(Topics,&lt;br&gt;Subscriptions)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="400" y="250" width="80" height="100" as="geometry"/>
+          <mxGeometry x="400" y="240" width="80" height="110" as="geometry"/>
         </mxCell>
 
         <mxCell id="badge_pubsub_user_ev" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;👤 User Action&lt;br&gt;Event&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="400" y="440" width="80" height="32" as="geometry"/>
+          <mxGeometry x="400" y="420" width="80" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- Dead Letter Queue Badge -->
+        <mxCell id="badge_pubsub_dlq" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;&quot;&gt;📬 🛑&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Dead-Letter Topic&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Automated Retry &amp;amp; Alert&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="480" width="80" height="50" as="geometry"/>
         </mxCell>
 
         <!-- Connector Cloud Run Ingest -> Pub/Sub -->
         <mxCell id="e_crun_pubsub" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="378" y="300" as="sourcePoint"/>
-            <mxPoint x="400" y="300" as="targetPoint"/>
+            <mxPoint x="378" y="295" as="sourcePoint"/>
+            <mxPoint x="400" y="295" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
 
         <!-- ==================== COLUMN 4: PROCESSING (TRIGGERED BY EVENTS) ==================== -->
         <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#DCFCE7;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="490" y="65" width="125" height="525" as="geometry"/>
+          <mxGeometry x="490" y="65" width="125" height="535" as="geometry"/>
         </mxCell>
         <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Processing&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;font-weight:normal;&quot;&gt;(Triggered by)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="495" y="68" width="115" height="28" as="geometry"/>
@@ -125,58 +136,63 @@ export function buildServerlessEdaXml(): string {
 
         <!-- 1. Cloud Run Telemetry Analysis -->
         <mxCell id="card_crun_telem" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;🏃&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Run&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;Telemetry Analysis&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="498" y="120" width="110" height="60" as="geometry"/>
+          <mxGeometry x="498" y="115" width="110" height="60" as="geometry"/>
         </mxCell>
 
         <!-- 2. Cloud Functions Validate Event -->
         <mxCell id="card_cfunc_val" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#D97706;&quot;&gt;⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Functions&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;Validate Event&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="498" y="200" width="110" height="60" as="geometry"/>
+          <mxGeometry x="498" y="190" width="110" height="60" as="geometry"/>
         </mxCell>
 
         <!-- 3. Cloud Run Anomaly Interpretation -->
-        <mxCell id="card_crun_anomaly" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;🏃&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Run&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;Anomaly Interpretation&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="498" y="280" width="110" height="60" as="geometry"/>
+        <mxCell id="card_crun_anomaly" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;🏃&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Run&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;Anomaly Interpretation&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="498" y="265" width="110" height="60" as="geometry"/>
         </mxCell>
 
         <!-- 4. Cloud Functions Route Action -->
-        <mxCell id="card_cfunc_route" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#D97706;&quot;&gt;⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Functions&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;Route Action&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="498" y="360" width="110" height="60" as="geometry"/>
+        <mxCell id="card_cfunc_route" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#D97706;&quot;&gt;⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Functions&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;Route Action&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="498" y="340" width="110" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Eventarc Triggering Router -->
+        <mxCell id="card_eventarc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Eventarc Router&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Direct Cloud Run Trigger&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="498" y="420" width="110" height="55" as="geometry"/>
         </mxCell>
 
         <mxCell id="col4_hdr_btm" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Event Processing&lt;br&gt;Microservices / Logic&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="495" y="440" width="115" height="24" as="geometry"/>
+          <mxGeometry x="495" y="495" width="115" height="24" as="geometry"/>
         </mxCell>
 
         <!-- Connectors Pub/Sub -> 4 Processing Microservices -->
         <mxCell id="e_ps_telem" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="480" y="280" as="sourcePoint"/>
-            <mxPoint x="498" y="150" as="targetPoint"/>
+            <mxPoint x="480" y="270" as="sourcePoint"/>
+            <mxPoint x="498" y="145" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="e_ps_val" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="480" y="295" as="sourcePoint"/>
-            <mxPoint x="498" y="230" as="targetPoint"/>
+            <mxPoint x="480" y="285" as="sourcePoint"/>
+            <mxPoint x="498" y="220" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="e_ps_anomaly" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="480" y="310" as="sourcePoint"/>
-            <mxPoint x="498" y="310" as="targetPoint"/>
+            <mxPoint x="480" y="295" as="sourcePoint"/>
+            <mxPoint x="498" y="295" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="e_ps_route" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="480" y="325" as="sourcePoint"/>
-            <mxPoint x="498" y="390" as="targetPoint"/>
+            <mxPoint x="480" y="310" as="sourcePoint"/>
+            <mxPoint x="498" y="370" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
 
         <!-- ==================== COLUMN 5: VERTEX AI & GEMINI PLATFORM ==================== -->
         <mxCell id="col5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="625" y="65" width="150" height="525" as="geometry"/>
+          <mxGeometry x="625" y="65" width="150" height="535" as="geometry"/>
         </mxCell>
         <mxCell id="col5_hdr_mesh" value="&lt;span style=&quot;font-size:20px;&quot;&gt;✨&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="675" y="70" width="50" height="24" as="geometry"/>
@@ -215,14 +231,19 @@ export function buildServerlessEdaXml(): string {
         <!-- Heavy Anomaly Connector into Gemini -->
         <mxCell id="e_anomaly_gemini" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=3.5;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="608" y="310" as="sourcePoint"/>
-            <mxPoint x="635" y="310" as="targetPoint"/>
+            <mxPoint x="608" y="295" as="sourcePoint"/>
+            <mxPoint x="635" y="295" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
         <!-- Maintenance Order Pill -->
         <mxCell id="badge_maint_order" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;🛠️ Maintenance&lt;br&gt;Order&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#FDE68A;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="645" y="440" width="90" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- Model Evaluation Box to fill bottom -->
+        <mxCell id="card_model_eval" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;⚖️ 📈&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI GenAI Eval&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Confidence Score 99.4%&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="500" width="120" height="55" as="geometry"/>
         </mxCell>
 
 
@@ -249,7 +270,7 @@ export function buildServerlessEdaXml(): string {
 
         <!-- ==================== COLUMN 6: STORAGE & ANALYTICS ==================== -->
         <mxCell id="col6_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="865" y="65" width="165" height="525" as="geometry"/>
+          <mxGeometry x="865" y="65" width="165" height="535" as="geometry"/>
         </mxCell>
         <mxCell id="col6_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Storage &amp;amp; Analytics&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="870" y="68" width="155" height="20" as="geometry"/>
@@ -319,15 +340,19 @@ export function buildServerlessEdaXml(): string {
         <!-- Connector from Route Action into Cloud Tasks -->
         <mxCell id="e_route_tasks" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="608" y="390" as="sourcePoint"/>
+            <mxPoint x="608" y="370" as="sourcePoint"/>
             <mxPoint x="875" y="455" as="targetPoint"/>
             <Array as="points">
-              <mxPoint x="618" y="390"/>
+              <mxPoint x="618" y="370"/>
               <mxPoint x="618" y="420"/>
               <mxPoint x="750" y="420"/>
               <mxPoint x="750" y="455"/>
             </Array>
           </mxGeometry>
+        </mxCell>
+
+        <mxCell id="card_firestore_cache" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;&quot;&gt;⚡ 🗄️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Firestore &amp;amp; Memorystore&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Sub-ms Real-Time App State Cache&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="875" y="515" width="145" height="45" as="geometry"/>
         </mxCell>
 
 
@@ -365,35 +390,39 @@ export function buildServerlessEdaXml(): string {
 
         <!-- 3. Bottom External Actions Box -->
         <mxCell id="col7_btm_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#FECACA;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="375" width="160" height="215" as="geometry"/>
+          <mxGeometry x="1040" y="355" width="160" height="245" as="geometry"/>
         </mxCell>
 
         <mxCell id="card_ext_apis" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;⚙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;External APIs&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;(Vendor Systems,&lt;br&gt;Work Order API, ERP)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="1048" y="390" width="144" height="65" as="geometry"/>
+          <mxGeometry x="1048" y="370" width="144" height="65" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_notifications" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;✉️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Notification Services&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="1048" y="480" width="144" height="55" as="geometry"/>
+        <mxCell id="card_notifications" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;✉️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Notification Services&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;&quot;&gt;FCM Mobile Push &amp;amp; Email&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="1048" y="450" width="144" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="card_closed_loop_feeder" value="&lt;b style=&quot;font-size:6px;color:#991B1B;&quot;&gt;🔄 Closed-Loop Feedback to GE App&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#FECACA;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1048" y="520" width="144" height="28" as="geometry"/>
         </mxCell>
 
         <!-- Connectors Pub/Sub -> External APIs & Notifications -->
         <mxCell id="e_pubsub_apis" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1020" y="445" as="sourcePoint"/>
-            <mxPoint x="1048" y="422" as="targetPoint"/>
+            <mxPoint x="1048" y="402" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="e_pubsub_notif" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1020" y="465" as="sourcePoint"/>
-            <mxPoint x="1048" y="507" as="targetPoint"/>
+            <mxPoint x="1048" y="477" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
 
         <!-- ==================== BOTTOM LOGO FOOTER ==================== -->
-        <mxCell id="footer_logo" value="&lt;b style=&quot;font-size:14px;color:#0F172A;&quot;&gt;☁️ Google Cloud + &lt;span style=&quot;color:#2563EB;&quot;&gt;Gemini&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="605" width="1300" height="24" as="geometry"/>
+        <mxCell id="footer_logo" value="&lt;b style=&quot;font-size:14px;color:#0F172A;&quot;&gt;☁️ Google Cloud + &lt;span style=&quot;color:#2563EB;&quot;&gt;Gemini&lt;/span&gt; Platform Architecture&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="615" width="1300" height="24" as="geometry"/>
         </mxCell>
 
       </root>
