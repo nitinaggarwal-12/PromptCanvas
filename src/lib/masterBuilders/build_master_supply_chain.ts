@@ -1,340 +1,593 @@
 export function buildSupplyChainXml(): string {
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="supply_chain_pipeline" name="Refactored Google Native Autonomous Supply Chain &amp; Real-Time Digital Twin with Agentic AI and Gemini Enterprise">
-    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1150" pageHeight="920" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="ge_equipment_optimization_gemini" name="GE Equipment Optimization &amp; Gemini AI Agents (Manufacturing)">
+    <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="720" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- 1. TOP MAIN HEADER BANNER -->
-        <mxCell id="main_title_banner" value="&lt;b style=&quot;font-size:14.5px;letter-spacing:0.2px;color:#0F172A;&quot;&gt;Refactored Google Native Autonomous Supply Chain &amp;amp; Real-Time Digital Twin with Agentic AI and Gemini Enterprise&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="14" width="1055" height="38" as="geometry"/>
+        <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
+        <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="25" y="8" width="35" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:19px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;Google Cloud MANUFACTURING USE CASE: GE EQUIPMENT OPTIMIZATION &amp;amp; GEMINI AI AGENTS&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="65" y="8" width="1050" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:600;&quot;&gt;Strictly utilizing official tools, tech, and branding from Google Cloud and the Gemini platform.&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="65" y="32" width="1050" height="18" as="geometry"/>
         </mxCell>
 
-        <!-- 2. ZONE 1: ON-PREMISES & EDGE TELEMETRY INGRESS (x = 30 .. 235) -->
-        <mxCell id="lbl_onprem_header" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;ON-PREMISES &amp;amp; EDGE /&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="40" y="62" width="180" height="20" as="geometry"/>
+        <!-- Top Right Gemini Platform Logo -->
+        <mxCell id="top_gemini_brand" value="&lt;b style=&quot;font-size:20px;color:#2563EB;&quot;&gt;Gemini&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Platform&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="8" width="100" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="box_onprem_container" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EDF2F7;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="88" width="205" height="545" as="geometry"/>
+
+
+        <!-- ==================== LEFT SIDEBAR: SECURITY, GOVERNANCE, AND COMPLIANCE ==================== -->
+        <!-- x = 20 .. 125 (width = 105) -->
+        <mxCell id="sidebar_sec_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="105" height="570" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_onprem_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Fleet Telemetry &amp;amp;&lt;br&gt;Edge Ingress (GPS, RFID, EDI)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="95" width="195" height="30" as="geometry"/>
+        <mxCell id="lbl_sidebar_sec_title" value="&lt;b style=&quot;font-size:7px;color:#334155;letter-spacing:0.3px;&quot;&gt;SECURITY, GOVERNANCE, AND COMPLIANCE SIDEBAR&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="-100" y="330" width="345" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="card_fleet_gps" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🚛&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Fleet GPS &amp;amp;&lt;br&gt;IoT Sensors&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="42" y="145" width="82" height="75" as="geometry"/>
+
+        <!-- Sidebar Security Icons -->
+        <mxCell id="side_card_iam" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;👤&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;IAM&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Identity &amp;amp; Access&lt;br&gt;Management)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="85" height="70" as="geometry"/>
         </mxCell>
-        <mxCell id="card_rfid_port" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🚢&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Port Scanners&lt;br&gt;&amp;amp; EDI 204/214&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="138" y="145" width="82" height="75" as="geometry"/>
+
+        <mxCell id="side_card_vpc_sc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;💠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;VPC SERVICE&lt;br&gt;CONTROLS&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="170" width="85" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="box_gemini_dataprep" value="&lt;div style=&quot;margin-bottom:3px;&quot;&gt;&lt;span style=&quot;font-size:20px;font-weight:900;background:linear-gradient(90deg,#4285F4,#9B72CB,#D96570);-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#4285F4;&quot;&gt;Gemini&lt;/span&gt;&lt;/div&gt;&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Data Prep &amp;amp;&lt;br&gt;Telemetry Validation&lt;/b&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="42" y="300" width="180" height="120" as="geometry"/>
+
+        <mxCell id="side_card_scc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;CLOUD&lt;br&gt;SECURITY&lt;br&gt;COMMAND&lt;br&gt;CENTER&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="255" width="85" height="75" as="geometry"/>
         </mxCell>
-        <mxCell id="e_gps_prep" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_fleet_gps" target="box_gemini_dataprep">
+
+        <mxCell id="side_card_mfg_std" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;color:#2563EB;&quot;&gt;📋 🔒&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;MANUFACTURING&lt;br&gt;COMPLIANCE&lt;br&gt;STANDARDS&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="350" width="85" height="75" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== MAIN GCP PLATFORM CONTAINER ==================== -->
+        <!-- x = 135 .. 1285 (width = 1150) -->
+        <mxCell id="gcp_main_container" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="135" y="60" width="1145" height="570" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_gcp_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;☁️ Google Cloud Platform&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="145" y="65" width="300" height="20" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 1: MANUFACTURING SHOP FLOOR & IOT DEVICES (GE EQUIPMENT) ==================== -->
+        <!-- x = 145 .. 330 (width = 185) -->
+        <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="145" y="90" width="185" height="530" as="geometry"/>
+        </mxCell>
+        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#1E3A8A;&quot;&gt;MANUFACTURING SHOP&lt;br&gt;FLOOR &amp;amp; IOT DEVICES&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(GE EQUIPMENT)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="150" y="95" width="175" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. Wind Turbine & GE Energy Sensors -->
+        <mxCell id="card_ge_turbines" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;💨 ⚙️ &lt;span style=&quot;color:#0284C7;font-size:12px;font-weight:bold;&quot;&gt;GE&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;GE Turbines &amp;amp; Heavy Equipment&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="155" y="130" width="95" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_sensors_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;📶&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Sensors &amp;amp;&lt;br&gt;Telemetry Data&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="255" y="130" width="70" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Cameras & Visual Inspection -->
+        <mxCell id="card_cameras_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;📷 📹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Visual Inspection Stream&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;(Camera/Images)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="155" y="205" width="170" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Shop Floor Factory CNC & Conveyor Machinery -->
+        <mxCell id="card_factory_machinery" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;padding:2px 0;&quot;&gt;🏭 🦾 ⚙️ 🎛️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Shop Floor Automation Assembly&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Robotics, CNC Milling, High-Speed Conveyors&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="155" y="280" width="170" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom Ingress Sensor Detail -->
+        <mxCell id="card_opcua_bridge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🔌 📡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Edge Protocol Gateway&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;OPC-UA / Modbus / MQTT Stream&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="155" y="445" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_col1_shop_status" value="&lt;span style=&quot;font-size:6px;color:#1E3A8A;font-weight:bold;&quot;&gt;Real-Time IoT &amp;amp; Machine Stream&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="155" y="595" width="170" height="15" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 2: DATA INGESTION & MANUFACTURING DATA ENGINE ==================== -->
+        <!-- x = 340 .. 510 (width = 170) -->
+        <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="340" y="90" width="170" height="530" as="geometry"/>
+        </mxCell>
+        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#166534;&quot;&gt;DATA INGESTION &amp;amp;&lt;br&gt;MANUFACTURING DATA ENGINE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="345" y="95" width="160" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. Data Ingestion (Pub/Sub) -->
+        <mxCell id="card_pubsub_mfg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;💠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Data Ingestion&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Pub/Sub)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="90" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Streaming ETL (Dataflow) -->
+        <mxCell id="card_dataflow_mfg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;💠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Streaming ETL&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Dataflow)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="205" width="90" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Manufacturing Data Engine (MDE) -->
+        <mxCell id="card_mde_engine" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;color:#059669;&quot;&gt;⚙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Manufacturing&lt;br&gt;Data Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="365" y="280" width="120" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. Unified Data Warehouse (BigQuery) -->
+        <mxCell id="card_bq_mfg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Unified Data&lt;br&gt;Warehouse&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(BigQuery)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="365" y="390" width="120" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_mde_to_bq" value="&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Raw data / Structured data&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="365" y="360" width="120" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_mde_bq" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_mde_engine" target="card_bq_mfg"/>
+
+        <!-- Connectors Col 1 -> Col 2 -->
+        <mxCell id="e_sensors_pubsub" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_sensors_badge" target="card_pubsub_mfg"/>
+        <mxCell id="e_visual_dataflow" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_cameras_badge" target="card_dataflow_mfg"/>
+        <mxCell id="e_factory_mde" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_factory_machinery" target="card_mde_engine"/>
+
+
+        <!-- ==================== COLUMN 3: VERTEX AI & GEMINI PLATFORM (INTELLIGENCE CORE) ==================== -->
+        <!-- x = 520 .. 830 (width = 310) -->
+        <mxCell id="col3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#FDE68A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="520" y="90" width="310" height="530" as="geometry"/>
+        </mxCell>
+        <mxCell id="col3_hdr" value="&lt;b style=&quot;font-size:9px;color:#92400E;&quot;&gt;VERTEX AI &amp;amp; GEMINI PLATFORM&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(INTELLIGENCE CORE)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="525" y="95" width="300" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Inner Yellow Orchestration Frame -->
+        <mxCell id="box_vertex_orch_inner" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="530" y="125" width="290" height="480" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_vertex_orch_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Vertex AI Orchestration&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="535" y="128" width="280" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Gemini Sparkle Logo -->
+        <mxCell id="lbl_gemini_sparkle_icon" value="&lt;span style=&quot;font-size:24px;color:#2563EB;&quot;&gt;✨&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#2563EB;&quot;&gt;Gemini&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="535" y="160" width="50" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Vertex AI Connectors (Left) -->
+        <mxCell id="card_vertex_ai_top" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;💠 Vertex AI&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="535" y="225" width="60" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_vertex_ai_bot" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;💠 Vertex AI&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="535" y="360" width="60" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. Top Model Box: Gemini Platform (MULTIMODAL ANOMALY DETECTION) -->
+        <mxCell id="box_anomaly_gemini" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="605" y="150" width="115" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_anomaly_title" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Gemini Platform&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="152" width="105" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="anomaly_fuzing_icons" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;📷 + ⚡ + 📶&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#475569;&quot;&gt;fuzing&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="170" width="105" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_anomaly_sub" value="&lt;b style=&quot;font-size:6px;color:#1E3A8A;&quot;&gt;(MULTIMODAL&lt;br&gt;ANOMALY DETECTION)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="215" width="105" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Bottom Model Box: GEMINI MODELS (PREDICTIVE MAINTENANCE REASONING AGENT) -->
+        <mxCell id="box_pred_maint_gemini" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="605" y="325" width="115" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="pred_maint_icons" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;⚙️ 📈 🔍&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="330" width="105" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_pred_maint_title" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;GEMINI MODELS&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(PREDICTIVE MAINTENANCE&lt;br&gt;REASONING AGENT)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="375" width="105" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Bidirectional Multi-Modal Reasoning Line between Models -->
+        <mxCell id="lbl_agentic_reason" value="&lt;span style=&quot;font-size:5px;color:#0F172A;font-weight:bold;&quot;&gt;Agentic Multi-Modal Reasoning&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="600" y="275" width="125" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_gemini_cross_reason" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="662" y="260" as="sourcePoint"/><mxPoint x="662" y="325" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Center-Right: AGENTIC ORCHESTRATOR / CONVERSATIONAL INTERFACE -->
+        <mxCell id="card_agentic_orch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;color:#D97706;&quot;&gt;🔶&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;AGENTIC&lt;br&gt;ORCHESTRATOR /&lt;br&gt;CONVERSATIONAL&lt;br&gt;INTERFACE&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="725" y="240" width="90" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Connectors into Orchestrator -->
+        <mxCell id="e_anomaly_orch" value="&lt;span style=&quot;font-size:5px;color:#0F172A;&quot;&gt;Anomalies, Score&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="200" as="sourcePoint"/>
+            <mxPoint x="750" y="240" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_pred_orch" value="&lt;span style=&quot;font-size:5px;color:#0F172A;&quot;&gt;Maintenance Schedule, Part Needs&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="380" as="sourcePoint"/>
+            <mxPoint x="750" y="340" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 4: GE APPLICATION LAYER (GE APP) & BUSINESS ACTIONS ==================== -->
+        <!-- x = 840 .. 1050 (width = 210) -->
+        <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FECDD3;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="840" y="90" width="210" height="530" as="geometry"/>
+        </mxCell>
+        <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#9F1239;&quot;&gt;GE APPLICATION LAYER (GE APP)&lt;br&gt;&amp;amp; BUSINESS ACTIONS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="845" y="95" width="200" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. GE App Web & Mobile UI -->
+        <mxCell id="card_ge_app_ui" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;💻 &lt;span style=&quot;color:#0284C7;font-size:14px;font-weight:bold;&quot;&gt;GE&lt;/span&gt; 📱&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;GE APP&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Industrial Operations Cockpit&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#60A5FA;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="850" y="130" width="190" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Looker Operational Dashboards -->
+        <mxCell id="card_looker_mfg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;📊 &lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;LOOKER&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#334155;line-height:1.2;&quot;&gt;• Operational Dashboards&lt;br&gt;• Predictive Maintenance Reports&lt;br&gt;• Anomaly Alerts&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="850" y="205" width="190" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Actionable Buttons Column -->
+        <mxCell id="btn_sched_maint" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;🛠️ SCHEDULE MAINTENANCE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="295" width="190" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btn_opt_speed" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;⏱️ OPTIMIZE LINE SPEED&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="335" width="190" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btn_order_parts" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;💳 ORDER PARTS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="375" width="190" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btn_retrain_model" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;🔄 RE-TRAIN MODEL&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="415" width="190" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_closed_loop_retrain" value="&lt;span style=&quot;font-size:5.5px;color:#166534;font-weight:bold;&quot;&gt;Closed-Loop Continuous Feedback&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="455" width="190" height="15" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== BOTTOM PLATFORMS, COMPLIANCE & LEGEND ==================== -->
+        <!-- x = 20 .. 1285 (width = 1265) -->
+        <mxCell id="bar_btm_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="20" y="640" width="1260" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_btm_brand" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;☁️ Google Cloud Platform + &lt;span style=&quot;color:#2563EB;&quot;&gt;✨ Gemini&lt;/span&gt;&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;BOTTOM PLATFORMS, AND COMPLIANCE&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="645" width="400" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Right Side Official Legend -->
+        <mxCell id="legend_box_container" value="&lt;table style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-weight:bold;padding-right:8px;&quot;&gt;Legend:&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;💠 GCP Services&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;✨ Gemini Elements&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;➡️ Data/Control Flow&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;🛡️ Security/Governance&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;⏩ Actionable Button&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="580" y="648" width="680" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Closed Loop Re-Train Line from Button to Vertex AI & MDE -->
+        <mxCell id="e_retrain_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#166534;strokeWidth=1.5;endArrow=classic;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="850" y="429" as="sourcePoint"/>
+            <mxPoint x="485" y="325" as="targetPoint"/>
             <Array as="points">
-              <mxPoint x="83" y="260"/>
-              <mxPoint x="132" y="260"/>
+              <mxPoint x="835" y="429"/>
+              <mxPoint x="835" y="520"/>
+              <mxPoint x="505" y="520"/>
+              <mxPoint x="505" y="325"/>
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e_rfid_prep" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_rfid_port" target="box_gemini_dataprep">
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
+export function buildManufacturingOptimizationXml(): string {
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="ge_equipment_optimization_gemini" name="GE Equipment Optimization &amp; Gemini AI Agents (Manufacturing)">
+    <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="720" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
+        <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="25" y="8" width="35" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:19px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;Google Cloud MANUFACTURING USE CASE: GE EQUIPMENT OPTIMIZATION &amp;amp; GEMINI AI AGENTS&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="65" y="8" width="1050" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:600;&quot;&gt;Strictly utilizing official tools, tech, and branding from Google Cloud and the Gemini platform.&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="65" y="32" width="1050" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Top Right Gemini Platform Logo -->
+        <mxCell id="top_gemini_brand" value="&lt;b style=&quot;font-size:20px;color:#2563EB;&quot;&gt;Gemini&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Platform&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="8" width="100" height="40" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== LEFT SIDEBAR: SECURITY, GOVERNANCE, AND COMPLIANCE ==================== -->
+        <!-- x = 20 .. 125 (width = 105) -->
+        <mxCell id="sidebar_sec_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="105" height="570" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_sidebar_sec_title" value="&lt;b style=&quot;font-size:7px;color:#334155;letter-spacing:0.3px;&quot;&gt;SECURITY, GOVERNANCE, AND COMPLIANCE SIDEBAR&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="-100" y="330" width="345" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Sidebar Security Icons -->
+        <mxCell id="side_card_iam" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;👤&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;IAM&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Identity &amp;amp; Access&lt;br&gt;Management)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="85" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="side_card_vpc_sc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;💠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;VPC SERVICE&lt;br&gt;CONTROLS&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="170" width="85" height="65" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="side_card_scc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;CLOUD&lt;br&gt;SECURITY&lt;br&gt;COMMAND&lt;br&gt;CENTER&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="255" width="85" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="side_card_mfg_std" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;color:#2563EB;&quot;&gt;📋 🔒&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;MANUFACTURING&lt;br&gt;COMPLIANCE&lt;br&gt;STANDARDS&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="350" width="85" height="75" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== MAIN GCP PLATFORM CONTAINER ==================== -->
+        <!-- x = 135 .. 1285 (width = 1150) -->
+        <mxCell id="gcp_main_container" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="135" y="60" width="1145" height="570" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_gcp_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;☁️ Google Cloud Platform&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="145" y="65" width="300" height="20" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 1: MANUFACTURING SHOP FLOOR & IOT DEVICES (GE EQUIPMENT) ==================== -->
+        <!-- x = 145 .. 330 (width = 185) -->
+        <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="145" y="90" width="185" height="530" as="geometry"/>
+        </mxCell>
+        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#1E3A8A;&quot;&gt;MANUFACTURING SHOP&lt;br&gt;FLOOR &amp;amp; IOT DEVICES&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(GE EQUIPMENT)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="150" y="95" width="175" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. Wind Turbine & GE Energy Sensors -->
+        <mxCell id="card_ge_turbines" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;💨 ⚙️ &lt;span style=&quot;color:#0284C7;font-size:12px;font-weight:bold;&quot;&gt;GE&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;GE Turbines &amp;amp; Heavy Equipment&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="155" y="130" width="95" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_sensors_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;📶&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Sensors &amp;amp;&lt;br&gt;Telemetry Data&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="255" y="130" width="70" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Cameras & Visual Inspection -->
+        <mxCell id="card_cameras_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;📷 📹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Visual Inspection Stream&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;(Camera/Images)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="155" y="205" width="170" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Shop Floor Factory CNC & Conveyor Machinery -->
+        <mxCell id="card_factory_machinery" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;padding:2px 0;&quot;&gt;🏭 🦾 ⚙️ 🎛️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Shop Floor Automation Assembly&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Robotics, CNC Milling, High-Speed Conveyors&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="155" y="280" width="170" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom Ingress Sensor Detail -->
+        <mxCell id="card_opcua_bridge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🔌 📡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Edge Protocol Gateway&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;OPC-UA / Modbus / MQTT Stream&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="155" y="445" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_col1_shop_status" value="&lt;span style=&quot;font-size:6px;color:#1E3A8A;font-weight:bold;&quot;&gt;Real-Time IoT &amp;amp; Machine Stream&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="155" y="595" width="170" height="15" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 2: DATA INGESTION & MANUFACTURING DATA ENGINE ==================== -->
+        <!-- x = 340 .. 510 (width = 170) -->
+        <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="340" y="90" width="170" height="530" as="geometry"/>
+        </mxCell>
+        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#166534;&quot;&gt;DATA INGESTION &amp;amp;&lt;br&gt;MANUFACTURING DATA ENGINE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="345" y="95" width="160" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. Data Ingestion (Pub/Sub) -->
+        <mxCell id="card_pubsub_mfg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;💠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Data Ingestion&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Pub/Sub)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="90" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Streaming ETL (Dataflow) -->
+        <mxCell id="card_dataflow_mfg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;💠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Streaming ETL&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Dataflow)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="205" width="90" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Manufacturing Data Engine (MDE) -->
+        <mxCell id="card_mde_engine" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;color:#059669;&quot;&gt;⚙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Manufacturing&lt;br&gt;Data Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="365" y="280" width="120" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. Unified Data Warehouse (BigQuery) -->
+        <mxCell id="card_bq_mfg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;color:#2563EB;&quot;&gt;🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Unified Data&lt;br&gt;Warehouse&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(BigQuery)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="365" y="390" width="120" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_mde_to_bq" value="&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Raw data / Structured data&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="365" y="360" width="120" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_mde_bq" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_mde_engine" target="card_bq_mfg"/>
+
+        <!-- Connectors Col 1 -> Col 2 -->
+        <mxCell id="e_sensors_pubsub" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_sensors_badge" target="card_pubsub_mfg"/>
+        <mxCell id="e_visual_dataflow" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_cameras_badge" target="card_dataflow_mfg"/>
+        <mxCell id="e_factory_mde" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_factory_machinery" target="card_mde_engine"/>
+
+
+        <!-- ==================== COLUMN 3: VERTEX AI & GEMINI PLATFORM (INTELLIGENCE CORE) ==================== -->
+        <!-- x = 520 .. 830 (width = 310) -->
+        <mxCell id="col3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#FDE68A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="520" y="90" width="310" height="530" as="geometry"/>
+        </mxCell>
+        <mxCell id="col3_hdr" value="&lt;b style=&quot;font-size:9px;color:#92400E;&quot;&gt;VERTEX AI &amp;amp; GEMINI PLATFORM&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(INTELLIGENCE CORE)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="525" y="95" width="300" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Inner Yellow Orchestration Frame -->
+        <mxCell id="box_vertex_orch_inner" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="530" y="125" width="290" height="480" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_vertex_orch_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Vertex AI Orchestration&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="535" y="128" width="280" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Gemini Sparkle Logo -->
+        <mxCell id="lbl_gemini_sparkle_icon" value="&lt;span style=&quot;font-size:24px;color:#2563EB;&quot;&gt;✨&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-size:8px;color:#2563EB;&quot;&gt;Gemini&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="535" y="160" width="50" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Vertex AI Connectors (Left) -->
+        <mxCell id="card_vertex_ai_top" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;💠 Vertex AI&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="535" y="225" width="60" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_vertex_ai_bot" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;💠 Vertex AI&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="535" y="360" width="60" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. Top Model Box: Gemini Platform (MULTIMODAL ANOMALY DETECTION) -->
+        <mxCell id="box_anomaly_gemini" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="605" y="150" width="115" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_anomaly_title" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Gemini Platform&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="152" width="105" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="anomaly_fuzing_icons" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;📷 + ⚡ + 📶&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#475569;&quot;&gt;fuzing&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="170" width="105" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_anomaly_sub" value="&lt;b style=&quot;font-size:6px;color:#1E3A8A;&quot;&gt;(MULTIMODAL&lt;br&gt;ANOMALY DETECTION)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="215" width="105" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Bottom Model Box: GEMINI MODELS (PREDICTIVE MAINTENANCE REASONING AGENT) -->
+        <mxCell id="box_pred_maint_gemini" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="605" y="325" width="115" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="pred_maint_icons" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;⚙️ 📈 🔍&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="330" width="105" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_pred_maint_title" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;GEMINI MODELS&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(PREDICTIVE MAINTENANCE&lt;br&gt;REASONING AGENT)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="375" width="105" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Bidirectional Multi-Modal Reasoning Line between Models -->
+        <mxCell id="lbl_agentic_reason" value="&lt;span style=&quot;font-size:5px;color:#0F172A;font-weight:bold;&quot;&gt;Agentic Multi-Modal Reasoning&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="600" y="275" width="125" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_gemini_cross_reason" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="662" y="260" as="sourcePoint"/><mxPoint x="662" y="325" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Center-Right: AGENTIC ORCHESTRATOR / CONVERSATIONAL INTERFACE -->
+        <mxCell id="card_agentic_orch" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;color:#D97706;&quot;&gt;🔶&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;AGENTIC&lt;br&gt;ORCHESTRATOR /&lt;br&gt;CONVERSATIONAL&lt;br&gt;INTERFACE&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="725" y="240" width="90" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Connectors into Orchestrator -->
+        <mxCell id="e_anomaly_orch" value="&lt;span style=&quot;font-size:5px;color:#0F172A;&quot;&gt;Anomalies, Score&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="200" as="sourcePoint"/>
+            <mxPoint x="750" y="240" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_pred_orch" value="&lt;span style=&quot;font-size:5px;color:#0F172A;&quot;&gt;Maintenance Schedule, Part Needs&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="380" as="sourcePoint"/>
+            <mxPoint x="750" y="340" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 4: GE APPLICATION LAYER (GE APP) & BUSINESS ACTIONS ==================== -->
+        <!-- x = 840 .. 1050 (width = 210) -->
+        <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FECDD3;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="840" y="90" width="210" height="530" as="geometry"/>
+        </mxCell>
+        <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#9F1239;&quot;&gt;GE APPLICATION LAYER (GE APP)&lt;br&gt;&amp;amp; BUSINESS ACTIONS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="845" y="95" width="200" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. GE App Web & Mobile UI -->
+        <mxCell id="card_ge_app_ui" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;💻 &lt;span style=&quot;color:#0284C7;font-size:14px;font-weight:bold;&quot;&gt;GE&lt;/span&gt; 📱&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;GE APP&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Industrial Operations Cockpit&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#60A5FA;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="850" y="130" width="190" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Looker Operational Dashboards -->
+        <mxCell id="card_looker_mfg" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;📊 &lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;LOOKER&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#334155;line-height:1.2;&quot;&gt;• Operational Dashboards&lt;br&gt;• Predictive Maintenance Reports&lt;br&gt;• Anomaly Alerts&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="850" y="205" width="190" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Actionable Buttons Column -->
+        <mxCell id="btn_sched_maint" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;🛠️ SCHEDULE MAINTENANCE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="295" width="190" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btn_opt_speed" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;⏱️ OPTIMIZE LINE SPEED&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="335" width="190" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btn_order_parts" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;💳 ORDER PARTS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="375" width="190" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btn_retrain_model" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;🔄 RE-TRAIN MODEL&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="415" width="190" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_closed_loop_retrain" value="&lt;span style=&quot;font-size:5.5px;color:#166534;font-weight:bold;&quot;&gt;Closed-Loop Continuous Feedback&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="850" y="455" width="190" height="15" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== BOTTOM PLATFORMS, COMPLIANCE & LEGEND ==================== -->
+        <!-- x = 20 .. 1285 (width = 1265) -->
+        <mxCell id="bar_btm_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="20" y="640" width="1260" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_btm_brand" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;☁️ Google Cloud Platform + &lt;span style=&quot;color:#2563EB;&quot;&gt;✨ Gemini&lt;/span&gt;&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;BOTTOM PLATFORMS, AND COMPLIANCE&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="645" width="400" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Right Side Official Legend -->
+        <mxCell id="legend_box_container" value="&lt;table style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-weight:bold;padding-right:8px;&quot;&gt;Legend:&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;💠 GCP Services&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;✨ Gemini Elements&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;➡️ Data/Control Flow&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;🛡️ Security/Governance&lt;/td&gt;&lt;td style=&quot;padding:0 8px;&quot;&gt;⏩ Actionable Button&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="580" y="648" width="680" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Closed Loop Re-Train Line from Button to Vertex AI & MDE -->
+        <mxCell id="e_retrain_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#166534;strokeWidth=1.5;endArrow=classic;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="850" y="429" as="sourcePoint"/>
+            <mxPoint x="485" y="325" as="targetPoint"/>
             <Array as="points">
-              <mxPoint x="179" y="260"/>
-              <mxPoint x="132" y="260"/>
+              <mxPoint x="835" y="429"/>
+              <mxPoint x="835" y="520"/>
+              <mxPoint x="505" y="520"/>
+              <mxPoint x="505" y="325"/>
             </Array>
           </mxGeometry>
-        </mxCell>
-
-        <!-- 3. ZONE 2: GOOGLE SUPPLY CHAIN & AGENTIC AI (DIGITAL TWIN & COMPUTE) (x = 250 .. 765) -->
-        <mxCell id="lbl_gcp_supply_hdr" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:4px;&quot;&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;☁️&lt;/span&gt; &lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;GOOGLE SUPPLY CHAIN &amp;amp; AGENTIC AI&lt;/b&gt; &lt;span style=&quot;font-size:9px;color:#475569;font-weight:bold;&quot;&gt;(DIGITAL TWIN &amp;amp; COMPUTE)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="270" y="60" width="470" height="22" as="geometry"/>
-        </mxCell>
-        <mxCell id="box_gcp_main_container" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EDF2F7;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="250" y="88" width="515" height="657" as="geometry"/>
-        </mxCell>
-
-        <!-- 3A. Top Left: Agentic Route & Network Simulation (Dataflow) -->
-        <mxCell id="box_route_design" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="260" y="105" width="245" height="175" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_route_design_title" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#2563EB;font-size:13px;&quot;&gt;🌐&lt;/span&gt; &lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Agentic Route &amp;amp; Network Simulation&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Dataflow Beam Sliding Windows)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="268" y="108" width="230" height="22" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_dataflow_sim" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Dataflow Digital Twin&lt;/b&gt;&lt;br&gt;&lt;div style=&quot;font-size:26px;margin-top:4px;&quot;&gt;🌊&lt;/div&gt;&lt;span style=&quot;font-size:8px;color:#2563EB;font-weight:bold;&quot;&gt;Sliding Session Simulation&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#60A5FA;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="270" y="135" width="105" height="135" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_diff_reroute" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Dynamic Dynamic&lt;br&gt;Re-Routing&lt;/b&gt;&lt;br&gt;&lt;div style=&quot;font-size:22px;margin:3px 0;&quot;&gt;⚡&lt;/div&gt;&lt;span style=&quot;font-size:8px;color:#16A34A;font-weight:bold;&quot;&gt;Autonomous Corridor&lt;br&gt;Optimization&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#34D399;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="390" y="135" width="105" height="135" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_sim_reroute" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_dataflow_sim" target="card_diff_reroute">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Top Right Callout: Vertex AI Predictive ETA Forecaster -->
-        <mxCell id="callout_eta_radar" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;vertical-align:middle;text-align:center;&quot;&gt;🧠&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Vertex AI Predictive ETA&lt;br&gt;(Multimodal Disruption AI)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Predicted dwell times, port strikes&lt;br&gt;&amp;amp; dynamic route recommendations&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="525" y="105" width="225" height="55" as="geometry"/>
-        </mxCell>
-
-        <!-- 3B. Middle Network Hub -->
-        <mxCell id="badge_ggn" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;GOOGLE&lt;br&gt;GLOBAL&lt;br&gt;NETWORK&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="265" y="325" width="68" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="badge_ncc" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;NETWORK&lt;br&gt;CONNECTIVITY&lt;br&gt;CENTER (NCC)&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="365" y="320" width="85" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_onprem_ggn" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gemini_dataprep" target="badge_ggn">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_ggn_ncc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="badge_ggn" target="badge_ncc">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_vpc_peering_up" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;VPC PEERING&lt;br&gt;(INTERNAL TRANSLATION)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=#FFFFFF;rounded=1;strokeColor=#E2E8F0;" vertex="1" parent="1">
-          <mxGeometry x="350" y="285" width="115" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_vpc_peering_right" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;VPC PEERING (INTERGLATION)&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0284C7;&quot;&gt;PRIVATE GOOGLE ACCESS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=#FFFFFF;rounded=1;strokeColor=#E2E8F0;" vertex="1" parent="1">
-          <mxGeometry x="460" y="325" width="105" height="35" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_ncc_route" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="badge_ncc" target="box_route_design">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_ncc_models" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="badge_ncc" target="box_gemini_models">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_refined_route" value="&lt;span style=&quot;font-size:7.5px;color:#475569;font-style:italic;&quot;&gt;Refined corridor&lt;br&gt;models for simulation&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="255" y="285" width="95" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- 3C. Bottom Left: GKE Compute & Spanner Multi-Region Global Inventory Graph -->
-        <mxCell id="box_spanner_cluster" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="260" y="395" width="245" height="255" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_spanner_title" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#2563EB;font-size:13px;&quot;&gt;☸️&lt;/span&gt; &lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Spanner Graph &amp;amp; GKE Compute Cluster&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;(99.999% SLA TrueTime Atomic Inventory)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="268" y="398" width="230" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="box_subnet3" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="268" y="428" width="110" height="212" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_subnet3_hdr" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Subnet 3 - CMEK&lt;br&gt;Encrypted Supply Lake&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="270" y="432" width="106" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_cloudsql" value="&lt;div style=&quot;display:flex;align-items:center;gap:3px;justify-content:center;&quot;&gt;&lt;span style=&quot;font-size:12px;&quot;&gt;🗄️&lt;/span&gt; &lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Cloud SQL Master&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="274" y="462" width="98" height="38" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_cmek_ent" value="&lt;div style=&quot;display:flex;align-items:center;gap:3px;justify-content:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;🔒&lt;/span&gt; &lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;CMEK-Enterprise&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Detailed CMEK-varies&lt;br&gt;and Encrypted Freight Lake&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#EAB308;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="274" y="510" width="98" height="118" as="geometry"/>
-        </mxCell>
-        <mxCell id="box_subnet4" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="388" y="428" width="110" height="212" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_subnet4_hdr" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Subnet 4 - BigQuery&lt;br&gt;Freight Data Insights&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="390" y="432" width="106" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_bigquery_s4" value="&lt;div style=&quot;display:flex;align-items:center;gap:3px;justify-content:center;&quot;&gt;&lt;span style=&quot;font-size:12px;&quot;&gt;🔍&lt;/span&gt; &lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;BigQuery&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="394" y="462" width="98" height="38" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_stockout_optimizer" value="&lt;div style=&quot;display:flex;align-items:center;gap:3px;justify-content:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;📋&lt;/span&gt; &lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Stockout Optimizer&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Detailed BigQuery &amp;amp;&lt;br&gt;Stockout Optimizer&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="394" y="510" width="98" height="118" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_ncc_spanner" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="badge_ncc" target="box_spanner_cluster">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- 3D. Center-Right: Gemini Supply-Chain-Specific Foundation Models -->
-        <mxCell id="box_gemini_models" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="525" y="175" width="225" height="375" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_gemini_models_title" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#2563EB;font-size:13px;&quot;&gt;✨&lt;/span&gt; &lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Gemini Supply-Chain-&lt;br&gt;Specific Models&lt;/b&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="532" y="178" width="210" height="26" as="geometry"/>
-        </mxCell>
-        <mxCell id="box_subnet5" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="533" y="212" width="210" height="150" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_subnet5_hdr" value="&lt;b style=&quot;font-size:8.5px;color:#16A34A;&quot;&gt;Subnet 5 - Gemini Logistics Platform&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="540" y="216" width="195" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_mgmt_console" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🖥️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Management&lt;br&gt;Console&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="540" y="235" width="90" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_cloud_tpu" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud TPU&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="645" y="235" width="90" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_gemini_pro_ultra" value="&lt;div style=&quot;margin-bottom:2px;&quot;&gt;&lt;span style=&quot;font-size:16px;font-weight:900;background:linear-gradient(90deg,#4285F4,#9B72CB,#D96570);-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#4285F4;&quot;&gt;Gemini&lt;/span&gt;&lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Gemini Pro, Ultra,&lt;br&gt;Specialized-Logistics&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="540" y="292" width="195" height="58" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_clinico_supply" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;SAP S/4HANA &amp;amp; ERP&lt;br&gt;Integration Bridge&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="533" y="370" width="210" height="36" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_carrier_dispatch" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;vertical-align:middle;text-align:center;&quot;&gt;⚡&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Carrier Bidding &amp;amp;&lt;br&gt;Autonomous Dispatch&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Coordinates high-throughput simulation, automated spot tenders &amp;amp; fleet dispatch scaling&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="533" y="420" width="210" height="115" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_clinico_carrier" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="node_clinico_supply" target="node_carrier_dispatch">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_spanner_models" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="box_spanner_cluster" target="box_gemini_models">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_route_models" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="box_route_design" target="box_gemini_models">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- 3E. Bottom Feedback Loop Bar -->
-        <mxCell id="bar_agentic_loop" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Agentic Feedback Loop:&lt;/b&gt; &lt;span style=&quot;font-size:9.5px;color:#334155;&quot;&gt;Optimization of multi-echelon inventory, route diversions, and carrier spot tenders&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="260" y="660" width="455" height="32" as="geometry"/>
-        </mxCell>
-        <mxCell id="robot_agent_bar" value="🤖" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
-          <mxGeometry x="722" y="662" width="28" height="28" as="geometry"/>
-        </mxCell>
-
-        <!-- 4. ZONE 3: AGENTIC INTERFACE & PSC (x = 775 .. 855) -->
-        <mxCell id="card_agentic_interface" value="&lt;b style=&quot;font-size:10px;color:#581C87;&quot;&gt;AGENTIC&lt;br&gt;INTERFACE&lt;br&gt;&amp;amp; PSC&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="775" y="300" width="80" height="95" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_psc_desc" value="&lt;b style=&quot;font-size:7px;color:#334155;line-height:1.15;&quot;&gt;PSC ENABLES&lt;br&gt;TRANSITIVE&lt;br&gt;ROUTING FROM&lt;br&gt;ON-PREM AND&lt;br&gt;VPC TO GOOGLE&lt;br&gt;MANAGER&lt;br&gt;SERVICES&lt;/b&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="775" y="405" width="80" height="110" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_models_psc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gemini_models" target="card_agentic_interface">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_psc_managed" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_agentic_interface" target="box_managed_services">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- 5. ZONE 4: GOOGLE CLOUD (GEMINI MANAGED SERVICES - REGION: GLOBAL) (x = 865 .. 1085) -->
-        <mxCell id="lbl_managed_hdr" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:4px;&quot;&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;☁️&lt;/span&gt; &lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;GOOGLE CLOUD&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9.5px;color:#0F172A;font-weight:bold;&quot;&gt;(GEMINI MANAGED SERVICES)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#64748B;font-weight:bold;&quot;&gt;REGION: GLOBAL&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="870" y="55" width="215" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="box_managed_services" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EDF2F7;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="865" y="88" width="220" height="657" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_m1_foundation" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;⚛️&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;GEMINI&lt;br&gt;FOUNDATION MODELS&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;font-weight:bold;&quot;&gt;(Supply+Fleet-Specific)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="878" y="105" width="194" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_m2_bigquery" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;BIGQUERY&lt;br&gt;(OMICS &amp;amp; FREIGHT ANALYTICS)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="878" y="195" width="194" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_m3_vertex" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;🕸️&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;VERTEX AI&lt;br&gt;(SUPPLY CHAIN AGENT ENGINE)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="878" y="285" width="194" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_m4_digital_twin_ai" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;🌐&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;LOGISTICS DIGITAL TWIN AI&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="878" y="375" width="194" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_m5_looker" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;📈&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;LOOKER STUDIO&lt;br&gt;(CONTROL TOWER 3D COCKPIT)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="878" y="465" width="194" height="75" as="geometry"/>
-        </mxCell>
-
-        <!-- 6. PURPLE AGENTS & CLOSED LOOPS -->
-        <mxCell id="robot_agent_left" value="🤖" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
-          <mxGeometry x="205" y="485" width="35" height="35" as="geometry"/>
-        </mxCell>
-        <mxCell id="robot_agent_right" value="🤖" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
-          <mxGeometry x="795" y="555" width="35" height="35" as="geometry"/>
-        </mxCell>
-
-        <!-- Zero-Collision Clean Purple Connections -->
-        <mxCell id="e_purple_top" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9333EA;strokeWidth=2;dashed=1;endArrow=classic;" edge="1" parent="1" source="card_diff_reroute" target="card_agentic_interface">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="510" y="202"/>
-              <mxPoint x="510" y="160"/>
-              <mxPoint x="760" y="160"/>
-              <mxPoint x="760" y="347"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_purple_feedback" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9333EA;strokeWidth=2;dashed=1;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="533" y="500" as="sourcePoint"/>
-            <mxPoint x="222" y="520" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="515" y="500"/>
-              <mxPoint x="515" y="620"/>
-              <mxPoint x="222" y="620"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_purple_dataprep" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9333EA;strokeWidth=2;dashed=1;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="222" y="485" as="sourcePoint"/>
-            <mxPoint x="132" y="420" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="222" y="450"/>
-              <mxPoint x="132" y="450"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_purple_to_sim" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9333EA;strokeWidth=2;dashed=1;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="222" y="325" as="sourcePoint"/>
-            <mxPoint x="322" y="270" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="240" y="325"/>
-              <mxPoint x="240" y="300"/>
-              <mxPoint x="322" y="300"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- 7. BOTTOM TIMELINE & STAGE PROGRESSION -->
-        <mxCell id="stage_1" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;FLEET INGRESS &amp;amp; GEOFENCE VALIDATION&lt;br&gt;(WITH GEMINI DATA PREP)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="250" y="755" width="160" height="26" as="geometry"/>
-        </mxCell>
-        <mxCell id="stage_arrow_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="415" y="768" as="sourcePoint"/>
-            <mxPoint x="430" y="768" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="stage_2" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;STATEFUL DATAFLOW &amp;amp; SPANNER GRAPH&lt;br&gt;(WITH GEMINI MULTIMODAL INSIGHTS)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="435" y="755" width="170" height="26" as="geometry"/>
-        </mxCell>
-        <mxCell id="stage_arrow_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="610" y="768" as="sourcePoint"/>
-            <mxPoint x="625" y="768" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="stage_3" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;AUTONOMOUS CARRIER DISPATCH&lt;br&gt;&amp;amp; SAP S/4HANA INTEGRATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="630" y="755" width="135" height="26" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_agentic_summary" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Agentic AI closed feedback loop coordinates Gemini Multimodal predictions with Spanner Graph state mutations, automated spot tenders, and edge fleet routing.&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="250" y="785" width="515" height="18" as="geometry"/>
-        </mxCell>
-
-        <!-- 8. BOTTOM RIGHT LEGEND -->
-        <mxCell id="box_legend" value="&lt;div style=&quot;font-weight:bold;font-size:10px;margin-bottom:2px;color:#0F172A;text-align:left;&quot;&gt;Legend&lt;/div&gt;
-&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;width:24px;font-weight:bold;font-size:10px;&quot;&gt;—&lt;/td&gt;
-    &lt;td style=&quot;width:38%;&quot;&gt;Fleet Telemetry Stream&lt;/td&gt;
-    &lt;td style=&quot;width:20px;color:#0284C7;&quot;&gt;➔&lt;/td&gt;
-    &lt;td&gt;Digital Twin Stream / EDI&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;font-weight:bold;font-size:10px;&quot;&gt;—&lt;/td&gt;
-    &lt;td&gt;Private Interconnect&lt;/td&gt;
-    &lt;td style=&quot;color:#9333EA;&quot;&gt;▢&lt;/td&gt;
-    &lt;td&gt;Private Interconnect Interface&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;color:#9333EA;font-weight:bold;&quot;&gt;---&amp;gt;&lt;/td&gt;
-    &lt;td style=&quot;color:#9333EA;font-weight:bold;&quot;&gt;Agentic loops&lt;/td&gt;
-    &lt;td style=&quot;color:#0284C7;&quot;&gt;☁️&lt;/td&gt;
-    &lt;td&gt;Gemini Data BAA Protected&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;color:#64748B;&quot;&gt;---&lt;/td&gt;
-    &lt;td&gt;BAA / SLA&lt;/td&gt;
-    &lt;td colspan=&quot;2&quot; style=&quot;font-size:7px;color:#9333EA;font-style:italic;&quot;&gt;Dotted purple lines represent data-driven agentic action loop&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;color:#64748B;&quot;&gt;····&lt;/td&gt;
-    &lt;td&gt;CMEK&lt;/td&gt;
-    &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="775" y="755" width="310" height="110" as="geometry"/>
         </mxCell>
 
       </root>

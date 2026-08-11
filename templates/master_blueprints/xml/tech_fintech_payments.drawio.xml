@@ -1,5 +1,4 @@
-export function buildFintechPaymentsXml(): string {
-  return `<mxfile host="embed.diagrams.net">
+<mxfile host="embed.diagrams.net">
   <diagram id="fintech_automated_advising" name="Automated Personalized Financial Advising (Fintech)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="720" background="#FFFFFF" math="0" shadow="0">
       <root>
@@ -336,5 +335,4 @@ export function buildFintechPaymentsXml(): string {
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>`;
-}
+</mxfile>

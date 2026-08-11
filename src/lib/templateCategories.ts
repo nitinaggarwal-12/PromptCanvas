@@ -626,23 +626,24 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_fintech_payments",
-    name: "FinTech Real-Time Payments & ISO 20022 Clearing",
+    name: "Automated Personalized Financial Advising (Fintech)",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
-    badge: "Production Blueprint (WBS 3.2.1)",
+    badge: "Master Blueprint (Verified)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use when designing PCI-DSS compliant real-time payment ledgers, ISO 20022 message transformation, sub-10ms fraud scoring, and FedNow / RTP settlement rails.",
+    whenToUse: "Use when designing an automated personalized financial advising and relationship management platform with GE Fintech Assistant, Gemini Pro Vision, Gemini High-Capability synthesis, and Looker analytics.",
     bestFor: [
-      "WBS 3.2.1 FinTech Real-Time Payments & ISO 20022 Clearing Architecture",
-      "Sub-10ms AI fraud scoring & anomaly detection on streaming transactions",
-      "Immutable double-entry payment ledger with Cloud Spanner global consistency",
-      "Multi-rail settlement integration (FedNow, RTP, ACH, SWIFT)",
-      "PCI-DSS Level 1 compliance, HSM encryption, and regulatory audit reporting"
+      "Automated Personalized Financial Advising & Relationship Management",
+      "Multimodal User Ingress (Voice, Text, Tax Returns & Financial Statement Uploads)",
+      "GE Fintech Assistant on Google App Engine & Firebase Auth",
+      "Vertex AI with Gemini Pro Vision for tax/statement parsing & Dialogflow CX chat agent",
+      "Gemini High-Capability model for custom financial reports & investment strategies",
+      "Looker Performance Analytics, Cloud Run & Firebase Cloud Messaging automated alerts"
     ],
-    keyTech: ["ISO 20022 Bus", "Cloud Spanner", "Real-Time Fraud Engine", "Double-Entry Ledger", "FedNow / RTP Rails", "PCI-DSS HSM"],
+    keyTech: ["Gemini Pro Vision", "Gemini Ultra/High-Capability", "Vertex AI", "Dialogflow CX", "BigQuery", "Looker", "Firebase Auth", "Cloud Run"],
     thumbnail: "/templates/tech_fintech_payments.png",
-    promptSummary: "FinTech Payments Architecture: Ingress -> ISO 20022 Bus -> Real-Time Fraud Engine -> Double-Entry Ledger -> Settlement Rails."
+    promptSummary: "Fintech Advising Platform: User Inputs -> GE App on App Engine -> Ingestion (GCS/BigQuery/PubSub) -> Vertex AI & Gemini Platform -> Analytics & Actions (BigQuery/GCS/Looker/FCM)."
   },
   {
     id: "tech_genomics_clinical",
@@ -666,24 +667,24 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_supply_chain",
-    name: "Autonomous Supply Chain Logistics & Real-Time Digital Twin",
+    name: "GE Equipment Optimization & Gemini AI Agents (Manufacturing)",
     categoryId: "data_pipelines",
     categoryName: "Data Pipelines",
     badge: "Master Blueprint (Verified)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for enterprise supply chain logistics, IoT fleet telemetry, Dataflow sliding-window simulation, Spanner Graph global inventory ledgers, and automated carrier dispatch.",
+    whenToUse: "Use for industrial IoT manufacturing, GE Equipment optimization, Manufacturing Data Engine (MDE), Gemini Multimodal Anomaly Detection, and closed-loop actionable buttons.",
     bestFor: [
-      "WBS 5.3.1 Autonomous Supply Chain & Real-Time Fleet Telemetry",
-      "Cloud Pub/Sub & mTLS edge telemetry ingestion (500k+ assets)",
-      "Cloud Dataflow sliding session window simulation engine",
-      "Cloud Spanner Multi-Region Global Inventory Graph (GQL, 99.999% SLA)",
-      "Vertex AI Multimodal Predictive ETA Forecaster & Weather Disruption AI",
-      "Logistics Control Tower 3D Cockpit, Automated Carrier Dispatch & SAP S/4HANA ERP Bridge"
+      "GE Equipment Optimization & Autonomous Gemini AI Agents",
+      "Manufacturing Shop Floor IoT Ingestion (Turbines, Sensors, Visual Cameras)",
+      "Manufacturing Data Engine (MDE), Cloud Pub/Sub, Dataflow & BigQuery Warehouse",
+      "Vertex AI Intelligence Core with Gemini Multimodal Anomaly Detection (Visual + Telemetry Fuzing)",
+      "Gemini Predictive Maintenance Reasoning Agent & Agentic Conversational Orchestrator",
+      "GE App Cockpit, Looker Dashboards, and Actionable Buttons (Schedule Maint, Optimize Speed, Order Parts, Re-Train Model)"
     ],
-    keyTech: ["Cloud Pub/Sub", "Cloud Dataflow", "Spanner Graph", "Vertex AI ETA", "BigQuery Lakehouse", "SAP S/4HANA", "Control Tower 3D"],
+    keyTech: ["Manufacturing Data Engine", "Gemini Multimodal", "Vertex AI Orchestration", "BigQuery", "Looker", "GE App", "Cloud Pub/Sub", "Dataflow"],
     thumbnail: "/templates/tech_supply_chain.png",
-    promptSummary: "Supply Chain Digital Twin: IoT Ingress -> Dataflow Simulation -> Spanner Graph -> Vertex AI ETA Forecaster -> Control Tower 3D -> Carrier Dispatch & SAP ERP."
+    promptSummary: "Manufacturing AI Optimization: Shop Floor IoT -> Data Ingestion (Pub/Sub, Dataflow, MDE) -> Vertex AI & Gemini Intelligence Core -> GE App Cockpit & Closed-Loop Actions."
   },
 
   // =========================================================================

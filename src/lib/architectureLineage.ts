@@ -473,32 +473,32 @@ export const BLUEPRINT_LINEAGE_REGISTRY: Record<string, BlueprintLineage> = {
     lineageBreadcrumb: ["Industry Solutions", "Pharma & Healthcare", "Genomics & Drug Discovery", "IND-PHARMA-01"]
   },
   "tech_supply_chain": {
-    uniqueId: "IND-SUPPLY-02",
-    canonicalWbsId: "IND-SUPPLY-02_autonomous_supply_chain",
+    uniqueId: "IND-MFG-02",
+    canonicalWbsId: "IND-MFG-02_ge_equipment_optimization_gemini",
     canonicalArchId: "tech_supply_chain",
-    name: "QuantumFlow Global Autonomous Supply Chain & Logistics",
+    name: "GE Equipment Optimization & Gemini AI Agents (Manufacturing)",
     phaseId: "IND",
     phaseTitle: "Industry Specialized Solutions",
     layer: "Industry",
     layerCode: "-IND-",
-    domain: "Supply Chain & Logistics",
+    domain: "Manufacturing & Industrial IoT",
     isIndustrySpecialized: true,
-    industryName: "Supply Chain & Logistics",
-    lineageBreadcrumb: ["Industry Solutions", "Supply Chain & Logistics", "Autonomous Logistics", "IND-SUPPLY-02"]
+    industryName: "Manufacturing & Industrial",
+    lineageBreadcrumb: ["Industry Solutions", "Manufacturing & Industrial", "GE Equipment Optimization", "IND-MFG-02"]
   },
   "tech_fintech_payments": {
     uniqueId: "IND-FINTECH-03",
-    canonicalWbsId: "IND-FINTECH-03_realtime_payments_iso20022",
+    canonicalWbsId: "IND-FINTECH-03_automated_personalized_financial_advising",
     canonicalArchId: "tech_fintech_payments",
-    name: "ApexPay Real-Time ISO 20022 Payments & Settlement Clearing",
+    name: "Automated Personalized Financial Advising (Fintech)",
     phaseId: "IND",
     phaseTitle: "Industry Specialized Solutions",
     layer: "Industry",
     layerCode: "-IND-",
-    domain: "Financial Services & Banking",
+    domain: "Financial Services & Wealth Management",
     isIndustrySpecialized: true,
     industryName: "FinTech & Banking",
-    lineageBreadcrumb: ["Industry Solutions", "FinTech & Banking", "ISO 20022 Payments", "IND-FINTECH-03"]
+    lineageBreadcrumb: ["Industry Solutions", "FinTech & Banking", "Personalized Financial Advising", "IND-FINTECH-03"]
   },
   "tech_ecommerce_retail": {
     uniqueId: "IND-RETAIL-04",

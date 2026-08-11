@@ -286,10 +286,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_fintech_payments",
-    name: "FinTech Real-Time Payments & ISO 20022 Clearing (WBS 3.2.1)",
-    category: "Data & Lakehouse Architecture",
-    whenToUse: "WBS 3.2.1 FinTech Real-Time Payments Architecture featuring ISO 20022 message transformation, sub-10ms fraud detection, double-entry payment ledger, and Federal Reserve / FedNow settlement rails.",
-    prompt: "Act as a Principal FinTech & Payment Systems Architect. Design a production-grade WBS 3.2.1 FinTech Real-Time Payments & ISO 20022 Clearing blueprint. Include: Payment Ingress -> ISO 20022 Normalization Bus -> Real-Time Fraud & AML Scoring Engine -> Immutable Double-Entry Ledger on Cloud Spanner -> Settlement Rails (FedNow / RTP / SWIFT) -> Regulatory Reporting & AML Audit."
+    name: "Automated Personalized Financial Advising (Fintech)",
+    category: "Industry Specialized Solutions",
+    whenToUse: "Google Cloud Architecture: Fintech Use Case - Automated Personalized Financial Advising and Relationship Management with GE Fintech Assistant & Gemini Platform.",
+    prompt: "Act as a Principal FinTech & Google Cloud AI Architect. Design a production-grade Google Cloud Fintech Architecture: Automated Personalized Financial Advising blueprint. Include: Users (Voice text-to-speech, Text input, Upload documents like tax returns/statements) -> User Interface Layer (GE App on App Engine, Firebase Authentication, Cloud Load Balancing) -> Ingestion & Data Management Layer (Unstructured recordings to GCS, Structured transaction history to BigQuery/Cloud SQL, Real-time transaction streams to Pub/Sub) -> Vertex AI & Gemini Platform Processing Layer (Gemini Pro Vision, Dialogflow CX conversational chat agent, Vertex AI, Gemini High-Capability Model for long-form reports & tailored strategies, Dataflow ETL) -> Analytics, Actions & Storage Layer (BigQuery insights, Cloud Storage PDF reports, Looker performance analytics, Firebase Cloud Messaging, Cloud Run & Cloud Functions automated alerts) -> Security, Governance & Compliance (IAM, VPC Service Controls, SCC, Fintech Compliance Standards)."
   },
   {
     id: "tech_multimodal_ingestion",
@@ -307,10 +307,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_supply_chain",
-    name: "Autonomous Supply Chain Logistics & Real-Time Digital Twin (WBS 5.3.1)",
-    category: "Data & Lakehouse Architecture",
-    whenToUse: "WBS 5.3.1 Autonomous Supply Chain Logistics & Real-Time Digital Twin featuring Cloud Dataflow sliding session window simulation, Cloud Spanner Multi-Region Global Inventory Graph (GQL), Vertex AI predictive ETA forecaster, and SAP S/4HANA ERP Bridge.",
-    prompt: "Act as a Principal Supply Chain & Cloud Solutions Architect. Design a production-grade WBS 5.3.1 Autonomous Supply Chain Logistics & Digital Twin blueprint. Include: 500k+ Fleet Telemetry Ingress -> Cloud Pub/Sub & mTLS TPM -> Cloud Dataflow Sliding Session Window Simulation -> Cloud Spanner Multi-Region Global Inventory Graph (GQL) -> Vertex AI Demand & Multimodal Predictive ETA Engine -> Logistics Control Tower 3D Cockpit -> Automated Carrier Spot Dispatch & SAP S/4HANA ERP Bridge -> BigQuery Logistics Data Lakehouse."
+    name: "GE Equipment Optimization & Gemini AI Agents (Manufacturing)",
+    category: "Industry Specialized Solutions",
+    whenToUse: "Google Cloud Manufacturing Use Case: GE Equipment Optimization & Gemini AI Agents with Manufacturing Data Engine, Multimodal Anomaly Detection, Predictive Maintenance Reasoning, and Closed-Loop Actions.",
+    prompt: "Act as a Principal Manufacturing & Industrial AI Architect. Design a production-grade Google Cloud Manufacturing Use Case: GE Equipment Optimization & Gemini AI Agents blueprint. Include: Left Sidebar Security, Governance & Compliance (IAM, VPC Service Controls, SCC, Manufacturing Compliance Standards); Column 1 Manufacturing Shop Floor & IoT Devices (GE Turbines & Heavy Equipment, Sensors & Telemetry Data, Visual Inspection Stream Cameras, Shop Floor Factory Assembly); Column 2 Data Ingestion & Manufacturing Data Engine (Data Ingestion Pub/Sub, Streaming ETL Dataflow, Manufacturing Data Engine MDE, Unified Data Warehouse BigQuery); Column 3 Vertex AI & Gemini Platform Intelligence Core (Vertex AI Orchestration, Gemini Multimodal Anomaly Detection with visual/telemetry fuzing, Gemini Predictive Maintenance Reasoning Agent, Agentic Orchestrator / Conversational Interface); Column 4 GE Application Layer (GE App Web & Mobile UI, Looker Operational Dashboards, Actionable Buttons: Schedule Maintenance, Optimize Line Speed, Order Parts, Re-Train Model closed loop); Bottom Platform Legend (GCP Services, Gemini Elements, Data/Control Flow, Security/Governance, Actionable Button)."
   },
   {
     id: "tech_eval_safety",

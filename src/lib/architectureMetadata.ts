@@ -21,13 +21,13 @@ export interface ArchitectureMeta {
 export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   tech_fintech_payments: {
     id: "tech_fintech_payments",
-    title: "FinTech Real-Time Payments & ISO 20022 Clearing (WBS 3.2.1)",
-    category: "Data & Lakehouse Architecture",
-    useCase: "FINTECH REAL-TIME PAYMENTS (WBS 3.2.1)",
-    businessUseCase: "WBS 3.2.1: PCI-DSS compliant real-time payment processing and ISO 20022 message transformation architecture with sub-10ms AI fraud scoring, immutable double-entry ledger on Cloud Spanner, and FedNow / RTP settlement rails.",
-    primaryActors: "FinTech Architects, Risk & Fraud Engineers, Payment Ops Leads, Compliance Officers",
-    targetOutcomes: "Sub-10ms Real-Time Fraud Scoring, Zero Transaction Loss, Global ACID Spanner Ledger, 100% ISO 20022 & PCI-DSS Compliance",
-    desc: "FinTech Real-Time Payments blueprint mapping ISO 20022 bus, AI fraud engine, Cloud Spanner ledger, and FedNow settlement rails."
+    title: "Automated Personalized Financial Advising (Fintech)",
+    category: "Industry Specialized Solutions",
+    useCase: "AUTOMATED PERSONALIZED FINANCIAL ADVISING & RELATIONSHIP MANAGEMENT",
+    businessUseCase: "Google Cloud Fintech Solution: Automated personalized financial advising and relationship management leveraging GE Fintech Assistant app, Firebase Auth, Cloud Storage for customer documents, BigQuery & Cloud SQL, Vertex AI with Gemini Pro Vision for tax/statement parsing, Gemini High-Capability synthesis for custom investment strategies, Dialogflow CX chat agent, and Looker analytics.",
+    primaryActors: "Fintech Product Managers, Wealth Advisors, Risk & Compliance Officers, Retail Banking Customers",
+    targetOutcomes: "Real-time Multimodal Advisory, Automated Financial Strategy Generation, Sub-second Portfolio Insights, Full Fintech Regulatory Compliance (PCI-DSS, SOC2, FINRA)",
+    desc: "Google Cloud Architecture: Fintech Use Case - Automated Personalized Financial Advising and Relationship Management with GE Fintech Assistant & Gemini Platform."
   },
   tech_genomics_clinical: {
     id: "tech_genomics_clinical",
@@ -41,13 +41,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_supply_chain: {
     id: "tech_supply_chain",
-    title: "Autonomous Supply Chain Logistics & Real-Time Digital Twin",
-    category: "Data & Lakehouse Architecture",
-    useCase: "AUTONOMOUS SUPPLY CHAIN LOGISTICS & REAL-TIME DIGITAL TWIN (WBS 5.3.1)",
-    businessUseCase: "WBS 5.3.1: Autonomous supply chain logistics and IoT fleet telemetry architecture with Cloud Dataflow sliding session window simulation, Cloud Spanner Multi-Region Global Inventory Graph (GQL), Vertex AI predictive ETA forecaster, and SAP S/4HANA ERP Bridge.",
-    primaryActors: "Supply Chain Solutions Architects, Global Logistics Directors, Inventory Planning Leads, Fleet Operations Engineers",
-    targetOutcomes: "Sub-Second Dynamic Re-Routing, 99.999% Graph Availability, 85% Stockout Reduction, Automated Spot Carrier Dispatch & SAP ERP Sync",
-    desc: "Autonomous Supply Chain & Digital Twin blueprint mapping 500k+ IoT fleet assets, Cloud Dataflow simulation, Spanner Graph global inventory ledger, Vertex AI ETA engine, and 3D Control Tower cockpit."
+    title: "GE Equipment Optimization & Gemini AI Agents (Manufacturing)",
+    category: "Industry Specialized Solutions",
+    useCase: "MANUFACTURING USE CASE: GE EQUIPMENT OPTIMIZATION & GEMINI AI AGENTS",
+    businessUseCase: "Google Cloud Manufacturing Solution: Industrial equipment optimization and autonomous Gemini AI agents integrating GE Equipment telemetry, Manufacturing Data Engine (MDE), Vertex AI Orchestration, Gemini Multimodal Anomaly Detection, Gemini Predictive Maintenance Reasoning Agent, Looker Operational Cockpit, and closed-loop actionable buttons.",
+    primaryActors: "Plant Operations Managers, Industrial Reliability Engineers, Maintenance Technicians, Manufacturing Data Analysts",
+    targetOutcomes: "Zero Unplanned Downtime, Real-Time Multimodal Anomaly Scoring, Automated Maintenance Scheduling & Part Dispatch, Closed-Loop Model Re-Training",
+    desc: "Google Cloud Manufacturing Use Case: GE Equipment Optimization & Gemini AI Agents with Manufacturing Data Engine, Multi-Modal Anomaly Detection & Closed-Loop Actions."
   },
   tech_eval_safety: {
     id: "tech_eval_safety",
