@@ -231,6 +231,30 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     salesStage: "Technical Workshop",
     lifecyclePhase: "Design → Implementation",
     liveRailwayLink: "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-APP-L-08_serverless_eda_architecture"
+  },
+  {
+    combinedId: "P4-TECH-M-01_enterprise_multiflow_zerotrust_platform",
+    diagramName: "Enterprise Multi-Flow Zero-Trust & Cognitive Platform Architecture",
+    intentKeywords: ["multi-flow", "decision diamond", "rhombus", "network flow", "process flow", "dataflow", "zero trust platform", "beyondcorp", "model armor gate", "hitl review"],
+    goldenExamplePayload: "Build an Enterprise Multi-Flow Zero-Trust Platform featuring 5 Decision Diamonds (BeyondCorp Posture Check, Cloud Armor WAF, Model Armor AI Safety, Agentic Confidence Gate, and DataOps Circuit Breaker) with explicit Dataflow, Network Flow, Control Flow, and Telemetry wires.",
+    uiCardDesc: "Deep Technical Blueprint featuring 5 Decision Diamonds, 4 distinct flow styles (Data, Network, Control, Telemetry), and full-stack GCP zero-trust services.",
+    phase: "4",
+    phaseName: "Technical Deep-Dive & Security Validation",
+    phaseGoal: "Visualize comprehensive multi-flow execution with 5 explicit decision diamonds routing network, process, data, and telemetry traffic.",
+    domain: "Zero-Trust & Cognitive Systems",
+    abstractionLevel: "Physical",
+    stackLayer: "Layer 1 to 4 (Full Stack)",
+    notationStandard: "Multi-Flow Zero-Trust & Decision Diamond Topology",
+    defaultDirection: "LR",
+    coreGcpServices: ["BeyondCorp Enterprise", "Cloud Armor WAF", "Identity-Aware Proxy", "GKE Autopilot", "Istio mTLS 1.3", "Model Armor", "Gemini 3.6 Pro", "Vertex AI Vector Search", "Cloud SQL PSA", "BigQuery BigLake", "Cloud KMS CMEK", "OpenTelemetry"],
+    generativeBuildSequence: "1. Draw Top Header & 4-Flow Legend (Data, Network, Control, Telemetry). 2. Draw Tier 1 Ingress with [D1] Device Posture and [D2] WAF Threat Diamonds. 3. Draw Tier 2 Compute Subnet (10.100.1.0/24) with [D3] Model Armor Safety Diamond and Istio mTLS mesh. 4. Draw Tier 3 Cognitive Mesh with [D4] Confidence Interlock Diamond and HITL Review Gate. 5. Draw Tier 4 Secure Data Subnet (10.200.2.0/24) with [D5] DataOps Circuit Breaker Diamond.",
+    advancedPromptLogic: "Enforce explicit color-coded wires (Solid Blue for Data, Solid Purple for Network, Dashed Amber for Control, Dotted Green for Telemetry) and solid white background pills on all edge labels.",
+    requiredUserInputs: "VPC Subnet CIDRs (10.100.1.0/24, 10.200.2.0/24), FIDO2 Attestation Criteria, WAF Rate Limits, Model Confidence Threshold (≥90%), Data Anomaly Threshold (>5%)",
+    prerequisite: "Secure Deployment Topology Map",
+    primaryPersonas: "Creator: Chief Security & AI Systems Architect | Consumers: SecOps, Network & Data Engineers | Stakeholders: CISO / CTO / VP Engineering",
+    salesStage: "Master Architecture Review / Technical Deep-Dive",
+    lifecyclePhase: "Design → Build",
+    liveRailwayLink: "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-TECH-M-01_enterprise_multiflow_zerotrust_platform"
   }
 ];
 

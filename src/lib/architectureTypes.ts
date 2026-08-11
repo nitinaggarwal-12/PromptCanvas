@@ -51,7 +51,8 @@ import {
   getExactLlmopsLifecycleXml,
   getExactLlmCapacityQuotaXml,
   getExactIncidentTriageSreXml,
-  getExactServerlessGcpReferenceXml
+  getExactServerlessGcpReferenceXml,
+  getExactMultiFlowZeroTrustPlatformXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -404,6 +405,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('secure_deployment') || id.includes('topology_map') || id === 'secure_deployment_map' || id.includes('p4-sec-p-01')) return 'secure_deployment_map';
   if (id.includes('vsm') || id.includes('value_stream') || id === 'value_stream_map') return 'value_stream_map';
   if (id.includes('as_is') || id.includes('asis') || id.includes('tobe') || id.includes('to_be') || id === 'asis_vs_tobe_process_flow') return 'asis_vs_tobe_process_flow';
+  if (id.includes('multiflow') || id.includes('p4-tech-m-01') || id.includes('decision_diamond')) return 'multiflow_zerotrust_platform';
   return id;
 }
 
@@ -499,6 +501,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactGcpDataLakehouseWbsXml();
   } else if (id === 'tech_serverless_gcp' || id === 'serverless_gcp' || id.includes('serverless') || id === 'p4-app-l-08') {
     xml = getExactServerlessGcpReferenceXml();
+  } else if (id === 'multiflow_zerotrust_platform') {
+    xml = getExactMultiFlowZeroTrustPlatformXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
