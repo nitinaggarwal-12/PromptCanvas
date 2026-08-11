@@ -1,42 +1,62 @@
-'use client';
-
 import React, { useState } from 'react';
-import { LayoutGrid, Sparkles, ArrowRight, Server, Cpu, Database, ShieldCheck, Search, CheckCircle2, Globe } from 'lucide-react';
+import { LayoutGrid, Sparkles, ArrowRight, Server, Cpu, Database, ShieldCheck, Search, CheckCircle2, Globe, Building2, Factory, Briefcase, Stethoscope, ShoppingBag, Truck, DollarSign } from 'lucide-react';
 import { ARCHITECTURE_TYPES } from '@/lib/architectureTypes';
 import { GOOGLE_OPEN_KNOWLEDGE_CATALOG, OKFEntity } from '@/lib/openKnowledgeFormatCatalog';
+import { getBlueprintLineage } from '@/lib/architectureLineage';
 
 interface TemplateGalleryTabProps {
   onSelectTemplate: (prompt: string, title: string, archType: string) => void;
 }
 
 export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelectTemplate }) => {
-  const [activeCategory, setActiveCategory] = useState<'blueprints' | 'ai_engines' | 'clouds'>('blueprints');
+  const [activeCategory, setActiveCategory] = useState<'wbs_master' | 'industry' | 'ai_engines' | 'clouds'>('wbs_master');
+  const [activePhase, setActivePhase] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const okfAiEngines = GOOGLE_OPEN_KNOWLEDGE_CATALOG.filter(e => e.category === 'NativeAIEngine');
   const okfCloudProviders = GOOGLE_OPEN_KNOWLEDGE_CATALOG.filter(e => e.category === 'CloudProvider');
 
-  const filteredBlueprints = ARCHITECTURE_TYPES.filter(t =>
-    t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.prompt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.whenToUse.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const wbsMasterTemplates = ARCHITECTURE_TYPES.filter(t => t.category !== 'Industry Specialized Solutions');
+  const industryTemplates = ARCHITECTURE_TYPES.filter(t => t.category === 'Industry Specialized Solutions');
+
+  const filteredMaster = wbsMasterTemplates.filter(t => {
+    const lineage = getBlueprintLineage(t.id);
+    const matchesPhase = activePhase === 'all' || lineage.phaseId === activePhase;
+    const matchesSearch = 
+      t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.prompt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.whenToUse.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lineage.uniqueId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lineage.domain.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesPhase && matchesSearch;
+  });
+
+  const filteredIndustry = industryTemplates.filter(t => {
+    const lineage = getBlueprintLineage(t.id);
+    return (
+      t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.prompt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.whenToUse.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lineage.uniqueId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (lineage.industryName && lineage.industryName.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  });
 
   return (
     <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#0B0F17] custom-scrollbar">
-      <div className="max-w-[1440px] mx-auto space-y-8">
+      <div className="max-w-[1500px] mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
           <div>
             <div className="flex items-center gap-2 text-teal-400 font-bold text-xs uppercase tracking-wider mb-1">
               <LayoutGrid className="w-4 h-4" />
-              <span>Universal Enterprise Technology &amp; Architecture Catalog</span>
+              <span>Universal Enterprise Architecture &amp; Industry Catalog</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
-              Complete Catalog for Everything: Blueprints, Native AI &amp; Multi-Cloud
+              Enterprise Blueprints, Industry Platforms &amp; Native AI
             </h1>
             <p className="text-sm text-slate-400 mt-1">
-              Browse all 21 publication-grade architecture blueprints across 6 enterprise personas, native AI engines, and cloud infrastructure providers.
+              Explore the 32 Master WBS Enterprise Architecture Hierarchy across 5 phases and dedicated Industry Specialized Blueprints.
             </p>
           </div>
 
@@ -45,7 +65,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search 21 blueprints, AI tools..."
+              placeholder="Search by ID (e.g. P4-DAT-P-09), domain..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-900 border border-slate-700 focus:border-teal-400 rounded-xl pl-10 pr-4 py-2.5 text-xs font-semibold text-white placeholder-slate-500 outline-none transition-all"
@@ -53,19 +73,32 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
           </div>
         </div>
 
-        {/* Catalog Navigation Tabs */}
+        {/* Primary Catalog Navigation Tabs */}
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
-            onClick={() => setActiveCategory('blueprints')}
+            onClick={() => setActiveCategory('wbs_master')}
             className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
-              activeCategory === 'blueprints'
+              activeCategory === 'wbs_master'
                 ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 shadow-lg'
                 : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
-            <span>🏛️ All Architecture Blueprints ({ARCHITECTURE_TYPES.length})</span>
+            <span>🏛️ 32 Master WBS Architecture Hierarchy ({wbsMasterTemplates.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveCategory('industry')}
+            className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
+              activeCategory === 'industry'
+                ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg'
+                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            <span>🏭 Industry Specialized Solutions ({industryTemplates.length})</span>
           </button>
 
           <button
@@ -78,7 +111,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
             }`}
           >
             <Cpu className="w-4 h-4" />
-            <span>🤖 Native AI &amp; LLM Engine Catalog ({okfAiEngines.length})</span>
+            <span>🤖 Native AI &amp; LLM Engines ({okfAiEngines.length})</span>
           </button>
 
           <button
@@ -91,44 +124,136 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
             }`}
           >
             <Server className="w-4 h-4" />
-            <span>☁️ Multi-Cloud &amp; Sovereign Catalog ({okfCloudProviders.length})</span>
+            <span>☁️ Multi-Cloud &amp; Sovereign ({okfCloudProviders.length})</span>
           </button>
         </div>
 
-        {/* CATEGORY 1: ALL 21 ARCHITECTURE BLUEPRINTS */}
-        {activeCategory === 'blueprints' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBlueprints.map((template) => (
-              <div
-                key={template.id}
-                onClick={() => onSelectTemplate(template.prompt, template.name, template.id)}
-                className="group p-6 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-teal-500/40 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col justify-between hover:shadow-xl hover:shadow-teal-500/5 hover:-translate-y-0.5"
+        {/* WBS MASTER CATEGORY: PHASE FILTER PILLS */}
+        {activeCategory === 'wbs_master' && (
+          <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-800/80">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-2">Lineage Phase:</span>
+            {[
+              { id: 'all', label: 'All 5 Phases' },
+              { id: 'P1', label: 'Phase 1: Foundation & Discovery' },
+              { id: 'P2', label: 'Phase 2: Strategy & Economics' },
+              { id: 'P3', label: 'Phase 3: Core AI, Data & Integration' },
+              { id: 'P4', label: 'Phase 4: Platform Engineering & Mesh' },
+              { id: 'P5', label: 'Phase 5: Operations & SRE Reliability' }
+            ].map(p => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setActivePhase(p.id)}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activePhase === p.id
+                    ? 'bg-cyan-500 text-slate-950 shadow-sm'
+                    : 'bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white'
+                }`}
               >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-1 text-[11px] font-bold bg-teal-500/10 text-teal-300 border border-teal-500/20 rounded-full">
-                      {template.category || 'Architecture Blueprint'}
-                    </span>
-                    <Sparkles className="w-4 h-4 text-slate-600 group-hover:text-teal-400 transition-colors" />
-                  </div>
-                  <h3 className="text-base font-bold text-white group-hover:text-teal-300 transition-colors mb-2">
-                    {template.name}
-                  </h3>
-                  <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
-                    {template.whenToUse}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-teal-400 group-hover:text-teal-300">
-                  <span>Launch Interactive Workspace</span>
-                  <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
+                {p.label}
+              </button>
             ))}
           </div>
         )}
 
-        {/* CATEGORY 2: NATIVE AI & LLM ENGINE CATALOG (GOOGLE OPEN KNOWLEDGE FORMAT) */}
+        {/* CATEGORY 1: 32 MASTER WBS ARCHITECTURE HIERARCHY */}
+        {activeCategory === 'wbs_master' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredMaster.map((template) => {
+              const lineage = getBlueprintLineage(template.id);
+              return (
+                <div
+                  key={template.id}
+                  onClick={() => onSelectTemplate(template.prompt, template.name, template.id)}
+                  className="group p-6 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/40 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col justify-between hover:shadow-xl hover:shadow-cyan-500/5 hover:-translate-y-0.5"
+                >
+                  <div>
+                    {/* Top Lineage Badges */}
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="px-2.5 py-1 text-xs font-mono font-black bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 rounded-md">
+                          {lineage.uniqueId}
+                        </span>
+                        <span className="px-2 py-0.5 text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700 rounded-md">
+                          {lineage.layerCode}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-400">
+                        {lineage.phaseTitle.split(':')[0]}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">
+                      {template.name}
+                    </h3>
+                    <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-3">
+                      {template.whenToUse}
+                    </p>
+
+                    {/* Domain Tag */}
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 text-[10px] font-medium bg-slate-800/80 text-slate-300 rounded border border-slate-700">
+                        📁 {lineage.domain}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-cyan-400 group-hover:text-cyan-300">
+                    <span>Launch Blueprint Workspace</span>
+                    <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* CATEGORY 2: INDUSTRY SPECIALIZED SOLUTIONS */}
+        {activeCategory === 'industry' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredIndustry.map((template) => {
+              const lineage = getBlueprintLineage(template.id);
+              return (
+                <div
+                  key={template.id}
+                  onClick={() => onSelectTemplate(template.prompt, template.name, template.id)}
+                  className="group p-6 bg-slate-900/60 hover:bg-slate-900 border border-purple-900/40 hover:border-purple-500/60 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col justify-between hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-0.5"
+                >
+                  <div>
+                    {/* Top Industry Badges */}
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="px-2.5 py-1 text-xs font-mono font-black bg-purple-500/20 text-purple-300 border border-purple-500/40 rounded-md">
+                        {lineage.uniqueId}
+                      </span>
+                      <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase bg-purple-950 text-purple-300 border border-purple-800 rounded-md">
+                        🏭 {lineage.industryName}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors mb-2">
+                      {template.name}
+                    </h3>
+                    <p className="text-xs text-slate-300 line-clamp-3 leading-relaxed mb-3">
+                      {template.whenToUse}
+                    </p>
+
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 text-[10px] font-medium bg-slate-800/80 text-slate-300 rounded border border-slate-700">
+                        🎯 {lineage.domain}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-purple-400 group-hover:text-purple-300">
+                    <span>Launch Industry Blueprint</span>
+                    <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {/* CATEGORY 3: NATIVE AI & LLM ENGINE CATALOG (GOOGLE OPEN KNOWLEDGE FORMAT) */}
         {activeCategory === 'ai_engines' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {okfAiEngines.map((ai: OKFEntity) => (

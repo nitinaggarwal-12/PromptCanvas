@@ -77,6 +77,15 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
     description: "High-level 3-stage business ingestion-to-outcome blueprints, unified enterprise lifecycle maps, and board-level strategy views.",
     color: "from-blue-500/20 to-cyan-500/20",
     accentColor: "border-blue-400 text-blue-400"
+  },
+  {
+    id: "industry_solutions",
+    name: "Industry Specialized Blueprints",
+    shortName: "Industry Solutions",
+    icon: "Factory",
+    description: "Domain-specific production blueprints tailored for Pharma & Healthcare, Supply Chain, FinTech Banking, Retail E-Commerce, Manufacturing, and HR.",
+    color: "from-purple-500/20 to-indigo-500/20",
+    accentColor: "border-purple-400 text-purple-400"
   }
 ];
 
@@ -774,5 +783,89 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     keyTech: ["Enterprise Planning", "Data Vetting", "Feature Store", "MLOps Lifecycle", "Secure VPC Subnets", "Agentic Orchestrator"],
     thumbnail: "/templates/unified_system_view.png",
     promptSummary: "Unified System View: Plan & Data Foundation -> Development & AI Lifecycle -> Cognitive Architecture & Secure Deployment."
+  },
+
+  // =========================================================================
+  // 7. INDUSTRY SPECIALIZED SOLUTIONS (DEDICATED SEPARATE CATALOG)
+  // =========================================================================
+  {
+    id: "tech_multimodal_ingestion",
+    name: "P4-DAT-P-09: Agentic Multi-Modal Ingestion Flow",
+    categoryId: "data_pipelines",
+    categoryName: "Data Pipelines",
+    badge: "Canonical Master (P4-DAT-P-09)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for Google Cloud End-to-End Agentic Multi-Modal Ingestion Flow powered by Gemini Platform and Google Earth App (GE App) across text, audio, video, geospatial, and BigQuery knowledge bases.",
+    bestFor: [
+      "P4-DAT-P-09 Canonical Master Blueprint (Platform Engineering Phase)",
+      "Custom Clients & Google Earth App (GE App) multimodal ingress",
+      "GCP Services: Cloud Storage GCS, Speech-to-Text API, Vertex Vision & Video Intelligence, Google Maps APIs",
+      "Gemini-Powered Agentic Orchestrator (Gemini 1.5 Pro, Tooling & Function Calling)",
+      "Vertex AI Embedding API, Vector Search, Semantic Search, and Gemini Reasoning Engine",
+      "BigQuery Knowledge Base, Knowledge Graph, Automated Insights & Reports, Cloud Functions Alerting"
+    ],
+    keyTech: ["Gemini 1.5 Pro", "Vertex AI Vector Search", "BigQuery Knowledge Base", "Speech-to-Text", "Vision API", "Google Earth App", "Cloud Logging"],
+    thumbnail: "/templates/tech_multimodal_ingestion.png",
+    promptSummary: "Agentic Multi-Modal Ingestion Flow: Multi-Modal Ingress (Text, Audio, Video, Geo-Spatial) -> GCP Ingestion Services -> Gemini Agentic Orchestrator -> Vector Search & Semantic Reasoning -> BigQuery Knowledge Base & GE App Visualizations."
+  },
+  {
+    id: "tech_genomics_clinical",
+    name: "IND-PHARMA-01: Pharma Genomics & Drug Discovery Pipeline",
+    categoryId: "industry_solutions",
+    categoryName: "Industry Solutions",
+    badge: "Pharma Specialized (IND-PHARMA-01)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for pharmaceutical bioinformatics, AlphaFold protein folding, GKE TPU compute clusters, CMEK data lakes, and Gemini Drug Discovery models.",
+    bestFor: [
+      "AlphaFold Pro Differentiable Protein Design with 3D folding structures",
+      "GKE Spot & TPU Compute Clusters for GATK variant calling",
+      "CMEK-Encrypted Data Lakes with Cloud SQL & BigQuery clinical trial optimizers",
+      "Gemini Drug-Discovery Specialized Models (Pro, Ultra, Specialized-Bio)",
+      "Transitive PSC routing to Google Managed Services (BigQuery, Vertex AI, Looker Studio)"
+    ],
+    keyTech: ["AlphaFold Pro", "Gemini Bio Models", "GKE TPU Clusters", "CMEK Data Lake", "BigQuery Omics", "PSC Transitive"],
+    thumbnail: "/templates/tech_genomics_clinical.png",
+    promptSummary: "Pharma Genomics Pipeline: On-Prem FASTQ -> AlphaFold Pro Design -> GKE TPU Cluster -> Gemini Drug-Discovery Platform -> PSC Managed Services."
+  },
+  {
+    id: "tech_supply_chain",
+    name: "IND-SUPPLY-02: QuantumFlow Global Autonomous Supply Chain",
+    categoryId: "industry_solutions",
+    categoryName: "Industry Solutions",
+    badge: "Supply Chain (IND-SUPPLY-02)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for global autonomous supply chain logistics, IoT fleet telemetry, Dataflow sliding-window simulation, Spanner Graph global inventory ledgers, and automated carrier dispatch.",
+    bestFor: [
+      "Cloud Pub/Sub & mTLS edge telemetry ingestion (500k+ assets)",
+      "Cloud Dataflow sliding session window simulation engine",
+      "Cloud Spanner Multi-Region Global Inventory Graph (GQL, 99.999% SLA)",
+      "Vertex AI Multimodal Predictive ETA Forecaster & Weather Disruption AI",
+      "Logistics Control Tower 3D Cockpit, Automated Carrier Dispatch & SAP S/4HANA ERP Bridge"
+    ],
+    keyTech: ["Cloud Pub/Sub", "Cloud Dataflow", "Spanner Graph", "Vertex AI ETA", "BigQuery Lakehouse", "SAP S/4HANA", "Control Tower 3D"],
+    thumbnail: "/templates/tech_supply_chain.png",
+    promptSummary: "Supply Chain Digital Twin: IoT Ingress -> Dataflow Simulation -> Spanner Graph -> Vertex AI ETA Forecaster -> Control Tower 3D -> Carrier Dispatch & SAP ERP."
+  },
+  {
+    id: "tech_fintech_payments",
+    name: "IND-FINTECH-03: ApexPay Real-Time ISO 20022 Payments & Clearing",
+    categoryId: "industry_solutions",
+    categoryName: "Industry Solutions",
+    badge: "FinTech Banking (IND-FINTECH-03)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for PCI-DSS compliant real-time payment ledgers, ISO 20022 message transformation, sub-10ms fraud scoring, and FedNow / RTP settlement rails.",
+    bestFor: [
+      "Sub-10ms AI fraud scoring & anomaly detection on streaming transactions",
+      "Immutable double-entry payment ledger with Cloud Spanner global consistency",
+      "Multi-rail settlement integration (FedNow, RTP, ACH, SWIFT)",
+      "PCI-DSS Level 1 compliance, HSM encryption, and regulatory audit reporting"
+    ],
+    keyTech: ["ISO 20022 Bus", "Cloud Spanner", "Real-Time Fraud Engine", "Double-Entry Ledger", "FedNow / RTP Rails", "PCI-DSS HSM"],
+    thumbnail: "/templates/tech_fintech_payments.png",
+    promptSummary: "FinTech Payments Architecture: Ingress -> ISO 20022 Bus -> Real-Time Fraud Engine -> Double-Entry Ledger -> Settlement Rails."
   }
 ];

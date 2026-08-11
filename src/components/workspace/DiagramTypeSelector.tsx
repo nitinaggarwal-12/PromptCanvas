@@ -3,6 +3,8 @@
 import React from 'react';
 import { getArchitectureTypeById } from '@/lib/architectureTypes';
 
+import { getBlueprintLineage } from '@/lib/architectureLineage';
+
 interface DiagramTypeSelectorProps {
   prompt: string;
   suggestedTypes: string[];
@@ -28,7 +30,7 @@ export function DiagramTypeSelector({
             <span className="px-2.5 py-1 text-xs font-semibold bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-full inline-block mb-2">
               Clarify Intent
             </span>
-            <h3 className="text-xl font-bold text-slate-100">Select Diagram Type</h3>
+            <h3 className="text-xl font-bold text-slate-100">Select Blueprint Architecture</h3>
           </div>
           <button
             onClick={onCancel}
@@ -67,21 +69,31 @@ export function DiagramTypeSelector({
 
         <div className="space-y-2">
           <label className="text-sm font-semibold text-slate-200 block">
-            Choose the diagram layout that best fits your goal:
+            Choose the blueprint that best matches your target architecture:
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {suggestedTypes.map(typeId => {
               const opt = getArchitectureTypeById(typeId);
+              const lineage = getBlueprintLineage(typeId);
               return (
                 <button
                   key={typeId}
                   onClick={() => onSelectType(typeId)}
                   className="flex flex-col items-start p-4 bg-slate-800/80 hover:bg-sky-600/20 border border-slate-700 hover:border-sky-500/50 rounded-xl transition text-left group"
                 >
-                  <span className="text-xs font-medium text-sky-400 group-hover:text-sky-300 mb-1">
-                    {opt.category}
-                  </span>
-                  <span className="text-base font-semibold text-slate-100 group-hover:text-white mb-1">
+                  <div className="flex items-center justify-between w-full mb-1.5">
+                    <span className={`px-2 py-0.5 text-[10px] font-mono font-bold rounded border ${
+                      lineage.isIndustrySpecialized 
+                        ? 'bg-purple-500/20 text-purple-300 border-purple-500/40' 
+                        : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                    }`}>
+                      {lineage.uniqueId}
+                    </span>
+                    <span className="text-[10px] font-medium text-slate-400">
+                      {lineage.isIndustrySpecialized ? `🏭 ${lineage.industryName}` : lineage.phaseTitle.split(':')[0]}
+                    </span>
+                  </div>
+                  <span className="text-sm font-bold text-slate-100 group-hover:text-white mb-1">
                     {opt.name}
                   </span>
                   <span className="text-xs text-slate-400 line-clamp-2">

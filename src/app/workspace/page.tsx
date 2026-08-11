@@ -100,6 +100,7 @@ import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
 import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
 import { checkDiagramStaleness } from '@/lib/diagramStaleness';
+import { getBlueprintLineage } from '@/lib/architectureLineage';
 
 
 // Define Types (matching our DB schema + API responses)
@@ -2410,6 +2411,7 @@ function WorkspaceContent() {
                 ? 'bg-teal-500/10 text-teal-400 border-teal-500/30'
                 : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
               const personaBadge = getPersonaBadge(t.id);
+              const lineage = getBlueprintLineage(t.id);
               const isHovered = hoveredTemplateId === t.id;
 
               return (
@@ -2423,9 +2425,18 @@ function WorkspaceContent() {
                 >
                   <div>
                     <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3">
-                      <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badgeColor}`}>
-                        {isBusiness ? '🏢 BUSINESS' : '⚙️ TECHNICAL'}
-                      </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-md border ${
+                          lineage.isIndustrySpecialized 
+                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/40' 
+                            : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                        }`}>
+                          {lineage.uniqueId}
+                        </span>
+                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badgeColor}`}>
+                          {isBusiness ? '🏢 BUSINESS' : (lineage.isIndustrySpecialized ? '🏭 INDUSTRY' : '⚙️ TECHNICAL')}
+                        </span>
+                      </div>
                       <div className="flex items-center gap-1.5">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${personaBadge.color}`}>
                           {personaBadge.label}
@@ -4018,6 +4029,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
   };
 
   function handleArchitectureSwitch(newArchId: string) {
+    if (typeof window !== 'undefined') {
+      try {
+        window.history.replaceState(null, '', `/workspace?arch=${newArchId}`);
+      } catch (e) {}
+    }
     if (tourStep === 2) {
       setTourStep(3);
     }

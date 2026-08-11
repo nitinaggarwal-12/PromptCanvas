@@ -1,5 +1,14 @@
+import { getBlueprintLineage } from './architectureLineage';
+
 export interface ArchitectureMeta {
   id: string;
+  uniqueId?: string;
+  phaseTitle?: string;
+  layer?: string;
+  layerCode?: string;
+  domain?: string;
+  isIndustrySpecialized?: boolean;
+  industryName?: string;
   title: string;
   category: string;
   useCase: string;
@@ -566,6 +575,16 @@ export function getArchitectureMeta(archId?: string, promptText?: string, custom
     baseMeta.primaryActors = getDomainNeutralPrimaryActors(archId);
     baseMeta.targetOutcomes = getDomainNeutralTargetOutcomes(archId);
   }
+
+  // Attach lineage and unique hierarchy ID
+  const lineage = getBlueprintLineage(archId);
+  baseMeta.uniqueId = lineage.uniqueId;
+  baseMeta.phaseTitle = lineage.phaseTitle;
+  baseMeta.layer = lineage.layer;
+  baseMeta.layerCode = lineage.layerCode;
+  baseMeta.domain = lineage.domain;
+  baseMeta.isIndustrySpecialized = lineage.isIndustrySpecialized;
+  baseMeta.industryName = lineage.industryName;
 
   return baseMeta;
 }
