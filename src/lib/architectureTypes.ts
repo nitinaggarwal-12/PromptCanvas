@@ -45,7 +45,8 @@ import {
   getExactEvalSafetyXml,
   getExactAgenticMeshXml,
   getExactValueStreamMapXml,
-  getExactAsIsToBeProcessFlowXml
+  getExactAsIsToBeProcessFlowXml,
+  getExactStreamingAnalyticsXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -461,6 +462,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactValueStreamMapXml();
   } else if (id === 'asis_vs_tobe_process_flow' || id.includes('asis') || id.includes('as_is') || id.includes('tobe') || id.includes('to_be')) {
     xml = getExactAsIsToBeProcessFlowXml();
+  } else if (id === 'tech_streaming_analytics' || id.includes('streaming') || id === 'streaming_pipeline') {
+    xml = getExactStreamingAnalyticsXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
     xml = getExactGcpDataLakehouseWbsXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
@@ -471,7 +474,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
 
   const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
-  const isFlagshipBlueprint = id.includes('lakehouse') || id.includes('golive') || id.includes('value_stream') || id.includes('vsm') || id.includes('asis') || id.includes('tobe') || id.includes('agentic_mesh') || id === 'tech_agentic_mesh' || id === 'value_stream_map' || id === 'asis_vs_tobe_process_flow' || id === 'tech_data_lakehouse_gcp' || id === 'golive_warroom_runbook' || id === 'federated_iam_sso';
+  const isFlagshipBlueprint = true; // All registered master builders preserve exact calibrated 2D coordinates
 
   // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor
   if (hasCustomUserPrompt && !isFlagshipBlueprint) {

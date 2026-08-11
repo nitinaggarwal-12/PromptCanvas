@@ -57,6 +57,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     archType === 'tech_supply_chain' ||
     archType === 'tech_eval_safety' ||
     archType === 'tech_agentic_mesh' ||
+    archType === 'tech_streaming_analytics' ||
+    Boolean(archType && archType.includes('streaming')) ||
+    inputXml.includes('real_time_streaming') ||
+    inputXml.includes('streaming_analytics') ||
     inputXml.includes('id="data-ai-pipeline-wbs"') ||
     inputXml.includes('id="gcp-lakehouse-wbs"') ||
     inputXml.includes('id="modern-data-stack-wbs"') ||
