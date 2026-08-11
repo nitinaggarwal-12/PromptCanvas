@@ -1,5 +1,4 @@
-export function buildEvalSafetyXml(): string {
-  return `<mxfile host="embed.diagrams.net">
+<mxfile host="embed.diagrams.net">
   <diagram id="eval_safety_redteaming" name="Applied GKE-based AI Safety &amp; Red-Teaming Continuous Pipeline (WBS 4.3.2)">
     <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1460" pageHeight="680" background="#FFFFFF" math="0" shadow="0">
       <root>
@@ -239,5 +238,4 @@ export function buildEvalSafetyXml(): string {
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>`;
-}
+</mxfile>
