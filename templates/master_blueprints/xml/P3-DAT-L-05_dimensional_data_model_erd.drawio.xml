@@ -23,7 +23,7 @@
           <mxGeometry x="1470" y="270" width="330" height="690" as="geometry" />
         </mxCell>
 
-        <!-- 2. COMPOSITE ERD TABLES & CALLOUT NOTES -->
+        <!-- 2. COMPOSITE ERD TABLES &amp; CALLOUT NOTES -->
         
         <!-- Table: <b>[ETL] ETL_System_Data_Sources</b> -->
         <mxCell id="etl_src" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=6;" vertex="1" parent="1">
@@ -299,7 +299,7 @@
           <mxGeometry x="1190" y="1050" width="240" height="50" as="geometry" />
         </mxCell>
 
-        <!-- 3. ALL 25 CONNECTING RELATIONSHIPS WITH CROW'S FOOT CARDINALITY & EXPLICIT CORRIDOR TRACK ROUTING -->
+        <!-- 3. ALL 25 CONNECTING RELATIONSHIPS WITH CROW'S FOOT CARDINALITY &amp; EXPLICIT CORRIDOR TRACK ROUTING -->
         <mxCell id="e_etl_1" value="&lt;b&gt;Audit Key&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;fontColor=#1E3A8A;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;startArrow=block;endArrow=block;startFill=1;endFill=1;" edge="1" parent="1" source="etl_src" target="etl_log">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -447,7 +447,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 5. LEGEND & FOOTER -->
+        <!-- 5. LEGEND &amp; FOOTER -->
         <mxCell id="legend_box" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Legend:&lt;/b&gt;&lt;br&gt;&lt;table style=&quot;width:100%;font-size:11px;border:none;margin-top:4px;&quot;&gt;&lt;tr&gt;&lt;td&gt;[Compute] &lt;b&gt;Managed Compute&lt;/b&gt;&lt;/td&gt;&lt;td&gt;[Storage] &lt;b&gt;Storage&lt;/b&gt;&lt;/td&gt;&lt;td&gt;[Secure] &lt;b&gt;Secure boundary&lt;/b&gt;&lt;/td&gt;&lt;td&gt;[PK] &lt;b&gt;Key Definition (PK)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;[FK] &lt;b&gt;Key Definition (FK)&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&amp;rarr; &lt;b&gt;One-to-many&lt;/b&gt;&lt;/td&gt;&lt;td&gt;--- &lt;b&gt;Relationship&lt;/b&gt;&lt;/td&gt;&lt;td&gt;[Time] &lt;b&gt;TimeRes&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;verticalAlign=top;padding=8;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="40" y="1030" width="600" height="110" as="geometry" />
         </mxCell>

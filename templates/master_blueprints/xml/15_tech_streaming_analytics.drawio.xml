@@ -55,7 +55,7 @@
           <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT TIER: INGRESS & TELEMETRY SOURCES (x = 30 .. 330) -->
+        <!-- LEFT TIER: INGRESS &amp; TELEMETRY SOURCES (x = 30 .. 330) -->
         <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
         </mxCell>
@@ -63,7 +63,7 @@
           <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Node 1: IoT & App Producers -->
+        <!-- Node 1: IoT &amp; App Producers -->
         <mxCell id="node_iot" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;IoT &amp; Mobile Event Producers&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Sensors, Telemetry streams, Web events&lt;br&gt;MQTT / HTTPS (100k events/sec)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="50" y="175" width="260" height="80" as="geometry"/>
         </mxCell>
@@ -78,7 +78,7 @@
           <mxGeometry x="50" y="445" width="260" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- Node 4: Schema Registry & Dead Letter Queue -->
+        <!-- Node 4: Schema Registry &amp; Dead Letter Queue -->
         <mxCell id="node_dlq" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Schema Registry &amp; DLQ Bucket&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Avro/Protobuf contracts &amp; poison-pill trap&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="50" y="590" width="260" height="75" as="geometry"/>
         </mxCell>
@@ -89,7 +89,7 @@
         </mxCell>
 
 
-        <!-- CENTER TIER: STREAM PROCESSING & FEATURE PLATFORM (x = 370 .. 790) -->
+        <!-- CENTER TIER: STREAM PROCESSING &amp; FEATURE PLATFORM (x = 370 .. 790) -->
         <mxCell id="box_processing" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
         </mxCell>
@@ -118,7 +118,7 @@
         </mxCell>
 
 
-        <!-- RIGHT TIER: ANALYTICS LAKEHOUSE & BI DELIVERY (x = 830 .. 1560) -->
+        <!-- RIGHT TIER: ANALYTICS LAKEHOUSE &amp; BI DELIVERY (x = 830 .. 1560) -->
         <mxCell id="box_lakehouse" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
         </mxCell>
@@ -152,7 +152,7 @@
         </mxCell>
 
 
-        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+        <!-- CONNECTORS &amp; FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
 
         <!-- 1. IoT -> Edge WAF -->
         <mxCell id="e_iot_waf" value="MQTT / HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_iot" target="node_edge_waf">

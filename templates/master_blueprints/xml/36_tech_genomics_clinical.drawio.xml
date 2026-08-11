@@ -55,7 +55,7 @@
           <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT TIER: CLINICAL INGRESS & BAA CMEK STORAGE (x = 30 .. 330) -->
+        <!-- LEFT TIER: CLINICAL INGRESS &amp; BAA CMEK STORAGE (x = 30 .. 330) -->
         <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
         </mxCell>
@@ -63,7 +63,7 @@
           <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Node 1: Illumina Sequencers & LIMS -->
+        <!-- Node 1: Illumina Sequencers &amp; LIMS -->
         <mxCell id="node_illumina" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Illumina Sequencers &amp; LIMS&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;NovaSeq 6000 FastQ streaming ingestion&lt;br&gt;Hospital LIMS sample manifest metadata&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
         </mxCell>
@@ -89,7 +89,7 @@
         </mxCell>
 
 
-        <!-- CENTER TIER: GATK VARIANT CALLING & BIGQUERY MULTI-OMICS (x = 370 .. 790) -->
+        <!-- CENTER TIER: GATK VARIANT CALLING &amp; BIGQUERY MULTI-OMICS (x = 370 .. 790) -->
         <mxCell id="box_gatk" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
         </mxCell>
@@ -102,7 +102,7 @@
           <mxGeometry x="395" y="175" width="360" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- Node 6: Cloud Life Sciences API & Cromwell Runner -->
+        <!-- Node 6: Cloud Life Sciences API &amp; Cromwell Runner -->
         <mxCell id="node_cromwell" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud Life Sciences Workflow Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Cromwell / Nextflow containerized task dispatch&lt;br&gt;• Automatic task retry &amp; intermediate storage caching&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="395" y="325" width="360" height="100" as="geometry"/>
         </mxCell>
@@ -118,7 +118,7 @@
         </mxCell>
 
 
-        <!-- RIGHT TIER: HAIL AI, PHARMACOGENOMICS & EHR (x = 830 .. 1560) -->
+        <!-- RIGHT TIER: HAIL AI, PHARMACOGENOMICS &amp; EHR (x = 830 .. 1560) -->
         <mxCell id="box_tertiary" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
         </mxCell>
@@ -152,7 +152,7 @@
         </mxCell>
 
 
-        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+        <!-- CONNECTORS &amp; FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
 
         <!-- 1. Illumina -> HIPAA GCS -->
         <mxCell id="e_illumina_gcs" value="Raw FastQ Streaming Upload" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_illumina" target="node_hipaa_gcs">

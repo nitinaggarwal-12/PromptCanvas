@@ -55,7 +55,7 @@
           <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT TIER: RED-TEAMING & ATTACK INGRESS (x = 30 .. 330) -->
+        <!-- LEFT TIER: RED-TEAMING &amp; ATTACK INGRESS (x = 30 .. 330) -->
         <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
         </mxCell>
@@ -68,7 +68,7 @@
           <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Node 2: Model Armor API & Prompt Shield -->
+        <!-- Node 2: Model Armor API &amp; Prompt Shield -->
         <mxCell id="node_model_armor" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Model Armor API &amp; Prompt Shield&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Pre-LLM toxic token sanitization&lt;br&gt;PII redaction, zero-day jailbreak filter&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="50" y="310" width="260" height="85" as="geometry"/>
         </mxCell>
@@ -89,7 +89,7 @@
         </mxCell>
 
 
-        <!-- CENTER TIER: CONSTITUTIONAL EVALUATION & BENCHMARKING (x = 370 .. 790) -->
+        <!-- CENTER TIER: CONSTITUTIONAL EVALUATION &amp; BENCHMARKING (x = 370 .. 790) -->
         <mxCell id="box_eval" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
         </mxCell>
@@ -107,7 +107,7 @@
           <mxGeometry x="395" y="320" width="360" height="115" as="geometry"/>
         </mxCell>
 
-        <!-- Node 7: Model Drift & Safety Regression Detector -->
+        <!-- Node 7: Model Drift &amp; Safety Regression Detector -->
         <mxCell id="node_drift_detector" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Model Drift &amp; Safety Regression Detector&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Statistical Kolmogorov-Smirnov test for alignment drift&lt;br&gt;• Instant alerting on emergent unsafe token distributions&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="395" y="475" width="360" height="100" as="geometry"/>
         </mxCell>
@@ -118,7 +118,7 @@
         </mxCell>
 
 
-        <!-- RIGHT TIER: GATEKEEPER, KILL-SWITCH & GOVERNANCE (x = 830 .. 1560) -->
+        <!-- RIGHT TIER: GATEKEEPER, KILL-SWITCH &amp; GOVERNANCE (x = 830 .. 1560) -->
         <mxCell id="box_governance" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
         </mxCell>
@@ -131,12 +131,12 @@
           <mxGeometry x="860" y="325" width="430" height="115" as="geometry"/>
         </mxCell>
 
-        <!-- Emergency Kill-Switch & IR Automation -->
+        <!-- Emergency Kill-Switch &amp; IR Automation -->
         <mxCell id="node_killswitch" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Emergency Kill-Switch &amp; IR&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Instant endpoint traffic draining,&lt;br&gt;fallback to deterministic rule engine&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="850" y="480" width="280" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- Looker AI Governance & EU AI Act Cockpit -->
+        <!-- Looker AI Governance &amp; EU AI Act Cockpit -->
         <mxCell id="node_looker_governance" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Looker AI Ethics Cockpit&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;EU AI Act compliance reporting,&lt;br&gt;bias &amp; fairness audit scorecards&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1170" y="480" width="220" height="90" as="geometry"/>
         </mxCell>
@@ -152,7 +152,7 @@
         </mxCell>
 
 
-        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+        <!-- CONNECTORS &amp; FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
 
         <!-- 1. Red Fuzzer -> Model Armor -->
         <mxCell id="e_fuzzer_armor" value="Adversarial Attack Payloads" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_red_fuzzer" target="node_model_armor">

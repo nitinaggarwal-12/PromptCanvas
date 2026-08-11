@@ -55,7 +55,7 @@
           <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT TIER: PAYMENT INGRESS & PCI-DSS TOKEN ENCLAVE (x = 30 .. 330) -->
+        <!-- LEFT TIER: PAYMENT INGRESS &amp; PCI-DSS TOKEN ENCLAVE (x = 30 .. 330) -->
         <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
         </mxCell>
@@ -63,12 +63,12 @@
           <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Node 1: Cardholder & POS Terminals -->
+        <!-- Node 1: Cardholder &amp; POS Terminals -->
         <mxCell id="node_terminals" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;POS, Mobile &amp; E-Commerce Ingress&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;ISO 8583 / JSON REST (50k tx/sec)&lt;br&gt;mTLS 1.3 + Idempotency Key Headers&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Node 2: PCI-DSS Token Vault & Cloud HSM -->
+        <!-- Node 2: PCI-DSS Token Vault &amp; Cloud HSM -->
         <mxCell id="node_token_vault" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;PCI-DSS Token Vault &amp; Cloud HSM&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;FIPS 140-2 Level 3 Key Management&lt;br&gt;Zero-raw PAN storage: Surrogate Token generation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="50" y="310" width="260" height="85" as="geometry"/>
         </mxCell>
@@ -89,7 +89,7 @@
         </mxCell>
 
 
-        <!-- CENTER TIER: TRANSACTION LEDGER & AI FRAUD ENGINE (x = 370 .. 790) -->
+        <!-- CENTER TIER: TRANSACTION LEDGER &amp; AI FRAUD ENGINE (x = 370 .. 790) -->
         <mxCell id="box_ledger" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
         </mxCell>
@@ -118,7 +118,7 @@
         </mxCell>
 
 
-        <!-- RIGHT TIER: CLEARING, SETTLEMENT & REGULATORY AUDIT (x = 830 .. 1560) -->
+        <!-- RIGHT TIER: CLEARING, SETTLEMENT &amp; REGULATORY AUDIT (x = 830 .. 1560) -->
         <mxCell id="box_clearing" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
         </mxCell>
@@ -152,7 +152,7 @@
         </mxCell>
 
 
-        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+        <!-- CONNECTORS &amp; FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
 
         <!-- 1. Terminals -> Token Vault -->
         <mxCell id="e_term_vault" value="ISO 8583 Authorization" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_terminals" target="node_token_vault">

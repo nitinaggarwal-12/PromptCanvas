@@ -6,27 +6,27 @@
         <mxCell id="1" parent="0"/>
 
         <!-- 1. TOP MAIN HEADER BANNER -->
-        <mxCell id="main_title_banner" value="&lt;b style=&quot;font-size:14.5px;letter-spacing:0.2px;color:#0F172A;&quot;&gt;Refactored Google Native Autonomous Supply Chain &amp;amp; Real-Time Digital Twin with Agentic AI and Gemini Enterprise&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_title_banner" value="&lt;b style=&quot;font-size:14.5px;letter-spacing:0.2px;color:#0F172A;&quot;&gt;Refactored Google Native Autonomous Supply Chain &amp; Real-Time Digital Twin with Agentic AI and Gemini Enterprise&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="14" width="1055" height="38" as="geometry"/>
         </mxCell>
 
-        <!-- 2. ZONE 1: ON-PREMISES & EDGE TELEMETRY INGRESS (x = 30 .. 235) -->
-        <mxCell id="lbl_onprem_header" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;ON-PREMISES &amp;amp; EDGE /&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <!-- 2. ZONE 1: ON-PREMISES &amp; EDGE TELEMETRY INGRESS (x = 30 .. 235) -->
+        <mxCell id="lbl_onprem_header" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;ON-PREMISES &amp; EDGE /&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="40" y="62" width="180" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="box_onprem_container" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EDF2F7;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="88" width="205" height="545" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_onprem_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Fleet Telemetry &amp;amp;&lt;br&gt;Edge Ingress (GPS, RFID, EDI)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_onprem_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Fleet Telemetry &amp;&lt;br&gt;Edge Ingress (GPS, RFID, EDI)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="35" y="95" width="195" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="card_fleet_gps" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🚛&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Fleet GPS &amp;amp;&lt;br&gt;IoT Sensors&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="card_fleet_gps" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🚛&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Fleet GPS &amp;&lt;br&gt;IoT Sensors&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="42" y="145" width="82" height="75" as="geometry"/>
         </mxCell>
-        <mxCell id="card_rfid_port" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🚢&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Port Scanners&lt;br&gt;&amp;amp; EDI 204/214&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="card_rfid_port" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🚢&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Port Scanners&lt;br&gt;&amp; EDI 204/214&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="138" y="145" width="82" height="75" as="geometry"/>
         </mxCell>
-        <mxCell id="box_gemini_dataprep" value="&lt;div style=&quot;margin-bottom:3px;&quot;&gt;&lt;span style=&quot;font-size:20px;font-weight:900;background:linear-gradient(90deg,#4285F4,#9B72CB,#D96570);-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#4285F4;&quot;&gt;Gemini&lt;/span&gt;&lt;/div&gt;&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Data Prep &amp;amp;&lt;br&gt;Telemetry Validation&lt;/b&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="box_gemini_dataprep" value="&lt;div style=&quot;margin-bottom:3px;&quot;&gt;&lt;span style=&quot;font-size:20px;font-weight:900;background:linear-gradient(90deg,#4285F4,#9B72CB,#D96570);-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#4285F4;&quot;&gt;Gemini&lt;/span&gt;&lt;/div&gt;&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Data Prep &amp;&lt;br&gt;Telemetry Validation&lt;/b&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="42" y="300" width="180" height="120" as="geometry"/>
         </mxCell>
         <mxCell id="e_gps_prep" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_fleet_gps" target="box_gemini_dataprep">
@@ -46,19 +46,19 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 3. ZONE 2: GOOGLE SUPPLY CHAIN & AGENTIC AI (DIGITAL TWIN & COMPUTE) (x = 250 .. 765) -->
-        <mxCell id="lbl_gcp_supply_hdr" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:4px;&quot;&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;☁️&lt;/span&gt; &lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;GOOGLE SUPPLY CHAIN &amp;amp; AGENTIC AI&lt;/b&gt; &lt;span style=&quot;font-size:9px;color:#475569;font-weight:bold;&quot;&gt;(DIGITAL TWIN &amp;amp; COMPUTE)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <!-- 3. ZONE 2: GOOGLE SUPPLY CHAIN &amp; AGENTIC AI (DIGITAL TWIN &amp; COMPUTE) (x = 250 .. 765) -->
+        <mxCell id="lbl_gcp_supply_hdr" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:4px;&quot;&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;☁️&lt;/span&gt; &lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;GOOGLE SUPPLY CHAIN &amp; AGENTIC AI&lt;/b&gt; &lt;span style=&quot;font-size:9px;color:#475569;font-weight:bold;&quot;&gt;(DIGITAL TWIN &amp; COMPUTE)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="270" y="60" width="470" height="22" as="geometry"/>
         </mxCell>
         <mxCell id="box_gcp_main_container" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EDF2F7;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="250" y="88" width="515" height="657" as="geometry"/>
         </mxCell>
 
-        <!-- 3A. Top Left: Agentic Route & Network Simulation (Dataflow) -->
+        <!-- 3A. Top Left: Agentic Route &amp; Network Simulation (Dataflow) -->
         <mxCell id="box_route_design" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="260" y="105" width="245" height="175" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_route_design_title" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#2563EB;font-size:13px;&quot;&gt;🌐&lt;/span&gt; &lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Agentic Route &amp;amp; Network Simulation&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Dataflow Beam Sliding Windows)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_route_design_title" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#2563EB;font-size:13px;&quot;&gt;🌐&lt;/span&gt; &lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Agentic Route &amp; Network Simulation&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Dataflow Beam Sliding Windows)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="268" y="108" width="230" height="22" as="geometry"/>
         </mxCell>
         <mxCell id="card_dataflow_sim" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Dataflow Digital Twin&lt;/b&gt;&lt;br&gt;&lt;div style=&quot;font-size:26px;margin-top:4px;&quot;&gt;🌊&lt;/div&gt;&lt;span style=&quot;font-size:8px;color:#2563EB;font-weight:bold;&quot;&gt;Sliding Session Simulation&lt;/span&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#60A5FA;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -72,7 +72,7 @@
         </mxCell>
 
         <!-- Top Right Callout: Vertex AI Predictive ETA Forecaster -->
-        <mxCell id="callout_eta_radar" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;vertical-align:middle;text-align:center;&quot;&gt;🧠&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Vertex AI Predictive ETA&lt;br&gt;(Multimodal Disruption AI)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Predicted dwell times, port strikes&lt;br&gt;&amp;amp; dynamic route recommendations&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+        <mxCell id="callout_eta_radar" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;vertical-align:middle;text-align:center;&quot;&gt;🧠&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Vertex AI Predictive ETA&lt;br&gt;(Multimodal Disruption AI)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Predicted dwell times, port strikes&lt;br&gt;&amp; dynamic route recommendations&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
           <mxGeometry x="525" y="105" width="225" height="55" as="geometry"/>
         </mxCell>
 
@@ -105,11 +105,11 @@
           <mxGeometry x="255" y="285" width="95" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- 3C. Bottom Left: GKE Compute & Spanner Multi-Region Global Inventory Graph -->
+        <!-- 3C. Bottom Left: GKE Compute &amp; Spanner Multi-Region Global Inventory Graph -->
         <mxCell id="box_spanner_cluster" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="260" y="395" width="245" height="255" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_spanner_title" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#2563EB;font-size:13px;&quot;&gt;☸️&lt;/span&gt; &lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Spanner Graph &amp;amp; GKE Compute Cluster&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;(99.999% SLA TrueTime Atomic Inventory)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_spanner_title" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#2563EB;font-size:13px;&quot;&gt;☸️&lt;/span&gt; &lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Spanner Graph &amp; GKE Compute Cluster&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;(99.999% SLA TrueTime Atomic Inventory)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="268" y="398" width="230" height="24" as="geometry"/>
         </mxCell>
         <mxCell id="box_subnet3" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
@@ -133,7 +133,7 @@
         <mxCell id="node_bigquery_s4" value="&lt;div style=&quot;display:flex;align-items:center;gap:3px;justify-content:center;&quot;&gt;&lt;span style=&quot;font-size:12px;&quot;&gt;🔍&lt;/span&gt; &lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;BigQuery&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="394" y="462" width="98" height="38" as="geometry"/>
         </mxCell>
-        <mxCell id="node_stockout_optimizer" value="&lt;div style=&quot;display:flex;align-items:center;gap:3px;justify-content:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;📋&lt;/span&gt; &lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Stockout Optimizer&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Detailed BigQuery &amp;amp;&lt;br&gt;Stockout Optimizer&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="node_stockout_optimizer" value="&lt;div style=&quot;display:flex;align-items:center;gap:3px;justify-content:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;📋&lt;/span&gt; &lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Stockout Optimizer&lt;/b&gt;&lt;/div&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Detailed BigQuery &amp;&lt;br&gt;Stockout Optimizer&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="394" y="510" width="98" height="118" as="geometry"/>
         </mxCell>
         <mxCell id="e_ncc_spanner" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="badge_ncc" target="box_spanner_cluster">
@@ -162,10 +162,10 @@
         <mxCell id="node_gemini_pro_ultra" value="&lt;div style=&quot;margin-bottom:2px;&quot;&gt;&lt;span style=&quot;font-size:16px;font-weight:900;background:linear-gradient(90deg,#4285F4,#9B72CB,#D96570);-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#4285F4;&quot;&gt;Gemini&lt;/span&gt;&lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Gemini Pro, Ultra,&lt;br&gt;Specialized-Logistics&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="540" y="292" width="195" height="58" as="geometry"/>
         </mxCell>
-        <mxCell id="node_clinico_supply" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;SAP S/4HANA &amp;amp; ERP&lt;br&gt;Integration Bridge&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="node_clinico_supply" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;SAP S/4HANA &amp; ERP&lt;br&gt;Integration Bridge&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="533" y="370" width="210" height="36" as="geometry"/>
         </mxCell>
-        <mxCell id="node_carrier_dispatch" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;vertical-align:middle;text-align:center;&quot;&gt;⚡&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Carrier Bidding &amp;amp;&lt;br&gt;Autonomous Dispatch&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Coordinates high-throughput simulation, automated spot tenders &amp;amp; fleet dispatch scaling&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+        <mxCell id="node_carrier_dispatch" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;vertical-align:middle;text-align:center;&quot;&gt;⚡&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Carrier Bidding &amp;&lt;br&gt;Autonomous Dispatch&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Coordinates high-throughput simulation, automated spot tenders &amp; fleet dispatch scaling&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
           <mxGeometry x="533" y="420" width="210" height="115" as="geometry"/>
         </mxCell>
         <mxCell id="e_clinico_carrier" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="node_clinico_supply" target="node_carrier_dispatch">
@@ -186,8 +186,8 @@
           <mxGeometry x="722" y="662" width="28" height="28" as="geometry"/>
         </mxCell>
 
-        <!-- 4. ZONE 3: AGENTIC INTERFACE & PSC (x = 775 .. 855) -->
-        <mxCell id="card_agentic_interface" value="&lt;b style=&quot;font-size:10px;color:#581C87;&quot;&gt;AGENTIC&lt;br&gt;INTERFACE&lt;br&gt;&amp;amp; PSC&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <!-- 4. ZONE 3: AGENTIC INTERFACE &amp; PSC (x = 775 .. 855) -->
+        <mxCell id="card_agentic_interface" value="&lt;b style=&quot;font-size:10px;color:#581C87;&quot;&gt;AGENTIC&lt;br&gt;INTERFACE&lt;br&gt;&amp; PSC&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="775" y="300" width="80" height="95" as="geometry"/>
         </mxCell>
         <mxCell id="card_psc_desc" value="&lt;b style=&quot;font-size:7px;color:#334155;line-height:1.15;&quot;&gt;PSC ENABLES&lt;br&gt;TRANSITIVE&lt;br&gt;ROUTING FROM&lt;br&gt;ON-PREM AND&lt;br&gt;VPC TO GOOGLE&lt;br&gt;MANAGER&lt;br&gt;SERVICES&lt;/b&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
@@ -210,7 +210,7 @@
         <mxCell id="card_m1_foundation" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;⚛️&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;GEMINI&lt;br&gt;FOUNDATION MODELS&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;font-weight:bold;&quot;&gt;(Supply+Fleet-Specific)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
           <mxGeometry x="878" y="105" width="194" height="75" as="geometry"/>
         </mxCell>
-        <mxCell id="card_m2_bigquery" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;BIGQUERY&lt;br&gt;(OMICS &amp;amp; FREIGHT ANALYTICS)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+        <mxCell id="card_m2_bigquery" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;BIGQUERY&lt;br&gt;(OMICS &amp; FREIGHT ANALYTICS)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
           <mxGeometry x="878" y="195" width="194" height="75" as="geometry"/>
         </mxCell>
         <mxCell id="card_m3_vertex" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:32px;font-size:22px;vertical-align:middle;text-align:center;&quot;&gt;🕸️&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;VERTEX AI&lt;br&gt;(SUPPLY CHAIN AGENT ENGINE)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
@@ -223,7 +223,7 @@
           <mxGeometry x="878" y="465" width="194" height="75" as="geometry"/>
         </mxCell>
 
-        <!-- 6. PURPLE AGENTS & CLOSED LOOPS -->
+        <!-- 6. PURPLE AGENTS &amp; CLOSED LOOPS -->
         <mxCell id="robot_agent_left" value="🤖" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
           <mxGeometry x="205" y="485" width="35" height="35" as="geometry"/>
         </mxCell>
@@ -275,8 +275,8 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 7. BOTTOM TIMELINE & STAGE PROGRESSION -->
-        <mxCell id="stage_1" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;FLEET INGRESS &amp;amp; GEOFENCE VALIDATION&lt;br&gt;(WITH GEMINI DATA PREP)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <!-- 7. BOTTOM TIMELINE &amp; STAGE PROGRESSION -->
+        <mxCell id="stage_1" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;FLEET INGRESS &amp; GEOFENCE VALIDATION&lt;br&gt;(WITH GEMINI DATA PREP)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="250" y="755" width="160" height="26" as="geometry"/>
         </mxCell>
         <mxCell id="stage_arrow_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
@@ -285,7 +285,7 @@
             <mxPoint x="430" y="768" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="stage_2" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;STATEFUL DATAFLOW &amp;amp; SPANNER GRAPH&lt;br&gt;(WITH GEMINI MULTIMODAL INSIGHTS)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="stage_2" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;STATEFUL DATAFLOW &amp; SPANNER GRAPH&lt;br&gt;(WITH GEMINI MULTIMODAL INSIGHTS)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="435" y="755" width="170" height="26" as="geometry"/>
         </mxCell>
         <mxCell id="stage_arrow_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1">
@@ -294,7 +294,7 @@
             <mxPoint x="625" y="768" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="stage_3" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;AUTONOMOUS CARRIER DISPATCH&lt;br&gt;&amp;amp; SAP S/4HANA INTEGRATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="stage_3" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;AUTONOMOUS CARRIER DISPATCH&lt;br&gt;&amp; SAP S/4HANA INTEGRATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="630" y="755" width="135" height="26" as="geometry"/>
         </mxCell>
         <mxCell id="lbl_agentic_summary" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Agentic AI closed feedback loop coordinates Gemini Multimodal predictions with Spanner Graph state mutations, automated spot tenders, and edge fleet routing.&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">

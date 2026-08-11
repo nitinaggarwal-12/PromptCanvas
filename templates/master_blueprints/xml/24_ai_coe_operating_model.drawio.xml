@@ -73,7 +73,7 @@
           <mxGeometry x="320" y="94" width="490" height="22" as="geometry" />
         </mxCell>
 
-        <!-- TIER 1: GOVERNANCE & STRATEGY -->
+        <!-- TIER 1: GOVERNANCE &amp; STRATEGY -->
         <mxCell id="box_gov_strat" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="335" y="120" width="460" height="95" as="geometry" />
         </mxCell>
@@ -94,7 +94,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- TIER 2: PROCESS & OPERATIONS -->
+        <!-- TIER 2: PROCESS &amp; OPERATIONS -->
         <mxCell id="box_proc_ops" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="335" y="225" width="460" height="140" as="geometry" />
         </mxCell>
@@ -158,7 +158,7 @@
           <mxGeometry x="640" y="255" width="95" height="95" as="geometry" />
         </mxCell>
 
-        <!-- TIER 3: ANALYTICS & MEASUREMENT -->
+        <!-- TIER 3: ANALYTICS &amp; MEASUREMENT -->
         <mxCell id="box_analytics" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="335" y="380" width="460" height="95" as="geometry" />
         </mxCell>
@@ -183,7 +183,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- RIGHT ARTIFACT & TOTAL UNIFIED SYSTEM VIEW -->
+        <!-- RIGHT ARTIFACT &amp; TOTAL UNIFIED SYSTEM VIEW -->
         <mxCell id="node_coe_operating_model" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;AI CoE&lt;br/&gt;Operating&lt;br/&gt;Model&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="850" y="270" width="105" height="65" as="geometry" />
         </mxCell>
@@ -248,7 +248,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- BOTTOM GOVERNANCE & FUNDING LOOP -->
+        <!-- BOTTOM GOVERNANCE &amp; FUNDING LOOP -->
         <mxCell id="node_execs_leads" value="&lt;div style=&quot;font-size:12px;font-weight:bold;color:#0F172A;margin-bottom:6px;&quot;&gt;Execs &amp; Business Leads&lt;/div&gt;&lt;div style=&quot;font-size:10.5px;color:#334155;line-height:1.4;&quot;&gt;• &lt;b&gt;Review:&lt;/b&gt; Performance Metrics&lt;br/&gt;&amp;nbsp;&amp;nbsp;(from Looker)&lt;br/&gt;• &lt;b&gt;Approve:&lt;/b&gt; Strategy &amp; Business&lt;br/&gt;&amp;nbsp;&amp;nbsp;Plan updates&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.5;align=left;verticalAlign=middle;padding=10;" vertex="1" parent="1">
           <mxGeometry x="270" y="585" width="270" height="115" as="geometry" />
         </mxCell>

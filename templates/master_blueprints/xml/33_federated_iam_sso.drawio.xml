@@ -6,7 +6,7 @@
         <mxCell id="1" parent="0"/>
 
         <!-- ========================================================================= -->
-        <!-- TOP MAIN TITLE BANNER & METADATA TABLE                                    -->
+        <!-- TOP MAIN TITLE BANNER &amp; METADATA TABLE                                    -->
         <!-- ========================================================================= -->
         <mxCell id="main_title" value="WBS 5.1.4: Federated IAM &amp; SSO Architecture (To-Be State)" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="40" y="10" width="1020" height="38" as="geometry"/>
@@ -61,7 +61,7 @@
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- HORIZONTAL ZONE BACKGROUND BORDERS & SEPARATORS                           -->
+        <!-- HORIZONTAL ZONE BACKGROUND BORDERS &amp; SEPARATORS                           -->
         <!-- ========================================================================= -->
         <mxCell id="zone1_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;strokeDashed=1;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="40" y="48" width="1025" height="162" as="geometry"/>
@@ -83,7 +83,7 @@
           <mxGeometry x="40" y="48" width="180" height="162" as="geometry"/>
         </mxCell>
 
-        <!-- PERSONAS & AGENTS IN ZONE 1 -->
+        <!-- PERSONAS &amp; AGENTS IN ZONE 1 -->
         <mxCell id="user_ext" value="👤&lt;br&gt;&lt;b&gt;External Users&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;(Human)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="235" y="56" width="95" height="55" as="geometry"/>
         </mxCell>
@@ -166,7 +166,7 @@
           <mxGeometry x="230" y="332" width="130" height="30" as="geometry"/>
         </mxCell>
 
-        <!-- FEDERATED IDENTITY & SSO BROKER CONTAINER -->
+        <!-- FEDERATED IDENTITY &amp; SSO BROKER CONTAINER -->
         <mxCell id="broker_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="380" y="228" width="460" height="145" as="geometry"/>
         </mxCell>
@@ -313,7 +313,7 @@
           <mxGeometry x="930" y="415" width="85" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- ENFORCEMENT & LINEAGE CONNECTORS FROM BROKER -->
+        <!-- ENFORCEMENT &amp; LINEAGE CONNECTORS FROM BROKER -->
         <mxCell id="e_lineage" value="Data Lineage, Indexing" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=10;fontColor=#0F172A;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="broker_container" target="card_gke">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
@@ -348,7 +348,7 @@
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- ZONE 4: FOURTH ZONE - ANALYTICS & COMPLIANCE REPORTING                    -->
+        <!-- ZONE 4: FOURTH ZONE - ANALYTICS &amp; COMPLIANCE REPORTING                    -->
         <!-- ========================================================================= -->
         <mxCell id="z4_label" value="&lt;b style=&quot;font-size:14px;&quot;&gt;Fourth Zone:&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;Analytics &amp; Compliance&lt;br&gt;Reporting&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="40" y="552" width="180" height="175" as="geometry"/>
@@ -410,7 +410,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- COMPLIANCE CHECKS & BADGES IN ZONE 4 -->
+        <!-- COMPLIANCE CHECKS &amp; BADGES IN ZONE 4 -->
         <mxCell id="chk_oauth" value="🌐&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;OAuth2/OIDC&lt;br&gt;validation&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
           <mxGeometry x="760" y="585" width="85" height="100" as="geometry"/>
         </mxCell>

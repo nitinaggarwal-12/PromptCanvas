@@ -55,7 +55,7 @@
           <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT TIER: HYBRID CLOUD & INTERCONNECT INGRESS (x = 30 .. 330) -->
+        <!-- LEFT TIER: HYBRID CLOUD &amp; INTERCONNECT INGRESS (x = 30 .. 330) -->
         <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
         </mxCell>
@@ -63,7 +63,7 @@
           <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Node 1: On-Prem Data Center & AWS Outposts -->
+        <!-- Node 1: On-Prem Data Center &amp; AWS Outposts -->
         <mxCell id="node_hybrid_sources" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;On-Prem DCs &amp; Multi-Cloud Outposts&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Hybrid agent runtimes &amp; legacy enterprise mainframes&lt;br&gt;Distributed agent nodes across AWS / Azure&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
         </mxCell>
@@ -73,7 +73,7 @@
           <mxGeometry x="50" y="310" width="260" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Node 3: Cloud Router & BGP Gateway -->
+        <!-- Node 3: Cloud Router &amp; BGP Gateway -->
         <mxCell id="node_cloud_router" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Cloud Router &amp; BGP Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Dynamic multi-region route propagation&lt;br&gt;Automated failover &amp; ECMP load distribution&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="50" y="450" width="260" height="90" as="geometry"/>
         </mxCell>
@@ -89,7 +89,7 @@
         </mxCell>
 
 
-        <!-- CENTER TIER: ANTHOS SERVICE MESH & ZERO-TRUST PSC (x = 370 .. 790) -->
+        <!-- CENTER TIER: ANTHOS SERVICE MESH &amp; ZERO-TRUST PSC (x = 370 .. 790) -->
         <mxCell id="box_mesh" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
         </mxCell>
@@ -107,7 +107,7 @@
           <mxGeometry x="395" y="320" width="360" height="115" as="geometry"/>
         </mxCell>
 
-        <!-- Node 7: Workload Identity & Token Attestation -->
+        <!-- Node 7: Workload Identity &amp; Token Attestation -->
         <mxCell id="node_workload_id" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Workload Identity &amp; Token Attestation Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Cryptographic JWT &amp; OIDC token exchange for agent microservices&lt;br&gt;• Hardware TPM-backed key attestation on GKE nodes&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="395" y="475" width="360" height="100" as="geometry"/>
         </mxCell>
@@ -118,7 +118,7 @@
         </mxCell>
 
 
-        <!-- RIGHT TIER: GKE AGENT MESH, CLOUD ARMOR & SRE (x = 830 .. 1560) -->
+        <!-- RIGHT TIER: GKE AGENT MESH, CLOUD ARMOR &amp; SRE (x = 830 .. 1560) -->
         <mxCell id="box_mesh_target" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
         </mxCell>
@@ -131,12 +131,12 @@
           <mxGeometry x="860" y="325" width="430" height="115" as="geometry"/>
         </mxCell>
 
-        <!-- Cloud Armor L7 DDoS & Rate Limiter -->
+        <!-- Cloud Armor L7 DDoS &amp; Rate Limiter -->
         <mxCell id="node_cloud_armor" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Cloud Armor L7 DDoS &amp; WAF&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Adaptive rate-limiting for LLM endpoints,&lt;br&gt;OWASP Top 10 automated threat mitigation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="850" y="480" width="280" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- Cloud Monitoring & OpenTelemetry Mesh Trace Studio -->
+        <!-- Cloud Monitoring &amp; OpenTelemetry Mesh Trace Studio -->
         <mxCell id="node_telemetry_mesh" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;OpenTelemetry Trace Mesh&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;End-to-end distributed agent traces,&lt;br&gt;real-time latency heatmaps &amp; SRE logs&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1170" y="480" width="220" height="90" as="geometry"/>
         </mxCell>
@@ -152,7 +152,7 @@
         </mxCell>
 
 
-        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+        <!-- CONNECTORS &amp; FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
 
         <!-- 1. Hybrid Sources -> Cloud Interconnect -->
         <mxCell id="e_sources_interconnect" value="Dedicated 100G Hybrid Link" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_hybrid_sources" target="node_interconnect_pipe">

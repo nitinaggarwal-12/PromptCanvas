@@ -9,16 +9,16 @@
         <mxCell id="main_title" value="&lt;b style=&quot;font-size:22px;color:#0F172A;letter-spacing:-0.3px;&quot;&gt;SERVERLESS EDA ARCHITECTURE: END-TO-END GE APP INTEGRATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="8" width="1300" height="28" as="geometry"/>
         </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Powered by Google Cloud (GCP), Gemini Platform, and GE App — Real-Time IoT &amp;amp; Mobile Event Mesh&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Powered by Google Cloud (GCP), Gemini Platform, and GE App — Real-Time IoT &amp; Mobile Event Mesh&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="34" width="1300" height="18" as="geometry"/>
         </mxCell>
 
 
-        <!-- ==================== COLUMN 1: EXTERNAL SOURCES & EVENT TRIGGERS ==================== -->
+        <!-- ==================== COLUMN 1: EXTERNAL SOURCES &amp; EVENT TRIGGERS ==================== -->
         <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="35" y="65" width="145" height="535" as="geometry"/>
         </mxCell>
-        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;letter-spacing:0.3px;&quot;&gt;EXTERNAL SOURCES&lt;br&gt;&amp;amp; EVENT TRIGGERS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;letter-spacing:0.3px;&quot;&gt;EXTERNAL SOURCES&lt;br&gt;&amp; EVENT TRIGGERS&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="40" y="68" width="135" height="28" as="geometry"/>
         </mxCell>
 
@@ -33,7 +33,7 @@
         </mxCell>
 
 
-        <!-- Ingress Payload Badges & Connectors -->
+        <!-- Ingress Payload Badges &amp; Connectors -->
         <mxCell id="badge_iot_telem" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;🎛️ IoT&lt;br&gt;Telemetry&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Event, images&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="195" y="105" width="70" height="42" as="geometry"/>
         </mxCell>
@@ -80,7 +80,7 @@
         </mxCell>
 
         <!-- Lower Ingestion Detail Card to fill vertical space -->
-        <mxCell id="card_ingest_dlq" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🛡️ 📋&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Schema Registry&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Protobuf &amp;amp; JSON&lt;br&gt;Contract Validation&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+        <mxCell id="card_ingest_dlq" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🛡️ 📋&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Schema Registry&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Protobuf &amp; JSON&lt;br&gt;Contract Validation&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="288" y="420" width="90" height="85" as="geometry"/>
         </mxCell>
 
@@ -112,7 +112,7 @@
         </mxCell>
 
         <!-- Dead Letter Queue Badge -->
-        <mxCell id="badge_pubsub_dlq" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;&quot;&gt;📬 🛑&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Dead-Letter Topic&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Automated Retry &amp;amp; Alert&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+        <mxCell id="badge_pubsub_dlq" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;&quot;&gt;📬 🛑&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Dead-Letter Topic&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Automated Retry &amp; Alert&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="400" y="480" width="80" height="50" as="geometry"/>
         </mxCell>
 
@@ -189,7 +189,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 5: VERTEX AI & GEMINI PLATFORM ==================== -->
+        <!-- ==================== COLUMN 5: VERTEX AI &amp; GEMINI PLATFORM ==================== -->
         <mxCell id="col5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="625" y="65" width="150" height="535" as="geometry"/>
         </mxCell>
@@ -267,11 +267,11 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 6: STORAGE & ANALYTICS ==================== -->
+        <!-- ==================== COLUMN 6: STORAGE &amp; ANALYTICS ==================== -->
         <mxCell id="col6_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="865" y="65" width="165" height="535" as="geometry"/>
         </mxCell>
-        <mxCell id="col6_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Storage &amp;amp; Analytics&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col6_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Storage &amp; Analytics&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="870" y="68" width="155" height="20" as="geometry"/>
         </mxCell>
 
@@ -350,13 +350,13 @@
           </mxGeometry>
         </mxCell>
 
-        <mxCell id="card_firestore_cache" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;&quot;&gt;⚡ 🗄️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Firestore &amp;amp; Memorystore&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Sub-ms Real-Time App State Cache&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+        <mxCell id="card_firestore_cache" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;&quot;&gt;⚡ 🗄️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Firestore &amp; Memorystore&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Sub-ms Real-Time App State Cache&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="875" y="515" width="145" height="45" as="geometry"/>
         </mxCell>
 
 
-        <!-- ==================== COLUMN 7: ACTIONS & VISIBILITY ==================== -->
-        <mxCell id="col7_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Actions &amp;amp; Visibility&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <!-- ==================== COLUMN 7: ACTIONS &amp; VISIBILITY ==================== -->
+        <mxCell id="col7_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Actions &amp; Visibility&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1045" y="68" width="145" height="20" as="geometry"/>
         </mxCell>
 
@@ -364,7 +364,7 @@
         <mxCell id="col7_top_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#DCFCE7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1040" y="95" width="160" height="245" as="geometry"/>
         </mxCell>
-        <mxCell id="card_looker" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;📊 &lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Looker&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#475569;&quot;&gt;Visual Insights &amp;amp;&lt;br&gt;BI Reporting&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding-top:4px;&quot;&gt;&lt;span style=&quot;font-size:24px;&quot;&gt;📈 📉 📊&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+        <mxCell id="card_looker" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;📊 &lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Looker&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#475569;&quot;&gt;Visual Insights &amp;&lt;br&gt;BI Reporting&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding-top:4px;&quot;&gt;&lt;span style=&quot;font-size:24px;&quot;&gt;📈 📉 📊&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="1048" y="105" width="144" height="110" as="geometry"/>
         </mxCell>
 
@@ -373,7 +373,7 @@
           <mxGeometry x="1060" y="235" width="120" height="55" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors BigQuery -> Looker & BigQuery ML -->
+        <!-- Connectors BigQuery -> Looker &amp; BigQuery ML -->
         <mxCell id="e_bq_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1020" y="250" as="sourcePoint"/>
@@ -396,7 +396,7 @@
           <mxGeometry x="1048" y="370" width="144" height="65" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_notifications" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;✉️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Notification Services&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;&quot;&gt;FCM Mobile Push &amp;amp; Email&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+        <mxCell id="card_notifications" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;✉️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Notification Services&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;&quot;&gt;FCM Mobile Push &amp; Email&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="1048" y="450" width="144" height="55" as="geometry"/>
         </mxCell>
 
@@ -404,7 +404,7 @@
           <mxGeometry x="1048" y="520" width="144" height="28" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors Pub/Sub -> External APIs & Notifications -->
+        <!-- Connectors Pub/Sub -> External APIs &amp; Notifications -->
         <mxCell id="e_pubsub_apis" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1020" y="445" as="sourcePoint"/>

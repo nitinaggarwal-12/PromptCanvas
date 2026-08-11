@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_genomics_clinical" name="Pharma-Specific Genomics & Drug Discovery Pipeline with Agentic AI">
+  <diagram id="tech_genomics_clinical" name="Pharma-Specific Genomics &amp; Drug Discovery Pipeline with Agentic AI">
     <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1150" pageHeight="920" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -48,7 +48,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 3. ZONE 2: GOOGLE GENOMICS & AGENTIC AI -->
+        <!-- 3. ZONE 2: GOOGLE GENOMICS &amp; AGENTIC AI -->
         <mxCell id="lbl_gcp_genomics_hdr" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:4px;&quot;&gt;&lt;span style=&quot;font-size:13px;&quot;&gt;☁️&lt;/span&gt; &lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;GOOGLE GENOMICS &amp; AGENTIC AI&lt;/b&gt; &lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:bold;&quot;&gt;(PHARMA DATA LAKE &amp; COMPUTE)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="270" y="60" width="470" height="22" as="geometry"/>
         </mxCell>
@@ -185,7 +185,7 @@
           <mxGeometry x="260" y="660" width="495" height="32" as="geometry"/>
         </mxCell>
 
-        <!-- 4. ZONE 3: AGENTIC INTERFACE & PSC -->
+        <!-- 4. ZONE 3: AGENTIC INTERFACE &amp; PSC -->
         <mxCell id="card_agentic_interface" value="&lt;b style=&quot;font-size:10px;color:#581C87;&quot;&gt;AGENTIC&lt;br&gt;INTERFACE&lt;br&gt;&amp; PSC&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="775" y="300" width="80" height="95" as="geometry"/>
         </mxCell>
@@ -222,7 +222,7 @@
           <mxGeometry x="878" y="465" width="194" height="75" as="geometry"/>
         </mxCell>
 
-        <!-- 6. PURPLE AGENTS & CLOSED LOOPS -->
+        <!-- 6. PURPLE AGENTS &amp; CLOSED LOOPS -->
         <mxCell id="robot_agent_left" value="🤖" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
           <mxGeometry x="205" y="485" width="35" height="35" as="geometry"/>
         </mxCell>
@@ -275,7 +275,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 7. BOTTOM TIMELINE & STAGE PROGRESSION -->
+        <!-- 7. BOTTOM TIMELINE &amp; STAGE PROGRESSION -->
         <mxCell id="stage_1" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;CLINICAL INGRESS &amp; BAA STORAGE&lt;br&gt;(WITH GEMINI DATA PREP)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="250" y="755" width="160" height="26" as="geometry"/>
         </mxCell>

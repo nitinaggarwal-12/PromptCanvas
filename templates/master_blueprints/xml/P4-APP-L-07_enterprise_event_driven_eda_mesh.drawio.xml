@@ -1,11 +1,11 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_event_driven_eda" name="Event-Driven Architecture (EDA) & Kafka Event Mesh">
+  <diagram id="tech_event_driven_eda" name="Event-Driven Architecture (EDA) &amp; Kafka Event Mesh">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- TOP EXECUTIVE BOARDROOM TITLE BANNER & SUBTITLE -->
+        <!-- TOP EXECUTIVE BOARDROOM TITLE BANNER &amp; SUBTITLE -->
         <mxCell id="title_banner" value="&lt;b&gt;McKinsey-Grade Enterprise Event-Driven Microservices Architecture (EDA) Blueprint&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="30" y="8" width="1320" height="26" as="geometry" />
         </mxCell>
@@ -19,7 +19,7 @@
           <mxGeometry x="30" y="55" width="1320" height="26" as="geometry" />
         </mxCell>
 
-        <!-- TIER 1 CARD [1.1] Order & Checkout Microservices Pods -->
+        <!-- TIER 1 CARD [1.1] Order &amp; Checkout Microservices Pods -->
         <mxCell id="en1_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.1] Order &amp; Checkout Microservices Pods&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Emitting events&lt;br&gt;into Transactional&lt;br&gt;Outbox tables&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
           <mxGeometry x="30" y="90" width="410" height="135" as="geometry" />
         </mxCell>
@@ -38,7 +38,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- TIER 1 CARD [1.2] Payment Settlement & Ledger Pods (with PCI-DSS Badge & CLEAR 25px BREATHING ROOM) -->
+        <!-- TIER 1 CARD [1.2] Payment Settlement &amp; Ledger Pods (with PCI-DSS Badge &amp; CLEAR 25px BREATHING ROOM) -->
         <mxCell id="en1_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.2] Payment Settlement &amp; Ledger Pods&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Generates &lt;b&gt;Settlement Events&lt;/b&gt;&lt;br&gt;Protected by cryptographic HMAC payload signatures&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
           <mxGeometry x="485" y="90" width="410" height="135" as="geometry" />
         </mxCell>
@@ -142,7 +142,7 @@
         <mxCell id="p3_1_spanner" value="☁️ &lt;b&gt;TrueTime atomic&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;append-only store&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;fontSize=10;fontColor=#1E4ED8;" vertex="1" parent="1">
           <mxGeometry x="45" y="515" width="165" height="85" as="geometry" />
         </mxCell>
-        <!-- Audit Trail & Replay Gantt visual inside [3.1] -->
+        <!-- Audit Trail &amp; Replay Gantt visual inside [3.1] -->
         <mxCell id="p3_1_audit" value="📜 &lt;b&gt;Log Audit trail&lt;/b&gt;&lt;br&gt;📊 Full historical audit&lt;br&gt;&amp; replay engine" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#059669;fillColor=#ECFDF5;fontSize=10;fontColor=#065F46;" vertex="1" parent="1">
           <mxGeometry x="235" y="515" width="190" height="85" as="geometry" />
         </mxCell>
@@ -160,7 +160,7 @@
           <mxGeometry x="700" y="515" width="180" height="85" as="geometry" />
         </mxCell>
 
-        <!-- TIER 3 CARD [3.3] Real-Time CEP Fraud & Risk Engine (EXACT HORIZONTAL PIPELINE CHAIN MATCHING media_1786033044522.png) -->
+        <!-- TIER 3 CARD [3.3] Real-Time CEP Fraud &amp; Risk Engine (EXACT HORIZONTAL PIPELINE CHAIN MATCHING media_1786033044522.png) -->
         <mxCell id="en3_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.3] Real-Time CEP Fraud &amp; Risk Engine&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
           <mxGeometry x="935" y="478" width="415" height="135" as="geometry" />
         </mxCell>
@@ -210,7 +210,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Tier 2 Flow: [2.1] Brokers -> [2.2] DLQ Self-Healing & [2.1] -> [2.3] Downstream Consumers -->
+        <!-- Tier 2 Flow: [2.1] Brokers -> [2.2] DLQ Self-Healing &amp; [2.1] -> [2.3] Downstream Consumers -->
         <mxCell id="ee4" value="Event events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en2_2">
           <mxGeometry relative="1" as="geometry">
             <mxPoint dy="-14" as="offset" />
@@ -223,7 +223,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Tier 2 Kafka Brokers -> Tier 3 Event Store & Read Views drop along Open Corridor y=426 -->
+        <!-- Tier 2 Kafka Brokers -> Tier 3 Event Store &amp; Read Views drop along Open Corridor y=426 -->
         <mxCell id="ee6" value="Kafka Event Stream Ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#059669;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="en2_1" target="en3_1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
@@ -249,7 +249,7 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="tech_event_driven_eda" name="Event-Driven Architecture (EDA) & Kafka Event Mesh">
+  <diagram id="tech_event_driven_eda" name="Event-Driven Architecture (EDA) &amp; Kafka Event Mesh">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0_edap2" />

@@ -55,7 +55,7 @@
           <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT TIER: INGESTION & DATA SOURCES (x = 30 .. 330) -->
+        <!-- LEFT TIER: INGESTION &amp; DATA SOURCES (x = 30 .. 330) -->
         <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
         </mxCell>
@@ -63,7 +63,7 @@
           <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Node 1: Operational OLTP & SaaS Sources -->
+        <!-- Node 1: Operational OLTP &amp; SaaS Sources -->
         <mxCell id="node_sources" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Operational Data Sources&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Amazon RDS Aurora, DynamoDB Streams,&lt;br&gt;Salesforce &amp; SaaS Webhook Feeds&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
         </mxCell>
@@ -73,7 +73,7 @@
           <mxGeometry x="50" y="310" width="260" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Node 3: AWS Lake Formation & IAM Access Control -->
+        <!-- Node 3: AWS Lake Formation &amp; IAM Access Control -->
         <mxCell id="node_lakeformation" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;AWS Lake Formation &amp; IAM Security&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Column &amp; row-level access control filters&lt;br&gt;Automated PII data masking &amp; audit trail&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="50" y="450" width="260" height="90" as="geometry"/>
         </mxCell>
@@ -118,7 +118,7 @@
         </mxCell>
 
 
-        <!-- RIGHT TIER: QUERY ENGINES & CONSUMPTION (x = 830 .. 1560) -->
+        <!-- RIGHT TIER: QUERY ENGINES &amp; CONSUMPTION (x = 830 .. 1560) -->
         <mxCell id="box_consumption" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
         </mxCell>
@@ -126,7 +126,7 @@
           <mxGeometry x="835" y="280" width="720" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Amazon Redshift Serverless & Spectrum -->
+        <!-- Amazon Redshift Serverless &amp; Spectrum -->
         <mxCell id="node_redshift" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;Amazon Redshift Serverless &amp; Spectrum&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Petabyte-scale SQL data warehousing&lt;br&gt;• Redshift Spectrum direct zero-ETL querying of Gold S3 data&lt;br&gt;• Auto-scaling concurrency scaling clusters&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="850" y="325" width="440" height="115" as="geometry"/>
         </mxCell>
@@ -152,7 +152,7 @@
         </mxCell>
 
 
-        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+        <!-- CONNECTORS &amp; FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
 
         <!-- 1. Sources -> Firehose -->
         <mxCell id="e_sources_firehose" value="CDC &amp; App Streams" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_sources" target="node_firehose">

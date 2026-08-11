@@ -21,7 +21,7 @@
           <mxGeometry x="15" y="600" width="25" height="100" as="geometry" />
         </mxCell>
 
-        <!-- 7 COLUMN HEADERS (WITH EXACT ICONS & STYLING MATCHING IMAGE 1) -->
+        <!-- 7 COLUMN HEADERS (WITH EXACT ICONS &amp; STYLING MATCHING IMAGE 1) -->
         <mxCell id="user_col" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;👤 External Actor:&lt;br&gt;User / Chat Interface&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#475569;strokeWidth=2;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="50" y="70" width="145" height="65" as="geometry" />
         </mxCell>
@@ -110,7 +110,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="122" y="160" as="sourcePoint" /><mxPoint x="340" y="160" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <!-- STEP 2: INTERFACE & PII BOXES -->
+        <!-- STEP 2: INTERFACE &amp; PII BOXES -->
         <mxCell id="s2_lbl" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;INTERFACE&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="150" y="195" width="80" height="22" as="geometry" />
         </mxCell>
@@ -121,7 +121,7 @@
           <mxGeometry x="145" y="440" width="160" height="28" as="geometry" />
         </mxCell>
 
-        <!-- STEP 3: PERSONA & MEMORY CHECK -->
+        <!-- STEP 3: PERSONA &amp; MEMORY CHECK -->
         <mxCell id="s3" value="Checks Persona &amp; Memory&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;(Query, Context reference image 7, context corpus definition)&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1D4ED8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="280" as="sourcePoint" /><mxPoint x="780" y="280" as="targetPoint" /></mxGeometry>
         </mxCell>
@@ -213,7 +213,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1180" as="sourcePoint" /><mxPoint x="780" y="1180" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <!-- STEP 19: SYNTHESIZE REPORTING ARTIFACT & FINAL RESPONSE -->
+        <!-- STEP 19: SYNTHESIZE REPORTING ARTIFACT &amp; FINAL RESPONSE -->
         <mxCell id="s19_user" value="Sends final synthesized response&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;(linked PPT report / JSON data)&lt;br&gt;Displays response to USER&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.5;strokeColor=#2563EB;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#1D4ED8;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1235" as="sourcePoint" /><mxPoint x="122" y="1235" as="targetPoint" /></mxGeometry>
         </mxCell>
@@ -223,7 +223,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="340" y="1285" as="sourcePoint" /><mxPoint x="1515" y="1285" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <!-- TOPOLOGY NOTES & LOGGING BOXES MATCHING IMAGE 1 -->
+        <!-- TOPOLOGY NOTES &amp; LOGGING BOXES MATCHING IMAGE 1 -->
         <mxCell id="top_note_1" value="Automatic context lookup, private access path to Gemini boundary reference 5 topology" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontStyle=0;fontSize=10;fontColor=#334155;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1300" y="180" width="180" height="40" as="geometry" />
         </mxCell>

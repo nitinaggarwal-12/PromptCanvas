@@ -6,7 +6,7 @@
         <mxCell id="1" parent="0"/>
 
         <!-- 1. TOP HEADER BANNER -->
-        <mxCell id="top_banner" value="&lt;b style=&quot;font-size:14px;letter-spacing:0.3px;color:#FFFFFF;&quot;&gt;Applied GKE-based AI Safety &amp;amp; Red-Teaming Continuous Pipeline (WBS 4.3.2)&lt;/b&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#2563EB;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="top_banner" value="&lt;b style=&quot;font-size:14px;letter-spacing:0.3px;color:#FFFFFF;&quot;&gt;Applied GKE-based AI Safety &amp; Red-Teaming Continuous Pipeline (WBS 4.3.2)&lt;/b&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#2563EB;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="175" y="15" width="970" height="36" as="geometry"/>
         </mxCell>
 
@@ -44,12 +44,12 @@
         <mxCell id="col1_box" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="190" y="65" width="285" height="435" as="geometry"/>
         </mxCell>
-        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#FFFFFF;&quot;&gt;1. Input Triage &amp;amp; Fuzzing (GKE Workloads)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#FFFFFF;&quot;&gt;1. Input Triage &amp; Fuzzing (GKE Workloads)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="190" y="65" width="285" height="24" as="geometry"/>
         </mxCell>
 
         <!-- Card 1.1: GKE Fuzzing Service -->
-        <mxCell id="card_fuzzing" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;🐳&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GKE-based Adversarial Fuzzing Service&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#334155;&quot;&gt;Dockerized Atheris-based Custom Fuzzer (Atheris 1.1). Mutate clean prompts, run continuous campaigns on GKE.&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Inputs:&lt;/b&gt; Clear Prompts, Known Vulnerabilities&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Processing:&lt;/b&gt; Mutate &amp;amp; test on target LLM endpoint&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Outputs:&lt;/b&gt; Fuzzed Prompts, Vulnerability Reports.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+        <mxCell id="card_fuzzing" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;🐳&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GKE-based Adversarial Fuzzing Service&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#334155;&quot;&gt;Dockerized Atheris-based Custom Fuzzer (Atheris 1.1). Mutate clean prompts, run continuous campaigns on GKE.&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Inputs:&lt;/b&gt; Clear Prompts, Known Vulnerabilities&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Processing:&lt;/b&gt; Mutate &amp; test on target LLM endpoint&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Outputs:&lt;/b&gt; Fuzzed Prompts, Vulnerability Reports.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
           <mxGeometry x="198" y="95" width="268" height="98" as="geometry"/>
         </mxCell>
 
@@ -77,12 +77,12 @@
         <mxCell id="col2_box" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="520" y="65" width="240" height="260" as="geometry"/>
         </mxCell>
-        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:10px;color:#FFFFFF;&quot;&gt;2. Agentic Orchestration &amp;amp; Deployment Control&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#16A34A;strokeColor=#15803D;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:10px;color:#FFFFFF;&quot;&gt;2. Agentic Orchestration &amp; Deployment Control&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#16A34A;strokeColor=#15803D;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="520" y="65" width="240" height="24" as="geometry"/>
         </mxCell>
 
         <!-- Card 2.1: Agentic Orchestrator Service -->
-        <mxCell id="card_orchestrator" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:22px;vertical-align:top;font-size:16px;&quot;&gt;🤖&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Agentic Orchestrator Service&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#15803D;font-weight:bold;&quot;&gt;(Vertex AI Agents Pod)&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#15803D;&quot;&gt;Input:&lt;/b&gt; Fuzzer Logs, Model Armor block logs, Canary metrics, Drift alerts&lt;br&gt;&lt;b style=&quot;color:#15803D;&quot;&gt;Processing:&lt;/b&gt; Agent Triage &amp;amp; Action&lt;br&gt;• Analyze attack patterns&lt;br&gt;• Cross-reference fuzzer results with current filters&lt;br&gt;• Autonomously mutate filtering rulesets&lt;br&gt;• Update ConfigMaps via Kubernetes API&lt;br&gt;• Trigger pre-deployment evaluation.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+        <mxCell id="card_orchestrator" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:22px;vertical-align:top;font-size:16px;&quot;&gt;🤖&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Agentic Orchestrator Service&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#15803D;font-weight:bold;&quot;&gt;(Vertex AI Agents Pod)&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#15803D;&quot;&gt;Input:&lt;/b&gt; Fuzzer Logs, Model Armor block logs, Canary metrics, Drift alerts&lt;br&gt;&lt;b style=&quot;color:#15803D;&quot;&gt;Processing:&lt;/b&gt; Agent Triage &amp; Action&lt;br&gt;• Analyze attack patterns&lt;br&gt;• Cross-reference fuzzer results with current filters&lt;br&gt;• Autonomously mutate filtering rulesets&lt;br&gt;• Update ConfigMaps via Kubernetes API&lt;br&gt;• Trigger pre-deployment evaluation.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
           <mxGeometry x="528" y="95" width="224" height="220" as="geometry"/>
         </mxCell>
 
@@ -95,7 +95,7 @@
         <mxCell id="col3_box" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="780" y="65" width="355" height="435" as="geometry"/>
         </mxCell>
-        <mxCell id="col3_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#FFFFFF;&quot;&gt;3. Continuous Evaluation &amp;amp; Compliance Vault (Vertex &amp;amp; BigQuery)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EA580C;strokeColor=#C2410C;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col3_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#FFFFFF;&quot;&gt;3. Continuous Evaluation &amp; Compliance Vault (Vertex &amp; BigQuery)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EA580C;strokeColor=#C2410C;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="780" y="65" width="355" height="24" as="geometry"/>
         </mxCell>
 
@@ -124,7 +124,7 @@
         </mxCell>
 
         <!-- Card 3.3: GCP Dataplex &amp; Vertex Monitoring Pod -->
-        <mxCell id="card_dataplex_pod" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GCP Dataplex &amp;amp; Vertex Monitoring Pod&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Input:&lt;/b&gt; Production traffic stream.&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Processing:&lt;/b&gt; Semantic drift detection, Output safety regression check.&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Output:&lt;/b&gt; Alert Agentic Orchestrator.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+        <mxCell id="card_dataplex_pod" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GCP Dataplex &amp; Vertex Monitoring Pod&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Input:&lt;/b&gt; Production traffic stream.&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Processing:&lt;/b&gt; Semantic drift detection, Output safety regression check.&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Output:&lt;/b&gt; Alert Agentic Orchestrator.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
           <mxGeometry x="788" y="320" width="338" height="75" as="geometry"/>
         </mxCell>
 
@@ -217,7 +217,7 @@
             &lt;td&gt;Evaluation Flow&lt;/td&gt;
             &lt;td&gt;Benchmark Store&lt;/td&gt;
             &lt;td&gt;Persona&lt;/td&gt;
-            &lt;td&gt;Audit &amp;amp; Metrics&lt;/td&gt;
+            &lt;td&gt;Audit &amp; Metrics&lt;/td&gt;
             &lt;td&gt;Safety Guard&lt;/td&gt;
             &lt;td&gt;GCP Key&lt;/td&gt;
           &lt;/tr&gt;

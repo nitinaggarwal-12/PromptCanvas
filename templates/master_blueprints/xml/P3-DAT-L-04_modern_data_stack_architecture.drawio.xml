@@ -69,11 +69,11 @@
           <mxGeometry x="170" y="70" width="140" height="22" as="geometry"/>
         </mxCell>
 
-        <!-- Batch & Micro-batch Ingestion Container -->
+        <!-- Batch &amp; Micro-batch Ingestion Container -->
         <mxCell id="box_batch_ingest" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#BAE6FD;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="170" y="98" width="140" height="210" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_batch_ingest" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Batch &amp;amp; Micro-batch&lt;br&gt;Ingestion&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_batch_ingest" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Batch &amp; Micro-batch&lt;br&gt;Ingestion&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="172" y="102" width="136" height="22" as="geometry"/>
         </mxCell>
         <mxCell id="card_gcs_transfer" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:18px;font-size:13px;text-align:center;&quot;&gt;🛢️&lt;/td&gt;&lt;td style=&quot;font-weight:bold;&quot;&gt;GCS Transfer&lt;br&gt;Service&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
@@ -145,8 +145,8 @@
           <mxGeometry x="570" y="186" width="75" height="22" as="geometry"/>
         </mxCell>
 
-        <!-- Layer 2: Governed & Secured Layer (Dataplex / BigLake) -->
-        <mxCell id="card_dataplex_layer" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;text-align:center;&quot;&gt;🕸️&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Governed &amp;amp; Secured Layer&lt;br&gt;(Dataplex / BigLake)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Unifying management, discovery, and governance across all data&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;width:28px;font-size:20px;text-align:center;&quot;&gt;🏛️&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+        <!-- Layer 2: Governed &amp; Secured Layer (Dataplex / BigLake) -->
+        <mxCell id="card_dataplex_layer" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;font-size:20px;text-align:center;&quot;&gt;🕸️&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Governed &amp; Secured Layer&lt;br&gt;(Dataplex / BigLake)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Unifying management, discovery, and governance across all data&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;width:28px;font-size:20px;text-align:center;&quot;&gt;🏛️&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
           <mxGeometry x="335" y="218" width="330" height="105" as="geometry"/>
         </mxCell>
 
@@ -155,7 +155,7 @@
           <mxGeometry x="335" y="355" width="330" height="115" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors inside Lakehouse & Ingress -->
+        <!-- Connectors inside Lakehouse &amp; Ingress -->
         <mxCell id="e_ingest_gcs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="304" y="137" as="sourcePoint"/>
@@ -181,11 +181,11 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 4: TRANSFORMATION & ORCHESTRATION ==================== -->
+        <!-- ==================== COLUMN 4: TRANSFORMATION &amp; ORCHESTRATION ==================== -->
         <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="685" y="65" width="160" height="440" as="geometry"/>
         </mxCell>
-        <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Transformation &amp;amp;&lt;br&gt;Orchestration&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Transformation &amp;&lt;br&gt;Orchestration&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="690" y="68" width="150" height="24" as="geometry"/>
         </mxCell>
 
@@ -214,11 +214,11 @@
           <mxGeometry x="696" y="252" width="138" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- Data Quality & Discovery Container -->
+        <!-- Data Quality &amp; Discovery Container -->
         <mxCell id="box_dq_discovery" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#BAE6FD;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="690" y="378" width="150" height="112" as="geometry"/>
         </mxCell>
-        <mxCell id="desc_dq_discovery" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Data Quality &amp;amp;&lt;br&gt;Discovery&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Integrated with Dataplex&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="desc_dq_discovery" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Data Quality &amp;&lt;br&gt;Discovery&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Integrated with Dataplex&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="692" y="388" width="146" height="90" as="geometry"/>
         </mxCell>
 
@@ -243,19 +243,19 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 5: SERVING & CONSUMPTION ==================== -->
+        <!-- ==================== COLUMN 5: SERVING &amp; CONSUMPTION ==================== -->
         <mxCell id="col5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="855" y="65" width="375" height="440" as="geometry"/>
         </mxCell>
-        <mxCell id="col5_hdr" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Serving &amp;amp; Consumption&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;font-weight:normal;&quot;&gt;Data &amp;amp; AI Pipelines (Consumption/transformation routes)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col5_hdr" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Serving &amp; Consumption&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;font-weight:normal;&quot;&gt;Data &amp; AI Pipelines (Consumption/transformation routes)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="860" y="68" width="365" height="26" as="geometry"/>
         </mxCell>
 
-        <!-- Section 1: BI & Analytics -->
+        <!-- Section 1: BI &amp; Analytics -->
         <mxCell id="box_bi_analytics" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="865" y="98" width="355" height="82" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_bi_analytics" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;BI &amp;amp; Analytics&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_bi_analytics" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;BI &amp; Analytics&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="870" y="100" width="345" height="16" as="geometry"/>
         </mxCell>
         <mxCell id="card_looker" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;font-size:16px;text-align:center;&quot;&gt;🎨&lt;/td&gt;&lt;td style=&quot;font-weight:bold;&quot;&gt;Looker&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
@@ -279,16 +279,16 @@
           <mxGeometry x="1050" y="214" width="160" height="46" as="geometry"/>
         </mxCell>
 
-        <!-- Queries Label between BI & Exploration -->
+        <!-- Queries Label between BI &amp; Exploration -->
         <mxCell id="lbl_queries" value="Queries" style="text;html=1;align=center;verticalAlign=middle;fontSize=7.5;fontStyle=1;color:#475569;" vertex="1" parent="1">
           <mxGeometry x="990" y="176" width="70" height="16" as="geometry"/>
         </mxCell>
 
-        <!-- Section 3: AI & Machine Learning (Vertex AI) (Green Box) -->
+        <!-- Section 3: AI &amp; Machine Learning (Vertex AI) (Green Box) -->
         <mxCell id="box_vertex_ai" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="865" y="282" width="355" height="208" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_vertex_ai" value="&lt;b style=&quot;font-size:9.5px;color:#166534;&quot;&gt;AI &amp;amp; Machine Learning (Vertex AI)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_vertex_ai" value="&lt;b style=&quot;font-size:9.5px;color:#166534;&quot;&gt;AI &amp; Machine Learning (Vertex AI)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="870" y="286" width="345" height="22" as="geometry"/>
         </mxCell>
 
@@ -322,13 +322,13 @@
         </mxCell>
 
 
-        <!-- ==================== BOTTOM GLOBAL BAR: UNIFIED GOVERNANCE & QUALITY ==================== -->
+        <!-- ==================== BOTTOM GLOBAL BAR: UNIFIED GOVERNANCE &amp; QUALITY ==================== -->
         <mxCell id="bar_gov_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="300" y="520" width="930" height="68" as="geometry"/>
         </mxCell>
 
-        <!-- Left Box: Cloud Logging & Monitoring -->
-        <mxCell id="card_cloud_ops" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;font-size:16px;text-align:center;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;font-weight:bold;&quot;&gt;Cloud Logging&lt;br&gt;&amp;amp; Monitoring&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+        <!-- Left Box: Cloud Logging &amp; Monitoring -->
+        <mxCell id="card_cloud_ops" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;font-size:16px;text-align:center;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;font-weight:bold;&quot;&gt;Cloud Logging&lt;br&gt;&amp; Monitoring&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="315" y="530" width="180" height="48" as="geometry"/>
         </mxCell>
 
@@ -337,8 +337,8 @@
           <mxGeometry x="515" y="530" width="140" height="48" as="geometry"/>
         </mxCell>
 
-        <!-- Right Label: Unified Governance & Quality -->
-        <mxCell id="lbl_unified_gov" value="&lt;b style=&quot;font-size:14px;color:#FFFFFF;&quot;&gt;Unified Governance&lt;br&gt;&amp;amp; Quality&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <!-- Right Label: Unified Governance &amp; Quality -->
+        <mxCell id="lbl_unified_gov" value="&lt;b style=&quot;font-size:14px;color:#FFFFFF;&quot;&gt;Unified Governance&lt;br&gt;&amp; Quality&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="685" y="530" width="220" height="48" as="geometry"/>
         </mxCell>
 

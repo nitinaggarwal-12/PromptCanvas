@@ -1,5 +1,5 @@
 <mxfile host="app.diagrams.net" modified="2026-08-10T16:35:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="asis_vs_tobe_process_flow" name="As-Is vs. To-Be Process & Architecture Flow (WBS 0.1.1)">
+  <diagram id="asis_vs_tobe_process_flow" name="As-Is vs. To-Be Process &amp; Architecture Flow (WBS 0.1.1)">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -11,7 +11,7 @@
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- TOP TITLE & GCAF HEADER BANNER (Full Width: X: 20 to 1540) -->
+        <!-- TOP TITLE &amp; GCAF HEADER BANNER (Full Width: X: 20 to 1540) -->
         <!-- ========================================================================= -->
         <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:16px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;WBS 0.1.1: Enterprise Architecture &amp; Process Modernization Flow (As-Is vs. To-Be)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:normal;&quot;&gt;On-Premises Monolithic Legacy to Google Cloud Lakehouse &amp; Gemini Enterprise Cognitive Architecture&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=16;" vertex="1" parent="1">
           <mxGeometry x="20" y="15" width="840" height="56" as="geometry" />
@@ -22,7 +22,7 @@
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- TOP SWIMLANE: AS-IS CURRENT STATE (LEGACY ON-PREM & BATCH SILOS) (Y: 85 to Y: 325) -->
+        <!-- TOP SWIMLANE: AS-IS CURRENT STATE (LEGACY ON-PREM &amp; BATCH SILOS) (Y: 85 to Y: 325) -->
         <!-- ========================================================================= -->
         <mxCell id="tab_asis" value="&lt;b style=&quot;font-size:13px;color:#991B1B;&quot;&gt;AS-IS&lt;br&gt;CURRENT&lt;br&gt;STATE&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7F1D1D;&quot;&gt;On-Premises&lt;br&gt;&amp; Monolith&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="85" width="80" height="235" as="geometry" />
@@ -109,7 +109,7 @@
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- BOTTOM SWIMLANE: TO-BE TARGET STATE (GOOGLE CLOUD & GEMINI ENTERPRISE) (Y: 395 to Y: 895) -->
+        <!-- BOTTOM SWIMLANE: TO-BE TARGET STATE (GOOGLE CLOUD &amp; GEMINI ENTERPRISE) (Y: 395 to Y: 895) -->
         <!-- ========================================================================= -->
         <mxCell id="tab_tobe" value="&lt;b style=&quot;font-size:13px;color:#15803D;&quot;&gt;TO-BE&lt;br&gt;TARGET&lt;br&gt;STATE&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;&quot;&gt;Google Cloud&lt;br&gt;&amp; Gemini 3.1&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="395" width="80" height="500" as="geometry" />
@@ -123,7 +123,7 @@
           <mxGeometry x="115" y="402" width="850" height="22" as="geometry" />
         </mxCell>
 
-        <!-- To-Be Stage 1: Cloud Pub/Sub & Edge Ingress -->
+        <!-- To-Be Stage 1: Cloud Pub/Sub &amp; Edge Ingress -->
         <mxCell id="node_tobe_ingress" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:radio.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;1. Real-Time Ingress&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;font-weight:normal;&quot;&gt;Cloud Pub/Sub Topics&lt;br&gt;Cloud Armor WAF &amp; Apigee Edge&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="120" y="435" width="220" height="115" as="geometry" />
         </mxCell>
@@ -133,17 +133,17 @@
           <mxGeometry x="410" y="435" width="230" height="115" as="geometry" />
         </mxCell>
 
-        <!-- To-Be Stage 3: Gemini 3.1 Pro & Vertex AI Reasoning Hub -->
+        <!-- To-Be Stage 3: Gemini 3.1 Pro &amp; Vertex AI Reasoning Hub -->
         <mxCell id="node_tobe_ai_hub" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:sparkles.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;3. Gemini 3.1 Pro Engine&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#0284C7;font-weight:bold;&quot;&gt;Vertex AI Vector Search&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#166534;&quot;&gt;Tangential Curved ReAct Reasoning&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="710" y="435" width="220" height="115" as="geometry" />
         </mxCell>
 
-        <!-- To-Be Stage 4: Autonomous MCP & HITL Guardrail Gate -->
+        <!-- To-Be Stage 4: Autonomous MCP &amp; HITL Guardrail Gate -->
         <mxCell id="node_tobe_gov" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;4. AI TRiSM &amp; HITL Gate&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#15803D;font-weight:bold;&quot;&gt;&gt;=95% Fast Path • &lt;75% Escalation&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;21 CFR Part 11 Audit Trail&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1000" y="435" width="230" height="115" as="geometry" />
         </mxCell>
 
-        <!-- To-Be Stage 5: Modern Serving & SRE Cockpit -->
+        <!-- To-Be Stage 5: Modern Serving &amp; SRE Cockpit -->
         <mxCell id="node_tobe_serving" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:box.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;5. Serverless Serving &amp; BI&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;font-weight:normal;&quot;&gt;Cloud Run Microservices&lt;br&gt;Looker Studio AI SRE Cockpit&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1300" y="435" width="220" height="115" as="geometry" />
         </mxCell>
@@ -163,7 +163,7 @@
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- TO-BE SUB-TIER: GOOGLE CLOUD ENTERPRISE LAKEHOUSE & ZERO-TRUST PERSISTENCE MESH -->
+        <!-- TO-BE SUB-TIER: GOOGLE CLOUD ENTERPRISE LAKEHOUSE &amp; ZERO-TRUST PERSISTENCE MESH -->
         <!-- ========================================================================= -->
         <mxCell id="box_lakehouse_tier" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="120" y="585" width="1400" height="235" as="geometry" />
@@ -188,7 +188,7 @@
           <mxGeometry x="715" y="625" width="235" height="120" as="geometry" />
         </mxCell>
 
-        <!-- Cloud KMS & Secret Manager Card -->
+        <!-- Cloud KMS &amp; Secret Manager Card -->
         <mxCell id="node_tobe_kms" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:key.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Cloud KMS &amp; CMEK&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;Hardware HSM Keys&lt;br&gt;Envelope Field Encryption&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1005" y="625" width="225" height="120" as="geometry" />
         </mxCell>
