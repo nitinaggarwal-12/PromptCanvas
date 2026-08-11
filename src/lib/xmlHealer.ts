@@ -63,6 +63,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     Boolean(archType && (archType.includes('serverless') || archType.includes('p4-app-l-08'))) ||
     inputXml.includes('serverless_eda_architecture') ||
     inputXml.includes('SERVERLESS EDA ARCHITECTURE') ||
+    archType === 'secure_deployment_map' ||
+    Boolean(archType && (archType.includes('secure_deployment') || archType.includes('p4-sec-p-01'))) ||
+    inputXml.includes('secure_deployment_topology_map') ||
+    inputXml.includes('Secure Deployment Topology Map') ||
     archType === 'tech_genomics_clinical' ||
     archType === 'tech_supply_chain' ||
     archType === 'tech_eval_safety' ||

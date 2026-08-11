@@ -121,13 +121,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   secure_deployment_map: {
     id: "secure_deployment_map",
-    title: "Secure Deployment Topology Map",
+    title: "P4-SEC-P-01: Secure Deployment Topology Map",
     category: "Cloud Infrastructure & Networking",
-    useCase: "ENTERPRISE SECURITY TOPOLOGY",
-    businessUseCase: "Enterprise security perimeter isolating proprietary data inside VPC Service Controls with Cloud Armor L7 WAF edge defense and IAM RBAC controls.",
-    primaryActors: "Chief Information Security Officer (CISO), Cloud Architects, Security Operations",
-    targetOutcomes: "Zero-Trust Compliance, Air-Gapped Data Isolation, Protection Against Data Exfiltration",
-    desc: "Maps Cloud Armor L7 WAF edge protection, API Gateway rate-limiting, and isolated private subnets within VPC-SC."
+    useCase: "SECURE DEPLOYMENT TOPOLOGY MAP: END-TO-END SECURE SUPPLY CHAIN (P4-SEC-P-01)",
+    businessUseCase: "P4-SEC-P-01: End-to-end secure software supply chain architecture on Google Cloud Platform integrating Developer Workstation with Gemini Code Assist AI, Cloud Build CI/CD gated pipeline (SBOM creation, Gemini SAST, DAST), Artifact Registry with SCA scanning and Binary Authorization signing, Cloud Deploy promotion gates, and Production VPC with Cloud Armor WAF, GKE Cluster mTLS microservices for GE App workloads, Cloud SQL via Private Service Connect, Cloud NAT, and Security Command Center (SCC) Gemini-driven threat analysis.",
+    primaryActors: "Cloud Security Architects, DevSecOps Leads, CISO Governance Officers, Platform SREs",
+    targetOutcomes: "100% Cryptographically Signed Container Supply Chain, Zero-Trust Ingress & Egress Isolation, Continuous Vulnerability Scanning (SAST/DAST/SCA), Sub-Second Threat Mitigation via SCC & Gemini",
+    desc: "Secure Deployment Topology Map blueprint mapping developer check-in with Gemini Code Assist, Cloud Build CI/CD gating, Artifact Registry with Binary Authorization, Cloud Deploy, Production VPC with GKE mTLS, and Security Command Center threat analysis."
   },
   devops_cicd_pipeline: {
     id: "devops_cicd_pipeline",

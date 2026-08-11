@@ -101,10 +101,10 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "secure_deployment_map",
-    name: "Secure Deployment Topology Map",
+    name: "P4-SEC-P-01: Secure Deployment Topology Map",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "Secure deployment topology map with edge load balancing, private VPC subnets, and security boundaries",
-    prompt: "Enterprise Secure Deployment Map:\n- Zone 1: Edge & Ingress filtering (Cloud Armor WAF, External Load Balancer, API Gateway).\n- Zone 2: Private Network & Subnets (Application Subnets, Data/AI Subnets, Isolated Pods).\n- Security Perimeters: VPC Service Controls, IAM RBAC, Private Service Connect (PSC) endpoints."
+    whenToUse: "P4-SEC-P-01 Secure Deployment Topology Map: End-to-End Secure Software Supply Chain integrating GCP, Gemini Platform, and GE App. Features Stage 1 Code Check-In with Gemini Code Assist AI IDE Copilot, Stage 2 CI/CD Secure Build & Gating (Cloud Build, SBOM, Gemini SAST, DAST), Stage 3 Secure Image Registry & Binary Authorization signing, Stage 4 Secure Deployment (Cloud Deploy to Dev/Stage/Prod), and Production Environment with Cloud Armor WAF, GKE Cluster, mTLS, Private Service Connect, Cloud NAT, and Security Command Center (SCC) Gemini-Driven Threat Analysis.",
+    prompt: "Act as a Principal Cloud Security & DevSecOps Architect. Design a production-grade Google Cloud End-to-End Architecture: Secure Deployment Topology Map blueprint integrating GCP, Gemini Platform, and GE App. Include: Top Conceptual Flow (Gemini Code Assist -> Cloud Source Repositories -> CI/CD Chain Build/Test/Scan -> Registry Sign & Authorize -> Target Environments Dev/Stage/Prod -> Secure Software Supply Chain badge); Outer Google Cloud Project container; Section 1 Code (Developer Gemini Code Assist AI IDE Copilot, Cloud Source Repositories, SAST & Code Quality Check, Git Push to secure pipeline with lock); Section 2 Build & Gating CI/CD Pipeline Cloud Build (Container Build, SBOM Creation, Gemini-Assisted Static Scan SAST, Dynamic Analysis DAST, Secure Supply Chain Gating with lock); Section 3 Registry & Binary Authorization (Artifact Registry, Software Composition Analysis SCA, Secure Image Registry, Binary Authorization policy, Secure Image Promotion with lock); Section 4 Target Environments & Networking (Development/Staging GKE envs, Stage 4 Binary Authorization Policy Check, Cloud Deploy, Internet Gateways with VPC Service Controls VPC SC); Production Environment with Production VPC (External Load Balancer with Cloud Armor WAF, Management Subnet with Bastion Host and Identity-Aware Proxy IAP, GKE Production Cluster Subnet with Internal Load Balancer and Workload 'GE App' Microservices with mTLS, Data Subnet with Cloud SQL and Cloud Storage via Private Service Connect, Cloud NAT); Right Side Stage 5 Production Security & Compliance (Firewalls, Cloud Audit Logs, Security Command Center SCC with Gemini-Driven Threat Analysis, Secret Manager, IAM Cloud Logging, Assured Workloads for compliance) -> Top right legend and Google Cloud logo."
   },
   {
     id: "devops_cicd_pipeline",
@@ -401,6 +401,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('eval_safety') || id.includes('benchmarking') || id === 'tech_eval_safety') return 'tech_eval_safety';
   if (id.includes('agentic_mesh') || id.includes('mesh_swarm') || id === 'tech_agentic_mesh') return 'tech_agentic_mesh';
   if (id.includes('serverless') || id === 'tech_serverless_gcp' || id.includes('p4-app-l-08')) return 'tech_serverless_gcp';
+  if (id.includes('secure_deployment') || id.includes('topology_map') || id === 'secure_deployment_map' || id.includes('p4-sec-p-01')) return 'secure_deployment_map';
   if (id.includes('vsm') || id.includes('value_stream') || id === 'value_stream_map') return 'value_stream_map';
   if (id.includes('as_is') || id.includes('asis') || id.includes('tobe') || id.includes('to_be') || id === 'asis_vs_tobe_process_flow') return 'asis_vs_tobe_process_flow';
   return id;

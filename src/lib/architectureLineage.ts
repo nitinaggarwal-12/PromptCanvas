@@ -218,16 +218,16 @@ export const BLUEPRINT_LINEAGE_REGISTRY: Record<string, BlueprintLineage> = {
   // ==========================================
   "secure_deployment_map": {
     uniqueId: "P4-SEC-P-01",
-    canonicalWbsId: "P4-SEC-P-01_secure_deployment_map",
+    canonicalWbsId: "P4-SEC-P-01_secure_deployment_topology_map",
     canonicalArchId: "secure_deployment_map",
-    name: "Production Zero-Trust Kubernetes & Network Perimeter",
+    name: "Secure Deployment Topology Map",
     phaseId: "P4",
     phaseTitle: "Phase 4: Platform Engineering, Mesh & Real-Time Intelligence",
     layer: "Physical",
     layerCode: "-P-",
-    domain: "Infrastructure Security",
+    domain: "Zero-Trust GCP Network Topology with Cloud Armor WAF, GKE Autopilot, Cloud SQL PSA, and CMEK KMS.",
     isIndustrySpecialized: false,
-    lineageBreadcrumb: ["Phase 4: Platform Engineering", "Physical Layer (-P-)", "Infrastructure Security", "P4-SEC-P-01"]
+    lineageBreadcrumb: ["Phase 4: Platform Engineering", "Physical Layer (-P-)", "Secure Deployment Topology Map", "P4-SEC-P-01"]
   },
   "data_residency_sovereign_map": {
     uniqueId: "P4-SEC-P-02",

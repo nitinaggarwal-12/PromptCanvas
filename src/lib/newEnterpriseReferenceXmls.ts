@@ -35,6 +35,7 @@ import { buildDataLakehouseXml } from './masterBuilders/build_master_data_lakeho
 import { buildValueStreamMapXml } from './masterBuilders/master_builder_vsm';
 import { buildAsIsToBeProcessFlowXml } from './masterBuilders/master_builder_asis_tobe';
 import { buildServerlessEdaXml } from './masterBuilders/build_master_serverless_eda';
+import { buildSecureDeploymentTopologyXml } from './masterBuilders/build_master_secure_deployment';
 
 const SVG_GCP_LOGO = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E";
 const SVG_CYLINDER_3D_RED = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2070%22%20width%3D%2238%22%20height%3D%2244%22%3E%3Cpath%20d%3D%22M5%2C15%20L5%2C50%20C5%2C60%2055%2C60%2055%2C50%20L55%2C15%20Z%22%20fill%3D%22%23EF4444%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%222%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2250%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%23DC2626%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2215%22%20rx%3D%2225%22%20ry%3D%229%22%20fill%3D%22%23F87171%22%20stroke%3D%22%23B91C1C%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E";
@@ -165,7 +166,7 @@ export function getExactGcpDataLakehouseWbsXml(): string {
 }
 
 export function getExactSecureDeploymentMapWidescreenXml(): string {
-  return buildZeroTrustMeshXml();
+  return buildSecureDeploymentTopologyXml();
 }
 
 export function getExactAgenticRagWidescreenXml(): string {

@@ -1,4 +1,5 @@
-<mxfile host="embed.diagrams.net">
+export function buildSecureDeploymentTopologyXml(): string {
+  return `<mxfile host="embed.diagrams.net">
   <diagram id="secure_deployment_topology_map" name="Secure Deployment Topology Map (P4-SEC-P-01)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="720" background="#FFFFFF" math="0" shadow="0">
       <root>
@@ -387,4 +388,5 @@
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>
+</mxfile>`;
+}

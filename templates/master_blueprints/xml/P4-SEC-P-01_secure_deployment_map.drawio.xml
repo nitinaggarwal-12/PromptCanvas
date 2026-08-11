@@ -6,18 +6,18 @@
         <mxCell id="1" parent="0"/>
 
         <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:22px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;Google Cloud End-to-End Architecture: Secure Deployment Topology Map&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="10" width="850" height="26" as="geometry"/>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:20px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;Google Cloud End-to-End Architecture: Secure Deployment Topology Map&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="10" width="850" height="24" as="geometry"/>
         </mxCell>
         <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Integrating GCP, Gemini Platform, and GE App&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="36" width="850" height="18" as="geometry"/>
+          <mxGeometry x="35" y="34" width="850" height="18" as="geometry"/>
         </mxCell>
 
         <!-- Top Right Mini Legend & Cloud Logo -->
-        <mxCell id="top_legend_box" value="&lt;table style=&quot;font-size:8px;color:#334155;line-height:1.2;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;color:#10B981;&quot;&gt;🟩 Google Coder coding&lt;/td&gt;&lt;td style=&quot;padding-left:12px;color:#DC2626;&quot;&gt;🛑 Vulnerability&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;color:#F59E0B;&quot;&gt;🟨 Context authenticated&lt;/td&gt;&lt;td style=&quot;padding-left:12px;color:#2563EB;&quot;&gt;🛡️ Core&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;color:#475569;&quot;&gt;➡️ Secure and authenticated&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+        <mxCell id="top_legend_box" value="&lt;table style=&quot;font-size:8px;color:#334155;line-height:1.2;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;color:#10B981;&quot;&gt;🟩 Google Coder coding&lt;/td&gt;&lt;td style=&quot;padding-left:12px;color:#DC2626;&quot;&gt;🛑 Vulnerability&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;color:#F59E0B;&quot;&gt;🟨 Context authenticated&lt;/td&gt;&lt;td style=&quot;padding-left:12px;color:#2563EB;&quot;&gt;🛡️ Core&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;color:#475569;&quot;&gt;➡️ Secure and authenticated&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
           <mxGeometry x="960" y="8" width="280" height="46" as="geometry"/>
         </mxCell>
-        <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:28px;&quot;&gt;☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1255" y="10" width="40" height="40" as="geometry"/>
         </mxCell>
 
@@ -329,12 +329,7 @@
           <mxGeometry x="930" y="525" width="50" height="55" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e_sql_psc_gcs" value="&lt;span style=&quot;font-size:5px;color:#0F172A;font-weight:bold;&quot;&gt;Private Service&lt;br&gt;Connect&lt;/span&gt;" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="870" y="552" as="sourcePoint"/>
-            <mxPoint x="930" y="552" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
+        <mxCell id="e_sql_psc_gcs" value="&lt;span style=&quot;font-size:5px;color:#0F172A;font-weight:bold;&quot;&gt;Private Service&lt;br&gt;Connect&lt;/span&gt;" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="card_cloudsql" target="card_gcs"/>
 
         <!-- Connectors External LB -> Subnets -->
         <mxCell id="e_extlb_mgmt" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">

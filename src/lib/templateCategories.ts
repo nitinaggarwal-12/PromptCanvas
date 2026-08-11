@@ -544,20 +544,29 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "secure_deployment_map",
-    name: "Secure Deployment Topology Map",
+    name: "P4-SEC-P-01: Secure Deployment Topology Map",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
-    badge: "Security Standard",
-    whenToUse: "Use when mapping out physical network security perimeters, demilitarized zones (DMZ), private application subnets, and isolated database clusters.",
+    badge: "Canonical Master (P4-SEC-P-01)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for end-to-end secure software supply chain architecture on Google Cloud Platform integrating Developer Workstations (Gemini Code Assist), Cloud Build CI/CD gating (SBOM, SAST, DAST), Artifact Registry with Binary Authorization signing, Cloud Deploy, and Production VPC with GKE mTLS, Cloud SQL via PSC, and Security Command Center.",
     bestFor: [
-      "DMZ & Perimeter network isolation",
-      "Private application and data subnets",
-      "VPC Service Controls & IAM boundary policies",
-      "Private Service Connect (PSC) endpoint routing"
+      "P4-SEC-P-01 Canonical Master Blueprint (Platform Engineering Phase)",
+      "Developer check-in with Gemini Code Assist AI IDE Copilot",
+      "Cloud Build CI/CD secure pipeline with Container Build & SBOM Creation",
+      "Gemini-Assisted Static Scan (SAST) & Dynamic Analysis (DAST)",
+      "Artifact Registry with Software Composition Analysis (SCA) & Binary Authorization signing",
+      "Cloud Deploy promotion to Development, Staging, and Production",
+      "Production VPC with External Load Balancer protected by Cloud Armor WAF",
+      "Management Subnet with Bastion Host & Identity-Aware Proxy (IAP)",
+      "GKE Production Cluster Subnet with mTLS encrypted GE App microservices",
+      "Data Subnet with Cloud SQL & Cloud Storage via Private Service Connect",
+      "Security Command Center (SCC) with Gemini-driven threat analysis & Assured Workloads"
     ],
-    keyTech: ["WAF Gateway", "VPC Subnets", "Private Service Connect", "IAM RBAC", "VPC-SC", "Isolated Pods"],
+    keyTech: ["Gemini Code Assist", "Cloud Build", "Artifact Registry", "Binary Authorization", "Cloud Deploy", "Cloud Armor WAF", "GKE Autopilot", "Private Service Connect", "Security Command Center"],
     thumbnail: "/templates/secure_deployment_map.png",
-    promptSummary: "Secure Deployment Map: Edge Ingress Zone -> Private Application Subnet -> Isolated Data Subnet -> VPC-SC Perimeter."
+    promptSummary: "Secure Deployment Topology Map: Gemini Code Assist -> Cloud Build CI/CD Gating -> Artifact Registry & Binary Auth -> Cloud Deploy -> Production VPC with GKE mTLS & Security Command Center."
   },
 
   // =========================================================================
