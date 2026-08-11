@@ -418,7 +418,7 @@ function WorkspaceContent() {
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const bp = params.get('blueprint') || params.get('arch');
+      const bp = params.get('blueprint') || params.get('arch') || params.get('template');
       if (bp) {
         const title = getTemplateTitle(bp);
         const xml = getDefaultXmlForArchitecture(bp);
