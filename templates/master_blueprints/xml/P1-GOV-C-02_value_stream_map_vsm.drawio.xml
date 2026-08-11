@@ -1,0 +1,298 @@
+<mxfile host="app.diagrams.net" modified="2026-08-10T16:00:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
+  <diagram id="vsm_ai_architecture_delivery" name="WBS 1.2.1: Enterprise AI Architecture &amp; Delivery Value Stream Map (VSM)">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- CANVAS BACKGROUND FRAME -->
+        <mxCell id="frame_vsm" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1560" height="920" as="geometry" />
+        </mxCell>
+
+        <!-- TOP TITLE & BANNER -->
+        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:15px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;WBS 1.2.1: Enterprise AI Architecture &amp; Delivery Value Stream Map (VSM)&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:normal;&quot;&gt;(Executive &amp; Business Strategy / Flow Efficiency Category)&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="15" width="560" height="52" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hdr_box_right" value="&lt;div style=&quot;font-size:11.5px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;line-height:1.4;&quot;&gt;&lt;b style=&quot;color:#0284C7;&quot;&gt;Scope:&lt;/b&gt; Prompt-to-Production Lifecycle &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#0284C7;&quot;&gt;Current LT:&lt;/b&gt; 5.4h &amp;rarr; &lt;b style=&quot;color:#16A34A;&quot;&gt;Target:&lt;/b&gt; 35m &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#0284C7;&quot;&gt;Flow Efficiency:&lt;/b&gt; 20.4% &amp;rarr; &lt;b style=&quot;color:#16A34A;&quot;&gt;78.5%&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;background:#E0F2FE;color:#0369A1;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:10px;&quot;&gt;DORA High Performer&lt;/span&gt; &lt;span style=&quot;background:#DCFCE7;color:#15803D;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:10px;&quot;&gt;ISO 9001 &amp; SOC 2 Certified&lt;/span&gt; &lt;span style=&quot;background:#FEF3C7;color:#B45309;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:10px;&quot;&gt;21 CFR Part 11 Audit Trail&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;fillColor=#F8FAFC;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="600" y="15" width="650" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- GCAF METADATA TABLE -->
+        <mxCell id="gcaf_table" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#F1F5F9;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;border-bottom:1px solid #CBD5E1;&quot;&gt;GCAF Pillar:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;border-bottom:1px solid #CBD5E1;&quot;&gt;Operational Excellence&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;border-bottom:1px solid #CBD5E1;&quot;&gt;Architecture State:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;border-bottom:1px solid #CBD5E1;&quot;&gt;Current vs Future State&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F1F5F9;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;border-bottom:1px solid #CBD5E1;&quot;&gt;Target Audience:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;border-bottom:1px solid #CBD5E1;&quot;&gt;C-Suite, VP Eng, ARB Leads&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Blueprint ID:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;value_stream_map&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="15" width="270" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- TOP SECTION: INFORMATION & GOVERNANCE FLOW PLANE (Y: 78 to Y: 215) -->
+        <!-- ========================================================================= -->
+        <mxCell id="tab_top_plane" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Information&lt;br&gt;&amp; Control&lt;br&gt;Plane&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="78" width="50" height="135" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cont_top_plane" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="78" width="1470" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Top Entity 1: Business & Customer Demand -->
+        <mxCell id="node_customer_demand" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:building-2.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Business Stakeholders&lt;br&gt;&amp; Product Owners&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;(Architecture Inquiries: 45/mo)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="90" y="90" width="190" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Top Entity 2: Enterprise Portfolio Steering & Backlog (Jira / Agile) -->
+        <mxCell id="node_portfolio_steering" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:jira.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Enterprise Architecture Steering&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#0284C7;font-weight:bold;&quot;&gt;Jira Align / Strategic Backlog&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Prioritization &amp; GCAF Guardrail Dispatch&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="450" y="90" width="280" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Top Entity 3: Architecture Review Board (ARB) & CISO Governance -->
+        <mxCell id="node_arb_governance" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Architecture Review Board (ARB)&lt;br&gt;&amp; CISO Security Committee&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#15803D;font-weight:bold;&quot;&gt;Weekly Synchronous Review Gate&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="870" y="90" width="270" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Top Entity 4: SRE & Production Telemetry Feedback -->
+        <mxCell id="node_sre_feedback" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:datadog.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Enterprise SRE Operations&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#7C3AED;font-weight:bold;&quot;&gt;Datadog / Looker Telemetry&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;SLO Drift &amp; Capacity Alerts&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="90" width="250" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Information Flow Arrows -->
+        <mxCell id="edge_info_1" value="Monthly Feature&lt;br&gt;Demands (Forecast)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;fontColor=#0369A1;fontSize=10;align=center;" edge="1" parent="1" source="node_customer_demand" target="node_portfolio_steering">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_info_2" value="Bi-Weekly Sprint&lt;br&gt;Commitments" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;fontColor=#0369A1;fontSize=10;align=center;" edge="1" parent="1" source="node_portfolio_steering" target="node_arb_governance">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_info_3" value="Continuous Telemetry&lt;br&gt;&amp; Incident Postmortems" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;fontColor=#6D28D9;fontSize=10;align=center;" edge="1" parent="1" source="node_sre_feedback" target="node_arb_governance">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Downward Information Flow to Pipeline Stages -->
+        <mxCell id="edge_info_down1" value="Sprint Backlog" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;fontColor=#0284C7;fontSize=9.5;align=center;" edge="1" parent="1" source="node_portfolio_steering" target="stage1_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="215" />
+              <mxPoint x="180" y="215" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge_info_down2" value="ARB Policies &amp; Risk Rules" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;dashed=1;fontColor=#15803D;fontSize=9.5;align=center;" edge="1" parent="1" source="node_arb_governance" target="stage4_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- CORE VALUE STREAM PIPELINE (STAGES 1 TO 5) (Y: 230 to Y: 630) -->
+        <!-- ========================================================================= -->
+        <mxCell id="tab_vsm_pipeline" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Execution&lt;br&gt;Value&lt;br&gt;Stream&lt;br&gt;Pipeline&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="230" width="50" height="395" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cont_vsm_pipeline" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="230" width="1470" height="395" as="geometry" />
+        </mxCell>
+
+        <!-- STAGE 1: PROMPT & REQUIREMENTS INGESTION -->
+        <mxCell id="stage1_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#F1F5F9;padding:6px;border-bottom:1px solid #CBD5E1;&quot;&gt;STAGE 1: Prompt Ingestion&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;&amp; Context Enrichment&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; Natural Language Prompt&lt;br&gt;&amp;bull; GCAF Pillar &amp; Target Cloud&lt;br&gt;&amp;bull; Compliance Rules (HIPAA/GxP)&lt;br&gt;&amp;bull; Existing Arch Repo Linking&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="85" y="250" width="190" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 1 Data Box -->
+        <mxCell id="stage1_databox" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#E2E8F0;&quot;&gt;&lt;td colspan=&quot;2&quot; style=&quot;padding:3px;font-weight:bold;text-align:center;border-bottom:1px solid #94A3B8;&quot;&gt;Stage 1 VSM Metrics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Process Time (PT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#0284C7;font-weight:bold;&quot;&gt;5 min&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Lead Time (LT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;font-weight:bold;&quot;&gt;15 min&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;% Complete &amp; Acc:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#16A34A;font-weight:bold;&quot;&gt;94%&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Operator / Staff:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;&quot;&gt;1 Architect&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Batch Size:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;&quot;&gt;Single Unit (1)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="400" width="190" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Queue 1 (Inventory Triangle) -->
+        <mxCell id="queue_1" value="&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;&amp;#9650;&lt;br&gt;10 min&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Queue (WIP=2)&lt;/span&gt;&lt;/b&gt;" style="shape=triangle;direction=north;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="290" y="280" width="40" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Push Arrow 1 -->
+        <mxCell id="edge_push_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=2;" edge="1" parent="1" source="stage1_box" target="stage2_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- STAGE 2: PROMPTCANVAS GEMINI 3.1 PRO COMPILATION -->
+        <mxCell id="stage2_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#E0F2FE;padding:6px;border-bottom:1px solid #7DD3FC;&quot;&gt;STAGE 2: AI Spec Compilation&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#0369A1;font-weight:bold;&quot;&gt;Gemini 3.1 Pro + 2D Collision Healing&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; AST Graph Spec Generation&lt;br&gt;&amp;bull; 2D Bounding Box Collision Fix&lt;br&gt;&amp;bull; Draw.io XML Synthesis&lt;br&gt;&amp;bull; 6-Point Preflight Healing&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="345" y="250" width="195" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 2 Data Box -->
+        <mxCell id="stage2_databox" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#BAE6FD;&quot;&gt;&lt;td colspan=&quot;2&quot; style=&quot;padding:3px;font-weight:bold;text-align:center;border-bottom:1px solid #0284C7;&quot;&gt;Stage 2 VSM Metrics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Process Time (PT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#0284C7;font-weight:bold;&quot;&gt;12 sec&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Lead Time (LT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;font-weight:bold;&quot;&gt;45 sec&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;% Complete &amp; Acc:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#16A34A;font-weight:bold;&quot;&gt;99%&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Operator / Engine:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;font-weight:bold;color:#0284C7;&quot;&gt;Gemini 3.1 Pro&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Availability:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;&quot;&gt;99.99% Cloud API&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="345" y="400" width="195" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Kaizen Burst 1 -->
+        <mxCell id="kaizen_1" value="&lt;b style=&quot;font-size:10px;color:#9A3412;&quot;&gt;KAIZEN 1&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#431407;font-weight:normal;&quot;&gt;Autonomous AST Healing&lt;br&gt;eliminates 100% manual&lt;br&gt;XML coordinate bug fixes&lt;/span&gt;&lt;/b&gt;" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="525" width="165" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Queue 2 (Inventory Triangle) -->
+        <mxCell id="queue_2" value="&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;&amp;#9650;&lt;br&gt;1.2 hr&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Queue (WIP=5)&lt;/span&gt;&lt;/b&gt;" style="shape=triangle;direction=north;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="555" y="280" width="40" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Push Arrow 2 -->
+        <mxCell id="edge_push_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=2;" edge="1" parent="1" source="stage2_box" target="stage3_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- STAGE 3: SECURITY, FINOPS & TRiSM EVALUATION -->
+        <mxCell id="stage3_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#FEF3C7;padding:6px;border-bottom:1px solid #FDE68A;&quot;&gt;STAGE 3: Security &amp; FinOps&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#B45309;font-weight:bold;&quot;&gt;AI TRiSM &amp; Cost Estimation Gate&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; AI TRiSM Prompt Shield Scan&lt;br&gt;&amp;bull; VPC-SC Perimeter Verification&lt;br&gt;&amp;bull; BigQuery/GKE FinOps Forecast&lt;br&gt;&amp;bull; Automated SAST Audit Pass&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="610" y="250" width="195" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 3 Data Box -->
+        <mxCell id="stage3_databox" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#FDE68A;&quot;&gt;&lt;td colspan=&quot;2&quot; style=&quot;padding:3px;font-weight:bold;text-align:center;border-bottom:1px solid #D97706;&quot;&gt;Stage 3 VSM Metrics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Process Time (PT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#0284C7;font-weight:bold;&quot;&gt;15 min&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Lead Time (LT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;font-weight:bold;&quot;&gt;1.5 hr&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;% Complete &amp; Acc:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#16A34A;font-weight:bold;&quot;&gt;91%&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Staff:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;&quot;&gt;SecOps / FinOps Lead&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Automation Ratio:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#16A34A;font-weight:bold;&quot;&gt;85% Automated&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="400" width="195" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Kaizen Burst 2 -->
+        <mxCell id="kaizen_2" value="&lt;b style=&quot;font-size:10px;color:#9A3412;&quot;&gt;KAIZEN 2&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#431407;font-weight:normal;&quot;&gt;Policy-as-Code (OPA)&lt;br&gt;reduces SecOps sign-off&lt;br&gt;backlog from 2 days to 15m&lt;/span&gt;&lt;/b&gt;" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="625" y="525" width="165" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Queue 3 (Inventory Triangle) -->
+        <mxCell id="queue_3" value="&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;&amp;#9650;&lt;br&gt;2.5 hr&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Queue (WIP=8)&lt;/span&gt;&lt;/b&gt;" style="shape=triangle;direction=north;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="820" y="280" width="40" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Push Arrow 3 -->
+        <mxCell id="edge_push_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=2;" edge="1" parent="1" source="stage3_box" target="stage4_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- STAGE 4: ARB & HITL GOVERNANCE SIGN-OFF -->
+        <mxCell id="stage4_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#DCFCE7;padding:6px;border-bottom:1px solid #86EFAC;&quot;&gt;STAGE 4: ARB &amp; HITL Sign-Off&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#15803D;font-weight:bold;&quot;&gt;21 CFR Part 11 Cryptographic E-Sign&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; Multi-Tier Confidence Routing&lt;br&gt;&amp;bull; Fast Path (&gt;=95%) vs HITL (&lt;75%)&lt;br&gt;&amp;bull; ARB Review &amp; Risk Sign-Off&lt;br&gt;&amp;bull; Immutable Audit Trail Stamp&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="875" y="250" width="195" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 4 Data Box -->
+        <mxCell id="stage4_databox" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#BBF7D0;&quot;&gt;&lt;td colspan=&quot;2&quot; style=&quot;padding:3px;font-weight:bold;text-align:center;border-bottom:1px solid #16A34A;&quot;&gt;Stage 4 VSM Metrics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Process Time (PT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#0284C7;font-weight:bold;&quot;&gt;25 min&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Lead Time (LT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;font-weight:bold;&quot;&gt;3.0 hr&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;% Complete &amp; Acc:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#16A34A;font-weight:bold;&quot;&gt;88%&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Governance Body:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;&quot;&gt;ARB Lead &amp; CISO&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Compliance Gate:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#15803D;font-weight:bold;&quot;&gt;21 CFR Part 11 Pass&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="875" y="400" width="195" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Kaizen Burst 3 -->
+        <mxCell id="kaizen_3" value="&lt;b style=&quot;font-size:10px;color:#9A3412;&quot;&gt;KAIZEN 3&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#431407;font-weight:normal;&quot;&gt;Pre-Certified GCAF Blueprint&lt;br&gt;Fast-Path bypasses manual&lt;br&gt;weekly ARB committee backlog&lt;/span&gt;&lt;/b&gt;" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="525" width="165" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Queue 4 (Inventory Triangle) -->
+        <mxCell id="queue_4" value="&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;&amp;#9650;&lt;br&gt;30 min&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Queue (WIP=1)&lt;/span&gt;&lt;/b&gt;" style="shape=triangle;direction=north;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=bottom;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1085" y="280" width="40" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Push Arrow 4 -->
+        <mxCell id="edge_push_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=2;" edge="1" parent="1" source="stage4_box" target="stage5_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- STAGE 5: GITOPS IAC GENERATION & PROVISIONING -->
+        <mxCell id="stage5_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#F3E8FF;padding:6px;border-bottom:1px solid #D8B4FE;&quot;&gt;STAGE 5: GitOps CI/CD&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7C3AED;font-weight:bold;&quot;&gt;Automated Terraform &amp; GKE Deployment&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; Terraform/Pulumi HCL Synthesis&lt;br&gt;&amp;bull; Polyrepo Git Branch &amp; PR&lt;br&gt;&amp;bull; Cloud Build Canary Pipeline&lt;br&gt;&amp;bull; Automated Blue/Green Rollout&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="250" width="195" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 5 Data Box -->
+        <mxCell id="stage5_databox" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#E9D5FF;&quot;&gt;&lt;td colspan=&quot;2&quot; style=&quot;padding:3px;font-weight:bold;text-align:center;border-bottom:1px solid #7C3AED;&quot;&gt;Stage 5 VSM Metrics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Process Time (PT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#0284C7;font-weight:bold;&quot;&gt;20 min&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Lead Time (LT):&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;font-weight:bold;&quot;&gt;45 min&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;% Complete &amp; Acc:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#16A34A;font-weight:bold;&quot;&gt;99.5%&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;IaC Engine:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;&quot;&gt;Terraform Cloud&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;&quot;&gt;Deployment Target:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;text-align:right;color:#7C3AED;font-weight:bold;&quot;&gt;GCP GKE / Cloud Run&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="400" width="195" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Push Arrow 5 -->
+        <mxCell id="edge_push_5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=2;" edge="1" parent="1" source="stage5_box" target="node_sre_feedback">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1355" y="317" />
+              <mxPoint x="1355" y="145" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ========================================================================= -->
+        <!-- BOTTOM SECTION: LEAD TIME & PROCESS TIME TIMELINE LADDER (Y: 645 to Y: 890) -->
+        <!-- ========================================================================= -->
+        <mxCell id="tab_timeline" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Lead Time&lt;br&gt;&amp; Flow&lt;br&gt;Ladder&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="645" width="50" height="245" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cont_timeline" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="645" width="1470" height="245" as="geometry" />
+        </mxCell>
+
+        <!-- Sawtooth Waveform Steps -->
+        <mxCell id="step_pt1" value="&lt;b style=&quot;font-size:10px;color:#0284C7;&quot;&gt;PT: 5m&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="700" width="190" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_wait1" value="&lt;b style=&quot;font-size:9.5px;color:#DC2626;&quot;&gt;Wait: 10m&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="275" y="660" width="70" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_pt2" value="&lt;b style=&quot;font-size:10px;color:#0284C7;&quot;&gt;PT: 12s&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="345" y="700" width="195" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_wait2" value="&lt;b style=&quot;font-size:9.5px;color:#DC2626;&quot;&gt;Wait: 1.2 hr&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="540" y="660" width="70" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_pt3" value="&lt;b style=&quot;font-size:10px;color:#0284C7;&quot;&gt;PT: 15m&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="700" width="195" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_wait3" value="&lt;b style=&quot;font-size:9.5px;color:#DC2626;&quot;&gt;Wait: 2.5 hr&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="805" y="660" width="70" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_pt4" value="&lt;b style=&quot;font-size:10px;color:#0284C7;&quot;&gt;PT: 25m&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="875" y="700" width="195" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_wait4" value="&lt;b style=&quot;font-size:9.5px;color:#DC2626;&quot;&gt;Wait: 30m&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="660" width="70" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_pt5" value="&lt;b style=&quot;font-size:10px;color:#0284C7;&quot;&gt;PT: 20m&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="700" width="195" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Connecting Ladder Lines -->
+        <mxCell id="line_step_1" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;" edge="1" parent="1" source="step_pt1" target="step_wait1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_step_2" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;" edge="1" parent="1" source="step_wait1" target="step_pt2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_step_3" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;" edge="1" parent="1" source="step_pt2" target="step_wait2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_step_4" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;" edge="1" parent="1" source="step_wait2" target="step_pt3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_step_5" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;" edge="1" parent="1" source="step_pt3" target="step_wait3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_step_6" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;" edge="1" parent="1" source="step_wait3" target="step_pt4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_step_7" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;" edge="1" parent="1" source="step_pt4" target="step_wait4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_step_8" value="" style="edgeStyle=none;html=1;strokeColor=#64748B;strokeWidth=1.5;" edge="1" parent="1" source="step_wait4" target="step_pt5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- SUMMARY METRICS ROLLUP CARD (Bottom Left) -->
+        <mxCell id="card_vsm_summary" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#0F172A;color:#FFFFFF;&quot;&gt;&lt;td colspan=&quot;2&quot; style=&quot;padding:5px;font-weight:bold;text-align:center;&quot;&gt;Value Stream Executive Summary&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px 6px;font-weight:bold;border-bottom:1px solid #E2E8F0;&quot;&gt;Total Lead Time (LT):&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;text-align:right;font-weight:bold;color:#DC2626;border-bottom:1px solid #E2E8F0;&quot;&gt;5.4 Hours (324 min)&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:3px 6px;font-weight:bold;border-bottom:1px solid #E2E8F0;&quot;&gt;Value-Add Process Time (PT):&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;text-align:right;font-weight:bold;color:#0284C7;border-bottom:1px solid #E2E8F0;&quot;&gt;1.1 Hours (65.2 min)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px 6px;font-weight:bold;border-bottom:1px solid #E2E8F0;&quot;&gt;Non-Value-Add Waiting Time:&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;text-align:right;font-weight:bold;border-bottom:1px solid #E2E8F0;&quot;&gt;4.3 Hours (258 min)&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:3px 6px;font-weight:bold;border-bottom:1px solid #E2E8F0;&quot;&gt;Current Flow Efficiency:&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;text-align:right;font-weight:bold;color:#D97706;border-bottom:1px solid #E2E8F0;&quot;&gt;20.1% (PT / LT)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px 6px;font-weight:bold;border-bottom:1px solid #E2E8F0;&quot;&gt;Rolled First-Pass Yield (RTY):&lt;/td&gt;&lt;td style=&quot;padding:3px 6px;text-align:right;font-weight:bold;color:#16A34A;border-bottom:1px solid #E2E8F0;&quot;&gt;75.8% (Multiplied %C/A)&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#DCFCE7;&quot;&gt;&lt;td style=&quot;padding:4px 6px;font-weight:bold;color:#15803D;&quot;&gt;Target Post-Kaizen Flow Efficiency:&lt;/td&gt;&lt;td style=&quot;padding:4px 6px;text-align:right;font-weight:bold;color:#15803D;&quot;&gt;78.5% (&lt; 35 min total LT)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="750" width="580" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- VSM LEGEND & SYMBOLS -->
+        <mxCell id="vsm_legend" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#F1F5F9;&quot;&gt;&lt;td colspan=&quot;4&quot; style=&quot;padding:3px 6px;font-weight:bold;text-align:center;border-bottom:1px solid #CBD5E1;&quot;&gt;VSM Symbology &amp; Legend&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#0284C7;&quot;&gt;&amp;#9632; Process Box:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Value-Add Activity&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#EF4444;&quot;&gt;&amp;#9650; Triangle:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Inventory / Queue Time&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#EA580C;&quot;&gt;&amp;#11044; Kaizen Burst:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Opportunity / Target&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#0284C7;&quot;&gt;&amp;dash;&amp;dash;&gt; Dashed Line:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Information &amp; Control Flow&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#475569;&quot;&gt;&amp;rarr; Solid Line:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Material / Artifact Push&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#16A34A;&quot;&gt;%C/A:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Percent Complete &amp; Accurate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="700" y="750" width="820" height="130" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,241 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="eval_safety_redteaming" name="Applied GKE-based AI Safety &amp; Red-Teaming Continuous Pipeline (WBS 4.3.2)">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1460" pageHeight="680" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- 1. TOP HEADER BANNER -->
+        <mxCell id="top_banner" value="&lt;b style=&quot;font-size:14px;letter-spacing:0.3px;color:#FFFFFF;&quot;&gt;Applied GKE-based AI Safety &amp;amp; Red-Teaming Continuous Pipeline (WBS 4.3.2)&lt;/b&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#2563EB;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="175" y="15" width="970" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. LEFT SIDE INPUTS &amp; ACTORS (x = 20 .. 155) -->
+        <!-- Stack Card 1: Input Prompts -->
+        <mxCell id="card_input_prompts_bg" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="25" y="112" width="125" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_input_prompts" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Input General&lt;br&gt;model prompts&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="115" width="125" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- Stack Card 2: Logging Sensor -->
+        <mxCell id="card_sensor_bg" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="25" y="242" width="125" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_sensor" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;📡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;font-weight:bold;color:#0F172A;&quot;&gt;Logging Sensor&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="245" width="125" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona: Red-Team Pen Tester (Left Outer) -->
+        <mxCell id="persona_hacker_avatar" value="🥷" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontSize=26;align=center;verticalAlign=middle;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="55" y="415" width="50" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="persona_hacker_text" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Red-Team Pen Tester&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Fuzzer Implementation&lt;br&gt;(Atheris), Vulnerability&lt;br&gt;Research, Advanced&lt;br&gt;Campaign Execution.&lt;br&gt;&lt;i style=&quot;color:#2563EB;&quot;&gt;(Keep GSP-Verified)&lt;/i&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="15" y="470" width="135" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. MAIN BLUE CONTAINER FRAME (x = 175 .. 1145, y = 55 .. 585) -->
+        <mxCell id="main_blue_frame" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="175" y="55" width="970" height="530" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== COLUMN 1: INPUT TRIAGE &amp; FUZZING (x = 190 .. 475) ==================== -->
+        <mxCell id="col1_box" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="190" y="65" width="285" height="435" as="geometry"/>
+        </mxCell>
+        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#FFFFFF;&quot;&gt;1. Input Triage &amp;amp; Fuzzing (GKE Workloads)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="190" y="65" width="285" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 1.1: GKE Fuzzing Service -->
+        <mxCell id="card_fuzzing" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;🐳&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GKE-based Adversarial Fuzzing Service&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#334155;&quot;&gt;Dockerized Atheris-based Custom Fuzzer (Atheris 1.1). Mutate clean prompts, run continuous campaigns on GKE.&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Inputs:&lt;/b&gt; Clear Prompts, Known Vulnerabilities&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Processing:&lt;/b&gt; Mutate &amp;amp; test on target LLM endpoint&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Outputs:&lt;/b&gt; Fuzzed Prompts, Vulnerability Reports.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="198" y="95" width="268" height="98" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 1.2: GKE Model Armor Service -->
+        <mxCell id="card_armor" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;🛡️&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GKE-based Model Armor Service&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#334155;&quot;&gt;(Envoy with Custom WASM filters) filters are config-driven via GKE ConfigMaps.&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Input:&lt;/b&gt; Fuzzed/Adversarial Prompts&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Processing:&lt;/b&gt; Regex PII filter, Hugging Face Toxicity filter (RoBERTa-based), custom Jailbreak Detection logic.&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Output:&lt;/b&gt; Cleaned Prompts, Blocked Input logs.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="198" y="202" width="268" height="122" as="geometry"/>
+        </mxCell>
+
+        <!-- Sub-Pill inside Model Armor: Target LLM Service Pod -->
+        <mxCell id="pill_target_llm" value="&lt;span style=&quot;font-size:7.5px;font-weight:bold;color:#1E40AF;&quot;&gt;Target LLM Service Pod (Hugging Face T5/Llama 2 via Vertex Endpoint)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="204" y="298" width="256" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 1.3: Shadow Canary Gateway -->
+        <mxCell id="card_canary" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;🚦&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Shadow Canary Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#334155;&quot;&gt;(Envoy Traffic Director Service Mesh)&lt;br&gt;Shadow Traffic from &#39;Customer Application Ingress&#39; (Production Mirror) -&amp;gt; A/B test target model with canary ruleset.&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Metrics:&lt;/b&gt; Compare Toxicity rate, Latency, Factuality. Connect with GCP Traffic Director.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="198" y="335" width="268" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- ConfigMaps Box placed cleanly between col1 and col2 -->
+        <mxCell id="box_configmaps" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;📋&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#1E40AF;&quot;&gt;ConfigMaps:&lt;br&gt;&#39;model-armor-rules.yaml&#39;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="400" y="275" width="105" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== COLUMN 2: AGENTIC ORCHESTRATION (x = 520 .. 760) ==================== -->
+        <mxCell id="col2_box" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="520" y="65" width="240" height="260" as="geometry"/>
+        </mxCell>
+        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:10px;color:#FFFFFF;&quot;&gt;2. Agentic Orchestration &amp;amp; Deployment Control&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#16A34A;strokeColor=#15803D;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="65" width="240" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 2.1: Agentic Orchestrator Service -->
+        <mxCell id="card_orchestrator" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:22px;vertical-align:top;font-size:16px;&quot;&gt;🤖&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Agentic Orchestrator Service&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#15803D;font-weight:bold;&quot;&gt;(Vertex AI Agents Pod)&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#15803D;&quot;&gt;Input:&lt;/b&gt; Fuzzer Logs, Model Armor block logs, Canary metrics, Drift alerts&lt;br&gt;&lt;b style=&quot;color:#15803D;&quot;&gt;Processing:&lt;/b&gt; Agent Triage &amp;amp; Action&lt;br&gt;• Analyze attack patterns&lt;br&gt;• Cross-reference fuzzer results with current filters&lt;br&gt;• Autonomously mutate filtering rulesets&lt;br&gt;• Update ConfigMaps via Kubernetes API&lt;br&gt;• Trigger pre-deployment evaluation.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="528" y="95" width="224" height="220" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 2.2: GCP Cloud Deploy -->
+        <mxCell id="card_deploy" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;🚀&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GCP Cloud Deploy&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#2563EB;font-weight:bold;&quot;&gt;(Pre-deployment Gate)&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Input:&lt;/b&gt; Agent-approved model/config.&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Processing:&lt;/b&gt; Automated safety benchmarks before production rollout.&lt;br&gt;&lt;b style=&quot;color:#1E40AF;&quot;&gt;Output:&lt;/b&gt; Verified deployment manifest.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="528" y="345" width="224" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== COLUMN 3: CONTINUOUS EVALUATION &amp; COMPLIANCE (x = 780 .. 1135) ==================== -->
+        <mxCell id="col3_box" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="780" y="65" width="355" height="435" as="geometry"/>
+        </mxCell>
+        <mxCell id="col3_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#FFFFFF;&quot;&gt;3. Continuous Evaluation &amp;amp; Compliance Vault (Vertex &amp;amp; BigQuery)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EA580C;strokeColor=#C2410C;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="780" y="65" width="355" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 3.1: Vertex AI Model Evaluation Service -->
+        <mxCell id="card_eval_service" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;⚖️&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Vertex AI Model Evaluation Service&lt;/b&gt; &lt;span style=&quot;color:#EA580C;font-weight:bold;&quot;&gt;(Vertex Jobs)&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#C2410C;&quot;&gt;Input:&lt;/b&gt; Benchmarking Datasets (BOLD 1.2, TruthfulQA 1.5, custom Red-Team set)&lt;br&gt;• Model-as-a-Judge Eval (Gemini 1.5 Pro)&lt;br&gt;• Trulens/RAGAS evaluation (v0.2/v0.3 deployed on GKE)&lt;br&gt;&lt;b style=&quot;color:#C2410C;&quot;&gt;Processing:&lt;/b&gt; Run Constitutional AI checks (Helpfulness, Safety, Tone), RAG factuality&lt;br&gt;&lt;b style=&quot;color:#C2410C;&quot;&gt;Output:&lt;/b&gt; Scorecards, Signed audit reports.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="788" y="95" width="338" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- Sub-Badges inside Eval Service -->
+        <mxCell id="badge_gemini" value="&lt;span style=&quot;font-size:7.5px;font-weight:bold;color:#2563EB;&quot;&gt;Gemini Pro&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="796" y="182" width="68" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_trulens" value="&lt;span style=&quot;font-size:7.5px;font-weight:bold;color:#059669;&quot;&gt;Trulens&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="870" y="182" width="62" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_ragas" value="&lt;span style=&quot;font-size:7.5px;font-weight:bold;color:#DC2626;&quot;&gt;RAGAS&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="938" y="182" width="62" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_gcs_store" value="&lt;span style=&quot;font-size:7px;font-weight:bold;color:#1E40AF;&quot;&gt;🛢️ GCS Benchmark Store&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1006" y="182" width="115" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 3.2: Immutable Safety Compliance Vault (BigQuery) -->
+        <mxCell id="card_bq_vault" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;🗄️&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Immutable Safety Compliance Vault&lt;/b&gt; &lt;span style=&quot;color:#0284C7;font-weight:bold;&quot;&gt;(BigQuery)&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;color:#0284C7;&quot;&gt;Tables:&lt;/b&gt; &#39;redteam_attack_logs&#39;, &#39;eval_scorecards&#39;, &#39;config_changes&#39;, &#39;signed_certificates&#39;&lt;br&gt;&lt;b style=&quot;color:#0284C7;&quot;&gt;Input:&lt;/b&gt; Cloud Logging, Vertex AI Evaluation job&lt;br&gt;&lt;b style=&quot;color:#0284C7;&quot;&gt;Processing:&lt;/b&gt; Storage and querying of all safety-related events.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="788" y="222" width="338" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Card 3.3: GCP Dataplex &amp; Vertex Monitoring Pod -->
+        <mxCell id="card_dataplex_pod" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:8px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;vertical-align:top;font-size:18px;&quot;&gt;📊&lt;/td&gt;&lt;td style=&quot;vertical-align:top;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GCP Dataplex &amp;amp; Vertex Monitoring Pod&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Input:&lt;/b&gt; Production traffic stream.&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Processing:&lt;/b&gt; Semantic drift detection, Output safety regression check.&lt;br&gt;&lt;b style=&quot;color:#64748B;&quot;&gt;Output:&lt;/b&gt; Alert Agentic Orchestrator.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="788" y="320" width="338" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== CONNECTORS &amp; EDGES WITH EXPLICIT CLEAN ROUTING ==================== -->
+        <!-- Prompts -> Fuzzer -->
+        <mxCell id="e_prompts_fuzz" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_input_prompts" target="card_fuzzing">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Sensor -> Armor -->
+        <mxCell id="e_sensor_armor" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_sensor" target="card_armor">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Fuzzer -> Armor (Down) -->
+        <mxCell id="e_fuzz_armor" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="card_fuzzing" target="card_armor">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Fuzzer -> Orchestrator (Top Right) -->
+        <mxCell id="e_fuzz_orch" value="Dockerized Fuzzer Output -&gt; Triage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontSize=7.5;fontStyle=1;exitX=1;exitY=0.5;entryX=0;entryY=0.25;" edge="1" parent="1" source="card_fuzzing" target="card_orchestrator">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-5" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Armor -> Orchestrator (Agentic Triage) -->
+        <mxCell id="e_armor_orch" value="Agentic Triage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontSize=7.5;fontStyle=1;exitX=1;exitY=0.5;entryX=0;entryY=0.75;" edge="1" parent="1" source="card_armor" target="card_orchestrator">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-5" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Orchestrator -> Cloud Deploy (Agentic Action) -->
+        <mxCell id="e_orch_deploy" value="Agentic Action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontSize=7.5;fontStyle=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="card_orchestrator" target="card_deploy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Canary -> Cloud Deploy (Shadow Traffic) -->
+        <mxCell id="e_canary_deploy" value="Shadow Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontSize=7.5;fontStyle=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_canary" target="card_deploy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Orchestrator -> Compliance Vault (Compliance) -->
+        <mxCell id="e_orch_vault" value="Compliance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontSize=7.5;fontStyle=1;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" parent="1" source="card_orchestrator" target="card_eval_service">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== BOTTOM PERSONAS &amp; LEGEND (y = 510 .. 575) ==================== -->
+        <!-- Persona 1: AI Safety Lead -->
+        <mxCell id="p_lead_avatar" value="👩‍💼" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#2563EB;fontSize=22;align=center;verticalAlign=middle;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="380" y="515" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="p_lead_badge" value="&lt;span style=&quot;font-size:7.5px;color:#059669;font-weight:bold;&quot;&gt;✓ GSP Verified Role&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="428" y="515" width="95" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="p_lead_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;AI Safety Lead&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="428" y="534" width="95" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona 2: Red-Team Pen Tester -->
+        <mxCell id="p_tester_avatar" value="🥷" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontSize=22;align=center;verticalAlign=middle;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="545" y="515" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="p_tester_badge" value="&lt;span style=&quot;font-size:7.5px;color:#059669;font-weight:bold;&quot;&gt;✓ GSP Verified Role&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="593" y="515" width="95" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="p_tester_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Red-Team Pen Tester&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="593" y="534" width="105" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend Box (Bottom Right of Frame) -->
+        <mxCell id="box_legend" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7.5px;color:#0F172A;text-align:center;&quot;&gt;
+          &lt;tr&gt;&lt;td colspan=&quot;6&quot; style=&quot;font-weight:bold;text-align:left;padding-bottom:3px;font-size:8px;&quot;&gt;Legend&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td style=&quot;font-size:13px;&quot;&gt;➔&lt;/td&gt;
+            &lt;td style=&quot;font-size:13px;&quot;&gt;🛢️&lt;/td&gt;
+            &lt;td style=&quot;font-size:13px;&quot;&gt;👤&lt;/td&gt;
+            &lt;td style=&quot;font-size:13px;&quot;&gt;📋&lt;/td&gt;
+            &lt;td style=&quot;font-size:13px;&quot;&gt;🛡️&lt;/td&gt;
+            &lt;td style=&quot;font-size:13px;&quot;&gt;☁️&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr style=&quot;color:#475569;font-weight:bold;&quot;&gt;
+            &lt;td&gt;Evaluation Flow&lt;/td&gt;
+            &lt;td&gt;Benchmark Store&lt;/td&gt;
+            &lt;td&gt;Persona&lt;/td&gt;
+            &lt;td&gt;Audit &amp;amp; Metrics&lt;/td&gt;
+            &lt;td&gt;Safety Guard&lt;/td&gt;
+            &lt;td&gt;GCP Key&lt;/td&gt;
+          &lt;/tr&gt;
+        &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
+          <mxGeometry x="780" y="510" width="355" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. RIGHT SIDE CALLOUT BOX (x = 1165 .. 1435) -->
+        <mxCell id="box_callout" value="&lt;div style=&quot;font-size:10px;color:#0F172A;line-height:1.6;padding:10px;&quot;&gt;
+          &lt;p style=&quot;margin:0 0 16px 0;&quot;&gt;• &lt;b&gt;Verifiable pre-deployment scorecards&lt;/b&gt; and audit trails.&lt;/p&gt;
+          &lt;p style=&quot;margin:0 0 16px 0;&quot;&gt;• &lt;b&gt;Closed-loop, fast-propagation&lt;/b&gt; of new safety filters via Agent-driven ConfigMaps.&lt;/p&gt;
+          &lt;p style=&quot;margin:0 0 16px 0;&quot;&gt;• &lt;b&gt;GKE-based, Dockerized fuzzing&lt;/b&gt; allows continuous, on-demand attack campaigns.&lt;/p&gt;
+          &lt;p style=&quot;margin:0;&quot;&gt;• &lt;b&gt;Signed safety certificates&lt;/b&gt; for model compliance and external validation.&lt;/p&gt;
+        &lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="55" width="265" height="530" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

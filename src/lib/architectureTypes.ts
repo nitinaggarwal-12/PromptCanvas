@@ -316,6 +316,40 @@ export const ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
 export function normalizeArchitectureId(archId?: string | null): string {
   if (!archId) return 'conceptual_diagram';
   const id = archId.toLowerCase().trim();
+  // 32 Master WBS / Combined ID normalizers
+  if (id.startsWith('p1-app-l-01') || id === 'p1-app-l-01') return 'hybrid_strangler_transition';
+  if (id.startsWith('p1-gov-c-02') || id === 'p1-gov-c-02') return 'value_stream_map';
+  if (id.startsWith('p1-gov-c-03') || id === 'p1-gov-c-03') return 'asis_vs_tobe_process_flow';
+  if (id.startsWith('p2-gov-c-03') || id === 'p2-gov-c-03') return 'cloud_finops_chargeback';
+  if (id.startsWith('p3-app-c-01') || id === 'p3-app-c-01') return 'unified_system_view';
+  if (id.startsWith('p3-ai-l-02') || id === 'p3-ai-l-02') return 'agentic_rag';
+  if (id.startsWith('p3-ai-l-03') || id === 'p3-ai-l-03') return 'hub_and_spoke_agent_config';
+  if (id.startsWith('p3-dat-l-04') || id === 'p3-dat-l-04') return 'tech_data_lakehouse_gcp';
+  if (id.startsWith('p3-dat-l-05') || id === 'p3-dat-l-05') return 'erd';
+  if (id.startsWith('p3-dat-c-06') || id === 'p3-dat-c-06') return 'unified_data_governance';
+  if (id.startsWith('p3-sec-l-07') || id === 'p3-sec-l-07') return 'federated_iam_sso';
+  if (id.startsWith('p3-app-l-08') || id === 'p3-app-l-08') return 'tech_micro_frontends';
+  if (id.startsWith('p3-gov-l-09') || id === 'p3-gov-l-09') return 'logical_ai_config_tenant';
+  if (id.startsWith('p3-app-l-10') || id === 'p3-app-l-10') return 'sequence_diagram';
+  if (id.startsWith('p4-sec-p-01') || id === 'p4-sec-p-01') return 'secure_deployment_map';
+  if (id.startsWith('p4-sec-p-02') || id === 'p4-sec-p-02') return 'data_residency_sovereign_map';
+  if (id.startsWith('p4-ai-p-03') || id === 'p4-ai-p-03') return 'tech_agentic_mesh';
+  if (id.startsWith('p4-gov-l-04') || id === 'p4-gov-l-04') return 'tech_eval_safety';
+  if (id.startsWith('p4-gov-l-05') || id === 'p4-gov-l-05') return 'tech_ai_trism_guardrails';
+  if (id.startsWith('p4-gov-p-06') || id === 'p4-gov-p-06') return 'devops_cicd_pipeline';
+  if (id.startsWith('p4-app-l-07') || id === 'p4-app-l-07') return 'tech_event_driven_eda';
+  if (id.startsWith('p4-app-l-08') || id === 'p4-app-l-08') return 'tech_serverless_gcp';
+  if (id.startsWith('p4-dat-p-09') || id === 'p4-dat-p-09') return 'tech_genomics_clinical';
+  if (id.startsWith('p4-dat-p-10') || id === 'p4-dat-p-10') return 'tech_streaming_analytics';
+  if (id.startsWith('p5-app-l-01') || id === 'p5-app-l-01') return 'six_rs_migration_matrix';
+  if (id.startsWith('p5-sec-p-02') || id === 'p5-sec-p-02') return 'enterprise_sre_observability';
+  if (id.startsWith('p5-gov-p-03') || id === 'p5-gov-p-03') return 'golive_warroom_runbook';
+  if (id.startsWith('p5-gov-l-04') || id === 'p5-gov-l-04') return 'enterprise_sre_observability';
+  if (id.startsWith('p5-ai-l-05') || id === 'p5-ai-l-05') return 'ai_coe_operating_model';
+  if (id.startsWith('p5-ai-p-07') || id === 'p5-ai-p-07') return 'tech_eval_safety';
+  if (id.startsWith('p5-dat-p-08') || id === 'p5-dat-p-08') return 'dataops_anomaly_detection';
+  if (id.startsWith('p5-gov-p-09') || id === 'p5-gov-p-09') return 'tech_multi_region_dr';
+
   if (id === 'tech_cicd_pipeline' || id === 'tech_cicd') return 'devops_cicd_pipeline';
   if (id === 'business_agent_governance_hitl' || id === 'business_agent_gov_hitl') return 'tech_ai_trism_guardrails';
   if (id === 'tech_multi_agent_langgraph' || id === 'tech_agent_harness_runtime') return 'tech_agentic_mesh';

@@ -513,8 +513,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
 };
 
 export function getArchitectureMeta(archId?: string, promptText?: string, customUseCaseName?: string): ArchitectureMeta {
-  const baseMeta: ArchitectureMeta = (archId && ARCHITECTURE_METADATA_MAP[archId])
-    ? { ...ARCHITECTURE_METADATA_MAP[archId] }
+  const normId = archId ? archId.toLowerCase().trim() : '';
+  const resolvedKey = (archId && ARCHITECTURE_METADATA_MAP[archId])
+    ? archId
+    : Object.keys(ARCHITECTURE_METADATA_MAP).find(k => k.toLowerCase() === normId || (normId && k.includes(normId)) || (normId && normId.includes(k)));
+
+  const baseMeta: ArchitectureMeta = resolvedKey && ARCHITECTURE_METADATA_MAP[resolvedKey]
+    ? { ...ARCHITECTURE_METADATA_MAP[resolvedKey] }
     : {
         id: archId || "custom",
         title: archId ? archId.replace(/_/g, ' ').toUpperCase() : "CUSTOM ARCHITECTURE",
