@@ -412,23 +412,33 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   enterprise_sre_observability: {
     id: "enterprise_sre_observability",
-    title: "WBS 6.1.1: Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)",
+    title: "P5-GOV-L-04: Enterprise SRE Observability & Incident Triage",
     category: "Operational Excellence",
-    useCase: "ENTERPRISE SRE & OBSERVABILITY ARCHITECTURE (WBS 6.1.1)",
-    businessUseCase: "WBS 6.1.1: Enterprise SRE & Observability Architecture illustrating the complete Day-2 operations ecosystem: Prerequisite Flow (Cloud-Native CI/CD with Git Repository, Jenkins, GitLab); Observed Workloads (GCP Workload Ingress with Client Applications, Microservices on Cloud Run/GKE, AI Agents Gemini Pro, and Data Tier Cloud SQL/BigQuery emitting logs, metrics, traces); Unified Observability & Telemetry Pipeline (The Core with distributed tracing, Cloud Logging with SOC 2 log sinks, Cloud Monitoring metrics aggregation, and Operational Excellence Control Plane for SRE SLO/SLA definitions and budget alerts); Actionable Operations & Reporting (Datadog Observability & SIEM Integration, Looker Studio dynamic dashboards with SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn, personas SRE, Ops Team, DevSecOps, Day-2 Ops Drift Detection & Automated Remediation with Automated Runbooks, and Incident Management with Cloud Monitoring Alerts and PagerDuty receiving RED alerts).",
-    primaryActors: "Site Reliability Engineers (SREs), Operations Leads, DevSecOps Engineers, Cloud Architects",
-    targetOutcomes: "Sub-Second Distributed Tracing, Zero-Lag SIEM & Datadog Observability, Automated Drift Detection & Runbook Remediation, SOC 2 Compliant Telemetry Audit",
-    desc: "WBS 6.1.1 Enterprise SRE & Observability blueprint mapping observed workloads, unified telemetry core, Datadog SIEM, Looker Studio dashboards, and incident management."
+    useCase: "ENTERPRISE SRE OBSERVABILITY & INCIDENT TRIAGE (P5-GOV-L-04)",
+    businessUseCase: "Enterprise Site Reliability Engineering (SRE) & Observability on Google Cloud Platform: DevSecOps pipeline (Code to Deploy), Multi-Cloud/GCP resources (GKE, Compute Engine, Databases), Integrated Observability Platform (GCP Operations Suite: Cloud Monitoring, Cloud Logging, Cloud Trace, Intelligent AI/ML Root Cause Analysis), automated Incident Management & Response Workflow (Trigger, Red Incident alert, PagerDuty/Slack notification via Pub/Sub, Analysis & Diagnosis, Mitigation, Post-Mortem, and closed-loop feedback to DevSecOps), 4 operational dashboards (Service Health, SLO & Error Budget, Application Performance, Log Analysis), Incident Command Center war room console, and Key SRE Artifacts.",
+    primaryActors: "Site Reliability Engineers (SREs), Incident Commanders, Operations Leads, DevSecOps Engineers, Cloud Architects",
+    targetOutcomes: "Automated Incident Triage, Sub-Second MTTD/MTTR Telemetry, Closed-Loop DevSecOps Feedback, SLI/SLO Error Budget Governance",
+    desc: "Enterprise SRE and Observability blueprint illustrating GCP Operations Suite, automated incident triage workflow, operational dashboards, and war room incident command console."
   },
   tech_enterprise_sre: {
     id: "enterprise_sre_observability",
-    title: "Enterprise SRE & Observability (WBS 6.1.1)",
+    title: "Enterprise SRE & Observability on Google Cloud Platform",
     category: "Operational Excellence",
-    useCase: "ENTERPRISE SRE & OBSERVABILITY ARCHITECTURE (WBS 6.1.1)",
-    businessUseCase: "Enterprise SRE and Observability architecture connecting observed GCP workloads, unified telemetry pipelines, Datadog SIEM, and Looker Studio dashboards.",
-    primaryActors: "SREs, Ops Teams, DevSecOps Engineers, Cloud Architects",
-    targetOutcomes: "Distributed Tracing, Automated Drift Remediation, High-Precision Alerting",
-    desc: "Enterprise SRE and observability blueprint illustrating unified telemetry pipelines, Datadog SIEM integration, and Looker Studio reporting."
+    useCase: "ENTERPRISE SRE & OBSERVABILITY ON GOOGLE CLOUD PLATFORM",
+    businessUseCase: "Enterprise SRE and Observability architecture connecting DevSecOps pipelines, GCP Operations Suite, automated incident triage workflows, and operational dashboards.",
+    primaryActors: "SREs, Ops Teams, DevSecOps Engineers, Incident Commanders",
+    targetOutcomes: "Automated Incident Triage, Operations Suite Integration, War Room Command",
+    desc: "Enterprise SRE and observability blueprint illustrating GCP Operations Suite, automated incident triage, and operational reporting."
+  },
+  tech_llm_capacity_quota: {
+    id: "tech_llm_capacity_quota",
+    title: "P5-AI-L-05: LLM Capacity & Quota Management",
+    category: "AI & Machine Learning",
+    useCase: "COMPREHENSIVE TOPOLOGY FOR (LLM) CAPACITY QUOTA MANAGEMENT (P5-AI-L-05)",
+    businessUseCase: "Enterprise LLM Capacity & Quota Management topology illustrating how AI workloads are tracked, governed, and optimized at scale: Edge API Gateway (Apigee/GKE Gateway with rate limiting), Quota Management Service with Redis distributed caching, Cross-Region Load Balancer (Google Cloud Load Balancing), Multi-Region Managed GKE Inference Clusters (us-central1, europe-west1) with vLLM/TGI Pods, NVIDIA GPUs/TPUs, and Vertex AI FinOps Agents, Vertex AI FinOps API Gateway with BigQuery cost reporting and Looker FinOps cost dashboards, and 4 real-time SRE operational dashboards (Rate Limiting, Cross-Region LB, LLM Inference Health, and Capacity Planning) powered by Cloud Monitoring & Cloud Logging.",
+    primaryActors: "AI Platform Architects, LLMOps Engineers, FinOps Leads, SREs, Product Owners",
+    targetOutcomes: "Zero Regional Capacity Exhaustion, Sub-Second Token Rate Limiting, 100% Granular Token/Compute FinOps Chargeback, SRE Quota & Inference Health Monitoring",
+    desc: "Comprehensive topology for LLM capacity and quota management mapping Edge API gateways, Redis rate-limiting caches, cross-region load balancers, multi-region GKE inference clusters, FinOps reporting, and SRE dashboards."
   },
   data_residency_sovereign_map: {
     id: "data_residency_sovereign_map",

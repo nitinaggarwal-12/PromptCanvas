@@ -1,4 +1,5 @@
-<mxfile host="embed.diagrams.net">
+export function buildIncidentTriageSreXml(): string {
+  return `<mxfile host="embed.diagrams.net">
   <diagram id="enterprise_sre_observability" name="Enterprise Site Reliability Engineering (SRE) &amp; Observability on Google Cloud Platform (P5-GOV-L-04)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1340" pageHeight="640" background="#FFFFFF" math="0" shadow="0">
       <root>
@@ -326,4 +327,5 @@
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>
+</mxfile>`;
+}

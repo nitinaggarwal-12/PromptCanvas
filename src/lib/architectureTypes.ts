@@ -47,7 +47,9 @@ import {
   getExactValueStreamMapXml,
   getExactAsIsToBeProcessFlowXml,
   getExactStreamingAnalyticsXml,
-  getExactLlmopsLifecycleXml
+  getExactLlmopsLifecycleXml,
+  getExactLlmCapacityQuotaXml,
+  getExactIncidentTriageSreXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -240,10 +242,17 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "enterprise_sre_observability",
-    name: "Enterprise SRE & Observability (WBS 6.1.1)",
+    name: "P5-GOV-L-04: Enterprise SRE Observability & Incident Triage",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "WBS 6.1.1 Enterprise SRE & Observability Architecture spanning Prerequisite CI/CD flow, Observed Workloads (Client, Microservices, AI Agents, Data Tier), Unified Telemetry Pipeline Core, Datadog SIEM, Looker Studio dynamic dashboards, automated drift remediation, and PagerDuty incident management.",
-    prompt: "Act as a Principal SRE & Observability Solutions Architect. Design a production-grade WBS 6.1.1 Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State) blueprint. Include: Left Prerequisite Flow (Cloud-Native CI/CD with Git Repository, Jenkins, GitLab); Container 1 Observed Workloads (GCP Workload Ingress with Client Applications, Microservices on Cloud Run/GKE, AI Agents Gemini Pro, and Data Tier Cloud SQL/BigQuery emitting logs, metrics, traces); Container 2 Unified Observability & Telemetry Pipeline (The Core with distributed tracing, Cloud Logging with SOC 2 log sinks, Cloud Monitoring metrics aggregation, and Operational Excellence Control Plane for SRE SLO/SLA definitions and budget alerts); Container 3 Actionable Operations & Reporting (Datadog Observability & SIEM Integration, Looker Studio dynamic dashboards with SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn, personas SRE, Ops Team, DevSecOps, Day-2 Ops Drift Detection & Automated Remediation with Automated Runbooks, and Incident Management with Cloud Monitoring Alerts and PagerDuty receiving RED alerts) -> Legend."
+    whenToUse: "P5-GOV-L-04 Enterprise Site Reliability Engineering (SRE) & Observability on Google Cloud Platform: DevSecOps pipeline, Multi-Cloud/GCP resources (GKE, Compute, DB), Operations Suite (Monitoring, Logging, Trace, Intelligent AI/ML Root Cause Analysis), automated Incident Management workflow, and SRE operational dashboards.",
+    prompt: "Act as a Principal SRE & Observability Solutions Architect. Design a production-grade Enterprise Site Reliability Engineering (SRE) & Observability on Google Cloud Platform (GCP) blueprint. Include: Top DevSecOps Pipeline (Code, Build, Test, Security Scan, Release, Deploy with error reporting); Left Multi-Cloud/Hybrid/GCP Resources (GKE, Compute Engine, App Engine, Pub/Sub, Databases, On-Prem) emitting Metrics, Logs, Traces; Center Integrated Observability Platform (Cloud Monitoring with Uptime Checks and SLI/SLO/SLA, Cloud Logging with centralized ingest, Cloud Trace with distributed tracing, Intelligent Analysis AI/ML Root Cause Analysis); Incident Management & Response Workflow (Critical Alert trigger, Red Incident alert, PagerDuty/Email/Slack notification via Pub/Sub, Analysis & Diagnosis, Mitigation, Post-Mortem, Feedback Loop to DevSecOps); Right Dashboards & Interfaces (Service Health, SLO & Error Budget, Application Performance, Log Analysis, Incident Command Center war room console) and Key SRE Artifacts -> Legend & Notes."
+  },
+  {
+    id: "tech_llm_capacity_quota",
+    name: "P5-AI-L-05: LLM Capacity & Quota Management",
+    category: "AI & Machine Learning",
+    whenToUse: "P5-AI-L-05 Comprehensive Topology for (LLM) Capacity Quota Management: Edge API Gateway rate limiting, Quota Management Service with Redis distributed caching, Cross-Region Load Balancer, Multi-Region Managed GKE Inference Clusters (us-central1, europe-west1) with vLLM/TGI Pods and Vertex AI FinOps Agents, FinOps BigQuery cost reporting, Looker FinOps dashboards, and 4 SRE real-time operational monitoring dashboards.",
+    prompt: "Act as a Principal AI Platform & FinOps Solutions Architect. Design a production-grade Comprehensive Topology for (LLM) Capacity Quota Management blueprint. Include: Left Ingress with Consumer Applications -> Edge API Gateway (Apigee / custom GKE Gateway) -> Quota Management Service with Redis distributed cache rate-limiting -> Cross-Region Load Balancer (Google Cloud Load Balancing); Center Multi-Region Managed GKE Inference Clusters in Region 1 us-central1 and Region 2 europe-west1 with LLM serving Pods (vLLM, TGI), NVIDIA GPUs, TPUs, and Vertex AI FinOps Agents; Center-Right FinOps Cost & Usage Hub with usage metrics callout, Vertex AI FinOps API Gateway, FinOps Cost Reporting Database BigQuery, and Looker FinOps Cost Dashboard; Right SRE Dashboards & Monitoring powered by Cloud Monitoring & Cloud Logging (Rate Limiting, Cross-Region LB, LLM Inference Health, Capacity Planning dashboards) -> Bottom Left Legend."
   },
   {
     id: "data_residency_sovereign_map",
@@ -346,8 +355,8 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.startsWith('p5-app-l-01') || id === 'p5-app-l-01') return 'six_rs_migration_matrix';
   if (id.startsWith('p5-sec-p-02') || id === 'p5-sec-p-02') return 'enterprise_sre_observability';
   if (id.startsWith('p5-gov-p-03') || id === 'p5-gov-p-03') return 'golive_warroom_runbook';
-  if (id.startsWith('p5-gov-l-04') || id === 'p5-gov-l-04') return 'enterprise_sre_observability';
-  if (id.startsWith('p5-ai-l-05') || id === 'p5-ai-l-05') return 'ai_coe_operating_model';
+  if (id.startsWith('p5-ai-l-05') || id === 'p5-ai-l-05') return 'tech_llm_capacity_quota';
+  if (id.includes('capacity_quota') || id.includes('quota_management') || id === 'tech_llm_capacity_quota') return 'tech_llm_capacity_quota';
   if (id.startsWith('p5-ai-p-07') || id === 'p5-ai-p-07') return 'tech_llmops_lifecycle';
   if (id.includes('llmops') || id.includes('prompt_config') || id === 'tech_llmops_lifecycle') return 'tech_llmops_lifecycle';
   if (id.startsWith('p5-dat-p-08') || id === 'p5-dat-p-08') return 'dataops_anomaly_detection';
@@ -468,6 +477,10 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactStreamingAnalyticsXml();
   } else if (id === 'tech_llmops_lifecycle' || id.includes('llmops') || id.includes('prompt_config') || id === 'p5-ai-p-07') {
     xml = getExactLlmopsLifecycleXml();
+  } else if (id === 'tech_llm_capacity_quota' || id.includes('capacity_quota') || id.includes('quota_management') || id === 'p5-ai-l-05') {
+    xml = getExactLlmCapacityQuotaXml();
+  } else if (id === 'enterprise_sre_observability' || id.includes('incident_triage') || id.includes('sre_observability') || id === 'p5-gov-l-04' || id === 'p5-sec-p-02') {
+    xml = getExactIncidentTriageSreXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
     xml = getExactGcpDataLakehouseWbsXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {

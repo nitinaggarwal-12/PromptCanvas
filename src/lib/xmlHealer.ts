@@ -46,8 +46,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     archType === 'logical_ai_config_tenant' ||
     archType === 'hub_and_spoke_agent_config' ||
     archType === 'unified_data_governance' ||
-    archType === 'dataops_anomaly_detection' ||
     archType === 'enterprise_sre_observability' ||
+    Boolean(archType && (archType.includes('incident_triage') || archType.includes('sre_observability'))) ||
+    inputXml.includes('Enterprise Site Reliability Engineering') ||
+    inputXml.includes('Incident Management & Response Workflow') ||
     archType === 'data_residency_sovereign_map' ||
     archType === 'federated_iam_sso' ||
     archType === 'tech_ai_trism_guardrails' ||
@@ -65,6 +67,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     Boolean(archType && (archType.includes('llmops') || archType.includes('prompt_config'))) ||
     inputXml.includes('llmops_prompt_config_lifecycle') ||
     inputXml.includes('LLMOps Prompt') ||
+    archType === 'tech_llm_capacity_quota' ||
+    Boolean(archType && (archType.includes('capacity_quota') || archType.includes('quota_management'))) ||
+    inputXml.includes('llm_capacity_quota_management') ||
+    inputXml.includes('Capacity Quota Management') ||
     inputXml.includes('id="data-ai-pipeline-wbs"') ||
     inputXml.includes('id="gcp-lakehouse-wbs"') ||
     inputXml.includes('id="modern-data-stack-wbs"') ||
