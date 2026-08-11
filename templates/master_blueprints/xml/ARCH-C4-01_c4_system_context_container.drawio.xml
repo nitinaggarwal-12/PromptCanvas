@@ -1,0 +1,222 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="tech_c4_system_context" name="C4 System Context & Container Model">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TOP MAIN TITLE BANNER -->
+        <mxCell id="title_banner" value="&lt;b&gt;McKinsey-Grade C4 Enterprise System Context &amp; Container Model (L1 &amp; L2) - 1340px Widescreen Boardroom Layout&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="10" width="1320" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- HORIZONTAL TIER BACKGROUND SWIMLANE STRIPES -->
+        <mxCell id="t1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#F8FAFC;" vertex="1" parent="1">
+          <mxGeometry x="30" y="65" width="1320" height="155" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=1;strokeColor=#BFDBFE;fillColor=#EFF6FF;" vertex="1" parent="1">
+          <mxGeometry x="30" y="245" width="1320" height="185" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=1;strokeColor=#E2E8F0;fillColor=#F1F5F9;" vertex="1" parent="1">
+          <mxGeometry x="30" y="455" width="1320" height="185" as="geometry" />
+        </mxCell>
+
+        <!-- LEFT TIER LABELS -->
+        <mxCell id="t1_lbl" value="&lt;b&gt;TIER 1&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;font-weight:normal;&quot;&gt;(External Access&lt;br&gt;&amp; Zero-Trust&lt;br&gt;Ingress&lt;br&gt;Boundary)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=13;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="78" width="180" height="125" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t2_lbl" value="&lt;b&gt;TIER 2&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;font-weight:normal;&quot;&gt;C4 Container&lt;br&gt;Architecture &amp;&lt;br&gt;Autonomous&lt;br&gt;Agent Mesh&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=13;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="268" width="180" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t3_lbl" value="&lt;b&gt;TIER 3&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;font-weight:normal;&quot;&gt;State&lt;br&gt;Persistence &amp;&lt;br&gt;Vector Memory&lt;br&gt;Foundation&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=13;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="478" width="180" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 1 BOARDROOM CARDS WITH HTML TABLE FILLED COLORED HEADERS -->
+        <mxCell id="card_1_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.1] Global B2B Enterprise Users &amp; Partner Apps&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;HTTPS / TLS 1.3 &amp; Hardware mTLS auth&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;&quot;&gt;🌐 &amp;nbsp;📱 &amp;nbsp;💻&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="245" y="78" width="320" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="card_1_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0284C7;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🛡️ [1.2] Cloud Armor WAF &amp; Identity-Aware Proxy&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;OWASP Top 10 DDoS defense + Entra ID OIDC&lt;br&gt;issuing 15-minute short-lived JWT token vaults &amp;nbsp;&lt;span style=&quot;font-size:15px;&quot;&gt;🔐 💠&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0284C7;fillColor=#F0F9FF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="625" y="78" width="320" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="card_1_3" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[1.3] Enterprise Envoy / Kong API Gateway Cluster ⬡&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;☁️ &lt;b&gt;VPC Subnet 10.128.0.0/20&lt;/b&gt; &amp;nbsp;|&amp;nbsp; 99.999% SLA Uptime&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;&quot;&gt;⚡ &amp;nbsp;☁️ &amp;nbsp;🌐&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="995" y="78" width="330" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 2 CARDS -->
+        <!-- [2.1] GKE Autopilot Microservices Cluster Container Frame -->
+        <mxCell id="card_2_1" value="&lt;font color=&quot;#1D4ED8&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[2.1] GKE Autopilot Microservices Cluster&lt;/b&gt;&lt;/font&gt; &amp;nbsp;&lt;font color=&quot;#475569&quot; style=&quot;font-size:10px;&quot;&gt;(Autoscaling 10 to 800 pods with Istio mTLS)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#2563EB;fillColor=#FFFFFF;verticalAlign=top;spacing=8;align=left;" vertex="1" parent="1">
+          <mxGeometry x="245" y="260" width="320" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="pod_order" value="Container&lt;br&gt;&lt;b&gt;Order Service&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=1;strokeColor=#94A3B8;fillColor=#F8FAFC;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="260" y="306" width="140" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="pod_billing" value="Container&lt;br&gt;&lt;b&gt;Billing Service&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=1;strokeColor=#94A3B8;fillColor=#F8FAFC;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="410" y="306" width="140" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="pod_inv" value="Container&lt;br&gt;&lt;b&gt;Inventory Service&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=1;strokeColor=#94A3B8;fillColor=#F8FAFC;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="260" y="358" width="140" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="pod_acc" value="Container&lt;br&gt;&lt;b&gt;Account Service&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=1;strokeColor=#94A3B8;fillColor=#F8FAFC;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="410" y="358" width="140" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- [2.2] Distributed Apache Kafka Event Mesh Frame -->
+        <mxCell id="card_2_2" value="&lt;font color=&quot;#1D4ED8&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[2.2] Distributed Apache Kafka Event Mesh&lt;/b&gt;&lt;/font&gt; &amp;nbsp;&lt;font color=&quot;#475569&quot; style=&quot;font-size:10px;&quot;&gt;(Multi-region event backbone)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#2563EB;fillColor=#FFFFFF;verticalAlign=top;spacing=8;align=left;" vertex="1" parent="1">
+          <mxGeometry x="625" y="260" width="320" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="kb_1" value="⚙️ &lt;b&gt;Kafka Broker&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=1;strokeColor=#64748B;fillColor=#F8FAFC;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="640" y="308" width="135" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="kb_2" value="⚙️ &lt;b&gt;Kafka Broker&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=1;strokeColor=#64748B;fillColor=#F8FAFC;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="795" y="308" width="135" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="avro_reg" value="&lt;b&gt;Avro Schema Registry&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;strokeWidth=1;strokeColor=#2563EB;fillColor=#EFF6FF;fontSize=10;fontColor=#1D4ED8;" vertex="1" parent="1">
+          <mxGeometry x="770" y="368" width="160" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- [2.3] Autonomous Agent Orchestration Kernel EXACT DEEP OBSIDIAN GLASSMORPHIC CARD (#090D16) -->
+        <mxCell id="card_2_3" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#090D16;padding:7px 10px;border-bottom:1px solid #1E293B;&quot;&gt;&lt;font color=&quot;#38BDF8&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;[2.3] Autonomous Agent Orchestration Kernel&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#F8FAFC&quot; style=&quot;font-size:11.5px;&quot;&gt;&lt;b&gt;LangGraph Directed State Machine&lt;/b&gt;&lt;br&gt;executing sub-15ms agent tools&lt;br&gt;&lt;br&gt;&lt;span style=&quot;color:#38BDF8;font-size:11px;font-weight:bold;&quot;&gt;📈 Sub-15ms Agent Tool Execution &amp; Orchestration 📈&lt;/span&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#38BDF8;fillColor=#090D16;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="995" y="260" width="330" height="155" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 3 BOARDROOM CARDS WITH HTML TABLE FILLED COLORED HEADERS -->
+        <mxCell id="card_3_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🛢️ [3.1] AlloyDB HA PostgreSQL Core Ledger&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;Active-Active multi-region database over GCP Private Service Connect&lt;br&gt;&lt;b&gt;IP: 10.128.64.10&lt;/b&gt; &amp;nbsp;|&amp;nbsp; 🛢️ &amp;nbsp;🌐&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="245" y="470" width="320" height="145" as="geometry" />
+        </mxCell>
+
+        <mxCell id="card_3_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#2563EB;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;🧠 [3.2] pgvector Semantic Memory Store&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;HNSW ANN vector index saving &lt;b&gt;-90% redundant LLM token compute OPEX&lt;/b&gt;&lt;br&gt;&lt;br&gt;🧠 &amp;nbsp;🔍 &amp;nbsp;🐘&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#2563EB;fillColor=#EFF6FF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="625" y="470" width="320" height="145" as="geometry" />
+        </mxCell>
+
+        <mxCell id="card_3_3" value="&lt;table style=&quot;width:100%;border-collapse:collapse;margin:0;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:7px 10px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;📊 [3.3] BigQuery / Apache Iceberg Analytical Lakehouse&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px;&quot;&gt;&lt;font color=&quot;#334155&quot; style=&quot;font-size:11px;&quot;&gt;Governed warehouse with immutable WORM retention for &lt;b&gt;SOC2 Type II &amp; ISO 27001&lt;/b&gt;&lt;br&gt;&lt;br&gt;🌐 &amp;nbsp;✅&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#0F172A;fillColor=#FFFFFF;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="995" y="470" width="330" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- ORTHOGONAL CONNECTORS ROUTED THROUGH DEDICATED COLLISION-FREE AIRSPACE CORRIDORS WITH CONCISE LABELS -->
+        <mxCell id="e1" value="HTTPS / mTLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_1" target="card_1_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="405" y="45" />
+              <mxPoint x="785" y="45" />
+            </Array>
+            <mxPoint dy="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e2" value="OWASP &amp; JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_2" target="card_1_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="785" y="45" />
+              <mxPoint x="1160" y="45" />
+            </Array>
+            <mxPoint dy="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Direct Tier 1 -> Tier 2 Ingress Route -->
+        <mxCell id="e3" value="gRPC / Istio mTLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_1_3" target="card_2_3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint dx="-28" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e4" value="Kafka Outbox Events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_1" target="card_2_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="405" y="235" />
+              <mxPoint x="785" y="235" />
+            </Array>
+            <mxPoint dy="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e5" value="Sub-15ms Agent Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_2" target="card_2_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="785" y="235" />
+              <mxPoint x="1160" y="235" />
+            </Array>
+            <mxPoint dy="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Vertical Tier 2 to Tier 3 Flow routed through Open Channel at y = 442 -->
+        <mxCell id="e6" value="Transactional SQL State" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_1" target="card_3_1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint dx="28" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e7" value="HNSW ANN Vector Recall" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#2563EB;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_2" target="card_3_2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint dx="28" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e8" value="Analytical Iceberg Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#0F172A;fontColor=#0F172A;fontStyle=1;fontSize=10;" edge="1" parent="1" source="card_2_3" target="card_3_3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint dx="-28" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="tech_c4_system_context" name="C4 System Context & Container Model">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
+      <root>
+        <mxCell id="0_p2" />
+        <mxCell id="1_p2" parent="0_p2" />
+
+        <!-- PAGE 2 HEADER BANNER -->
+        <mxCell id="p2_hdr" value="&lt;b&gt;EXECUTIVE ARCHITECTURE PLAYBOOK &amp; GOVERNANCE METADATA PROFILE — DIAGRAM 11: C4 SYSTEM CONTEXT&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="10" width="1310" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p2_line" value="" style="line;strokeWidth=2;strokeColor=#0F172A;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="38" width="1310" height="4" as="geometry" />
+        </mxCell>
+
+        <!-- KPI SUMMARY BAR WITH STRATEGIC IMPORTANCE 5/5 STARS -->
+        <mxCell id="kpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE NAME&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;C4 Enterprise System Context (L1 &amp; L2)&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="kpi_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;STRATEGIC IMPORTANCE SCORE&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#D97706&quot; style=&quot;font-size:16px;&quot;&gt;&lt;b&gt;★★★★★ &amp;nbsp;5.0 / 5.0&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#D97706;fillColor=#FEFCE8;align=center;" vertex="1" parent="1_p2">
+          <mxGeometry x="375" y="55" width="290" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="kpi_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;PRODUCT JOURNEY TIMING&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0D9488&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;Phase 0–1 Greenfield RFC &amp; Scale Migration&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0D9488;fillColor=#F0FDFA;align=center;" vertex="1" parent="1_p2">
+          <mxGeometry x="695" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="kpi_4" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;TARGET ARTIFACT DOCUMENT&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#2563EB&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;RFC / PRD, SOC2 Audit Deck &amp; Board Review&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;align=center;" vertex="1" parent="1_p2">
+          <mxGeometry x="1035" y="55" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- PERSONA MATRIX ROW -->
+        <mxCell id="per_card_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👤 PRIMARY CREATOR PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Principal Staff Cloud / Security Architect&lt;/b&gt; (&lt;i&gt;Staff Engineer L7+ at Google; Partner Enterprise Architect at Consulting&lt;/i&gt;)&lt;br&gt;&lt;br&gt;Responsible for establishing trust boundaries, mTLS encryption SLAs, and network blast-radius containment before production code authorization.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="130" width="630" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="per_card_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0284C7;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👔 PRIMARY CONSUMER PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#F0F9FF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Chief Information Security Officer (CISO), VP of Engineering &amp; External SOC2/ISO Auditors&lt;/b&gt;&lt;br&gt;&lt;br&gt;Uses this visual diagram to verify Zero-Trust security governance, identity-aware ingress policies, and active-active multi-region fault tolerance.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0284C7;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
+          <mxGeometry x="695" y="130" width="650" height="115" as="geometry" />
+        </mxCell>
+
+        <!-- TWO-COLUMN DEEP STRATEGIC PERSPECTIVE COMPARISON: GOOGLE PRODUCT STANDPOINT vs MCKINSEY CONSULTING STANDPOINT -->
+        <mxCell id="lens_google" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#1D4ED8;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;🚀 BIG TECH &amp; PRODUCT COMPANY STANDPOINT (e.g. Google / Stripe / Meta)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;1. Internal Lifecycle &amp; RFC Enforcement:&lt;/b&gt; At Google/Stripe, a C4 System Context &amp; Container blueprint is mandatory inside every Architectural RFC before design freeze. It serves as the authoritative boundary contract between product teams.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;2. Zero-Trust Perimeter Governance:&lt;/b&gt; Visualizes BeyondCorp Identity-Aware Proxy (IAP) access policies and GCP Private Service Connect boundaries so that zero production containers expose direct public internet IPs.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;3. Site Reliability Engineering (SRE) Blameless Postmortems:&lt;/b&gt; During major incidents, SRE teams overlay telemetry hotspots onto this exact C4 Container topology to trace dependency failure cascading.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#1D4ED8;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
+          <mxGeometry x="35" y="265" width="630" height="380" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lens_mckinsey" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;💼 TIER-1 MANAGEMENT CONSULTING STANDPOINT (e.g. McKinsey / BCG / Deloitte)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#F8FAFC;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;1. Billable Client Transformation Anchor:&lt;/b&gt; In multi-million-dollar Enterprise Cloud Modernization engagements, consultants present this visual as the Executive Boardroom Baseline comparing &quot;As-Is Monolith&quot; vs &quot;To-Be Cloud Native System Context&quot;.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;2. Application Portfolio Rationalization (APM):&lt;/b&gt; Helps client C-Suite stakeholders identify duplicate business services, legacy mainframe dependencies, and compliance gaps within 60 minutes.&lt;br&gt;&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;3. RFP &amp; Post-Merger Integration (PMI):&lt;/b&gt; Serves as the primary security architecture exhibit proving compliance with federal regulatory frameworks and enabling seamless corporate entity integration.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
+          <mxGeometry x="695" y="265" width="650" height="380" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

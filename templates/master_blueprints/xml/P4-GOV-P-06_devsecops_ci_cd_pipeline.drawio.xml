@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="devops_cicd_pipeline_compiled" name="Diagram: The Operational Flow">
+  <diagram id="devops_cicd_pipeline" name="Enterprise DevSecOps Polyrepo CI/CD Pipeline Flow">
     <mxGraphModel dx="1800" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1000" math="0" shadow="0">
       <root>
         <mxCell id="0" />

@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="data_residency_sovereign_map" name="Data Residency & Sovereign Cloud Map (WBS 5.1.6)">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1620" pageHeight="950" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ==================== HEADER (TOP LEFT) ==================== -->
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 5.1.6: Data Residency &amp; Sovereign Cloud Map&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:normal;color:#334155;&quot;&gt;(To-Be State, Infra Provisioning Phase)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="25" y="22" width="460" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- TOP RIGHT COMPLIANCE BADGES & METADATA TABLE -->
+        <mxCell id="badge_gdpr" value="&lt;font style=&quot;font-size:7px;color:#FFFFFF;&quot;&gt;&lt;b&gt;GDPR&lt;/b&gt;&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="495" y="32" width="26" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_eu_ai" value="&lt;font style=&quot;font-size:6px;color:#FFFFFF;&quot;&gt;&lt;b&gt;EU AI&lt;br&gt;Act&lt;/b&gt;&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="528" y="32" width="26" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_hipaa" value="&lt;font style=&quot;font-size:6px;color:#FFFFFF;&quot;&gt;&lt;b&gt;HIPAA&lt;/b&gt;&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284C7;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="560" y="32" width="26" height="26" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box_meta_table" value="&lt;table style=&quot;font-size:7.5px;color:#0F172A;width:100%;border-collapse:collapse;&quot; border=&quot;1&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Diagram Name:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Data Residency &amp; Sovereign Cloud Map&lt;/td&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Effort:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;High&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;GCAF Pillar:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Security, Privacy &amp; Compliance&lt;/td&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Creation Tool:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;GCP Arch Tool&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Phase:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Project Plan Infra Provisioning&lt;/td&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Compliance:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;GDPR, EU AI Act, HIPAA&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Creator:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;4. Cloud Infra&lt;/td&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Update Freq:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Annually&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Target Audience:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Legal, Compliance, SecOps&lt;/td&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Usage:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;High&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Tech Stack:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Vertex AI Localization, VPC SC&lt;/td&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Purpose:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Regional data boundaries, cross-border controls&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Representation:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;Ensures patient IP/data doesn't leave region&lt;/td&gt;&lt;td style=&quot;background:#F1F5F9;padding:1.5px 4px;&quot;&gt;&lt;b&gt;Blueprint ID:&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:1.5px 4px;&quot;&gt;data_residency_sovereign_map&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="600" y="14" width="495" height="102" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== LEFT INGRESS & PERSONAS ==================== -->
+        <!-- Top Personas -->
+        <mxCell id="ico_sre_lead" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;SRE Ops Lead&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="65" y="150" width="60" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="ico_legal_lead" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👩‍💼&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Legal Persona&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="125" y="150" width="60" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="ico_ciso_lead" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👨‍💼&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;CISO Persona&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="185" y="150" width="60" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- End Users -->
+        <mxCell id="ico_end_users" value="&lt;font style=&quot;font-size:22px;&quot;&gt;👥&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;End Users&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;(Patient data source)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="15" y="325" width="85" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Load Balancing (Global/Regional) -->
+        <mxCell id="box_glb" value="&lt;font style=&quot;font-size:18px;&quot;&gt;🔀&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Cloud Load Balancing&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6.5px;color:#64748B;&quot;&gt;(Global/Regional)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="175" y="330" width="105" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge_users_to_glb" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Patient Data Flow&lt;br&gt;&lt;span style=&quot;font-weight:normal;color:#475569;&quot;&gt;(GDPR, HIPAA rules)&lt;/span&gt;&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="95" y="356" as="sourcePoint"/><mxPoint x="175" y="356" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="lbl_verified_access" value="&lt;b style=&quot;font-size:6.5px;color:#059669;&quot;&gt;Verified compliant&lt;br&gt;access control&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="110" y="420" width="90" height="24" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="arr_personas_to_glb" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#475569;strokeWidth=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="180" y="200" as="sourcePoint"/><mxPoint x="227" y="330" as="targetPoint"/><Array as="points"><mxPoint x="180" y="270"/><mxPoint x="227" y="270"/></Array></mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== CENTER: CORE SOVEREIGN CLOUD ==================== -->
+        <mxCell id="box_sovereign_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="310" y="165" width="415" height="570" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_sovereign_hdr" value="&lt;font style=&quot;font-size:10px;&quot;&gt;☁️&lt;/font&gt; &lt;b style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Google Cloud&lt;/b&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Core Sovereign Cloud&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="325" y="172" width="350" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- REGION 1: EU-WEST4 (THE NETHERLANDS) -->
+        <mxCell id="box_region_eu" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;strokeWidth=1.2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="325" y="200" width="385" height="235" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_region_eu_title" value="&lt;font style=&quot;font-size:11px;&quot;&gt;🇳🇱&lt;/font&gt; &lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;GCP Region: EU-West4 (The Netherlands)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="335" y="205" width="260" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- EU VPC SC Perimeter (Red Dashed Box) -->
+        <mxCell id="box_vpc_sc_eu" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.2;dashed=1;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="335" y="230" width="365" height="195" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_vpc_sc_eu_title" value="&lt;b style=&quot;font-size:7.5px;color:#BE123C;&quot;&gt;VPC Service Controls (VPC SC) Perimeter&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="345" y="232" width="220" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- EU Restricted GCP APIs & Vertex AI -->
+        <mxCell id="box_restricted_api_eu" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Restricted GCP APIs&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;(Restricted GCS,&lt;br&gt;GCP Datamount, GCP APIs,&lt;br&gt;GCP API restrictions, etc.)&lt;/font&gt;&lt;br&gt;&lt;div style=&quot;margin-top:6px;&quot;&gt;&lt;font style=&quot;font-size:16px;&quot;&gt;🧠⚙️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Vertex AI&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;(Local Inference &amp;&lt;br&gt;Grounding, prerequisite pattern)&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;dashed=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="345" y="252" width="115" height="160" as="geometry"/>
+        </mxCell>
+
+        <!-- EU Alert Triangle Center -->
+        <mxCell id="alert_eu_center" value="&lt;font style=&quot;font-size:14px;&quot;&gt;⚠️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Internal&lt;br&gt;Compliant&lt;br&gt;Data Flow&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="468" y="280" width="55" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- EU Storage & DB Services -->
+        <mxCell id="box_gcs_eu" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🗄️&lt;/font&gt; &lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Cloud Storage Buckets&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6px;color:#64748B;&quot;&gt;(EU GCS, Patient data)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="532" y="252" width="158" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_sql_eu" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🛢️&lt;/font&gt; &lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Cloud SQL&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6px;color:#64748B;&quot;&gt;(EU, GxP validated keys)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="532" y="300" width="158" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_vector_eu" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🌐&lt;/font&gt; &lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Vertex AI Vector Search&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6px;color:#64748B;&quot;&gt;(EU, local grounding)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="532" y="348" width="158" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Internal Compliant Connectors in EU -->
+        <mxCell id="arr_eu_internal" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="460" y="332" as="sourcePoint"/><mxPoint x="532" y="269" as="targetPoint"/><Array as="points"><mxPoint x="500" y="332"/><mxPoint x="500" y="269"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="arr_eu_sql" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="460" y="332" as="sourcePoint"/><mxPoint x="532" y="317" as="targetPoint"/><Array as="points"><mxPoint x="500" y="332"/><mxPoint x="500" y="317"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="arr_eu_vector" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="460" y="332" as="sourcePoint"/><mxPoint x="532" y="365" as="targetPoint"/><Array as="points"><mxPoint x="500" y="332"/><mxPoint x="500" y="365"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- GLB into EU West -->
+        <mxCell id="arr_glb_to_eu" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="280" y="356" as="sourcePoint"/><mxPoint x="345" y="356" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+
+        <!-- CROSS-BORDER BRIDGE (CENTER CHANNEL) -->
+        <mxCell id="box_vpc_sc_bridge" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🔀&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;GCP VPC-SC&lt;br&gt;Bridge&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="495" y="442" width="46" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_cross_border" value="&lt;b style=&quot;font-size:6.5px;color:#DC2626;&quot;&gt;Cross-Border Data&lt;br&gt;Transfer Path&lt;/b&gt;" style="text;html=1;align=right;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="385" y="445" width="105" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Bidirectional Red Dashed Arrow across regions -->
+        <mxCell id="arr_cross_border_eu" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=block;endFill=1;startArrow=block;startFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="518" y="425" as="sourcePoint"/><mxPoint x="518" y="505" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Perimeter Red Alert Badges -->
+        <mxCell id="badge_alert_eu_bottom" value="&lt;font style=&quot;font-size:12px;&quot;&gt;⚠️&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="509" y="415" width="18" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_alert_us_top" value="&lt;font style=&quot;font-size:12px;&quot;&gt;⚠️&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="509" y="495" width="18" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_alert_eu_right" value="&lt;font style=&quot;font-size:12px;&quot;&gt;⚠️&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="690" y="320" width="18" height="18" as="geometry"/>
+        </mxCell>
+
+
+        <!-- REGION 2: US-CENTRAL1 (IOWA) -->
+        <mxCell id="box_region_us" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;strokeWidth=1.2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="325" y="485" width="385" height="235" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_region_us_title" value="&lt;font style=&quot;font-size:11px;&quot;&gt;🇺🇸&lt;/font&gt; &lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;GCP Region: US-Central1 (Iowa)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="335" y="490" width="260" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- US VPC SC Perimeter (Red Dashed Box) -->
+        <mxCell id="box_vpc_sc_us" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.2;dashed=1;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="335" y="515" width="365" height="195" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_vpc_sc_us_title" value="&lt;b style=&quot;font-size:7.5px;color:#BE123C;&quot;&gt;VPC Service Controls (VPC SC) Perimeter&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="345" y="517" width="220" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- US Restricted GCP APIs & Vertex AI -->
+        <mxCell id="box_restricted_api_us" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Restricted GCP APIs&lt;/b&gt;&lt;br&gt;&lt;div style=&quot;margin-top:14px;&quot;&gt;&lt;font style=&quot;font-size:16px;&quot;&gt;🧠⚙️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Vertex AI&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;(Local Inference &amp;&lt;br&gt;Grounding, prerequisite pattern)&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;dashed=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="345" y="537" width="115" height="160" as="geometry"/>
+        </mxCell>
+
+        <!-- US Alert Triangle Center -->
+        <mxCell id="alert_us_center" value="&lt;font style=&quot;font-size:14px;&quot;&gt;⚠️&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Internal&lt;br&gt;Compliant&lt;br&gt;Data Flow&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="468" y="565" width="55" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- US Storage & DB Services -->
+        <mxCell id="box_gcs_us" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🗄️&lt;/font&gt; &lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Cloud Storage Buckets&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6px;color:#64748B;&quot;&gt;(US GCS, Patient data)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="532" y="537" width="158" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_sql_us" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🛢️&lt;/font&gt; &lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Cloud SQL&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6px;color:#64748B;&quot;&gt;(US, GxP validated keys)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="532" y="585" width="158" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="box_vector_us" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🌐&lt;/font&gt; &lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Vertex AI Vector Search&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:6px;color:#64748B;&quot;&gt;(US, local grounding)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="532" y="633" width="158" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Internal Compliant Connectors in US -->
+        <mxCell id="arr_us_internal" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="460" y="617" as="sourcePoint"/><mxPoint x="532" y="554" as="targetPoint"/><Array as="points"><mxPoint x="500" y="617"/><mxPoint x="500" y="554"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="arr_us_sql" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="460" y="617" as="sourcePoint"/><mxPoint x="532" y="602" as="targetPoint"/><Array as="points"><mxPoint x="500" y="617"/><mxPoint x="500" y="602"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="arr_us_vector" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="460" y="617" as="sourcePoint"/><mxPoint x="532" y="650" as="targetPoint"/><Array as="points"><mxPoint x="500" y="617"/><mxPoint x="500" y="650"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="badge_alert_us_bottom" value="&lt;font style=&quot;font-size:12px;&quot;&gt;⚠️&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="509" y="700" width="18" height="18" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== RIGHT TOP: OBSERVABILITY & COMPLIANCE REPORTING ==================== -->
+        <mxCell id="box_observability_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="745" y="165" width="350" height="375" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_observability_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Observability &amp; Compliance Reporting&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="745" y="170" width="350" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Looker Studio Dashboard Sub-Container -->
+        <mxCell id="box_looker_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="755" y="195" width="280" height="240" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_looker_card_title" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Looker Studio Dashboards&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="755" y="200" width="280" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- Dashboard Left Checklist Items -->
+        <mxCell id="chk_compliance" value="&lt;font style=&quot;font-size:10px;&quot;&gt;🟢&lt;/font&gt; &lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Regional Data&lt;br&gt;Compliance Score&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="760" y="222" width="105" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="chk_cross_border" value="&lt;font style=&quot;font-size:10px;&quot;&gt;⇄&lt;/font&gt; &lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Cross-Border&lt;br&gt;Transfer Audit Logs&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="760" y="254" width="105" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="chk_vpc_alerts" value="&lt;font style=&quot;font-size:10px;&quot;&gt;⚠️&lt;/font&gt; &lt;b style=&quot;font-size:6.5px;color:#DC2626;&quot;&gt;VPC SC Perimeter&lt;br&gt;Alerts &lt;span style=&quot;font-weight:normal;color:#475569;&quot;&gt;(red alert icons)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="760" y="286" width="105" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="chk_grounding" value="&lt;font style=&quot;font-size:10px;&quot;&gt;🔍&lt;/font&gt; &lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Vertex AI Grounding&lt;br&gt;Lineage&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="760" y="320" width="105" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Dashboard Right Graphical Mockup -->
+        <mxCell id="mock_dashboard" value="&lt;div style=&quot;border:1px solid #E2E8F0;background:#F8FAFC;padding:4px;height:100%;box-sizing:border-box;&quot;&gt;&lt;div style=&quot;display:flex;justify-content:space-between;border-bottom:1px solid #CBD5E1;padding-bottom:2px;font-size:6px;color:#475569;&quot;&gt;&lt;b&gt;Looker Studio&lt;/b&gt;&lt;span&gt;🔍 ⚙️&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px;&quot;&gt;&lt;div style=&quot;border:1px solid #CBD5E1;background:#FFF;padding:2px;text-align:center;&quot;&gt;&lt;div style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;Compliance&lt;/div&gt;&lt;b style=&quot;font-size:9px;color:#059669;&quot;&gt;99.8%&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;border:1px solid #CBD5E1;background:#FFF;padding:2px;text-align:center;&quot;&gt;&lt;div style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;Alerts&lt;/div&gt;&lt;b style=&quot;font-size:9px;color:#0284C7;&quot;&gt;0 Blocked&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;&lt;div style=&quot;border:1px solid #CBD5E1;background:#FFF;margin-top:4px;padding:3px;text-align:center;font-size:6px;color:#475569;&quot;&gt;&lt;b&gt;Regional Telemetry Lineage&lt;/b&gt;&lt;br&gt;📊 📈 📉&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="870" y="222" width="158" height="205" as="geometry"/>
+        </mxCell>
+
+        <!-- Personas Right of Looker Studio -->
+        <mxCell id="ico_legal_obs" value="&lt;font style=&quot;font-size:16px;&quot;&gt;👩‍💼&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Legal&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="215" width="45" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="ico_ciso_obs" value="&lt;font style=&quot;font-size:16px;&quot;&gt;👨‍💼&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;CISO&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="270" width="45" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="ico_sre_obs" value="&lt;font style=&quot;font-size:16px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;SRE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="325" width="45" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="arr_looker_to_legal" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1035" y="235" as="sourcePoint"/><mxPoint x="1045" y="235" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="arr_looker_to_ciso" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1035" y="290" as="sourcePoint"/><mxPoint x="1045" y="290" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="arr_looker_to_sre" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1035" y="345" as="sourcePoint"/><mxPoint x="1045" y="345" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- Active Data Control Plane Note & Central Logging -->
+        <mxCell id="lbl_active_control_plane" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;**Active data control plane verifying regional isolation&lt;br&gt;for GxP, GDPR, HIPAA, EU AI Act.**&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="755" y="440" width="280" height="24" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box_central_logging" value="&lt;font style=&quot;font-size:14px;&quot;&gt;📑&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Central logging&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830" y="475" width="85" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_audit_metrics" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Audit Logs &amp;&lt;br&gt;Governance Metrics&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;Prerequisites&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="745" y="475" width="80" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_bigquery_hist" value="&lt;font style=&quot;font-size:6.5px;color:#475569;&quot;&gt;Data from prerequisites&lt;br&gt;&lt;b&gt;BigQuery&lt;/b&gt; historical data&lt;br&gt;from &lt;IMAGE 11&gt; context&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="925" y="475" width="115" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="arr_central_to_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="872" y="475" as="sourcePoint"/><mxPoint x="872" y="440" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== RIGHT BOTTOM: MANAGEMENT PLANE (ASYNC FLOWS) ==================== -->
+        <mxCell id="box_management_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="745" y="555" width="350" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_mgmt_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Management Plane (Async Flows)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="745" y="560" width="350" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Infra Lead -->
+        <mxCell id="ico_cloud_infra_lead" value="&lt;font style=&quot;font-size:18px;&quot;&gt;👤&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Cloud Infra Lead&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="590" width="70" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- Internal metric collectors -->
+        <mxCell id="lbl_metric_collectors" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Internal metric&lt;br&gt;collectors action&lt;br&gt;prerequisite&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="915" y="595" width="90" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_lead_to_collectors" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1015" y="612" as="sourcePoint"/><mxPoint x="980" y="612" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Trace Correlation, Vertex AI Monitoring, Dataplex, Cloud Logging -->
+        <mxCell id="node_trace_corr" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Unified Trace Correlation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="755" y="585" width="125" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_vertex_mon" value="&lt;b style=&quot;font-size:6.5px;color:#7C3AED;&quot;&gt;Vertex AI Monitoring&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;(latency, hallucination score)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="755" y="615" width="125" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_dataplex" value="&lt;font style=&quot;font-size:12px;&quot;&gt;🌐&lt;/font&gt; &lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Dataplex&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830" y="650" width="85" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="node_cloud_logging_mgmt" value="&lt;font style=&quot;font-size:12px;&quot;&gt;📑&lt;/font&gt; &lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Cloud Logging&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830" y="685" width="85" height="26" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_dataplex_desc" value="&lt;font style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Distributed Trace Correlation&lt;br&gt;&amp; Hallucination Prevention&lt;br&gt;from &lt;IMAGE 15&gt; context&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="925" y="650" width="125" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_sec_mgmt_patterns" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Security &amp; Secret&lt;br&gt;Management&lt;br&gt;&lt;span style=&quot;font-weight:normal;color:#64748B;&quot;&gt;prerequisite patterns&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="755" y="675" width="115" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- Async Connectors to Sovereign Cloud & Central Logging -->
+        <mxCell id="arr_async_purple" value="&lt;font style=&quot;font-size:6px;color:#7C3AED;&quot;&gt;Async Flow&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="755" y="629" as="sourcePoint"/><mxPoint x="710" y="380" as="targetPoint"/><Array as="points"><mxPoint x="730" y="629"/><mxPoint x="730" y="380"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="arr_audit_blue" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="755" y="695" as="sourcePoint"/><mxPoint x="710" y="650" as="targetPoint"/><Array as="points"><mxPoint x="725" y="695"/><mxPoint x="725" y="650"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="arr_red_alert_logging" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="710" y="335" as="sourcePoint"/><mxPoint x="830" y="495" as="targetPoint"/><Array as="points"><mxPoint x="740" y="335"/><mxPoint x="740" y="495"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Bottom Footer Note -->
+        <mxCell id="lbl_footer_note" value="&lt;font style=&quot;font-size:7px;color:#475569;&quot;&gt;&lt;i&gt;Patient IP stands for Patient Intellectual Property/Data&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="840" y="740" width="250" height="16" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== BOTTOM LEFT: LEGEND ==================== -->
+        <mxCell id="box_legend" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="15" y="580" width="265" height="155" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_legend_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="22" y="585" width="80" height="14" as="geometry"/>
+        </mxCell>
+
+        <!-- Column 1: Line Types -->
+        <mxCell id="leg_line_solid" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="25" y="608" as="sourcePoint"/><mxPoint x="55" y="608" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_leg_solid" value="&lt;font style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Solid Data Flow&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="602" width="85" height="12" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_line_dashed" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.2;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="25" y="622" as="sourcePoint"/><mxPoint x="55" y="622" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_leg_dashed" value="&lt;font style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Dashed-Cross-Border&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="616" width="85" height="12" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_line_audit" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="25" y="636" as="sourcePoint"/><mxPoint x="55" y="636" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_leg_audit" value="&lt;font style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Async Audit Flow&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="630" width="85" height="12" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_sym_red_alert" value="&lt;font style=&quot;font-size:10px;&quot;&gt;⚠️&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="25" y="646" width="18" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_leg_red_alert" value="&lt;font style=&quot;font-size:6.5px;color:#DC2626;&quot;&gt;&lt;b&gt;Red Alert&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="646" width="85" height="16" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_ico_personas" value="&lt;font style=&quot;font-size:12px;&quot;&gt;👩‍💼👨‍💼&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="25" y="666" width="30" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_leg_personas" value="&lt;font style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;Legal Persona /&lt;br&gt;CISO Persona&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="666" width="85" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Column 2: Palette Tags -->
+        <mxCell id="leg_tag_patient" value="" style="line;strokeColor=#F43F5E;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="155" y="608" width="20" height="2" as="geometry"/></mxCell>
+        <mxCell id="lbl_leg_patient" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Patient Data Flow&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="180" y="602" width="95" height="12" as="geometry"/></mxCell>
+
+        <mxCell id="leg_tag_persona" value="" style="line;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="155" y="622" width="20" height="2" as="geometry"/></mxCell>
+        <mxCell id="lbl_leg_persona" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Persona Definition&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="180" y="616" width="95" height="12" as="geometry"/></mxCell>
+
+        <mxCell id="leg_tag_sovereign" value="" style="line;strokeColor=#0284C7;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="155" y="636" width="20" height="2" as="geometry"/></mxCell>
+        <mxCell id="lbl_leg_sovereign" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Sovereign Data Flow&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="180" y="630" width="95" height="12" as="geometry"/></mxCell>
+
+        <mxCell id="leg_tag_async" value="" style="line;strokeColor=#7C3AED;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="155" y="650" width="20" height="2" as="geometry"/></mxCell>
+        <mxCell id="lbl_leg_async" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Asynchronous Flow&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="180" y="644" width="95" height="12" as="geometry"/></mxCell>
+
+        <mxCell id="leg_tag_remediation" value="" style="line;strokeColor=#E11D48;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="155" y="664" width="20" height="2" as="geometry"/></mxCell>
+        <mxCell id="lbl_leg_remediation" value="&lt;font style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Remediation Flow&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="180" y="658" width="95" height="12" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

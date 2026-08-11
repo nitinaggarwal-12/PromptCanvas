@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="event_driven_eda" name="Page 1: Event-Driven EDA Blueprint">
+  <diagram id="tech_event_driven_eda" name="Event-Driven Architecture (EDA) & Kafka Event Mesh">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -249,7 +249,7 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="eda_executive_guide" name="Page 2: Executive Playbook &amp; Governance Profile">
+  <diagram id="tech_event_driven_eda" name="Event-Driven Architecture (EDA) & Kafka Event Mesh">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0_edap2" />

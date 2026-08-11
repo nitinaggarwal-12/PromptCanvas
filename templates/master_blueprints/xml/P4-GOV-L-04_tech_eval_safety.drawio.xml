@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="agentic_eval_safety_platform" name="Agentic AI Evaluation, Safety &amp; Optimization Platform (P4-GOV-L-04)">
+  <diagram id="tech_eval_safety" name="Agentic AI Evaluation, Safety & Optimization Platform (P4-GOV-L-04)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="720" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -40,7 +40,7 @@
         <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="20" y="78" width="185" height="520" as="geometry"/>
         </mxCell>
-        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:9px;color:#1E3A8A;&quot;&gt;END USER &amp;amp; GE&lt;br&gt;APP CONTEXT&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(EXTERNAL)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:9px;color:#1E3A8A;&quot;&gt;END USER &amp; GE&lt;br&gt;APP CONTEXT&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(EXTERNAL)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="82" width="175" height="32" as="geometry"/>
         </mxCell>
 
@@ -50,7 +50,7 @@
         </mxCell>
 
         <!-- Center GE App Device Visual Box -->
-        <mxCell id="card_ge_app_user" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;👩‍💼 📱 💻&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#0F172A;&quot;&gt;GE App&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Industrial &amp;amp; Field Client&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#60A5FA;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+        <mxCell id="card_ge_app_user" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;👩‍💼 📱 💻&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#0F172A;&quot;&gt;GE App&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Industrial &amp; Field Client&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#60A5FA;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="28" y="185" width="112" height="110" as="geometry"/>
         </mxCell>
 
@@ -77,7 +77,7 @@
         </mxCell>
 
         <!-- Col 1 Bottom Device Context Engine -->
-        <mxCell id="card_col1_bottom_telemetry" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;📶 🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Device Context Engine&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Location, Role &amp;amp; Ephemeral JWT&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+        <mxCell id="card_col1_bottom_telemetry" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;📶 🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Device Context Engine&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Location, Role &amp; Ephemeral JWT&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="28" y="420" width="168" height="60" as="geometry"/>
         </mxCell>
 
@@ -96,7 +96,7 @@
         <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="215" y="78" width="175" height="520" as="geometry"/>
         </mxCell>
-        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:9px;color:#166534;&quot;&gt;INGESTION &amp;amp; REGISTRATION&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(Registry)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:9px;color:#166534;&quot;&gt;INGESTION &amp; REGISTRATION&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(Registry)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="220" y="82" width="165" height="32" as="geometry"/>
         </mxCell>
 
@@ -104,7 +104,7 @@
         <mxCell id="box_data_sources" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="225" y="120" width="155" height="75" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_data_sources_title" value="&lt;b style=&quot;font-size:7px;color:#166534;&quot;&gt;Data Sources &amp;amp; Datasets&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_data_sources_title" value="&lt;b style=&quot;font-size:7px;color:#166534;&quot;&gt;Data Sources &amp; Datasets&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="230" y="122" width="145" height="14" as="geometry"/>
         </mxCell>
         <mxCell id="card_src_gcs" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;🗄️ GCS&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Agent Configs&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -161,7 +161,7 @@
           <mxGeometry x="235" y="435" width="135" height="65" as="geometry"/>
         </mxCell>
 
-        <mxCell id="lbl_reg_rules_top" value="&lt;span style=&quot;font-size:6px;color:#166534;font-weight:bold;&quot;&gt;Central Agent Metadata &amp;amp; Rules&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_reg_rules_top" value="&lt;span style=&quot;font-size:6px;color:#166534;font-weight:bold;&quot;&gt;Central Agent Metadata &amp; Rules&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="235" y="570" width="135" height="15" as="geometry"/>
         </mxCell>
 
@@ -235,12 +235,12 @@
         </mxCell>
 
         <!-- Function Calling & Extensions -->
-        <mxCell id="card_func_calling" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🔗&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Function Calling &amp;amp; Extensions&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Get/write API/tools to call external APIs)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+        <mxCell id="card_func_calling" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🔗&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Function Calling &amp; Extensions&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Get/write API/tools to call external APIs)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="500" y="360" width="80" height="85" as="geometry"/>
         </mxCell>
 
         <!-- Execution Logs & Traces -->
-        <mxCell id="card_exec_logs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;📋 📊&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Execution Logs &amp;amp; Traces&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Cloud Logging / GCS)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+        <mxCell id="card_exec_logs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;📋 📊&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Execution Logs &amp; Traces&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Cloud Logging / GCS)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="590" y="360" width="80" height="85" as="geometry"/>
         </mxCell>
 
@@ -292,7 +292,7 @@
         <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="686" y="78" width="185" height="520" as="geometry"/>
         </mxCell>
-        <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;EVALUATION, SAFETY&lt;br&gt;&amp;amp; GUARDRAILS LOOP&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;EVALUATION, SAFETY&lt;br&gt;&amp; GUARDRAILS LOOP&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="690" y="82" width="175" height="32" as="geometry"/>
         </mxCell>
 
@@ -300,7 +300,7 @@
         <mxCell id="box_eval_workloads" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="695" y="120" width="165" height="55" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_eval_wl_title" value="&lt;b style=&quot;font-size:7px;color:#1E3A8A;&quot;&gt;Eval &amp;amp; Safety Workloads&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_eval_wl_title" value="&lt;b style=&quot;font-size:7px;color:#1E3A8A;&quot;&gt;Eval &amp; Safety Workloads&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="700" y="122" width="155" height="14" as="geometry"/>
         </mxCell>
         <mxCell id="pod_eval_icons" value="&lt;span style=&quot;font-size:16px;&quot;&gt;📦 🚀 📦&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -320,7 +320,7 @@
         </mxCell>
 
         <!-- Human-in-the-Loop Eval Box -->
-        <mxCell id="box_hitl_eval" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;👤 📋&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Human-in-the-Loop Eval&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Human Annotation &amp;amp; Review UI&lt;br&gt;(Links to review management)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+        <mxCell id="box_hitl_eval" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;👤 📋&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Human-in-the-Loop Eval&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Human Annotation &amp; Review UI&lt;br&gt;(Links to review management)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="695" y="270" width="165" height="65" as="geometry"/>
         </mxCell>
 
@@ -385,7 +385,7 @@
         <mxCell id="col5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FECDD3;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="879" y="78" width="170" height="520" as="geometry"/>
         </mxCell>
-        <mxCell id="col5_hdr" value="&lt;b style=&quot;font-size:9px;color:#9F1239;&quot;&gt;ANALYSIS, REPORTING&lt;br&gt;&amp;amp; OPTIMIZATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col5_hdr" value="&lt;b style=&quot;font-size:9px;color:#9F1239;&quot;&gt;ANALYSIS, REPORTING&lt;br&gt;&amp; OPTIMIZATION&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="885" y="82" width="160" height="32" as="geometry"/>
         </mxCell>
 
@@ -393,7 +393,7 @@
         <mxCell id="box_analysis_rep" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FDA4AF;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="888" y="120" width="152" height="185" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_anal_hdr" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🔍 📊&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Analysis &amp;amp; Reporting&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(BigQuery -&amp;gt; Looker)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_anal_hdr" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🔍 📊&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Analysis &amp; Reporting&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(BigQuery -&gt; Looker)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="892" y="122" width="144" height="35" as="geometry"/>
         </mxCell>
         <mxCell id="pill_opt_dash" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Optimization Dashboards&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -444,12 +444,12 @@
           <mxGeometry x="20" y="605" width="1285" height="90" as="geometry"/>
         </mxCell>
 
-        <mxCell id="lbl_gov_title" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;color:#2563EB;&quot;&gt;🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#1E3A8A;&quot;&gt;PLATFORM&lt;br&gt;GOVERNANCE&lt;br&gt;&amp;amp; MONITORING&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_gov_title" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;color:#2563EB;&quot;&gt;🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#1E3A8A;&quot;&gt;PLATFORM&lt;br&gt;GOVERNANCE&lt;br&gt;&amp; MONITORING&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="612" width="115" height="75" as="geometry"/>
         </mxCell>
 
         <!-- 1. IAM -->
-        <mxCell id="gov_card_iam" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;👤&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;IAM&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Identity &amp;amp; Access&lt;br&gt;Management&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+        <mxCell id="gov_card_iam" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;👤&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;IAM&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Identity &amp; Access&lt;br&gt;Management&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="155" y="618" width="145" height="65" as="geometry"/>
         </mxCell>
 

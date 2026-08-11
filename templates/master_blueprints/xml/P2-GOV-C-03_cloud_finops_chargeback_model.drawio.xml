@@ -1,5 +1,5 @@
 <mxfile host="app.diagrams.net" modified="2026-08-08T17:48:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="cloud_finops_chargeback" name="WBS 1.1.3: Cloud FinOps &amp; Chargeback Model">
+  <diagram id="cloud_finops_chargeback" name="Cloud FinOps & Chargeback Model (WBS 1.1.3)">
     <mxGraphModel dx="1500" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1480" pageHeight="860" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -484,7 +484,7 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="cloud_finops_playbook" name="Page 2: Executive Playbook &amp; Governance Profile">
+  <diagram id="cloud_finops_chargeback" name="Cloud FinOps & Chargeback Model (WBS 1.1.3)">
     <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="680" background="#FFFFFF">
       <root>
         <mxCell id="0_p2" />
