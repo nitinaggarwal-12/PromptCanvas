@@ -112,23 +112,24 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_eval_safety",
-    name: "LLM-as-a-Judge AI Safety & Model Evaluation Platform",
+    name: "Agentic AI Evaluation, Safety & Optimization Platform",
     categoryId: "ai_agentic",
     categoryName: "AI & Agentic Systems",
-    badge: "Production Blueprint (WBS 4.3.2)",
+    badge: "Production Blueprint (P4-GOV-L-04)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use when establishing automated AI safety benchmarks, toxic content mitigation, adversarial red-teaming, and LLM-as-a-Judge consensus evaluation before model promotion.",
+    whenToUse: "Use when establishing end-to-end agent lifecycle evaluation, safety policies, multi-modal grounding, AI-based and human-in-the-loop review, and ML-driven closed-loop optimization.",
     bestFor: [
-      "WBS 4.3.2 Automated AI Safety & Model Evaluation Platform",
-      "Multi-model parallel inference benchmarking (MMLU, GSM8K, HELM)",
-      "Adversarial red-teaming & prompt injection robustness testing",
-      "LLM-as-a-Judge consensus jury & toxicity scoring matrices",
-      "Continuous safety scorecard tracking and model promotion gates"
+      "P4-GOV-L-04 Agentic AI Evaluation, Safety & Optimization Platform",
+      "Agent Registry structured storage (definitions, safety policies, grounding knowledge)",
+      "Gemini Agent Platform (Vertex AI Agent Builder Orchestrator, Gemini Pro/Ultra, GKE/Cloud Run workloads)",
+      "Parallel AI-Based Evaluation (Vertex AI Model Evaluation) & Human Review UI",
+      "Safety Guardrails (Toxicity Filter, Bias Mitigation, PII Redaction, Alignment Checker)",
+      "ML-Driven Optimization (Prompt Engineering, RLHF) closed-loop updates"
     ],
-    keyTech: ["LLM-as-a-Judge", "HELM Benchmarks", "Red-Teaming Harness", "Safety Scorecards", "Model Promotion Gate"],
+    keyTech: ["Vertex AI Agent Builder", "Gemini Pro & Ultra", "Agent Registry", "Vertex AI Model Evaluation", "Looker", "BigQuery", "Safety Guardrails"],
     thumbnail: "/templates/tech_eval_safety.png",
-    promptSummary: "AI Safety Platform: Benchmark Ingress -> Red-Team Harness -> Parallel Inference -> LLM Consensus -> Safety Scorecards."
+    promptSummary: "Agentic AI Safety Platform: Ingestion & Registry -> Gemini Agent Platform -> Eval & Safety Loop -> BigQuery/Looker Analysis -> ML Closed-Loop Optimization."
   },
   {
     id: "tech_agentic_mesh",

@@ -51,13 +51,13 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_eval_safety: {
     id: "tech_eval_safety",
-    title: "LLM-as-a-Judge AI Safety & Model Evaluation Platform (WBS 4.3.2)",
+    title: "Agentic AI Evaluation, Safety & Optimization Platform (P4-GOV-L-04)",
     category: "AI & Cognitive Systems",
-    useCase: "AI SAFETY & MODEL EVALUATION (WBS 4.3.2)",
-    businessUseCase: "WBS 4.3.2: Automated AI safety and foundation model evaluation platform conducting benchmark suites (MMLU, GSM8K, HELM), adversarial red-teaming, LLM-as-a-Judge jury consensus, toxicity scoring, and model promotion gating.",
-    primaryActors: "AI Safety Researchers, Model Evaluation Leads, ML Engineers, Governance Officers",
-    targetOutcomes: "Automated Pre-Deployment Model Evaluation, Zero-Toxicity Threshold Enforcement, Multi-Model Consensus Scoring, Standardized Safety Scorecards",
-    desc: "AI Safety and Model Evaluation blueprint mapping benchmark suites, red-teaming harness, parallel inference, LLM-as-a-Judge consensus, and promotion gates."
+    useCase: "AGENTIC AI EVALUATION, SAFETY & OPTIMIZATION PLATFORM (P4-GOV-L-04)",
+    businessUseCase: "P4-GOV-L-04: Closed-loop Agentic AI Evaluation, Safety, and Optimization Platform integrating Agent Registry, Vertex AI Agent Builder, Gemini Pro/Ultra intelligence core, GKE/Cloud Run agent workloads, parallel AI-based & Human-in-the-loop evaluation, Safety Guardrails, BigQuery/Looker optimization analytics, and continuous ML-driven closed-loop updates.",
+    primaryActors: "AI Safety Researchers, Prompt Engineers, Model Evaluation Leads, ML Governance Officers, SecOps",
+    targetOutcomes: "Continuous Closed-Loop Agent Alignment, Automated AI & Human Safety Gating, Sub-second Policy Sync, Enterprise Multi-Modal Grounding",
+    desc: "GCP Solution Blueprint: End-to-End Agentic AI Evaluation, Safety, and Optimization Platform powered by Google Cloud, Gemini Platform, Agent Registry, and GE App Context."
   },
   tech_agentic_mesh: {
     id: "tech_agentic_mesh",

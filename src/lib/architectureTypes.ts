@@ -314,10 +314,10 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "tech_eval_safety",
-    name: "LLM-as-a-Judge AI Safety & Model Evaluation (WBS 4.3.2)",
+    name: "Agentic AI Evaluation, Safety & Optimization Platform (P4-GOV-L-04)",
     category: "AI & Cognitive Systems",
-    whenToUse: "WBS 4.3.2 Automated AI Safety & Model Evaluation Platform with multi-metric benchmarking (MMLU, GSM8K, HELM), adversarial red-teaming, LLM-as-a-Judge consensus, and safety scorecards.",
-    prompt: "Act as a Principal AI Safety & Evaluation Architect. Design a production-grade WBS 4.3.2 LLM-as-a-Judge AI Safety & Model Evaluation Platform blueprint. Include: Prompt Benchmark Ingress -> Adversarial Red-Teaming Harness -> Multi-Model Parallel Inference -> LLM-as-a-Judge Consensus Jury -> Safety, Toxicity & Truthfulness Scorecards -> Model Promotion Gate."
+    whenToUse: "P4-GOV-L-04 Agentic AI Evaluation, Safety, and Optimization Platform powered by Google Cloud, Gemini Platform, Agent Registry, and GE App Context — Continuous Evaluation, RLHF & Guardrails Closed Loop.",
+    prompt: "Act as a Principal Google Cloud & Gemini AI Architect. Design a production-grade P4-GOV-L-04 Agentic AI Evaluation, Safety, and Optimization Platform blueprint. Include: Multi-modal Input & GE App Context -> Cloud Load Balancing & Cloud Armor WAF -> Ingestion & Agent Registry (Structured Storage, Safety Policies, Grounding Knowledge) -> Gemini Agent Platform (Vertex AI Agent Builder Orchestrator, Gemini Pro/Ultra Intelligence Core, GKE/Cloud Run Agent Workloads, Vertex AI Search, Function Calling Extensions, Execution Logs & Traces) -> Evaluation, Safety & Guardrails Loop (AI-Based Eval with Vertex AI Model Eval, Human-in-the-Loop Review UI, Safety Guardrails) -> Analysis, Reporting & ML-Driven Optimization (BigQuery -> Looker Dashboards, RLHF / Prompt Tuning Closed Loop back to Agent Registry) -> Platform Governance & Monitoring (IAM, Secret Manager, Cloud Armor, Audit Logs, Vertex AI Model Monitoring, SCC, Assured Workloads)."
   },
   {
     id: "tech_agentic_mesh",

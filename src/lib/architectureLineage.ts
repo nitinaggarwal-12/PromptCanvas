@@ -259,7 +259,7 @@ export const BLUEPRINT_LINEAGE_REGISTRY: Record<string, BlueprintLineage> = {
     uniqueId: "P4-GOV-L-04",
     canonicalWbsId: "P4-GOV-L-04_tech_eval_safety",
     canonicalArchId: "tech_eval_safety",
-    name: "LLM-as-a-Judge AI Safety & Benchmarking Platform",
+    name: "Agentic AI Evaluation, Safety & Optimization Platform",
     phaseId: "P4",
     phaseTitle: "Phase 4: Platform Engineering, Mesh & Real-Time Intelligence",
     layer: "Logical",
