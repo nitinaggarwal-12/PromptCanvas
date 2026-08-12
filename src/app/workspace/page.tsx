@@ -4373,76 +4373,19 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           )}
         </div>
 
-        {/* 1. ACTION ZONE: Primary Architecture Creation Strip */}
-        <div 
-          className="p-3 border-b border-panel-border/30 relative shrink-0"
-          onMouseLeave={() => setExpandedSubMenu(null)}
-        >
+        {/* 1. ACTION ZONE: Primary Architecture Creation Button */}
+        <div className="p-3 border-b border-panel-border/30 relative shrink-0">
           <button
             id="new-diagram-btn"
-            onClick={() => setExpandedSubMenu(expandedSubMenu === 'create_popover' ? null : 'create_popover')}
-            onMouseEnter={() => setExpandedSubMenu('create_popover')}
-            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-extrabold transition-all shadow-sm text-xs cursor-pointer ${
+            onClick={openCreateModal}
+            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black transition-all shadow-md hover:shadow-teal-500/20 text-xs cursor-pointer ${
               !isSidebarOpen && 'p-2'
             }`}
+            title="Create New Architecture with AI Prompt"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
-            {isSidebarOpen && <span>{t.newArchitecture} ▾</span>}
+            {isSidebarOpen && <span>New Architecture</span>}
           </button>
-
-          {/* Inline Non-Blocking Expanding Creation & Tools Popover (Auto-collapses on mouse leave / click outside) */}
-          {expandedSubMenu === 'create_popover' && isSidebarOpen && (
-            <div 
-              className="mt-2 p-2.5 rounded-xl bg-slate-900/95 border border-teal-500/40 shadow-2xl space-y-2 animate-in fade-in slide-in-from-top-1 duration-150 z-50"
-            >
-              <div className="text-[10px] font-extrabold uppercase tracking-wider text-teal-400 px-1">
-                Instant Architecture Actions
-              </div>
-              
-              <button
-                onClick={() => { openCreateModal(); setExpandedSubMenu(null); }}
-                className="w-full flex items-center justify-between p-2 rounded-lg bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 text-teal-200 text-xs font-bold transition-all text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-teal-400" />
-                  <span>AI Prompt Studio</span>
-                </div>
-                <ChevronRight className="w-3.5 h-3.5 opacity-60" />
-              </button>
-
-              <button
-                onClick={() => { setIsUseCaseModalOpen(true); setExpandedSubMenu(null); }}
-                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all text-left cursor-pointer"
-              >
-                <ClipboardList className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Use Case Intake Form</span>
-              </button>
-
-              <button
-                onClick={() => { setIsImportModalOpen(true); setExpandedSubMenu(null); }}
-                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all text-left cursor-pointer"
-              >
-                <Upload className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Import (.drawio / .tf)</span>
-              </button>
-
-              <button
-                onClick={() => { setIsVersionDiffModalOpen(true); setExpandedSubMenu(null); }}
-                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all text-left cursor-pointer"
-              >
-                <FileCode className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Version &amp; Visual Diff</span>
-              </button>
-
-              <button
-                onClick={() => { setIsExecutiveSummaryOpen(true); setExpandedSubMenu(null); }}
-                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all text-left cursor-pointer"
-              >
-                <Briefcase className="w-3.5 h-3.5 text-amber-400" />
-                <span>Executive Board Suite</span>
-              </button>
-            </div>
-          )}
         </div>
 
         {/* 3. CLEAN PRIMARY NAVIGATION LINKS (No Auto-Hover Accordion Sprawl) */}
@@ -6168,7 +6111,6 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               id="tour-canvas-viewport"
               className={getTourClass(tourStep, 4, "flex-1 w-full h-full relative overflow-hidden")}
             >
-              
               {!activeDiagram ? (
                 <div className="w-full h-full overflow-y-auto p-8 md:p-12 relative flex items-center justify-center bg-gradient-to-b from-[#090d16] to-[#05080e]">
                   {/* Subtle Grid overlay */}
@@ -6183,97 +6125,164 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     }}
                   />
 
-                  <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-5 gap-8 items-start z-10">
-                    {/* Welcome & Scratch Onboarding (Left Column) */}
-                    <div className="md:col-span-2 space-y-6">
-                      <div className="space-y-2">
-                        <span className="text-[10px] font-bold text-teal-accent uppercase tracking-wider px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/20">
-                          Active Workspace
+                  <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start z-10">
+                    {/* Embedded AI Prompt Studio (Left 7 Cols) */}
+                    <div className="lg:col-span-7 glass-panel border-teal-500/40 rounded-2xl p-6 shadow-2xl bg-slate-900/90 space-y-4">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400">
+                            <Sparkles className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="font-extrabold text-sm text-white">AI Architectural Prompt Studio</h3>
+                            <p className="text-[11px] text-teal-400 font-mono">Compile text to zero-trust Draw.io vector SVG</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-teal-950/80 text-teal-300 border border-teal-800/80">
+                          AI Engine: Pro
                         </span>
-                        <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight pt-2">
-                          Welcome to <br />
-                          <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-accent to-cyan-400">
-                            PromptCanvas
-                          </span>
-                        </h2>
-                        <p className="text-xs text-slate-400 leading-relaxed pt-1">
-                          Translate raw system descriptions into professional Draw.io cloud architectures instantly. Audited for compliance, version-controlled, and editable.
-                        </p>
                       </div>
 
-                      {/* Launch Card */}
-                      <div className="glass-panel border-panel-border/80 hover:border-teal-500/40 rounded-xl p-5 space-y-4 hover:scale-[1.01] transition-all duration-300">
-                        <div className="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-accent">
-                          <Plus className="w-5 h-5" />
-                        </div>
+                      <form onSubmit={handleCreateDiagram} className="space-y-3.5">
                         <div>
-                          <h4 className="font-bold text-sm text-white">Start from scratch</h4>
-                          <p className="text-[11px] text-slate-400 mt-1">Initialize a clean slate diagram canvas with your custom prompt inputs.</p>
+                          <label className="block text-xs font-bold text-slate-300 mb-1">
+                            Architecture Project Name
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={newDiagramName}
+                            onChange={(e) => setNewDiagramName(e.target.value)}
+                            placeholder="e.g. ApexPay Global Multi-Region Payment Mesh"
+                            className="w-full bg-slate-950 border border-slate-700/80 focus:border-teal-400 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-all font-semibold"
+                          />
                         </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-300 mb-1">
+                            Describe Your System Requirements
+                          </label>
+                          <textarea
+                            rows={4}
+                            value={newDiagramPrompt}
+                            onChange={(e) => setNewDiagramPrompt(e.target.value)}
+                            placeholder="e.g., Design a high-throughput event-driven microservices platform on AWS. Include API Gateway, EKS Kubernetes cluster, Kafka event mesh, DynamoDB for orders, and Redis for low-latency session caching..."
+                            className="w-full bg-slate-950 border border-slate-700/80 focus:border-teal-400 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none transition-all resize-none leading-relaxed font-medium"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-400 mb-1">
+                            Starter Blueprint Topology
+                          </label>
+                          <select
+                            value={selectedTemplate}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setSelectedTemplate(val);
+                              if (val.startsWith('arch_')) {
+                                const archId = val.replace('arch_', '');
+                                setSelectedArchType(archId);
+                                const arch = getArchitectureTypeById(archId);
+                                if (arch) setNewDiagramPrompt(arch.prompt);
+                              }
+                            }}
+                            className="w-full bg-slate-950 border border-slate-800 focus:border-teal-400 rounded-xl px-3 py-2 text-xs text-teal-300 font-bold focus:outline-none transition-all cursor-pointer"
+                          >
+                            <optgroup label="🏢 BUSINESS & STRATEGIC BLUEPRINTS" className="bg-[#0b101d] text-teal-400 font-bold">
+                              {BUSINESS_ARCHITECTURE_TYPES.map((b) => (
+                                <option key={b.id} value={`arch_${b.id}`} className="bg-[#0b101d] text-slate-200">
+                                  🏢 {b.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="⚙️ TECHNICAL & CLOUD TOPOLOGIES" className="bg-[#0b101d] text-indigo-400 font-bold">
+                              {TECHNICAL_ARCHITECTURE_TYPES.map((tech) => (
+                                <option key={tech.id} value={`arch_${tech.id}`} className="bg-[#0b101d] text-slate-200">
+                                  ⚙️ {tech.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                          </select>
+                        </div>
+
                         <button
-                          onClick={openCreateModal}
-                          className="w-full py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-semibold text-xs transition-all glow-teal-hover cursor-pointer"
+                          type="submit"
+                          disabled={isAnyAIBusy}
+                          className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                         >
-                          Create New Diagram
+                          {isGenerating ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                              <span>Compiling Zero-Trust Vector Blueprint...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="w-4 h-4 fill-current" />
+                              <span>⚡ Synthesize Architecture with AI</span>
+                            </>
+                          )}
                         </button>
-                      </div>
+                      </form>
                     </div>
 
-                    {/* Presets Onboarding (Right Column) */}
-                    <div className="md:col-span-3 space-y-4">
-                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Quick Start Presets</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Quick Start Presets (Right 5 Cols) */}
+                    <div className="lg:col-span-5 space-y-3.5">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-black text-slate-300 uppercase tracking-wider">Quick Start Presets</h4>
+                        <Link
+                          href="/templates"
+                          className="text-[11px] font-bold text-teal-400 hover:text-teal-300 transition-colors flex items-center gap-1"
+                        >
+                          <span>Browse 37 Templates</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                      <div className="space-y-3">
                         {[
                           {
                             name: "GCP Serverless App",
-                            prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture. It should include: a Global HTTPS Load Balancer, Cloud CDN, Cloud Run for the frontend/backend services, Cloud SQL (PostgreSQL) for relational data, and Cloud Storage for static media assets.",
+                            prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture with Global HTTPS Load Balancer, Cloud CDN, Cloud Run microservices, Cloud SQL (PostgreSQL), and Cloud Storage.",
                             provider: "GCP",
                             color: "bg-teal-500/10 text-teal-400 border-teal-500/20"
                           },
                           {
                             name: "AWS Kubernetes Cluster",
-                            prompt: "Act as an AWS Solutions Architect. Design a microservices architecture hosted on EKS (Elastic Kubernetes Service). It should include: an Application Load Balancer, Amazon API Gateway, EKS worker nodes running services, RDS PostgreSQL for main DB, DynamoDB for session state, and ElastiCache Redis for caching.",
+                            prompt: "Act as an AWS Solutions Architect. Design a microservices architecture on EKS with Application Load Balancer, API Gateway, worker nodes, RDS PostgreSQL, DynamoDB, and ElastiCache Redis.",
                             provider: "AWS",
                             color: "bg-amber-500/10 text-amber-400 border-amber-500/20"
                           },
                           {
-                            name: "AI RAG GCP Pipeline",
-                            prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system on GCP. It should include: a Cloud Run API service, Cloud SQL with pgvector extension for storing vector embeddings, Vertex AI Search for document retrieval, Vertex AI Gemini API for LLM reasoning, and Cloud Storage for source documents.",
-                            provider: "AI / GCP",
+                            name: "AI Agentic RAG Pipeline",
+                            prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system with Cloud Run API, Cloud SQL pgvector, Vertex AI Search for document retrieval, and Gemini 2.5 Pro for reasoning.",
+                            provider: "AI / LLM",
                             color: "bg-purple-500/10 text-purple-400 border-purple-500/20"
                           },
                           {
-                            name: "CI/CD Build Pipeline",
-                            prompt: "Act as a DevOps Architect. Design a secure CI/CD build and deploy pipeline. It should include: GitHub repository triggering a GitHub Actions Runner, compilation/testing step, containerizing with Docker, pushing images to Artifact Registry, deploying using Terraform Cloud to a target Kubernetes cluster, and monitoring with Prometheus/Grafana.",
-                            provider: "DevOps",
+                            name: "Enterprise Event-Driven Kafka",
+                            prompt: "Act as an Enterprise Architect. Design an event-driven architecture with Apache Kafka cluster, Schema Registry, Flink stream processing, Dead Letter Queue (DLQ), and microservice consumers.",
+                            provider: "Event-Driven",
                             color: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
                           }
                         ].map((preset, idx) => (
                           <div 
                             key={idx}
-                            className="glass-panel border-panel-border/40 hover:border-teal-500/30 rounded-xl p-4 flex flex-col justify-between hover:scale-[1.01] transition-all group"
+                            onClick={() => {
+                              setNewDiagramName(preset.name);
+                              setNewDiagramPrompt(preset.prompt);
+                            }}
+                            className="glass-panel border-panel-border/60 hover:border-teal-500/60 rounded-xl p-3.5 flex flex-col justify-between hover:scale-[1.01] transition-all cursor-pointer group bg-slate-950/60 hover:bg-slate-900/90"
                           >
-                            <div>
-                              <div className="flex items-center justify-between mb-2">
-                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${preset.color}`}>
-                                  {preset.provider}
-                                </span>
-                              </div>
-                              <h5 className="font-bold text-xs text-white group-hover:text-teal-accent transition-colors mb-1">{preset.name}</h5>
-                              <p className="text-[10px] text-slate-500 line-clamp-3 leading-relaxed mb-4">{preset.prompt}</p>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${preset.color}`}>
+                                {preset.provider}
+                              </span>
+                              <span className="text-[10px] text-teal-400 opacity-0 group-hover:opacity-100 transition-opacity font-bold">
+                                Use Preset ➔
+                              </span>
                             </div>
-                            <button
-                              onClick={() => {
-                                setNewDiagramName(preset.name);
-                                setNewDiagramPrompt(preset.prompt);
-                                setSelectedTemplate((idx + 1).toString());
-                                setIsCreateModalOpen(true);
-                              }}
-                              className="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-[10px] font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1 cursor-pointer"
-                            >
-                              <span>Launch Preset</span>
-                              <ArrowRight className="w-2.5 h-2.5" />
-                            </button>
+                            <h5 className="font-extrabold text-xs text-white group-hover:text-teal-300 transition-colors mb-1">{preset.name}</h5>
+                            <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed font-medium">{preset.prompt}</p>
                           </div>
                         ))}
                       </div>
