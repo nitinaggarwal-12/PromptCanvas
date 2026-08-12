@@ -66,7 +66,8 @@ import {
   RefreshCw,
   DollarSign,
   ClipboardList,
-  Star
+  Star,
+  History
 } from 'lucide-react';
 import { CloudCostModal } from '@/components/workspace/CloudCostModal';
 import { ArchitectureCodeViewerModal } from '@/components/workspace/ArchitectureCodeViewerModal';
@@ -4491,6 +4492,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           {[
             { id: 'editor', name: t.designCanvas, icon: Network },
             { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
+            { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
             { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
             { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
             { id: 'walkthrough', name: t.interactiveTour, icon: BookOpen },

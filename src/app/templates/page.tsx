@@ -24,7 +24,8 @@ import {
   X,
   Compass,
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  History
 } from 'lucide-react';
 import { TEMPLATE_CATEGORIES, TEMPLATE_CATALOG_ITEMS, TemplateCatalogItem } from '@/lib/templateCategories';
 
@@ -109,10 +110,18 @@ export default function TemplatesPage() {
           </div>
 
           {/* Nav Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/history"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-xs font-bold text-slate-300 hover:text-teal-300 transition-all shadow-sm"
+            >
+              <History className="w-4 h-4 text-teal-400" />
+              <span>Historical Canvases</span>
+            </Link>
+
             <Link
               href="/dashboard"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-xs font-bold text-slate-300 hover:text-white transition-all shadow-sm"
+              className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-xs font-bold text-slate-300 hover:text-white transition-all shadow-sm"
             >
               <LayoutGrid className="w-4 h-4 text-slate-400" />
               <span>Dashboard</span>

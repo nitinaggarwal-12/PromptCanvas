@@ -31,7 +31,8 @@ import {
   ShieldCheck,
   ChevronDown,
   Compass,
-  RefreshCw
+  RefreshCw,
+  History
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
@@ -392,6 +393,7 @@ export default function Dashboard() {
           {[
             { id: "editor", name: "Design Canvas", icon: Network, href: "/workspace" },
             { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/workspace?tab=templates" },
+            { id: "history", name: "Historical Canvases", icon: History, href: "/history" },
             { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },
             { id: "audit", name: "Security & Zero-Trust Audit", icon: ShieldCheck, href: "/workspace?tab=audit" },
             { id: "walkthrough", name: "Interactive Visual Tour", icon: BookOpen, href: "/workspace?tab=walkthrough" },
