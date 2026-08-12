@@ -67,7 +67,10 @@ import {
   DollarSign,
   ClipboardList,
   Star,
-  History
+  History,
+  Layers,
+  Zap,
+  Palette
 } from 'lucide-react';
 import { CloudCostModal } from '@/components/workspace/CloudCostModal';
 import { ArchitectureCodeViewerModal } from '@/components/workspace/ArchitectureCodeViewerModal';
@@ -858,6 +861,7 @@ function WorkspaceContent() {
   const [versionSearchQuery, setVersionSearchQuery] = useState('');
   const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState(false);
   const [isSettingsHoverOpen, setIsSettingsHoverOpen] = useState(false);
+  const [isViewStyleDropdownOpen, setIsViewStyleDropdownOpen] = useState(false);
 
   async function handleSelectDisambiguationType(typeId: string) {
     const promptToGen = disambiguationData?.prompt || newDiagramPrompt || activeDiagram?.name || 'Architecture Diagram';
@@ -5935,56 +5939,138 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       TECHNICAL INTEGRATION WALKTHROUGH
                     </span>
                   ) : (
-                    <div className="flex items-center gap-2">
-                      {/* Canvas Presets & Playbook Group */}
-                      <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-teal-500/40 shadow-lg">
-                        <button
-                          type="button"
-                          onClick={() => setLayoutPreset('detailed')}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                            layoutPreset === 'detailed' ? 'bg-teal-500/20 text-teal-300 border border-teal-400/60' : 'text-slate-400 hover:text-white'
-                          }`}
+                    <div className="relative">
+                      {/* Consolidated View Style Dropdown */}
+                      <button
+                        type="button"
+                        onClick={() => setIsViewStyleDropdownOpen(!isViewStyleDropdownOpen)}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/90 hover:bg-slate-900 border border-teal-500/50 hover:border-teal-400 text-teal-300 font-extrabold text-xs transition-all shadow-md cursor-pointer"
+                        title="Configure Architecture Detail Level, Visual Theme Skin & Telemetry Flow"
+                      >
+                        <Layers className="w-3.5 h-3.5 text-teal-400" />
+                        <span>
+                          View: {layoutPreset === 'obsidian' ? 'Obsidian HUD' : layoutPreset === 'lucid' ? 'Lucidchart Blue' : layoutPreset === 'clean' ? 'Executive Clean' : 'Technical Detailed'}
+                        </span>
+                        {isLiveFlowEnabled && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            LIVE
+                          </span>
+                        )}
+                        <ChevronDown className={`w-3.5 h-3.5 text-teal-400 transition-transform ${isViewStyleDropdownOpen ? 'rotate-180' : ''}`} />
+                      </button>
+
+                      {/* Dropdown Popover */}
+                      {isViewStyleDropdownOpen && (
+                        <div 
+                          className="header-dropdown-menu fixed sm:absolute left-0 top-12 sm:top-full mt-1.5 w-[300px] bg-[#090d16]/98 backdrop-blur-2xl border border-teal-500/50 rounded-2xl shadow-2xl p-3.5 z-[9999] animate-fade-in text-slate-100 flex flex-col gap-3"
+                          onMouseLeave={() => setIsViewStyleDropdownOpen(false)}
                         >
-                          📐 {t.detailed}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setLayoutPreset('clean')}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                            layoutPreset === 'clean' ? 'bg-teal-500/20 text-teal-300 border border-teal-400/60' : 'text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          ✨ {t.clean}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setLayoutPreset('lucid')}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                            layoutPreset === 'lucid' ? 'bg-blue-600 text-white border border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.4)]' : 'text-slate-300 hover:text-blue-300'
-                          }`}
-                        >
-                          💎 {t.lucidchart}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setLayoutPreset('obsidian')}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
-                            layoutPreset === 'obsidian' ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400 shadow-[0_0_14px_rgba(56,189,248,0.4)]' : 'text-slate-300 hover:text-cyan-300'
-                          }`}
-                        >
-                          🌌 {t.obsidianHud}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setIsLiveFlowEnabled(!isLiveFlowEnabled)}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                            isLiveFlowEnabled ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'text-slate-400 hover:text-emerald-300'
-                          }`}
-                          title="Toggle Live Telemetry Flow Stream Animation"
-                        >
-                          ⚡ {t.liveFlow}
-                        </button>
-                      </div>
+                          {/* Section 1: Architecture Detail Level */}
+                          <div className="space-y-1.5">
+                            <span className="text-[10px] font-mono text-teal-400 font-extrabold uppercase tracking-wider">
+                              Architecture Detail Level
+                            </span>
+                            <div className="grid grid-cols-2 gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => { setLayoutPreset('detailed'); setIsViewStyleDropdownOpen(false); }}
+                                className={`p-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border ${
+                                  layoutPreset === 'detailed'
+                                    ? 'bg-teal-500/20 border-teal-400 text-teal-200 shadow-sm font-extrabold'
+                                    : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                                }`}
+                              >
+                                <Layers className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                                <div className="text-left">
+                                  <p className="leading-tight">Technical</p>
+                                  <p className="text-[9px] text-slate-400 font-normal">Full ports &amp; specs</p>
+                                </div>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => { setLayoutPreset('clean'); setIsViewStyleDropdownOpen(false); }}
+                                className={`p-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border ${
+                                  layoutPreset === 'clean'
+                                    ? 'bg-teal-500/20 border-teal-400 text-teal-200 shadow-sm font-extrabold'
+                                    : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                                }`}
+                              >
+                                <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                <div className="text-left">
+                                  <p className="leading-tight">Executive</p>
+                                  <p className="text-[9px] text-slate-400 font-normal">High-level view</p>
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Section 2: Visual Theme Skin */}
+                          <div className="space-y-1.5 pt-2 border-t border-slate-800/80">
+                            <span className="text-[10px] font-mono text-indigo-400 font-extrabold uppercase tracking-wider">
+                              Visual Theme Skin
+                            </span>
+                            <div className="grid grid-cols-2 gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => { setLayoutPreset('lucid'); setIsViewStyleDropdownOpen(false); }}
+                                className={`p-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border ${
+                                  layoutPreset === 'lucid'
+                                    ? 'bg-blue-600/30 border-blue-400 text-blue-200 shadow-sm font-extrabold'
+                                    : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                                }`}
+                              >
+                                <span className="text-sm shrink-0">💎</span>
+                                <div className="text-left">
+                                  <p className="leading-tight">Lucidchart</p>
+                                  <p className="text-[9px] text-slate-400 font-normal">Corporate Blue</p>
+                                </div>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => { setLayoutPreset('obsidian'); setIsViewStyleDropdownOpen(false); }}
+                                className={`p-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border ${
+                                  layoutPreset === 'obsidian'
+                                    ? 'bg-cyan-500/30 border-cyan-400 text-cyan-200 shadow-sm font-extrabold'
+                                    : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                                }`}
+                              >
+                                <span className="text-sm shrink-0">🌌</span>
+                                <div className="text-left">
+                                  <p className="leading-tight">Obsidian HUD</p>
+                                  <p className="text-[9px] text-slate-400 font-normal">Cyberpunk Neon</p>
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Section 3: Live Flow Animation Toggle */}
+                          <div className="pt-2 border-t border-slate-800/80">
+                            <button
+                              type="button"
+                              onClick={() => setIsLiveFlowEnabled(!isLiveFlowEnabled)}
+                              className={`w-full p-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer border ${
+                                isLiveFlowEnabled
+                                  ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 shadow-sm font-extrabold'
+                                  : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <Zap className="w-4 h-4 text-emerald-400 fill-current" />
+                                <div className="text-left">
+                                  <p className="leading-tight">Live Telemetry Flow</p>
+                                  <p className="text-[9px] text-slate-400 font-normal">Animated particle stream</p>
+                                </div>
+                              </div>
+                              <div className={`w-8 h-4 rounded-full transition-colors relative p-0.5 ${isLiveFlowEnabled ? 'bg-emerald-500' : 'bg-slate-700'}`}>
+                                <div className={`w-3 h-3 rounded-full bg-white transition-transform ${isLiveFlowEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
