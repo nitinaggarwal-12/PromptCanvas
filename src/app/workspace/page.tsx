@@ -857,6 +857,7 @@ function WorkspaceContent() {
   const [hoveredArchId, setHoveredArchId] = useState<string | null>(null);
   const [versionSearchQuery, setVersionSearchQuery] = useState('');
   const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState(false);
+  const [isSettingsHoverOpen, setIsSettingsHoverOpen] = useState(false);
 
   async function handleSelectDisambiguationType(typeId: string) {
     const promptToGen = disambiguationData?.prompt || newDiagramPrompt || activeDiagram?.name || 'Architecture Diagram';
@@ -4523,6 +4524,188 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               );
             }
 
+            if (item.id === 'settings') {
+              return (
+                <div
+                  key={item.id}
+                  className="relative"
+                  onMouseEnter={() => setIsSettingsHoverOpen(true)}
+                  onMouseLeave={() => setIsSettingsHoverOpen(false)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentTab('settings');
+                      if (typeof window !== 'undefined') {
+                        const params = new URLSearchParams(window.location.search);
+                        params.set('tab', 'settings');
+                        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+                      }
+                      if (!isSidebarOpen) setIsSidebarOpen(true);
+                    }}
+                    className="w-full text-left block"
+                  >
+                    {buttonContent}
+                  </button>
+
+                  {/* HOVER-OVER SETTINGS & AI TIER DROPDOWN */}
+                  {isSettingsHoverOpen && (
+                    <div 
+                      className="fixed sm:absolute left-16 sm:left-full bottom-0 ml-3 w-[360px] bg-[#090d16]/98 backdrop-blur-2xl border border-teal-500/50 rounded-2xl shadow-2xl p-4 z-[9999] animate-fade-in text-slate-100 flex flex-col gap-3.5"
+                      onMouseEnter={() => setIsSettingsHoverOpen(true)}
+                      onMouseLeave={() => setIsSettingsHoverOpen(false)}
+                    >
+                      {/* Header */}
+                      <div className="pb-2 border-b border-slate-800 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Settings className="w-4 h-4 text-teal-400" />
+                          <span className="font-black text-xs text-white uppercase tracking-wider">System &amp; Workspace Settings</span>
+                        </div>
+                        <span className="text-[10px] font-mono text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded border border-teal-800/80 font-bold">
+                          AI Tier: Pro
+                        </span>
+                      </div>
+
+                      {/* 1. Theme Selection */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Canvas Theme</span>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setCanvasTheme('light')}
+                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer border ${
+                              canvasTheme === 'light'
+                                ? 'bg-amber-400/20 border-amber-400 text-amber-200 shadow-sm font-extrabold'
+                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            <Sun className="w-3.5 h-3.5 text-amber-400" />
+                            <span>☀️ Light Mode</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCanvasTheme('dark')}
+                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer border ${
+                              canvasTheme === 'dark'
+                                ? 'bg-indigo-500/20 border-indigo-400 text-indigo-200 shadow-sm font-extrabold'
+                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                            <span>🌙 Dark Mode</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 2. Language Selection */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Workspace Language</span>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setCurrentLanguage('en')}
+                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border ${
+                              currentLanguage === 'en'
+                                ? 'bg-teal-500/20 border-teal-400 text-teal-200 shadow-sm font-extrabold'
+                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            <span>🇺🇸 English (EN)</span>
+                            {currentLanguage === 'en' && <span className="text-teal-400 font-black">✓</span>}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCurrentLanguage('hi')}
+                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border ${
+                              currentLanguage === 'hi'
+                                ? 'bg-teal-500/20 border-teal-400 text-teal-200 shadow-sm font-extrabold'
+                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            <span>🇮🇳 हिन्दी (HI)</span>
+                            {currentLanguage === 'hi' && <span className="text-teal-400 font-black">✓</span>}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 3. Diagram Privacy */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Diagram Privacy &amp; Visibility</span>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleDiagramPrivacy(false)}
+                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border ${
+                              !isPrivate
+                                ? 'bg-teal-500/20 border-teal-400 text-teal-200 shadow-sm font-extrabold'
+                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            <Globe className="w-3.5 h-3.5 text-teal-400" />
+                            <span>🌐 Public</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleDiagramPrivacy(true)}
+                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border ${
+                              isPrivate
+                                ? 'bg-amber-500/20 border-amber-400 text-amber-200 shadow-sm font-extrabold'
+                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            <Lock className="w-3.5 h-3.5 text-amber-400" />
+                            <span>🔒 Private</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 4. Slides & Aspect Ratio Format */}
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Slides &amp; Canvas Ratio</span>
+                        <div className="grid grid-cols-4 gap-1.5">
+                          {[
+                            { id: '16:9', label: '16:9', desc: 'Widescreen (1360x720)' },
+                            { id: '4:3', label: '4:3', desc: 'Standard Slide (1024x768)' },
+                            { id: '1:1', label: '1:1', desc: 'Square (800x800)' },
+                            { id: '9:16', label: '9:16', desc: 'Story Mobile (720x1280)' },
+                          ].map((r) => (
+                            <button
+                              key={r.id}
+                              type="button"
+                              onClick={() => setSelectedAspectRatio(r.id)}
+                              className={`py-1.5 rounded-lg text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer border ${
+                                selectedAspectRatio === r.id
+                                  ? 'bg-teal-400 text-slate-950 border-teal-300 font-black shadow-sm'
+                                  : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                              }`}
+                              title={`${r.desc} (${r.id})`}
+                            >
+                              <span>{r.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 5. AI Tier & Full Settings Modal Trigger */}
+                      <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsSettingsHoverOpen(false);
+                            setCurrentTab('settings');
+                          }}
+                          className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-slate-950 font-black text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>⚡ Open AI Tier &amp; API Key Config</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
               <button
                 key={item.id}
@@ -5365,114 +5548,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 )}
               </div>
 
-              {/* Group 2: Center - Status Indicators & Theme */}
+              {/* Group 2: Center - Status Indicators */}
               <div className="hidden xl:flex items-center gap-2 shrink-0">
                 {isAnyAIBusy && (
                   <div className="flex items-center gap-2 px-3 py-1 bg-amber-500/15 border border-amber-500/30 rounded-full text-amber-300 text-xs font-semibold animate-pulse">
                     <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
                     <span>⚡ Gemini API active...</span>
                   </div>
-                )}
-                {activeDiagram && (
-                  <>
-                    <button
-                      id="canvas-theme-toggle"
-                      onClick={() => {
-                        setCanvasTheme(prev => prev === 'dark' ? 'light' : 'dark');
-                        if (tourStep === 4) setTourStep(5);
-                      }}
-                      title={`Switch to ${canvasTheme === 'dark' ? 'Light' : 'Dark'} Canvas Theme`}
-                      className={getTourClass(tourStep, 4, "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0")}
-                    >
-                      {canvasTheme === 'dark' ? (
-                        <>
-                          <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                          <span>{t.darkTheme}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Sun className="w-3.5 h-3.5 text-amber-400" />
-                          <span>{t.lightTheme}</span>
-                        </>
-                      )}
-                    </button>
-
-                    {/* SEARCHABLE GLOBE LANGUAGE DROPDOWN */}
-                    <div
-                      className="relative shrink-0"
-                      onMouseEnter={() => setIsLangDropdownOpen(true)}
-                      onMouseLeave={() => setIsLangDropdownOpen(false)}
-                    >
-                      <button
-                        type="button"
-                        title="Select Enterprise Workspace Language Pack"
-                        onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
-                      >
-                        <Globe className="w-3.5 h-3.5 text-teal-400" />
-                        <span>{langInfo.flag} {langInfo.code.toUpperCase()}</span>
-                      </button>
-
-                      {isLangDropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2.5 z-[9999] animate-fade-in">
-                          <input
-                            type="text"
-                            value={langSearchQuery}
-                            onChange={(e) => setLangSearchQuery(e.target.value)}
-                            placeholder="🔍 Search 10+ languages..."
-                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 mb-2"
-                            autoFocus
-                          />
-                          <div className="max-h-60 overflow-y-auto space-y-1 scrollbar-thin">
-                            {filteredLanguages.map((lang) => (
-                              <button
-                                key={lang.code}
-                                type="button"
-                                onClick={() => {
-                                  setCurrentLanguage(lang.code);
-                                  setIsLangDropdownOpen(false);
-                                }}
-                                className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between transition-all cursor-pointer ${
-                                  lang.code === currentLanguage ? "bg-teal-500/20 text-teal-300 border border-teal-500/40 font-bold" : "hover:bg-slate-800 text-slate-300"
-                                }`}
-                              >
-                                <span className="flex items-center gap-2">
-                                  <span>{lang.flag}</span>
-                                  <span>{lang.nativeName}</span>
-                                  <span className="text-[10px] text-slate-400">({lang.name})</span>
-                                </span>
-                                {lang.code === currentLanguage && <span className="text-teal-400 font-black">✓</span>}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    <label
-                      id="diagram-visibility-toggle"
-                      title={isPrivate ? "Private: Visible only to you" : "Public: Shared & accessible across sessions"}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-panel-border hover:border-teal-500/40 bg-slate-900/90 hover:bg-slate-800/90 text-slate-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 select-none"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={isPrivate}
-                        onChange={(e) => toggleDiagramPrivacy(e.target.checked)}
-                        className="w-3.5 h-3.5 rounded border-slate-700 bg-slate-900 text-teal-400 focus:ring-teal-400 focus:ring-offset-slate-900 cursor-pointer"
-                      />
-                      {isPrivate ? (
-                        <span className="flex items-center gap-1 text-amber-300">
-                          <Lock className="w-3 h-3 text-amber-400" />
-                          <span>{t.privateVis}</span>
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-teal-300">
-                          <Globe className="w-3 h-3 text-teal-400" />
-                          <span>{t.publicVis}</span>
-                        </span>
-                      )}
-                    </label>
-                  </>
                 )}
               </div>
 
