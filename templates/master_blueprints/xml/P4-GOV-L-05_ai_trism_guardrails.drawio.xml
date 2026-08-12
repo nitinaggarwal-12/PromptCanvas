@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_ai_trism_guardrails" name="AI TRiSM Security Guardrail Pipeline (WBS 4.3.1)">
+  <diagram id="ai_trism_guardrails" name="WBS 4.3.1: AI TRiSM Security Guardrail Pipeline System">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -127,7 +127,7 @@
           <mxGeometry x="345" y="210" width="120" height="20" as="geometry"/>
         </mxCell>
 
-        <!-- 1. Input Guardrail (Adversarial Check &amp; Defense) -->
+        <!-- 1. Input Guardrail (Adversarial Check & Defense) -->
         <mxCell id="input_guard_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="350" y="240" width="255" height="135" as="geometry"/>
         </mxCell>
@@ -152,7 +152,7 @@
           <mxGeometry x="430" y="405" width="150" height="20" as="geometry"/>
         </mxCell>
 
-        <!-- 2. PII Scrubbing &amp; Data Masking -->
+        <!-- 2. PII Scrubbing & Data Masking -->
         <mxCell id="pii_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="350" y="435" width="255" height="115" as="geometry"/>
         </mxCell>
@@ -166,7 +166,7 @@
           <mxGeometry x="415" y="475" width="185" height="40" as="geometry"/>
         </mxCell>
 
-        <!-- 3. TRiSM Threat Logging &amp; Alerting Engine Box -->
+        <!-- 3. TRiSM Threat Logging & Alerting Engine Box -->
         <mxCell id="trism_engine_box" value="&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;TRiSM Threat&lt;br&gt;Logging &amp;&lt;br&gt;Alerting Engine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="625" y="450" width="125" height="110" as="geometry"/>
         </mxCell>
@@ -233,7 +233,7 @@
           <mxGeometry x="585" y="775" width="125" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- EXTERNAL AI MODELS &amp; PROVIDERS -->
+        <!-- EXTERNAL AI MODELS & PROVIDERS -->
         <mxCell id="ext_ai_models_box" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;External AI Models&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;(GCP Vertex AI, etc.)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="840" y="240" width="165" height="50" as="geometry"/>
         </mxCell>
@@ -323,7 +323,7 @@
           <mxGeometry x="1020" y="482" width="75" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors to/from Looker Studio &amp; Threat Engine -->
+        <!-- Connectors to/from Looker Studio & Threat Engine -->
         <mxCell id="e_trism_to_looker" value="EU AI Act&lt;br&gt;Compliance&lt;br&gt;Engine" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="750" y="475" as="sourcePoint"/>
@@ -337,7 +337,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- BOTTOM CONFIGURATION &amp; INFRASTRUCTURE CONTROLS -->
+        <!-- BOTTOM CONFIGURATION & INFRASTRUCTURE CONTROLS -->
         <mxCell id="cloud_iam_box" value="🛡️ 🌐 🔒&lt;br&gt;&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Cloud IAM, VPC-SC, Secret&lt;br&gt;Secret Manager&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="840" y="730" width="200" height="65" as="geometry"/>
         </mxCell>
@@ -357,7 +357,7 @@
         </mxCell>
 
         <!-- PERSONAS (RIGHT SIDE) -->
-        <!-- CISO &amp; AI Sec Personas -->
+        <!-- CISO & AI Sec Personas -->
         <mxCell id="persona_ciso" value="👥🛡️&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;CISO &amp; AI Sec&lt;br&gt;Personas&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
           <mxGeometry x="1170" y="445" width="130" height="60" as="geometry"/>
         </mxCell>

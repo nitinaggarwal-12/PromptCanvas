@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_llm_capacity_quota" name="Comprehensive Topology for (LLM) Capacity Quota Management">
+  <diagram id="llm_capacity_quota_management" name="Comprehensive Topology for (LLM) Capacity Quota Management (P5-AI-L-05)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1340" pageHeight="640" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -10,7 +10,7 @@
           <mxGeometry x="30" y="10" width="1280" height="34" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== LEFT INGRESS &amp; CLOUD INFRASTRUCTURE ==================== -->
+        <!-- ==================== LEFT INGRESS & CLOUD INFRASTRUCTURE ==================== -->
         
         <!-- Consumer Applications Icon -->
         <mxCell id="card_consumer_apps" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:26px;&quot;&gt;💻📱&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;Consumer&lt;br&gt;Applications&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
@@ -170,7 +170,7 @@
           <mxGeometry x="555" y="483" width="75" height="18" as="geometry"/>
         </mxCell>
 
-        <!-- Dynamic Routing Connectors from LB to Region 1 &amp; Region 2 -->
+        <!-- Dynamic Routing Connectors from LB to Region 1 & Region 2 -->
         <mxCell id="e_lb_reg1" value="Dynamic Traffic&lt;br&gt;routing on region" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=6.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="430" y="240" as="sourcePoint"/>
@@ -194,7 +194,7 @@
         </mxCell>
 
 
-        <!-- ==================== CENTER-RIGHT: FINOPS COST &amp; USAGE HUB ==================== -->
+        <!-- ==================== CENTER-RIGHT: FINOPS COST & USAGE HUB ==================== -->
 
         <!-- Intercept Usage Metrics Callout -->
         <mxCell id="card_usage_metrics_note" value="&lt;div style=&quot;font-size:6.5px;color:#0F172A;line-height:1.3;&quot;&gt;&lt;b&gt;Intercept Usage metrics:&lt;/b&gt;&lt;br&gt;• Intercept inference requests&lt;br&gt;• Prompt and completion token counts&lt;br&gt;• Model types used&lt;br&gt;• Request latency&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#FEF9C3;strokeColor=#CA8A04;strokeWidth=1;align=left;verticalAlign=top;padding=2;" vertex="1" parent="1">
@@ -242,7 +242,7 @@
         <mxCell id="e_finops_db_dash" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_finops_db" target="card_looker_finops"/>
 
 
-        <!-- ==================== RIGHT: SRE DASHBOARDS &amp; MONITORING ==================== -->
+        <!-- ==================== RIGHT: SRE DASHBOARDS & MONITORING ==================== -->
         <mxCell id="box_sre_dashboards" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="980" y="55" width="330" height="545" as="geometry"/>
         </mxCell>
@@ -250,7 +250,7 @@
           <mxGeometry x="990" y="60" width="310" height="26" as="geometry"/>
         </mxCell>
 
-        <!-- Cloud Monitoring &amp; Cloud Logging Icons Header -->
+        <!-- Cloud Monitoring & Cloud Logging Icons Header -->
         <mxCell id="badge_cloud_mon" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:18px;font-size:13px;text-align:center;&quot;&gt;📈&lt;/td&gt;&lt;td style=&quot;font-weight:bold;&quot;&gt;Cloud&lt;br&gt;Monitoring&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="1015" y="90" width="115" height="34" as="geometry"/>
         </mxCell>

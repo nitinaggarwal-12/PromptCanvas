@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="enterprise_sre_observability" name="WBS 6.1.1: Enterprise SRE &amp; Observability Architecture">
+  <diagram id="enterprise_sre_observability" name="Enterprise Site Reliability Engineering (SRE) &amp; Observability on Google Cloud Platform (P5-GOV-L-04)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1340" pageHeight="640" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -45,7 +45,7 @@
         <mxCell id="e_p4_5" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1;endArrow=classic;" edge="1" parent="1" source="pipe_scan" target="pipe_release"/>
         <mxCell id="e_p5_6" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1;endArrow=classic;" edge="1" parent="1" source="pipe_release" target="pipe_deploy"/>
 
-        <!-- Pipeline Security &amp; Error Reporting Badges -->
+        <!-- Pipeline Security & Error Reporting Badges -->
         <mxCell id="badge_sec_gate" value="&lt;span style=&quot;font-size:6px;color:#047857;&quot;&gt;🔒 Security&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="240" y="98" width="60" height="18" as="geometry"/>
         </mxCell>
@@ -177,7 +177,7 @@
         </mxCell>
 
 
-        <!-- ==================== CENTER RIGHT: INCIDENT MANAGEMENT &amp; RESPONSE WORKFLOW ==================== -->
+        <!-- ==================== CENTER RIGHT: INCIDENT MANAGEMENT & RESPONSE WORKFLOW ==================== -->
         <mxCell id="box_incident_wf" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="535" y="130" width="235" height="385" as="geometry"/>
         </mxCell>
@@ -196,7 +196,7 @@
         </mxCell>
         <mxCell id="e_trig_inc" value="" style="edgeStyle=none;html=1;strokeColor=#DC2626;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_trigger" target="card_incident"/>
 
-        <!-- Notify Box &amp; Channels -->
+        <!-- Notify Box & Channels -->
         <mxCell id="card_notify" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Notify&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="632" y="222" width="75" height="26" as="geometry"/>
         </mxCell>
@@ -205,7 +205,7 @@
         </mxCell>
         <mxCell id="e_inc_notify" value="" style="edgeStyle=none;html=1;strokeColor=#DC2626;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_incident" target="card_notify"/>
 
-        <!-- Analysis &amp; Diagnosis -->
+        <!-- Analysis & Diagnosis -->
         <mxCell id="card_analysis" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Analysis &amp; Diagnosis&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:6.5px;color:#2563EB;&quot;&gt;Dashboards | Logs | Trace&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="580" y="260" width="145" height="34" as="geometry"/>
         </mxCell>
@@ -230,9 +230,9 @@
         <mxCell id="e_post_feedback" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1;endArrow=classic;" edge="1" parent="1" source="card_postmortem" target="card_feedback_loop"/>
 
 
-        <!-- ==================== RIGHT: DASHBOARDS &amp; SRE ARTIFACTS ==================== -->
+        <!-- ==================== RIGHT: DASHBOARDS & SRE ARTIFACTS ==================== -->
         
-        <!-- Dashboards &amp; Interfaces Container -->
+        <!-- Dashboards & Interfaces Container -->
         <mxCell id="box_dashboards_if" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="780" y="44" width="490" height="388" as="geometry"/>
         </mxCell>

@@ -1,11 +1,11 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_eval_safety" name="Agentic AI Evaluation, Safety &amp; Optimization Platform (P4-GOV-L-04)">
+  <diagram id="agentic_eval_safety_platform" name="Agentic AI Evaluation, Safety &amp; Optimization Platform (P4-GOV-L-04)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="720" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ==================== TOP TITLE BANNER &amp; HEADER ==================== -->
+        <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
         <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="8" width="35" height="35" as="geometry"/>
         </mxCell>
@@ -16,7 +16,7 @@
           <mxGeometry x="65" y="32" width="1260" height="18" as="geometry"/>
         </mxCell>
 
-        <!-- Top Conceptual Overview Arc &amp; Badge -->
+        <!-- Top Conceptual Overview Arc & Badge -->
         <mxCell id="top_concept_arc" value="&lt;b style=&quot;font-size:8px;color:#475569;&quot;&gt;Conceptual overview&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="465" y="52" width="125" height="22" as="geometry"/>
         </mxCell>
@@ -35,7 +35,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 1: END USER &amp; GE APP CONTEXT (EXTERNAL) ==================== -->
+        <!-- ==================== COLUMN 1: END USER & GE APP CONTEXT (EXTERNAL) ==================== -->
         <!-- x = 20 .. 205 (width = 185) -->
         <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="20" y="78" width="185" height="520" as="geometry"/>
@@ -91,7 +91,7 @@
         <mxCell id="e_clb_carmor" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_clb" target="card_carmor"/>
 
 
-        <!-- ==================== COLUMN 2: INGESTION &amp; REGISTRATION (REGISTRY) ==================== -->
+        <!-- ==================== COLUMN 2: INGESTION & REGISTRATION (REGISTRY) ==================== -->
         <!-- x = 215 .. 390 (width = 175) -->
         <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="215" y="78" width="175" height="520" as="geometry"/>
@@ -100,7 +100,7 @@
           <mxGeometry x="220" y="82" width="165" height="32" as="geometry"/>
         </mxCell>
 
-        <!-- Top Sub-Box: Data Sources &amp; Datasets -->
+        <!-- Top Sub-Box: Data Sources & Datasets -->
         <mxCell id="box_data_sources" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="225" y="120" width="155" height="75" as="geometry"/>
         </mxCell>
@@ -117,7 +117,7 @@
           <mxGeometry x="330" y="140" width="45" height="45" as="geometry"/>
         </mxCell>
 
-        <!-- Reads Label &amp; Connector -->
+        <!-- Reads Label & Connector -->
         <mxCell id="lbl_reads" value="&lt;b style=&quot;font-size:6px;color:#475569;&quot;&gt;Reads&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="275" y="196" width="55" height="15" as="geometry"/>
         </mxCell>
@@ -234,12 +234,12 @@
           <mxGeometry x="545" y="288" width="120" height="15" as="geometry"/>
         </mxCell>
 
-        <!-- Function Calling &amp; Extensions -->
+        <!-- Function Calling & Extensions -->
         <mxCell id="card_func_calling" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🔗&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Function Calling &amp; Extensions&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Get/write API/tools to call external APIs)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="500" y="360" width="80" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Execution Logs &amp; Traces -->
+        <!-- Execution Logs & Traces -->
         <mxCell id="card_exec_logs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;📋 📊&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Execution Logs &amp; Traces&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Cloud Logging / GCS)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="590" y="360" width="80" height="85" as="geometry"/>
         </mxCell>
@@ -287,7 +287,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 4: EVALUATION, SAFETY &amp; GUARDRAILS LOOP ==================== -->
+        <!-- ==================== COLUMN 4: EVALUATION, SAFETY & GUARDRAILS LOOP ==================== -->
         <!-- x = 686 .. 871 (width = 185) -->
         <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="686" y="78" width="185" height="520" as="geometry"/>
@@ -296,7 +296,7 @@
           <mxGeometry x="690" y="82" width="175" height="32" as="geometry"/>
         </mxCell>
 
-        <!-- Eval &amp; Safety Workloads Box -->
+        <!-- Eval & Safety Workloads Box -->
         <mxCell id="box_eval_workloads" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="695" y="120" width="165" height="55" as="geometry"/>
         </mxCell>
@@ -349,7 +349,7 @@
           <mxGeometry x="710" y="475" width="135" height="35" as="geometry"/>
         </mxCell>
 
-        <!-- Ingress to Eval Loop (Logs -> Workloads &amp; Guardrails) -->
+        <!-- Ingress to Eval Loop (Logs -> Workloads & Guardrails) -->
         <mxCell id="e_logs_eval_wl" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="670" y="380" as="sourcePoint"/>
@@ -380,7 +380,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 5: ANALYSIS, REPORTING &amp; OPTIMIZATION ==================== -->
+        <!-- ==================== COLUMN 5: ANALYSIS, REPORTING & OPTIMIZATION ==================== -->
         <!-- x = 879 .. 1049 (width = 170) -->
         <mxCell id="col5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FECDD3;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="879" y="78" width="170" height="520" as="geometry"/>
@@ -389,7 +389,7 @@
           <mxGeometry x="885" y="82" width="160" height="32" as="geometry"/>
         </mxCell>
 
-        <!-- Analysis &amp; Reporting Box -->
+        <!-- Analysis & Reporting Box -->
         <mxCell id="box_analysis_rep" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FDA4AF;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="888" y="120" width="152" height="185" as="geometry"/>
         </mxCell>
@@ -439,7 +439,7 @@
         </mxCell>
 
 
-        <!-- ==================== BOTTOM HORIZONTAL BAR: PLATFORM GOVERNANCE &amp; MONITORING ==================== -->
+        <!-- ==================== BOTTOM HORIZONTAL BAR: PLATFORM GOVERNANCE & MONITORING ==================== -->
         <mxCell id="bar_gov_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="20" y="605" width="1285" height="90" as="geometry"/>
         </mxCell>

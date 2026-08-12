@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_serverless_gcp" name="Serverless EDA Architecture (P4-APP-L-08)">
+  <diagram id="serverless_eda_architecture" name="Serverless EDA Architecture (P4-APP-L-08)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="680" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -14,7 +14,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 1: EXTERNAL SOURCES &amp; EVENT TRIGGERS ==================== -->
+        <!-- ==================== COLUMN 1: EXTERNAL SOURCES & EVENT TRIGGERS ==================== -->
         <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="35" y="65" width="145" height="535" as="geometry"/>
         </mxCell>
@@ -33,7 +33,7 @@
         </mxCell>
 
 
-        <!-- Ingress Payload Badges &amp; Connectors -->
+        <!-- Ingress Payload Badges & Connectors -->
         <mxCell id="badge_iot_telem" value="&lt;b style=&quot;font-size:6.5px;color:#0F172A;&quot;&gt;🎛️ IoT&lt;br&gt;Telemetry&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Event, images&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="195" y="105" width="70" height="42" as="geometry"/>
         </mxCell>
@@ -189,7 +189,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 5: VERTEX AI &amp; GEMINI PLATFORM ==================== -->
+        <!-- ==================== COLUMN 5: VERTEX AI & GEMINI PLATFORM ==================== -->
         <mxCell id="col5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="625" y="65" width="150" height="535" as="geometry"/>
         </mxCell>
@@ -267,7 +267,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 6: STORAGE &amp; ANALYTICS ==================== -->
+        <!-- ==================== COLUMN 6: STORAGE & ANALYTICS ==================== -->
         <mxCell id="col6_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="865" y="65" width="165" height="535" as="geometry"/>
         </mxCell>
@@ -355,7 +355,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 7: ACTIONS &amp; VISIBILITY ==================== -->
+        <!-- ==================== COLUMN 7: ACTIONS & VISIBILITY ==================== -->
         <mxCell id="col7_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Actions &amp; Visibility&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1045" y="68" width="145" height="20" as="geometry"/>
         </mxCell>
@@ -373,7 +373,7 @@
           <mxGeometry x="1060" y="235" width="120" height="55" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors BigQuery -> Looker &amp; BigQuery ML -->
+        <!-- Connectors BigQuery -> Looker & BigQuery ML -->
         <mxCell id="e_bq_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1020" y="250" as="sourcePoint"/>
@@ -404,7 +404,7 @@
           <mxGeometry x="1048" y="520" width="144" height="28" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors Pub/Sub -> External APIs &amp; Notifications -->
+        <!-- Connectors Pub/Sub -> External APIs & Notifications -->
         <mxCell id="e_pubsub_apis" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1020" y="445" as="sourcePoint"/>

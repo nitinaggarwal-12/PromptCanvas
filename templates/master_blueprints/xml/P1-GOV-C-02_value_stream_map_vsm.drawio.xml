@@ -1,5 +1,5 @@
 <mxfile host="app.diagrams.net" modified="2026-08-10T16:00:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="value_stream_map" name="Enterprise AI Architecture &amp; Delivery Value Stream Map (WBS 1.2.1)">
+  <diagram id="vsm_ai_architecture_delivery" name="WBS 1.2.1: Enterprise AI Architecture &amp; Delivery Value Stream Map (VSM)">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -10,7 +10,7 @@
           <mxGeometry x="0" y="0" width="1560" height="920" as="geometry" />
         </mxCell>
 
-        <!-- TOP TITLE &amp; BANNER -->
+        <!-- TOP TITLE & BANNER -->
         <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:15px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;WBS 1.2.1: Enterprise AI Architecture &amp; Delivery Value Stream Map (VSM)&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:normal;&quot;&gt;(Executive &amp; Business Strategy / Flow Efficiency Category)&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="15" width="560" height="52" as="geometry" />
         </mxCell>
@@ -25,7 +25,7 @@
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- TOP SECTION: INFORMATION &amp; GOVERNANCE FLOW PLANE (Y: 78 to Y: 215) -->
+        <!-- TOP SECTION: INFORMATION & GOVERNANCE FLOW PLANE (Y: 78 to Y: 215) -->
         <!-- ========================================================================= -->
         <mxCell id="tab_top_plane" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Information&lt;br&gt;&amp; Control&lt;br&gt;Plane&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="78" width="50" height="135" as="geometry" />
@@ -35,22 +35,22 @@
           <mxGeometry x="70" y="78" width="1470" height="135" as="geometry" />
         </mxCell>
 
-        <!-- Top Entity 1: Business &amp; Customer Demand -->
+        <!-- Top Entity 1: Business & Customer Demand -->
         <mxCell id="node_customer_demand" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:building-2.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Business Stakeholders&lt;br&gt;&amp; Product Owners&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;(Architecture Inquiries: 45/mo)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
           <mxGeometry x="90" y="90" width="190" height="110" as="geometry" />
         </mxCell>
 
-        <!-- Top Entity 2: Enterprise Portfolio Steering &amp; Backlog (Jira / Agile) -->
+        <!-- Top Entity 2: Enterprise Portfolio Steering & Backlog (Jira / Agile) -->
         <mxCell id="node_portfolio_steering" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:jira.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Enterprise Architecture Steering&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#0284C7;font-weight:bold;&quot;&gt;Jira Align / Strategic Backlog&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Prioritization &amp; GCAF Guardrail Dispatch&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
           <mxGeometry x="450" y="90" width="280" height="110" as="geometry" />
         </mxCell>
 
-        <!-- Top Entity 3: Architecture Review Board (ARB) &amp; CISO Governance -->
+        <!-- Top Entity 3: Architecture Review Board (ARB) & CISO Governance -->
         <mxCell id="node_arb_governance" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Architecture Review Board (ARB)&lt;br&gt;&amp; CISO Security Committee&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#15803D;font-weight:bold;&quot;&gt;Weekly Synchronous Review Gate&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
           <mxGeometry x="870" y="90" width="270" height="110" as="geometry" />
         </mxCell>
 
-        <!-- Top Entity 4: SRE &amp; Production Telemetry Feedback -->
+        <!-- Top Entity 4: SRE & Production Telemetry Feedback -->
         <mxCell id="node_sre_feedback" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:datadog.svg&quot; width=&quot;24&quot; height=&quot;24&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Enterprise SRE Operations&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#7C3AED;font-weight:bold;&quot;&gt;Datadog / Looker Telemetry&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;SLO Drift &amp; Capacity Alerts&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1270" y="90" width="250" height="110" as="geometry" />
         </mxCell>
@@ -93,7 +93,7 @@
           <mxGeometry x="70" y="230" width="1470" height="395" as="geometry" />
         </mxCell>
 
-        <!-- STAGE 1: PROMPT &amp; REQUIREMENTS INGESTION -->
+        <!-- STAGE 1: PROMPT & REQUIREMENTS INGESTION -->
         <mxCell id="stage1_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#F1F5F9;padding:6px;border-bottom:1px solid #CBD5E1;&quot;&gt;STAGE 1: Prompt Ingestion&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;&amp; Context Enrichment&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; Natural Language Prompt&lt;br&gt;&amp;bull; GCAF Pillar &amp; Target Cloud&lt;br&gt;&amp;bull; Compliance Rules (HIPAA/GxP)&lt;br&gt;&amp;bull; Existing Arch Repo Linking&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;align=center;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="85" y="250" width="190" height="135" as="geometry" />
         </mxCell>
@@ -138,7 +138,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- STAGE 3: SECURITY, FINOPS &amp; TRiSM EVALUATION -->
+        <!-- STAGE 3: SECURITY, FINOPS & TRiSM EVALUATION -->
         <mxCell id="stage3_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#FEF3C7;padding:6px;border-bottom:1px solid #FDE68A;&quot;&gt;STAGE 3: Security &amp; FinOps&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#B45309;font-weight:bold;&quot;&gt;AI TRiSM &amp; Cost Estimation Gate&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; AI TRiSM Prompt Shield Scan&lt;br&gt;&amp;bull; VPC-SC Perimeter Verification&lt;br&gt;&amp;bull; BigQuery/GKE FinOps Forecast&lt;br&gt;&amp;bull; Automated SAST Audit Pass&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="610" y="250" width="195" height="135" as="geometry" />
         </mxCell>
@@ -163,7 +163,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- STAGE 4: ARB &amp; HITL GOVERNANCE SIGN-OFF -->
+        <!-- STAGE 4: ARB & HITL GOVERNANCE SIGN-OFF -->
         <mxCell id="stage4_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#DCFCE7;padding:6px;border-bottom:1px solid #86EFAC;&quot;&gt;STAGE 4: ARB &amp; HITL Sign-Off&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#15803D;font-weight:bold;&quot;&gt;21 CFR Part 11 Cryptographic E-Sign&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; Multi-Tier Confidence Routing&lt;br&gt;&amp;bull; Fast Path (&gt;=95%) vs HITL (&lt;75%)&lt;br&gt;&amp;bull; ARB Review &amp; Risk Sign-Off&lt;br&gt;&amp;bull; Immutable Audit Trail Stamp&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="875" y="250" width="195" height="135" as="geometry" />
         </mxCell>
@@ -188,7 +188,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- STAGE 5: GITOPS IAC GENERATION &amp; PROVISIONING -->
+        <!-- STAGE 5: GITOPS IAC GENERATION & PROVISIONING -->
         <mxCell id="stage5_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;background:#F3E8FF;padding:6px;border-bottom:1px solid #D8B4FE;&quot;&gt;STAGE 5: GitOps CI/CD&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7C3AED;font-weight:bold;&quot;&gt;Automated Terraform &amp; GKE Deployment&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:8px 4px;text-align:left;line-height:1.3;&quot;&gt;&amp;bull; Terraform/Pulumi HCL Synthesis&lt;br&gt;&amp;bull; Polyrepo Git Branch &amp; PR&lt;br&gt;&amp;bull; Cloud Build Canary Pipeline&lt;br&gt;&amp;bull; Automated Blue/Green Rollout&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="1140" y="250" width="195" height="135" as="geometry" />
         </mxCell>
@@ -209,7 +209,7 @@
         </mxCell>
 
         <!-- ========================================================================= -->
-        <!-- BOTTOM SECTION: LEAD TIME &amp; PROCESS TIME TIMELINE LADDER (Y: 645 to Y: 890) -->
+        <!-- BOTTOM SECTION: LEAD TIME & PROCESS TIME TIMELINE LADDER (Y: 645 to Y: 890) -->
         <!-- ========================================================================= -->
         <mxCell id="tab_timeline" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Lead Time&lt;br&gt;&amp; Flow&lt;br&gt;Ladder&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="645" width="50" height="245" as="geometry" />
@@ -287,7 +287,7 @@
           <mxGeometry x="85" y="750" width="580" height="130" as="geometry" />
         </mxCell>
 
-        <!-- VSM LEGEND &amp; SYMBOLS -->
+        <!-- VSM LEGEND & SYMBOLS -->
         <mxCell id="vsm_legend" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;border-collapse:collapse;&quot;&gt;&lt;tr style=&quot;background:#F1F5F9;&quot;&gt;&lt;td colspan=&quot;4&quot; style=&quot;padding:3px 6px;font-weight:bold;text-align:center;border-bottom:1px solid #CBD5E1;&quot;&gt;VSM Symbology &amp; Legend&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#0284C7;&quot;&gt;&amp;#9632; Process Box:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Value-Add Activity&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#EF4444;&quot;&gt;&amp;#9650; Triangle:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Inventory / Queue Time&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#EA580C;&quot;&gt;&amp;#11044; Kaizen Burst:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Opportunity / Target&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#0284C7;&quot;&gt;&amp;dash;&amp;dash;&gt; Dashed Line:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Information &amp; Control Flow&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#475569;&quot;&gt;&amp;rarr; Solid Line:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Material / Artifact Push&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;font-weight:bold;color:#16A34A;&quot;&gt;%C/A:&lt;/td&gt;&lt;td style=&quot;padding:2px 4px;&quot;&gt;Percent Complete &amp; Accurate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="700" y="750" width="820" height="130" as="geometry" />
         </mxCell>

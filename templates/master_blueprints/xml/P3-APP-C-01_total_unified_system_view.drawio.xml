@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="unified_system_view" name="Total Unified System View (Master Blueprint)">
+  <diagram id="unified_system_view_compiled" name="Enterprise Architecture Platform - TOTAL UNIFIED SYSTEM VIEW">
     <mxGraphModel dx="1920" dy="1150" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1150" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -15,7 +15,7 @@
           <mxGeometry x="400" y="70" width="1120" height="20" as="geometry" />
         </mxCell>
 
-        <!-- 2. Swimlane 1: PLAN &amp; DATA FOUNDATION -->
+        <!-- 2. Swimlane 1: PLAN & DATA FOUNDATION -->
         <mxCell id="sw1_tab" value="&lt;b style='font-size:10px;color:#FFFFFF;'&gt;Planning &amp;&lt;br&gt;Ingestion&lt;br&gt;Phases&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#64748B;strokeColor=#475569;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="95" width="55" height="140" as="geometry" />
         </mxCell>
@@ -67,7 +67,7 @@
           <mxGeometry x="1630" y="105" width="250" height="40" as="geometry" />
         </mxCell>
 
-        <!-- 3. Swimlane 2: DEVELOPMENT &amp; AI LIFECYCLE -->
+        <!-- 3. Swimlane 2: DEVELOPMENT & AI LIFECYCLE -->
         <!-- Left Tab -->
         <mxCell id="sw2_tab" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;DEVELOPMENT&lt;br&gt;&amp; AI LIFECYCLE&lt;br&gt;(Integrating&lt;br&gt;MLOps Lifecycle,&lt;br&gt;State Machine &amp;&lt;br&gt;Pipelines)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#475569;strokeColor=#334155;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="245" width="55" height="295" as="geometry" />
@@ -76,7 +76,7 @@
           <mxGeometry x="75" y="245" width="1830" height="295" as="geometry" />
         </mxCell>
 
-        <!-- Track 2a: DATA ENGINEERING &amp; DFD -->
+        <!-- Track 2a: DATA ENGINEERING & DFD -->
         <mxCell id="t2a_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Track 2a: DATA ENGINEERING &amp; DFD&lt;/b&gt; &lt;font style='font-size:10px;color:#64748B;'&gt;(End-to-End Enterprise Data Flow)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="85" y="250" width="350" height="20" as="geometry" />
         </mxCell>
@@ -125,7 +125,7 @@
           <mxGeometry x="785" y="365" width="115" height="90" as="geometry" />
         </mxCell>
 
-        <!-- Track 2c: AI MODEL &amp; PROMPT DEVELOPMENT LIFECYCLE -->
+        <!-- Track 2c: AI MODEL & PROMPT DEVELOPMENT LIFECYCLE -->
         <mxCell id="t2c_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Track 2c: AI MODEL &amp; PROMPT DEVELOPMENT LIFECYCLE&lt;/b&gt; &lt;font style='font-size:10px;color:#64748B;'&gt;(Unified Governance &amp; Security Audits)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="920" y="250" width="550" height="20" as="geometry" />
         </mxCell>
@@ -153,7 +153,7 @@
         <mxCell id="t2c_eval" value="&lt;b style='font-size:11px;color:#0369A1;'&gt;EVALUATED&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1425" y="342" width="105" height="70" as="geometry" />
         </mxCell>
-        <!-- Bias &amp; Fairness Audit -->
+        <!-- Bias & Fairness Audit -->
         <mxCell id="t2c_eval_sub" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Bias &amp; Fairness Audit&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#64748B;'&gt;Audit &amp; Fairness Metrics&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="1410" y="420" width="135" height="35" as="geometry" />
         </mxCell>
@@ -193,7 +193,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Deployment outside dashed box (Canary &amp; Promote) -->
+        <!-- Deployment outside dashed box (Canary & Promote) -->
         <mxCell id="t2c_canary" value="&lt;b style='font-size:11px;color:#FFFFFF;'&gt;Canary&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#0F766E;strokeColor=#115E59;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1745" y="450" width="70" height="35" as="geometry" />
         </mxCell>
@@ -220,7 +220,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 4. Swimlane 3: GOVERNANCE, FEEDBACK &amp; RETIREMENT LIFECYCLE -->
+        <!-- 4. Swimlane 3: GOVERNANCE, FEEDBACK & RETIREMENT LIFECYCLE -->
         <!-- Left Tab -->
         <mxCell id="sw3_tab" value="&lt;b style='font-size:9px;color:#FFFFFF;'&gt;GOVERNANCE,&lt;br&gt;FEEDBACK &amp;&lt;br&gt;RETIREMENT&lt;br&gt;LIFECYCLE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#1E293B;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="15" y="545" width="55" height="360" as="geometry" />
@@ -249,7 +249,7 @@
         </mxCell>
         <mxCell id="arr_pub_lb" value="&lt;font style='font-size:9px;color:#333;'&gt;Public calls&lt;/font&gt;" style="endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=1.5;html=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="sw3_pub_int" target="sw3_lb_waf"><mxGeometry relative="1" as="geometry" /></mxCell>
         <mxCell id="arr_lb_gw" value="" style="endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=1.5;html=1;" edge="1" parent="1" source="sw3_lb_waf" target="sw3_api_gw"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <!-- Cloud Armor WAF Rules Top &amp; Bottom callouts -->
+        <!-- Cloud Armor WAF Rules Top & Bottom callouts -->
         <mxCell id="sw3_waf_top" value="&lt;span style='font-size:14px;'&gt;🛡️&lt;/span&gt; &lt;b style='font-size:9px;color:#C2410C;'&gt;Cloud Armor WAF Rules&lt;br&gt;(Edge protection)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="250" y="590" width="130" height="30" as="geometry" />
         </mxCell>
@@ -324,7 +324,7 @@
           <mxGeometry x="1025" y="800" width="455" height="55" as="geometry" />
         </mxCell>
 
-        <!-- Deployment &amp; Observability -->
+        <!-- Deployment & Observability -->
         <mxCell id="sw3_can_gke" value="&lt;span style='font-size:24px;'&gt;☸️&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#FFFFFF;'&gt;GKE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#172554;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1530" y="625" width="75" height="65" as="geometry" />
         </mxCell>

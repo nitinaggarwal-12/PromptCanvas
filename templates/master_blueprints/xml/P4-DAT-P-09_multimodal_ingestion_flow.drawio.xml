@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_multimodal_ingestion" name="Agentic Multi-Modal Ingestion Flow (P4-DAT-P-09)">
+  <diagram id="agentic_multimodal_ingestion" name="Agentic Multi-Modal Ingestion Flow (P4-DAT-P-09)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="660" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -89,7 +89,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 2: CAPTURE &amp; MULTI-MODAL PROCESSING ==================== -->
+        <!-- ==================== COLUMN 2: CAPTURE & MULTI-MODAL PROCESSING ==================== -->
         <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="270" y="65" width="160" height="470" as="geometry"/>
         </mxCell>
@@ -107,7 +107,7 @@
           <mxGeometry x="280" y="210" width="140" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- 3. Vertex AI Vision &amp; Video Intelligence -->
+        <!-- 3. Vertex AI Vision & Video Intelligence -->
         <mxCell id="card_vision_video" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:6.5px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:22px;font-size:16px;text-align:center;&quot;&gt;👁️&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Vertex AI&lt;br&gt;Vision API&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;&amp; Vertex AI Video Intelligence API&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="280" y="295" width="140" height="75" as="geometry"/>
         </mxCell>
@@ -179,7 +179,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Downward &amp; Internal Agent Routing -->
+        <!-- Downward & Internal Agent Routing -->
         <mxCell id="lbl_sends_signals" value="Sends&lt;br&gt;processed&lt;br&gt;signals&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;&quot;&gt;(transcript,&lt;br&gt;labels, etc.)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=6px;color:#0F172A;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="460" y="210" width="60" height="50" as="geometry"/>
         </mxCell>
@@ -234,7 +234,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 4: KNOWLEDGE REPRESENTATION &amp; ACTIONS ==================== -->
+        <!-- ==================== COLUMN 4: KNOWLEDGE REPRESENTATION & ACTIONS ==================== -->
         <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="790" y="65" width="180" height="470" as="geometry"/>
         </mxCell>
@@ -252,17 +252,17 @@
           <mxGeometry x="798" y="180" width="164" height="52" as="geometry"/>
         </mxCell>
 
-        <!-- 3. Automated Insights &amp; Reports -->
+        <!-- 3. Automated Insights & Reports -->
         <mxCell id="card_act_insights" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;font-size:16px;text-align:center;&quot;&gt;📊&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Automated&lt;br&gt;Insights &amp; Reports&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="798" y="248" width="164" height="46" as="geometry"/>
         </mxCell>
 
-        <!-- 4. Alerting &amp; Notifications -->
+        <!-- 4. Alerting & Notifications -->
         <mxCell id="card_act_alert" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;font-size:16px;text-align:center;&quot;&gt;⚡&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Alerting &amp;&lt;br&gt;Notifications&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;&quot;&gt;(Cloud Functions)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="798" y="310" width="164" height="52" as="geometry"/>
         </mxCell>
 
-        <!-- 5. GE App Annotations &amp; Visualizations -->
+        <!-- 5. GE App Annotations & Visualizations -->
         <mxCell id="card_act_ge" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:24px;font-size:16px;text-align:center;&quot;&gt;🌐&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;GE App&lt;br&gt;Annotations &amp;&lt;br&gt;Visualizations&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="798" y="380" width="164" height="58" as="geometry"/>
         </mxCell>

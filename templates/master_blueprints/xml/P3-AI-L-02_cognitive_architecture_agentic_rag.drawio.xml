@@ -1,11 +1,11 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="agentic_rag" name="Cognitive Architecture / Agentic RAG">
+  <diagram id="agentic_rag_master" name="Cognitive Architecture (Agentic RAG)">
     <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ==================== TOP TITLE BANNER &amp; HEADER ==================== -->
+        <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
         <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:24px;&quot;&gt;🧠 ☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="6" width="35" height="35" as="geometry"/>
         </mxCell>
@@ -41,17 +41,17 @@
           <mxGeometry x="28" y="156" width="204" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- Client Ingress Security &amp; Sanitization -->
+        <!-- Client Ingress Security & Sanitization -->
         <mxCell id="card_ui_sanitization" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#DC2626;&quot;&gt;🛡️ 🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Client-Side Input Sanitizer&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Prompt Injection Filter, Rate Limiter &amp;&lt;br&gt;Client-Side PII Pre-Check (DLP)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="28" y="274" width="204" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- Session &amp; State Manager -->
+        <!-- Session & State Manager -->
         <mxCell id="card_ui_session_mgr" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🔑 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Session &amp; Identity Manager&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;OAuth2 / OIDC Token Exchange,&lt;br&gt;Ephemeral Chat State &amp; Websocket Session&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="28" y="342" width="204" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- Human Feedback &amp; Inline Rating -->
+        <!-- Human Feedback & Inline Rating -->
         <mxCell id="card_ui_feedback" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;👍 👎 💬&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Active User Feedback Collector&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Thumbs Up/Down, Edit Suggestions &amp;&lt;br&gt;RLHF Annotation Event Dispatcher&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="28" y="410" width="204" height="60" as="geometry"/>
         </mxCell>
@@ -66,7 +66,7 @@
         </mxCell>
 
 
-        <!-- ==================== ZONE 2: THE AGENTIC CORE (ORCHESTRATION &amp; REASONING) ==================== -->
+        <!-- ==================== ZONE 2: THE AGENTIC CORE (ORCHESTRATION & REASONING) ==================== -->
         <!-- x = 248 .. 808 (width = 560) -->
         <mxCell id="zone_2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="248" y="52" width="560" height="575" as="geometry"/>
@@ -169,7 +169,7 @@
           <mxGeometry x="622" y="448" width="164" height="48" as="geometry"/>
         </mxCell>
 
-        <!-- Continuous Agent Feedback &amp; Telemetry Tracing -->
+        <!-- Continuous Agent Feedback & Telemetry Tracing -->
         <mxCell id="card_rag_triad_eval" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#166534;&quot;&gt;📈 🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#166534;&quot;&gt;Automated RAG Triad Evaluator (Context Relevance, Groundedness &amp; Answer Relevance)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Continuous evaluation logs metrics to BigQuery &amp; triggers automated prompt tuning&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="270" y="502" width="516" height="42" as="geometry"/>
         </mxCell>
@@ -192,7 +192,7 @@
           <mxGeometry x="825" y="55" width="505" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Tool 1: Document Index &amp; Hybrid Semantic Retrieval -->
+        <!-- Tool 1: Document Index & Hybrid Semantic Retrieval -->
         <mxCell id="box_tool_doc_index" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="825" y="84" width="502" height="100" as="geometry"/>
         </mxCell>
@@ -212,7 +212,7 @@
           <mxGeometry x="835" y="160" width="480" height="15" as="geometry"/>
         </mxCell>
 
-        <!-- Tool 2: Enterprise Databases &amp; Knowledge Graph -->
+        <!-- Tool 2: Enterprise Databases & Knowledge Graph -->
         <mxCell id="box_tool_enterprise_db" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="825" y="192" width="502" height="105" as="geometry"/>
         </mxCell>
@@ -232,7 +232,7 @@
           <mxGeometry x="835" y="270" width="480" height="15" as="geometry"/>
         </mxCell>
 
-        <!-- Tool 3: Sandboxed Code Execution &amp; Real-Time APIs -->
+        <!-- Tool 3: Sandboxed Code Execution & Real-Time APIs -->
         <mxCell id="box_tool_execution_env" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="825" y="305" width="502" height="105" as="geometry"/>
         </mxCell>
@@ -263,7 +263,7 @@
           <mxGeometry x="835" y="440" width="480" height="45" as="geometry"/>
         </mxCell>
 
-        <!-- Tool 5: Observability, Tracing &amp; Cloud Operations -->
+        <!-- Tool 5: Observability, Tracing & Cloud Operations -->
         <mxCell id="box_tool_observability" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="825" y="500" width="502" height="75" as="geometry"/>
         </mxCell>
@@ -283,7 +283,7 @@
         </mxCell>
 
 
-        <!-- ==================== BOTTOM HORIZONTAL BAR: ENTERPRISE SECURITY &amp; COMPLIANCE ==================== -->
+        <!-- ==================== BOTTOM HORIZONTAL BAR: ENTERPRISE SECURITY & COMPLIANCE ==================== -->
         <!-- x = 20 .. 1336 (width = 1316) -->
         <mxCell id="bar_btm_gov_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="20" y="632" width="1316" height="58" as="geometry"/>

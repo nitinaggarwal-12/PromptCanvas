@@ -1,11 +1,11 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_fintech_payments" name="Automated Personalized Financial Advising (Fintech)">
+  <diagram id="fintech_automated_advising" name="Automated Personalized Financial Advising (Fintech)">
     <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="690" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ==================== TOP TITLE BANNER &amp; HEADER ==================== -->
+        <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
         <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="8" width="35" height="35" as="geometry"/>
         </mxCell>
@@ -17,7 +17,7 @@
         </mxCell>
 
 
-        <!-- ==================== OUTER SECURITY, GOVERNANCE &amp; COMPLIANCE FRAME ==================== -->
+        <!-- ==================== OUTER SECURITY, GOVERNANCE & COMPLIANCE FRAME ==================== -->
         <!-- x = 20 .. 1340 (width = 1320, height = 635) -->
         <mxCell id="outer_sec_frame" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="20" y="55" width="1320" height="625" as="geometry"/>
@@ -27,7 +27,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 1: USERS &amp; MULTI-MODAL INGRESS ==================== -->
+        <!-- ==================== COLUMN 1: USERS & MULTI-MODAL INGRESS ==================== -->
         <!-- x = 30 .. 170 (width = 140) -->
         <mxCell id="col0_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="30" y="80" width="140" height="585" as="geometry"/>
@@ -55,12 +55,12 @@
           <mxGeometry x="35" y="305" width="130" height="75" as="geometry"/>
         </mxCell>
 
-        <!-- Market Feeds &amp; Ingress Stream -->
+        <!-- Market Feeds & Ingress Stream -->
         <mxCell id="card_market_feed_in" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;📈 📡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Live Market Feeds&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;NASDAQ, NYSE, OPRA Options,&lt;br&gt;FIX Protocol Real-Time Ticks&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="35" y="388" width="130" height="75" as="geometry"/>
         </mxCell>
 
-        <!-- Custodian &amp; Open Banking API Ingress -->
+        <!-- Custodian & Open Banking API Ingress -->
         <mxCell id="card_open_banking_in" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🏦 🔗&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Open Banking &amp; Plaid APIs&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Plaid, MX, Yodlee Aggregator,&lt;br&gt;Direct Custodian Core Feeds&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="35" y="470" width="130" height="75" as="geometry"/>
         </mxCell>
@@ -95,12 +95,12 @@
           <mxGeometry x="183" y="280" width="130" height="24" as="geometry"/>
         </mxCell>
 
-        <!-- Firebase Auth &amp; Session Security -->
+        <!-- Firebase Auth & Session Security -->
         <mxCell id="card_firebase_auth" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🔥 🔐&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Firebase Authentication&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;MFA, OAuth2, WebAuthn Keys&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="183" y="312" width="130" height="50" as="geometry"/>
         </mxCell>
 
-        <!-- Cloud Load Balancing &amp; Cloud Armor -->
+        <!-- Cloud Load Balancing & Cloud Armor -->
         <mxCell id="card_clb_ui" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;⚖️ 🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Load Balancing (Global)&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Cloud Armor Layer 7 WAF DDoS&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="183" y="370" width="130" height="50" as="geometry"/>
         </mxCell>
@@ -120,7 +120,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 3: INGESTION &amp; DATA MANAGEMENT LAYER ==================== -->
+        <!-- ==================== COLUMN 3: INGESTION & DATA MANAGEMENT LAYER ==================== -->
         <!-- x = 326 .. 476 (width = 150) -->
         <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="326" y="80" width="150" height="585" as="geometry"/>
@@ -129,7 +129,7 @@
           <mxGeometry x="331" y="83" width="140" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Track 1: Unstructured Recordings &amp; Documents -> GCS -->
+        <!-- Track 1: Unstructured Recordings & Documents -> GCS -->
         <mxCell id="card_unstruct_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;📄 🎙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Unstructured&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;(audio, scanned PDFs)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="332" y="112" width="60" height="52" as="geometry"/>
         </mxCell>
@@ -138,7 +138,7 @@
         </mxCell>
         <mxCell id="e_unstruct_gcs" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_unstruct_badge" target="card_gcs_docs"/>
 
-        <!-- Track 2: Structured Core Data -> BigQuery &amp; Cloud SQL -->
+        <!-- Track 2: Structured Core Data -> BigQuery & Cloud SQL -->
         <mxCell id="card_struct_badge" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Structured Data&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Transactions,&lt;br&gt;Ledgers, Accounts&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="332" y="178" width="60" height="75" as="geometry"/>
         </mxCell>
@@ -149,7 +149,7 @@
           <mxGeometry x="398" y="218" width="72" height="42" as="geometry"/>
         </mxCell>
 
-        <!-- Track 3: Real-Time Transaction Streams &amp; Change Data Capture -->
+        <!-- Track 3: Real-Time Transaction Streams & Change Data Capture -->
         <mxCell id="card_realtime_streams" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Real-Time Streams&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Card Swipes, ACH,&lt;br&gt;Wire Transfers&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="332" y="268" width="60" height="52" as="geometry"/>
         </mxCell>
@@ -157,17 +157,17 @@
           <mxGeometry x="398" y="268" width="72" height="52" as="geometry"/>
         </mxCell>
 
-        <!-- Track 4: Vector Embeddings &amp; Financial Knowledge Base -->
+        <!-- Track 4: Vector Embeddings & Financial Knowledge Base -->
         <mxCell id="card_vector_search_db" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;⚡ 📚&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI Vector Search&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;IRS Tax Codes, SEC Filings,&lt;br&gt;Equity Research &amp; Fund Prospectuses&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="332" y="335" width="138" height="70" as="geometry"/>
         </mxCell>
 
-        <!-- Track 5: Dataplex FinTech Data Governance &amp; Lineage -->
+        <!-- Track 5: Dataplex FinTech Data Governance & Lineage -->
         <mxCell id="card_dataplex_fin" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🛡️ 📊&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Dataplex Data Fabric&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Automated Data Quality Checks &amp;&lt;br&gt;PII Column Masking Policy&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="332" y="415" width="138" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- Track 6: Real-Time Fraud &amp; Anomaly Ingest -->
+        <!-- Track 6: Real-Time Fraud & Anomaly Ingest -->
         <mxCell id="card_fraud_rule_engine" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#DC2626;&quot;&gt;🚨 🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Sub-10ms Fraud Filter&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;AML Screening &amp; Sanctions List&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="332" y="490" width="138" height="60" as="geometry"/>
         </mxCell>
@@ -177,7 +177,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 4: VERTEX AI &amp; GEMINI PLATFORM (PROCESSING LAYER) ==================== -->
+        <!-- ==================== COLUMN 4: VERTEX AI & GEMINI PLATFORM (PROCESSING LAYER) ==================== -->
         <!-- x = 484 .. 794 (width = 310) -->
         <mxCell id="col3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="484" y="80" width="310" height="585" as="geometry"/>
@@ -249,7 +249,7 @@
           <mxGeometry x="498" y="365" width="85" height="50" as="geometry"/>
         </mxCell>
 
-        <!-- Vertex AI Model Evaluation &amp; Explainable AI (XAI) -->
+        <!-- Vertex AI Model Evaluation & Explainable AI (XAI) -->
         <mxCell id="card_fin_eval_xai" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#2563EB;&quot;&gt;🔍 ⚖️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;Explainable AI (Vertex XAI)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Feature Attributions &amp; Fiduciary Audit&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
           <mxGeometry x="498" y="425" width="282" height="42" as="geometry"/>
         </mxCell>
@@ -346,7 +346,7 @@
         </mxCell>
 
 
-        <!-- ==================== COLUMN 6: SECURITY, GOVERNANCE &amp; COMPLIANCE SIDEBAR ==================== -->
+        <!-- ==================== COLUMN 6: SECURITY, GOVERNANCE & COMPLIANCE SIDEBAR ==================== -->
         <!-- x = 1080 .. 1330 (width = 250) -->
         <mxCell id="col5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="1080" y="80" width="250" height="585" as="geometry"/>

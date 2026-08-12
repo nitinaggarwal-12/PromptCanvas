@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="devops_cicd_pipeline" name="Enterprise DevSecOps Polyrepo CI/CD Pipeline Flow">
+  <diagram id="devops_cicd_pipeline_compiled" name="Diagram: The Operational Flow">
     <mxGraphModel dx="1800" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1000" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -20,7 +20,7 @@
           <mxGeometry x="40" y="50" width="500" height="30" as="geometry" />
         </mxCell>
 
-        <!-- 2. Column 1: PLAN &amp; GOVERN -->
+        <!-- 2. Column 1: PLAN & GOVERN -->
         <mxCell id="col_plan" value="&lt;b style='font-size:13px;color:#202124;'&gt;PLAN &amp; GOVERN&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=3;fontFamily=Helvetica;verticalAlign=top;paddingTop=12;" vertex="1" parent="1">
           <mxGeometry x="40" y="90" width="130" height="670" as="geometry" />
         </mxCell>
@@ -30,7 +30,7 @@
         <mxCell id="plan_erd" value="&lt;span style='font-size:32px;'&gt;🗂️&lt;/span&gt;&lt;br&gt;&lt;font style='font-size:12px;color:#202124;'&gt;Dimensional&lt;br&gt;Data Modeling&lt;br&gt;(ERD)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="55" y="380" width="100" height="110" as="geometry" />
         </mxCell>
-        <!-- Connectors from Plan &amp; Govern to Git Source -->
+        <!-- Connectors from Plan & Govern to Git Source -->
         <mxCell id="arr_plan_merge1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#202124;strokeWidth=1.2;endArrow=none;" edge="1" parent="1" source="plan_proj">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="175" y="335" as="targetPoint" />
@@ -46,7 +46,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 3. Column 2: GIT SOURCE &amp; IaC DEFINE -->
+        <!-- 3. Column 2: GIT SOURCE & IaC DEFINE -->
         <mxCell id="col_git" value="&lt;b style='font-size:13px;color:#202124;'&gt;GIT SOURCE &amp; IaC DEFINE&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px;color:#475569;'&gt;(Governance/Compliance)&lt;br&gt;(Polyrepo setup with explicit&lt;br&gt;PR/Branch Protection Rules)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=3;fontFamily=Helvetica;verticalAlign=top;paddingTop=12;" vertex="1" parent="1">
           <mxGeometry x="185" y="90" width="220" height="670" as="geometry" />
         </mxCell>
@@ -72,7 +72,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 4. Central Ecosystem Boundary &amp; The 3 Tracks -->
+        <!-- 4. Central Ecosystem Boundary & The 3 Tracks -->
         <mxCell id="boundary_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8F0;strokeColor=#F6AD55;strokeWidth=2;arcSize=2;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="425" y="90" width="820" height="670" as="geometry" />
         </mxCell>
@@ -115,7 +115,7 @@
           <mxGeometry x="450" y="325" width="60" height="30" as="geometry" />
         </mxCell>
 
-        <!-- TRACK 1: DATA ENGINEERING &amp; DIMENSIONAL MODELING FLOW -->
+        <!-- TRACK 1: DATA ENGINEERING & DIMENSIONAL MODELING FLOW -->
         <mxCell id="track1_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="510" y="135" width="720" height="195" as="geometry" />
         </mxCell>
@@ -141,7 +141,7 @@
           <mxGeometry x="530" y="305" width="400" height="20" as="geometry" />
         </mxCell>
 
-        <!-- TRACK 2: APPLICATION DEVELOPMENT &amp; COGNITIVE ARCHITECTURE FLOW -->
+        <!-- TRACK 2: APPLICATION DEVELOPMENT & COGNITIVE ARCHITECTURE FLOW -->
         <mxCell id="track2_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="510" y="345" width="720" height="195" as="geometry" />
         </mxCell>
@@ -190,7 +190,7 @@
           <mxGeometry x="530" y="715" width="350" height="20" as="geometry" />
         </mxCell>
 
-        <!-- 5. Column 4: PHASE 4: EVALUATION, GOVERNANCE &amp; PROMOTION FLOW -->
+        <!-- 5. Column 4: PHASE 4: EVALUATION, GOVERNANCE & PROMOTION FLOW -->
         <mxCell id="col_gov" value="&lt;b style='font-size:13px;color:#202124;'&gt;PHASE 4: EVALUATION, GOVERNANCE&lt;br&gt;&amp; PROMOTION FLOW&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=3;fontFamily=Helvetica;verticalAlign=top;paddingTop=12;" vertex="1" parent="1">
           <mxGeometry x="1255" y="90" width="235" height="670" as="geometry" />
         </mxCell>
@@ -247,7 +247,7 @@
           <mxGeometry x="1265" y="615" width="215" height="100" as="geometry" />
         </mxCell>
 
-        <!-- 6. Column 5: PHASE 5: SECURED DEPLOYMENT &amp; OBSERVATION FLOW -->
+        <!-- 6. Column 5: PHASE 5: SECURED DEPLOYMENT & OBSERVATION FLOW -->
         <mxCell id="col_deploy" value="&lt;b style='font-size:13px;color:#202124;'&gt;PHASE 5: SECURED DEPLOYMENT &amp;&lt;br&gt;OBSERVATION FLOW&lt;br&gt;&lt;font style='font-size:11px;font-weight:normal;'&gt;(Topology Flow)&lt;/font&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;arcSize=3;fontFamily=Helvetica;verticalAlign=top;paddingTop=12;" vertex="1" parent="1">
           <mxGeometry x="1505" y="90" width="260" height="670" as="geometry" />
         </mxCell>

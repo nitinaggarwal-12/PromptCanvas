@@ -1,5 +1,5 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_llmops_lifecycle" name="LLMOps Prompt Configuration Lifecycle (P5-AI-P-07)">
+  <diagram id="llmops_prompt_config_lifecycle" name="LLMOps Prompt Configuration Lifecycle (P5-AI-P-07)">
     <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1180" pageHeight="600" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -12,7 +12,7 @@
 
         <!-- ==================== 6 VERTICAL EXECUTION ZONES ==================== -->
 
-        <!-- Zone 1: Prompt Design &amp; Iteration (Blue #E0F2FE) -->
+        <!-- Zone 1: Prompt Design & Iteration (Blue #E0F2FE) -->
         <mxCell id="zone1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#BAE6FD;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="30" y="55" width="175" height="490" as="geometry"/>
         </mxCell>
@@ -66,7 +66,7 @@
           <mxGeometry x="380" y="60" width="245" height="28" as="geometry"/>
         </mxCell>
 
-        <!-- Cloud Build Logo &amp; Label -->
+        <!-- Cloud Build Logo & Label -->
         <mxCell id="card_cloud_build" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;📦&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Build&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="465" y="95" width="75" height="46" as="geometry"/>
         </mxCell>
@@ -98,7 +98,7 @@
           <mxGeometry x="400" y="220" width="205" height="28" as="geometry"/>
         </mxCell>
 
-        <!-- Evaluation Dataset &amp; Baseline Prompt Cards inside Step 2 -->
+        <!-- Evaluation Dataset & Baseline Prompt Cards inside Step 2 -->
         <mxCell id="card_eval_dataset" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;▦&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Evaluation&lt;br&gt;Dataset&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="405" y="255" width="85" height="55" as="geometry"/>
         </mxCell>
@@ -120,7 +120,7 @@
         <mxCell id="e_sxs_gate" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_autosxs" target="gate_approval"/>
 
 
-        <!-- Zone 4: Prompt Registry &amp; Versioning (Yellow #FEF9C3) -->
+        <!-- Zone 4: Prompt Registry & Versioning (Yellow #FEF9C3) -->
         <mxCell id="zone4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FEF08A;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="635" y="55" width="160" height="490" as="geometry"/>
         </mxCell>
@@ -149,7 +149,7 @@
         </mxCell>
 
 
-        <!-- Zone 5: Application Serving &amp; Inference (Green #DCFCE7) -->
+        <!-- Zone 5: Application Serving & Inference (Green #DCFCE7) -->
         <mxCell id="zone5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#BBF7D0;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="800" y="55" width="175" height="490" as="geometry"/>
         </mxCell>
@@ -188,7 +188,7 @@
         <mxCell id="e_server_endpoint" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_app_server" target="card_endpoint"/>
 
 
-        <!-- Zone 6: Monitoring &amp; Feedback Loop (Pink #FEE2E2) -->
+        <!-- Zone 6: Monitoring & Feedback Loop (Pink #FEE2E2) -->
         <mxCell id="zone6_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#FECACA;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="980" y="55" width="170" height="490" as="geometry"/>
         </mxCell>

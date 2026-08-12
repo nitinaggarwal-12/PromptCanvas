@@ -1,11 +1,11 @@
 <mxfile host="embed.diagrams.net">
-  <diagram id="tech_manufacturing_iot" name="Smart Factory Industry 4.0 IoT &amp; Predictive Maintenance">
+  <diagram id="real_time_streaming_analytics_topology" name="Real-Time Streaming Analytics Topology (P4-DAT-P-10)">
     <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="560" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ==================== 1. TOP GLOBAL SUPPORT &amp; MONITORING BAR ==================== -->
+        <!-- ==================== 1. TOP GLOBAL SUPPORT & MONITORING BAR ==================== -->
         <mxCell id="bar_support_bg" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="30" y="12" width="1060" height="46" as="geometry"/>
         </mxCell>
@@ -47,7 +47,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="895" y="65" as="sourcePoint"/><mxPoint x="895" y="485" as="targetPoint"/></mxGeometry>
         </mxCell>
 
-        <!-- ==================== ZONE 1: IoT DATA SOURCES &amp; INGESTION (x = 30 .. 205) ==================== -->
+        <!-- ==================== ZONE 1: IoT DATA SOURCES & INGESTION (x = 30 .. 205) ==================== -->
         <mxCell id="hdr_zone1" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;1. IoT Data Sources&lt;br&gt;&amp; Ingestion&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="70" width="175" height="26" as="geometry"/>
         </mxCell>
@@ -95,7 +95,7 @@
           <mxGeometry x="30" y="490" width="175" height="24" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== ZONE 2: MESSAGING &amp; TRANSPORT: GCP PUB/SUB (x = 215 .. 385) ==================== -->
+        <!-- ==================== ZONE 2: MESSAGING & TRANSPORT: GCP PUB/SUB (x = 215 .. 385) ==================== -->
         <mxCell id="hdr_zone2" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;2. Messaging &amp; Transport:&lt;br&gt;GCP Pub/Sub&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="215" y="70" width="170" height="26" as="geometry"/>
         </mxCell>
@@ -151,7 +151,7 @@
           <mxGeometry x="408" y="104" width="155" height="20" as="geometry"/>
         </mxCell>
 
-        <!-- Watermark &amp; Latency Monitoring Mini-Chart Card -->
+        <!-- Watermark & Latency Monitoring Mini-Chart Card -->
         <mxCell id="card_watermark" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Watermark &amp;&lt;br&gt;Latency Monitoring&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;&quot;&gt;📈&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#CA8A04;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="575" y="104" width="95" height="36" as="geometry"/>
         </mxCell>
@@ -200,12 +200,12 @@
           <mxGeometry x="395" y="490" width="290" height="24" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== ZONE 4: REAL-TIME ANALYTICS &amp; STORAGE: GCP BIGQUERY (x = 695 .. 890) ==================== -->
+        <!-- ==================== ZONE 4: REAL-TIME ANALYTICS & STORAGE: GCP BIGQUERY (x = 695 .. 890) ==================== -->
         <mxCell id="hdr_zone4" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;4. Real-Time Analytics&lt;br&gt;&amp; Storage: GCP BigQuery&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="695" y="70" width="195" height="26" as="geometry"/>
         </mxCell>
 
-        <!-- Top Callout Bubble: BigQuery Storage Write API &amp; BQ ML -->
+        <!-- Top Callout Bubble: BigQuery Storage Write API & BQ ML -->
         <mxCell id="callout_bq_top" value="&lt;div style=&quot;font-size:7px;color:#0F172A;text-align:center;line-height:1.3;&quot;&gt;&lt;b&gt;BigQuery Storage Write API&lt;/b&gt;&lt;br&gt;(Streaming Ingestion)&lt;br&gt;&lt;b&gt;BigQuery ML&lt;/b&gt;&lt;br&gt;(In-place inference and forecasting)&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position=0.5;base=12;size=8;position2=0.5;fillColor=#FEF9C3;strokeColor=#CA8A04;strokeWidth=1;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
           <mxGeometry x="705" y="100" width="175" height="60" as="geometry"/>
         </mxCell>
@@ -229,7 +229,7 @@
           <mxGeometry x="710" y="330" width="165" height="42" as="geometry"/>
         </mxCell>
 
-        <!-- Cloud Storage Archival &amp; Replay Box -->
+        <!-- Cloud Storage Archival & Replay Box -->
         <mxCell id="card_gcs_archive" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🛢️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Storage&lt;br&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;font-weight:normal;&quot;&gt;(Archival &amp; Replay)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="725" y="395" width="135" height="52" as="geometry"/>
         </mxCell>
@@ -249,7 +249,7 @@
           <mxGeometry x="695" y="490" width="195" height="24" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== ZONE 5: VISUALIZATION &amp; REAL-TIME DASHBOARDS (x = 900 .. 1090) ==================== -->
+        <!-- ==================== ZONE 5: VISUALIZATION & REAL-TIME DASHBOARDS (x = 900 .. 1090) ==================== -->
         <mxCell id="hdr_zone5" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;5. Visualization &amp;&lt;br&gt;Real-Time Dashboards&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="900" y="70" width="190" height="26" as="geometry"/>
         </mxCell>

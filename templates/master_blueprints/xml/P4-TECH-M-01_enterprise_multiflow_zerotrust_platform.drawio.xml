@@ -9,7 +9,7 @@
         <mxCell id="main_title_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="25" y="8" width="1315" height="44" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:14px;color:#0F172A;&quot;&gt;Enterprise Multi-Flow Zero-Trust &amp;amp; Cognitive Platform Architecture&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Deep Technical Blueprint: Multi-Layer Network Flow, Process Control, Agentic Dataflow &amp;amp; 5 Decision Diamonds&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:14px;color:#0F172A;&quot;&gt;Enterprise Multi-Flow Zero-Trust &amp; Cognitive Platform Architecture&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Deep Technical Blueprint: Multi-Layer Network Flow, Process Control, Agentic Dataflow &amp; 5 Decision Diamonds&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="35" y="10" width="700" height="40" as="geometry"/>
         </mxCell>
 
@@ -22,12 +22,12 @@
         <mxCell id="box_tier1" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#FCA5A5;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="25" y="58" width="310" height="650" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_tier1_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#991B1B;&quot;&gt;TIER 1: ZERO-TRUST INGRESS &amp;amp; EDGE PERIMETER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_tier1_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#991B1B;&quot;&gt;TIER 1: ZERO-TRUST INGRESS &amp; EDGE PERIMETER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="62" width="300" height="20" as="geometry"/>
         </mxCell>
 
         <!-- 1.1 Ingress Clients Card -->
-        <mxCell id="node_clients" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[1.1] Client &amp;amp; Partner Ingress&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Web / Mobile Clients (HTTPS :443)&lt;br&gt;• Managed Workstations (FIDO2 Keys)&lt;br&gt;• Partner B2B API Clients (TLS 1.3)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_clients" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[1.1] Client &amp; Partner Ingress&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Web / Mobile Clients (HTTPS :443)&lt;br&gt;• Managed Workstations (FIDO2 Keys)&lt;br&gt;• Partner B2B API Clients (TLS 1.3)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="35" y="90" width="290" height="65" as="geometry"/>
         </mxCell>
 
@@ -37,7 +37,7 @@
         </mxCell>
 
         <!-- 1.3 Cloud Armor WAF & Global LB -->
-        <mxCell id="node_cloud_armor" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[1.2] Cloud Armor &amp;amp; Global LB&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Layer 7 DDoS Mitigation &amp;amp; Geo-Fencing&lt;br&gt;• OWASP Top 10 Pre-configured Rules&lt;br&gt;• Global Anycast IP Ingress (:443)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_cloud_armor" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[1.2] Cloud Armor &amp; Global LB&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Layer 7 DDoS Mitigation &amp; Geo-Fencing&lt;br&gt;• OWASP Top 10 Pre-configured Rules&lt;br&gt;• Global Anycast IP Ingress (:443)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="35" y="285" width="290" height="70" as="geometry"/>
         </mxCell>
 
@@ -52,7 +52,7 @@
         </mxCell>
 
         <!-- 1.6 Threat Quarantine Sink -->
-        <mxCell id="node_quarantine" value="&lt;b style=&quot;font-size:9.5px;color:#991B1B;&quot;&gt;🚨 Threat Quarantine / SIEM Sink&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;HTTP 403 Forbidden &amp;amp; Chronicle SIEM Event&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
+        <mxCell id="node_quarantine" value="&lt;b style=&quot;font-size:9.5px;color:#991B1B;&quot;&gt;🚨 Threat Quarantine / SIEM Sink&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;HTTP 403 Forbidden &amp; Chronicle SIEM Event&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
           <mxGeometry x="35" y="590" width="290" height="50" as="geometry"/>
         </mxCell>
 
@@ -60,7 +60,7 @@
         <mxCell id="box_tier2" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="350" y="58" width="315" height="650" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_tier2_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#1E3A8A;&quot;&gt;TIER 2: PRIVATE GKE &amp;amp; ISTIO MESH (10.100.1.0/24)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_tier2_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#1E3A8A;&quot;&gt;TIER 2: PRIVATE GKE &amp; ISTIO MESH (10.100.1.0/24)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="355" y="62" width="305" height="20" as="geometry"/>
         </mxCell>
 
@@ -75,12 +75,12 @@
         </mxCell>
 
         <!-- 2.3 GKE Workload Pods -->
-        <mxCell id="node_gke_pods" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[2.2] GKE Hardened Workload Pods&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Shielded Nodes &amp;amp; Binary Authorization&lt;br&gt;• Read-Only Root Filesystems &amp;amp; Seccomp&lt;br&gt;• Workload Identity (Zero Long-Lived Keys)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_gke_pods" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[2.2] GKE Hardened Workload Pods&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Shielded Nodes &amp; Binary Authorization&lt;br&gt;• Read-Only Root Filesystems &amp; Seccomp&lt;br&gt;• Workload Identity (Zero Long-Lived Keys)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="360" y="285" width="295" height="70" as="geometry"/>
         </mxCell>
 
         <!-- 2.4 Cloud KMS CMEK Hardware HSM -->
-        <mxCell id="node_hsm_kms" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[2.3] Cloud KMS Hardware HSM (FIPS 140-2)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Customer-Managed Encryption Keys (CMEK)&lt;br&gt;• Envelope Encryption for Pod Secrets &amp;amp; DBs&lt;br&gt;• Automated 90-Day Key Rotation&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_hsm_kms" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[2.3] Cloud KMS Hardware HSM (FIPS 140-2)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Customer-Managed Encryption Keys (CMEK)&lt;br&gt;• Envelope Encryption for Pod Secrets &amp; DBs&lt;br&gt;• Automated 90-Day Key Rotation&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="360" y="385" width="295" height="70" as="geometry"/>
         </mxCell>
 
@@ -90,7 +90,7 @@
         </mxCell>
 
         <!-- 2.6 DLP Redaction & Prompt Rewriter -->
-        <mxCell id="node_sanitizer" value="&lt;b style=&quot;font-size:9.5px;color:#D97706;&quot;&gt;🛡️ DLP Redaction &amp;amp; Prompt Rewriter&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Cloud DLP masks PII tokens before model inference&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
+        <mxCell id="node_sanitizer" value="&lt;b style=&quot;font-size:9.5px;color:#D97706;&quot;&gt;🛡️ DLP Redaction &amp; Prompt Rewriter&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Cloud DLP masks PII tokens before model inference&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
           <mxGeometry x="360" y="590" width="295" height="50" as="geometry"/>
         </mxCell>
 
@@ -98,22 +98,22 @@
         <mxCell id="box_tier3" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="680" y="58" width="320" height="650" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_tier3_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#6B21A8;&quot;&gt;TIER 3: COGNITIVE AI REASONING &amp;amp; MULTI-AGENT MESH&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_tier3_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#6B21A8;&quot;&gt;TIER 3: COGNITIVE AI REASONING &amp; MULTI-AGENT MESH&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="685" y="62" width="310" height="20" as="geometry"/>
         </mxCell>
 
         <!-- 3.1 Gemini 3.6 Pro Super-Orchestrator -->
-        <mxCell id="node_gemini_brain" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.1] Gemini 3.6 Pro Super-Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• LangGraph DAG State Machine &amp;amp; Checkpoints&lt;br&gt;• Dynamic Multi-Modal Synthesis (Text, Vision)&lt;br&gt;• Model Context Protocol (MCP) Tool Calling&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_gemini_brain" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.1] Gemini 3.6 Pro Super-Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• LangGraph DAG State Machine &amp; Checkpoints&lt;br&gt;• Dynamic Multi-Modal Synthesis (Text, Vision)&lt;br&gt;• Model Context Protocol (MCP) Tool Calling&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="690" y="90" width="300" height="65" as="geometry"/>
         </mxCell>
 
         <!-- 3.2 Vertex AI Vector Search -->
-        <mxCell id="node_vector_search" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.2] Vertex AI Vector Search &amp;amp; BigLake&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• 1536-dim text-embedding-004 ScaNN Index&lt;br&gt;• Sub-10ms Approximate Nearest Neighbor&lt;br&gt;• VPC-SC Air-Gapped Private Service Connect&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#EFF6FF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_vector_search" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.2] Vertex AI Vector Search &amp; BigLake&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• 1536-dim text-embedding-004 ScaNN Index&lt;br&gt;• Sub-10ms Approximate Nearest Neighbor&lt;br&gt;• VPC-SC Air-Gapped Private Service Connect&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#EFF6FF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="690" y="185" width="300" height="70" as="geometry"/>
         </mxCell>
 
         <!-- 3.3 DECISION DIAMOND 4: Confidence & Quality Gate -->
-        <mxCell id="diamond_confidence" value="&lt;b style=&quot;font-size:9px;color:#065F46;&quot;&gt;[◆ D4] AI Confidence&lt;br&gt;Score ≥ 90% &amp;amp;&lt;br&gt;Zero Hallucination?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="diamond_confidence" value="&lt;b style=&quot;font-size:9px;color:#065F46;&quot;&gt;[◆ D4] AI Confidence&lt;br&gt;Score ≥ 90% &amp;&lt;br&gt;Zero Hallucination?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="745" y="285" width="190" height="70" as="geometry"/>
         </mxCell>
 
@@ -136,7 +136,7 @@
         <mxCell id="box_tier4" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1015" y="58" width="325" height="650" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_tier4_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#166534;&quot;&gt;TIER 4: SECURE DATA FABRIC &amp;amp; RESILIENCE (10.200.2.0/24)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_tier4_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#166534;&quot;&gt;TIER 4: SECURE DATA FABRIC &amp; RESILIENCE (10.200.2.0/24)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1020" y="62" width="315" height="20" as="geometry"/>
         </mxCell>
 
@@ -146,7 +146,7 @@
         </mxCell>
 
         <!-- 4.2 BigQuery BigLake & Dataplex -->
-        <mxCell id="node_bigquery_lake" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.2] BigQuery BigLake &amp;amp; Dataplex&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Medallion Tiering (Bronze, Silver, Gold)&lt;br&gt;• Column-Level Crypto Masking &amp;amp; ABAC Tags&lt;br&gt;• WORM Immutable 7-Year Compliance Vault&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_bigquery_lake" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.2] BigQuery BigLake &amp; Dataplex&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Medallion Tiering (Bronze, Silver, Gold)&lt;br&gt;• Column-Level Crypto Masking &amp; ABAC Tags&lt;br&gt;• WORM Immutable 7-Year Compliance Vault&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="1025" y="185" width="305" height="70" as="geometry"/>
         </mxCell>
 
@@ -156,12 +156,12 @@
         </mxCell>
 
         <!-- 4.4 Real-Time Pub/Sub & Dataflow -->
-        <mxCell id="node_streaming_bus" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.3] Cloud Pub/Sub &amp;amp; Dataflow Beam&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Exactly-Once Processing (100k msg/sec)&lt;br&gt;• Avro Schema Registry &amp;amp; DLQ Error Topics&lt;br&gt;• Real-Time Sliding Window Aggregations&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="node_streaming_bus" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.3] Cloud Pub/Sub &amp; Dataflow Beam&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Exactly-Once Processing (100k msg/sec)&lt;br&gt;• Avro Schema Registry &amp; DLQ Error Topics&lt;br&gt;• Real-Time Sliding Window Aggregations&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="1025" y="385" width="305" height="70" as="geometry"/>
         </mxCell>
 
         <!-- 4.5 Rollback & SRE Alert -->
-        <mxCell id="node_rollback_alert" value="&lt;b style=&quot;font-size:9.5px;color:#991B1B;&quot;&gt;🛑 Circuit Breaker Trip / ETL Halt&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Halts ingestion, routes to DLQ &amp;amp; pages On-Call SRE&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
+        <mxCell id="node_rollback_alert" value="&lt;b style=&quot;font-size:9.5px;color:#991B1B;&quot;&gt;🛑 Circuit Breaker Trip / ETL Halt&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Halts ingestion, routes to DLQ &amp; pages On-Call SRE&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
           <mxGeometry x="1025" y="485" width="305" height="50" as="geometry"/>
         </mxCell>
 
