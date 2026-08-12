@@ -30,7 +30,10 @@ import {
   Globe,
   SlidersHorizontal,
   RefreshCw,
-  Loader2
+  Loader2,
+  Star,
+  Trophy,
+  Award
 } from 'lucide-react';
 import { getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 
@@ -58,6 +61,7 @@ interface CanvasDiagramItem {
   max_version?: number;
   latest_prompt?: string;
   xml_content?: string;
+  is_starred?: boolean;
 }
 
 export default function CanvasHistoryPage() {
@@ -69,7 +73,39 @@ export default function CanvasHistoryPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedPhase, setSelectedPhase] = useState<string>('all');
   const [selectedArchFilter, setSelectedArchFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'recent' | 'versions' | 'oldest' | 'name'>('recent');
+  const [sortBy, setSortBy] = useState<'recent' | 'versions' | 'oldest' | 'name' | 'starred'>('recent');
+
+  // Starred Canvases Set (Local state persisted across session)
+  const [starredIds, setStarredIds] = useState<Set<string>>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('promptcanvas_starred_canvases');
+        if (saved) return new Set(JSON.parse(saved));
+      } catch (e) {}
+    }
+    return new Set<string>();
+  });
+
+  const toggleStar = (diagramId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setStarredIds(prev => {
+      const next = new Set(prev);
+      if (next.has(diagramId)) {
+        next.delete(diagramId);
+      } else {
+        next.add(diagramId);
+      }
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('promptcanvas_starred_canvases', JSON.stringify(Array.from(next)));
+        } catch (e) {}
+      }
+      return next;
+    });
+  };
+
+  // Executive Playbook Modal State (Moved from Workspace to History Page)
+  const [isPlaybookModalOpen, setIsPlaybookModalOpen] = useState<boolean>(false);
 
   // Preview Modal State
   const [activeModalCanvas, setActiveModalCanvas] = useState<CanvasDiagramItem | null>(null);
@@ -239,6 +275,11 @@ export default function CanvasHistoryPage() {
 
     // Sorting
     list.sort((a, b) => {
+      if (sortBy === 'starred') {
+        const aStarred = starredIds.has(a.id) ? 1 : 0;
+        const bStarred = starredIds.has(b.id) ? 1 : 0;
+        return bStarred - aStarred;
+      }
       if (sortBy === 'recent') {
         return new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime();
       }
@@ -257,7 +298,7 @@ export default function CanvasHistoryPage() {
     });
 
     return list;
-  }, [diagrams, searchQuery, selectedPhase, selectedArchFilter, sortBy]);
+  }, [diagrams, searchQuery, selectedPhase, selectedArchFilter, sortBy, starredIds]);
 
   // Summary Metrics
   const totalCanvases = diagrams.length;
@@ -330,6 +371,16 @@ export default function CanvasHistoryPage() {
 
           {/* Quick Actions */}
           <div className="flex items-center gap-3">
+            {/* Page 2: Executive Playbook Table Button */}
+            <button
+              onClick={() => setIsPlaybookModalOpen(true)}
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-bold text-xs transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
+              title="Open Page 2: Executive Strategic Playbook & Governance Profile Table"
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <span>Executive Playbook Table</span>
+            </button>
+
             <button
               onClick={fetchAllCanvases}
               disabled={isLoading}
@@ -338,6 +389,7 @@ export default function CanvasHistoryPage() {
             >
               <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />
             </button>
+
             <Link
               href="/workspace"
               className="px-5 py-2.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black text-xs rounded-xl shadow-lg shadow-teal-500/20 transition-all hover:scale-[1.02] flex items-center gap-2 shrink-0"
@@ -363,7 +415,7 @@ export default function CanvasHistoryPage() {
                 Canvas Version <span className="bg-gradient-to-r from-teal-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">Archive &amp; Tiles</span>
               </h1>
               <p className="text-sm md:text-base text-slate-400 leading-relaxed">
-                Browse and inspect every historical canvas, architecture blueprint, and iterative snapshot created since project inception with instant vector preview and version time-travel.
+                Browse and inspect every historical canvas, architecture blueprint, and iterative snapshot created since project inception with instant vector preview, version time-travel, and star bookmarks.
               </p>
             </div>
 
@@ -443,6 +495,7 @@ export default function CanvasHistoryPage() {
                   className="bg-slate-900/90 border border-slate-700/80 text-slate-200 text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer focus:border-teal-400"
                 >
                   <option value="recent">⚡ Most Recent</option>
+                  <option value="starred">⭐ Starred First</option>
                   <option value="versions">🏆 Most Versions</option>
                   <option value="oldest">📅 Oldest First</option>
                   <option value="name">🔤 Alphabetical</option>
@@ -488,18 +541,22 @@ export default function CanvasHistoryPage() {
               const archMeta = getArchitectureTypeById(diagram.architecture_type || '');
               const verCount = diagram.version_count || diagram.versions?.length || 1;
               const dateStr = diagram.updated_at || diagram.created_at;
+              const isStarred = starredIds.has(diagram.id);
 
               return (
                 <div
                   key={diagram.id}
-                  className="bg-slate-900/70 border border-slate-800 hover:border-teal-500/50 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:shadow-teal-500/5 group relative overflow-hidden"
+                  className={`bg-slate-900/70 border rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:shadow-teal-500/5 group relative overflow-hidden ${
+                    isStarred ? 'border-amber-500/50 bg-slate-900/90' : 'border-slate-800 hover:border-teal-500/50'
+                  }`}
                 >
-                  {/* Top Header Strip */}
+                  {/* Top Header Strip with Star Icon */}
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-md bg-teal-950/80 text-teal-300 border border-teal-800/80 truncate max-w-[200px]">
+                      <span className="text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-md bg-teal-950/80 text-teal-300 border border-teal-800/80 truncate max-w-[180px]">
                         {archMeta?.name || diagram.architecture_type || 'Custom Canvas'}
                       </span>
+                      
                       <div className="flex items-center gap-2">
                         {diagram.is_private ? (
                           <span className="text-[10px] font-bold text-amber-400 flex items-center gap-1">
@@ -510,7 +567,18 @@ export default function CanvasHistoryPage() {
                             <Globe className="w-3 h-3" /> Public
                           </span>
                         )}
-                        <span className="text-[10px] font-mono text-slate-500">#{idx + 1}</span>
+                        
+                        {/* ONLY STAR ICON BUTTON AS REQUESTED */}
+                        <button
+                          type="button"
+                          onClick={(e) => toggleStar(diagram.id, e)}
+                          className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                          title={isStarred ? "Starred Master Blueprint (Click to Unstar)" : "Star as Master Template"}
+                        >
+                          <Star className={`w-4 h-4 transition-all ${
+                            isStarred ? 'fill-amber-400 text-amber-400 scale-110' : 'text-slate-500 hover:text-amber-300'
+                          }`} />
+                        </button>
                       </div>
                     </div>
 
@@ -749,6 +817,138 @@ export default function CanvasHistoryPage() {
                 )}
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 5. PAGE 2: EXECUTIVE PLAYBOOK TABLE MODAL (MOVED FROM WORKSPACE TOOLBAR) */}
+      {/* ========================================================================= */}
+      {isPlaybookModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[#0b101d] border-2 border-amber-500/40 rounded-3xl max-w-7xl w-full max-h-[92vh] overflow-y-auto shadow-2xl p-6 md:p-8 space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
+                  <Trophy className="w-3.5 h-3.5" />
+                  <span>PAGE 2: EXECUTIVE ARCHITECTURE PLAYBOOK &amp; GOVERNANCE METADATA TABLE</span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-black text-white">Enterprise Architecture Governance Profile</h2>
+              </div>
+              <button
+                onClick={() => setIsPlaybookModalOpen(false)}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all font-bold cursor-pointer"
+              >
+                ✕ Close Table
+              </button>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-slate-800">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-900 text-slate-300 text-xs uppercase tracking-wider border-b border-slate-800">
+                    <th className="p-4 font-extrabold w-48">Architecture Blueprint</th>
+                    <th className="p-4 font-extrabold w-36">Strategic Score</th>
+                    <th className="p-4 font-extrabold w-56">When to Use (Product Journey)</th>
+                    <th className="p-4 font-extrabold w-48">Where to Use (Target Document)</th>
+                    <th className="p-4 font-extrabold w-64">Creator &amp; Consumer Personas</th>
+                    <th className="p-4 font-extrabold">🚀 Big Tech Product Standpoint</th>
+                    <th className="p-4 font-extrabold">💼 Tier-1 Management Consulting Standpoint</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/80 text-xs">
+                  <tr className="hover:bg-slate-900/40 transition-colors">
+                    <td className="p-4 font-black text-white">
+                      11. C4 Enterprise System Context &amp; Container Model (L1 &amp; L2)
+                    </td>
+                    <td className="p-4 font-black text-amber-400 text-sm">
+                      ★★★★★<br/>5.0 / 5.0
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      <strong className="text-teal-400">Phase 0–1 Greenfield RFC:</strong> Before writing backend service code.<br/><br/>
+                      <strong className="text-teal-400">Growth &amp; Scale:</strong> During Kubernetes/Istio service mesh adoption.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • Technical Design Document (TDD / RFC) Section 2.<br/>
+                      • SOC2 Type II / ISO 27001 Audit Dossier.<br/>
+                      • C-Suite Boardroom Review Deck Slide 3.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      <strong className="text-white">Creator:</strong> Principal Staff Cloud / Security Architect.<br/><br/>
+                      <strong className="text-white">Consumer:</strong> CISO, VP of Engineering, SOC2 Auditors.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • <strong className="text-blue-400">Internal RFC Enforcement:</strong> Mandatory inside every RFC before design freeze.<br/>
+                      • <strong className="text-blue-400">Zero-Trust Perimeter:</strong> BeyondCorp IAP and Private Service Connect.<br/>
+                      • <strong className="text-blue-400">SRE Postmortems:</strong> Used to trace incident cascading.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • <strong className="text-amber-300">Billable Transformation Anchor:</strong> Compares As-Is Monolith vs To-Be Cloud Native.<br/>
+                      • <strong className="text-amber-300">APM Rationalization:</strong> Identifies duplicate services in 60 minutes.
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-slate-900/40 transition-colors">
+                    <td className="p-4 font-black text-white">
+                      12. Modern Data Stack Architecture Blueprint (CDC &amp; Lakehouse)
+                    </td>
+                    <td className="p-4 font-black text-amber-400 text-sm">
+                      ★★★★★<br/>5.0 / 5.0
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      <strong className="text-teal-400">Series B+ Data Modernization:</strong> When SQL analytics databases stall under ETL lag.<br/><br/>
+                      <strong className="text-teal-400">AI &amp; RAG Monetization:</strong> Building feature stores &amp; enterprise RAG pipelines.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • Enterprise Data Strategy &amp; Governance Charter.<br/>
+                      • Data Engineering Solution Architecture Blueprint (SAD).<br/>
+                      • AI Business Case Deck for Steering Committee.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      <strong className="text-white">Creator:</strong> Principal Staff Data Architect / Analytics Engineer.<br/><br/>
+                      <strong className="text-white">Consumer:</strong> Chief Data Officer (CDO), VP BI, AI Leads.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • <strong className="text-teal-400">Real-Time Telemetry:</strong> OLTP WAL logs into BigQuery &amp; Vertex AI.<br/>
+                      • <strong className="text-teal-400">Data Contracts:</strong> Soda.io &amp; Great Expectations guardrails.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • <strong className="text-amber-300">Monetization Engine:</strong> Eliminates data silos across 12 business units.<br/>
+                      • <strong className="text-amber-300">Self-Service BI:</strong> Cuts ad-hoc analyst request queues by 80%.
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-slate-900/40 transition-colors">
+                    <td className="p-4 font-black text-white">
+                      13. Enterprise Event-Driven Microservices Architecture (EDA Mesh)
+                    </td>
+                    <td className="p-4 font-black text-amber-400 text-sm">
+                      ★★★★★<br/>5.0 / 5.0
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      <strong className="text-teal-400">Hypergrowth Scaling:</strong> Decoupling billing, checkout, and inventory.<br/><br/>
+                      <strong className="text-teal-400">Real-Time Fraud &amp; AI Ingress:</strong> Sub-second streaming ML inference.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • Enterprise Microservices Topology Map.<br/>
+                      • High-Throughput Distributed Systems Blueprint.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      <strong className="text-white">Creator:</strong> Lead Distributed Systems Engineer / Backend Architect.<br/><br/>
+                      <strong className="text-white">Consumer:</strong> Engineering Directors, DevOps Leads.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • <strong className="text-purple-400">Zero Lock-In:</strong> Kafka Event Mesh with DLQ &amp; Outbox pattern.<br/>
+                      • <strong className="text-purple-400">Fault Tolerance:</strong> Guaranteed exactly-once delivery.
+                    </td>
+                    <td className="p-4 text-slate-300 leading-relaxed">
+                      • <strong className="text-amber-300">99.99% Availability Guarantee:</strong> Protects peak cyber week revenue.<br/>
+                      • <strong className="text-amber-300">M&amp;A Rapid Ingestion:</strong> Ingest acquired startups in weeks.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

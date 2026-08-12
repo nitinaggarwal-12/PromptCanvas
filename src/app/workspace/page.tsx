@@ -5782,23 +5782,6 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setIsPlaybookModalOpen(true)}
-                          className="px-3 py-1 rounded-lg text-xs font-black bg-gradient-to-r from-amber-500/25 via-yellow-500/25 to-amber-500/25 hover:from-amber-500 hover:to-yellow-400 text-amber-300 hover:text-slate-950 border border-amber-500/60 hover:border-transparent transition-all flex items-center gap-1 cursor-pointer shadow-lg hover:scale-[1.03]"
-                          title="Open Page 2: Executive Strategic Playbook & Governance Profile Table"
-                        >
-                          <span>🏆 Page 2: Executive Playbook Table</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setIsSetMasterModalOpen(true)}
-                          className="px-3 py-1 rounded-lg text-xs font-black bg-gradient-to-r from-amber-500/30 via-yellow-500/30 to-amber-600/30 hover:from-amber-500 hover:to-yellow-400 text-amber-300 hover:text-slate-950 border border-amber-500/60 hover:border-transparent transition-all flex items-center gap-1.5 cursor-pointer shadow-lg hover:scale-[1.03]"
-                          title="Promote or save this active diagram and layout as an official Master Template"
-                        >
-                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                          <span>⭐ Set as Master Template</span>
-                        </button>
-                        <button
-                          type="button"
                           onClick={() => setIsLiveFlowEnabled(!isLiveFlowEnabled)}
                           className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                             isLiveFlowEnabled ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'text-slate-400 hover:text-emerald-300'
