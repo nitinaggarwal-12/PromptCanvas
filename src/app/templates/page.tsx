@@ -159,18 +159,18 @@ export default function TemplatesPage() {
                 Zero Confusion. <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-300 to-indigo-400">Choose the Right Blueprint</span> for Every System.
               </h1>
               <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-3xl">
-                Browse all 22 verified publication-grade architecture blueprints categorized across 6 enterprise domains. Compare decision heuristics, view high-res visual thumbnails, and launch directly into the interactive editor.
+                Browse all {TEMPLATE_CATALOG_ITEMS.length} verified publication-grade architecture blueprints categorized across {TEMPLATE_CATEGORIES.length} enterprise domains. Compare decision heuristics, view high-res visual thumbnails, and launch directly into the interactive editor.
               </p>
             </div>
 
             {/* Quick Stats Badges */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0">
               <div className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800/80 shadow-md">
-                <div className="text-2xl font-black text-teal-400">22</div>
+                <div className="text-2xl font-black text-teal-400">{TEMPLATE_CATALOG_ITEMS.length}</div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Production Templates</div>
               </div>
               <div className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800/80 shadow-md">
-                <div className="text-2xl font-black text-indigo-400">6</div>
+                <div className="text-2xl font-black text-indigo-400">{TEMPLATE_CATEGORIES.length}</div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Enterprise Domains</div>
               </div>
               <div className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800/80 shadow-md col-span-2 sm:col-span-1">
@@ -285,7 +285,7 @@ export default function TemplatesPage() {
             <Search className="w-12 h-12 text-slate-600 mx-auto" />
             <h3 className="text-lg font-bold text-slate-300">No architecture templates match your search</h3>
             <p className="text-slate-500 text-xs max-w-md mx-auto">
-              Try adjusting your query or resetting the category filter to view all 22 blueprints.
+              Try adjusting your query or resetting the category filter to view all {TEMPLATE_CATALOG_ITEMS.length} blueprints.
             </p>
             <button
               onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
