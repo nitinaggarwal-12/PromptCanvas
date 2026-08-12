@@ -4366,58 +4366,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           )}
         </div>
 
-        {/* 1. TOP ZONE (MOVED TO TOP): Active Design & Project Switcher Card */}
-        {isSidebarOpen && (
-          <div className="p-3 border-b border-panel-border/30 space-y-2 shrink-0">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-400">
-                {t.activeWorkspaceHeader}
-              </span>
-              {activeDiagram && (
-                <button
-                  onClick={(e) => handleDeleteDiagram(activeDiagram.id, e)}
-                  className="p-1 rounded hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-all"
-                  title="Delete active diagram"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            {/* Active Design Title & Switcher Dropdown */}
-            <div className="relative">
-              <select
-                value={activeDiagram?.id || ''}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  if (id) loadDiagramDetails(id);
-                }}
-                className="w-full appearance-none bg-slate-900/90 hover:bg-slate-800 border border-teal-500/40 hover:border-teal-400 text-white font-extrabold text-xs rounded-xl pl-3 pr-8 py-2.5 outline-none cursor-pointer transition-all shadow-sm truncate"
-              >
-                {activeDiagram && (
-                  <option value={activeDiagram.id} className="bg-[#0b101d] text-teal-300 font-extrabold">
-                    ✓ {activeDiagram.name}
-                  </option>
-                )}
-                {diagrams.filter(d => d.id !== activeDiagram?.id).map((d) => (
-                  <option key={d.id} value={d.id} className="bg-[#0b101d] text-slate-200 font-bold">
-                    {d.name} ({formatRelativeTime(d.updated_at)})
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-teal-400 absolute right-2.5 top-2.5 pointer-events-none" />
-            </div>
-
-            {activeDiagram && (
-              <div className="flex items-center justify-between text-[11px] text-slate-400 px-1 pt-0.5">
-                <span>Updated {formatRelativeTime(activeDiagram.updated_at)}</span>
-                <span className="text-teal-400 font-bold">Diagram Version v{activeDiagram?.versions?.length || displayedVersion?.version_number || 1}</span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* 2. ACTION ZONE: Non-Blocking Hover/Click Expanding Creation Strip */}
+        {/* 1. ACTION ZONE: Primary Architecture Creation Strip */}
         <div 
           className="p-3 border-b border-panel-border/30 relative shrink-0"
           onMouseLeave={() => setExpandedSubMenu(null)}
