@@ -4198,6 +4198,53 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     }
   };
 
+  // Global Keyboard Navigation for Canvas Architecture Diagrams (ArrowLeft / ArrowRight)
+  useEffect(() => {
+    function handleCanvasKeyDown(e: KeyboardEvent) {
+      if (previewModalTemplateId) return;
+
+      const target = e.target as HTMLElement | null;
+      const tagName = target?.tagName?.toLowerCase() || '';
+      if (tagName === 'input' || tagName === 'textarea' || tagName === 'select' || target?.isContentEditable) {
+        return;
+      }
+
+      if (isCreateModalOpen || isSaveModalOpen || isInlineEditorOpen || isInspectModalOpen || isExecutiveSummaryOpen || isUseCaseModalOpen || isVersionDiffModalOpen || isPlaybookModalOpen || isSetMasterModalOpen) {
+        return;
+      }
+
+      const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
+      if (allArchs.length === 0) return;
+
+      const idx = allArchs.findIndex(a => a.id === selectedArchType);
+
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const prevIdx = idx > 0 ? idx - 1 : allArchs.length - 1;
+        handleArchitectureSwitch(allArchs[prevIdx].id);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const nextIdx = idx >= 0 && idx < allArchs.length - 1 ? idx + 1 : 0;
+        handleArchitectureSwitch(allArchs[nextIdx].id);
+      }
+    }
+
+    window.addEventListener('keydown', handleCanvasKeyDown);
+    return () => window.removeEventListener('keydown', handleCanvasKeyDown);
+  }, [
+    selectedArchType,
+    previewModalTemplateId,
+    isCreateModalOpen,
+    isSaveModalOpen,
+    isInlineEditorOpen,
+    isInspectModalOpen,
+    isExecutiveSummaryOpen,
+    isUseCaseModalOpen,
+    isVersionDiffModalOpen,
+    isPlaybookModalOpen,
+    isSetMasterModalOpen
+  ]);
+
   const [isForceRefreshing, setIsForceRefreshing] = useState(false);
   const [forceRefreshToast, setForceRefreshToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
 
@@ -5267,65 +5314,45 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 )}
               </div>
 
-              {/* Group 3: Right - Executive & Stakeholder Actions */}
-              <div className="flex items-center gap-2 shrink-0">
+              {/* Group 3: Right - Consolidated Action Hub */}
+              <div className="flex items-center gap-1.5 shrink-0 min-w-0">
                 <AccessRequestsInbox user={currentUser} />
                 {activeDiagram && (
                   <>
-                    {/* Force Refresh Master Template Live API Primary Button */}
-                    <button
-                      type="button"
-                      id="workspace-force-refresh-btn-main"
-                      disabled={isForceRefreshing || isAnyAIBusy}
-                      onClick={() => handleForceRefreshDiagram()}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-black transition-all shadow-sm cursor-pointer shrink-0 ${
-                        checkDiagramStaleness(activeDiagram).isStale
-                          ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/50 animate-pulse shadow-amber-500/10'
-                          : 'bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border-teal-500/40'
-                      }`}
-                      title={
-                        checkDiagramStaleness(activeDiagram).isStale
-                          ? `⚠️ Master Template Updated: ${checkDiagramStaleness(activeDiagram).reason}. Click to Force Refresh via Live API!`
-                          : `⚡ Force Refresh from Master Template via Live API (Bypasses all shortcuts & caches)`
-                      }
-                    >
-                      <RefreshCw className={`w-3.5 h-3.5 ${isForceRefreshing ? 'animate-spin text-teal-400' : checkDiagramStaleness(activeDiagram).isStale ? 'text-amber-400' : 'text-teal-400'}`} />
-                      <span className="hidden sm:inline">{isForceRefreshing ? 'Refreshing Live API...' : checkDiagramStaleness(activeDiagram).isStale ? 'Update Template' : 'Force Refresh'}</span>
-                      {checkDiagramStaleness(activeDiagram).isStale && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                      )}
-                    </button>
-
                     <button
                       type="button"
                       onClick={() => setIsExecutiveSummaryOpen(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
                       title="Open C-Suite Executive Strategic Summary & Board Brief"
                     >
                       <Briefcase className="w-3.5 h-3.5 text-amber-300" />
-                      <span className="hidden md:inline">💼 Executive Board Suite</span>
+                      <span className="hidden xl:inline">Executive</span>
+                      <span>Suite</span>
                     </button>
+
                     <button
                       type="button"
                       onClick={() => setIsUseCaseModalOpen(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-400 bg-teal-400/20 hover:bg-teal-400/30 text-teal-200 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-teal-400/60 bg-teal-400/15 hover:bg-teal-400/25 text-teal-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
                       title="Open New Use Case Architectural Intake Form"
                     >
                       <ClipboardList className="w-3.5 h-3.5 text-teal-300" />
-                      <span className="hidden md:inline">📋 Use Case Form</span>
+                      <span className="hidden xl:inline">Intake</span>
+                      <span>Form</span>
                     </button>
+
                     <button
                       type="button"
                       onClick={() => setIsVersionDiffModalOpen(true)}
-                      className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/50 hover:border-teal-400 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 text-xs font-black transition-all shadow-sm cursor-pointer shrink-0"
+                      className="hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-teal-500/50 hover:border-teal-400 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
                       title="Compare diagram versions & inspect visual geometric diffs"
                     >
                       <FileCode className="w-3.5 h-3.5 text-teal-400" />
-                      <span>🔍 Visual Diff</span>
+                      <span>Diff</span>
                     </button>
 
                     {/* Edit Options Dropdown */}
-                    <div className="relative inline-flex items-center shrink-0 w-[120px]">
+                    <div className="relative inline-flex items-center shrink-0 w-[105px]">
                       <select
                         value=""
                         onChange={(e) => {
@@ -5336,19 +5363,19 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             openInNewTab();
                           }
                         }}
-                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2 pr-6 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-[120px] truncate"
+                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2 pr-5 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-full truncate"
                       >
                         <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
                           ✏️ Edit ▾
                         </option>
                         <option value="inline" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                          ✏️ Edit Diagram Inline
+                          ✏️ Edit Inline
                         </option>
                         <option value="newtab" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
-                          ↗️ Open Editor in New Tab
+                          ↗️ New Tab
                         </option>
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2 pointer-events-none" />
+                      <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-1.5 pointer-events-none" />
                     </div>
                   </>
                 )}
@@ -5712,40 +5739,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       TECHNICAL INTEGRATION WALKTHROUGH
                     </span>
                   ) : (
-                    <div className="flex items-center gap-2.5">
-                      {/* Backward & Forward Diagram Navigation Button Pair */}
-                      <div className="inline-flex items-center bg-slate-900/90 rounded-lg border border-teal-500/50 p-0.5 shadow-md">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
-                            const idx = allArchs.findIndex(a => a.id === selectedArchType);
-                            if (idx > 0) handleArchitectureSwitch(allArchs[idx - 1].id);
-                          }}
-                          disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) <= 0}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-teal-950 text-white font-extrabold text-xs disabled:opacity-30 cursor-pointer transition-all border-r border-teal-500/30"
-                          title="Backward: Switch to Previous Architecture Diagram on Canvas"
-                        >
-                          <ChevronLeft className="w-4 h-4 text-teal-400" />
-                          <span>{t.prevDiagram}</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
-                            const idx = allArchs.findIndex(a => a.id === selectedArchType);
-                            if (idx >= 0 && idx < allArchs.length - 1) handleArchitectureSwitch(allArchs[idx + 1].id);
-                          }}
-                          disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) >= [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].length - 1}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-teal-950 text-white font-extrabold text-xs disabled:opacity-30 cursor-pointer transition-all"
-                          title="Forward: Switch to Next Architecture Diagram on Canvas"
-                        >
-                          <span>{t.nextDiagram}</span>
-                          <ChevronRight className="w-4 h-4 text-teal-400" />
-                        </button>
-                      </div>
-
+                    <div className="flex items-center gap-2">
                       {/* Canvas Presets & Playbook Group */}
                       <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-teal-500/40 shadow-lg">
                         <button
