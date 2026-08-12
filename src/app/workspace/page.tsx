@@ -1640,8 +1640,11 @@ function WorkspaceContent() {
         if (typeof window !== 'undefined') {
           const params = new URLSearchParams(window.location.search);
           const hasBlueprintParam = params.get('arch') || params.get('blueprint') || params.get('template');
-          if (!params.get('diagram') && !hasBlueprintParam && !activeDiagram) {
+          const isNewParam = params.get('new') === 'true' || params.get('blank') === 'true' || params.get('action') === 'create' || params.get('modal') === 'create';
+          if (!params.get('diagram') && !hasBlueprintParam && !activeDiagram && !isNewParam) {
             loadDiagramDetails(data[0].id);
+          } else if (isNewParam && !activeDiagram) {
+            setIsCreateModalOpen(true);
           }
         }
       }
