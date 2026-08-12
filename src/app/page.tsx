@@ -224,7 +224,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center gap-4 w-full pt-2">
             <Link
               id="hero-build-diagram-btn"
-              href="/workspace"
+              href="/workspace?new=true"
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
             >
               <span>Build First Diagram</span>

@@ -805,7 +805,7 @@ function WorkspaceContent() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      return params.get('modal') === 'create';
+      return params.get('modal') === 'create' || params.get('new') === 'true' || params.get('create') === 'true';
     }
     return false;
   });
@@ -4966,8 +4966,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     <Network className="w-4 h-4 text-teal-400" />
                   </button>
                   <div className="relative inline-flex items-center shrink-0">
-                    <span className="text-[10px] uppercase tracking-wider font-extrabold text-teal-400/80 mr-1.5 hidden xl:inline">
-                      Canvas:
+                    <span className="text-[10px] uppercase tracking-wider font-extrabold text-slate-400 mr-1.5 hidden xl:inline flex items-center gap-1">
+                      📁 Project:
                     </span>
                     <div className="relative">
                       <button
@@ -5177,8 +5177,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         setIsArchDropdownOpen(false);
                       }}
                     >
-                      <span className="text-[10px] uppercase tracking-wider font-extrabold text-indigo-400/80 mr-1.5 hidden xl:inline">
-                        Diagram:
+                      <span className="text-[10px] uppercase tracking-wider font-extrabold text-teal-400/90 mr-1.5 hidden xl:inline">
+                        📐 Blueprint:
                       </span>
                       <div className="relative">
                         <div className="inline-flex items-center gap-1">
