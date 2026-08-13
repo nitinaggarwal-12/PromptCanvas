@@ -100,6 +100,7 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('modern_data_stack_lakehouse') ||
     inputXml.includes('Modern Data Stack') ||
     inputXml.includes('GCP Enterprise Data Lakehouse') ||
+    archType === 'unified_flowchart' ||
     inputXml.includes('id="event_driven_eda"')
   );
 

@@ -11,6 +11,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   archType: string = 'unified_system_view'
 ): string {
   if (
+    archType === 'unified_flowchart' ||
     archType === 'tech_multi_region_dr' ||
     archType === 'tech_serverless_gcp' ||
     archType === 'tech_c4_system_context' ||
