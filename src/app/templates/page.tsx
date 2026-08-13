@@ -25,12 +25,71 @@ import {
   Compass,
   Zap,
   ShieldCheck,
-  History
+  History,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  User,
+  ShieldAlert,
+  Settings,
+  BookOpen,
+  ClipboardList,
+  Network,
+  BarChart3
 } from 'lucide-react';
 import { TEMPLATE_CATEGORIES, TEMPLATE_CATALOG_ITEMS, TemplateCatalogItem } from '@/lib/templateCategories';
+import { UserProfileModal } from '@/components/UserProfileModal';
+import { AuthModal } from '@/components/AuthModal';
+import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 
 export default function TemplatesPage() {
   const router = useRouter();
+
+  // Layout & Navigation State
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+  const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState<boolean>(false);
+
+  // Warning Banner Dismiss State
+  const [isGuestDisclaimerDismissed, setIsGuestDisclaimerDismissed] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return sessionStorage.getItem('promptcanvas_dismiss_guest_disclaimer') === 'true';
+      } catch (e) {}
+    }
+    return false;
+  });
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.authenticated && data.user) {
+        setUser(data.user);
+      } else {
+        setUser(null);
+      }
+    } catch {
+      setUser(null);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setUser(null);
+      setIsProfileModalOpen(false);
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
+
+  React.useEffect(() => {
+    checkAuth();
+  }, []);
+
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
@@ -76,68 +135,234 @@ export default function TemplatesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-slate-100 flex flex-col font-sans selection:bg-teal-500/30 selection:text-teal-200">
+    <div className="flex h-screen w-screen bg-[#070a13] text-slate-100 font-sans overflow-hidden select-none selection:bg-teal-500/30 selection:text-teal-200">
+      
       {/* ========================================================================= */}
-      {/* STICKY FULL-WIDTH NAVIGATION HEADER */}
+      {/* 1. UNIFIED APP COLLAPSIBLE LEFT SIDEBAR */}
       {/* ========================================================================= */}
-      <header className="sticky top-0 z-50 w-full bg-[#0B0F19]/90 backdrop-blur-xl border-b border-slate-800/80 shadow-2xl">
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between gap-6">
-          {/* Logo & Breadcrumb */}
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 p-[1.5px] shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/40 transition-all duration-300">
-                <div className="w-full h-full bg-[#0B0F19] rounded-[10px] flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-teal-400 group-hover:rotate-12 transition-transform duration-300" />
+      <aside 
+        className={`${
+          isSidebarOpen ? 'w-64' : 'w-16'
+        } bg-[#090d16]/95 border-r border-panel-border/80 transition-all duration-300 flex flex-col justify-between z-40 shrink-0 relative select-none`}
+      >
+        {/* Brand Header */}
+        <div>
+          <div className="h-14 border-b border-panel-border/40 flex items-center justify-between px-4 shrink-0">
+            {isSidebarOpen ? (
+              <Link href="/" className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
+                  <div className="w-full h-full bg-[#070a13] rounded-[6px] flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-teal-accent" />
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-extrabold tracking-wider text-xs text-white uppercase">Prompt Canvas</span>
+                  <span className="text-[9px] text-teal-accent font-semibold tracking-wider">Enterprise AI</span>
+                </div>
+              </Link>
+            ) : (
+              <Link href="/">
+                <Sparkles className="w-5 h-5 text-teal-accent mx-auto hover:opacity-90 transition-opacity" />
+              </Link>
+            )}
+            {isSidebarOpen && (
+              <button 
+                onClick={() => setIsSidebarOpen(false)}
+                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white cursor-pointer"
+                title="Collapse Sidebar"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Action Zone: Primary Creation CTA */}
+          <div className="p-3 border-b border-panel-border/30 relative shrink-0">
+            <Link
+              href="/workspace?new=true"
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black transition-all shadow-md hover:shadow-teal-500/20 text-xs cursor-pointer ${
+                !isSidebarOpen && 'p-2'
+              }`}
+              title="Create New Architecture with AI Prompt"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              {isSidebarOpen && <span>New Architecture</span>}
+            </Link>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="p-3 space-y-1">
+            {[
+              { id: 'editor', name: 'Design Canvas', icon: Network, href: '/workspace' },
+              { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid, href: '/templates' },
+              { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
+              { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
+              { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },
+              { id: 'walkthrough', name: 'Interactive Tour', icon: BookOpen, href: '/workspace?tour=true' },
+              { id: 'settings', name: 'Settings & AI Tier Config', icon: Settings, href: '/workspace?tab=settings' }
+            ].map((item) => {
+              const Icon = item.icon;
+              const isActive = item.id === 'templates';
+
+              return (
+                <Link key={item.id} href={item.href} className="block">
+                  <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isActive 
+                      ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                  }`}>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-bg-dark' : 'text-slate-400'}`} />
+                      {isSidebarOpen && <span className="truncate">{item.name}</span>}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom Sidebar: User Profile & Expand Toggle */}
+        <div className="p-3 border-t border-panel-border/30 bg-slate-950/40">
+          {!isSidebarOpen ? (
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className="w-full flex justify-center p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+              title="Expand Sidebar"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          ) : user ? (
+            <button
+              onClick={() => setIsProfileModalOpen(true)}
+              className="w-full flex items-center justify-between p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5 truncate">
+                <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs shrink-0">
+                  {(user.name || user.email)[0].toUpperCase()}
+                </div>
+                <div className="truncate">
+                  <p className="text-xs font-bold text-slate-200 truncate">{user.name || user.email}</p>
+                  <p className="text-[10px] text-teal-400 font-mono">{user.is_guest ? 'Guest Session' : 'Verified Pro'}</p>
                 </div>
               </div>
-              <div className="flex flex-col">
-                <span className="font-black text-xl tracking-tight text-white flex items-center gap-1.5">
-                  Prompt<span className="text-teal-400">Canvas</span>
-                </span>
-                <span className="text-[10px] tracking-widest uppercase font-bold text-slate-400">
-                  Enterprise AI Architect
-                </span>
-              </div>
-            </Link>
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsAuthOpen(true)}
+              className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-teal-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>Sign In / Profile</span>
+            </button>
+          )}
+        </div>
+      </aside>
 
-            <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-500 border-l border-slate-800 pl-6">
-              <Link href="/dashboard" className="text-slate-400 hover:text-slate-200 transition-colors">
-                Dashboard
-              </Link>
-              <span>/</span>
-              <span className="text-teal-400 font-bold">Template Decision Matrix</span>
+      {/* ========================================================================= */}
+      {/* 2. MAIN APPLICATION CONTAINER */}
+      {/* ========================================================================= */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
+        
+        {/* ========================================================================= */}
+        {/* TOP NAVBAR HEADER */}
+        {/* ========================================================================= */}
+        <header className="h-14 border-b border-panel-border/80 flex items-center justify-between px-4 md:px-8 bg-[#090d16]/90 backdrop-blur-md gap-3 relative shrink-0 z-30">
+          {/* Left: Breadcrumbs & Sidebar Toggle */}
+          <div className="flex items-center gap-3 shrink-0 min-w-0">
+            {!isSidebarOpen && (
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                title="Expand Sidebar"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
+            
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+              <span className="font-extrabold text-white">PromptCanvas</span>
+              <span className="text-slate-600">/</span>
+              <span className="text-teal-400 font-bold flex items-center gap-1.5">
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Templates &amp; Master Blueprint Matrix</span>
+              </span>
             </div>
           </div>
 
-          {/* Nav Actions */}
-          <div className="flex items-center gap-3">
+          {/* Right: Quick Action Controls */}
+          <div className="flex items-center gap-2.5">
             <Link
               href="/history"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-xs font-bold text-slate-300 hover:text-teal-300 transition-all shadow-sm"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-teal-300 font-bold text-xs transition cursor-pointer"
             >
-              <History className="w-4 h-4 text-teal-400" />
+              <History className="w-3.5 h-3.5 text-teal-400" />
               <span>Historical Canvases</span>
             </Link>
 
-            <Link
-              href="/dashboard"
-              className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-xs font-bold text-slate-300 hover:text-white transition-all shadow-sm"
+            <button
+              type="button"
+              onClick={() => setIsUseCaseModalOpen(true)}
+              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-teal-300 border border-teal-500/30 hover:border-teal-400 font-bold text-xs transition-all cursor-pointer shadow-sm"
             >
-              <LayoutGrid className="w-4 h-4 text-slate-400" />
-              <span>Dashboard</span>
-            </Link>
+              <ClipboardList className="w-3.5 h-3.5 text-teal-400" />
+              <span>Intake Form</span>
+            </button>
 
+            {/* + New Canvas Button */}
             <Link
-              href="/workspace"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-black text-xs shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition-all duration-200"
+              href="/workspace?new=true"
+              className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black text-xs rounded-xl shadow-lg shadow-teal-500/20 transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0"
             >
-              <Zap className="w-4 h-4 fill-current" />
-              <span>Launch Blank Canvas</span>
-              <ArrowRight className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 stroke-[3]" />
+              <span>New Canvas</span>
             </Link>
           </div>
-        </div>
-      </header>
+        </header>
+
+        {/* ========================================================================= */}
+        {/* DISMISSIBLE GUEST MODE WARNING DISCLAIMER BANNER WITH X BUTTON */}
+        {/* ========================================================================= */}
+        {user?.is_guest && !isGuestDisclaimerDismissed && (
+          <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in">
+            <div className="flex items-center gap-2 font-medium min-w-0">
+              <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+              <span className="truncate sm:whitespace-normal">
+                <strong className="text-amber-300 font-bold">Guest Mode Disclaimer:</strong> Content created as a Guest is visible to all users unless deleted.
+              </span>
+            </div>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <button
+                onClick={() => {
+                  setIsAuthOpen(true);
+                }}
+                className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black rounded-lg shadow-md transition-all cursor-pointer flex items-center gap-1.5 text-xs hover:scale-[1.02]"
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>Create Login Profile to Keep Private</span>
+              </button>
+              <button
+                onClick={() => {
+                  setIsGuestDisclaimerDismissed(true);
+                  if (typeof window !== 'undefined') {
+                    try {
+                      sessionStorage.setItem('promptcanvas_dismiss_guest_disclaimer', 'true');
+                    } catch (e) {}
+                  }
+                }}
+                className="p-1 rounded-lg hover:bg-amber-500/20 text-amber-300 hover:text-white transition-colors cursor-pointer"
+                title="Dismiss warning"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* MAIN SCROLLABLE CONTENT BODY */}
+        {/* ========================================================================= */}
+        <main className="flex-1 w-full overflow-y-auto relative z-10 custom-scrollbar">
 
       {/* ========================================================================= */}
       {/* HERO SECTION & METRIC HIGHLIGHTS */}
@@ -279,7 +504,7 @@ export default function TemplatesPage() {
       {/* ========================================================================= */}
       {/* MAIN CONTENT AREA */}
       {/* ========================================================================= */}
-      <main className="flex-1 max-w-[1600px] w-full mx-auto px-6 md:px-12 py-10 space-y-12">
+      <div className="max-w-[1600px] w-full mx-auto px-6 md:px-12 py-10 space-y-12">
         {filteredItems.length === 0 ? (
           <div className="text-center py-20 bg-slate-900/40 rounded-3xl border border-slate-800 border-dashed space-y-4">
             <Search className="w-12 h-12 text-slate-600 mx-auto" />
@@ -533,7 +758,46 @@ export default function TemplatesPage() {
             </div>
           </div>
         )}
+        </div>
       </main>
+      </div>
+
+      {/* Global Modals */}
+      {user && isProfileModalOpen && (
+        <UserProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          user={user}
+          onUpdateUser={(updatedUser) => setUser(updatedUser)}
+          onLogout={handleLogout}
+        />
+      )}
+
+      {isAuthOpen && (
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          onSuccess={(u) => {
+            setUser(u);
+            setIsAuthOpen(false);
+          }}
+        />
+      )}
+
+      {isUseCaseModalOpen && (
+        <UseCaseIntakeModal
+          isOpen={isUseCaseModalOpen}
+          onClose={() => setIsUseCaseModalOpen(false)}
+          onSubmitUseCase={(useCaseData) => {
+            setIsUseCaseModalOpen(false);
+            if (useCaseData.archType && useCaseData.archType !== 'auto') {
+              router.push(`/workspace?blueprint=${useCaseData.archType}`);
+            } else {
+              router.push(`/workspace?new=true`);
+            }
+          }}
+        />
+      )}
 
       {/* ========================================================================= */}
       {/* QUICK PREVIEW & INSPECTION MODAL */}

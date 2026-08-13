@@ -862,6 +862,14 @@ function WorkspaceContent() {
   const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState(false);
   const [isSettingsHoverOpen, setIsSettingsHoverOpen] = useState(false);
   const [isViewStyleDropdownOpen, setIsViewStyleDropdownOpen] = useState(false);
+  const [isGuestDisclaimerDismissed, setIsGuestDisclaimerDismissed] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return sessionStorage.getItem('promptcanvas_dismiss_guest_disclaimer') === 'true';
+      } catch (e) {}
+    }
+    return false;
+  });
 
   async function handleSelectDisambiguationType(typeId: string) {
     const promptToGen = disambiguationData?.prompt || newDiagramPrompt || activeDiagram?.name || 'Architecture Diagram';
@@ -4818,23 +4826,39 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               setActiveAlternativeTypes([]);
             }}
           />
-          {currentUser?.is_guest && (
-            <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2 px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0">
-              <div className="flex items-center gap-2 font-medium">
+          {currentUser?.is_guest && !isGuestDisclaimerDismissed && (
+            <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2 px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in">
+              <div className="flex items-center gap-2 font-medium min-w-0">
                 <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>
-                  <strong>Guest Mode Disclaimer:</strong> Content created as a Guest is visible to all users unless deleted.
+                <span className="truncate sm:whitespace-normal">
+                  <strong className="text-amber-300 font-bold">Guest Mode Disclaimer:</strong> Content created as a Guest is visible to all users unless deleted.
                 </span>
               </div>
-              <button
-                onClick={() => {
-                  setIsAuthOpen(true);
-                }}
-                className="px-3.5 py-1 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-extrabold rounded-lg shadow-md transition-all shrink-0 cursor-pointer flex items-center gap-1.5 text-xs"
-              >
-                <User className="w-3.5 h-3.5" />
-                <span>Create Login Profile to Keep Private</span>
-              </button>
+              <div className="flex items-center gap-2.5 shrink-0">
+                <button
+                  onClick={() => {
+                    setIsAuthOpen(true);
+                  }}
+                  className="px-3.5 py-1 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black rounded-lg shadow-md transition-all shrink-0 cursor-pointer flex items-center gap-1.5 text-xs hover:scale-[1.02]"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Create Login Profile to Keep Private</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsGuestDisclaimerDismissed(true);
+                    if (typeof window !== 'undefined') {
+                      try {
+                        sessionStorage.setItem('promptcanvas_dismiss_guest_disclaimer', 'true');
+                      } catch (e) {}
+                    }
+                  }}
+                  className="p-1 rounded-lg hover:bg-amber-500/20 text-amber-300 hover:text-white transition-colors cursor-pointer"
+                  title="Dismiss warning"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           )}
           {!activeDiagram ? (

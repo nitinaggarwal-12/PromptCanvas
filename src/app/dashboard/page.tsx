@@ -32,7 +32,8 @@ import {
   ChevronDown,
   Compass,
   RefreshCw,
-  History
+  History,
+  X
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
@@ -122,6 +123,14 @@ export default function Dashboard() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isGuestDisclaimerDismissed, setIsGuestDisclaimerDismissed] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return sessionStorage.getItem('promptcanvas_dismiss_guest_disclaimer') === 'true';
+      } catch (e) {}
+    }
+    return false;
+  });
   
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -341,62 +350,29 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* 1. TOP ZONE: Active Design & Project Switcher Card */}
-        {isSidebarOpen && (
-          <div className="p-3 border-b border-panel-border/30 space-y-2 shrink-0">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-400">
-                ACTIVE WORKSPACE &amp; DESIGN
-              </span>
-            </div>
-
-            <div className="relative">
-              <select
-                value={diagrams[0]?.id || ""}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  if (id) window.location.href = `/workspace?id=${id}`;
-                }}
-                className="w-full appearance-none bg-slate-900/90 hover:bg-slate-800 border border-teal-500/40 hover:border-teal-400 text-white font-extrabold text-xs rounded-xl pl-3 pr-8 py-2.5 outline-none cursor-pointer transition-all shadow-sm truncate"
-              >
-                {diagrams[0] && (
-                  <option value={diagrams[0].id} className="bg-[#0b101d] text-teal-300 font-extrabold">
-                    ✓ {diagrams[0].name}
-                  </option>
-                )}
-                {diagrams.slice(1).map((d) => (
-                  <option key={d.id} value={d.id} className="bg-[#0b101d] text-slate-200 font-bold">
-                    {d.name}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-teal-400 absolute right-2.5 top-2.5 pointer-events-none" />
-            </div>
-          </div>
-        )}
-
-        {/* 2. ACTION ZONE: Prominent + New Architecture Button */}
-        <div className="p-3 border-b border-panel-border/30 shrink-0">
+        {/* Action Zone: Primary Creation CTA */}
+        <div className="p-3 border-b border-panel-border/30 relative shrink-0">
           <Link
             href="/workspace?new=true"
-            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-extrabold transition-all shadow-sm text-xs cursor-pointer ${
+            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black transition-all shadow-md hover:shadow-teal-500/20 text-xs cursor-pointer ${
               !isSidebarOpen && "p-2"
             }`}
+            title="Create New Architecture with AI Prompt"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
-            {isSidebarOpen && <span>+ New Architecture</span>}
+            {isSidebarOpen && <span>New Architecture</span>}
           </Link>
         </div>
 
-        {/* 3. CLEAN PRIMARY NAVIGATION LINKS */}
-        <div className="p-3 space-y-1 flex-1 overflow-y-auto">
+        {/* Navigation Links */}
+        <div className="p-3 space-y-1">
           {[
             { id: "editor", name: "Design Canvas", icon: Network, href: "/workspace" },
-            { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/workspace?tab=templates" },
+            { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/templates" },
             { id: "history", name: "Historical Canvases", icon: History, href: "/history" },
             { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },
-            { id: "audit", name: "Security & Zero-Trust Audit", icon: ShieldCheck, href: "/workspace?tab=audit" },
-            { id: "walkthrough", name: "Interactive Visual Tour", icon: BookOpen, href: "/workspace?tab=walkthrough" },
+            { id: "audit", name: "Security Audit", icon: ShieldCheck, href: "/workspace?tab=audit" },
+            { id: "walkthrough", name: "Interactive Tour", icon: BookOpen, href: "/workspace?tour=true" },
             { id: "settings", name: "Settings & AI Tier Config", icon: Settings, href: "/workspace?tab=settings" }
           ].map((item) => {
             const Icon = item.icon;
@@ -418,18 +394,43 @@ export default function Dashboard() {
             );
           })}
         </div>
-{/* Toggle Expand Sidebar */}
-        {!isSidebarOpen && (
-          <div className="p-3 border-t border-panel-border flex justify-center mt-auto">
-            <button 
-              onClick={() => setIsSidebarOpen(true)}
-              className="p-1.5 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+
+        {/* Bottom Sidebar: User Profile & Expand Toggle */}
+      <div className="p-3 border-t border-panel-border/30 bg-slate-950/40">
+        {!isSidebarOpen ? (
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="w-full flex justify-center p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+            title="Expand Sidebar"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        ) : user ? (
+          <button
+            onClick={() => setIsProfileModalOpen(true)}
+            className="w-full flex items-center justify-between p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition cursor-pointer"
+          >
+            <div className="flex items-center gap-2.5 truncate">
+              <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs shrink-0">
+                {(user.name || user.email)[0].toUpperCase()}
+              </div>
+              <div className="truncate">
+                <p className="text-xs font-bold text-slate-200 truncate">{user.name || user.email}</p>
+                <p className="text-[10px] text-teal-400 font-mono">{user.is_guest ? "Guest Session" : "Verified Pro"}</p>
+              </div>
+            </div>
+          </button>
+        ) : (
+          <button
+            onClick={() => setIsAuthOpen(true)}
+            className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-teal-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+          >
+            <User className="w-3.5 h-3.5" />
+            <span>Sign In / Profile</span>
+          </button>
         )}
-      </aside>
+      </div>
+    </aside>
 
       {/* Main Dashboard Portal Container */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto relative">
@@ -506,23 +507,39 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {user?.is_guest && (
-        <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-12 md:px-16 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40">
-          <div className="flex items-center gap-2 font-medium">
+      {user?.is_guest && !isGuestDisclaimerDismissed && (
+        <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-12 md:px-16 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 animate-fade-in">
+          <div className="flex items-center gap-2 font-medium min-w-0">
             <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
-            <span>
-              <strong>Guest Mode Disclaimer:</strong> Content created as a Guest is visible to all users unless deleted.
+            <span className="truncate sm:whitespace-normal">
+              <strong className="text-amber-300 font-bold">Guest Mode Disclaimer:</strong> Content created as a Guest is visible to all users unless deleted.
             </span>
           </div>
-          <button
-            onClick={() => {
-              setIsAuthOpen(true);
-            }}
-            className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-extrabold rounded-lg shadow-md transition-all shrink-0 cursor-pointer flex items-center gap-1.5 text-xs"
-          >
-            <User className="w-3.5 h-3.5" />
-            <span>Create Login Profile to Keep Private</span>
-          </button>
+          <div className="flex items-center gap-2.5 shrink-0">
+            <button
+              onClick={() => {
+                setIsAuthOpen(true);
+              }}
+              className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black rounded-lg shadow-md transition-all cursor-pointer flex items-center gap-1.5 text-xs hover:scale-[1.02]"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>Create Login Profile to Keep Private</span>
+            </button>
+            <button
+              onClick={() => {
+                setIsGuestDisclaimerDismissed(true);
+                if (typeof window !== 'undefined') {
+                  try {
+                    sessionStorage.setItem('promptcanvas_dismiss_guest_disclaimer', 'true');
+                  } catch (e) {}
+                }
+              }}
+              className="p-1 rounded-lg hover:bg-amber-500/20 text-amber-300 hover:text-white transition-colors cursor-pointer"
+              title="Dismiss warning"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
