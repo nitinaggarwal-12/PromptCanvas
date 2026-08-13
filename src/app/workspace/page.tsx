@@ -946,7 +946,7 @@ function WorkspaceContent() {
     if (searchParams.get('tour') === 'true') {
       setTourStep(1);
     }
-    const archParam = searchParams.get('arch') || searchParams.get('template');
+    const archParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
     if (archParam) {
       setSelectedArchType(archParam);
       const defaultXml = getDefaultXmlForArchitecture(archParam);
@@ -959,7 +959,12 @@ function WorkspaceContent() {
         setActiveVersion(null);
       }
     }
-  }, [searchParams, activeDiagram]);
+    const promptParam = searchParams.get('prompt');
+    if (promptParam && !promptInput) {
+      setPromptInput(promptParam);
+      setNewDiagramPrompt(promptParam);
+    }
+  }, [searchParams, activeDiagram, promptInput]);
 
   async function handleConversationalRefactor(promptText: string) {
     setIsConversationalRefactoring(true);
@@ -1533,7 +1538,7 @@ function WorkspaceContent() {
   // Synchronize initial diagram selection once page loads
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const diagramId = params.get('diagram');
+    const diagramId = params.get('diagram') || params.get('id');
     if (diagramId && (!activeDiagram || activeDiagram.id !== diagramId) && !restrictedState) {
       loadDiagramDetails(diagramId);
     }
@@ -1653,7 +1658,7 @@ function WorkspaceContent() {
           const params = new URLSearchParams(window.location.search);
           const hasBlueprintParam = params.get('arch') || params.get('blueprint') || params.get('template');
           const isNewParam = params.get('new') === 'true' || params.get('blank') === 'true' || params.get('action') === 'create' || params.get('modal') === 'create';
-          if (!params.get('diagram') && !hasBlueprintParam && !activeDiagram && !isNewParam) {
+          if (!params.get('diagram') && !params.get('id') && !hasBlueprintParam && !activeDiagram && !isNewParam) {
             loadDiagramDetails(data[0].id);
           } else if (isNewParam && !activeDiagram) {
             setIsCreateModalOpen(true);

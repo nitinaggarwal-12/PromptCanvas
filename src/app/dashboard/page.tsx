@@ -40,6 +40,7 @@ import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModa
 import { AuthModal } from '@/components/AuthModal';
 import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { checkDiagramStaleness } from '@/lib/diagramStaleness';
+import { TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
 
 interface Diagram {
   id: string;
@@ -479,7 +480,7 @@ export default function Dashboard() {
             className="px-4 py-2.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-teal-300 border border-teal-500/30 hover:border-teal-400 font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm"
           >
             <Compass className="w-4 h-4 text-teal-400" />
-            <span>Templates Matrix (22)</span>
+            <span>Templates Matrix ({TEMPLATE_CATALOG_ITEMS.length})</span>
           </Link>
 
           <button
