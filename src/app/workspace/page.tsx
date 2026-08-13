@@ -110,8 +110,16 @@ import { TEMPLATE_CATEGORIES, TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCateg
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
 
-export function generateUniqueDiagramName(): string {
+export function generateUniqueDiagramName(baseName?: string): string {
   const code = Math.floor(100 + Math.random() * 900);
+  if (baseName) {
+    const cleanBase = baseName
+      .replace(/\s*\(WBS\s*[\d.]+\)/gi, '')
+      .replace(/\s*-\s*System Design/gi, '')
+      .replace(/\s*-\s*Enterprise Edition/gi, '')
+      .trim();
+    return `${cleanBase} #${code}`;
+  }
   return `Unified Cloud Architecture #${code}`;
 }
 
@@ -3586,7 +3594,7 @@ function WorkspaceContent() {
                     value={newDiagramName}
                     onChange={(e) => setNewDiagramName(e.target.value)}
                     placeholder="Diagram Name (e.g. Enterprise Ledger Architecture)"
-                    className="bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-4 py-2.5 text-xs md:text-sm outline-none w-72 transition-all font-medium"
+                    className="bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-4 py-2.5 text-xs md:text-sm outline-none w-80 md:w-[420px] transition-all font-medium"
                   />
                   <select
                     value={selectedArchType}
@@ -3602,7 +3610,7 @@ function WorkspaceContent() {
                         const archInfo = getArchitectureTypeById(newArch);
                         if (archInfo) {
                           setNewDiagramPrompt(archInfo.prompt);
-                          setNewDiagramName(`${archInfo.name} - System Design`);
+                          setNewDiagramName(generateUniqueDiagramName(archInfo.name));
                         }
                       }
                     }}
@@ -3688,7 +3696,8 @@ function WorkspaceContent() {
                     </div>
                     <button
                       onClick={async () => {
-                        setNewDiagramName(t.name);
+                        const uniqueName = generateUniqueDiagramName(t.name);
+                        setNewDiagramName(uniqueName);
                         setNewDiagramPrompt(t.prompt);
                         setSelectedTemplate((idx + 1).toString());
                         setGeneratingTemplateIdx(idx);
@@ -3697,7 +3706,7 @@ function WorkspaceContent() {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
                             body: JSON.stringify({
-                              name: t.name,
+                              name: uniqueName,
                               prompt: t.prompt
                             })
                           });
@@ -6245,7 +6254,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                           <div 
                             key={idx}
                             onClick={() => {
-                              setNewDiagramName(preset.name);
+                              setNewDiagramName(generateUniqueDiagramName(preset.name));
                               setNewDiagramPrompt(preset.prompt);
                             }}
                             className="glass-panel border-panel-border/60 hover:border-teal-500/60 rounded-xl p-3.5 flex flex-col justify-between hover:scale-[1.01] transition-all cursor-pointer group bg-slate-950/60 hover:bg-slate-900/90"
