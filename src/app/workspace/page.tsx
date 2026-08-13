@@ -105,6 +105,15 @@ import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector'
 import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
 import { checkDiagramStaleness } from '@/lib/diagramStaleness';
 import { getBlueprintLineage } from '@/lib/architectureLineage';
+import { TEMPLATE_CATEGORIES, TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
+
+export const DEFAULT_UNIFIED_PROMPT =
+  "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
+
+export function generateUniqueDiagramName(): string {
+  const code = Math.floor(100 + Math.random() * 900);
+  return `Unified Cloud Architecture #${code}`;
+}
 
 
 // Define Types (matching our DB schema + API responses)
@@ -834,10 +843,10 @@ function WorkspaceContent() {
   });
   
   // Form Inputs
-  const [newDiagramName, setNewDiagramName] = useState('');
-  const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
+  const [newDiagramName, setNewDiagramName] = useState<string>(() => generateUniqueDiagramName());
+  const [newDiagramPrompt, setNewDiagramPrompt] = useState<string>(DEFAULT_UNIFIED_PROMPT);
   const [selectedTemplate, setSelectedTemplate] = useState('0');
-  const [selectedArchType, setSelectedArchType] = useState('conceptual_diagram');
+  const [selectedArchType, setSelectedArchType] = useState('unified_system_view');
   const [pendingArchType, setPendingArchType] = useState<string | null>(null);
   const [isArchConsentModalOpen, setIsArchConsentModalOpen] = useState(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
@@ -3581,14 +3590,40 @@ function WorkspaceContent() {
                   />
                   <select
                     value={selectedArchType}
-                    onChange={(e) => setSelectedArchType(e.target.value)}
-                    className="bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-4 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer"
+                    onChange={(e) => {
+                      const newArch = e.target.value;
+                      setSelectedArchType(newArch);
+                      if (newArch === 'unified_system_view') {
+                        if (!newDiagramPrompt || newDiagramPrompt !== DEFAULT_UNIFIED_PROMPT) {
+                          setNewDiagramPrompt(DEFAULT_UNIFIED_PROMPT);
+                          setNewDiagramName(generateUniqueDiagramName());
+                        }
+                      } else {
+                        const archInfo = getArchitectureTypeById(newArch);
+                        if (archInfo) {
+                          setNewDiagramPrompt(archInfo.prompt);
+                          setNewDiagramName(`${archInfo.name} - System Design`);
+                        }
+                      }
+                    }}
+                    className="bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-4 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer max-w-xs"
                   >
-                    <option value="unified_system_view">Auto-Detect Architecture Type</option>
-                    <option value="agentic_rag">Agentic AI Evaluation &amp; Safety</option>
-                    <option value="gcp_hybrid_interconnect">GCP / AWS Hybrid Multi-Cloud</option>
-                    <option value="fintech_ledger">FinTech Real-Time Ledger (PCI-DSS)</option>
-                    <option value="event_driven_microservices">Event-Driven Kafka Mesh</option>
+                    <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
+                      ✨ Auto-Detect Architecture Type
+                    </option>
+                    {TEMPLATE_CATEGORIES.map((category) => {
+                      const items = TEMPLATE_CATALOG_ITEMS.filter((item) => item.categoryId === category.id);
+                      if (items.length === 0) return null;
+                      return (
+                        <optgroup key={category.id} label={`${category.name} (${items.length})`} className="bg-[#0B101D] text-teal-400 font-extrabold">
+                          {items.map((item) => (
+                            <option key={item.id} value={item.id} className="bg-[#0B101D] text-slate-200 font-medium">
+                              {item.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
                   </select>
                 </div>
 
