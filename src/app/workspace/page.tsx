@@ -1656,12 +1656,9 @@ function WorkspaceContent() {
       if (Array.isArray(data) && data.length > 0) {
         if (typeof window !== 'undefined') {
           const params = new URLSearchParams(window.location.search);
-          const hasBlueprintParam = params.get('arch') || params.get('blueprint') || params.get('template');
-          const isNewParam = params.get('new') === 'true' || params.get('blank') === 'true' || params.get('action') === 'create' || params.get('modal') === 'create';
-          if (!params.get('diagram') && !params.get('id') && !hasBlueprintParam && !activeDiagram && !isNewParam) {
-            loadDiagramDetails(data[0].id);
-          } else if (isNewParam && !activeDiagram) {
-            setIsCreateModalOpen(true);
+          const targetDiagramId = params.get('diagram') || params.get('id');
+          if (targetDiagramId) {
+            loadDiagramDetails(targetDiagramId);
           }
         }
       }
@@ -3536,42 +3533,75 @@ function WorkspaceContent() {
 
         <div className="max-w-[1600px] mx-auto space-y-12 z-10 relative">
           
-          {/* Top Row: Welcome Header & Start from Scratch Card (Horizontal) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center bg-slate-900/30 border border-panel-border/30 rounded-2xl p-8 backdrop-blur-sm">
-            <div className="lg:col-span-2 space-y-4">
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-teal-accent uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Next-Gen Architecture Compiler</span>
-              </span>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-none">
-                Design Systems <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-accent via-cyan-400 to-indigo-400">
-                  With Pure Intent.
+          {/* Top Hero & Live Prompt Studio Card */}
+          <div className="bg-[#0B101D] border border-panel-border/70 rounded-3xl p-8 md:p-10 backdrop-blur-md space-y-6 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-teal-500/10 blur-[100px] rounded-full pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-black text-teal-400 uppercase tracking-widest px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/30">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>AI Architectural Prompt Studio</span>
                 </span>
-              </h2>
-              <p className="text-sm text-slate-400 leading-relaxed max-w-2xl pt-1">
-                Translate complex system descriptions into production-grade interactive architecture diagrams. Formatted for compliance, version-controlled, and instantly editable.
-              </p>
+                <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+                  Sketch Architecture <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-400">With Pure Intent.</span>
+                </h2>
+                <p className="text-sm md:text-base text-slate-400 max-w-3xl leading-relaxed">
+                  Describe any cloud, microservices, AI swarm, or enterprise system. Gemini AI compiles it into a collision-free, interactive Draw.io vector architecture.
+                </p>
+              </div>
             </div>
 
-            {/* Launch Card (Horizontal on right side of hero) */}
-            <div className="glass-panel border-panel-border/60 hover:border-teal-500/40 rounded-xl p-5 flex flex-col justify-between h-full hover:scale-[1.01] transition-all duration-300 shadow-xl">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-accent border border-teal-500/20 shrink-0">
-                  <Plus className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-white">Start from Scratch</h4>
-                  <p className="text-[10px] text-slate-400 leading-tight">Initialize a clean slate workspace.</p>
-                </div>
+            {/* Direct Embedded Prompt Input Form */}
+            <form onSubmit={handleCreateDiagram} className="space-y-4 pt-2">
+              <div className="relative">
+                <textarea
+                  value={newDiagramPrompt}
+                  onChange={(e) => {
+                    setNewDiagramPrompt(e.target.value);
+                    if (!newDiagramName) {
+                      const words = e.target.value.split(' ').slice(0, 5).join(' ');
+                      if (words) setNewDiagramName(words);
+                    }
+                  }}
+                  placeholder="Describe the system architecture you want to build (e.g. Distributed Core Banking Ledger with Kafka Transactional Outbox, Redis Caching, and PCI-DSS compliant Cloud Run microservices)..."
+                  rows={3}
+                  className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-2xl p-5 text-sm md:text-base outline-none resize-none shadow-inner transition-all leading-relaxed font-sans"
+                />
               </div>
-              <button
-                onClick={openCreateModal}
-                className="w-full mt-4 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-xs uppercase tracking-wider transition-all shadow-lg cursor-pointer"
-              >
-                Create New Canvas
-              </button>
-            </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <input
+                    type="text"
+                    value={newDiagramName}
+                    onChange={(e) => setNewDiagramName(e.target.value)}
+                    placeholder="Diagram Name (e.g. Enterprise Ledger Architecture)"
+                    className="bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-4 py-2.5 text-xs md:text-sm outline-none w-72 transition-all font-medium"
+                  />
+                  <select
+                    value={selectedArchType}
+                    onChange={(e) => setSelectedArchType(e.target.value)}
+                    className="bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-4 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer"
+                  >
+                    <option value="unified_system_view">Auto-Detect Architecture Type</option>
+                    <option value="agentic_rag">Agentic AI Evaluation &amp; Safety</option>
+                    <option value="gcp_hybrid_interconnect">GCP / AWS Hybrid Multi-Cloud</option>
+                    <option value="fintech_ledger">FinTech Real-Time Ledger (PCI-DSS)</option>
+                    <option value="event_driven_microservices">Event-Driven Kafka Mesh</option>
+                  </select>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isGenerating || (!newDiagramPrompt.trim() && !newDiagramName.trim())}
+                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                >
+                  {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  <span>{isGenerating ? 'Compiling Architecture...' : '⚡ Generate Architecture with Gemini AI'}</span>
+                </button>
+              </div>
+            </form>
           </div>
 
           {/* Bottom Row: Quick Start Presets (Horizontal Grid) */}
