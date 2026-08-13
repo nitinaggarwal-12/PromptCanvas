@@ -202,6 +202,28 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     promptSummary: "Master Multi-Region Active-Passive DR: Global L7 LB -> Zero-Trust Active Region A (US-East1) & Pilot Light Region B (US-West1) -> Redis Cache -> Cross-Region Async DB Replication -> 6-Step SRE Failover Runbook & FMEA Matrix."
   },
   {
+    id: "unified_flowchart",
+    name: "Unified End-to-End Operational Flowchart (WBS 1.1.0)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Infrastructure",
+    badge: "Master Flowchart (WBS 1.1.0)",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Comprehensive sequential step-by-step flowchart [1] to [16] spanning 6 layer swimlanes: Client Edge, Apigee Policy Gate, GKE Microservices, Pub/Sub Mesh, Vertex AI Gemini Reasoning, and Cloud SQL HA.",
+    bestFor: [
+      "WBS 1.1.0 Master End-to-End Sequential Operational Architecture Flowchart",
+      "Layer 1 Client & Global Edge Security Ingress (React/Mobile App [1], Cloud DNS [2], Cloud Armor WAF & GSLB [3])",
+      "Layer 2 API Management & Policy Inspection Gate (Apigee Gateway [4], Auth & Quota Decision Gate [5], Reject 401/429 [5b])",
+      "Layer 3 GKE Microservices & Core Processing Mesh (GKE Core Order Service [6])",
+      "Layer 4 In-Memory Caching & Distributed Pub/Sub Mesh (Redis MemoryStore [7], Pub/Sub Topic [8], DLQ Poison Bus [9])",
+      "Layer 5 AI Cognitive Reasoning & Knowledge Retrieval (Vertex AI Gemini 1.5 Pro [10], Vector Search Store [11])",
+      "Layer 6 Persistence, Lakehouse & SRE Observability (Cloud SQL PostgreSQL HA [12], BigQuery Lakehouse [13], Cloud Operations Suite [14], SRE Hub [15])"
+    ],
+    keyTech: ["Cloud Armor WAF", "Global HTTPS LB", "Apigee X", "GKE Autopilot", "Redis MemoryStore", "Cloud Pub/Sub", "Vertex AI Gemini", "Vector Search", "Cloud SQL HA", "BigQuery", "OpenTelemetry"],
+    thumbnail: "/templates/unified_system_view.png",
+    promptSummary: "Sequential End-to-End Flowchart: Client Ingress -> Apigee Gateway -> GKE Microservices -> Pub/Sub Mesh -> Vertex AI Reasoning -> Cloud SQL Persistence & SRE Telemetry."
+  },
+  {
     id: "six_rs_migration_matrix",
     name: "6Rs Migration Disposition Matrix (Assessment Phase)",
     categoryId: "cloud_infra",

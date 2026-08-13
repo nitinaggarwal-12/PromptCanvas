@@ -52,7 +52,8 @@ import {
   getExactLlmCapacityQuotaXml,
   getExactIncidentTriageSreXml,
   getExactServerlessGcpReferenceXml,
-  getExactMultiFlowZeroTrustPlatformXml
+  getExactMultiFlowZeroTrustPlatformXml,
+  getExactUnifiedFlowchartXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -235,6 +236,13 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "WBS 3.1.7 DataOps & Anomaly Detection Architecture spanning Looker Studio observability, SRE PagerDuty incident alerts, Dataplex SODA/CARLO anomaly engine, and hallucination-free Vertex AI model grounding.",
     prompt: "Act as a Lead DataOps & Reliability Architect. Design a production-grade WBS 3.1.7 DataOps & Anomaly Detection Architecture (To-Be State) blueprint. Include: 5 Horizontal Zones (Top Zone Strategy & Observability Dashboard with Looker Studio 8-metric reporting; Second Zone Incident Management & SRE View with SRE, Cloud Monitoring, PagerDuty, RCA feedback loop; Third Zone The Core Dataplex Integrated DataOps Control Plane with Partner observability, SODA Quality checks, Active Schema Drift Monitoring, Anomaly Detection Engine, CARLO observability, CSV Checkpoints, Reliability Guardrails; Fourth Zone Enforced Pipeline & Consumption with Validated GCS Lakes and Vertex AI Hallucination Prevention; Bottom Zone Unified Modern Data Stack with BigQuery, GCS, Cloud SQL, Dataflow, Dataproc, External SaaS) -> Legend."
+  },
+  {
+    id: "unified_flowchart",
+    name: "Unified End-to-End Operational Flowchart (WBS 1.1.0)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "Complete End-to-End Enterprise Flowchart showing sequential step-by-step operational flow [1] to [16], 6 distinct layer swimlanes, decision gates, vendor icons, and zero-collision line routing",
+    prompt: "Act as a Principal Google Cloud Solutions Architect. Design a production-grade Unified End-to-End Enterprise Flowchart Architecture (WBS 1.1.0) blueprint across 6 horizontal layer swimlanes: Layer 1 Client & Global Edge Security Ingress (React/Mobile App [1], Cloud DNS Anycast [2], Cloud Armor WAF & GSLB [3]); Layer 2 API Management (Apigee Gateway [4], Auth & Quota Decision Gate [5], Reject 401/429 [5b]); Layer 3 GKE Microservices Mesh (GKE Core Order Service [6]); Layer 4 In-Memory Cache & Pub/Sub Mesh (Redis MemoryStore [7], Cloud Pub/Sub Topic [8], DLQ Poison Bus [9]); Layer 5 AI Cognitive Reasoning (Vertex AI Gemini Engine [10], Vector Search Embeddings [11]); Layer 6 Persistence & Lakehouse (Cloud SQL PostgreSQL HA [12], BigQuery CDC Lakehouse [13], Cloud Operations Suite [14], SRE Alerting Hub [15])."
   },
   {
     id: "golive_warroom_runbook",
@@ -503,6 +511,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactServerlessGcpReferenceXml();
   } else if (id === 'multiflow_zerotrust_platform') {
     xml = getExactMultiFlowZeroTrustPlatformXml();
+  } else if (id === 'unified_flowchart' || id.includes('flowchart') || id.includes('unified_flow')) {
+    xml = getExactUnifiedFlowchartXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {
