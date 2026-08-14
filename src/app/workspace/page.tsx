@@ -1687,11 +1687,35 @@ function WorkspaceContent() {
       const data = await res.json();
       setDiagrams(data);
       if (Array.isArray(data) && data.length > 0) {
+        let targetDiagramId: string | null = null;
         if (typeof window !== 'undefined') {
           const params = new URLSearchParams(window.location.search);
-          const targetDiagramId = params.get('diagram') || params.get('id');
-          if (targetDiagramId) {
-            loadDiagramDetails(targetDiagramId);
+          targetDiagramId = params.get('diagram') || params.get('id');
+        }
+        if (!targetDiagramId) {
+          targetDiagramId = data[0].id;
+        }
+        if (targetDiagramId) {
+          await loadDiagramDetails(targetDiagramId);
+        }
+      } else if (Array.isArray(data) && data.length === 0) {
+        // Auto-initialize default architecture canvas
+        const defaultXml = getDefaultXmlForArchitecture('unified_system_view', 'Unified Cloud Architecture #101', 'Unified Cloud Architecture #101');
+        const createRes = await fetch('/api/diagrams', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'Unified Cloud Architecture #101',
+            xml: defaultXml,
+            comment: 'Default initialized canvas',
+            architectureType: 'unified_system_view'
+          })
+        });
+        if (createRes.ok) {
+          const createData = await createRes.json();
+          if (createData.diagram?.id) {
+            setDiagrams([createData.diagram]);
+            await loadDiagramDetails(createData.diagram.id);
           }
         }
       }
@@ -4864,6 +4888,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 onClick={() => {
                   const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
                   setCurrentTab(newTab);
+                  if (newTab === 'editor') {
+                    setIsAssistantOpen(true);
+                    if (!activeDiagram && diagrams.length > 0) {
+                      loadDiagramDetails(diagrams[0].id);
+                    }
+                  }
                   if (newTab === 'walkthrough') {
                     setTourStep(1);
                   }
@@ -5107,8 +5137,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             </div>
           )}
           {!activeDiagram ? (
-          renderEmptyWorkspaceDashboard()
-        ) : (
+            <div className="flex-1 flex flex-col items-center justify-center bg-bg-dark text-slate-400 gap-3">
+              <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
+              <p className="text-sm font-semibold text-slate-300">Opening Design Canvas &amp; AI Chatbox...</p>
+            </div>
+          ) : (
           <>
             {/* Top Navbar */}
             <header className={`h-14 border-b border-panel-border flex items-center justify-between px-3 md:px-6 bg-panel-dark/80 backdrop-blur-md gap-3 relative shrink-0 ${tourStep !== null ? 'z-[60]' : 'z-30'}`}>
