@@ -2460,6 +2460,163 @@ function WorkspaceContent() {
             </div>
           </div>
 
+          {/* AI Architectural Prompt Studio in Templates Gallery */}
+          <div className="bg-[#0B101D] border border-panel-border/70 rounded-3xl p-6 md:p-8 backdrop-blur-md space-y-5 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-teal-500/10 blur-[100px] rounded-full pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1.5">
+                <span className="inline-flex items-center gap-1.5 text-xs font-black text-teal-400 uppercase tracking-widest px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>AI Architectural Prompt Studio</span>
+                </span>
+                <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
+                  Customize Blueprint <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-400">With Pure Intent.</span>
+                </h2>
+                <p className="text-xs md:text-sm text-slate-400 max-w-3xl leading-relaxed">
+                  Select any blueprint below to populate this studio, or write your custom prompt to compile with Gemini AI.
+                </p>
+              </div>
+            </div>
+
+            {/* Direct Embedded Prompt Input Form */}
+            <form onSubmit={handleCreateDiagram} className="space-y-4 pt-1">
+              <div className="space-y-1.5">
+                <label className="flex items-center justify-between text-xs font-bold text-slate-300">
+                  <span className="flex items-center gap-1.5 text-teal-300">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                    <span>Prompt</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono">Gemini 1.5 Pro</span>
+                </label>
+                <textarea
+                  value={newDiagramPrompt}
+                  onChange={(e) => {
+                    setNewDiagramPrompt(e.target.value);
+                    if (!newDiagramName) {
+                      const words = e.target.value.split(' ').slice(0, 5).join(' ');
+                      if (words) setNewDiagramName(words);
+                    }
+                  }}
+                  placeholder="Describe the system architecture you want to build..."
+                  rows={3}
+                  className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-2xl p-4 text-xs md:text-sm outline-none resize-none shadow-inner transition-all leading-relaxed font-sans"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 flex-1 min-w-[300px]">
+                  {/* 1. Project */}
+                  <div className="sm:col-span-4 space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                      <span>Project</span>
+                      {earlierProjects.length > 0 && (
+                        <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                      )}
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="text"
+                        value={newProjectName}
+                        onChange={(e) => setNewProjectName(e.target.value)}
+                        placeholder="e.g. Project-Alpha-101"
+                        className="flex-1 min-w-0 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium truncate"
+                      />
+                      {earlierProjects.length > 0 && (
+                        <select
+                          value=""
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              setNewProjectName(e.target.value);
+                            }
+                          }}
+                          className="w-24 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-400 rounded-xl px-2 py-2.5 text-xs outline-none cursor-pointer shrink-0"
+                          title="Choose from earlier projects"
+                        >
+                          <option value="" disabled>📂 Earlier</option>
+                          {earlierProjects.map((p: string) => (
+                            <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                              {p}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 2. Diagram Name */}
+                  <div className="sm:col-span-4 space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-300">
+                      Diagram Name
+                    </label>
+                    <input
+                      type="text"
+                      value={newDiagramName}
+                      onChange={(e) => setNewDiagramName(e.target.value)}
+                      placeholder="Diagram Name"
+                      className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium"
+                    />
+                  </div>
+
+                  {/* 3. Blueprint */}
+                  <div className="sm:col-span-4 space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-300">
+                      Blueprint
+                    </label>
+                    <select
+                      value={selectedArchType}
+                      onChange={(e) => {
+                        const newArch = e.target.value;
+                        setSelectedArchType(newArch);
+                        if (newArch === 'unified_system_view') {
+                          if (!newDiagramPrompt || newDiagramPrompt !== DEFAULT_UNIFIED_PROMPT) {
+                            setNewDiagramPrompt(DEFAULT_UNIFIED_PROMPT);
+                            setNewDiagramName(generateUniqueDiagramName());
+                          }
+                        } else {
+                          const archInfo = getArchitectureTypeById(newArch);
+                          if (archInfo) {
+                            setNewDiagramPrompt(archInfo.prompt);
+                            setNewDiagramName(generateUniqueDiagramName(archInfo.name));
+                          }
+                        }
+                      }}
+                      className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-3 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer truncate"
+                    >
+                      <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
+                        ✨ Auto-Detect Architecture Type
+                      </option>
+                      {TEMPLATE_CATEGORIES.map((category) => {
+                        const items = TEMPLATE_CATALOG_ITEMS.filter((item) => item.categoryId === category.id);
+                        if (items.length === 0) return null;
+                        return (
+                          <optgroup key={category.id} label={`${category.name} (${items.length})`} className="bg-[#0B101D] text-teal-400 font-extrabold">
+                            {items.map((item) => (
+                              <option key={item.id} value={item.id} className="bg-[#0B101D] text-slate-200 font-medium">
+                                {item.name}
+                              </option>
+                            ))}
+                          </optgroup>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="shrink-0">
+                  <button
+                    type="submit"
+                    disabled={isGenerating || (!newDiagramPrompt.trim() && !newDiagramName.trim())}
+                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                  >
+                    {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    <span>{isGenerating ? 'Compiling Architecture...' : '⚡ Generate Architecture with Gemini AI'}</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {filteredTemplates.map((t, idx) => {
               const isBusiness = t.category === 'business';
@@ -3724,96 +3881,6 @@ function WorkspaceContent() {
                 </div>
               </div>
             </form>
-          </div>
-
-          {/* Bottom Row: Quick Start Presets (Horizontal Grid) */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                <LayoutGrid className="w-3.5 h-3.5 text-teal-accent" />
-                <span>Bootstrap with a Quick Start Template</span>
-              </h4>
-              <button
-                type="button"
-                onClick={() => setCurrentTab('templates')}
-                className="text-xs font-bold text-teal-300 hover:text-white bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 px-3 py-1 rounded-full transition-all flex items-center gap-1 cursor-pointer"
-              >
-                <span>View Full Gallery</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {TEMPLATE_PROMPTS.slice(1).map((t, idx) => {
-                const isAws = t.name.includes('AWS');
-                const isGcp = t.name.includes('GCP');
-                const provider = isAws ? 'AWS' : isGcp ? 'GCP' : 'DevOps';
-                const providerColor = isAws 
-                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
-                  : isGcp 
-                    ? 'bg-teal-500/10 text-teal-400 border-teal-500/20' 
-                    : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
-
-                return (
-                  <div 
-                    key={idx} 
-                    className="glass-panel border-panel-border/60 hover:border-teal-500/30 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01] hover:shadow-lg"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${providerColor}`}>
-                          {provider}
-                        </span>
-                        <Sparkles className="w-3.5 h-3.5 text-teal-accent/30 group-hover:text-teal-accent transition-colors" />
-                      </div>
-                      <h3 className="font-bold text-xs text-white group-hover:text-teal-accent transition-colors mb-2 leading-snug">
-                        {t.name}
-                      </h3>
-                      <p className="text-[11px] text-slate-400 line-clamp-3 leading-relaxed mb-4">
-                        {t.prompt}
-                      </p>
-                    </div>
-                    <button
-                      onClick={async () => {
-                        const uniqueName = generateUniqueDiagramName(t.name);
-                        setNewDiagramName(uniqueName);
-                        setNewDiagramPrompt(t.prompt);
-                        setSelectedTemplate((idx + 1).toString());
-                        setGeneratingTemplateIdx(idx);
-                        try {
-                          const res = await fetch('/api/generate', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-                            body: JSON.stringify({
-                              name: uniqueName,
-                              prompt: t.prompt
-                            })
-                          });
-                          if (!res.ok) throw new Error('Failed to generate template');
-                          const data = await res.json();
-                          await fetchDiagrams();
-                          await loadDiagramDetails(data.diagram.id);
-                        } catch (err) {
-                          console.error(err);
-                          alert('Error launching preset');
-                        } finally {
-                          setGeneratingTemplateIdx(null);
-                        }
-                      }}
-                      disabled={isAnyAIBusy}
-                      className="w-full py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-[10px] uppercase tracking-wider font-bold transition-all border border-slate-700/60 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
-                    >
-                      {generatingTemplateIdx === idx ? <Loader2 className="w-3 h-3 animate-spin" /> : (
-                        <>
-                          <span>Launch Preset</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </>
-                      )}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
           </div>
 
         </div>
