@@ -32,11 +32,11 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry x="58" y="37" width="36" height="36" as="geometry" />
     </mxCell>
 
-    <mxCell id="header_text" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;Google Cloud | Unified 7-Layer Enterprise Operational Flowchart&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11.5px;color:#475569;'&gt;Sequential End-to-End Execution Flow: Ingress &amp;rarr; Apigee &amp;rarr; Orchestrator &amp;rarr; Vertex AI &amp;rarr; Pub/Sub &amp;rarr; Persistence &amp;amp; SRE Hub&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+    <mxCell id="header_text" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;Google Cloud | Unified Enterprise Agentic AI &amp;amp; Operational Architecture&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11.5px;color:#475569;'&gt;Full-Lifecycle Agent Mesh: Gemini Apps &amp;bull; Agent Designer &amp;bull; ADK 2.0 &amp;bull; Deep Research &amp;bull; Vertex AI &amp;bull; Pub/Sub &amp;bull; Persistence &amp;amp; SRE Hub&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
       <mxGeometry x="110" y="32" width="840" height="46" as="geometry" />
     </mxCell>
 
-    <mxCell id="header_badges" value="&lt;span style='background-color:#E0F2FE;color:#0369A1;border:1px solid #7DD3FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;SOC2 Type II&lt;/span&gt; &lt;span style='background-color:#DCFCE7;color:#15803D;border:1px solid #86EFAC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;PCI-DSS 4.0&lt;/span&gt; &lt;span style='background-color:#EEF2FF;color:#4338CA;border:1px solid #A5B4FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;HA 99.99%&lt;/span&gt; &lt;span style='background-color:#F3E8FF;color:#7E22CE;border:1px solid #D8B4FE;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Zero-Trust&lt;/span&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+    <mxCell id="header_badges" value="&lt;span style='background-color:#E0F2FE;color:#0369A1;border:1px solid #7DD3FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;ADK 2.0 Core&lt;/span&gt; &lt;span style='background-color:#DCFCE7;color:#15803D;border:1px solid #86EFAC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Deep Research&lt;/span&gt; &lt;span style='background-color:#EEF2FF;color:#4338CA;border:1px solid #A5B4FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;HA 99.99%&lt;/span&gt; &lt;span style='background-color:#F3E8FF;color:#7E22CE;border:1px solid #D8B4FE;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Zero-Trust&lt;/span&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
       <mxGeometry x="960" y="37" width="440" height="36" as="geometry" />
     </mxCell>
 
@@ -44,12 +44,12 @@ export function buildMasterUnifiedFlowchartXml(): string {
     <!-- 7 BALANCED HORIZONTAL LAYER SWIMLANES (1380px WIDTH, PASTEL LIGHT)        -->
     <!-- ========================================================================= -->
 
-    <!-- Tier 1: Client & Ingress Layer -->
+    <!-- Tier 1: Agentic Workspace & Developer Studio -->
     <mxCell id="tier_1_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#F0F9FF;fillOpacity=40;strokeColor=#BAE6FD;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
       <mxGeometry x="40" y="100" width="1380" height="135" as="geometry" />
     </mxCell>
-    <mxCell id="tier_1_tab" value="&lt;b style='font-size:10px;color:#0369A1;'&gt;TIER 1: USER INTERACTION &amp;amp; GLOBAL EDGE INGRESS LAYER&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#E0F2FE;strokeColor=#38BDF8;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-      <mxGeometry x="55" y="106" width="370" height="20" as="geometry" />
+    <mxCell id="tier_1_tab" value="&lt;b style='font-size:10px;color:#0369A1;'&gt;TIER 1: ENTERPRISE AGENTIC WORKSPACE &amp;amp; DEVELOPER STUDIO&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#E0F2FE;strokeColor=#38BDF8;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="55" y="106" width="390" height="20" as="geometry" />
     </mxCell>
 
     <!-- Tier 2: API Management & Policy Gate -->
@@ -60,12 +60,12 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry x="850" y="286" width="310" height="20" as="geometry" />
     </mxCell>
 
-    <!-- Tier 3: Core Orchestration & AI Reasoning -->
+    <!-- Tier 3: Multi-Agent Mesh & ADK 2.0 Runtime -->
     <mxCell id="tier_3_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#FAF5FF;fillOpacity=40;strokeColor=#E9D5FF;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
       <mxGeometry x="40" y="470" width="1380" height="145" as="geometry" />
     </mxCell>
-    <mxCell id="tier_3_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 3: CORE ORCHESTRATOR &amp;amp; AI REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-      <mxGeometry x="55" y="476" width="360" height="20" as="geometry" />
+    <mxCell id="tier_3_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 3: COGNITIVE MULTI-AGENT MESH &amp;amp; ADK 2.0 REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="55" y="476" width="430" height="20" as="geometry" />
     </mxCell>
 
     <!-- Tier 4: In-Memory Caching & Vector Memory -->
@@ -101,21 +101,21 @@ export function buildMasterUnifiedFlowchartXml(): string {
     </mxCell>
 
     <!-- ========================================================================= -->
-    <!-- TIER 1: USER INTERACTION & INGRESS (4 EQUAL 220px UNITS, 140px GAPS)      -->
+    <!-- TIER 1: AGENTIC WORKSPACE & STUDIO (4 EQUAL 220px UNITS, 140px GAPS)      -->
     <!-- ========================================================================= -->
-    <mxCell id="node_1_client" value="&lt;b style='font-size:12.5px;color:#92400E;'&gt;[1] Client Portal&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#78350F;'&gt;React 19 SPA &amp;bull; Mobile SDK&lt;br&gt;mTLS Mutual Auth &amp;bull; FIDO2&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.8;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+    <mxCell id="node_1_client" value="&lt;b style='font-size:12px;color:#92400E;'&gt;[1] Gemini Enterprise App&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#78350F;'&gt;Business Generative Portal&lt;br&gt;Multi-Turn Workspaces &amp;bull; SSO&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.8;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
       <mxGeometry x="80" y="136" width="220" height="80" as="geometry" />
     </mxCell>
 
-    <mxCell id="node_1a_dns" value="&lt;b style='font-size:12.5px;color:#0369A1;'&gt;[1a] Cloud DNS Anycast&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#075985;'&gt;Global Anycast Edge PoPs&lt;br&gt;DNSSEC &amp;amp; Geo-Latency Routing&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+    <mxCell id="node_1a_dns" value="&lt;b style='font-size:12px;color:#0369A1;'&gt;[1a] Gemini Notebook&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#075985;'&gt;Colab Enterprise Sandbox&lt;br&gt;Prompt Tuning &amp;amp; Model Evals&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
       <mxGeometry x="440" y="136" width="220" height="80" as="geometry" />
     </mxCell>
 
-    <mxCell id="node_1b_waf" value="&lt;b style='font-size:12.5px;color:#0369A1;'&gt;[1b] Cloud Armor WAF&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#075985;'&gt;OWASP Top 10 &amp;bull; DDoS Mitigation&lt;br&gt;Adaptive ML Layer 7 Rate Limiting&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+    <mxCell id="node_1b_waf" value="&lt;b style='font-size:12px;color:#0369A1;'&gt;[1b] Agent Designer IDE&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#075985;'&gt;Vertex Agent Builder Canvas&lt;br&gt;Visual Tool &amp;amp; Policy Definition&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
       <mxGeometry x="800" y="136" width="220" height="80" as="geometry" />
     </mxCell>
 
-    <mxCell id="node_1c_gslb" value="&lt;b style='font-size:12.5px;color:#0369A1;'&gt;[1c] Global External LB&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#075985;'&gt;HTTPS Anycast VIP&lt;br&gt;SSL Offload &amp;amp; HTTP/3 Ingress&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+    <mxCell id="node_1c_gslb" value="&lt;b style='font-size:12px;color:#0369A1;'&gt;[1c] Global External LB &amp;amp; WAF&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#075985;'&gt;Cloud Armor L7 Rate Limit&lt;br&gt;HTTPS Anycast VIP Ingress&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
       <mxGeometry x="1160" y="136" width="220" height="80" as="geometry" />
     </mxCell>
 
@@ -135,14 +135,18 @@ export function buildMasterUnifiedFlowchartXml(): string {
     </mxCell>
 
     <!-- ========================================================================= -->
-    <!-- TIER 3: ORCHESTRATION & REASONING MESH (TWO 500px/520px UNITS, 280px GAP) -->
+    <!-- TIER 3: COGNITIVE MULTI-AGENT MESH & ADK 2.0 (420px + 360px + 360px UNITS)-->
     <!-- ========================================================================= -->
-    <mxCell id="node_3_orchestrator" value="&lt;b style='font-size:13.5px;color:#6B21A8;'&gt;[3] Router / GKE Master Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#581C87;'&gt;LangGraph Multi-Agent State Machine &amp;bull; GKE Autopilot Pod Mesh &amp;bull; Execution Controller&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-      <mxGeometry x="80" y="506" width="500" height="88" as="geometry" />
+    <mxCell id="node_3_orchestrator" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[3] ADK 2.0 / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+      <mxGeometry x="80" y="506" width="420" height="88" as="geometry" />
     </mxCell>
 
-    <mxCell id="node_3a_gemini" value="&lt;b style='font-size:13.5px;color:#9D174D;'&gt;[3a] Vertex AI Gemini 1.5 Pro (Reasoning Engine)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#831843;'&gt;Cognitive Multi-Modal Reasoning &amp;bull; Dynamic Context Grounding &amp;bull; Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
-      <mxGeometry x="860" y="506" width="520" height="88" as="geometry" />
+    <mxCell id="node_3_research" value="&lt;b style='font-size:13px;color:#0369A1;'&gt;[3a] Deep Research Agent&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#075985;'&gt;Autonomous Multi-Hop Search&lt;br&gt;Citation Grounding &amp;amp; Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+      <mxGeometry x="580" y="506" width="360" height="88" as="geometry" />
+    </mxCell>
+
+    <mxCell id="node_3a_gemini" value="&lt;b style='font-size:13px;color:#9D174D;'&gt;[3b] Vertex AI Gemini 1.5 Pro&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#831843;'&gt;Multi-Modal Cognitive Engine&lt;br&gt;Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+      <mxGeometry x="1020" y="506" width="360" height="88" as="geometry" />
     </mxCell>
 
     <!-- ========================================================================= -->
@@ -163,7 +167,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
     <!-- ========================================================================= -->
     <!-- TIER 5: ASYNCHRONOUS EVENT BUS & QUEUING (CENTERED 520px, 160px DLQ GAP)  -->
     <!-- ========================================================================= -->
-    <mxCell id="node_7_pubsub" value="&lt;b style='font-size:13px;color:#1E40AF;'&gt;[7] Google Cloud Pub/Sub Distributed Event Mesh&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#1D4ED8;'&gt;Topic: orders.created.v1 &amp;bull; Partitioned High-Throughput Event Stream for Agent Coordination&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+    <mxCell id="node_7_pubsub" value="&lt;b style='font-size:13px;color:#1E40AF;'&gt;[7] Google Cloud Pub/Sub Distributed Event Mesh&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#1D4ED8;'&gt;Topic: agent.events.v1 &amp;bull; Partitioned High-Throughput Event Stream for Agent Coordination&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
       <mxGeometry x="460" y="905" width="520" height="75" as="geometry" />
     </mxCell>
 
@@ -178,7 +182,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry x="80" y="1086" width="220" height="88" as="geometry" />
     </mxCell>
 
-    <mxCell id="node_9_embedding" value="&lt;b style='font-size:13px;color:#9F1239;'&gt;[9] Embedding &amp;amp; Fraud Scoring Agent&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#881337;'&gt;Vertex AI Text-Embedding-004 Worker &amp;bull; Real-Time Risk Anomaly &amp;amp; Fraud Scorer&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFE4E6;strokeColor=#E11D48;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+    <mxCell id="node_9_embedding" value="&lt;b style='font-size:13px;color:#9F1239;'&gt;[9] Embedding &amp;amp; Grounding Worker&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#881337;'&gt;Vertex AI Text-Embedding-004 &amp;bull; Real-Time Grounding &amp;amp; Verification Scorer&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFE4E6;strokeColor=#E11D48;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
       <mxGeometry x="460" y="1086" width="520" height="88" as="geometry" />
     </mxCell>
 
@@ -201,23 +205,23 @@ export function buildMasterUnifiedFlowchartXml(): string {
     <!-- FLOW ARROWS & LABELS (ZERO-COLLISION IN OPEN AIR CHANNELS)                -->
     <!-- ========================================================================= -->
 
-    <!-- Flow 1: Client -> DNS (140px Open Gap) -->
-    <mxCell id="flow_1" value="&lt;b style='color:#0284C7;'&gt;1. Resolve VIP&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;" edge="1" parent="1" source="node_1_client" target="node_1a_dns">
+    <!-- Flow 1: Enterprise App -> Notebook (140px Open Gap) -->
+    <mxCell id="flow_1" value="&lt;b style='color:#0284C7;'&gt;1. Evals &amp;amp; Prompts&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;" edge="1" parent="1" source="node_1_client" target="node_1a_dns">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 1a: DNS -> WAF (140px Open Gap) -->
-    <mxCell id="flow_1a" value="&lt;b style='color:#0284C7;'&gt;1a. DDoS Filter&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;" edge="1" parent="1" source="node_1a_dns" target="node_1b_waf">
+    <!-- Flow 1a: Notebook -> Agent Designer (140px Open Gap) -->
+    <mxCell id="flow_1a" value="&lt;b style='color:#0284C7;'&gt;1a. Export Blueprint&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;" edge="1" parent="1" source="node_1a_dns" target="node_1b_waf">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 1b: WAF -> GSLB (140px Open Gap) -->
-    <mxCell id="flow_1b" value="&lt;b style='color:#0284C7;'&gt;1b. Route Ingress&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;" edge="1" parent="1" source="node_1b_waf" target="node_1c_gslb">
+    <!-- Flow 1b: Agent Designer -> GSLB (140px Open Gap) -->
+    <mxCell id="flow_1b" value="&lt;b style='color:#0284C7;'&gt;1b. Deploy Endpoint&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;" edge="1" parent="1" source="node_1b_waf" target="node_1c_gslb">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
     <!-- Flow 2: GSLB -> Apigee (Open Inter-Tier Channel at y=255) -->
-    <mxCell id="flow_2" value="&lt;b style='color:#B45309;'&gt;2. HTTPS User Query&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#D97706;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_1c_gslb" target="node_2_apigee">
+    <mxCell id="flow_2" value="&lt;b style='color:#B45309;'&gt;2. HTTPS Ingress Query&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#D97706;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_1c_gslb" target="node_2_apigee">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
           <mxPoint x="1270" y="255" />
@@ -236,46 +240,54 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 3: Apigee -> Orchestrator (Open Inter-Tier Channel at y=448) -->
-    <mxCell id="flow_3" value="&lt;b style='color:#6B21A8;'&gt;3. Auth'd &amp;amp; PII-Scrubbed Request&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9333EA;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#9333EA;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=0.5;exitY=1;entryX=0.68;entryY=0;" edge="1" parent="1" source="node_2_apigee" target="node_3_orchestrator">
+    <!-- Flow 3: Apigee -> ADK 2.0 Orchestrator (Open Inter-Tier Channel at y=448) -->
+    <mxCell id="flow_3" value="&lt;b style='color:#6B21A8;'&gt;3. Auth'd &amp;amp; PII-Masked Payload&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9333EA;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#9333EA;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_2_apigee" target="node_3_orchestrator">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
           <mxPoint x="720" y="448" />
-          <mxPoint x="420" y="448" />
+          <mxPoint x="290" y="448" />
         </Array>
       </mxGeometry>
     </mxCell>
 
-    <!-- Flow 4: Orchestrator <-> Gemini 1.5 Pro (280px Wide Open Corridor) -->
-    <mxCell id="flow_4_fwd" value="&lt;b style='color:#9D174D;'&gt;4. Context Prompt&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DB2777;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#DB2777;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=1;exitY=0.32;entryX=0;entryY=0.32;" edge="1" parent="1" source="node_3_orchestrator" target="node_3a_gemini">
+    <!-- Flow 4: ADK 2.0 Orchestrator <-> Deep Research Agent (80px Wide Gap) -->
+    <mxCell id="flow_4_fwd" value="&lt;b style='color:#0284C7;'&gt;4. Multi-Hop Search&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" parent="1" source="node_3_orchestrator" target="node_3_research">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
-    <mxCell id="flow_4_back" value="&lt;b style='color:#9D174D;'&gt;4a. CoT Synthesis&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DB2777;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#DB2777;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=0;exitY=0.68;entryX=1;entryY=0.68;" edge="1" parent="1" source="node_3a_gemini" target="node_3_orchestrator">
-      <mxGeometry relative="1" as="geometry" />
-    </mxCell>
-
-    <!-- Flow 5: Orchestrator -> Vector Search (Open Vertical Drop at y=638) -->
-    <mxCell id="flow_5" value="&lt;b style='color:#065F46;'&gt;5. Vector Query&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.22;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_4_vector">
+    <mxCell id="flow_4_back" value="&lt;b style='color:#0284C7;'&gt;4a. Verified Findings&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0;exitY=0.65;entryX=1;entryY=0.65;" edge="1" parent="1" source="node_3_research" target="node_3_orchestrator">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 6: Orchestrator -> Redis (Open Vertical Drop at y=638) -->
-    <mxCell id="flow_6" value="&lt;b style='color:#065F46;'&gt;6. Read/Write State&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.84;exitY=1;entryX=0.12;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_5_redis">
+    <!-- Flow 4b: Deep Research Agent <-> Vertex AI Gemini 1.5 Pro (80px Wide Gap) -->
+    <mxCell id="flow_4b_fwd" value="&lt;b style='color:#9D174D;'&gt;4b. CoT Reasoning&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DB2777;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#DB2777;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" parent="1" source="node_3_research" target="node_3a_gemini">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="flow_4b_back" value="&lt;b style='color:#9D174D;'&gt;4c. Synthesis&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DB2777;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#DB2777;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0;exitY=0.65;entryX=1;entryY=0.65;" edge="1" parent="1" source="node_3a_gemini" target="node_3_research">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 7: Orchestrator -> Cloud SQL (Open Inter-Tier Channel at y=638) -->
-    <mxCell id="flow_7" value="&lt;b style='color:#1E40AF;'&gt;7. ACID Commit&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.94;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_6_cloudsql">
+    <!-- Flow 5: ADK 2.0 Orchestrator -> Vector Search (Open Vertical Drop at y=638) -->
+    <mxCell id="flow_5" value="&lt;b style='color:#065F46;'&gt;5. Vector RAG Query&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.26;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_4_vector">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Flow 6: ADK 2.0 Orchestrator -> Redis (Open Vertical Drop at y=638) -->
+    <mxCell id="flow_6" value="&lt;b style='color:#065F46;'&gt;6. Read/Write State&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.85;exitY=1;entryX=0.12;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_5_redis">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Flow 7: ADK 2.0 Orchestrator -> Cloud SQL (Open Inter-Tier Channel at y=638) -->
+    <mxCell id="flow_7" value="&lt;b style='color:#1E40AF;'&gt;7. ACID Commit&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.96;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_6_cloudsql">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
-          <mxPoint x="550" y="638" />
+          <mxPoint x="483" y="638" />
           <mxPoint x="1260" y="638" />
         </Array>
       </mxGeometry>
     </mxCell>
 
     <!-- Flow 8: Redis -> Pub/Sub (Straight Vertical Drop at x=720) -->
-    <mxCell id="flow_8" value="&lt;b style='color:#1E40AF;'&gt;8. Publish tasks for Agents&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_5_redis" target="node_7_pubsub">
+    <mxCell id="flow_8" value="&lt;b style='color:#1E40AF;'&gt;8. Publish Tasks for Agents&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_5_redis" target="node_7_pubsub">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
@@ -284,18 +296,17 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 9: Pub/Sub -> Chunking Agent (Label centered on vertical drop at y=1035) -->
+    <!-- Flow 9: Pub/Sub -> Chunking Agent (Open Channel at x=190, y=942) -->
     <mxCell id="flow_9" value="&lt;b style='color:#9F1239;'&gt;9. Ingest Task&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E11D48;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#E11D48;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_7_pubsub" target="node_8_chunking">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
           <mxPoint x="190" y="942" />
         </Array>
-        <mxPoint x="0" y="45" as="offset" />
       </mxGeometry>
     </mxCell>
 
-    <!-- Flow 10: Pub/Sub -> Embedding Agent (Straight Vertical Drop at x=720) -->
-    <mxCell id="flow_10" value="&lt;b style='color:#9F1239;'&gt;10. Embed Request&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E11D48;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#E11D48;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_7_pubsub" target="node_9_embedding">
+    <!-- Flow 10: Pub/Sub -> Embedding Worker (Straight Vertical Drop at x=720) -->
+    <mxCell id="flow_10" value="&lt;b style='color:#9F1239;'&gt;10. Embed &amp;amp; Verify&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E11D48;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#E11D48;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_7_pubsub" target="node_9_embedding">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
@@ -306,7 +317,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
       </mxGeometry>
     </mxCell>
 
-    <!-- Flow 12: Embedding Agent -> Vector Search (Dedicated Highway at x=380, Label at y=800 in Tier 4/5 Open Gap) -->
+    <!-- Flow 12: Embedding Worker -> Vector Search (Dedicated Highway at x=380, Label at y=820 in Tier 4/5 Open Gap) -->
     <mxCell id="flow_12" value="&lt;b style='color:#065F46;'&gt;12. Upsert 768d Vectors&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="node_9_embedding" target="node_4_vector">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
@@ -317,7 +328,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
       </mxGeometry>
     </mxCell>
 
-    <!-- Flow 13: Orchestrator -> Telemetry Hub (Dedicated Leftmost Corridor at x=55) -->
+    <!-- Flow 13: ADK 2.0 Orchestrator -> Telemetry Hub (Dedicated Leftmost Corridor at x=55) -->
     <mxCell id="flow_13" value="&lt;b style='color:#1E293B;'&gt;13. OTel Traces &amp;amp; Metrics&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#475569;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0;exitY=0.8;entryX=0;entryY=0.5;" edge="1" parent="1" source="node_3_orchestrator" target="node_11_telemetry">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
@@ -333,7 +344,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 15: Response Back to Client (Routes via Left Margin at x=65, Label squarely in Open Channel at y=248) -->
+    <!-- Flow 15: Response Back to Gemini Enterprise App (Routes via Left Margin, Label squarely in Open Channel at y=248) -->
     <mxCell id="flow_15_return" value="&lt;b style='color:#15803D;'&gt;15. Signed 200 OK Response&lt;br&gt;(Sub-45ms SLA)&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0;exitY=0.35;entryX=0.5;entryY=1;" edge="1" parent="1" source="node_3_orchestrator" target="node_1_client">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
