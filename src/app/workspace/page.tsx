@@ -4283,6 +4283,26 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           architecture_type: newArchId,
           versions: [newVer, ...(prev.versions || [])]
         } : prev);
+      } else {
+        fetch('/api/diagrams', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
+          body: JSON.stringify({
+            name: archName,
+            xml: baseRefXml || '',
+            comment: `Master Reference Blueprint: ${archName}`,
+            architectureType: newArchId,
+            isPrivate: false
+          })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data?.diagram?.id) {
+              fetchDiagrams();
+              loadDiagramDetails(data.diagram.id);
+            }
+          })
+          .catch(console.error);
       }
 
       setChatMessages([{
