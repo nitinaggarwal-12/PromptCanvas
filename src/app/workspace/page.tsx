@@ -15,7 +15,7 @@ import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/compon
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
 import { SUPPORTED_LANGUAGES, translateDiagramXmlToLanguage, TRANSLATIONS, SupportedLanguage } from '@/lib/i18n';
 import { getLocalizedWorkspaceStrings, localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
-import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -109,6 +109,11 @@ import { TEMPLATE_CATEGORIES, TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCateg
 
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
+
+export function generateUniqueProjectName(): string {
+  const code = Math.floor(100 + Math.random() * 900);
+  return `Google Cloud Project #${code}`;
+}
 
 export function generateUniqueDiagramName(baseName?: string): string {
   const code = Math.floor(100 + Math.random() * 900);
@@ -851,6 +856,7 @@ function WorkspaceContent() {
   });
   
   // Form Inputs
+  const [newProjectName, setNewProjectName] = useState<string>(() => generateUniqueProjectName());
   const [newDiagramName, setNewDiagramName] = useState<string>(() => generateUniqueDiagramName());
   const [newDiagramPrompt, setNewDiagramPrompt] = useState<string>(DEFAULT_UNIFIED_PROMPT);
   const [selectedTemplate, setSelectedTemplate] = useState('0');
@@ -859,6 +865,16 @@ function WorkspaceContent() {
   const [isArchConsentModalOpen, setIsArchConsentModalOpen] = useState(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [newDiagramIsPrivate, setNewDiagramIsPrivate] = useState<boolean>(false);
+
+  const earlierProjects: string[] = useMemo(() => {
+    const names = new Set<string>();
+    diagrams.forEach((d: Diagram) => {
+      if (d.name) {
+        names.add(d.name);
+      }
+    });
+    return Array.from(names);
+  }, [diagrams]);
 
   const [disambiguationData, setDisambiguationData] = useState<{
     prompt: string;
@@ -1688,11 +1704,11 @@ function WorkspaceContent() {
 
   async function handleCreateDiagram(e: React.FormEvent) {
     e.preventDefault();
-    if (!newDiagramName.trim()) return;
+    const finalDiagramName = newDiagramName.trim() || newProjectName.trim() || generateUniqueDiagramName();
     
     try {
       const promptToGenerate = newDiagramPrompt.trim();
-      const defaultXml = getDefaultXmlForArchitecture(selectedArchType, promptToGenerate || newDiagramName.trim(), promptToGenerate || newDiagramName.trim());
+      const defaultXml = getDefaultXmlForArchitecture(selectedArchType, promptToGenerate || finalDiagramName, promptToGenerate || finalDiagramName);
 
       if (promptToGenerate) {
         setIsGenerating(true);
@@ -1702,7 +1718,7 @@ function WorkspaceContent() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
             body: JSON.stringify({
-              name: newDiagramName.trim(),
+              name: finalDiagramName,
               prompt: promptToGenerate,
               architectureType: selectedArchType,
               isPrivate: newDiagramIsPrivate
@@ -1713,7 +1729,7 @@ function WorkspaceContent() {
           if (data.needsDisambiguation) {
             setDisambiguationData({
               prompt: promptToGenerate,
-              name: newDiagramName.trim(),
+              name: finalDiagramName,
               suggestedTypes: data.suggestedTypes,
               assumptions: data.assumptions,
               reasoning: data.reasoning
@@ -1724,6 +1740,7 @@ function WorkspaceContent() {
           if (data.alternativeTypes) setActiveAlternativeTypes(data.alternativeTypes);
           setNewDiagramName('');
           setNewDiagramPrompt('');
+          setNewProjectName(generateUniqueProjectName());
           await fetchDiagrams();
           if (data.diagram?.id) {
             await loadDiagramDetails(data.diagram.id);
@@ -1734,7 +1751,7 @@ function WorkspaceContent() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
             body: JSON.stringify({
-              name: newDiagramName.trim(),
+              name: finalDiagramName,
               xml: defaultXml,
               comment: 'Synthesized Enterprise Canvas',
               architectureType: selectedArchType,
@@ -1745,6 +1762,7 @@ function WorkspaceContent() {
             const data = await fallbackRes.json();
             setNewDiagramName('');
             setNewDiagramPrompt('');
+            setNewProjectName(generateUniqueProjectName());
             await fetchDiagrams();
             await loadDiagramDetails(data.diagram.id);
           } else {
@@ -1760,7 +1778,7 @@ function WorkspaceContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
         body: JSON.stringify({
-          name: newDiagramName,
+          name: finalDiagramName,
           xml: defaultXml,
           comment: 'Initial canvas created',
           architectureType: selectedArchType,
@@ -1773,6 +1791,7 @@ function WorkspaceContent() {
       
       setNewDiagramName('');
       setNewDiagramPrompt('');
+      setNewProjectName(generateUniqueProjectName());
       setIsCreateModalOpen(false);
       
       await fetchDiagrams();
@@ -3571,7 +3590,14 @@ function WorkspaceContent() {
 
             {/* Direct Embedded Prompt Input Form */}
             <form onSubmit={handleCreateDiagram} className="space-y-4 pt-2">
-              <div className="relative">
+              <div className="space-y-1.5">
+                <label className="flex items-center justify-between text-xs font-bold text-slate-300">
+                  <span className="flex items-center gap-1.5 text-teal-300">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                    <span>Prompt</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono">Gemini 1.5 Pro</span>
+                </label>
                 <textarea
                   value={newDiagramPrompt}
                   onChange={(e) => {
@@ -3587,62 +3613,115 @@ function WorkspaceContent() {
                 />
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex flex-wrap items-center gap-3">
-                  <input
-                    type="text"
-                    value={newDiagramName}
-                    onChange={(e) => setNewDiagramName(e.target.value)}
-                    placeholder="Diagram Name (e.g. Enterprise Ledger Architecture)"
-                    className="bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-4 py-2.5 text-xs md:text-sm outline-none w-80 md:w-[420px] transition-all font-medium"
-                  />
-                  <select
-                    value={selectedArchType}
-                    onChange={(e) => {
-                      const newArch = e.target.value;
-                      setSelectedArchType(newArch);
-                      if (newArch === 'unified_system_view') {
-                        if (!newDiagramPrompt || newDiagramPrompt !== DEFAULT_UNIFIED_PROMPT) {
-                          setNewDiagramPrompt(DEFAULT_UNIFIED_PROMPT);
-                          setNewDiagramName(generateUniqueDiagramName());
-                        }
-                      } else {
-                        const archInfo = getArchitectureTypeById(newArch);
-                        if (archInfo) {
-                          setNewDiagramPrompt(archInfo.prompt);
-                          setNewDiagramName(generateUniqueDiagramName(archInfo.name));
-                        }
-                      }
-                    }}
-                    className="bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-4 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer max-w-xs"
-                  >
-                    <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
-                      ✨ Auto-Detect Architecture Type
-                    </option>
-                    {TEMPLATE_CATEGORIES.map((category) => {
-                      const items = TEMPLATE_CATALOG_ITEMS.filter((item) => item.categoryId === category.id);
-                      if (items.length === 0) return null;
-                      return (
-                        <optgroup key={category.id} label={`${category.name} (${items.length})`} className="bg-[#0B101D] text-teal-400 font-extrabold">
-                          {items.map((item) => (
-                            <option key={item.id} value={item.id} className="bg-[#0B101D] text-slate-200 font-medium">
-                              {item.name}
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 flex-1 min-w-[300px]">
+                  {/* 1. Project (Textbox with unique + dropdown for earlier ones, BEFORE Architecture Name) */}
+                  <div className="sm:col-span-4 space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                      <span>Project</span>
+                      {earlierProjects.length > 0 && (
+                        <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                      )}
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="text"
+                        value={newProjectName}
+                        onChange={(e) => setNewProjectName(e.target.value)}
+                        placeholder="e.g. Project-Alpha-101"
+                        className="flex-1 min-w-0 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium truncate"
+                      />
+                      {earlierProjects.length > 0 && (
+                        <select
+                          value=""
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              setNewProjectName(e.target.value);
+                            }
+                          }}
+                          className="w-24 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-400 rounded-xl px-2 py-2.5 text-xs outline-none cursor-pointer shrink-0"
+                          title="Choose from earlier projects"
+                        >
+                          <option value="" disabled>📂 Earlier</option>
+                          {earlierProjects.map((p: string) => (
+                            <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                              {p}
                             </option>
                           ))}
-                        </optgroup>
-                      );
-                    })}
-                  </select>
+                        </select>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 2. Diagram Name */}
+                  <div className="sm:col-span-4 space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-300">
+                      Diagram Name
+                    </label>
+                    <input
+                      type="text"
+                      value={newDiagramName}
+                      onChange={(e) => setNewDiagramName(e.target.value)}
+                      placeholder="Diagram Name (e.g. Enterprise Ledger Architecture)"
+                      className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium"
+                    />
+                  </div>
+
+                  {/* 3. Blueprint */}
+                  <div className="sm:col-span-4 space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-300">
+                      Blueprint
+                    </label>
+                    <select
+                      value={selectedArchType}
+                      onChange={(e) => {
+                        const newArch = e.target.value;
+                        setSelectedArchType(newArch);
+                        if (newArch === 'unified_system_view') {
+                          if (!newDiagramPrompt || newDiagramPrompt !== DEFAULT_UNIFIED_PROMPT) {
+                            setNewDiagramPrompt(DEFAULT_UNIFIED_PROMPT);
+                            setNewDiagramName(generateUniqueDiagramName());
+                          }
+                        } else {
+                          const archInfo = getArchitectureTypeById(newArch);
+                          if (archInfo) {
+                            setNewDiagramPrompt(archInfo.prompt);
+                            setNewDiagramName(generateUniqueDiagramName(archInfo.name));
+                          }
+                        }
+                      }}
+                      className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-3 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer truncate"
+                    >
+                      <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
+                        ✨ Auto-Detect Architecture Type
+                      </option>
+                      {TEMPLATE_CATEGORIES.map((category) => {
+                        const items = TEMPLATE_CATALOG_ITEMS.filter((item) => item.categoryId === category.id);
+                        if (items.length === 0) return null;
+                        return (
+                          <optgroup key={category.id} label={`${category.name} (${items.length})`} className="bg-[#0B101D] text-teal-400 font-extrabold">
+                            {items.map((item) => (
+                              <option key={item.id} value={item.id} className="bg-[#0B101D] text-slate-200 font-medium">
+                                {item.name}
+                              </option>
+                            ))}
+                          </optgroup>
+                        );
+                      })}
+                    </select>
+                  </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isGenerating || (!newDiagramPrompt.trim() && !newDiagramName.trim())}
-                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
-                >
-                  {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                  <span>{isGenerating ? 'Compiling Architecture...' : '⚡ Generate Architecture with Gemini AI'}</span>
-                </button>
+                <div className="shrink-0">
+                  <button
+                    type="submit"
+                    disabled={isGenerating || (!newDiagramPrompt.trim() && !newDiagramName.trim())}
+                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                  >
+                    {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    <span>{isGenerating ? 'Compiling Architecture...' : '⚡ Generate Architecture with Gemini AI'}</span>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -6150,23 +6229,63 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       </div>
 
                       <form onSubmit={handleCreateDiagram} className="space-y-3.5">
-                        <div>
-                          <label className="block text-xs font-bold text-slate-300 mb-1">
-                            Architecture Project Name
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={newDiagramName}
-                            onChange={(e) => setNewDiagramName(e.target.value)}
-                            placeholder="e.g. ApexPay Global Multi-Region Payment Mesh"
-                            className="w-full bg-slate-950 border border-slate-700/80 focus:border-teal-400 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-all font-semibold"
-                          />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center justify-between">
+                              <span>Project</span>
+                              {earlierProjects.length > 0 && (
+                                <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                              )}
+                            </label>
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="text"
+                                value={newProjectName}
+                                onChange={(e) => setNewProjectName(e.target.value)}
+                                placeholder="Project Name"
+                                className="w-full bg-slate-950 border border-slate-700/80 focus:border-teal-400 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-all font-semibold"
+                              />
+                              {earlierProjects.length > 0 && (
+                                <select
+                                  value=""
+                                  onChange={(e) => {
+                                    if (e.target.value) {
+                                      setNewProjectName(e.target.value);
+                                    }
+                                  }}
+                                  className="bg-slate-950 border border-slate-700/80 focus:border-teal-400 text-teal-400 rounded-xl px-2 py-2 text-xs outline-none cursor-pointer shrink-0"
+                                  title="Choose from earlier projects"
+                                >
+                                  <option value="" disabled>📂 Earlier</option>
+                                  {earlierProjects.map((p: string) => (
+                                    <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                                      {p}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 mb-1">
+                              Diagram Name
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={newDiagramName}
+                              onChange={(e) => setNewDiagramName(e.target.value)}
+                              placeholder="e.g. ApexPay Global Multi-Region Payment Mesh"
+                              className="w-full bg-slate-950 border border-slate-700/80 focus:border-teal-400 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-all font-semibold"
+                            />
+                          </div>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-slate-300 mb-1">
-                            Describe Your System Requirements
+                          <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center justify-between">
+                            <span>Prompt / System Requirements</span>
+                            <span className="text-[10px] text-teal-400 font-mono">Gemini 1.5 Pro</span>
                           </label>
                           <textarea
                             rows={4}
@@ -6179,7 +6298,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
                         <div>
                           <label className="block text-[11px] font-bold text-slate-400 mb-1">
-                            Starter Blueprint Topology
+                            Blueprint
                           </label>
                           <select
                             value={selectedTemplate}
@@ -6701,6 +6820,42 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </button>
             </div>
             <form onSubmit={handleCreateDiagram} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span>Project</span>
+                  {earlierProjects.length > 0 && (
+                    <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                  )}
+                </label>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="text"
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    placeholder="e.g. Project-842"
+                    className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
+                  />
+                  {earlierProjects.length > 0 && (
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          setNewProjectName(e.target.value);
+                        }
+                      }}
+                      className="bg-bg-dark border border-panel-border focus:border-teal-accent text-teal-400 rounded-lg px-2.5 py-2 text-xs outline-none cursor-pointer shrink-0"
+                      title="Choose from earlier projects"
+                    >
+                      <option value="" disabled>📂 Earlier</option>
+                      {earlierProjects.map((p: string) => (
+                        <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                          {p}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">Diagram Name</label>
                 <input

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
@@ -41,6 +41,7 @@ import { AuthModal } from '@/components/AuthModal';
 import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { checkDiagramStaleness } from '@/lib/diagramStaleness';
 import { TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
+import { generateUniqueProjectName, generateUniqueDiagramName } from '@/app/workspace/page';
 
 interface Diagram {
   id: string;
@@ -135,12 +136,21 @@ export default function Dashboard() {
   
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [newProjectName, setNewProjectName] = useState<string>(() => generateUniqueProjectName());
   const [newDiagramName, setNewDiagramName] = useState('');
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [selectedArchType, setSelectedArchType] = useState('conceptual_diagram');
   const [isCreating, setIsCreating] = useState(false);
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
+
+  const earlierProjects = useMemo(() => {
+    const names = new Set<string>();
+    diagrams.forEach((d) => {
+      if (d.name) names.add(d.name);
+    });
+    return Array.from(names);
+  }, [diagrams]);
 
   const checkAuth = async () => {
     try {
@@ -252,11 +262,11 @@ export default function Dashboard() {
 
   const handleCreateDiagram = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newDiagramName.trim()) return;
+    const finalDiagramName = newDiagramName.trim() || newProjectName.trim() || generateUniqueDiagramName();
     setIsCreating(true);
 
     try {
-      const defaultXml = getDefaultXmlForArchitecture(selectedArchType, newDiagramName.trim(), newDiagramName.trim());
+      const defaultXml = getDefaultXmlForArchitecture(selectedArchType, finalDiagramName, finalDiagramName);
 
       const promptToGenerate = newDiagramPrompt.trim();
 
@@ -266,7 +276,7 @@ export default function Dashboard() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: newDiagramName.trim(),
+            name: finalDiagramName,
             prompt: promptToGenerate,
             architectureType: selectedArchType
           })
@@ -276,6 +286,9 @@ export default function Dashboard() {
         const data = await res.json();
         
         setIsCreateModalOpen(false);
+        setNewProjectName(generateUniqueProjectName());
+        setNewDiagramName('');
+        setNewDiagramPrompt('');
         router.push(`/workspace?diagram=${data.diagram.id}`);
         return;
       }
@@ -285,7 +298,7 @@ export default function Dashboard() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: newDiagramName,
+          name: finalDiagramName,
           xml: defaultXml,
           comment: 'Initial canvas created',
           architectureType: selectedArchType
@@ -296,6 +309,9 @@ export default function Dashboard() {
       const newDiagram = await res.json();
       
       setIsCreateModalOpen(false);
+      setNewProjectName(generateUniqueProjectName());
+      setNewDiagramName('');
+      setNewDiagramPrompt('');
       router.push(`/workspace?diagram=${newDiagram.diagram.id}`);
     } catch (err) {
       console.error(err);
@@ -916,22 +932,60 @@ export default function Dashboard() {
             </div>
             
             <form onSubmit={handleCreateDiagram} className="space-y-6">
-              <div className="space-y-2.5">
-                <label className="block text-base font-bold text-slate-200">Workspace Name</label>
-                <input
-                  id="modal-diagram-name"
-                  type="text"
-                  placeholder="e.g., Google Cloud E-Commerce"
-                  value={newDiagramName}
-                  onChange={(e) => setNewDiagramName(e.target.value)}
-                  required
-                  className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all placeholder-slate-600"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2.5">
+                  <label className="block text-base font-bold text-slate-200 flex items-center justify-between">
+                    <span>Project</span>
+                    {earlierProjects.length > 0 && (
+                      <span className="text-xs text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                    )}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="e.g., Project-842"
+                      value={newProjectName}
+                      onChange={(e) => setNewProjectName(e.target.value)}
+                      className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all placeholder-slate-600 font-semibold"
+                    />
+                    {earlierProjects.length > 0 && (
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            setNewProjectName(e.target.value);
+                          }
+                        }}
+                        className="bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 text-teal-400 rounded-lg px-3 py-3.5 text-sm outline-none cursor-pointer shrink-0"
+                        title="Choose from earlier projects"
+                      >
+                        <option value="" disabled>📂 Earlier</option>
+                        {earlierProjects.map((p: string) => (
+                          <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                            {p}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  <label className="block text-base font-bold text-slate-200">Diagram Name</label>
+                  <input
+                    id="modal-diagram-name"
+                    type="text"
+                    placeholder="e.g., Google Cloud E-Commerce"
+                    value={newDiagramName}
+                    onChange={(e) => setNewDiagramName(e.target.value)}
+                    className="w-full bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all placeholder-slate-600 font-semibold"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2.5">
                 <label className="block text-base font-bold text-slate-200">
-                  Select Architecture Blueprint or Template
+                  Blueprint
                 </label>
                 <select
                   id="modal-template-select"
@@ -980,7 +1034,10 @@ export default function Dashboard() {
               </div>
 
               <div className="space-y-2.5">
-                <label className="block text-base font-bold text-slate-200">Initial AI Prompt (Optional)</label>
+                <label className="block text-base font-bold text-slate-200 flex items-center justify-between">
+                  <span>Prompt</span>
+                  <span className="text-xs text-teal-400 font-mono">Gemini 1.5 Pro</span>
+                </label>
                 <textarea
                   id="modal-diagram-prompt"
                   placeholder="e.g., Act as a Solutions Architect. Design a serverless backend using Cloud Run..."

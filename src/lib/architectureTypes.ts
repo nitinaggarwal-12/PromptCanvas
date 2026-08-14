@@ -240,9 +240,9 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   {
     id: "unified_flowchart",
     name: "Unified End-to-End Operational Flowchart",
-    category: "Cloud Infrastructure & Networking",
-    whenToUse: "Complete End-to-End Enterprise Flowchart showing sequential step-by-step operational flow [1] to [16], 7 distinct layer swimlanes, decision gates, vendor icons, and zero-collision line routing",
-    prompt: "Act as a Principal Google Cloud Solutions Architect. Design a production-grade Unified End-to-End Enterprise Flowchart Architecture blueprint across 7 horizontal layer swimlanes: Layer 1 Client & Global Edge Security Ingress (React/Mobile App [1], Cloud DNS Anycast [1a], Cloud Armor WAF [1b], GSLB [1c]); Layer 2 API Management (Apigee Gateway [2], Auth & Quota Decision Gate, KMS HSM [2a], Reject 401/429 [2b]); Layer 3 Orchestrator & AI Reasoning (GKE Orchestrator [3], Vertex AI Gemini 1.5 Pro [3a]); Layer 4 Cache & Persistence (Vector Search [4], Redis [5], Cloud SQL HA [6]); Layer 5 Event Mesh & DLQ (Pub/Sub [7], DLQ [7a]); Layer 6 Ingestion Agents & Lakehouse (Chunking Agent [8], Embedding Agent [9], BigQuery Lakehouse [10]); Layer 7 SRE Observability (Cloud Operations [11], PagerDuty [12])."
+    category: "Flowcharts",
+    whenToUse: "Complete End-to-End Enterprise Flowchart showing sequential step-by-step operational flow [1] to [15], 7 distinct layer swimlanes, decision gates, official Google Cloud product icons, and zero-collision line routing",
+    prompt: "Act as a Principal Google Cloud Solutions Architect. Design a production-grade Unified End-to-End Enterprise Flowchart Architecture blueprint across 7 horizontal layer swimlanes: Layer 1 Enterprise Agentic Workspace & Developer Studio (Gemini Enterprise App [1], Gemini Notebook [1a], Agent Designer IDE [1b], GSLB & WAF [1c]); Layer 2 API Management & Zero-Trust Policy Gate (Apigee Gateway [2], KMS HSM Vault [2a], SIEM Rejection [2b]); Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 1.5 Pro [3b]); Layer 4 In-Memory Cache, Vector Store & Persistence (Vertex Vector Search [4], Redis MemoryStore [5], Cloud SQL HA [6]); Layer 5 Asynchronous Event Bus & Resilience Queue (Pub/Sub [7], Dead-Letter Queue [7a]); Layer 6 Async Ingestion Agents & Lakehouse (Document Chunking Agent [8], Embedding Worker [9], BigQuery Lakehouse [10]); Layer 7 Enterprise SRE Observability & Telemetry (Cloud Operations Suite [11], PagerDuty SRE Hub [12])."
   },
   {
     id: "golive_warroom_runbook",

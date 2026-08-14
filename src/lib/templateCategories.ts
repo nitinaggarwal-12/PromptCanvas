@@ -25,6 +25,15 @@ export interface TemplateCatalogItem {
 
 export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
   {
+    id: "flowcharts",
+    name: "Flowcharts",
+    shortName: "Flowcharts",
+    icon: "Network",
+    description: "End-to-end operational flowcharts, sequential execution paths, multi-agent meshes, and state machine decision trees.",
+    color: "from-blue-500/20 to-teal-500/20",
+    accentColor: "border-teal-400 text-teal-400"
+  },
+  {
     id: "ai_agentic",
     name: "AI & Agentic Systems Architecture",
     shortName: "AI & Agents",
@@ -90,6 +99,33 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
 ];
 
 export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
+  // =========================================================================
+  // 0. FLOWCHARTS
+  // =========================================================================
+  {
+    id: "unified_flowchart",
+    name: "Unified End-to-End Operational Flowchart",
+    categoryId: "flowcharts",
+    categoryName: "Flowcharts",
+    badge: "Master Flowchart",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Comprehensive sequential step-by-step flowchart [1] to [15] spanning 7 layer swimlanes: Client Edge (Gemini App/Notebook/Agent Designer), Apigee Policy Gate, ADK 2.0 & Deep Research Agent Mesh, Pub/Sub Event Mesh, BigQuery Lakehouse, and SRE Hub.",
+    bestFor: [
+      "Master End-to-End Sequential Operational Architecture Flowchart",
+      "Layer 1 Enterprise Agentic Workspace & Developer Studio (Gemini Enterprise App [1], Gemini Notebook [1a], Agent Designer IDE [1b], GSLB & WAF [1c])",
+      "Layer 2 API Management & Zero-Trust Policy Gate (Apigee Gateway [2], KMS HSM Vault [2a], SIEM Rejection [2b])",
+      "Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 1.5 Pro [3b])",
+      "Layer 4 In-Memory Cache, Vector Store & Persistence (Vertex Vector Search [4], Redis MemoryStore [5], Cloud SQL HA [6])",
+      "Layer 5 Asynchronous Event Bus & Resilience Queue (Pub/Sub [7], Dead-Letter Queue [7a])",
+      "Layer 6 Async Ingestion Agents & Lakehouse (Document Chunking Agent [8], Embedding Worker [9], BigQuery Lakehouse [10])",
+      "Layer 7 Enterprise SRE Observability & Telemetry (Cloud Operations Suite [11], PagerDuty SRE Hub [12])"
+    ],
+    keyTech: ["Gemini Enterprise", "Gemini Notebook", "Agent Designer IDE", "Apigee X", "ADK 2.0", "Deep Research", "Vertex AI Gemini", "Vector Search", "Redis MemoryStore", "Cloud Pub/Sub", "Cloud SQL HA", "BigQuery", "Cloud Operations"],
+    thumbnail: "/templates/unified_system_view.png",
+    promptSummary: "Sequential End-to-End Flowchart: Gemini Apps & Agent Designer -> Apigee Gateway -> ADK 2.0 & Deep Research Mesh -> Pub/Sub -> Lakehouse & SRE Telemetry."
+  },
+
   // =========================================================================
   // 1. AI & AGENTIC SYSTEMS ARCHITECTURE
   // =========================================================================
@@ -200,29 +236,6 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     keyTech: ["Global HTTPS LB", "Cloud Armor WAF", "Cloud Run Gen2", "Memorystore Redis HA", "Cloud SQL HA & Cross-Region Replica", "Dual-Region GCS", "Cloud KMS CMEK", "VPC-SC & PSC", "Terraform IaC"],
     thumbnail: "/templates/tech_multi_region_dr.png",
     promptSummary: "Master Multi-Region Active-Passive DR: Global L7 LB -> Zero-Trust Active Region A (US-East1) & Pilot Light Region B (US-West1) -> Redis Cache -> Cross-Region Async DB Replication -> 6-Step SRE Failover Runbook & FMEA Matrix."
-  },
-  {
-    id: "unified_flowchart",
-    name: "Unified End-to-End Operational Flowchart",
-    categoryId: "cloud_infra",
-    categoryName: "Cloud & Infrastructure",
-    badge: "Master Flowchart",
-    isFlagship: true,
-    isNew: true,
-    whenToUse: "Comprehensive sequential step-by-step flowchart [1] to [16] spanning 7 layer swimlanes: Client Edge, Apigee Policy Gate, GKE Microservices, Pub/Sub Mesh, Vertex AI Gemini Reasoning, and Cloud SQL HA.",
-    bestFor: [
-      "Master End-to-End Sequential Operational Architecture Flowchart",
-      "Layer 1 Client & Global Edge Security Ingress (React/Mobile App [1], Cloud DNS Anycast [1a], Cloud Armor WAF [1b], GSLB [1c])",
-      "Layer 2 API Management & Policy Inspection Gate (Apigee Gateway [2], Auth & Quota Decision Gate, KMS HSM [2a], Reject 401/429 [2b])",
-      "Layer 3 GKE Microservices & AI Reasoning (GKE Core Orchestrator [3], Vertex AI Gemini 1.5 Pro [3a])",
-      "Layer 4 In-Memory Caching & Persistence (Vector Search [4], Redis [5], Cloud SQL HA [6])",
-      "Layer 5 Event Mesh & Poison Queue (Pub/Sub [7], DLQ [7a])",
-      "Layer 6 Ingestion Agents & Lakehouse (Chunking Agent [8], Embedding Agent [9], BigQuery Lakehouse [10])",
-      "Layer 7 SRE Observability & Telemetry (Cloud Operations [11], PagerDuty [12])"
-    ],
-    keyTech: ["Cloud Armor WAF", "Global HTTPS LB", "Apigee X", "GKE Autopilot", "Redis MemoryStore", "Cloud Pub/Sub", "Vertex AI Gemini", "Vector Search", "Cloud SQL HA", "BigQuery", "OpenTelemetry"],
-    thumbnail: "/templates/unified_system_view.png",
-    promptSummary: "Sequential End-to-End Flowchart: Client Ingress -> Apigee Gateway -> GKE Microservices -> Pub/Sub Mesh -> Vertex AI Reasoning -> Cloud SQL Persistence & SRE Telemetry."
   },
   {
     id: "six_rs_migration_matrix",
