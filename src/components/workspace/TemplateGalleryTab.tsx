@@ -56,7 +56,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
               Enterprise Blueprints, Industry Platforms &amp; Native AI
             </h1>
             <p className="text-sm text-slate-400 mt-1">
-              Explore the 32 Master WBS Enterprise Architecture Hierarchy across 5 phases and dedicated Industry Specialized Blueprints.
+              Explore the 32 Master Enterprise Architecture Hierarchy across 5 phases and dedicated Industry Specialized Blueprints.
             </p>
           </div>
 
@@ -65,7 +65,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by ID (e.g. P4-DAT-P-09), domain..."
+              placeholder="Search by title, domain, keyword..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-900 border border-slate-700 focus:border-teal-400 rounded-xl pl-10 pr-4 py-2.5 text-xs font-semibold text-white placeholder-slate-500 outline-none transition-all"
@@ -85,7 +85,7 @@ export const TemplateGalleryTab: React.FC<TemplateGalleryTabProps> = ({ onSelect
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
-            <span>🏛️ 32 Master WBS Architecture Hierarchy ({wbsMasterTemplates.length})</span>
+            <span>🏛️ 32 Master Architecture Hierarchy ({wbsMasterTemplates.length})</span>
           </button>
 
           <button

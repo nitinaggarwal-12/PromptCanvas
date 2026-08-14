@@ -151,7 +151,7 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
             onChange={(e) => onArchitectureTypeChange(e.target.value)}
             className="bg-transparent text-xs font-semibold text-slate-200 px-3 py-1.5 outline-none cursor-pointer hover:text-white max-w-[320px] truncate"
           >
-            <optgroup label="🏛️ 32 Master WBS Enterprise Architecture Hierarchy" className="bg-slate-950 text-cyan-400 font-bold">
+            <optgroup label="🏛️ 32 Master Enterprise Architecture Hierarchy" className="bg-slate-950 text-cyan-400 font-bold">
               {ARCHITECTURE_TYPES.filter(t => t.category !== 'Industry Specialized Solutions').map((type) => (
                 <option key={type.id} value={type.id} className="bg-slate-900 text-slate-200 font-normal">
                   {type.name}
