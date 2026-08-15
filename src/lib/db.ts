@@ -369,6 +369,14 @@ export async function ensureTablesExist(): Promise<void> {
       );
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS site_stats (
+        key TEXT PRIMARY KEY,
+        value BIGINT NOT NULL DEFAULT 0,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Schema Evolution Migrations
     await pool.query(`
       ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS user_id TEXT;
@@ -585,6 +593,14 @@ export async function ensureTablesExist(): Promise<void> {
         token TEXT UNIQUE NOT NULL,
         expires_at TEXT NOT NULL,
         created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
+      );
+    `);
+
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS site_stats (
+        key TEXT PRIMARY KEY,
+        value INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
       );
     `);
 
@@ -2774,3 +2790,64 @@ export async function getAuditReportsForDiagram(diagramId: string): Promise<Audi
     return stmt.all(diagramId) as unknown as AuditReport[];
   }
 }
+
+export async function getVisitorCount(): Promise<number> {
+  await ensureTablesExist();
+  const INITIAL_SEED = 1284;
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(`SELECT value FROM site_stats WHERE key = 'visitor_count'`);
+    if (res.rows.length === 0) {
+      const insertRes = await pool.query(`
+        INSERT INTO site_stats (key, value, updated_at)
+        VALUES ('visitor_count', $1, CURRENT_TIMESTAMP)
+        ON CONFLICT (key) DO UPDATE SET value = site_stats.value
+        RETURNING value;
+      `, [INITIAL_SEED]);
+      return parseInt(insertRes.rows[0].value, 10);
+    }
+    return parseInt(res.rows[0].value, 10);
+  } else {
+    const db = getSqliteDb();
+    let row = db.prepare(`SELECT value FROM site_stats WHERE key = 'visitor_count'`).get() as { value: number } | undefined;
+    if (!row) {
+      db.exec(`
+        INSERT OR IGNORE INTO site_stats (key, value, updated_at)
+        VALUES ('visitor_count', ${INITIAL_SEED}, strftime('%Y-%m-%d %H:%M:%f', 'now'));
+      `);
+      row = db.prepare(`SELECT value FROM site_stats WHERE key = 'visitor_count'`).get() as { value: number } | undefined;
+    }
+    return row ? Number(row.value) : INITIAL_SEED;
+  }
+}
+
+export async function incrementVisitorCount(step: number = 1): Promise<number> {
+  await ensureTablesExist();
+  const INITIAL_SEED = 1284;
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(`
+      INSERT INTO site_stats (key, value, updated_at)
+      VALUES ('visitor_count', $1 + $2, CURRENT_TIMESTAMP)
+      ON CONFLICT (key)
+      DO UPDATE SET value = site_stats.value + $2, updated_at = CURRENT_TIMESTAMP
+      RETURNING value;
+    `, [INITIAL_SEED, step]);
+    return parseInt(res.rows[0].value, 10);
+  } else {
+    const db = getSqliteDb();
+    db.exec(`
+      INSERT OR IGNORE INTO site_stats (key, value, updated_at)
+      VALUES ('visitor_count', ${INITIAL_SEED}, strftime('%Y-%m-%d %H:%M:%f', 'now'));
+    `);
+    const updateStmt = db.prepare(`
+      UPDATE site_stats 
+      SET value = value + ?, updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now') 
+      WHERE key = 'visitor_count'
+    `);
+    updateStmt.run(step);
+    const row = db.prepare(`SELECT value FROM site_stats WHERE key = 'visitor_count'`).get() as { value: number } | undefined;
+    return row ? Number(row.value) : (INITIAL_SEED + step);
+  }
+}
+

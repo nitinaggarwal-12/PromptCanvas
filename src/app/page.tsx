@@ -23,6 +23,7 @@ import { AuthModal } from '@/components/AuthModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 import { ContactUsModal } from '@/components/ContactUsModal';
+import { VisitorCounter } from '@/components/VisitorCounter';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -102,10 +103,10 @@ export default function LandingPage() {
 
       {/* Header/Navigation */}
       <header className="sticky top-0 w-full z-50 border-b border-panel-border/30 bg-[#070a13]/80 backdrop-blur-md">
-        <div className="w-full max-w-8xl mx-auto h-20 px-6 md:px-12 flex items-center justify-between">
+        <div className="w-full max-w-8xl mx-auto h-16 sm:h-20 px-3 sm:px-6 md:px-12 flex items-center justify-between gap-2 sm:gap-3">
           <Link 
             href="/" 
-            className="flex items-center gap-3 hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 sm:gap-3 shrink-0 hover:opacity-90 transition-opacity"
             onClick={(e) => {
               if (window.location.pathname === '/') {
                 e.preventDefault();
@@ -114,22 +115,22 @@ export default function LandingPage() {
               }
             }}
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center shrink-0">
               <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
-                <Network className="w-5 h-5 text-teal-accent" />
+                <Network className="w-4 h-4 sm:w-5 sm:h-5 text-teal-accent" />
               </div>
             </div>
-            <div>
-              <span className="font-extrabold text-lg tracking-wider text-white bg-clip-text bg-gradient-to-r from-white to-slate-300">
+            <div className="shrink-0 flex items-center gap-1">
+              <span className="font-extrabold text-sm sm:text-lg tracking-wider text-white bg-clip-text bg-gradient-to-r from-white to-slate-300">
                 PROMPT
               </span>
-              <span className="font-light text-lg tracking-wider text-teal-400">
+              <span className="font-light text-sm sm:text-lg tracking-wider text-teal-400 hidden min-[380px]:inline">
                 CANVAS
               </span>
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm text-slate-400 font-medium shrink-0">
             <a href="#features" className="hover:text-teal-400 transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
             <Link href="/templates" className="hover:text-teal-300 transition-colors text-teal-400 font-semibold flex items-center gap-1">
@@ -139,32 +140,35 @@ export default function LandingPage() {
             <a href="#value" className="hover:text-teal-400 transition-colors">Why PromptCanvas</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 shrink-0">
+            <VisitorCounter />
             <button
               id="header-contact-us-btn"
               onClick={() => setIsContactOpen(true)}
-              className="px-3.5 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-teal-500/40 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+              className="hidden lg:flex px-3.5 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-teal-500/40 text-slate-300 hover:text-white text-xs font-semibold items-center gap-1.5 transition-all cursor-pointer"
             >
               <Mail className="w-3.5 h-3.5 text-teal-accent" />
               <span>Contact Us</span>
             </button>
             {user ? (
               <>
-                <AccessRequestsInbox user={user} />
+                <div className="hidden sm:flex">
+                  <AccessRequestsInbox user={user} />
+                </div>
                 <button
                   id="header-user-profile-btn"
                   onClick={() => setIsProfileOpen(true)}
-                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all"
+                  className="hidden sm:flex px-2.5 md:px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-200 text-xs font-semibold items-center gap-2 transition-all"
                 >
                   <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
                     {(user.name || user.email)[0].toUpperCase()}
                   </div>
-                  <span className="hidden sm:inline max-w-[120px] truncate">{user.name || user.email}</span>
+                  <span className="hidden xl:inline max-w-[120px] truncate">{user.name || user.email}</span>
                 </button>
                 <Link
                   id="header-launch-app-btn"
                   href="/dashboard"
-                  className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
+                  className="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
                 >
                   Launch App
                 </Link>
@@ -174,7 +178,7 @@ export default function LandingPage() {
                 <button
                   id="header-explore-guest-btn"
                   onClick={handleExploreAsGuest}
-                  className="px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 border border-slate-700 hover:border-teal-400 text-teal-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  className="hidden md:flex px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 border border-slate-700 hover:border-teal-400 text-teal-300 text-xs font-bold transition-all items-center gap-1.5 cursor-pointer shadow-sm"
                 >
                   <User className="w-3.5 h-3.5 text-teal-400" />
                   <span>Explore as a Guest</span>
@@ -185,7 +189,7 @@ export default function LandingPage() {
                     setAuthMode('signin');
                     setIsAuthOpen(true);
                   }}
-                  className="px-4 py-2 text-sm text-slate-300 hover:text-white font-medium transition-colors"
+                  className="hidden sm:flex px-3 sm:px-4 py-2 text-xs sm:text-sm text-slate-300 hover:text-white font-medium transition-colors"
                 >
                   Sign In
                 </button>
@@ -193,7 +197,7 @@ export default function LandingPage() {
                   id="header-launch-app-btn"
                   href="/dashboard"
                   onClick={handleLaunchAppClick}
-                  className="px-5 py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
+                  className="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
                 >
                   Launch App
                 </Link>
