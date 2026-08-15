@@ -28,6 +28,16 @@ describe('template domain adaptation (guards the 23-identical-diagrams bug)', ()
   it('flavor injection is idempotent (second pass changes nothing)', () => {
     const once = getDefaultXmlForArchitecture('conceptual_diagram', PROMPT_A, PROMPT_A)!;
     const twice = injectUseCaseFlavor(once, PROMPT_A, PROMPT_A);
+    if (once !== twice) {
+      for (let i = 0; i < Math.max(once.length, twice.length); i++) {
+        if (once[i] !== twice[i]) {
+          console.log(`Diff at index ${i}:`);
+          console.log('once :', JSON.stringify(once.substring(Math.max(0, i - 30), i + 50)));
+          console.log('twice:', JSON.stringify(twice.substring(Math.max(0, i - 30), i + 50)));
+          break;
+        }
+      }
+    }
     expect(md5(twice)).toBe(md5(once));
   });
 });

@@ -3,11 +3,13 @@ export { getTechnicalArchitectureXml };
 import {
   compileSpecToDrawioXml,
   getExactItacsReferenceXml,
+  getExactErdReferenceXml,
   getExactSequenceDiagramReferenceXml,
   getExactDataAiPipelineReferenceXml,
   getExactSecureDeploymentMapReferenceXml,
   getExactDevopsCicdPipelineReferenceXml,
   getExactUnifiedSystemViewReferenceXml,
+  getExactGovernanceStateMachineReferenceXml,
   getBenchmarkItacsSpec,
   getBenchmarkErdSpec,
   getBenchmarkAgenticRagSpec,
@@ -92,7 +94,7 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Cognitive Architecture / Agentic RAG",
     category: "AI & Cognitive Systems",
     whenToUse: "AI Cognitive Architecture with multi-agent orchestration, RAG retrieval, vector search, and LLM reasoning",
-    prompt: "Act as an AI Chief Architect and Cognitive Systems Engineer. Design an advanced Cognitive Architecture featuring Agentic Retrieval-Augmented Generation (RAG). It should include: multi-agent orchestration loops, dynamic tool execution, vector embedding database (pgvector/Pinecone), document chunking & ingestion pipelines, semantic search retrieval, LLM reasoning engine (Gemini 3.6 Pro/Flash), and fallback validation guardrails."
+    prompt: "Act as an AI Chief Architect and Cognitive Systems Engineer. Design an advanced Cognitive Architecture featuring Agentic Retrieval-Augmented Generation (RAG). It should include: multi-agent orchestration loops, dynamic tool execution, vector embedding database (pgvector/Pinecone), document chunking & ingestion pipelines, semantic search retrieval, LLM reasoning engine (Gemini 3.7 Flash), and fallback validation guardrails."
   },
   {
     id: "sequence_diagram",
@@ -120,14 +122,21 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Value Stream Map (VSM) - AI Delivery",
     category: "Executive & Business Strategy",
     whenToUse: "Enterprise AI Architecture & Delivery Value Stream Map (VSM) mapping Lead Time, Process Time (%C/A), Information Plane, Kaizen bursts, and DORA flow efficiency ladder from Prompt Ingestion to Production GitOps.",
-    prompt: "Act as an Enterprise Agile & Lean Value Stream Architect. Design a production-grade Enterprise AI Architecture & Delivery Value Stream Map (VSM). Include: Top Information & Control Plane (Customer Demand, Jira Portfolio Steering, Weekly ARB Committee, SRE Telemetry) -> Core Execution Value Stream Pipeline (Stage 1 Prompt Ingestion, Stage 2 Gemini 3.1 Pro Compilation, Stage 3 AI TRiSM & FinOps, Stage 4 ARB & HITL Sign-Off, Stage 5 GitOps IaC Provisioning) with Queue WIP Triangles and Kaizen Bursts -> Bottom Lead Time & Process Time Ladder with Flow Efficiency Scorecard and VSM Symbology Legend."
+    prompt: "Act as an Enterprise Agile & Lean Value Stream Architect. Design a production-grade Enterprise AI Architecture & Delivery Value Stream Map (VSM). Include: Top Information & Control Plane (Customer Demand, Jira Portfolio Steering, Weekly ARB Committee, SRE Telemetry) -> Core Execution Value Stream Pipeline (Stage 1 Prompt Ingestion, Stage 2 Gemini 3.7 Flash Compilation, Stage 3 AI TRiSM & FinOps, Stage 4 ARB & HITL Sign-Off, Stage 5 GitOps IaC Provisioning) with Queue WIP Triangles and Kaizen Bursts -> Bottom Lead Time & Process Time Ladder with Flow Efficiency Scorecard and VSM Symbology Legend."
   },
   {
     id: "asis_vs_tobe_process_flow",
     name: "As-Is vs. To-Be Process Flow",
     category: "Executive & Business Strategy",
-    whenToUse: "Enterprise Modernization Process Flow comparing fragile on-premises monolithic legacy state against Google Cloud real-time Lakehouse and Gemini 3.1 Pro cognitive architecture with Strangler Fig modernization bridge and ROI transformation scorecard.",
-    prompt: "Act as an Enterprise Cloud Modernization & AI Transformation Principal Architect. Design a production-grade Enterprise As-Is vs. To-Be Process & Architecture Modernization Flow blueprint. Include: Top Zone AS-IS Legacy State (On-Prem VMs/Monolith Ingress, Nightly Informatica Batch ETL, Oracle RDBMS Core, Manual Spreadsheet Review, Static Cognos Reports) -> Center Google Cloud Strangler Fig Modernization Bridge (Apigee API Interceptor & Datastream CDC) -> Bottom Zone TO-BE Target State (Cloud Pub/Sub Ingress, Cloud Dataflow Streaming Pipeline, Gemini 3.1 Pro Reasoning Hub, AI TRiSM & HITL Gate, Cloud Run Serverless Serving, BigQuery Lakehouse, AlloyDB HA, Dataplex ABAC, Cloud KMS) -> Right Panel Executive Transformation Scorecard with 68% OpEx Cut and Year 1 ROI."
+    whenToUse: "Enterprise Modernization Process Flow comparing fragile on-premises monolithic legacy state against Google Cloud real-time Lakehouse and Gemini 3.7 Flash cognitive architecture with Strangler Fig modernization bridge and ROI transformation scorecard.",
+    prompt: "Act as an Enterprise Cloud Modernization & AI Transformation Principal Architect. Design a production-grade Enterprise As-Is vs. To-Be Process & Architecture Modernization Flow blueprint. Include: Top Zone AS-IS Legacy State (On-Prem VMs/Monolith Ingress, Nightly Informatica Batch ETL, Oracle RDBMS Core, Manual Spreadsheet Review, Static Cognos Reports) -> Center Google Cloud Strangler Fig Modernization Bridge (Apigee API Interceptor & Datastream CDC) -> Bottom Zone TO-BE Target State (Cloud Pub/Sub Ingress, Cloud Dataflow Streaming Pipeline, Gemini 3.7 Flash Reasoning Hub, AI TRiSM & HITL Gate, Cloud Run Serverless Serving, BigQuery Lakehouse, AlloyDB HA, Dataplex ABAC, Cloud KMS) -> Right Panel Executive Transformation Scorecard with 68% OpEx Cut and Year 1 ROI."
+  },
+  {
+    id: "governance_state_machine",
+    name: "Unified Governance & State-Machine Lifecycle",
+    category: "Executive & Business Strategy",
+    whenToUse: "Comprehensive state machine tracking data vetting, dimensional data modeling, model creation, training & offline evaluation, GAMP 5 / SOC 2 certification, canary/production deployment, and continuous drift monitoring",
+    prompt: "Act as an Enterprise Systems & Governance Architect. Design a production-grade Unified Governance & State-Machine Lifecycle blueprint. Include: 4 Core Phases: Phase 1 Initial Vetting & Modeling (Data Vetting, Ethical Sourcing, PII Check, Dimensional Data Model ERD, Model/Prompt Created) -> Phase 2 Training, Evaluation & Audits (In Training/Development, Offline Metric Evaluation, Audited & Certified GAMP 5 / SOC 2, Approval Pending) -> Phase 3 Deployment & Promotion (Canary / Shadow Deployment, Live Production Deployed) -> Phase 4 Continuous Governance & Feedback Loop (Continuous Telemetry & Observability, Drift Detected / Retrain Trigger, Decommissioned / Archived, Societal & Regulatory Monitoring) with decision diamonds, status badges, and guard triggers."
   }
 ];
 
@@ -214,14 +223,14 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Product Plan - Logical AI Config (Tenant Architecture)",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "Product Plan: Multi-tenant Logical AI Config architecture modeling environment segregation across Dev/Test/Prod, Agent Designer topologies, and SOC 2 / GxP compliance within Gemini Enterprise.",
-    prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade Product Plan - Logical AI Config (Tenant Architecture) blueprint. Include: App Owners & Devs -> Logical AI Config Management Console & APIs -> Enterprise IAM -> Development, Testing, and Production Environments with Tenant Boundaries -> Platform Orchestrator -> Gemini Enterprise Engine instances -> Production Workspace A with Logical AI Config (Model Selection Gemini 3.6 Pro, System Instructions, Memory & Context Management, Tool Invocation Definitions) and Agent Designer (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents) -> Application Logic invocation -> SOC 2 & GxP Compliance Guardrails -> VPC Firewalls, Centralized Audit Logging, and KMS Configuration Encryption -> Legend."
+    prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade Product Plan - Logical AI Config (Tenant Architecture) blueprint. Include: App Owners & Devs -> Logical AI Config Management Console & APIs -> Enterprise IAM -> Development, Testing, and Production Environments with Tenant Boundaries -> Platform Orchestrator -> Gemini Enterprise Engine instances -> Production Workspace A with Logical AI Config (Model Selection Gemini 3.7 Flash, System Instructions, Memory & Context Management, Tool Invocation Definitions) and Agent Designer (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents) -> Application Logic invocation -> SOC 2 & GxP Compliance Guardrails -> VPC Firewalls, Centralized Audit Logging, and KMS Configuration Encryption -> Legend."
   },
   {
     id: "hub_and_spoke_agent_config",
     name: "Hub-and-Spoke Agent Configuration Map",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "Hub-and-Spoke Multi-Agent Configuration Map with Orchestrator Parent Agent Hub, 3 domain sub-agents (Support, Fulfillment, Knowledge), Logical UI Matrix, HITL Gate, and 21 CFR Part 11 Audit Trail.",
-    prompt: "Act as an Enterprise AI Solutions Architect. Design a production-grade Hub-and-Spoke Agent Configuration Map blueprint. Include: Workspace X (Tenant Y - Production Environment) -> 3 Sub-Agents / Spokes (Customer Support with Zendesk API & BigQuery/Vector Grounding, Fulfillment SA with SAP ERP API & Cloud Storage Grounding, Knowledge Base SA with GCS PDF/Doc Grounding) -> Orchestrator (Parent Agent) Hub (General Config Gemini 3.6 Pro, System Instructions, Context, Memory TTL; Multi-Agent Router / Dispatcher Logic rules; Shared Memory & State; Vertex AI Agent Runtime; 21 CFR Part 11 Compliance Gate) -> Logical UI Configuration Matrix (Prompt editors, Rule editors, Knowledge Source selectors, API Config panels) -> Logical UI Config Management Console -> Human-in-the-Loop (HITL) Gate -> 21 CFR Part 11 Immutable Audit Trail & E-Signature Ledger -> Persona Dashboards (AI Architect, Solutions Arch, Agent Economic & Runtime Metrics) -> Legend."
+    prompt: "Act as an Enterprise AI Solutions Architect. Design a production-grade Hub-and-Spoke Agent Configuration Map blueprint. Include: Workspace X (Tenant Y - Production Environment) -> 3 Sub-Agents / Spokes (Customer Support with Zendesk API & BigQuery/Vector Grounding, Fulfillment SA with SAP ERP API & Cloud Storage Grounding, Knowledge Base SA with GCS PDF/Doc Grounding) -> Orchestrator (Parent Agent) Hub (General Config Gemini 3.7 Flash, System Instructions, Context, Memory TTL; Multi-Agent Router / Dispatcher Logic rules; Shared Memory & State; Vertex AI Agent Runtime; 21 CFR Part 11 Compliance Gate) -> Logical UI Configuration Matrix (Prompt editors, Rule editors, Knowledge Source selectors, API Config panels) -> Logical UI Config Management Console -> Human-in-the-Loop (HITL) Gate -> 21 CFR Part 11 Immutable Audit Trail & E-Signature Ledger -> Persona Dashboards (AI Architect, Solutions Arch, Agent Economic & Runtime Metrics) -> Legend."
   },
   {
     id: "unified_data_governance",
@@ -242,7 +251,7 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Unified End-to-End Operational Flowchart",
     category: "Flowcharts",
     whenToUse: "Complete End-to-End Enterprise Flowchart showing sequential step-by-step operational flow [1] to [15], 7 distinct layer swimlanes, decision gates, official Google Cloud product icons, and zero-collision line routing",
-    prompt: "Act as a Principal Google Cloud Solutions Architect. Design a production-grade Unified End-to-End Enterprise Flowchart Architecture blueprint across 7 horizontal layer swimlanes: Layer 1 Enterprise Agentic Workspace & Developer Studio (Gemini Enterprise App [1], Gemini Notebook [1a], Agent Designer IDE [1b], GSLB & WAF [1c]); Layer 2 API Management & Zero-Trust Policy Gate (Apigee Gateway [2], KMS HSM Vault [2a], SIEM Rejection [2b]); Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 1.5 Pro [3b]); Layer 4 In-Memory Cache, Vector Store & Persistence (Vertex Vector Search [4], Redis MemoryStore [5], Cloud SQL HA [6]); Layer 5 Asynchronous Event Bus & Resilience Queue (Pub/Sub [7], Dead-Letter Queue [7a]); Layer 6 Async Ingestion Agents & Lakehouse (Document Chunking Agent [8], Embedding Worker [9], BigQuery Lakehouse [10]); Layer 7 Enterprise SRE Observability & Telemetry (Cloud Operations Suite [11], PagerDuty SRE Hub [12])."
+    prompt: "Act as a Principal Google Cloud Solutions Architect. Design a production-grade Unified End-to-End Enterprise Flowchart Architecture blueprint across 7 horizontal layer swimlanes: Layer 1 Enterprise Agentic Workspace & Developer Studio (Gemini Enterprise App [1], Gemini Notebook [1a], Agent Designer IDE [1b], GSLB & WAF [1c]); Layer 2 API Management & Zero-Trust Policy Gate (Apigee Gateway [2], KMS HSM Vault [2a], SIEM Rejection [2b]); Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 3.7 Flash [3b]); Layer 4 In-Memory Cache, Vector Store & Persistence (Vertex Vector Search [4], Redis MemoryStore [5], Cloud SQL HA [6]); Layer 5 Asynchronous Event Bus & Resilience Queue (Pub/Sub [7], Dead-Letter Queue [7a]); Layer 6 Async Ingestion Agents & Lakehouse (Document Chunking Agent [8], Embedding Worker [9], BigQuery Lakehouse [10]); Layer 7 Enterprise SRE Observability & Telemetry (Cloud Operations Suite [11], PagerDuty SRE Hub [12])."
   },
   {
     id: "golive_warroom_runbook",
@@ -305,7 +314,7 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Agentic Multi-Modal Ingestion Flow",
     category: "Data & Lakehouse Architecture",
     whenToUse: "Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow powered by Gemini Platform and Enterprise Client Applications: Custom Clients, multi-modal capture (Text/Docs, Voice/Audio, Image/Video, Geo-Spatial), GCP Services (GCS, STT API, Vision/Video Intelligence, Maps APIs), Gemini-Powered Agentic Orchestrator (Orchestration Agent, Embedding API, Vector Search, Semantic Search, Reasoning Engine), and Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph, Automated Insights, Alerting Cloud Functions, Visualizations).",
-    prompt: "Act as a Principal Multimodal AI & Data Solutions Architect. Design a production-grade Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow blueprint. Include: Left Platform Governance & Monitoring rotated strip; Column 1 Multi-Modal Input Sources & User Applications (User Application Custom Client, Enterprise Mobile App, 4 channels: Text/Docs, Voice/Audio, Image/Video, Geo-Spatial); Column 2 Capture & Multi-Modal Processing GCP Services (Cloud Storage GCS, Speech-to-Text API, Vertex AI Vision API & Video Intelligence API, Google Maps Platform APIs); Column 3 Gemini-Powered Agentic Orchestrator Vertex AI (Orchestration Agent powered by Gemini 1.5 Pro, Agentic Planning & Reasoning, Function Calling Tooling, Vertex AI Embedding API, Vertex AI Vector Search, Multimodal Semantic Search, Multimodal Gemini Reasoning Engine, agent context feedback); Column 4 Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph Storage, Automated Insights & Reports, Alerting & Notifications Cloud Functions, Map Annotations & Visualizations); Bottom Platform Governance & Monitoring (IAM, Vertex AI Model Monitoring, Cloud Logging)."
+    prompt: "Act as a Principal Multimodal AI & Data Solutions Architect. Design a production-grade Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow blueprint. Include: Left Platform Governance & Monitoring rotated strip; Column 1 Multi-Modal Input Sources & User Applications (User Application Custom Client, Enterprise Mobile App, 4 channels: Text/Docs, Voice/Audio, Image/Video, Geo-Spatial); Column 2 Capture & Multi-Modal Processing GCP Services (Cloud Storage GCS, Speech-to-Text API, Vertex AI Vision API & Video Intelligence API, Google Maps Platform APIs); Column 3 Gemini-Powered Agentic Orchestrator Vertex AI (Orchestration Agent powered by Gemini 3.7 Flash, Agentic Planning & Reasoning, Function Calling Tooling, Vertex AI Embedding API, Vertex AI Vector Search, Multimodal Semantic Search, Multimodal Gemini Reasoning Engine, agent context feedback); Column 4 Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph Storage, Automated Insights & Reports, Alerting & Notifications Cloud Functions, Map Annotations & Visualizations); Bottom Platform Governance & Monitoring (IAM, Vertex AI Model Monitoring, Cloud Logging)."
   },
   {
     id: "tech_genomics_clinical",
@@ -440,7 +449,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   if (id === 'conceptual_diagram') {
     xml = getExactItacsReferenceXml();
   } else if (id === 'erd') {
-    xml = compileSpecToDrawioXml(getBenchmarkErdSpec());
+    xml = getExactErdReferenceXml();
   } else if (id === 'agentic_rag' || id.includes('rag')) {
     xml = getExactAgenticRagWidescreenXml();
   } else if (id === 'sequence_diagram') {
@@ -451,6 +460,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactDevopsCicdPipelineReferenceXml();
   } else if (id === 'unified_system_view') {
     xml = getExactUnifiedSystemViewReferenceXml();
+  } else if (id === 'governance_state_machine' || id.includes('governance_state') || id.includes('state_machine')) {
+    xml = getExactGovernanceStateMachineReferenceXml();
   } else if (id === 'six_rs_migration_matrix') {
     xml = getExactSixRsMigrationMatrixXml();
   } else if (id === 'hybrid_strangler_transition') {
@@ -521,10 +532,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
 
   const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
-  const isFlagshipBlueprint = true; // All registered master builders preserve exact calibrated 2D coordinates
-
   // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor
-  if (hasCustomUserPrompt && !isFlagshipBlueprint) {
+  if (hasCustomUserPrompt) {
     const cleanUseCase = (useCaseContext && !/^\d+\.\s/.test(useCaseContext)) ? useCaseContext : undefined;
     const effectiveContext = cleanUseCase || userPrompt || getTemplateTitle(id);
     xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);

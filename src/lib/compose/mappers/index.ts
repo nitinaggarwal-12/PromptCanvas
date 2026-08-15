@@ -55,10 +55,18 @@ export const componentDescriptionsMapper: DerivationMapperFn = (model, sectionId
     });
   }
 
+  const bullets: ProvenanceText[] = [];
+  for (const comp of model.components.slice(0, 10)) {
+    bullets.push({
+      text: `**${comp.label}**: ${comp.subtitle || `Subsystem component within tier "${getTierName(model, comp.tier || 'core')}"`}.`,
+      sourceRefs: [comp.id],
+    });
+  }
+
   return {
     sectionId,
     paragraphs,
-    bullets: [],
+    bullets,
     table: {
       headers: ['Architectural Subsystem Tier', 'Component Count', 'Primary Lead Capability', 'Key Components & Microservices', 'Primary Integration & Event Flow'],
       rows: tableRows,

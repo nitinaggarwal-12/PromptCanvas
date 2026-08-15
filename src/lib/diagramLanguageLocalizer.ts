@@ -20,7 +20,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'Fact_Account_Transactions को 1:N कार्डिनलिटी से जोड़ें',
       sug3: 'PCI-DSS और KYC अनुपालन नियम लागू करें',
       sug4: 'कार्ड नेटवर्क शुल्क टियर विशेषताएँ जोड़ें',
-      refineHint: 'भेजने के लिए Enter दबाएं। Gemini 3.6 Pro आपके आरेख को अद्यतन करेगा।',
+      refineHint: 'भेजने के लिए Enter दबाएं। Gemini 3.7 Flash आपके आरेख को अद्यतन करेगा।',
       diagramTitle10: '10. एकीकृत सिस्टम दृश्य'
     },
     es: {
@@ -41,7 +41,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'Conectar Fact_Account_Transactions con cardinalidad 1:N',
       sug3: 'Aplicar Reglas de Cumplimiento PCI-DSS y KYC',
       sug4: 'Agregar Atributos de Tarifa de Red de Tarjetas',
-      refineHint: 'Presione Enter para enviar. Gemini 3.6 Pro perfeccionará su diagrama.',
+      refineHint: 'Presione Enter para enviar. Gemini 3.7 Flash perfeccionará su diagrama.',
       diagramTitle10: '10. Vista Unificada del Sistema'
     },
     pt: {
@@ -62,7 +62,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'Conectar Fact_Account_Transactions com cardinalidade 1:N',
       sug3: 'Aplicar Regras de Conformidade PCI-DSS e KYC',
       sug4: 'Adicionar Atributos de Tarifa da Rede de Cartões',
-      refineHint: 'Pressione Enter para enviar. Gemini 3.6 Pro aprimorará seu diagrama.',
+      refineHint: 'Pressione Enter para enviar. Gemini 3.7 Flash aprimorará seu diagrama.',
       diagramTitle10: '10. Visão Unificada de Sistema'
     },
     ja: {
@@ -83,7 +83,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'Fact_Account_Transactionsを1:N多重度で接続',
       sug3: 'PCI-DSSおよびKYCコンプライアンスルールを適用',
       sug4: 'カードネットワーク手数料層属性を追加',
-      refineHint: 'Enterキーで送信。Gemini 3.6 Proがアクティブな構成図を洗練します。',
+      refineHint: 'Enterキーで送信。Gemini 3.7 Flashがアクティブな構成図を洗練します。',
       diagramTitle10: '10. 統合システム構成図'
     },
     fr: {
@@ -104,7 +104,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'Connecter Fact_Account_Transactions avec cardinalité 1:N',
       sug3: 'Appliquer les règles de conformité PCI-DSS & KYC',
       sug4: 'Ajouter les attributs de frais de réseau de cartes',
-      refineHint: 'Appuyez sur Entrée pour envoyer. Gemini 3.6 Pro affinera votre schéma.',
+      refineHint: 'Appuyez sur Entrée pour envoyer. Gemini 3.7 Flash affinera votre schéma.',
       diagramTitle10: '10. Vue Système Unifiée'
     },
     de: {
@@ -125,7 +125,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'Fact_Account_Transactions mit 1:N Kardinalität verknüpfen',
       sug3: 'PCI-DSS & KYC Compliance-Regeln erzwingen',
       sug4: 'Kartennetzwerk-Gebührenstufe-Attribute hinzufügen',
-      refineHint: 'Eingabetaste zum Senden. Gemini 3.6 Pro verfeinert Ihr Diagramm.',
+      refineHint: 'Eingabetaste zum Senden. Gemini 3.7 Flash verfeinert Ihr Diagramm.',
       diagramTitle10: '10. Vereinheitlichte Systemansicht'
     },
     ar: {
@@ -146,7 +146,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'ربط Fact_Account_Transactions مع ارتباط 1:N',
       sug3: 'تطبيق قواعد امتثال PCI-DSS و KYC',
       sug4: 'إضافة سمات طبقة رسوم شبكة البطاقات',
-      refineHint: 'اضغط Enter للإرسال. سيعمل Gemini 3.6 Pro على تحسين مخططك.',
+      refineHint: 'اضغط Enter للإرسال. سيعمل Gemini 3.7 Flash على تحسين مخططك.',
       diagramTitle10: '10. عرض النظام الموحد'
     },
     zh: {
@@ -167,7 +167,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: '按 1:N 基数连接 Fact_Account_Transactions 事实表',
       sug3: '执行 PCI-DSS 和 KYC 合规合规规则',
       sug4: '添加卡组织费率层级属性',
-      refineHint: '按 Enter 发送。Gemini 3.6 Pro 将优化您的当前架构图。',
+      refineHint: '按 Enter 发送。Gemini 3.7 Flash 将优化您的当前架构图。',
       diagramTitle10: '10. 统一系统架构视图'
     },
     id: {
@@ -188,7 +188,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'Hubungkan Fact_Account_Transactions dengan kardinalitas 1:N',
       sug3: 'Terapkan Aturan Kepatuhan PCI-DSS & KYC',
       sug4: 'Tambahkan Atribut Tingkat Biaya Jaringan Kartu',
-      refineHint: 'Tekan Enter untuk mengirim. Gemini 3.6 Pro akan menyempurnakan diagram Anda.',
+      refineHint: 'Tekan Enter untuk mengirim. Gemini 3.7 Flash akan menyempurnakan diagram Anda.',
       diagramTitle10: '10. Tampilan Sistem Terpadu'
     },
     en: {
@@ -209,7 +209,7 @@ export function getLocalizedWorkspaceStrings(lang: SupportedLanguage) {
       sug2: 'Connect Fact_Account_Transactions with 1:N cardinality',
       sug3: 'Enforce PCI-DSS & KYC Compliance Rules',
       sug4: 'Add Card Network Fee Tier Attributes',
-      refineHint: 'Press Enter to send. Gemini 3.6 Pro will refine your active diagram.',
+      refineHint: 'Press Enter to send. Gemini 3.7 Flash will refine your active diagram.',
       diagramTitle10: '10. Unified System View'
     }
   };

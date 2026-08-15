@@ -1,4 +1,4 @@
-import { DocArchetype } from './archetypes';
+import { DocArchetype, NON_GOALS_DISCLAIMER } from './archetypes';
 import { SystemModel } from './extract';
 import { SectionContent } from './mappers/types';
 import { InferredSectionOutput } from './infer';
@@ -144,6 +144,14 @@ export function renderMarkdown(input: ComposeRenderInput): string {
   lines.push(`| **Use-Case Architecture Suite** | ${availableDiagramTypes.length || 21} Visual Architecture Diagrams Available | Linked System Repository |`);
   lines.push(`| **Specification Date** | ${timestamp} | Continuous Verification |`);
   lines.push('');
+  lines.push('### Section Provenance Breakdown');
+  lines.push('');
+  lines.push('| Section ID | Section Title | Provenance Class | Verification Standard |');
+  lines.push('| :--- | :--- | :---: | :--- |');
+  for (const s of archetype.sections) {
+    lines.push(`| \`${s.id}\` | ${s.title} | **${s.provenance.toUpperCase()}** | ${s.provenance === 'derived' ? 'Deterministic Graph AST Extraction' : s.provenance === 'inferred' ? 'LLM Semantic Inference' : 'Accountable Human Review'} |`);
+  }
+  lines.push('');
   lines.push('---');
   lines.push('');
 
@@ -207,6 +215,9 @@ export function renderMarkdown(input: ComposeRenderInput): string {
       lines.push(`* **Target Scope & Operational Boundary:** Applies to all production environments and enterprise workflows executing within **${systemTitle}**.`);
       lines.push(`* **Human Accountability Mandate:** Qualified business, medical, or engineering owners preserve ultimate review and sign-off authority prior to production system release.`);
       lines.push(`* **Inspection Readiness:** Complete immutable event logging and audit trails are preserved across all components.`);
+      lines.push('');
+      lines.push(`> **TODO [HUMAN ACTION REQUIRED — DO NOT AUTO-FILL]:** This section requires authoring by an authorized domain specialist.`);
+      lines.push(`> *Note:* ${NON_GOALS_DISCLAIMER}`);
       lines.push('');
       sectionCounter++;
       lines.push('---');

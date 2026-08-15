@@ -115,7 +115,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Master End-to-End Sequential Operational Architecture Flowchart",
       "Layer 1 Enterprise Agentic Workspace & Developer Studio (Gemini Enterprise App [1], Gemini Notebook [1a], Agent Designer IDE [1b], GSLB & WAF [1c])",
       "Layer 2 API Management & Zero-Trust Policy Gate (Apigee Gateway [2], KMS HSM Vault [2a], SIEM Rejection [2b])",
-      "Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 1.5 Pro [3b])",
+      "Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 3.7 Flash [3b])",
       "Layer 4 In-Memory Cache, Vector Store & Persistence (Vertex Vector Search [4], Redis MemoryStore [5], Cloud SQL HA [6])",
       "Layer 5 Asynchronous Event Bus & Resilience Queue (Pub/Sub [7], Dead-Letter Queue [7a])",
       "Layer 6 Async Ingestion Agents & Lakehouse (Document Chunking Agent [8], Embedding Worker [9], BigQuery Lakehouse [10])",
@@ -124,6 +124,26 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     keyTech: ["Gemini Enterprise", "Gemini Notebook", "Agent Designer IDE", "Apigee X", "ADK 2.0", "Deep Research", "Vertex AI Gemini", "Vector Search", "Redis MemoryStore", "Cloud Pub/Sub", "Cloud SQL HA", "BigQuery", "Cloud Operations"],
     thumbnail: "/templates/unified_system_view.png",
     promptSummary: "Sequential End-to-End Flowchart: Gemini Apps & Agent Designer -> Apigee Gateway -> ADK 2.0 & Deep Research Mesh -> Pub/Sub -> Lakehouse & SRE Telemetry."
+  },
+  {
+    id: "governance_state_machine",
+    name: "Unified Governance & State-Machine Lifecycle",
+    categoryId: "flowcharts",
+    categoryName: "Flowcharts",
+    badge: "State Machine Standard",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use when modeling discrete entity or system lifecycle states (Draft -> Vetting -> Training -> Evaluated -> Approval -> Canary -> Production -> Drift -> Retired) with guard conditions and decision triggers.",
+    bestFor: [
+      "Unified Governance & State-Machine Lifecycle (The 'What Status' Total System View)",
+      "Phase 1 Initial Vetting & Modeling: Ethical Sourcing, PII Checks, Dimensional ERD Data Model",
+      "Phase 2 Training & Evaluation: Offline Metrics, GAMP 5 & SOC 2 Audits, Approval Gates",
+      "Phase 3 Deployment: Canary / Shadow Testing, Production Gate, Live Deployment",
+      "Phase 4 Continuous Governance: Telemetry Observability, Active Drift Detection, Automated Retrain Loops, Decommissioning"
+    ],
+    keyTech: ["UML State Machine", "Lifecycle States", "Guard Triggers", "GAMP 5 Audit Gate", "Drift Detection", "Decision Diamonds", "21 CFR Part 11"],
+    thumbnail: "/templates/governance_state_machine.png",
+    promptSummary: "Unified Governance & State Machine Lifecycle: Data Vetting & Modeling -> Training & Offline Evaluation -> GAMP 5 Audit Gate -> Canary & Production Deployment -> Continuous Telemetry & Retrain Loop."
   },
 
   // =========================================================================
@@ -142,7 +162,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Hybrid dense/sparse search & re-ranking",
       "Dynamic tool invocation guardrails"
     ],
-    keyTech: ["Gemini 3.6 Pro", "pgvector", "Pinecone", "RAG Pipeline", "Vector Embeddings", "Re-ranking Engine"],
+    keyTech: ["Gemini 3.7 Flash", "pgvector", "Pinecone", "RAG Pipeline", "Vector Embeddings", "Re-ranking Engine"],
     thumbnail: "/templates/agentic_rag.png",
     promptSummary: "Cognitive RAG Architecture: Document Chunking -> Embeddings DB -> Hybrid Retrieval -> LLM Synthesis -> Guardrails."
   },
@@ -158,12 +178,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     bestFor: [
       "Agentic AI Evaluation, Safety & Optimization Platform",
       "Agent Registry structured storage (definitions, safety policies, grounding knowledge)",
-      "Gemini Agent Platform (Vertex AI Agent Builder Orchestrator, Gemini Pro/Ultra, GKE/Cloud Run workloads)",
+      "Gemini Agent Platform (Vertex AI Agent Builder Orchestrator, Gemini 3.7 Flash, GKE/Cloud Run workloads)",
       "Parallel AI-Based Evaluation (Vertex AI Model Evaluation) & Human Review UI",
       "Safety Guardrails (Toxicity Filter, Bias Mitigation, PII Redaction, Alignment Checker)",
       "ML-Driven Optimization (Prompt Engineering, RLHF) closed-loop updates"
     ],
-    keyTech: ["Vertex AI Agent Builder", "Gemini Pro & Ultra", "Agent Registry", "Vertex AI Model Evaluation", "Looker", "BigQuery", "Safety Guardrails"],
+    keyTech: ["Vertex AI Agent Builder", "Gemini 3.7 Flash", "Agent Registry", "Vertex AI Model Evaluation", "Looker", "BigQuery", "Safety Guardrails"],
     thumbnail: "/templates/tech_eval_safety.png",
     promptSummary: "Agentic AI Safety Platform: Ingestion & Registry -> Gemini Agent Platform -> Eval & Safety Loop -> BigQuery/Looker Analysis -> ML Closed-Loop Optimization."
   },
@@ -366,7 +386,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Multi-tenant environment segregation across Development, Testing, and Production environments",
       "Logical AI Config Management Console and automated Config Updates APIs with Enterprise IAM",
       "Platform Orchestrator routing configurations to Gemini Enterprise Engine instances",
-      "Production Workspace encapsulation with Logical AI Config (Model Selection Gemini 3.6 Pro, System Instructions, Memory, Tool Invocation)",
+      "Production Workspace encapsulation with Logical AI Config (Model Selection Gemini 3.7 Flash, System Instructions, Memory, Tool Invocation)",
       "Agent Designer topologies (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents)",
       "Application Logic execution with agent endpoint invocation",
       "Strict SOC 2 & GxP Compliance Guardrails and compliance markers",
@@ -387,7 +407,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     whenToUse: "Use to configure and orchestrate enterprise multi-agent hub-and-spoke topologies with Gemini Enterprise, specialized sub-agent spokes (Support, Fulfillment, Knowledge), Logical UI configuration matrices, HITL gates, and 21 CFR Part 11 compliance audit trails.",
     bestFor: [
       "Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)",
-      "Orchestrator (Parent Agent) Hub with General Configuration (Gemini 3.6 Pro, Global System Instructions, Shared Context Window, Memory TTL)",
+      "Orchestrator (Parent Agent) Hub with General Configuration (Gemini 3.7 Flash, Global System Instructions, Shared Context Window, Memory TTL)",
       "Multi-Agent Router / Dispatcher Logic with intent-based dispatch routing rules",
       "Shared Memory & State and Vertex AI Agent Runtime invocation patterns",
       "Sub-Agent 1: Customer Support with Zendesk API tool proxy and BigQuery / Vector Search Grounding",
@@ -398,7 +418,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "21 CFR Part 11 Compliance Gate & Immutable Audit Trail E-Signature Ledger",
       "Persona Dashboards (AI Architect, Solutions Architect, Agent Economic & Runtime Metrics)"
     ],
-    keyTech: ["Gemini 3.6 Pro", "Vertex AI Agent Runtime", "Multi-Agent Router", "BigQuery Grounding", "Vector Search", "Zendesk API", "SAP ERP API", "GCS Storage", "21 CFR Part 11 Ledger", "HITL Gate", "Looker Metrics"],
+    keyTech: ["Gemini 3.7 Flash", "Vertex AI Agent Runtime", "Multi-Agent Router", "BigQuery Grounding", "Vector Search", "Zendesk API", "SAP ERP API", "GCS Storage", "21 CFR Part 11 Ledger", "HITL Gate", "Looker Metrics"],
     thumbnail: "/templates/hub_and_spoke_agent_config.png",
     promptSummary: "Hub-and-Spoke Agent Config Map: Orchestrator Hub -> Intent Router -> 3 Domain Spokes (Support, Fulfillment, Knowledge) -> Logical UI Matrix -> HITL Gate -> 21 CFR Part 11 Audit Ledger."
   },
@@ -477,12 +497,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     bestFor: [
       "Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)",
       "Prerequisite Flow: Cloud-Native CI/CD (Git Repository, Jenkins, GitLab -> Deployment Triggers & Manifests)",
-      "Observed Workloads (GCP Workload Ingress): Client Applications, Microservices (Cloud Run / GKE), AI Agents (Gemini Pro), Data Tier (Cloud SQL, BigQuery) emitting logs, metrics, traces",
+      "Observed Workloads (GCP Workload Ingress): Client Applications, Microservices (Cloud Run / GKE), AI Agents (Gemini 3.7 Flash), Data Tier (Cloud SQL, BigQuery) emitting logs, metrics, traces",
       "Unified Observability & Telemetry Pipeline (The Core): distributed tracing (cross-service correlation), Cloud Logging (log sinks, SOC 2 compliance auditing), Cloud Monitoring (metrics aggregation policies)",
       "Operational Excellence Control Plane: SREs, SLO/SLA Definition, Capacity Planning, Budget Alerts with SOC 2 policies ingress",
       "Actionable Operations & Reporting: Datadog Observability & SIEM Integration, Looker Studio dashboards (SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn), personas (SRE, Ops Team, DevSecOps), Day-2 Ops Drift Detection & Automated Remediation, Automated Runbooks, and Incident Management (Cloud Monitoring Alerts, PagerDuty, RED alerts)"
     ],
-    keyTech: ["Cloud Monitoring", "Cloud Logging", "Distributed Tracing", "Datadog SIEM", "Looker Studio", "PagerDuty", "Google Kubernetes Engine (GKE)", "Cloud Run", "Gemini Pro AI Agents", "SOC 2 Type II"],
+    keyTech: ["Cloud Monitoring", "Cloud Logging", "Distributed Tracing", "Datadog SIEM", "Looker Studio", "PagerDuty", "Google Kubernetes Engine (GKE)", "Cloud Run", "Gemini 3.7 Flash AI Agents", "SOC 2 Type II"],
     thumbnail: "/templates/enterprise_sre_observability.png",
     promptSummary: "Enterprise SRE & Observability: CI/CD Prereq -> Observed Workloads (Client, Microservices, AI Agents, Data Tier) -> Unified Telemetry Pipeline (Tracing, Logging, Monitoring) -> Datadog SIEM & Looker Studio Dashboards -> Automated Drift Remediation & PagerDuty Incident Management."
   },
@@ -855,11 +875,11 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Agentic Multi-Modal Ingestion Flow (Platform Engineering)",
       "Custom Clients & Enterprise Mobile App multimodal ingress",
       "GCP Services: Cloud Storage GCS, Speech-to-Text API, Vertex Vision & Video Intelligence, Google Maps APIs",
-      "Gemini-Powered Agentic Orchestrator (Gemini 1.5 Pro, Tooling & Function Calling)",
+      "Gemini-Powered Agentic Orchestrator (Gemini 3.7 Flash, Tooling & Function Calling)",
       "Vertex AI Embedding API, Vector Search, Semantic Search, and Gemini Reasoning Engine",
       "BigQuery Knowledge Base, Knowledge Graph, Automated Insights & Reports, Cloud Functions Alerting"
     ],
-    keyTech: ["Gemini 1.5 Pro", "Vertex AI Vector Search", "BigQuery Knowledge Base", "Speech-to-Text", "Vision API", "Maps Platform", "Cloud Logging"],
+    keyTech: ["Gemini 3.7 Flash", "Vertex AI Vector Search", "BigQuery Knowledge Base", "Speech-to-Text", "Vision API", "Maps Platform", "Cloud Logging"],
     thumbnail: "/templates/tech_multimodal_ingestion.png",
     promptSummary: "Agentic Multi-Modal Ingestion Flow: Multi-Modal Ingress (Text, Audio, Video, Geo-Spatial) -> GCP Ingestion Services -> Gemini Agentic Orchestrator -> Vector Search & Semantic Reasoning -> BigQuery Knowledge Base & Annotations."
   },

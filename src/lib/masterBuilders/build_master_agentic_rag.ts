@@ -108,11 +108,11 @@ export function buildAgenticRagWidescreenXml(): string {
           <mxGeometry x="622" y="128" width="164" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- The Reasoner: Gemini 3.1 Pro (LLM) Centerpiece -->
+        <!-- The Reasoner: Gemini 3.7 Flash (LLM) Centerpiece -->
         <mxCell id="reasoner_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="270" y="200" width="516" height="240" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_reasoner_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;The Reasoner: Gemini 3.1 Pro / Ultra (Cognitive Planning Engine)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_reasoner_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;The Reasoner: Gemini 3.7 Flash (Cognitive Planning Engine)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="280" y="204" width="496" height="16" as="geometry"/>
         </mxCell>
 
@@ -434,11 +434,11 @@ export function buildCognitiveRagXml(): string {
           <mxGeometry x="622" y="128" width="164" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- The Reasoner: Gemini 3.1 Pro (LLM) Centerpiece -->
+        <!-- The Reasoner: Gemini 3.7 Flash (LLM) Centerpiece -->
         <mxCell id="reasoner_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="270" y="200" width="516" height="240" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_reasoner_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;The Reasoner: Gemini 3.1 Pro / Ultra (Cognitive Planning Engine)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_reasoner_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;The Reasoner: Gemini 3.7 Flash (Cognitive Planning Engine)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="280" y="204" width="496" height="16" as="geometry"/>
         </mxCell>
 

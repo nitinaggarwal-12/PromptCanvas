@@ -163,7 +163,7 @@ export function buildLogicalAiConfigTenantXml(): string {
         </mxCell>
 
         <!-- Stack of Config Components -->
-        <mxCell id="cfg_model" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Model Selection&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;(e.g., Gemini 1.5 Pro)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=8;arcSize=3;" vertex="1" parent="1">
+        <mxCell id="cfg_model" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Model Selection&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;(Gemini 3.7 Flash)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=8;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="852" y="178" width="180" height="32" as="geometry"/>
         </mxCell>
         <mxCell id="cfg_sys" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;System Instructions&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=8;arcSize=3;" vertex="1" parent="1">
@@ -228,7 +228,7 @@ export function buildLogicalAiConfigTenantXml(): string {
         <mxCell id="lbl_prod_config_title" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Logical AI Config&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="280" y="470" width="120" height="14" as="geometry"/>
         </mxCell>
-        <mxCell id="pcfg_model" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Model Selection (e.g., Gemini 1.5 Pro)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
+        <mxCell id="pcfg_model" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Model Selection (Gemini 3.7 Flash)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">
           <mxGeometry x="280" y="488" width="182" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="pcfg_sys" value="&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;System Instructions&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;align=left;verticalAlign=middle;spacingLeft=4;" vertex="1" parent="1">

@@ -1,13 +1,13 @@
-export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || 'gemini-3.1-pro-preview';
+export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || 'gemini-3.7-flash';
 
 export type ModelTier = 'lite' | 'medium' | 'pro';
 
 /**
- * 🧠 Unified Gemini 3.1 Pro Architectural Engine
- * - Enforces Gemini 3.1 Pro across all tiers, generation calls, audits, and pipeline synthesis.
+ * 🧠 Unified Gemini 3.7 Flash Architectural Engine
+ * - Enforces Gemini 3.7 Flash across all tiers, generation calls, audits, and pipeline synthesis.
  */
 export function getGeminiModel(tier: ModelTier = 'pro'): string {
-  return process.env.GEMINI_PRO_MODEL_ID || process.env.GEMINI_MODEL_ID || 'gemini-3.1-pro-preview';
+  return process.env.GEMINI_MODEL_ID || 'gemini-3.7-flash';
 }
 
 export function getGeminiModelForArchitecture(archId?: string): string {

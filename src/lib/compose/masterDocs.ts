@@ -261,8 +261,8 @@ graph TD
     REQ["📥 Incoming Agent Task Request"] --> ROUTER["🔀 Model Routing Engine"]
     
     subgraph ROUTING_RULES["Deterministic Model Selection Rules"]
-        ROUTER -->|"Classification / Fast Triage"| M_FLASH["⚡ Gemini 3.6 Flash (Low Latency / Cost)"]
-        ROUTER -->|"Scientific Synthesis & CSR Analysis"| M_PRO["🧠 Gemini 3.6 Pro (Deep Reasoning / 1M Context)"]
+        ROUTER -->|"Classification / Fast Triage"| M_FLASH["⚡ Gemini 3.7 Flash (High Performance / Low Latency)"]
+        ROUTER -->|"Scientific Synthesis & CSR Analysis"| M_PRO["🧠 Gemini 3.7 Flash (Deep Reasoning / 1M Context)"]
         ROUTER -->|"Compliance & Safety Rule Audit"| M_SPECIAL["🛡️ Specialist Compliance Audit Engine"]
     end
 
@@ -428,7 +428,7 @@ graph TD
 
     subgraph L5["5. Model Gateway & Approved AI Models"]
         SPECIALISTS --> GW["🚪 Model Gateway (Routing & Token Budget Control)"]
-        GW --> LLM["🧠 Approved Model Endpoints (Gemini 3.6 Pro / Flash)"]
+        GW --> LLM["🧠 Approved Model Endpoints (Gemini 3.7 Flash)"]
     end
 \`\`\`
 `,

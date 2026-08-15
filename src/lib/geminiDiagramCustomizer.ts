@@ -17,7 +17,7 @@ function getAiClient(customKey?: string): GoogleGenAI {
 }
 
 /**
- * 🧠 Live Gemini-Powered Structured AST Diagram Customizer (Gemini 3.1 Pro Enforced)
+ * 🧠 Live Gemini-Powered Structured AST Diagram Customizer (Gemini 3.7 Flash Enforced)
  * Takes a collision-free Draw.io XML template backbone and prompts Gemini to return
  * a strictly validated JSON mapping of domain-specific titles, subtitles, and badges.
  * Injects the semantic content directly into the exact template nodes, guaranteeing
@@ -29,7 +29,7 @@ export async function customizeDiagramTemplateWithGemini(
   architectureType: string = 'conceptual_diagram',
   userApiKey?: string
 ): Promise<CustomizationResult> {
-  const modelName = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID || 'gemini-3.1-pro-preview';
+  const modelName = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID || 'gemini-3.7-flash';
 
   if (!templateXml || typeof templateXml !== 'string') {
     throw new Error('Template XML is empty or invalid');

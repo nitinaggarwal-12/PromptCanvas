@@ -24,6 +24,7 @@ import { UserProfileModal } from '@/components/UserProfileModal';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { VisitorCounter } from '@/components/VisitorCounter';
+import { TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -135,7 +136,7 @@ export default function LandingPage() {
             <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
             <Link href="/templates" className="hover:text-teal-300 transition-colors text-teal-400 font-semibold flex items-center gap-1">
               <span>Templates Matrix</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-black">22</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-black">{TEMPLATE_CATALOG_ITEMS.length}</span>
             </Link>
             <a href="#value" className="hover:text-teal-400 transition-colors">Why PromptCanvas</a>
           </nav>

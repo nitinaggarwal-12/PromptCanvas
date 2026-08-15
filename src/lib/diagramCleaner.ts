@@ -913,26 +913,26 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   const promptLower = ((userPrompt || '') + ' ' + (useCaseTitle || '')).toLowerCase();
   let dynPersonas = 'Enterprise Architect, AI Systems Engineer';
   let dynStakeholders = 'Governance Board, Platform SRE';
-  let dynDefinition = 'Unified Logical Flow, Technology Stack, Security Boundaries, & Operational Lifecycles';
+  let dynDefinition = 'Unified Logical Flow, Technology Stack, Security Boundaries, &amp; Operational Lifecycles';
   let dynSla = 'SLA: 99.99% Uptime | Zero-Trust Perimeter';
   let dynArchName = 'Enterprise Architecture System';
 
   if (/payment|fintech|banking|pci|ledger|fraud/i.test(promptLower)) {
     dynPersonas = 'Payment Operator, Risk Officer, Compliance Analyst';
     dynStakeholders = 'Central Bank Ops, Clearing House, Security Lead';
-    dynDefinition = 'Real-Time Financial Settlement, Multi-Tier Fraud Detection, & ISO 20022 Ledger Flow';
+    dynDefinition = 'Real-Time Financial Settlement, Multi-Tier Fraud Detection, &amp; ISO 20022 Ledger Flow';
     dynSla = 'SLA: 99.999% Uptime | Latency &lt;50ms';
     dynArchName = 'FinTech Financial Settlement Architecture';
   } else if (/supply|logistics|warehouse|fleet|inventory|chain/i.test(promptLower)) {
     dynPersonas = 'Supply Chain Architect, Logistics Fleet SRE, Depot Ops';
     dynStakeholders = 'Global Supply Chain Board, Carrier Partners, SRE Lead';
-    dynDefinition = 'Autonomous Multi-Node Supply Routing, Telemetry Tracking, & Fleet Orchestration';
+    dynDefinition = 'Autonomous Multi-Node Supply Routing, Telemetry Tracking, &amp; Fleet Orchestration';
     dynSla = 'SLA: Real-Time Telemetry | 99.9% Uptime';
     dynArchName = 'Autonomous Supply Chain Topology';
   } else if (/genomic|fastq|variant|dna|gatk|literature|clinical|pharma|cancer/i.test(promptLower)) {
     dynPersonas = 'Bioinformatician, Clinical AI Engineer, Data Modeler';
     dynStakeholders = 'Regulatory Review Board, Chief Medical Officer, SRE Lead';
-    dynDefinition = 'HIPAA-Governed Literature Mining, Genomic Pipeline & Agentic RAG Discovery';
+    dynDefinition = 'HIPAA-Governed Literature Mining, Genomic Pipeline &amp; Agentic RAG Discovery';
     dynSla = 'SLA: HIPAA / SOC2 Governed | GKE Autopilot';
     dynArchName = 'Clinical & Genomic Cognitive Architecture';
   } else if (/devops|ci\/cd|pipeline|polyrepo|argocd|gitops|snyk|sonarqube/i.test(promptLower)) {
@@ -1010,10 +1010,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     dynSla = `${dynSla} &amp;nbsp;|&amp;nbsp; &lt;span style='background:rgba(245,158,11,0.2);border:1px solid #F59E0B;color:#FBBF24;font-size:10px;padding:2px 6px;border-radius:8px;'&gt;⚡ Total FinOps: Context Cache (-90% Token) | CDN Edge Egress (-75%) | Autoclass Storage | HA Regional DR&lt;/span&gt;`;
   }
 
-  const dynamicEnterpriseHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;${topicClean}&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;${dynArchName} &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; ${dynDefinition}&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; ${dynPersonas}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; ${dynStakeholders}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;${dynSla}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
+  const dynamicEnterpriseHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;&#10070; USE CASE:&lt;/span&gt;${topicClean}&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;${dynArchName} &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; ${dynDefinition}&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; ${dynPersonas}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; ${dynStakeholders}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;${dynSla}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
 
   updatedXml = updatedXml
-    .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title)"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${dynamicEnterpriseHeaderHtml}$2`)
+    .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title|main_title|main_title_banner|hdr_title)"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${dynamicEnterpriseHeaderHtml}$2`)
     .replace(/(<mxCell\s+[^>]*\bvalue=")(?:[^"]*?(?:Enterprise Architecture Platform|TOTAL UNIFIED SYSTEM VIEW|UNIFIED SYSTEM VIEW|एकीकृत सिस्टम दृश्य|Unified Logical Flow)[^"]*?)("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${dynamicEnterpriseHeaderHtml}$2`);
 
   // 2. Adapt technical nodes if generic
@@ -1037,10 +1037,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/API Gateway/g, 'PCI-DSS Compliant ISO 20022 API Gateway')
       .replace(/Canary deployment on GKE/g, 'Automated Settlement Rollout &amp; PCI Compliance Gate')
       .replace(/Human-in-the-Loop Governance/g, 'High-Risk Fraud Escalation &amp; AML Compliance Gate')
-      .replace(/Dim_Patient/g, 'Dim_Merchant_Account (PK/FK)')
-      .replace(/Fact_Patient_Encounters/g, 'Fact_ISO20022_Payment_Transactions')
-      .replace(/Dim_Physician/g, 'Dim_Payment_Rail_Metadata')
-      .replace(/Dim_Payer/g, 'Dim_Fraud_Risk_Rules');
+      .replace(/Dim_Patient/g, 'Dim_Customer_Account')
+      .replace(/Fact_Patient_Encounters/g, 'Fact_Account_Transactions')
+      .replace(/Dim_Physician/g, 'Dim_Merchant')
+      .replace(/Dim_Payer/g, 'Dim_Card_Issuer');
   } else if (isEarlyDiscoveryPrompt) {
     updatedXml = updatedXml
       .replace(/Manual Data Sources Card/g, 'Internal Assay Notes, PDFs &amp; Lab Summaries')
@@ -1084,9 +1084,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Insight Type/g, 'Agent Designer Signal Confidence')
       .replace(/Row-Level Security on Patient Data/g, 'IP &amp; Target Molecule Protection')
       // Product Vendor Model & Vendor Service Updates (Latest GCP & Enterprise LLM updates)
-      .replace(/Gemini 1\.5 Pro/g, 'Gemini 3.6 Pro')
-      .replace(/Gemini 2\.5 Pro/g, 'Gemini 3.6 Pro')
-      .replace(/Vertex AI Gemini API/g, 'Gemini 3.6 Pro LLM &amp; Notebook Enterprise')
+      .replace(/Gemini 1\.5 Pro/g, 'Gemini 3.7 Flash')
+      .replace(/Gemini 2\.5 Pro/g, 'Gemini 3.7 Flash')
+      .replace(/Gemini 3\.6 Pro/g, 'Gemini 3.7 Flash')
+      .replace(/Vertex AI Gemini API/g, 'Gemini 3.7 Flash LLM &amp; Notebook Enterprise')
       .replace(/Anthos Service Mesh/gi, 'Google Cloud Service Mesh (Managed Istio)')
       .replace(/Cloud Life Sciences API/gi, 'Genomics on Google Cloud Batch &amp; GKE Spot')
       .replace(/Cloud Source Repositories/gi, 'GitHub Enterprise &amp; Cloud Build Triggers')
@@ -1156,7 +1157,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/ITACS Agent Orchestrator \(GKE Pod\)/g, 'Scientific Discovery Orchestrator (GKE Cluster)')
       .replace(/Vertex AI Vector Search Index/g, 'Vertex AI Vector Search (pgvector Target Embeddings)')
       .replace(/Vertex AI Training Cluster/g, 'AIDDISON Virtual Screening Engine (Vertex AI)')
-      .replace(/Vertex AI Gemini API/g, 'Gemini 3.6 Pro LLM &amp; Notebook Enterprise')
+      .replace(/Vertex AI Gemini API/g, 'Gemini 3.7 Flash LLM &amp; Notebook Enterprise')
       // DevOps & CI/CD Pipeline Replacements for Early Discovery
       .replace(/ITACS Governing Cloud Tenant \(Managed Services\)/g, 'Early Discovery &amp; Target Identification Cloud Tenant')
       .replace(/Rly Identific Ion Person Governing Cloud Tenant/gi, 'Early Discovery &amp; Target Identification Cloud Tenant')
@@ -1289,7 +1290,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/\[6\]\s*S3 Processed Zone[^<]*/gi, '[6] S3 Processed Embeddings &amp; Vector Zone')
       .replace(/\[7\]\s*Cloud SQL[^<]*/gi, '[7] Vertex AI Vector Search Index (pgvector / Cosine Embeddings)')
       .replace(/\[7\]\s*S3 Curated Zone[^<]*/gi, '[7] S3 Curated Target &amp; Pathway Data Marts')
-      .replace(/\[8\]\s*Cloud Storage[^<]*/gi, '[8] Fine-Tuned Medical LLM (Gemini 3.6 Pro / Flash)')
+      .replace(/\[8\]\s*Cloud Storage[^<]*/gi, '[8] Fine-Tuned Medical LLM (Gemini 3.7 Flash)')
       .replace(/\[8\]\s*Glue Data Catalog[^<]*/gi, '[8] NSCLC Target Catalog (AWS Glue)')
       .replace(/\[9\]\s*Secret Manager[^<]*/gi, '[9] Target &amp; Pathway Consensus Evaluation Engine')
       .replace(/\[9\]\s*Amazon Athena[^<]*/gi, '[9] Amazon Athena (In-Silico Target Query Engine)')
@@ -1395,17 +1396,20 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Oncology Operational Strategy/gi, 'Banking Real-Time Compliance Strategy')
       .replace(/STRATEGIC ADVISORY ALERT:[\s\S]*?Strategy/g, 'BANKING SECURITY ALERT: Real-Time Fraud &amp; Compliance Audit Active')
       // ERD Specific Banking Replacements
+      .replace(/Dim_Customer_Entity/g, 'Dim_Customer_Account')
       .replace(/Dim_Patient/g, 'Dim_Customer_Account')
       .replace(/Patient Key/g, 'Account Key (PK)')
       .replace(/Patient Type/g, 'Account Type (Checking/Savings)')
       .replace(/Demographics/g, 'KYC Status &amp; Credit Score')
       .replace(/Disease History/g, 'Account Standing &amp; Risk Rating')
+      .replace(/Dim_Provider_Service/g, 'Dim_Merchant')
       .replace(/Dim_Physician/g, 'Dim_Merchant')
       .replace(/Physician Key/g, 'Merchant Key (PK)')
       .replace(/Specialization/g, 'Merchant Category Code (MCC)')
       .replace(/Affiliation/g, 'Payment Network (Visa/MC)')
       .replace(/Ranking/g, 'Risk Rating')
       .replace(/Location/g, 'Terminal / Store Location')
+      .replace(/Dim_Billing_Channel/g, 'Dim_Card_Issuer')
       .replace(/Dim_Payer/g, 'Dim_Card_Issuer')
       .replace(/Payer Key/g, 'Issuer Key (PK)')
       .replace(/Payer Name/g, 'Card Issuer / Bank')
@@ -1475,6 +1479,14 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   } else {
     // For Healthcare/Pharma prompts: preserve generic medical vocabulary, only clean ITACS brand boilerplate
     updatedXml = updatedXml
+      .replace(/Dim_Customer_Entity/g, 'Dim_Patient')
+      .replace(/Customer ID/g, 'Patient Key')
+      .replace(/Entity Type/g, 'Patient Type')
+      .replace(/Activity History/g, 'Medical History')
+      .replace(/Dim_Provider_Service/g, 'Dim_Physician')
+      .replace(/Provider ID/g, 'Physician Key')
+      .replace(/Dim_Billing_Channel/g, 'Dim_Payer')
+      .replace(/Fact_System_Transactions/g, 'Fact_Patient_Encounters')
       .replace(/ITACS Oncology Platform/g, `${topic} Platform`)
       .replace(/ITACS/gi, topic || 'Healthcare');
   }
@@ -1540,7 +1552,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     }
   }
 
-  return updatedXml;
+  return sanitizeDrawioXmlAttributes(updatedXml);
 }
 
 /**

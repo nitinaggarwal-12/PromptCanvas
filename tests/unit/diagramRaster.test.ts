@@ -84,12 +84,24 @@ describe('Phase 1 & 2: Diagram Rasterizer & Export Protocols', () => {
     };
     listeners.forEach(cb => cb(initEvent));
 
-    expect(iframe.contentWindow.postMessage).toHaveBeenCalledTimes(2);
+    expect(iframe.contentWindow.postMessage).toHaveBeenCalledTimes(1);
     expect(JSON.parse((iframe.contentWindow.postMessage as any).mock.calls[0][0])).toEqual({
       action: 'load',
       xml: xml,
       autosave: 0,
     });
+
+    // Simulate load event from embed.diagrams.net
+    const loadEvent = {
+      origin: 'https://embed.diagrams.net',
+      data: JSON.stringify({ event: 'load' }),
+    };
+    listeners.forEach(cb => cb(loadEvent));
+
+    // Wait for 800ms settling delay
+    await new Promise(r => setTimeout(r, 850));
+
+    expect(iframe.contentWindow.postMessage).toHaveBeenCalledTimes(2);
     expect(JSON.parse((iframe.contentWindow.postMessage as any).mock.calls[1][0])).toEqual({
       action: 'export',
       format: 'png',

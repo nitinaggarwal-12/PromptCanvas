@@ -61,9 +61,9 @@ export const GOOGLE_OPEN_KNOWLEDGE_CATALOG: OKFEntity[] = [
   {
     '@context': 'https://schema.org',
     '@type': 'NativeAIEngine',
-    '@id': 'okf:ai:google-gemini-2.5',
-    name: 'Google Gemini 3.6 Flash & Pro',
-    alternateName: 'Gemini 3.6 Ephemeral Context Caching Engine',
+    '@id': 'okf:ai:google-gemini-3.7-flash',
+    name: 'Google Gemini 3.7 Flash',
+    alternateName: 'Gemini 3.7 Flash Ephemeral Context Caching Engine',
     category: 'NativeAIEngine',
     description: '1M+ token context windows with Ephemeral Context Caching (90% OPEX cut) and Vertex AI Agent Builder.',
     vendor: 'Google Cloud Platform (GCP)',

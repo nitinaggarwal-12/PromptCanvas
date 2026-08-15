@@ -10,7 +10,7 @@ import { buildIntentClassificationPrompt } from '@/prompts/classifyIntent';
 describe('Intent Classifier Unit Tests', () => {
   it('exports correct classifier timeout (2500ms) and model ID', () => {
     expect(CLASSIFIER_TIMEOUT_MS).toBe(2500);
-    expect(CLASSIFIER_MODEL_ID).toBe(process.env.INTENT_CLASSIFIER_MODEL || 'gemini-3.5-flash-lite');
+    expect(CLASSIFIER_MODEL_ID).toBe(process.env.INTENT_CLASSIFIER_MODEL || process.env.GEMINI_MODEL_ID || 'gemini-3.7-flash');
   });
 
   it('buildIntentClassificationPrompt embeds user prompt and architecture types', () => {

@@ -165,8 +165,7 @@ describe('V2 Pipeline & Architecture Routing Contract Tests', () => {
     expect(res.status).toBe(201);
     expect(v2PipelineModule.runV2Pipeline).toHaveBeenCalledWith(
       'Design a microservice payment gateway on AWS',
-      expect.any(String),
-      expect.anything()
+      expect.any(String)
     );
     expect(dbModule.createDiagram).toHaveBeenCalledWith(
       expect.any(String),
@@ -198,8 +197,7 @@ describe('V2 Pipeline & Architecture Routing Contract Tests', () => {
     expect(v2PipelineModule.runV2EditPipeline).toHaveBeenCalledWith(
       { nodes: [{ id: 'n1', label: 'Node 1', type: 'service' }], edges: [] },
       'Add Redis cache node to system',
-      expect.any(String),
-      expect.anything()
+      expect.any(String)
     );
     expect(dbModule.saveDiagramVersion).toHaveBeenCalledWith(
       'v2_diagram_id',
