@@ -941,5 +941,292 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     keyTech: ["ISO 20022 Bus", "Cloud Spanner", "Real-Time Fraud Engine", "Double-Entry Ledger", "FedNow / RTP Rails", "PCI-DSS HSM"],
     thumbnail: "/templates/tech_fintech_payments.png",
     promptSummary: "FinTech Payments Architecture: Ingress -> ISO 20022 Bus -> Real-Time Fraud Engine -> Double-Entry Ledger -> Settlement Rails."
+  },
+  {
+    id: "value_stream_map",
+    name: "Enterprise Value Stream Map (VSM)",
+    categoryId: "business_strategy",
+    categoryName: "Business Strategy & Alignment",
+    badge: "Lean VSM",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for visualizing end-to-end customer value streams, lead time vs process time (PT/LT), rolled first pass yield (%C/A), and bottleneck elimination.",
+    bestFor: [
+      "Customer demand & order processing stream visualization",
+      "Automated Jira / ServiceNow lead time & process time calculation",
+      "Gemini 3.7 Flash AI bottleneck detection & root cause diagnosis",
+      "Real-time value-added vs non-value-added time ladder ratio calculation",
+      "Executive scorecard with Rolled First Pass Yield (%C/A) analytics"
+    ],
+    keyTech: ["Gemini 3.7 Flash", "Dataflow Streaming VSM", "BigQuery Analytics", "Looker VSM Cockpit", "Jira/ServiceNow API"],
+    thumbnail: "/templates/value_stream_map.png",
+    promptSummary: "Enterprise Value Stream Map: Customer Ingress -> Order & Requirements -> Automated AI Build/Test -> Deployment Pipeline -> Customer Delivery & Lead Time Timeline."
+  },
+  {
+    id: "asis_vs_tobe_process_flow",
+    name: "As-Is vs To-Be Modernization Process Flow",
+    categoryId: "business_strategy",
+    categoryName: "Business Strategy & Alignment",
+    badge: "Process Modernization",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for executive side-by-side comparison of legacy manual spaghetti processes vs modern Google Cloud automated target architectures.",
+    bestFor: [
+      "Side-by-side As-Is (Legacy Red) vs To-Be (Google Cloud Green) process comparison",
+      "Quantifying pain points: manual spreadsheets, batch silos, multi-day delays",
+      "Highlighting target wins: Cloud Run, Vertex AI Gemini 3.7, BigQuery Lakehouse",
+      "Executive transformation ROI metrics: 92% cycle time reduction, 100% compliance"
+    ],
+    keyTech: ["Gemini 3.7 Flash", "Cloud Run", "Vertex AI", "BigQuery", "Eventarc", "Looker Studio"],
+    thumbnail: "/templates/asis_vs_tobe_process_flow.png",
+    promptSummary: "As-Is vs To-Be Modernization Flow: Top As-Is Legacy Lane (Manual Silos) vs Bottom To-Be Modern Lane (Serverless GCP + Gemini AI) with KPI Delta Callouts."
+  },
+  {
+    id: "legacy_data_dependency_map",
+    name: "Legacy Data Dependency Map (P1-APP-L-01)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Zero-Trust Infrastructure",
+    badge: "Discovery",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use to map legacy on-prem spaghetti dependencies, database coupling, shadow IT extracts, StratoZone inventory probes, and Migration Center wave planning.",
+    bestFor: [
+      "On-premises legacy monolith and shadow DB discovery",
+      "StratoZone agentless discovery probe and network netflow mapping",
+      "Migration Center wave planning (Wave 1: Low-hanging, Wave 2: Core Data, Wave 3: Mainframe)",
+      "Automated Strangler Fig facade routing and cutover scheduling"
+    ],
+    keyTech: ["StratoZone", "Migration Center", "Cloud Run Strangler Proxy", "BigQuery Lakehouse", "Gemini 3.7 Flash"],
+    thumbnail: "/templates/legacy_data_dependency_map.png",
+    promptSummary: "Legacy Data Dependency Map: On-Prem Legacy Spaghetti -> StratoZone Discovery Probe -> Migration Center Waves -> Cloud Target Architecture."
+  },
+  {
+    id: "gcp_landing_zone_vpc",
+    name: "GCP Landing Zone & Shared VPC Network Fabric (P4-SEC-P-02)",
+    categoryId: "cloud_infra",
+    categoryName: "Cloud & Zero-Trust Infrastructure",
+    badge: "Networking",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for production enterprise Hub-and-Spoke Shared VPC network fabric with 100G Dedicated Interconnect, Cloud NAT HA, Private Service Connect (PSC), and VPC-SC perimeter.",
+    bestFor: [
+      "Enterprise Hub-and-Spoke Shared VPC with Central Host Project",
+      "100G Dedicated Interconnect & Cloud Router BGP Dual-Region Redundancy",
+      "Private Service Connect (PSC) 10.50.0.0/24 private endpoints",
+      "Cloud Next-Gen Firewall (NGFW) with IDS/IPS & VPC-SC data perimeter"
+    ],
+    keyTech: ["Shared VPC Host Project", "Dedicated Interconnect 100G", "Private Service Connect", "Cloud NGFW", "VPC-SC Perimeter", "Gemini 3.7 Flash"],
+    thumbnail: "/templates/gcp_landing_zone_vpc.png",
+    promptSummary: "GCP Landing Zone & Shared VPC: Hybrid WAN -> Central Hub Host Project -> Production Workload Spoke -> Managed Services Enclave (PSC)."
+  },
+  {
+    id: "enterprise_agent_runtime",
+    name: "Enterprise Agent Runtime Platform (P4-AI-P-03)",
+    categoryId: "ai_agentic",
+    categoryName: "AI & Agentic Systems Architecture",
+    badge: "Agent Runtime",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for physical sandboxed compute runtime on GKE Autopilot with Agent Gateway, MCP tool worker pods, Model Armor prompt interceptor, and Vertex AI TPU v5e serving.",
+    bestFor: [
+      "GKE Autopilot sandboxed compute with gVisor container kernel isolation",
+      "Agent Gateway OIDC authentication & tenant quota management",
+      "Model-Context Protocol (MCP) tool worker pods with ephemeral scratchpad disks",
+      "Model Armor real-time prompt injection filtering and Vertex AI TPU v5e inference"
+    ],
+    keyTech: ["GKE Autopilot (gVisor)", "Model Armor", "Vertex AI TPU v5e", "MCP Gateway", "Memorystore Redis", "Gemini 3.7 Flash"],
+    thumbnail: "/templates/enterprise_agent_runtime.png",
+    promptSummary: "Enterprise Agent Runtime: Ingress LB -> Agent Gateway & Model Armor -> GKE Autopilot Sandboxed Workers (MCP) -> Vertex AI TPU Serving & Telemetry."
+  },
+  {
+    id: "ai_agent_approval_workflow",
+    name: "AI Agent Approval Workflow & Human-in-the-Loop Governance (P4-GOV-L-05)",
+    categoryId: "devsecops",
+    categoryName: "DevSecOps & Platform Engineering",
+    badge: "AI Governance",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for multi-stage AI agent review, automated red-teaming, Legal/AppSec human approval gates, Binary Authorization KMS attestation, and signed production serving.",
+    bestFor: [
+      "Developer IDE agent submission & prompt artifact manifest packaging",
+      "Automated SAST & Gemini 3.7 Flash adversarial red-teaming scans",
+      "Human-in-the-Loop (HITL) approval portal for Legal, Security & Product Leads",
+      "Binary Authorization Cloud KMS cryptographic signing & signed GKE deployment"
+    ],
+    keyTech: ["Vertex AI Evaluation", "Binary Authorization", "Cloud KMS HSM", "Cloud Tasks HITL", "GKE Autopilot", "Gemini 3.7 Flash"],
+    thumbnail: "/templates/ai_agent_approval_workflow.png",
+    promptSummary: "AI Agent Approval Workflow: Developer IDE -> Automated Red-Teaming -> Human Governance Approvals -> Binary Authorization Signing -> Signed GKE Serving."
+  },
+  {
+    id: "incident_triage_swimlane",
+    name: "Incident Triage & Escalation Swimlane (P5-GOV-L-04)",
+    categoryId: "devsecops",
+    categoryName: "DevSecOps & Platform Engineering",
+    badge: "SRE Incident Ops",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for 3-tier SRE incident triage: L1 Automated Alerting & Gemini Cloud Assist RCA, L2 Auto-Remediation Runbooks, and L3 Incident Commander War Room bridge.",
+    bestFor: [
+      "L1 Automated Alerting with Cloud Monitoring & Gemini Cloud Assist RCA",
+      "L2 Auto-Remediation Runbooks via Cloud Workflows & Terraform Rollbacks",
+      "L3 Incident Commander War Room bridge with PagerDuty & Slack War Room",
+      "Immutable post-mortem incident dossier generation in BigQuery"
+    ],
+    keyTech: ["Cloud Monitoring", "Gemini Cloud Assist RCA", "Cloud Workflows Auto-Remediation", "PagerDuty", "BigQuery Incident Ledger"],
+    thumbnail: "/templates/incident_triage_swimlane.png",
+    promptSummary: "Incident Triage Swimlane: L1 Automated Alerting & Gemini RCA -> L2 Auto-Remediation Workflow -> L3 War Room Bridge & Post-Mortem Dossier."
+  },
+  {
+    id: "ecommerce_retail",
+    name: "OmniChannel Intelligent E-Commerce Platform (IND-RETAIL-04)",
+    categoryId: "industry_solutions",
+    categoryName: "Industry Specialized Solutions",
+    badge: "Retail AI",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for enterprise retail architectures featuring Vertex AI Search for Retail, AlloyDB pgvector discovery, Cloud Spanner global cart, and BigQuery Lakehouse.",
+    bestFor: [
+      "Omni-channel shopper ingress (Next.js PWA, Mobile, POS kiosks)",
+      "Vertex AI Search for Retail & Gemini 3.7 Flash Conversational Concierge",
+      "AlloyDB pgvector sub-10ms visual product similarity indexing",
+      "Cloud Spanner multi-region ACID transactional cart & BigQuery Customer 360"
+    ],
+    keyTech: ["Vertex AI Search for Retail", "AlloyDB pgvector", "Cloud Spanner", "Cloud Run Microservices", "BigQuery Lakehouse", "Gemini 3.7 Flash"],
+    thumbnail: "/templates/ecommerce_retail.png",
+    promptSummary: "OmniChannel E-Commerce: Shopper Ingress -> Cloud Run Retail Microservices -> Vertex AI Retail Search & Gemini AI -> Cloud Spanner & BigQuery Lakehouse."
+  },
+  {
+    id: "hr_talent_ai",
+    name: "WorkforceAI HR Talent & People Intelligence (IND-HR-06)",
+    categoryId: "industry_solutions",
+    categoryName: "Industry Specialized Solutions",
+    badge: "HR Talent AI",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for enterprise human capital AI platforms featuring Document AI resume parsing, AlloyDB pgvector skills graph, Gemini 3.7 Flash candidate matching, and bias audits.",
+    bestFor: [
+      "ATS / HRIS connectors (Workday, SuccessFactors, Greenhouse)",
+      "Document AI custom resume parser & Cloud DLP blind screening filter",
+      "AlloyDB pgvector enterprise skills taxonomy graph (O*NET aligned)",
+      "Gemini 3.7 Flash multi-factor candidate fit evaluation & Looker Recruiter Cockpit"
+    ],
+    keyTech: ["Document AI Resume Parser", "Cloud DLP", "AlloyDB pgvector Skills Graph", "Gemini 3.7 Flash Matcher", "Looker Recruiter Cockpit"],
+    thumbnail: "/templates/hr_talent_ai.png",
+    promptSummary: "WorkforceAI HR Intelligence: ATS Ingress -> Document AI Resume Parser -> AlloyDB Skills Graph -> Gemini 3.7 Candidate Matcher -> Looker Recruiter Cockpit."
+  },
+  {
+    id: "smart_factory_iot",
+    name: "Smart Factory Industry 4.0 IoT & Predictive Maintenance (IND-MFG-05)",
+    categoryId: "industry_solutions",
+    categoryName: "Industry Specialized Solutions",
+    badge: "Industry 4.0",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for industrial edge-to-cloud IoT platforms with Google Distributed Cloud (GDC) Edge, Cloud Dataflow streaming, Bigtable time-series, Vertex AI anomaly detection, and Looker OEE cockpit.",
+    bestFor: [
+      "Shop floor PLCs & GDC Edge gateway with OPC-UA / MQTT protocol broker",
+      "Cloud Pub/Sub & Cloud Dataflow real-time telemetry streaming (500k+ events/s)",
+      "Cloud Bigtable sub-10ms time-series store & Dataplex manufacturing data mesh",
+      "Gemini 3.7 Flash multimodal anomaly fuser (thermal video + spindle waveforms) & SAP PM work order dispatch"
+    ],
+    keyTech: ["GDC Edge Gateway", "Cloud Pub/Sub", "Cloud Dataflow", "Cloud Bigtable", "Gemini 3.7 Anomaly Fuser", "Looker OEE Cockpit", "SAP PM"],
+    thumbnail: "/templates/smart_factory_iot.png",
+    promptSummary: "Smart Factory IoT: Shop Floor PLCs -> GDC Edge -> Cloud Dataflow Streaming -> Cloud Bigtable -> Gemini Anomaly AI -> Looker OEE & SAP PM."
+  },
+  {
+    id: "c4_component_lld",
+    name: "C4 Level 3 Component Diagram & Microservice LLD (ARCH-C4-03)",
+    categoryId: "microservices_flow",
+    categoryName: "Microservices & Application Flow",
+    badge: "C4 L3 LLD",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for C4 Model Level 3 container internal component designs: REST controllers, JWT auth interceptors, SAGA domain services, repositories, Redis cache, and cloud DBs.",
+    bestFor: [
+      "C4 Level 3 component breakdown of containerized microservices",
+      "REST & gRPC ingress controllers with DTO validation",
+      "SAGA pattern domain services & transactional outbox event publishing",
+      "PostgreSQL repository pattern, Redis caching, and AlloyDB / PubSub integration"
+    ],
+    keyTech: ["Cloud Run Microservices", "JWT Auth Interceptor", "SAGA Domain Service", "Outbox Pattern", "AlloyDB PostgreSQL", "Gemini 3.7 Flash"],
+    thumbnail: "/templates/c4_component_lld.png",
+    promptSummary: "C4 Level 3 Component LLD: Ingress Controllers -> Auth Interceptors -> SAGA Domain Services -> Repositories & Outbox -> AlloyDB & Pub/Sub."
+  },
+  {
+    id: "bpmn_process_workflow",
+    name: "BPMN 2.0 Business Process & Autonomous Workflow (ARCH-BPMN-01)",
+    categoryId: "business_strategy",
+    categoryName: "Business Strategy & Alignment",
+    badge: "BPMN 2.0",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for standard BPMN 2.0 business workflows with start/end events, user tasks, Gemini 3.7 Flash AI service tasks, XOR branching gateways, and ERP backend posting.",
+    bestFor: [
+      "BPMN 2.0 standard notation: Pool, User Persona, Agentic AI & ERP Lanes",
+      "Start / End events, User Tasks, and Service Tasks",
+      "Exclusive XOR decision gateways with conditional branch routing",
+      "Gemini 3.7 Flash automated fraud scoring & SAP ERP financial posting"
+    ],
+    keyTech: ["BPMN 2.0 Engine", "User Persona Lane", "Gemini 3.7 Service Task", "XOR Branching Gateways", "SAP ERP Posting"],
+    thumbnail: "/templates/bpmn_process_workflow.png",
+    promptSummary: "BPMN 2.0 Process Workflow: User Submit -> Document AI OCR -> Gemini Fraud Scorer -> XOR Risk Gateway -> Auto-Approve -> SAP ERP Post -> End Event."
+  },
+  {
+    id: "threat_modeling_stride",
+    name: "STRIDE Zero-Trust Threat Model & Boundary Map (ARCH-SEC-01)",
+    categoryId: "devsecops",
+    categoryName: "DevSecOps & Platform Engineering",
+    badge: "STRIDE Threat Model",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for STRIDE threat modeling mapping attacks (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) to Google Cloud defenses.",
+    bestFor: [
+      "STRIDE threat taxonomy mapping across 4 zero-trust security zones",
+      "Adversary threat actors & prompt injection / DDoS attack vector mapping",
+      "DMZ defenses: Cloud Armor WAF, Model Armor AI Shield & Identity-Aware Proxy",
+      "Trust boundary: GKE gVisor enclaves, Workload Identity, VPC-SC, and Cloud KMS HSM"
+    ],
+    keyTech: ["Cloud Armor WAF", "Model Armor", "Identity-Aware Proxy", "GKE gVisor", "Workload Identity", "VPC-SC Perimeter", "Cloud KMS HSM"],
+    thumbnail: "/templates/threat_modeling_stride.png",
+    promptSummary: "STRIDE Threat Model: Untrusted Attack Vectors -> DMZ & Model Armor -> Sandboxed GKE Compute -> Secure Data Enclave & VPC-SC Perimeter."
+  },
+  {
+    id: "data_lineage_provenance",
+    name: "Column-Level Data Lineage & Provenance Graph (ARCH-DAT-01)",
+    categoryId: "data_pipelines",
+    categoryName: "Modern Data & Analytics Pipelines",
+    badge: "Data Governance",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for end-to-end column-level data lineage tracing from raw bronze tables through Dataform / dbt silver models to curated gold fact/dimension marts and Looker BI metrics.",
+    bestFor: [
+      "Bronze (Raw) -> Silver (Dataform/dbt Cleaned) -> Gold (Curated Marts) lineage flow",
+      "Column-level transformation formula and type casting tracking",
+      "Dataplex automatic lineage discovery from GoogleSQL query execution plans",
+      "Upstream schema change impact analysis and BCBS 239 / GDPR audit compliance export"
+    ],
+    keyTech: ["BigQuery", "Dataform / dbt", "Dataplex Lineage Auto-Discovery", "Sensitive Data Protection DLP", "BI Engine", "Looker Studio"],
+    thumbnail: "/templates/data_lineage_provenance.png",
+    promptSummary: "Column-Level Data Lineage: Raw Bronze Tables -> Dataform Silver Models -> Curated Gold Marts -> Looker BI Metrics & Gemini 3.7 RAG."
+  },
+  {
+    id: "healthcare_fhir_hl7",
+    name: "Google Cloud Healthcare & Life Sciences FHIR / HL7 Pipeline (IND-HEALTH-01)",
+    categoryId: "industry_solutions",
+    categoryName: "Industry Specialized Solutions",
+    badge: "Healthcare & Life Sciences",
+    isFlagship: true,
+    isNew: true,
+    whenToUse: "Use for HIPAA-compliant healthcare interoperability featuring Cloud Healthcare API (HL7v2/FHIR R4/DICOM), DLP PHI de-identification, OMOP BigQuery lakehouse, and Gemini 3.7 Flash clinical insights.",
+    bestFor: [
+      "Hospital EHR ingress: HL7v2 ADT/ORU via MLLP, FHIR R4 bundles, DICOM imaging",
+      "Cloud Healthcare API with automatic HL7-to-FHIR transformation",
+      "Sensitive Data Protection (DLP) 18 HIPAA Safe Harbor PHI de-identification",
+      "Gemini 3.7 Flash clinical reasoner, drug interaction safety, and OMOP BigQuery lakehouse"
+    ],
+    keyTech: ["Cloud Healthcare API", "HL7v2 & FHIR R4", "DLP PHI Redaction", "Cloud KMS HSM CMEK", "Gemini 3.7 Clinical Reasoner", "OMOP CDM BigQuery"],
+    thumbnail: "/templates/healthcare_fhir_hl7.png",
+    promptSummary: "Healthcare FHIR / HL7 Pipeline: Hospital EHR Ingress -> Cloud Healthcare API -> DLP PHI De-Identification -> Gemini Clinical AI -> OMOP BigQuery Lakehouse & Physician Cockpit."
   }
 ];
+

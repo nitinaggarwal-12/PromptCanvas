@@ -55,7 +55,20 @@ import {
   getExactIncidentTriageSreXml,
   getExactServerlessGcpReferenceXml,
   getExactMultiFlowZeroTrustPlatformXml,
-  getExactUnifiedFlowchartXml
+  getExactUnifiedFlowchartXml,
+  getExactLegacyDataDependencyMapXml,
+  getExactGcpLandingZoneVpcXml,
+  getExactEnterpriseAgentRuntimeXml,
+  getExactAiAgentApprovalWorkflowXml,
+  getExactIncidentTriageSwimlaneXml,
+  getExactEcommerceRetailXml,
+  getExactHrTalentAiXml,
+  getExactSmartFactoryIotXml,
+  getExactC4ComponentLldXml,
+  getExactBpmnWorkflowXml,
+  getExactThreatModelingStrideXml,
+  getExactDataLineageXml,
+  getExactHealthcareFhirXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -343,6 +356,97 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     category: "Cloud Infrastructure & Networking",
     whenToUse: "Google Cloud Hybrid Multi-Cloud Networking Architecture with 100G Dedicated Interconnect, Partner Interconnect, Cloud VPN, Cross-Cloud Interconnect for AWS, Network Connectivity Center (NCC) BGP Routing, and Gemini Enterprise AIOps.",
     prompt: "Act as a Principal Google Cloud Networking & AI Infrastructure Architect. Design a production-grade Hybrid Multi-Cloud Networking & Gemini Enterprise reference blueprint. Include: On-Premises / Private Cloud (Tier IV Data Center, BGP ASN 65001, BFD 300ms, VMware Servers, Gemini on GDC Hosted) -> Google Cloud Global Network (187+ Anycast PoPs, Cloud CDN, Global L7 Load Balancing) -> Region us-central1 VPC (GKE Autopilot, Compute Engine, Cloud SQL PSA, Gemini Enterprise AIOps) -> AWS Cloud us-east-1 (EKS, EC2, ECS, Aurora RDS, DX Gateway ASN 64512) -> Direct 100G Cross-Cloud Interconnect & Bottom Routing Telemetry Matrix."
+  },
+  {
+    id: "legacy_data_dependency_map",
+    name: "Legacy Data Dependency Map (P1-APP-L-01)",
+    category: "Migration & Modernization",
+    whenToUse: "Visualizes legacy on-premises spaghetti dependencies, database coupling, shadow IT extracts, StratoZone inventory probes, and Migration Center wave planning.",
+    prompt: "Act as a Principal Google Cloud Migration & Discovery Architect. Design a production-grade Legacy Data Dependency Map blueprint featuring on-prem legacy spaghetti dependencies, shadow DBs, StratoZone probe, and Migration Center wave planning powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "gcp_landing_zone_vpc",
+    name: "GCP Landing Zone & Shared VPC Network Fabric (P4-SEC-P-02)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "Production-grade Hub-and-Spoke Shared VPC network fabric with 100G Dedicated Interconnect, Cloud NAT HA, Private Service Connect (PSC), Cloud NGFW, and VPC-SC isolation.",
+    prompt: "Act as a Principal Google Cloud Network & Security Architect. Design a production-grade GCP Landing Zone & Hub-and-Spoke Shared VPC Network Fabric blueprint featuring Dedicated Interconnect, Cloud Router BGP, PSC Endpoints, GKE/Serverless Subnets, and VPC-SC perimeter powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "enterprise_agent_runtime",
+    name: "Enterprise Agent Runtime Platform (P4-AI-P-03)",
+    category: "AI & Cognitive Systems",
+    whenToUse: "Physical sandboxed compute runtime on GKE Autopilot with Agent Gateway, MCP tool worker pods, Model Armor real-time prompt interceptor, and Vertex AI TPU v5e serving.",
+    prompt: "Act as a Principal Google Cloud & Gemini AI Systems Architect. Design a production-grade Enterprise Agent Runtime Platform blueprint featuring GKE Autopilot sandboxed compute, Agent Gateway, MCP Tool Worker Pods, Model Armor Interceptor, and Vertex AI TPU v5e serving powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "ai_agent_approval_workflow",
+    name: "AI Agent Approval Workflow & Human-in-the-Loop Governance (P4-GOV-L-05)",
+    category: "Security, Governance & Risk",
+    whenToUse: "Multi-stage AI agent review, automated red-teaming, Legal/AppSec human approval gates, Binary Authorization KMS attestation, and signed production serving.",
+    prompt: "Act as a Principal AI Governance & SecOps Architect. Design a production-grade AI Agent Approval Workflow & Governance Gatekeeper blueprint featuring developer IDE agent submission, automated red-teaming, Legal/AppSec approvals, Binary Authorization KMS attestation, and signed GKE serving powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "incident_triage_swimlane",
+    name: "Incident Triage & Escalation Swimlane (P5-GOV-L-04)",
+    category: "Security, Governance & Risk",
+    whenToUse: "Multi-tier SRE incident triage swimlane: L1 Automated Alerting & Gemini Cloud Assist RCA, L2 Auto-Remediation Runbooks, and L3 Incident Commander War Room bridge.",
+    prompt: "Act as a Principal Google Cloud SRE & Incident Response Architect. Design a production-grade 3-tier SRE Incident Triage Swimlane blueprint featuring L1 Alerting & Gemini Assist RCA, L2 Auto-Remediation Runbooks, and L3 Incident Commander War Room bridge powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "ecommerce_retail",
+    name: "OmniChannel Intelligent E-Commerce Platform (IND-RETAIL-04)",
+    category: "Industry Specialized Solutions",
+    whenToUse: "Enterprise retail platform featuring Vertex AI Search for Retail, AlloyDB pgvector product catalog, Cloud Spanner multi-region cart, and BigQuery Lakehouse.",
+    prompt: "Act as a Principal Google Cloud Retail Architect. Design a production-grade OmniChannel Intelligent E-Commerce Platform blueprint featuring Vertex AI Search for Retail, AlloyDB pgvector Discovery, Cloud Spanner Global Cart, and BigQuery Lakehouse powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "hr_talent_ai",
+    name: "WorkforceAI HR Talent & People Intelligence (IND-HR-06)",
+    category: "Industry Specialized Solutions",
+    whenToUse: "Enterprise human capital AI platform featuring Document AI resume parsing, AlloyDB pgvector skills graph, Gemini 3.7 Flash candidate matching, and bias-free audits.",
+    prompt: "Act as a Principal Google Cloud AI Architect for HR & People Systems. Design a production-grade WorkforceAI HR Talent & People Intelligence blueprint featuring Document AI resume parser, AlloyDB pgvector skills graph, Gemini 3.7 Flash candidate matching, and Looker Recruiter Cockpit."
+  },
+  {
+    id: "smart_factory_iot",
+    name: "Smart Factory Industry 4.0 IoT & Predictive Maintenance (IND-MFG-05)",
+    category: "Industry Specialized Solutions",
+    whenToUse: "Industrial edge-to-cloud platform with Google Distributed Cloud (GDC) Edge gateway, Cloud Dataflow streaming, Bigtable time-series store, Vertex AI anomaly detection, and Looker OEE cockpit.",
+    prompt: "Act as a Principal Google Cloud Industrial IoT Architect. Design a production-grade Smart Factory Industry 4.0 IoT & Predictive Maintenance blueprint featuring GDC Edge Gateway, Cloud Dataflow streaming, Bigtable time-series, Vertex AI Anomaly Fuser, and Looker OEE Cockpit powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "c4_component_lld",
+    name: "C4 Level 3 Component Diagram & Microservice LLD (ARCH-C4-03)",
+    category: "Software & Application Architecture",
+    whenToUse: "Detailed container internal architecture: REST controllers, JWT auth interceptors, SAGA domain services, repositories, Redis cache, outbox poller, and external cloud infrastructure.",
+    prompt: "Act as a Principal Software & Microservice Architect. Design a production-grade C4 Level 3 Component Diagram & Microservice Low-Level Design (LLD) blueprint featuring Ingress Controllers, Auth Interceptors, Domain Services, Repositories, Redis Cache, and Cloud DBs powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "bpmn_process_workflow",
+    name: "BPMN 2.0 Business Process & Autonomous Workflow (ARCH-BPMN-01)",
+    category: "Business Strategy & Alignment",
+    whenToUse: "BPMN 2.0 standard process map featuring customer start/end events, user tasks, Gemini 3.7 Flash service tasks, XOR branching gateways, and ERP backend posting.",
+    prompt: "Act as a Principal Business Process & BPMN 2.0 Enterprise Architect. Design a production-grade BPMN 2.0 Business Process & Autonomous Workflow blueprint featuring Start Events, User Tasks, Gemini 3.7 Service Tasks, XOR Gateways, and ERP systems."
+  },
+  {
+    id: "threat_modeling_stride",
+    name: "STRIDE Zero-Trust Threat Model & Boundary Map (ARCH-SEC-01)",
+    category: "Security, Governance & Risk",
+    whenToUse: "STRIDE security analysis mapping threat vectors (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) to Google Cloud defenses (Cloud Armor, Model Armor, IAP, GKE gVisor, Workload Identity, VPC-SC, Cloud KMS HSM).",
+    prompt: "Act as a Principal Google Cloud Chief Information Security Officer (CISO) & Threat Modeler. Design a production-grade STRIDE Threat Model & Attack Vector Boundary Map blueprint featuring STRIDE attack vectors and Google Cloud defenses powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "data_lineage_provenance",
+    name: "Column-Level Data Lineage & Provenance Graph (ARCH-DAT-01)",
+    category: "Data Pipelines & Governance",
+    whenToUse: "End-to-end data lineage tracing from raw bronze tables through Dataform / dbt silver models to curated gold fact/dimension marts, Looker BI metrics, and Gemini 3.7 Flash RAG grounding.",
+    prompt: "Act as a Principal Google Cloud Data Governance & Lineage Architect. Design a production-grade Column-Level Data Lineage & Provenance Graph blueprint featuring Raw Bronze Tables, Dataform Silver Cleaning, Curated Gold Marts, and Looker Metrics powered by Gemini 3.7 Flash."
+  },
+  {
+    id: "healthcare_fhir_hl7",
+    name: "Google Cloud Healthcare & Life Sciences FHIR / HL7 Pipeline (IND-HEALTH-01)",
+    category: "Industry Specialized Solutions",
+    whenToUse: "Enterprise healthcare interoperability platform featuring Cloud Healthcare API (HL7v2/FHIR R4/DICOM), DLP PHI de-identification, OMOP BigQuery lakehouse, and Gemini 3.7 Flash clinical insights.",
+    prompt: "Act as a Principal Google Cloud Healthcare & Life Sciences Architect. Design a production-grade Healthcare FHIR R4 & HL7 Pipeline blueprint featuring Cloud Healthcare API, DLP PHI De-Identification, BigQuery Health Marts, and Gemini 3.7 Flash Clinical Reasoner."
   }
 ];
 
@@ -355,7 +459,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (!archId) return 'conceptual_diagram';
   const id = archId.toLowerCase().trim();
   // 32 Master WBS / Combined ID normalizers
-  if (id.startsWith('p1-app-l-01') || id === 'p1-app-l-01') return 'hybrid_strangler_transition';
+  if (id.startsWith('p1-app-l-01') || id === 'p1-app-l-01' || id.includes('legacy_data_dependency')) return 'legacy_data_dependency_map';
   if (id.startsWith('p1-gov-c-02') || id === 'p1-gov-c-02') return 'value_stream_map';
   if (id.startsWith('p1-gov-c-03') || id === 'p1-gov-c-03') return 'asis_vs_tobe_process_flow';
   if (id.startsWith('p2-gov-c-03') || id === 'p2-gov-c-03') return 'cloud_finops_chargeback';
@@ -370,10 +474,10 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.startsWith('p3-gov-l-09') || id === 'p3-gov-l-09') return 'logical_ai_config_tenant';
   if (id.startsWith('p3-app-l-10') || id === 'p3-app-l-10') return 'sequence_diagram';
   if (id.startsWith('p4-sec-p-01') || id === 'p4-sec-p-01') return 'secure_deployment_map';
-  if (id.startsWith('p4-sec-p-02') || id === 'p4-sec-p-02') return 'data_residency_sovereign_map';
-  if (id.startsWith('p4-ai-p-03') || id === 'p4-ai-p-03') return 'tech_agentic_mesh';
+  if (id.startsWith('p4-sec-p-02') || id === 'p4-sec-p-02' || id.includes('landing_zone') || id.includes('shared_vpc')) return 'gcp_landing_zone_vpc';
+  if (id.startsWith('p4-ai-p-03') || id === 'p4-ai-p-03' || id.includes('agent_runtime') || id.includes('enterprise_agent_runtime')) return 'enterprise_agent_runtime';
   if (id.startsWith('p4-gov-l-04') || id === 'p4-gov-l-04') return 'tech_eval_safety';
-  if (id.startsWith('p4-gov-l-05') || id === 'p4-gov-l-05') return 'tech_ai_trism_guardrails';
+  if (id.startsWith('p4-gov-l-05') || id === 'p4-gov-l-05' || id.includes('agent_approval')) return 'ai_agent_approval_workflow';
   if (id.startsWith('p4-gov-p-06') || id === 'p4-gov-p-06') return 'devops_cicd_pipeline';
   if (id.startsWith('p4-app-l-07') || id === 'p4-app-l-07') return 'tech_event_driven_eda';
   if (id.startsWith('p4-dat-p-09') || id === 'p4-dat-p-09') return 'tech_multimodal_ingestion';
@@ -383,12 +487,22 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.startsWith('p5-app-l-01') || id === 'p5-app-l-01') return 'six_rs_migration_matrix';
   if (id.startsWith('p5-sec-p-02') || id === 'p5-sec-p-02') return 'enterprise_sre_observability';
   if (id.startsWith('p5-gov-p-03') || id === 'p5-gov-p-03') return 'golive_warroom_runbook';
+  if (id.startsWith('p5-gov-l-04') || id === 'p5-gov-l-04' || id.includes('incident_triage_swimlane')) return 'incident_triage_swimlane';
   if (id.startsWith('p5-ai-l-05') || id === 'p5-ai-l-05') return 'tech_llm_capacity_quota';
   if (id.includes('capacity_quota') || id.includes('quota_management') || id === 'tech_llm_capacity_quota') return 'tech_llm_capacity_quota';
   if (id.startsWith('p5-ai-p-07') || id === 'p5-ai-p-07') return 'tech_llmops_lifecycle';
   if (id.includes('llmops') || id.includes('prompt_config') || id === 'tech_llmops_lifecycle') return 'tech_llmops_lifecycle';
   if (id.startsWith('p5-dat-p-08') || id === 'p5-dat-p-08') return 'dataops_anomaly_detection';
   if (id.startsWith('p5-gov-p-09') || id === 'p5-gov-p-09') return 'tech_multi_region_dr';
+
+  if (id.includes('retail') || id.includes('ecommerce') || id.includes('ind-retail-04') || id === 'ecommerce_retail') return 'ecommerce_retail';
+  if (id.includes('hr_talent') || id.includes('talent_ai') || id.includes('workforce_talent') || id.includes('ind-hr-06') || id === 'hr_talent_ai') return 'hr_talent_ai';
+  if (id.includes('smart_factory') || id.includes('manufacturing_iot') || id.includes('ind-mfg-05') || id === 'smart_factory_iot') return 'smart_factory_iot';
+  if (id.includes('c4_component') || id.includes('c4_lld') || id.includes('arch-c4-03') || id === 'c4_component_lld') return 'c4_component_lld';
+  if (id.includes('bpmn') || id.includes('workflow_process') || id.includes('arch-bpmn-01') || id === 'bpmn_process_workflow') return 'bpmn_process_workflow';
+  if (id.includes('stride') || id.includes('threat_modeling') || id.includes('arch-sec-01') || id === 'threat_modeling_stride') return 'threat_modeling_stride';
+  if (id.includes('data_lineage') || id.includes('provenance') || id.includes('arch-dat-01') || id === 'data_lineage_provenance') return 'data_lineage_provenance';
+  if (id.includes('fhir') || id.includes('hl7') || id.includes('healthcare_fhir') || id.includes('ind-health-01') || id === 'healthcare_fhir_hl7') return 'healthcare_fhir_hl7';
 
   if (id === 'tech_cicd_pipeline' || id === 'tech_cicd') return 'devops_cicd_pipeline';
   if (id === 'business_agent_governance_hitl' || id === 'business_agent_gov_hitl') return 'tech_ai_trism_guardrails';
@@ -410,7 +524,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('data_residency') || id.includes('sovereign_map') || id.includes('sovereign') || id === 'data_residency_sovereign_map') return 'data_residency_sovereign_map';
   if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('federated') || id === 'federated_iam_sso') return 'federated_iam_sso';
   if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') return 'logical_ai_config_tenant';
-  if (id.includes('legacy') || id.includes('dependency_map')) return 'hybrid_strangler_transition';
+  if (id.includes('legacy') || id.includes('dependency_map')) return 'legacy_data_dependency_map';
   if (id.includes('trism') || id.includes('guardrail') || id === 'tech_ai_trism_guardrails') return 'tech_ai_trism_guardrails';
   if (id.includes('micro_frontend') || id.includes('mfe') || id === 'tech_micro_frontends') return 'tech_micro_frontends';
   if (id.includes('fintech') || id.includes('payments') || id === 'tech_fintech_payments') return 'tech_fintech_payments';
@@ -466,6 +580,32 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactSixRsMigrationMatrixXml();
   } else if (id === 'hybrid_strangler_transition') {
     xml = getExactHybridStranglerTransitionXml();
+  } else if (id === 'legacy_data_dependency_map') {
+    xml = getExactLegacyDataDependencyMapXml();
+  } else if (id === 'gcp_landing_zone_vpc') {
+    xml = getExactGcpLandingZoneVpcXml();
+  } else if (id === 'enterprise_agent_runtime') {
+    xml = getExactEnterpriseAgentRuntimeXml();
+  } else if (id === 'ai_agent_approval_workflow') {
+    xml = getExactAiAgentApprovalWorkflowXml();
+  } else if (id === 'incident_triage_swimlane') {
+    xml = getExactIncidentTriageSwimlaneXml();
+  } else if (id === 'ecommerce_retail') {
+    xml = getExactEcommerceRetailXml();
+  } else if (id === 'hr_talent_ai') {
+    xml = getExactHrTalentAiXml();
+  } else if (id === 'smart_factory_iot') {
+    xml = getExactSmartFactoryIotXml();
+  } else if (id === 'c4_component_lld') {
+    xml = getExactC4ComponentLldXml();
+  } else if (id === 'bpmn_process_workflow') {
+    xml = getExactBpmnWorkflowXml();
+  } else if (id === 'threat_modeling_stride') {
+    xml = getExactThreatModelingStrideXml();
+  } else if (id === 'data_lineage_provenance') {
+    xml = getExactDataLineageXml();
+  } else if (id === 'healthcare_fhir_hl7') {
+    xml = getExactHealthcareFhirXml();
   } else if (id === 'cloud_finops_chargeback') {
     xml = getExactCloudFinopsChargebackXml();
   } else if (id === 'ai_coe_operating_model') {
@@ -514,7 +654,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactLlmopsLifecycleXml();
   } else if (id === 'tech_llm_capacity_quota' || id.includes('capacity_quota') || id.includes('quota_management') || id === 'p5-ai-l-05') {
     xml = getExactLlmCapacityQuotaXml();
-  } else if (id === 'enterprise_sre_observability' || id.includes('incident_triage') || id.includes('sre_observability') || id === 'p5-gov-l-04' || id === 'p5-sec-p-02') {
+  } else if (id.includes('incident_triage') || id.includes('sre_observability') || id === 'p5-sec-p-02') {
     xml = getExactIncidentTriageSreXml();
   } else if (id === 'tech_data_lakehouse_gcp' || id === 'data_lakehouse' || id.includes('lakehouse')) {
     xml = getExactGcpDataLakehouseWbsXml();

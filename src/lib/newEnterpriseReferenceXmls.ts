@@ -1,4 +1,17 @@
 import { buildAgenticRagWidescreenXml } from './masterBuilders/build_master_agentic_rag';
+import { buildLegacyDataDependencyMapXml } from './masterBuilders/build_master_legacy_data_dependency';
+import { buildGcpLandingZoneVpcXml } from './masterBuilders/build_master_gcp_landing_zone_vpc';
+import { buildEnterpriseAgentRuntimeXml } from './masterBuilders/build_master_enterprise_agent_runtime';
+import { buildAiAgentApprovalWorkflowXml } from './masterBuilders/build_master_ai_agent_approval_workflow';
+import { buildIncidentTriageSwimlaneXml } from './masterBuilders/build_master_incident_triage_swimlane';
+import { buildEcommerceRetailXml } from './masterBuilders/build_master_ecommerce_retail';
+import { buildHrTalentAiXml } from './masterBuilders/build_master_hr_talent_ai';
+import { buildSmartFactoryIotXml } from './masterBuilders/build_master_smart_factory_iot';
+import { buildC4ComponentLldXml } from './masterBuilders/build_master_c4_component_lld';
+import { buildBpmnWorkflowXml } from './masterBuilders/build_master_bpmn_workflow';
+import { buildThreatModelingStrideXml } from './masterBuilders/build_master_threat_modeling_stride';
+import { buildDataLineageXml } from './masterBuilders/build_master_data_lineage';
+import { buildHealthcareFhirXml } from './masterBuilders/build_master_healthcare_fhir';
 /**
  * 🏛️ Master Widescreen Reference Layouts for New Enterprise Blueprints
  * JOURNAL-PUBLICATION GRADE SCIENTIFIC REFERENCE ARCHITECTURES
@@ -194,4 +207,56 @@ export function getExactValueStreamMapXml(): string {
 
 export function getExactAsIsToBeProcessFlowXml(): string {
   return buildAsIsToBeProcessFlowXml();
+}
+
+export function getExactLegacyDataDependencyMapXml(): string {
+  return buildLegacyDataDependencyMapXml();
+}
+
+export function getExactGcpLandingZoneVpcXml(): string {
+  return buildGcpLandingZoneVpcXml();
+}
+
+export function getExactEnterpriseAgentRuntimeXml(): string {
+  return buildEnterpriseAgentRuntimeXml();
+}
+
+export function getExactAiAgentApprovalWorkflowXml(): string {
+  return buildAiAgentApprovalWorkflowXml();
+}
+
+export function getExactIncidentTriageSwimlaneXml(): string {
+  return buildIncidentTriageSwimlaneXml();
+}
+
+export function getExactEcommerceRetailXml(): string {
+  return buildEcommerceRetailXml();
+}
+
+export function getExactHrTalentAiXml(): string {
+  return buildHrTalentAiXml();
+}
+
+export function getExactSmartFactoryIotXml(): string {
+  return buildSmartFactoryIotXml();
+}
+
+export function getExactC4ComponentLldXml(): string {
+  return buildC4ComponentLldXml();
+}
+
+export function getExactBpmnWorkflowXml(): string {
+  return buildBpmnWorkflowXml();
+}
+
+export function getExactThreatModelingStrideXml(): string {
+  return buildThreatModelingStrideXml();
+}
+
+export function getExactDataLineageXml(): string {
+  return buildDataLineageXml();
+}
+
+export function getExactHealthcareFhirXml(): string {
+  return buildHealthcareFhirXml();
 }
