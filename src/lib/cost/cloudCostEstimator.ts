@@ -66,7 +66,7 @@ export function estimateCloudArchitectureCost(
     if (lower.includes('vertex') || lower.includes('gemini') || lower.includes('ai platform') || lower.includes('nli')) {
       category = 'AI / LLM Inference Tier';
       unitCost = 480;
-      desc = 'Vertex AI Gemini 3.6 Pro / Flash Tokens & Red-Teaming Safety Harness';
+      desc = 'Vertex AI Gemini 3.7 Flash / Flash Tokens & Red-Teaming Safety Harness';
       prov = 'GCP';
       providerCountGcp++;
     } else if (lower.includes('armor') || lower.includes('waf') || lower.includes('safety setting')) {

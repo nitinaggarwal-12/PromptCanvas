@@ -173,7 +173,7 @@ export function buildHubAndSpokeAgentConfigXml(): string {
         <mxCell id="gen_form_ui" value="&lt;font style=&quot;font-size:7px;color:#94A3B8;&quot;&gt;General Form&lt;br&gt;[______]&lt;br&gt;[______]&lt;br&gt;[______]&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="476" y="196" width="90" height="76" as="geometry"/>
         </mxCell>
-        <mxCell id="gen_item_model" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Gemini 1.5 Pro&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
+        <mxCell id="gen_item_model" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Gemini 3.7 Flash&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
           <mxGeometry x="572" y="196" width="180" height="17" as="geometry"/>
         </mxCell>
         <mxCell id="gen_item_sys" value="&lt;font style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Global System Instructions&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">

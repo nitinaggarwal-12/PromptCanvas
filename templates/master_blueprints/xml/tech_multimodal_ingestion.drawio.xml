@@ -161,7 +161,7 @@
         </mxCell>
 
         <!-- 3 Pills inside Orchestration Agent -->
-        <mxCell id="pill_gemini_model" value="&lt;b style=&quot;font-size:6px;color:#1E40AF;&quot;&gt;Gemini 1.5 Pro&lt;br&gt;Multimodal Model&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="pill_gemini_model" value="&lt;b style=&quot;font-size:6px;color:#1E40AF;&quot;&gt;Gemini 3.7 Flash&lt;br&gt;Multimodal Model&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="456" y="146" width="98" height="38" as="geometry"/>
         </mxCell>
         <mxCell id="pill_agent_planning" value="&lt;b style=&quot;font-size:6px;color:#1E40AF;&quot;&gt;Agentic Planning&lt;br&gt;&amp; Reasoning&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">

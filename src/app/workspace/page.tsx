@@ -2511,7 +2511,7 @@ function WorkspaceContent() {
                     <Sparkles className="w-3.5 h-3.5 text-teal-400" />
                     <span>Prompt</span>
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono">Gemini 1.5 Pro</span>
+                  <span className="text-[10px] text-slate-400 font-mono">Gemini 3.7 Flash</span>
                 </label>
                 <textarea
                   value={newDiagramPrompt}
@@ -3701,7 +3701,7 @@ function WorkspaceContent() {
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
                   <div>
                     <span className="text-xs font-bold text-slate-400 block">Active LLM Architecture Engine</span>
-                    <span className="text-sm font-extrabold text-white mt-0.5 block">Gemini 3.6 Pro / Flash (Google AI)</span>
+                    <span className="text-sm font-extrabold text-white mt-0.5 block">Gemini 3.7 Flash / Flash (Google AI)</span>
                   </div>
                   <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
                     Connected
@@ -3776,7 +3776,7 @@ function WorkspaceContent() {
                     <Sparkles className="w-3.5 h-3.5 text-teal-400" />
                     <span>Prompt</span>
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono">Gemini 1.5 Pro</span>
+                  <span className="text-[10px] text-slate-400 font-mono">Gemini 3.7 Flash</span>
                 </label>
                 <textarea
                   value={newDiagramPrompt}
@@ -6384,7 +6384,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         <div>
                           <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center justify-between">
                             <span>Prompt / System Requirements</span>
-                            <span className="text-[10px] text-teal-400 font-mono">Gemini 1.5 Pro</span>
+                            <span className="text-[10px] text-teal-400 font-mono">Gemini 3.7 Flash</span>
                           </label>
                           <textarea
                             rows={4}
@@ -6478,7 +6478,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                           },
                           {
                             name: "AI Agentic RAG Pipeline",
-                            prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system with Cloud Run API, Cloud SQL pgvector, Vertex AI Search for document retrieval, and Gemini 2.5 Pro for reasoning.",
+                            prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system with Cloud Run API, Cloud SQL pgvector, Vertex AI Search for document retrieval, and Gemini 3.7 Flash for reasoning.",
                             provider: "AI / LLM",
                             color: "bg-purple-500/10 text-purple-400 border-purple-500/20"
                           },

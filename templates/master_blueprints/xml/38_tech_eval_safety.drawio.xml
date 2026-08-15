@@ -98,7 +98,7 @@
         </mxCell>
 
         <!-- Node 5: Vertex AI Constitutional Judge Models -->
-        <mxCell id="node_constitutional_judge" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Constitutional Judge Models&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Gemini 1.5 Pro multi-agent constitutional alignment judges&lt;br&gt;• Automated critique &amp; revision scoring across 50 ethical principles&lt;br&gt;• Sub-second latency rubric-based evaluation scores&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="node_constitutional_judge" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Vertex AI Constitutional Judge Models&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Gemini 3.7 Flash multi-agent constitutional alignment judges&lt;br&gt;• Automated critique &amp; revision scoring across 50 ethical principles&lt;br&gt;• Sub-second latency rubric-based evaluation scores&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="395" y="175" width="360" height="110" as="geometry"/>
         </mxCell>
 

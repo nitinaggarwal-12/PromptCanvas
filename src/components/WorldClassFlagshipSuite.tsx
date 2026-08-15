@@ -151,7 +151,7 @@ export function WorldClassFlagshipDrawer({
     }
   };
 
-  const sampleTerraform = `# PromptCanvas Gemini 3.6 Pro Generated Production HCL
+  const sampleTerraform = `# PromptCanvas Gemini 3.7 Flash Generated Production HCL
 resource "google_compute_global_forwarding_rule" "default" {
   name       = "promptcanvas-lb-ingress"
   target     = google_compute_target_https_proxy.default.id
@@ -223,7 +223,7 @@ export const cloudRunService = new gcp.cloudrunv2.Service("quantumflow-service",
     },
     {
       title: '2. Multi-Agent Autonomous Orchestration Engine',
-      subtitle: 'Gemini 3.6 Pro + Ephemeral System Prompt Context Caching',
+      subtitle: 'Gemini 3.7 Flash + Ephemeral System Prompt Context Caching',
       desc: 'Requests are routed into parallel worker pods (Grounding Agent, Code Synthesis Agent, Safety Verification Agent) with 90% OPEX cut via Ephemeral Context Caching.',
       metric: '$1,420/mo Token Savings • 3.2x Throughput Boost'
     },
@@ -250,7 +250,7 @@ export const cloudRunService = new gcp.cloudrunv2.Service("quantumflow-service",
               {activeTool === 'chaos' && '🔥 Visual Chaos & Disaster Recovery Stress-Simulator'}
               {activeTool === 'code_split' && '💻 Bidirectional Code-to-Canvas AST Split-Pane'}
               {activeTool === 'opex_heatmap' && '💰 Visual OPEX Cloud Spend & Carbon Footprint Radar'}
-              {activeTool === 'boardroom' && '🎬 Executive Boardroom Storytelling Narrator (Gemini 3.6 Pro)'}
+              {activeTool === 'boardroom' && '🎬 Executive Boardroom Storytelling Narrator (Gemini 3.7 Flash)'}
             </h3>
             <span className="text-xs font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/30">
               {activeDiagramName}
@@ -400,7 +400,7 @@ export const cloudRunService = new gcp.cloudrunv2.Service("quantumflow-service",
 
             <div className="md:col-span-2 p-3 rounded-xl bg-slate-950 border border-panel-border space-y-2">
               <div className="text-[10px] font-extrabold uppercase text-slate-400">
-                Gemini 3.6 Pro Node Spend &amp; Carbon Breakdown
+                Gemini 3.7 Flash Node Spend &amp; Carbon Breakdown
               </div>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 <div className="p-2 rounded-lg bg-teal-500/10 border border-teal-500/30">

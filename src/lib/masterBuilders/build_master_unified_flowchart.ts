@@ -4,7 +4,7 @@
  * FULL-WIDTH 4-COLUMN BALANCED DISTRIBUTION (NO EMPTY RIGHT SIDE, ZERO CLUTTER):
  * - Col 1 (x=80..350):   Client Portal [1] &bull; SIEM Reject [2b] &bull; Vector Search [4] &bull; Chunking Agent [8]
  * - Col 2/3 (x=420..910): DNS [1a] &bull; WAF [1b] &bull; Apigee Gateway [2] &bull; Orchestrator [3] &bull; Redis Cache [5] &bull; Pub/Sub Mesh [7] &bull; Embedding Agent [9] &bull; SRE Suite [11]
- * - Col 4 (x=1010..1290): GSLB [1c] &bull; Cloud KMS [2a] &bull; Gemini 1.5 Pro [3a] &bull; Cloud SQL HA [6] &bull; DLQ Bus [7a] &bull; BigQuery Lakehouse [10] &bull; PagerDuty SRE [12]
+ * - Col 4 (x=1010..1290): GSLB [1c] &bull; Cloud KMS [2a] &bull; Gemini 3.7 Flash [3a] &bull; Cloud SQL HA [6] &bull; DLQ Bus [7a] &bull; BigQuery Lakehouse [10] &bull; PagerDuty SRE [12]
  * 
  * 100% Zero-Collision 2D Coordinates with Solid White Contrast Pills and Dedicated Routing Channels.
  */
@@ -341,7 +341,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 4b: Deep Research Agent <-> Vertex AI Gemini 1.5 Pro (80px Wide Gap) -->
+    <!-- Flow 4b: Deep Research Agent <-> Vertex AI Gemini 3.7 Flash (80px Wide Gap) -->
     <mxCell id="flow_4b_fwd" value="&lt;b style='color:#9D174D;'&gt;4b. CoT Reasoning&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DB2777;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#DB2777;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" parent="1" source="node_3_research" target="node_3a_gemini">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>

@@ -40,7 +40,7 @@ export function TechRadarAndConceptDriftGuardModal({
       title: '🟢 ADOPT — Production Gold Standard (2026)',
       color: 'text-emerald-400 border-emerald-500/40 bg-emerald-500/10',
       nodes: [
-        { name: 'Gemini 3.6 Pro LLM Reasoning Engine', status: 'Optimal OPEX & Architectural Intelligence' },
+        { name: 'Gemini 3.7 Flash LLM Reasoning Engine', status: 'Optimal OPEX & Architectural Intelligence' },
         { name: 'Serverless Cloud Run v2 Containers', status: 'Zero-Idle Cost Auto-Scaling (0 -> 1000 pods)' },
         { name: 'Vertex AI Vector Search & ANN Indexing', status: 'Sub-10ms Billion-Vector Retrieval' }
       ]

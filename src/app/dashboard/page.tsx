@@ -1036,7 +1036,7 @@ export default function Dashboard() {
               <div className="space-y-2.5">
                 <label className="block text-base font-bold text-slate-200 flex items-center justify-between">
                   <span>Prompt</span>
-                  <span className="text-xs text-teal-400 font-mono">Gemini 1.5 Pro</span>
+                  <span className="text-xs text-teal-400 font-mono">Gemini 3.7 Flash</span>
                 </label>
                 <textarea
                   id="modal-diagram-prompt"
