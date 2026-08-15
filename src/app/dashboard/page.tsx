@@ -33,7 +33,8 @@ import {
   Compass,
   RefreshCw,
   History,
-  X
+  X,
+  Settings2
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
@@ -42,6 +43,16 @@ import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { checkDiagramStaleness } from '@/lib/diagramStaleness';
 import { TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
 import { generateUniqueProjectName, generateUniqueDiagramName } from '@/app/workspace/page';
+import {
+  PHASE_NAME_OPTIONS,
+  ARCHITECTURE_DOMAIN_OPTIONS,
+  ABSTRACTION_LEVEL_OPTIONS,
+  ARCHITECTURAL_STACK_LAYER_OPTIONS,
+  DEFAULT_LAYOUT_DIRECTION_OPTIONS,
+  SALES_CYCLE_STAGE_OPTIONS,
+  LIFECYCLE_PHASE_OPTIONS,
+  getBlueprintMetadataById
+} from '@/lib/blueprintKnowledgeMatrix';
 
 interface Diagram {
   id: string;
@@ -139,10 +150,31 @@ export default function Dashboard() {
   const [newProjectName, setNewProjectName] = useState<string>(() => generateUniqueProjectName());
   const [newDiagramName, setNewDiagramName] = useState('');
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [selectedArchType, setSelectedArchType] = useState('conceptual_diagram');
   const [isCreating, setIsCreating] = useState(false);
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
+
+  // 🏛️ 7 Architectural Classification & Lifecycle Dropdown States
+  const [selectedPhaseName, setSelectedPhaseName] = useState<string>('Target State Logical Architecture');
+  const [selectedDomain, setSelectedDomain] = useState<string>('App & Integration');
+  const [selectedAbstractionLevel, setSelectedAbstractionLevel] = useState<string>('Logical');
+  const [selectedStackLayer, setSelectedStackLayer] = useState<string>('Layer 4 (Application)');
+  const [selectedLayoutDirection, setSelectedLayoutDirection] = useState<string>('LR (Left to Right)');
+  const [selectedSalesCycleStage, setSelectedSalesCycleStage] = useState<string>('Presales Pitch');
+  const [selectedLifecyclePhase, setSelectedLifecyclePhase] = useState<string>('Requirements → Design');
+
+  const syncDimensionsForBlueprint = (archId: string) => {
+    const meta = getBlueprintMetadataById(archId);
+    if (meta) {
+      if (meta.phaseName) setSelectedPhaseName(meta.phaseName);
+      if (meta.domain) setSelectedDomain(meta.domain);
+      if (meta.abstractionLevel) setSelectedAbstractionLevel(meta.abstractionLevel);
+      if (meta.stackLayer) setSelectedStackLayer(meta.stackLayer);
+      if (meta.defaultDirection) setSelectedLayoutDirection(meta.defaultDirection === 'TD' ? 'TD (Top to Down)' : 'LR (Left to Right)');
+      if (meta.salesStage) setSelectedSalesCycleStage(meta.salesStage);
+      if (meta.lifecyclePhase) setSelectedLifecyclePhase(meta.lifecyclePhase);
+    }
+  };
 
   const earlierProjects = useMemo(() => {
     const names = new Set<string>();
@@ -278,7 +310,14 @@ export default function Dashboard() {
           body: JSON.stringify({
             name: finalDiagramName,
             prompt: promptToGenerate,
-            architectureType: selectedArchType
+            architectureType: selectedArchType,
+            phaseName: selectedPhaseName,
+            domain: selectedDomain,
+            abstractionLevel: selectedAbstractionLevel,
+            stackLayer: selectedStackLayer,
+            layoutDirection: selectedLayoutDirection,
+            salesStage: selectedSalesCycleStage,
+            lifecyclePhase: selectedLifecyclePhase
           })
         });
 
@@ -996,6 +1035,7 @@ export default function Dashboard() {
                     if (val.startsWith('arch_')) {
                       const archId = val.replace('arch_', '');
                       setSelectedArchType(archId);
+                      syncDimensionsForBlueprint(archId);
                       const arch = getArchitectureTypeById(archId);
                       if (arch) {
                         setNewDiagramPrompt(arch.prompt);
@@ -1033,6 +1073,133 @@ export default function Dashboard() {
                 </select>
               </div>
 
+              {/* 7 Architectural Classification & Lifecycle Dropdowns */}
+              <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                    <Settings2 className="w-4 h-4 text-teal-400" />
+                    <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                  </span>
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    7 Enterprise Parameters
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {/* 1. Phase Name */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-slate-300 truncate">
+                      Phase Name
+                    </label>
+                    <select
+                      value={selectedPhaseName}
+                      onChange={(e) => setSelectedPhaseName(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {PHASE_NAME_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 2. Architecture Domain */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-slate-300 truncate">
+                      Architecture Domain
+                    </label>
+                    <select
+                      value={selectedDomain}
+                      onChange={(e) => setSelectedDomain(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 3. Abstraction Level */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-slate-300 truncate">
+                      Abstraction Level
+                    </label>
+                    <select
+                      value={selectedAbstractionLevel}
+                      onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {ABSTRACTION_LEVEL_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 4. Architectural Stack Layer */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-slate-300 truncate">
+                      Stack Layer
+                    </label>
+                    <select
+                      value={selectedStackLayer}
+                      onChange={(e) => setSelectedStackLayer(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 5. Default Layout Direction */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-slate-300 truncate">
+                      Layout Direction
+                    </label>
+                    <select
+                      value={selectedLayoutDirection}
+                      onChange={(e) => setSelectedLayoutDirection(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 6. Sales Cycle Stage */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-slate-300 truncate">
+                      Sales Stage
+                    </label>
+                    <select
+                      value={selectedSalesCycleStage}
+                      onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {SALES_CYCLE_STAGE_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 7. Lifecycle Phase */}
+                  <div className="space-y-1 sm:col-span-2">
+                    <label className="block text-xs font-bold text-slate-300 truncate">
+                      Lifecycle Phase
+                    </label>
+                    <select
+                      value={selectedLifecyclePhase}
+                      onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {LIFECYCLE_PHASE_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-2.5">
                 <label className="block text-base font-bold text-slate-200 flex items-center justify-between">
                   <span>Prompt</span>
@@ -1043,7 +1210,7 @@ export default function Dashboard() {
                   placeholder="e.g., Act as a Solutions Architect. Design a serverless backend using Cloud Run..."
                   value={newDiagramPrompt}
                   onChange={(e) => setNewDiagramPrompt(e.target.value)}
-                  className="w-full h-36 bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all placeholder-slate-600 resize-none leading-relaxed"
+                  className="w-full h-32 bg-[#0b0f19] border border-panel-border/80 focus:border-teal-500/50 rounded-lg px-5 py-3.5 text-base text-slate-200 focus:outline-none transition-all placeholder-slate-600 resize-none leading-relaxed"
                 />
               </div>
 

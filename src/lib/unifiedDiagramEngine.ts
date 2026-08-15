@@ -13,6 +13,13 @@ export interface UnifiedDiagramRequest {
   isPrivate?: boolean;
   userId?: string | null;
   existingXml?: string;
+  phaseName?: string;
+  domain?: string;
+  abstractionLevel?: string;
+  stackLayer?: string;
+  layoutDirection?: string;
+  salesStage?: string;
+  lifecyclePhase?: string;
 }
 
 export interface UnifiedDiagramResponse {
@@ -40,10 +47,22 @@ export async function executeUnifiedDiagramPipeline(
   const { prompt, diagramId, name, isPrivate, userId } = req;
   const effectiveArchType = req.architectureType || 'conceptual_diagram';
 
+  const classificationTag = [
+    req.phaseName ? `Phase: ${req.phaseName}` : '',
+    req.domain ? `Domain: ${req.domain}` : '',
+    req.abstractionLevel ? `Level: ${req.abstractionLevel}` : '',
+    req.stackLayer ? `Layer: ${req.stackLayer}` : '',
+    req.layoutDirection ? `Direction: ${req.layoutDirection}` : '',
+    req.salesStage ? `Sales Stage: ${req.salesStage}` : '',
+    req.lifecyclePhase ? `Lifecycle: ${req.lifecyclePhase}` : ''
+  ].filter(Boolean).join(' | ');
+
+  const contextualPrompt = classificationTag ? `[${classificationTag}]\n${prompt}` : prompt;
+
   // 1. Resolve pristine 1400x800 base reference template
-  let baseTemplateXml = getDefaultXmlForArchitecture(effectiveArchType, prompt, prompt);
+  let baseTemplateXml = getDefaultXmlForArchitecture(effectiveArchType, contextualPrompt, contextualPrompt);
   if (!baseTemplateXml) {
-    baseTemplateXml = getDefaultXmlForArchitecture('conceptual_diagram', prompt, prompt);
+    baseTemplateXml = getDefaultXmlForArchitecture('conceptual_diagram', contextualPrompt, contextualPrompt);
   }
 
   // 2. Determine target XML to customize (existing version XML if refining same architecture, or base reference template)

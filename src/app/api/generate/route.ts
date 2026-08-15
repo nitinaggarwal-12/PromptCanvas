@@ -27,6 +27,13 @@ export async function POST(request: Request) {
     const architectureType = body.architectureType || body.architecture_type;
     const existingXml = body.existingXml || body.existing_xml;
     const isPrivate = body.isPrivate ?? body.is_private;
+    const phaseName = body.phaseName || body.phase_name;
+    const domain = body.domain;
+    const abstractionLevel = body.abstractionLevel || body.abstraction_level;
+    const stackLayer = body.stackLayer || body.stack_layer;
+    const layoutDirection = body.layoutDirection || body.layout_direction;
+    const salesStage = body.salesStage || body.sales_stage;
+    const lifecyclePhase = body.lifecyclePhase || body.lifecycle_phase;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -156,7 +163,14 @@ export async function POST(request: Request) {
       name,
       existingXml,
       isPrivate: isPrivate,
-      userId: user?.id || null
+      userId: user?.id || null,
+      phaseName,
+      domain,
+      abstractionLevel,
+      stackLayer,
+      layoutDirection,
+      salesStage,
+      lifecyclePhase
     });
 
     if (diagramId) {

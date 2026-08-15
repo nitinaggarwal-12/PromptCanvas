@@ -610,3 +610,104 @@ export function findBestMatchingBlueprint(prompt: string): BlueprintKnowledgeIte
 
   return highestScore >= 3 ? bestMatch : null;
 }
+
+export const PHASE_NAME_OPTIONS = [
+  'Current State Assessment & Baseline',
+  'Business Vision & Strategy Alignment',
+  'Target State Logical Architecture',
+  'Technical Deep-Dive & Security Validation',
+  'Transition Planning & Operational Readiness',
+  'Industry Specialized Solutions',
+  'Universal Architecture Standards'
+];
+
+export const ARCHITECTURE_DOMAIN_OPTIONS = [
+  'App & Integration',
+  'Application Migration',
+  'Data & Analytics',
+  'AI Agentic & LLMOps',
+  'Cloud Infra Security',
+  'Strategy & Governance',
+  'Cloud Migration Strategy',
+  'Release & Cutover',
+  'SRE & Incident Management',
+  'DataOps & Reliability',
+  'Resilience & DR',
+  'Financial Services & Wealth Management',
+  'Manufacturing & Industrial IoT',
+  'Pharma & Life Sciences',
+  'Retail & E-Commerce',
+  'Human Resources (HR) & People AI',
+  'Industry'
+];
+
+export const ABSTRACTION_LEVEL_OPTIONS = [
+  'Conceptual',
+  'Logical',
+  'Physical',
+  'Industry'
+];
+
+export const ARCHITECTURAL_STACK_LAYER_OPTIONS = [
+  'Layer 1 (Foundation)',
+  'Layer 2 (Intermediary)',
+  'Layer 3 (Complex)',
+  'Layer 4 (Application)',
+  'Layer 4 (Operations)'
+];
+
+export const DEFAULT_LAYOUT_DIRECTION_OPTIONS = [
+  'LR (Left to Right)',
+  'TD (Top to Down)'
+];
+
+export const SALES_CYCLE_STAGE_OPTIONS = [
+  'Presales Pitch',
+  'Executive Workshop',
+  'Technical Deep-Dive',
+  'Architecture Design / Review',
+  'Security Review / ARB Sign-Off',
+  'Implementation & Handoff',
+  'Technical Workshop',
+  'Technical Implementation',
+  'Migration Assessment',
+  'Governance Workshop',
+  'Strategic Alignment',
+  'Enterprise Architecture Review',
+  'Industry Solution Pitch'
+];
+
+export const LIFECYCLE_PHASE_OPTIONS = [
+  'Requirements → Design',
+  'Assessment',
+  'Planning → Design',
+  'Design → Build',
+  'Design → Implementation',
+  'Design → Deployment',
+  'Design → Prompt Eng.',
+  'Design → Modeling',
+  'Design → Operations',
+  'Design → Verification',
+  'Design → Production',
+  'Testing → Deployment',
+  'Operations → Maintenance',
+  'Operations → Scaling',
+  'Release & Deployment',
+  'Planning → Maintenance',
+  'Maintenance & Scale'
+];
+
+export function getBlueprintMetadataById(id: string): BlueprintKnowledgeItem | null {
+  if (!id) return null;
+  const cleanId = id.toLowerCase();
+  for (const item of BLUEPRINT_KNOWLEDGE_MATRIX) {
+    if (
+      item.combinedId.toLowerCase() === cleanId ||
+      item.combinedId.toLowerCase().includes(cleanId) ||
+      cleanId.includes(item.combinedId.toLowerCase())
+    ) {
+      return item;
+    }
+  }
+  return null;
+}

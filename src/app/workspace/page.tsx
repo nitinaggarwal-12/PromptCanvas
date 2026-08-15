@@ -14,7 +14,16 @@ import { TechRadarAndConceptDriftGuardModal } from '@/components/TechRadarAndCon
 import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
 import { SUPPORTED_LANGUAGES, translateDiagramXmlToLanguage, TRANSLATIONS, SupportedLanguage } from '@/lib/i18n';
-import { getLocalizedWorkspaceStrings, localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
+import {
+  PHASE_NAME_OPTIONS,
+  ARCHITECTURE_DOMAIN_OPTIONS,
+  ABSTRACTION_LEVEL_OPTIONS,
+  ARCHITECTURAL_STACK_LAYER_OPTIONS,
+  DEFAULT_LAYOUT_DIRECTION_OPTIONS,
+  SALES_CYCLE_STAGE_OPTIONS,
+  LIFECYCLE_PHASE_OPTIONS,
+  getBlueprintMetadataById
+} from '@/lib/blueprintKnowledgeMatrix';
 import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -865,6 +874,28 @@ function WorkspaceContent() {
   const [isArchConsentModalOpen, setIsArchConsentModalOpen] = useState(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [newDiagramIsPrivate, setNewDiagramIsPrivate] = useState<boolean>(false);
+
+  // 🏛️ 7 Architectural Classification & Lifecycle Dropdown States
+  const [selectedPhaseName, setSelectedPhaseName] = useState<string>('Target State Logical Architecture');
+  const [selectedDomain, setSelectedDomain] = useState<string>('App & Integration');
+  const [selectedAbstractionLevel, setSelectedAbstractionLevel] = useState<string>('Logical');
+  const [selectedStackLayer, setSelectedStackLayer] = useState<string>('Layer 4 (Application)');
+  const [selectedLayoutDirection, setSelectedLayoutDirection] = useState<string>('LR (Left to Right)');
+  const [selectedSalesCycleStage, setSelectedSalesCycleStage] = useState<string>('Presales Pitch');
+  const [selectedLifecyclePhase, setSelectedLifecyclePhase] = useState<string>('Requirements → Design');
+
+  const syncDimensionsForBlueprint = useCallback((archId: string) => {
+    const meta = getBlueprintMetadataById(archId);
+    if (meta) {
+      if (meta.phaseName) setSelectedPhaseName(meta.phaseName);
+      if (meta.domain) setSelectedDomain(meta.domain);
+      if (meta.abstractionLevel) setSelectedAbstractionLevel(meta.abstractionLevel);
+      if (meta.stackLayer) setSelectedStackLayer(meta.stackLayer);
+      if (meta.defaultDirection) setSelectedLayoutDirection(meta.defaultDirection === 'TD' ? 'TD (Top to Down)' : 'LR (Left to Right)');
+      if (meta.salesStage) setSelectedSalesCycleStage(meta.salesStage);
+      if (meta.lifecyclePhase) setSelectedLifecyclePhase(meta.lifecyclePhase);
+    }
+  }, []);
 
   const earlierProjects: string[] = useMemo(() => {
     const names = new Set<string>();
@@ -2528,8 +2559,9 @@ function WorkspaceContent() {
                 />
               </div>
 
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 flex-1 min-w-[300px]">
+              <div className="space-y-4">
+                {/* 1. Identification & Blueprint Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
                   {/* 1. Project */}
                   <div className="sm:col-span-4 space-y-1.5">
                     <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
@@ -2592,6 +2624,7 @@ function WorkspaceContent() {
                       onChange={(e) => {
                         const newArch = e.target.value;
                         setSelectedArchType(newArch);
+                        syncDimensionsForBlueprint(newArch);
                         if (newArch === 'unified_system_view') {
                           if (!newDiagramPrompt || newDiagramPrompt !== DEFAULT_UNIFIED_PROMPT) {
                             setNewDiagramPrompt(DEFAULT_UNIFIED_PROMPT);
@@ -2627,11 +2660,139 @@ function WorkspaceContent() {
                   </div>
                 </div>
 
-                <div className="shrink-0">
+                {/* 2. 7 Architectural Classification & Lifecycle Dropdowns */}
+                <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                      <Settings2 className="w-3.5 h-3.5 text-teal-400" />
+                      <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      7 Enterprise Parameters (Auto-Populated • Customizable)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2.5">
+                    {/* 1. Phase Name */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Phase Name">
+                        Phase Name
+                      </label>
+                      <select
+                        value={selectedPhaseName}
+                        onChange={(e) => setSelectedPhaseName(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {PHASE_NAME_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 2. Architecture Domain */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architecture Domain">
+                        Architecture Domain
+                      </label>
+                      <select
+                        value={selectedDomain}
+                        onChange={(e) => setSelectedDomain(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 3. Abstraction Level */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Abstraction Level">
+                        Abstraction Level
+                      </label>
+                      <select
+                        value={selectedAbstractionLevel}
+                        onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {ABSTRACTION_LEVEL_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 4. Architectural Stack Layer */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architectural Stack Layer">
+                        Stack Layer
+                      </label>
+                      <select
+                        value={selectedStackLayer}
+                        onChange={(e) => setSelectedStackLayer(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 5. Default Layout Direction */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Default Layout Direction">
+                        Layout Direction
+                      </label>
+                      <select
+                        value={selectedLayoutDirection}
+                        onChange={(e) => setSelectedLayoutDirection(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 6. Sales Cycle Stage */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Sales Cycle Stage">
+                        Sales Stage
+                      </label>
+                      <select
+                        value={selectedSalesCycleStage}
+                        onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {SALES_CYCLE_STAGE_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 7. Lifecycle Phase */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Lifecycle Phase">
+                        Lifecycle Phase
+                      </label>
+                      <select
+                        value={selectedLifecyclePhase}
+                        onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {LIFECYCLE_PHASE_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Action Button Row */}
+                <div className="flex items-center justify-end pt-1">
                   <button
                     type="submit"
                     disabled={isGenerating || (!newDiagramPrompt.trim() && !newDiagramName.trim())}
-                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                    className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
                   >
                     {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                     <span>{isGenerating ? 'Compiling Architecture...' : '⚡ Generate Architecture with Gemini AI'}</span>
@@ -3793,9 +3954,10 @@ function WorkspaceContent() {
                 />
               </div>
 
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 flex-1 min-w-[300px]">
-                  {/* 1. Project (Textbox with unique + dropdown for earlier ones, BEFORE Architecture Name) */}
+              <div className="space-y-4">
+                {/* 1. Identification & Blueprint Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+                  {/* 1. Project */}
                   <div className="sm:col-span-4 space-y-1.5">
                     <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
                       <span>Project</span>
@@ -3842,7 +4004,7 @@ function WorkspaceContent() {
                       type="text"
                       value={newDiagramName}
                       onChange={(e) => setNewDiagramName(e.target.value)}
-                      placeholder="Diagram Name (e.g. Enterprise Ledger Architecture)"
+                      placeholder="Diagram Name"
                       className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium"
                     />
                   </div>
@@ -3857,6 +4019,7 @@ function WorkspaceContent() {
                       onChange={(e) => {
                         const newArch = e.target.value;
                         setSelectedArchType(newArch);
+                        syncDimensionsForBlueprint(newArch);
                         if (newArch === 'unified_system_view') {
                           if (!newDiagramPrompt || newDiagramPrompt !== DEFAULT_UNIFIED_PROMPT) {
                             setNewDiagramPrompt(DEFAULT_UNIFIED_PROMPT);
@@ -3892,11 +4055,139 @@ function WorkspaceContent() {
                   </div>
                 </div>
 
-                <div className="shrink-0">
+                {/* 2. 7 Architectural Classification & Lifecycle Dropdowns */}
+                <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                      <Settings2 className="w-3.5 h-3.5 text-teal-400" />
+                      <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      7 Enterprise Parameters (Auto-Populated • Customizable)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2.5">
+                    {/* 1. Phase Name */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Phase Name">
+                        Phase Name
+                      </label>
+                      <select
+                        value={selectedPhaseName}
+                        onChange={(e) => setSelectedPhaseName(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {PHASE_NAME_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 2. Architecture Domain */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architecture Domain">
+                        Architecture Domain
+                      </label>
+                      <select
+                        value={selectedDomain}
+                        onChange={(e) => setSelectedDomain(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 3. Abstraction Level */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Abstraction Level">
+                        Abstraction Level
+                      </label>
+                      <select
+                        value={selectedAbstractionLevel}
+                        onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {ABSTRACTION_LEVEL_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 4. Architectural Stack Layer */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architectural Stack Layer">
+                        Stack Layer
+                      </label>
+                      <select
+                        value={selectedStackLayer}
+                        onChange={(e) => setSelectedStackLayer(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 5. Default Layout Direction */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Default Layout Direction">
+                        Layout Direction
+                      </label>
+                      <select
+                        value={selectedLayoutDirection}
+                        onChange={(e) => setSelectedLayoutDirection(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 6. Sales Cycle Stage */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Sales Cycle Stage">
+                        Sales Stage
+                      </label>
+                      <select
+                        value={selectedSalesCycleStage}
+                        onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {SALES_CYCLE_STAGE_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 7. Lifecycle Phase */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Lifecycle Phase">
+                        Lifecycle Phase
+                      </label>
+                      <select
+                        value={selectedLifecyclePhase}
+                        onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
+                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                      >
+                        {LIFECYCLE_PHASE_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Action Button Row */}
+                <div className="flex items-center justify-end pt-1">
                   <button
                     type="submit"
                     disabled={isGenerating || (!newDiagramPrompt.trim() && !newDiagramName.trim())}
-                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                    className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
                   >
                     {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                     <span>{isGenerating ? 'Compiling Architecture...' : '⚡ Generate Architecture with Gemini AI'}</span>
@@ -6908,67 +7199,76 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       {/* 1. Create Diagram Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-panel border-panel-border rounded-xl p-6 w-full max-w-sm shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg text-white">Create New Diagram</h3>
+          <div className="glass-panel border-panel-border rounded-2xl p-6 md:p-8 w-full max-w-2xl shadow-2xl space-y-5">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <h3 className="font-extrabold text-xl text-white flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-teal-400" />
+                  <span>Create New Architecture Diagram</span>
+                </h3>
+                <p className="text-xs text-slate-400">Configure your project, select an enterprise blueprint, and tune architectural parameters.</p>
+              </div>
               <button 
                 onClick={() => setIsCreateModalOpen(false)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
+                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleCreateDiagram} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
-                  <span>Project</span>
-                  {earlierProjects.length > 0 && (
-                    <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
-                  )}
-                </label>
-                <div className="flex items-center gap-1.5">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+                <div className="sm:col-span-6 space-y-1.5">
+                  <label className="block text-xs font-semibold text-slate-300 flex items-center justify-between">
+                    <span>Project</span>
+                    {earlierProjects.length > 0 && (
+                      <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                    )}
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={newProjectName}
+                      onChange={(e) => setNewProjectName(e.target.value)}
+                      placeholder="e.g. Project-842"
+                      className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
+                    />
+                    {earlierProjects.length > 0 && (
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            setNewProjectName(e.target.value);
+                          }
+                        }}
+                        className="bg-bg-dark border border-panel-border focus:border-teal-accent text-teal-400 rounded-xl px-2.5 py-2.5 text-xs outline-none cursor-pointer shrink-0"
+                        title="Choose from earlier projects"
+                      >
+                        <option value="" disabled>📂 Earlier</option>
+                        {earlierProjects.map((p: string) => (
+                          <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                            {p}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </div>
+                <div className="sm:col-span-6 space-y-1.5">
+                  <label className="block text-xs font-semibold text-slate-300">Diagram Name</label>
                   <input
                     type="text"
-                    value={newProjectName}
-                    onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="e.g. Project-842"
-                    className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
+                    required
+                    value={newDiagramName}
+                    onChange={(e) => setNewDiagramName(e.target.value)}
+                    placeholder="e.g., Google Cloud E-Commerce"
+                    className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
+                    autoFocus
                   />
-                  {earlierProjects.length > 0 && (
-                    <select
-                      value=""
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          setNewProjectName(e.target.value);
-                        }
-                      }}
-                      className="bg-bg-dark border border-panel-border focus:border-teal-accent text-teal-400 rounded-lg px-2.5 py-2 text-xs outline-none cursor-pointer shrink-0"
-                      title="Choose from earlier projects"
-                    >
-                      <option value="" disabled>📂 Earlier</option>
-                      {earlierProjects.map((p: string) => (
-                        <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
-                          {p}
-                        </option>
-                      ))}
-                    </select>
-                  )}
                 </div>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Diagram Name</label>
-                <input
-                  type="text"
-                  required
-                  value={newDiagramName}
-                  onChange={(e) => setNewDiagramName(e.target.value)}
-                  placeholder="e.g., Google Cloud E-Commerce"
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg px-3.5 py-2 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-300">
                   Select Architecture Blueprint or Template
                 </label>
                 <select
@@ -6979,6 +7279,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     if (val.startsWith('arch_')) {
                       const archId = val.replace('arch_', '');
                       setSelectedArchType(archId);
+                      syncDimensionsForBlueprint(archId);
                       const arch = getArchitectureTypeById(archId);
                       if (arch) {
                         setNewDiagramPrompt(arch.prompt);
@@ -6991,7 +7292,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       }
                     }
                   }}
-                  className="w-full bg-slate-900 border border-teal-500/40 hover:border-teal-400 focus:border-teal-accent rounded-xl px-3.5 py-3 text-xs md:text-sm text-teal-300 font-bold focus:outline-none transition-all cursor-pointer shadow-sm"
+                  className="w-full bg-slate-900 border border-teal-500/40 hover:border-teal-400 focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-teal-300 font-bold focus:outline-none transition-all cursor-pointer shadow-sm"
                 >
                   <optgroup label="🏢 BUSINESS & STRATEGIC ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
                     {BUSINESS_ARCHITECTURE_TYPES.map((b) => (
@@ -7015,18 +7316,146 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   </optgroup>
                 </select>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                  Initial AI Prompt <span className="text-slate-400 font-normal">(Optional)</span>
+
+              {/* 7 Architectural Classification & Lifecycle Dropdowns */}
+              <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                    <Settings2 className="w-3.5 h-3.5 text-teal-400" />
+                    <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    7 Parameters
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                  {/* 1. Phase Name */}
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Phase Name">
+                      Phase Name
+                    </label>
+                    <select
+                      value={selectedPhaseName}
+                      onChange={(e) => setSelectedPhaseName(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {PHASE_NAME_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 2. Architecture Domain */}
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architecture Domain">
+                      Architecture Domain
+                    </label>
+                    <select
+                      value={selectedDomain}
+                      onChange={(e) => setSelectedDomain(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 3. Abstraction Level */}
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Abstraction Level">
+                      Abstraction Level
+                    </label>
+                    <select
+                      value={selectedAbstractionLevel}
+                      onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {ABSTRACTION_LEVEL_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 4. Architectural Stack Layer */}
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architectural Stack Layer">
+                      Stack Layer
+                    </label>
+                    <select
+                      value={selectedStackLayer}
+                      onChange={(e) => setSelectedStackLayer(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 5. Default Layout Direction */}
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Default Layout Direction">
+                      Layout Direction
+                    </label>
+                    <select
+                      value={selectedLayoutDirection}
+                      onChange={(e) => setSelectedLayoutDirection(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 6. Sales Cycle Stage */}
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Sales Cycle Stage">
+                      Sales Stage
+                    </label>
+                    <select
+                      value={selectedSalesCycleStage}
+                      onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {SALES_CYCLE_STAGE_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 7. Lifecycle Phase */}
+                  <div className="space-y-1 sm:col-span-2">
+                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Lifecycle Phase">
+                      Lifecycle Phase
+                    </label>
+                    <select
+                      value={selectedLifecyclePhase}
+                      onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
+                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
+                    >
+                      {LIFECYCLE_PHASE_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-semibold text-slate-400 flex items-center justify-between">
+                  <span>Initial AI Prompt <span className="text-slate-500 font-normal">(Optional)</span></span>
+                  <span className="text-[10px] text-teal-400 font-mono">Gemini 3.7 Flash</span>
                 </label>
                 <textarea
-                  rows={3}
+                  rows={2}
                   value={newDiagramPrompt}
                   onChange={(e) => setNewDiagramPrompt(e.target.value)}
-                  placeholder="e.g., Act as a GCP Data Architect. Design a simple 5-node streaming data pipeline with Cloud Storage, Pub/Sub, Dataflow, BigQuery, and Looker..."
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-lg p-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
+                  placeholder="e.g., Act as a GCP Data Architect. Design a streaming data pipeline with Pub/Sub and BigQuery..."
+                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl p-3 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
                 />
-                <p className="text-xs text-slate-400 mt-1.5">Leave empty to start with a clean minimal slate.</p>
               </div>
               <div className="pt-1">
                 <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer select-none">
