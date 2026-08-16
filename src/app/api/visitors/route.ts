@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getVisitorCount, incrementVisitorCount } from '@/lib/db';
+import { getVisitorCount, incrementVisitorCount, resetVisitorCount } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -23,7 +23,7 @@ export async function GET() {
   } catch (error: unknown) {
     console.error('Failed to get visitor count:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve visitor count', count: 1284 },
+      { error: 'Failed to retrieve visitor count', count: 0 },
       { status: 500, headers: noCacheHeaders }
     );
   }
@@ -42,7 +42,28 @@ export async function POST() {
   } catch (error: unknown) {
     console.error('Failed to increment visitor count:', error);
     return NextResponse.json(
-      { error: 'Failed to increment visitor count', count: 1284 },
+      { error: 'Failed to increment visitor count', count: 0 },
+      { status: 500, headers: noCacheHeaders }
+    );
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json().catch(() => ({}));
+    const targetValue = typeof body.value === 'number' ? body.value : 0;
+    const count = await resetVisitorCount(targetValue);
+    return NextResponse.json(
+      { count, success: true, message: `Visitor count reset to ${count}` },
+      {
+        status: 200,
+        headers: noCacheHeaders,
+      }
+    );
+  } catch (error: unknown) {
+    console.error('Failed to reset visitor count:', error);
+    return NextResponse.json(
+      { error: 'Failed to reset visitor count' },
       { status: 500, headers: noCacheHeaders }
     );
   }

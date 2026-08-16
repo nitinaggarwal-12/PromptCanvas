@@ -2793,7 +2793,7 @@ export async function getAuditReportsForDiagram(diagramId: string): Promise<Audi
 
 export async function getVisitorCount(): Promise<number> {
   await ensureTablesExist();
-  const INITIAL_SEED = 1284;
+  const INITIAL_SEED = 0;
   if (isPostgres()) {
     const pool = getPgPool();
     const res = await pool.query(`SELECT value FROM site_stats WHERE key = 'visitor_count'`);
@@ -2823,7 +2823,7 @@ export async function getVisitorCount(): Promise<number> {
 
 export async function incrementVisitorCount(step: number = 1): Promise<number> {
   await ensureTablesExist();
-  const INITIAL_SEED = 1284;
+  const INITIAL_SEED = 0;
   if (isPostgres()) {
     const pool = getPgPool();
     const res = await pool.query(`
@@ -2848,6 +2848,29 @@ export async function incrementVisitorCount(step: number = 1): Promise<number> {
     updateStmt.run(step);
     const row = db.prepare(`SELECT value FROM site_stats WHERE key = 'visitor_count'`).get() as { value: number } | undefined;
     return row ? Number(row.value) : (INITIAL_SEED + step);
+  }
+}
+
+export async function resetVisitorCount(value: number = 0): Promise<number> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(`
+      INSERT INTO site_stats (key, value, updated_at)
+      VALUES ('visitor_count', $1, CURRENT_TIMESTAMP)
+      ON CONFLICT (key)
+      DO UPDATE SET value = $1, updated_at = CURRENT_TIMESTAMP
+      RETURNING value;
+    `, [value]);
+    return parseInt(res.rows[0].value, 10);
+  } else {
+    const db = getSqliteDb();
+    db.exec(`
+      INSERT INTO site_stats (key, value, updated_at)
+      VALUES ('visitor_count', ${value}, strftime('%Y-%m-%d %H:%M:%f', 'now'))
+      ON CONFLICT(key) DO UPDATE SET value = ${value}, updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now');
+    `);
+    return value;
   }
 }
 
