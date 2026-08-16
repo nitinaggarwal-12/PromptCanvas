@@ -431,6 +431,8 @@ function WorkspaceContent() {
   const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
   const [isExecutiveSummaryOpen, setIsExecutiveSummaryOpen] = useState(false);
   const [isPlaybookModalOpen, setIsPlaybookModalOpen] = useState(false);
+  const [isPromptStudioExpanded, setIsPromptStudioExpanded] = useState<boolean>(false);
+  const [templateSearchQuery, setTemplateSearchQuery] = useState<string>('');
 
   // Global Keyboard Navigation for Master Template Preview Carousel
   useEffect(() => {
@@ -2479,9 +2481,21 @@ function WorkspaceContent() {
       filteredTemplates = filteredTemplates.filter(t => allowed.includes(t.id));
     }
 
+    if (templateSearchQuery.trim()) {
+      const q = templateSearchQuery.toLowerCase().trim();
+      filteredTemplates = filteredTemplates.filter(t => 
+        t.name.toLowerCase().includes(q) || 
+        t.id.toLowerCase().includes(q) || 
+        t.domain.toLowerCase().includes(q) || 
+        t.whenToUse.toLowerCase().includes(q) ||
+        (t.keyTech && t.keyTech.some((k: string) => k.toLowerCase().includes(q)))
+      );
+    }
+
     return (
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-bg-dark select-none animate-fade-in">
         <div className="max-w-[1600px] mx-auto space-y-6 sm:space-y-8">
+          {/* Top Header Bar with Live Search & Global Quick Actions */}
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-panel-border/40 pb-6">
             <div className="flex items-center gap-3">
               <button
@@ -2493,578 +2507,727 @@ function WorkspaceContent() {
                 <Menu className="w-5 h-5" />
               </button>
               <div>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-white">Architectural Blueprint Library</h1>
+                <div className="flex items-center gap-2.5">
+                  <h1 className="text-xl sm:text-2xl font-extrabold text-white">Architectural Blueprint Library</h1>
+                  <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/30">
+                    {filteredTemplates.length} of {allTemplates.length} Blueprints
+                  </span>
+                </div>
                 <p className="text-xs sm:text-sm text-slate-400 mt-0.5">Select an out-of-the-box publication architecture template to bootstrap your canvas instantly.</p>
               </div>
             </div>
 
-            {/* Filter Toolbar: Persona Dropdown + Phase/Category Tabs */}
+            {/* Filter Toolbar: Live Search + Persona Dropdown + Action Buttons */}
             <div className="flex flex-wrap items-center gap-3">
+              {/* Search Bar */}
+              <div className="relative min-w-[220px] sm:min-w-[260px]">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={templateSearchQuery}
+                  onChange={(e) => setTemplateSearchQuery(e.target.value)}
+                  placeholder="Search 50 blueprints (e.g. RAG, Event, DR)..."
+                  className="w-full bg-slate-900 border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 text-xs rounded-xl pl-9 pr-8 py-2 outline-none transition-all font-medium"
+                />
+                {templateSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setTemplateSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs font-bold"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
               {/* Persona Filter Dropdown */}
               <div className="relative inline-flex items-center">
                 <User className="w-3.5 h-3.5 text-teal-400 absolute left-3 pointer-events-none" />
                 <select
                   value={selectedPersonaFilter}
                   onChange={(e) => setSelectedPersonaFilter(e.target.value)}
-                  className="appearance-none bg-slate-900 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-bold text-xs rounded-xl pl-8 pr-8 py-2 outline-none cursor-pointer shadow-sm"
+                  className="appearance-none bg-slate-900 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-bold text-xs rounded-xl pl-8 pr-8 py-2 outline-none cursor-pointer shadow-sm max-w-[210px] truncate"
                 >
                   <optgroup label="💼 BUSINESS & EXECUTIVE PERSONAS" className="bg-[#0b101d] text-teal-400 font-extrabold">
-                    <option value="all">👤 All Enterprise Roles ({allTemplates.length} Blueprints)</option>
-                    <option value="executive">💼 Executive, Strategy &amp; C-Suite ({personaRelevantIds.executive.length})</option>
-                    <option value="industry">🏭 Industry Domain Leads ({personaRelevantIds.industry.length})</option>
+                    <option value="all">👤 All Roles ({allTemplates.length})</option>
+                    <option value="executive">💼 Executive &amp; C-Suite ({personaRelevantIds.executive.length})</option>
+                    <option value="industry">🏭 Industry Leads ({personaRelevantIds.industry.length})</option>
                   </optgroup>
                   <optgroup label="⚙️ TECHNICAL ENGINEERING PERSONAS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                    <option value="architect">🏛️ Enterprise Cloud &amp; Systems Architects ({personaRelevantIds.architect.length})</option>
-                    <option value="ai">🤖 AI Agentic &amp; LLMOps Engineers ({personaRelevantIds.ai.length})</option>
-                    <option value="data">📊 Data &amp; Medallion Lakehouse Engineers ({personaRelevantIds.data.length})</option>
-                    <option value="security">🛡️ Security, Cyber &amp; CISO Governance ({personaRelevantIds.security.length})</option>
-                    <option value="devops">⚙️ DevOps, GitOps &amp; SRE Reliability ({personaRelevantIds.devops.length})</option>
+                    <option value="architect">🏛️ Cloud Architects ({personaRelevantIds.architect.length})</option>
+                    <option value="ai">🤖 AI &amp; LLMOps ({personaRelevantIds.ai.length})</option>
+                    <option value="data">📊 Data &amp; Lakehouse ({personaRelevantIds.data.length})</option>
+                    <option value="security">🛡️ Security &amp; CISO ({personaRelevantIds.security.length})</option>
+                    <option value="devops">⚙️ DevOps &amp; SRE ({personaRelevantIds.devops.length})</option>
                   </optgroup>
                 </select>
                 <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
-              </div>
-
-              {/* Category Filter Tabs */}
-              <div className="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 flex-wrap">
-                <button
-                  type="button"
-                  onClick={() => setTemplateCategoryFilter('all')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'all' ? 'bg-teal-accent text-bg-dark shadow-sm' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  All ({allTemplates.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTemplateCategoryFilter('Phase 1')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'Phase 1' ? 'bg-cyan-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Phase 1 (4)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTemplateCategoryFilter('Phase 2')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'Phase 2' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Phase 2 (1)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTemplateCategoryFilter('Phase 3')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'Phase 3' ? 'bg-teal-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Phase 3 (10)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTemplateCategoryFilter('Phase 4')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'Phase 4' ? 'bg-indigo-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Phase 4 (13)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTemplateCategoryFilter('Phase 5')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'Phase 5' ? 'bg-purple-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Phase 5 (9)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTemplateCategoryFilter('Phase 6')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'Phase 6' ? 'bg-pink-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Phase 6 (7)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTemplateCategoryFilter('Phase 7')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'Phase 7' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Phase 7 (6)
-                </button>
               </div>
 
               {/* Master Template Carousel Preview Button */}
               <button
                 type="button"
                 onClick={() => setPreviewModalTemplateId(filteredTemplates[0]?.id || allTemplates[0]?.id)}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-teal-500/20 flex items-center gap-2 transition-all cursor-pointer hover:scale-[1.02]"
-                title="Browse All 50 Master Blueprints in High-Res Carousel (Back / Forward controls)"
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-teal-500/20 flex items-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02]"
+                title="Browse All 50 Master Blueprints in High-Res Carousel"
               >
                 <Eye className="w-4 h-4" />
                 <span>Preview All Blueprints</span>
               </button>
+
+              {/* Toggle AI Prompt Studio Button */}
+              <button
+                type="button"
+                onClick={() => setIsPromptStudioExpanded(prev => !prev)}
+                className={`px-3.5 py-2 rounded-xl font-extrabold text-xs border flex items-center gap-1.5 transition-all cursor-pointer ${
+                  isPromptStudioExpanded
+                    ? 'bg-teal-500 text-[#070A13] border-teal-400 shadow-md shadow-teal-500/20'
+                    : 'bg-slate-900 hover:bg-slate-800 text-teal-300 border-teal-500/40'
+                }`}
+                title={isPromptStudioExpanded ? 'Collapse AI Prompt Studio' : 'Open AI Architectural Prompt Studio'}
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>{isPromptStudioExpanded ? 'Hide Prompt Studio ▲' : 'AI Prompt Studio ▼'}</span>
+              </button>
             </div>
           </div>
 
-          {/* AI Architectural Prompt Studio in Templates Gallery */}
-          <div className="bg-[#0B101D] border border-panel-border/70 rounded-3xl p-6 md:p-8 backdrop-blur-md space-y-5 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-teal-500/10 blur-[100px] rounded-full pointer-events-none" />
-            
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-1.5">
-                <span className="inline-flex items-center gap-1.5 text-xs font-black text-teal-400 uppercase tracking-widest px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>AI Architectural Prompt Studio</span>
-                </span>
-                <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
-                  Customize Blueprint <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-400">With Pure Intent.</span>
-                </h2>
-                <p className="text-xs md:text-sm text-slate-400 max-w-3xl leading-relaxed">
-                  Select any blueprint below to populate this studio, or write your custom prompt to compile with Gemini AI.
-                </p>
+          {/* Phase Filter Tabs Ribbon */}
+          <div className="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 overflow-x-auto no-scrollbar">
+            <button
+              type="button"
+              onClick={() => setTemplateCategoryFilter('all')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                templateCategoryFilter === 'all' ? 'bg-teal-accent text-bg-dark shadow-sm font-black' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              All (50)
+            </button>
+            <button
+              type="button"
+              onClick={() => setTemplateCategoryFilter('Phase 1')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                templateCategoryFilter === 'Phase 1' ? 'bg-cyan-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Phase 1: Baseline (4)
+            </button>
+            <button
+              type="button"
+              onClick={() => setTemplateCategoryFilter('Phase 2')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                templateCategoryFilter === 'Phase 2' ? 'bg-emerald-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Phase 2: Strategy (1)
+            </button>
+            <button
+              type="button"
+              onClick={() => setTemplateCategoryFilter('Phase 3')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                templateCategoryFilter === 'Phase 3' ? 'bg-teal-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Phase 3: Target State (10)
+            </button>
+            <button
+              type="button"
+              onClick={() => setTemplateCategoryFilter('Phase 4')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                templateCategoryFilter === 'Phase 4' ? 'bg-indigo-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Phase 4: Security &amp; Tech (13)
+            </button>
+            <button
+              type="button"
+              onClick={() => setTemplateCategoryFilter('Phase 5')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                templateCategoryFilter === 'Phase 5' ? 'bg-purple-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Phase 5: Transition &amp; SRE (9)
+            </button>
+            <button
+              type="button"
+              onClick={() => setTemplateCategoryFilter('Phase 6')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                templateCategoryFilter === 'Phase 6' ? 'bg-pink-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Phase 6: Industry (7)
+            </button>
+            <button
+              type="button"
+              onClick={() => setTemplateCategoryFilter('Phase 7')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                templateCategoryFilter === 'Phase 7' ? 'bg-amber-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Phase 7: Standards (6)
+            </button>
+          </div>
+
+          {/* Collapsible AI Architectural Prompt Studio Banner & Panel */}
+          {!isPromptStudioExpanded ? (
+            <div 
+              onClick={() => setIsPromptStudioExpanded(true)}
+              className="bg-gradient-to-r from-[#0B101D] via-[#0F172A] to-[#0B101D] border border-teal-500/30 hover:border-teal-400/70 rounded-2xl p-4 sm:p-5 backdrop-blur-md shadow-xl transition-all relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer group hover:shadow-teal-500/10"
+            >
+              <div className="absolute top-0 right-0 w-64 h-full bg-teal-500/5 blur-3xl pointer-events-none" />
+              <div className="flex items-center gap-3.5 relative z-10">
+                <div className="p-2.5 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-400 group-hover:scale-105 transition-transform shrink-0">
+                  <Sparkles className="w-5 h-5 text-teal-400" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-sm sm:text-base font-black text-white group-hover:text-teal-300 transition-colors">
+                      AI Architectural Prompt Studio
+                    </h3>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/30 font-mono">
+                      Gemini 3.7 Flash
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Click to write custom requirements or customize any blueprint with pure natural language intent.
+                  </p>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsPromptStudioExpanded(true);
+                }}
+                className="px-4 py-2 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 font-bold text-xs border border-teal-500/40 flex items-center justify-center gap-2 transition-all cursor-pointer shrink-0 self-start md:self-auto"
+              >
+                <span>Expand Prompt Studio</span>
+                <ChevronDown className="w-4 h-4 text-teal-300" />
+              </button>
             </div>
-
-            {/* Direct Embedded Prompt Input Form */}
-            <form onSubmit={handleCreateDiagram} className="space-y-4 pt-1">
-              <div className="space-y-1.5">
-                <label className="flex items-center justify-between text-xs font-bold text-slate-300">
-                  <span className="flex items-center gap-1.5 text-teal-300">
-                    <Sparkles className="w-3.5 h-3.5 text-teal-400" />
-                    <span>Prompt</span>
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-mono">Gemini 3.7 Flash</span>
-                </label>
-                <textarea
-                  value={newDiagramPrompt}
-                  onChange={(e) => {
-                    setNewDiagramPrompt(e.target.value);
-                    if (!newDiagramName) {
-                      const words = e.target.value.split(' ').slice(0, 5).join(' ');
-                      if (words) setNewDiagramName(words);
-                    }
-                  }}
-                  placeholder="Describe the system architecture you want to build..."
-                  rows={3}
-                  className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-2xl p-4 text-xs md:text-sm outline-none resize-none shadow-inner transition-all leading-relaxed font-sans"
-                />
+          ) : (
+            <div className="bg-[#0B101D] border border-teal-500/40 rounded-3xl p-5 md:p-8 backdrop-blur-md space-y-5 shadow-2xl relative overflow-hidden animate-fade-in">
+              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-teal-500/10 blur-[100px] rounded-full pointer-events-none" />
+              
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-teal-400 uppercase tracking-widest px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>AI Architectural Prompt Studio</span>
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">Gemini 3.7 Flash</span>
+                  </div>
+                  <h2 className="text-lg md:text-xl font-black text-white tracking-tight">
+                    Customize Blueprint <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-400">With Pure Intent.</span>
+                  </h2>
+                  <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
+                    Write your custom architecture requirements or tweak any blueprint below to compile with Gemini AI.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsPromptStudioExpanded(false)}
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs border border-slate-700 flex items-center gap-1.5 transition-all self-start md:self-auto cursor-pointer"
+                >
+                  <span>✕ Collapse Studio</span>
+                </button>
               </div>
 
-              <div className="space-y-4">
-                {/* 1. Identification & Blueprint Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
-                  {/* 1. Project */}
-                  <div className="sm:col-span-4 space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
-                      <span>Project</span>
-                      {earlierProjects.length > 0 && (
-                        <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
-                      )}
-                    </label>
-                    <div className="flex items-center gap-1.5">
+              {/* Direct Embedded Prompt Input Form */}
+              <form onSubmit={handleCreateDiagram} className="space-y-4 pt-1">
+                <div className="space-y-1.5">
+                  <label className="flex items-center justify-between text-xs font-bold text-slate-300">
+                    <span className="flex items-center gap-1.5 text-teal-300">
+                      <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                      <span>Prompt Specification</span>
+                    </span>
+                  </label>
+                  <textarea
+                    value={newDiagramPrompt}
+                    onChange={(e) => {
+                      setNewDiagramPrompt(e.target.value);
+                      if (!newDiagramName) {
+                        const words = e.target.value.split(' ').slice(0, 5).join(' ');
+                        if (words) setNewDiagramName(words);
+                      }
+                    }}
+                    placeholder="Describe the system architecture you want to build..."
+                    rows={3}
+                    className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-2xl p-4 text-xs md:text-sm outline-none resize-none shadow-inner transition-all leading-relaxed font-sans"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  {/* 1. Identification & Target Blueprint Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+                    {/* Project Name */}
+                    <div className="sm:col-span-4 space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                        <span>Project</span>
+                        {earlierProjects.length > 0 && (
+                          <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                        )}
+                      </label>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          value={newProjectName}
+                          onChange={(e) => setNewProjectName(e.target.value)}
+                          placeholder="e.g. Project-Alpha-101"
+                          className="flex-1 min-w-0 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2 text-xs md:text-sm outline-none transition-all font-medium truncate"
+                        />
+                        {earlierProjects.length > 0 && (
+                          <select
+                            value=""
+                            onChange={(e) => {
+                              if (e.target.value) setNewProjectName(e.target.value);
+                            }}
+                            className="w-24 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-400 rounded-xl px-2 py-2 text-xs outline-none cursor-pointer shrink-0"
+                            title="Choose from earlier projects"
+                          >
+                            <option value="" disabled>📂 Earlier</option>
+                            {earlierProjects.map((p: string) => (
+                              <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                                {p}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Diagram Name */}
+                    <div className="sm:col-span-4 space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-300">
+                        Diagram Name
+                      </label>
                       <input
                         type="text"
-                        value={newProjectName}
-                        onChange={(e) => setNewProjectName(e.target.value)}
-                        placeholder="e.g. Project-Alpha-101"
-                        className="flex-1 min-w-0 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium truncate"
+                        value={newDiagramName}
+                        onChange={(e) => setNewDiagramName(e.target.value)}
+                        placeholder="Diagram Name"
+                        className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2 text-xs md:text-sm outline-none transition-all font-medium"
                       />
-                      {earlierProjects.length > 0 && (
-                        <select
-                          value=""
-                          onChange={(e) => {
-                            if (e.target.value) {
-                              setNewProjectName(e.target.value);
+                    </div>
+
+                    {/* Target Blueprint */}
+                    <div className="sm:col-span-4 space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                        <span>Target Blueprint Reference</span>
+                        <span className="text-[10px] text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
+                      </label>
+                      <select
+                        value={selectedArchType}
+                        onChange={(e) => {
+                          const newArch = e.target.value;
+                          setSelectedArchType(newArch);
+                          syncDimensionsForBlueprint(newArch);
+                          if (newArch === 'unified_system_view') {
+                            if (!newDiagramPrompt || newDiagramPrompt !== DEFAULT_UNIFIED_PROMPT) {
+                              setNewDiagramPrompt(DEFAULT_UNIFIED_PROMPT);
+                              setNewDiagramName(generateUniqueDiagramName());
                             }
-                          }}
-                          className="w-24 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-400 rounded-xl px-2 py-2.5 text-xs outline-none cursor-pointer shrink-0"
-                          title="Choose from earlier projects"
-                        >
-                          <option value="" disabled>📂 Earlier</option>
-                          {earlierProjects.map((p: string) => (
-                            <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
-                              {p}
+                          } else {
+                            const meta = getBlueprintMetadataById(newArch);
+                            if (meta?.goldenExamplePayload) {
+                              setNewDiagramPrompt(meta.goldenExamplePayload);
+                              setNewDiagramName(generateUniqueDiagramName(meta.diagramName));
+                            } else {
+                              const archInfo = getArchitectureTypeById(newArch);
+                              if (archInfo) {
+                                setNewDiagramPrompt(archInfo.prompt);
+                                setNewDiagramName(generateUniqueDiagramName(archInfo.name));
+                              }
+                            }
+                          }
+                        }}
+                        className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-3 py-2 text-xs md:text-sm outline-none transition-all cursor-pointer truncate"
+                      >
+                        <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
+                          ✨ All Matching ({facetedOptions.matchingCount} Blueprints)
+                        </option>
+                        {facetedOptions.matchingBlueprints.length > 0 ? (
+                          facetedOptions.matchingBlueprints.map((item) => (
+                            <option key={item.combinedId} value={item.combinedId} className="bg-[#0B101D] text-slate-200 font-medium">
+                              {item.diagramName}
                             </option>
-                          ))}
-                        </select>
-                      )}
+                          ))
+                        ) : (
+                          <option disabled value="" className="bg-[#0B101D] text-amber-400 font-bold">
+                            ⚠️ No blueprints match this combination
+                          </option>
+                        )}
+                      </select>
                     </div>
                   </div>
 
-                  {/* 2. Diagram Name */}
-                  <div className="sm:col-span-4 space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300">
-                      Diagram Name
-                    </label>
-                    <input
-                      type="text"
-                      value={newDiagramName}
-                      onChange={(e) => setNewDiagramName(e.target.value)}
-                      placeholder="Diagram Name"
-                      className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium"
-                    />
+                  {/* 2-Column Categorized Architectural Dimensions */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Column 1: Core Architectural Classification */}
+                    <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-4 space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                          <span>1. Core Architectural Classification</span>
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
+                          3 Dimensions
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {/* 1. Phase Name */}
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Lifecycle Phase">
+                            Lifecycle Phase
+                          </label>
+                          <select
+                            value={selectedPhaseName}
+                            onChange={(e) => setSelectedPhaseName(e.target.value)}
+                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                          >
+                            <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 7 Phases ({allTemplates.length})</option>
+                            {PHASE_NAME_OPTIONS.map((opt) => {
+                              const count = facetedOptions.phaseCounts[opt] || 0;
+                              return (
+                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                  {opt.split(':')[0]} ({count})
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+
+                        {/* 2. Architecture Domain */}
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architecture Domain">
+                            Domain
+                          </label>
+                          <select
+                            value={selectedDomain}
+                            onChange={(e) => setSelectedDomain(e.target.value)}
+                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                          >
+                            <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 6 Domains</option>
+                            {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
+                              const count = facetedOptions.domainCounts[opt] || 0;
+                              return (
+                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                  {opt} ({count})
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+
+                        {/* 3. Abstraction Level */}
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Abstraction Level">
+                            Abstraction
+                          </label>
+                          <select
+                            value={selectedAbstractionLevel}
+                            onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
+                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                          >
+                            <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 4 Levels</option>
+                            {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
+                              const count = facetedOptions.abstractionCounts[opt] || 0;
+                              return (
+                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                  {opt} ({count})
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Column 2: Technical & Delivery Specifications */}
+                    <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-4 space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <span className="text-[11px] font-black uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+                          <Settings2 className="w-3.5 h-3.5 text-indigo-400" />
+                          <span>2. Technical &amp; Delivery Specifications</span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleResetFilters}
+                          className="text-[10px] font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                          title="Reset all dimension filters"
+                        >
+                          <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-300" />
+                          <span>Reset Filters</span>
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                        {/* 4. Architectural Stack Layer */}
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architectural Stack Layer">
+                            Stack Layer
+                          </label>
+                          <select
+                            value={selectedStackLayer}
+                            onChange={(e) => setSelectedStackLayer(e.target.value)}
+                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-indigo-400 text-slate-200 text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate"
+                          >
+                            <option value="ALL" className="bg-[#0B101D] text-indigo-300 font-bold">✨ All 5 Layers</option>
+                            {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
+                              const count = facetedOptions.stackLayerCounts[opt] || 0;
+                              return (
+                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                  {opt} ({count})
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+
+                        {/* 5. Default Layout Direction */}
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Default Layout Direction">
+                            Direction
+                          </label>
+                          <select
+                            value={selectedLayoutDirection}
+                            onChange={(e) => setSelectedLayoutDirection(e.target.value)}
+                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-indigo-400 text-slate-200 text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate"
+                          >
+                            <option value="ALL" className="bg-[#0B101D] text-indigo-300 font-bold">✨ All Directions</option>
+                            {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
+                              const count = facetedOptions.directionCounts[opt] || 0;
+                              return (
+                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                  {opt === 'LR' ? 'LR (Horizontal)' : opt === 'TD' ? 'TD (Vertical)' : opt} ({count})
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+
+                        {/* 6. Sales Cycle Stage */}
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Sales Cycle Stage">
+                            Sales Stage
+                          </label>
+                          <select
+                            value={selectedSalesCycleStage}
+                            onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
+                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-indigo-400 text-slate-200 text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate"
+                          >
+                            <option value="ALL" className="bg-[#0B101D] text-indigo-300 font-bold">✨ All Stages</option>
+                            {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
+                              const count = facetedOptions.salesStageCounts[opt] || 0;
+                              return (
+                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                  {opt} ({count})
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+
+                        {/* 7. Lifecycle Phase */}
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Delivery Lifecycle">
+                            Delivery Lifecycle
+                          </label>
+                          <select
+                            value={selectedLifecyclePhase}
+                            onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
+                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-indigo-400 text-slate-200 text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate"
+                          >
+                            <option value="ALL" className="bg-[#0B101D] text-indigo-300 font-bold">✨ All Lifecycles</option>
+                            {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
+                              const count = facetedOptions.lifecycleCounts[opt] || 0;
+                              return (
+                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                  {opt} ({count})
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* 3. Blueprint */}
-                  {/* 3. Blueprint */}
-                  <div className="sm:col-span-4 space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
-                      <span>Blueprint</span>
-                      <span className="text-[10px] text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
-                    </label>
-                    <select
-                      value={selectedArchType}
-                      onChange={(e) => {
-                        const newArch = e.target.value;
-                        setSelectedArchType(newArch);
-                        syncDimensionsForBlueprint(newArch);
-                        if (newArch === 'unified_system_view') {
-                          if (!newDiagramPrompt || newDiagramPrompt !== DEFAULT_UNIFIED_PROMPT) {
-                            setNewDiagramPrompt(DEFAULT_UNIFIED_PROMPT);
-                            setNewDiagramName(generateUniqueDiagramName());
-                          }
-                        } else {
-                          const meta = getBlueprintMetadataById(newArch);
+                  {/* Action Button Row */}
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+                    <button
+                      type="button"
+                      onClick={() => setIsPromptStudioExpanded(false)}
+                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs transition-all cursor-pointer"
+                    >
+                      Close Prompt Studio
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isGenerating || (!newDiagramPrompt.trim() && !newDiagramName.trim())}
+                      className="px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                    >
+                      {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                      <span>{isGenerating ? 'Compiling Architecture...' : '⚡ Generate Architecture with Gemini AI'}</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Blueprint Cards Grid - Immediately Visible */}
+          {filteredTemplates.length === 0 ? (
+            <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-12 text-center space-y-3">
+              <p className="text-base font-bold text-slate-300">No architecture blueprints match your filter criteria.</p>
+              <p className="text-xs text-slate-500">Try adjusting your search terms or clearing your filters.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setTemplateCategoryFilter('all');
+                  setSelectedPersonaFilter('all');
+                  setTemplateSearchQuery('');
+                  handleResetFilters();
+                }}
+                className="px-4 py-2 rounded-xl bg-teal-500/20 text-teal-300 font-bold text-xs border border-teal-500/40 hover:bg-teal-500/30 transition-all cursor-pointer"
+              >
+                Reset All Filters
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
+              {filteredTemplates.map((t, idx) => {
+                const personaBadge = getPersonaBadge(t);
+                const isHovered = hoveredTemplateId === t.id;
+
+                return (
+                  <div 
+                    key={t.id} 
+                    onMouseEnter={() => setHoveredTemplateId(t.id)}
+                    onMouseLeave={() => setHoveredTemplateId(null)}
+                    className={`glass-panel border-panel-border/50 hover:border-teal-500/40 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01] relative ${
+                      isHovered ? 'ring-1 ring-teal-500/30 bg-slate-900/90' : ''
+                    }`}
+                  >
+                    <div>
+                      <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-md border bg-cyan-500/20 text-cyan-300 border-cyan-500/40">
+                            {t.id.split('_')[0]}
+                          </span>
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-cyan-500/10 text-cyan-300 border-cyan-500/30">
+                            Phase: {t.phaseName.split(':')[0]}
+                          </span>
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-purple-500/10 text-purple-300 border-purple-500/30">
+                            ABSTRACTION: {t.abstractionLevel}
+                          </span>
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/30">
+                            LAYER: {t.stackLayer}
+                          </span>
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-slate-800 text-slate-300 border-slate-700">
+                            {t.domain}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${personaBadge.color}`}>
+                            {personaBadge.label}
+                          </span>
+                          {/* Eye Preview Button on Card */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPreviewModalTemplateId(t.id);
+                            }}
+                            className="p-1 rounded-md bg-slate-800/80 hover:bg-teal-500/20 text-slate-400 hover:text-teal-300 border border-slate-700/60 hover:border-teal-500/50 transition-all cursor-pointer"
+                            title={`Quick Preview Master Template: ${t.name}`}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                      <h3 className="font-extrabold text-sm text-white group-hover:text-teal-accent transition-colors mb-2 flex items-center justify-between">
+                        <span>{t.name}</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-3">
+                        {t.whenToUse}
+                      </p>
+
+                      {/* Featured GCP Services pills */}
+                      {t.keyTech && t.keyTech.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {t.keyTech.slice(0, 3).map((tech: string) => (
+                            <span key={tech} className="text-[9px] px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400 font-mono border border-slate-700/50">
+                              {tech}
+                            </span>
+                          ))}
+                          {t.keyTech.length > 3 && (
+                            <span className="text-[9px] px-1 py-0.5 rounded bg-slate-800/50 text-slate-500 font-mono">
+                              +{t.keyTech.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-3 border-t border-panel-border/30">
+                      <button
+                        type="button"
+                        onClick={() => setPreviewModalTemplateId(t.id)}
+                        className="px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-all border border-slate-700 flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                        title="Preview Master Template without opening canvas"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-teal-400" />
+                        <span>Preview</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsPromptStudioExpanded(true);
+                          setSelectedArchType(t.id);
+                          syncDimensionsForBlueprint(t.id);
+                          const meta = getBlueprintMetadataById(t.id);
                           if (meta?.goldenExamplePayload) {
                             setNewDiagramPrompt(meta.goldenExamplePayload);
                             setNewDiagramName(generateUniqueDiagramName(meta.diagramName));
                           } else {
-                            const archInfo = getArchitectureTypeById(newArch);
-                            if (archInfo) {
-                              setNewDiagramPrompt(archInfo.prompt);
-                              setNewDiagramName(generateUniqueDiagramName(archInfo.name));
-                            }
+                            setNewDiagramPrompt(t.whenToUse);
+                            setNewDiagramName(generateUniqueDiagramName(t.name));
                           }
-                        }
-                      }}
-                      className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-3 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer truncate"
-                    >
-                      <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
-                        ✨ All Matching ({facetedOptions.matchingCount} Blueprints)
-                      </option>
-                      {facetedOptions.matchingBlueprints.length > 0 ? (
-                        facetedOptions.matchingBlueprints.map((item) => (
-                          <option key={item.combinedId} value={item.combinedId} className="bg-[#0B101D] text-slate-200 font-medium">
-                            {item.diagramName}
-                          </option>
-                        ))
-                      ) : (
-                        <option disabled value="" className="bg-[#0B101D] text-amber-400 font-bold">
-                          ⚠️ No blueprints match this combination
-                        </option>
-                      )}
-                    </select>
-                  </div>
-                </div>
-
-                {/* 2. 7 Architectural Classification & Lifecycle Dropdowns (Cascading Facets) */}
-                <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                        <Settings2 className="w-3.5 h-3.5 text-teal-400" />
-                        <span>Architectural Classification &amp; Lifecycle Dimensions</span>
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
-                        {facetedOptions.matchingCount} of {BLUEPRINT_KNOWLEDGE_MATRIX.length} Blueprints
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleResetFilters}
-                      className="text-[10px] font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
-                      title="Reset all dimension filters"
-                    >
-                      <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-300" />
-                      <span>Reset Filters</span>
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2.5">
-                    {/* 1. Phase Name */}
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Phase Name">
-                        Phase Name
-                      </label>
-                      <select
-                        value={selectedPhaseName}
-                        onChange={(e) => setSelectedPhaseName(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                          if (typeof window !== 'undefined') {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }
+                        }}
+                        className="px-2.5 py-2 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 hover:text-indigo-200 text-xs font-bold transition-all border border-indigo-500/30 flex items-center justify-center gap-1 cursor-pointer shrink-0"
+                        title="Customize this blueprint in the AI Prompt Studio"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 7 Phases (50 Blueprints)</option>
-                        {PHASE_NAME_OPTIONS.map((opt) => {
-                          const count = facetedOptions.phaseCounts[opt] || 0;
-                          return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                              {opt} ({count})
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-
-                    {/* 2. Architecture Domain */}
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architecture Domain">
-                        Architecture Domain
-                      </label>
-                      <select
-                        value={selectedDomain}
-                        onChange={(e) => setSelectedDomain(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                        <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>Customize</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrentTab('editor');
+                          handleArchitectureSwitch(t.id);
+                          if (typeof window !== 'undefined') {
+                            const params = new URLSearchParams(window.location.search);
+                            params.delete('tab');
+                            const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+                            window.history.replaceState({}, '', newUrl);
+                          }
+                        }}
+                        className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1 cursor-pointer truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 6 Domains</option>
-                        {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
-                          const count = facetedOptions.domainCounts[opt] || 0;
-                          return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                              {opt} ({count})
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-
-                    {/* 3. Abstraction Level */}
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Abstraction Level">
-                        Abstraction Level
-                      </label>
-                      <select
-                        value={selectedAbstractionLevel}
-                        onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
-                      >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 4 Abstractions</option>
-                        {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
-                          const count = facetedOptions.abstractionCounts[opt] || 0;
-                          return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                              {opt} ({count})
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-
-                    {/* 4. Architectural Stack Layer */}
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architectural Stack Layer">
-                        Stack Layer
-                      </label>
-                      <select
-                        value={selectedStackLayer}
-                        onChange={(e) => setSelectedStackLayer(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
-                      >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 5 Layers</option>
-                        {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
-                          const count = facetedOptions.stackLayerCounts[opt] || 0;
-                          return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                              {opt} ({count})
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-
-                    {/* 5. Default Layout Direction */}
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Default Layout Direction">
-                        Layout Direction
-                      </label>
-                      <select
-                        value={selectedLayoutDirection}
-                        onChange={(e) => setSelectedLayoutDirection(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
-                      >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Directions</option>
-                        {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
-                          const count = facetedOptions.directionCounts[opt] || 0;
-                          return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                              {opt === 'LR' ? 'LR (Left to Right)' : opt === 'TD' ? 'TD (Top to Down)' : opt} ({count})
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-
-                    {/* 6. Sales Cycle Stage */}
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Sales Cycle Stage">
-                        Sales Stage
-                      </label>
-                      <select
-                        value={selectedSalesCycleStage}
-                        onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
-                      >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Stages</option>
-                        {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
-                          const count = facetedOptions.salesStageCounts[opt] || 0;
-                          return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                              {opt} ({count})
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-
-                    {/* 7. Lifecycle Phase */}
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Lifecycle Phase">
-                        Lifecycle Phase
-                      </label>
-                      <select
-                        value={selectedLifecyclePhase}
-                        onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
-                      >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Lifecycles</option>
-                        {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
-                          const count = facetedOptions.lifecycleCounts[opt] || 0;
-                          return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                              {opt} ({count})
-                            </option>
-                          );
-                        })}
-                      </select>
+                        <span>Use Blueprint →</span>
+                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                      </button>
                     </div>
                   </div>
-                </div>
-
-                {/* 3. Action Button Row */}
-                <div className="flex items-center justify-end pt-1">
-                  <button
-                    type="submit"
-                    disabled={isGenerating || (!newDiagramPrompt.trim() && !newDiagramName.trim())}
-                    className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070A13] font-black text-sm transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
-                  >
-                    {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                    <span>{isGenerating ? 'Compiling Architecture...' : '⚡ Generate Architecture with Gemini AI'}</span>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
-            {filteredTemplates.map((t, idx) => {
-              const personaBadge = getPersonaBadge(t);
-              const isHovered = hoveredTemplateId === t.id;
-
-              return (
-                <div 
-                  key={t.id} 
-                  onMouseEnter={() => setHoveredTemplateId(t.id)}
-                  onMouseLeave={() => setHoveredTemplateId(null)}
-                  className={`glass-panel border-panel-border/50 hover:border-teal-500/40 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01] relative ${
-                    isHovered ? 'ring-1 ring-teal-500/30 bg-slate-900/90' : ''
-                  }`}
-                >
-                  <div>
-                    <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-md border bg-cyan-500/20 text-cyan-300 border-cyan-500/40">
-                          {t.id.split('_')[0]}
-                        </span>
-                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-cyan-500/10 text-cyan-300 border-cyan-500/30">
-                          Phase: {t.phaseName.split(':')[0]}
-                        </span>
-                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-purple-500/10 text-purple-300 border-purple-500/30">
-                          ABSTRACTION: {t.abstractionLevel}
-                        </span>
-                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/30">
-                          LAYER: {t.stackLayer}
-                        </span>
-                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-slate-800 text-slate-300 border-slate-700">
-                          {t.domain}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${personaBadge.color}`}>
-                          {personaBadge.label}
-                        </span>
-                        {/* Eye Preview Button on Card */}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPreviewModalTemplateId(t.id);
-                          }}
-                          className="p-1 rounded-md bg-slate-800/80 hover:bg-teal-500/20 text-slate-400 hover:text-teal-300 border border-slate-700/60 hover:border-teal-500/50 transition-all cursor-pointer"
-                          title={`Quick Preview Master Template: ${t.name}`}
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                    <h3 className="font-extrabold text-sm text-white group-hover:text-teal-accent transition-colors mb-2 flex items-center justify-between">
-                      <span>{t.name}</span>
-                    </h3>
-                    <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-3">
-                      {t.whenToUse}
-                    </p>
-
-                    {/* Featured GCP Services pills */}
-                    {t.keyTech && t.keyTech.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {t.keyTech.slice(0, 3).map((tech: string) => (
-                          <span key={tech} className="text-[9px] px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400 font-mono border border-slate-700/50">
-                            {tech}
-                          </span>
-                        ))}
-                        {t.keyTech.length > 3 && (
-                          <span className="text-[9px] px-1 py-0.5 rounded bg-slate-800/50 text-slate-500 font-mono">
-                            +{t.keyTech.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2 pt-3 border-t border-panel-border/30">
-                    <button
-                      type="button"
-                      onClick={() => setPreviewModalTemplateId(t.id)}
-                      className="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-all border border-slate-700 flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
-                      title="Preview Master Template without opening canvas"
-                    >
-                      <Eye className="w-3.5 h-3.5 text-teal-400" />
-                      <span>Preview</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setCurrentTab('editor');
-                        handleArchitectureSwitch(t.id);
-                        if (typeof window !== 'undefined') {
-                          const params = new URLSearchParams(window.location.search);
-                          params.delete('tab');
-                          const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
-                          window.history.replaceState({}, '', newUrl);
-                        }
-                      }}
-                      className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <span>Use Blueprint →</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     );
