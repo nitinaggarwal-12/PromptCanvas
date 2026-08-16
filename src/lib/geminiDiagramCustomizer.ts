@@ -170,8 +170,10 @@ ${JSON.stringify(nodesToCustomize, null, 2)}`,
     const businessUsecase = data.businessUsecase || `Enterprise cloud architecture tailored for ${userPrompt.slice(0, 50)}.`;
     const technicalUsecase = data.technicalUsecase || `Zero-collision 1400x800 high-availability architecture deployed on Google Cloud.`;
 
+    const finalFlavored = injectUseCaseFlavor(customizedXml, userPrompt, userPrompt);
+
     return {
-      xml: customizedXml,
+      xml: finalFlavored,
       reasoning,
       businessUsecase,
       technicalUsecase

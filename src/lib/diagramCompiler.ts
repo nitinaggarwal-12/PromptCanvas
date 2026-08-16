@@ -55,7 +55,7 @@ export interface CompiledDiagramSpec {
 export function getExactItacsReferenceXml(): string {
   return `
 <mxfile host="embed.diagrams.net">
-  <diagram id="itacs_conceptual_compiled" name="Enterprise Architecture Platform Conceptual Diagram">
+  <diagram id="conceptual_diagram_compiled" name="Enterprise Architecture Platform Conceptual Diagram">
     <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -319,7 +319,7 @@ export function getExactErdReferenceXml(): string {
 
   tables += createTable('dim_time', '<b>[DIM] Dim_Time</b>', 820, 280, 180, 120, '<b>PK</b> Time Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Date<br>&nbsp;&nbsp;&nbsp;&nbsp;Week<br>&nbsp;&nbsp;&nbsp;&nbsp;Month<br>&nbsp;&nbsp;&nbsp;&nbsp;Quarter<br>&nbsp;&nbsp;&nbsp;&nbsp;Year', '#DBEAFE', '#1E3A8A');
   tables += createTable('dim_loc', '<b>[DIM] Dim_Location</b>', 820, 430, 180, 120, '<b>PK</b> Location Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Facility Name<br>&nbsp;&nbsp;&nbsp;&nbsp;City<br>&nbsp;&nbsp;&nbsp;&nbsp;State<br>&nbsp;&nbsp;&nbsp;&nbsp;Country<br>&nbsp;&nbsp;&nbsp;&nbsp;Region', '#DBEAFE', '#1E3A8A');
-  tables += createTable('dim_payer', '<b>[DIM] Dim_Billing_Channel</b>', 820, 580, 180, 100, '<b>PK</b> Channel Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Channel Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Type<br>&nbsp;&nbsp;&nbsp;&nbsp;Tier', '#DBEAFE', '#1E3A8A');
+  tables += createTable('dim_channel', '<b>[DIM] Dim_Billing_Channel</b>', 820, 580, 180, 100, '<b>PK</b> Channel Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Channel Name<br>&nbsp;&nbsp;&nbsp;&nbsp;Type<br>&nbsp;&nbsp;&nbsp;&nbsp;Tier', '#DBEAFE', '#1E3A8A');
   tables += createTable('dim_src', '<b>[DIM] Dim_Intel_Source</b>', 820, 710, 180, 100, '<b>PK</b> Source Key<br>&nbsp;&nbsp;&nbsp;&nbsp;Source Name<br>&nbsp;&nbsp;&nbsp;&nbsp;URL<br>&nbsp;&nbsp;&nbsp;&nbsp;Silo ID', '#DBEAFE', '#1E3A8A');
 
   // Right Sub-Schema 3 Tables
@@ -444,7 +444,7 @@ export function getExactErdReferenceXml(): string {
         <mxCell id="e_f11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_loc" target="fact_enc">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_f12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_payer" target="fact_enc">
+        <mxCell id="e_f12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.5;strokeColor=#92400E;startArrow=ERmandOne;endArrow=ERoneToMany;" edge="1" parent="1" source="dim_channel" target="fact_enc">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="780" y="630" />
@@ -878,7 +878,7 @@ export function getExactSequenceDiagramReferenceXml(): string {
         </mxCell>
 
         <!-- STEP 1: USER PROMPT -->
-        <mxCell id="s1" value="Sends single Oncology prompt:&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;'Compare market trends across 5 silos,&lt;br&gt;include recent sales figures'&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1E293B;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
+        <mxCell id="s1" value="Sends enterprise request:&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;'Process order &amp;amp; execute real-time&lt;br&gt;fraud risk evaluation across mesh'&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1E293B;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;fontColor=#0F172A;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry"><mxPoint x="122" y="160" as="sourcePoint" /><mxPoint x="340" y="160" as="targetPoint" /></mxGeometry>
         </mxCell>
 

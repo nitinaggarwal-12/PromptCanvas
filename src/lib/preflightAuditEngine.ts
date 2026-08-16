@@ -393,7 +393,7 @@ export function heal2DSameTierNodeCollisions(xml: string): string {
     return val;
   });
 
-  // 2. Scan nodes and prevent horizontal overlapping along same Y tiers
+  // 2. Scan nodes and heal only TRUE 2D bounding box intersections (with safety margin)
   const nodes: NodeItem[] = [];
   const regex = /(<mxCell\s+id="([^"]+)"[^>]*\bvertex="1"[^>]*>([\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?x="(\d+)"\s+y="(\d+)"\s+width="(\d+)"\s+height="(\d+)"[^>]*>[\s\S]*?<\/mxCell>))/gi;
 
@@ -401,7 +401,7 @@ export function heal2DSameTierNodeCollisions(xml: string): string {
   while ((m = regex.exec(xml)) !== null) {
     const fullTag = m[1];
     const id = m[2];
-    if (id.includes('container') || id.includes('subnet') || id.includes('lane') || id.includes('hdr') || id.includes('page') || id.includes('vpc_')) continue;
+    if (id.includes('container') || id.includes('subnet') || id.includes('lane') || id.includes('hdr') || id.includes('page') || id.includes('vpc_') || id.includes('col') || id.includes('box_') || id.includes('bar_')) continue;
     const x = parseInt(m[4], 10);
     const y = parseInt(m[5], 10);
     const w = parseInt(m[6], 10);
@@ -411,40 +411,20 @@ export function heal2DSameTierNodeCollisions(xml: string): string {
     }
   }
 
-  if (nodes.length === 0) return xml;
-
-  // Group by Y tier (within 45px vertical tolerance)
-  const tiers: NodeItem[][] = [];
-  for (const node of nodes) {
-    let placed = false;
-    for (const tier of tiers) {
-      if (Math.abs(tier[0].y - node.y) <= 45) {
-        tier.push(node);
-        placed = true;
-        break;
-      }
-    }
-    if (!placed) {
-      tiers.push([node]);
-    }
-  }
-
-  // Resolve horizontal overlaps per tier
-  for (const tier of tiers) {
-    tier.sort((a, b) => a.x - b.x);
-    for (let i = 0; i < tier.length - 1; i++) {
-      const current = tier[i];
-      const next = tier[i + 1];
-      const minClearanceX = current.x + current.w + 45; // Enforce minimum 45px clear horizontal corridor
-      if (minClearanceX > next.x) {
-        const shiftX = minClearanceX - next.x;
-        for (let j = i + 1; j < tier.length; j++) {
-          const oldX = tier[j].x;
+  // Check actual 2D pairwise intersection
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i];
+      const b = nodes[j];
+      const isIntersecting = (a.x < b.x + b.w && a.x + a.w > b.x) && (a.y < b.y + b.h && a.y + a.h > b.y);
+      if (isIntersecting) {
+        // Shift b rightward by overlap amount + 20px
+        const shiftX = (a.x + a.w + 20) - b.x;
+        if (shiftX > 0 && shiftX < 300) {
+          const oldX = b.x;
           const newX = oldX + shiftX;
-          tier[j].x = newX;
-
-          // Replace x in XML string for this cell
-          const oldGeomRegex = new RegExp(`(<mxCell\\s+id="${tier[j].id}"[^>]*\\bvertex="1"[^>]*>[\\s\\S]*?<mxGeometry\\s+[^>]*?\\bx=")${oldX}(")`);
+          b.x = newX;
+          const oldGeomRegex = new RegExp(`(<mxCell\\s+id="${b.id}"[^>]*\\bvertex="1"[^>]*>[\\s\\S]*?<mxGeometry\\s+[^>]*?\\bx=")${oldX}(")`);
           xml = xml.replace(oldGeomRegex, `$1${newX}$2`);
         }
       }

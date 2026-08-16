@@ -1018,12 +1018,62 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
 
   // 2. Adapt technical nodes if generic
   const promptTextLower = (userPrompt || topic || '').toLowerCase();
+  const isEcommerce = /e-?commerce|retail|storefront|cart|checkout|catalog|shopper|merchant|omnichannel|product catalog/i.test(promptTextLower + ' ' + (topic || ''));
   const isGenomicPrompt = promptTextLower.includes('genomic') || promptTextLower.includes('fastq') || promptTextLower.includes('variant') || promptTextLower.includes('gatk') || promptTextLower.includes('dna') || promptTextLower.includes('bwa');
   const isLiteratureMiningPrompt = promptTextLower.includes('literature') || promptTextLower.includes('patent') || promptTextLower.includes('clinical trial') || promptTextLower.includes('nsclc') || promptTextLower.includes('target discovery') || promptTextLower.includes('langchain') || promptTextLower.includes('bioinformatician');
   const isEarlyDiscoveryPrompt = promptLower.includes('discovery') || promptLower.includes('aiddison') || promptLower.includes('notebook') || promptLower.includes('biologist') || promptLower.includes('hypothesis');
-  const isFintechPrompt = promptLower.includes('fintech') || promptLower.includes('payment') || promptLower.includes('fraud') || promptLower.includes('ledger') || promptLower.includes('banking') || promptLower.includes('iso 20022') || promptLower.includes('pci') || promptLower.includes('apexpay');
+  const isFintechPrompt = !isEcommerce && (promptLower.includes('fintech') || promptLower.includes('payment') || promptLower.includes('fraud') || promptLower.includes('ledger') || promptLower.includes('banking') || promptLower.includes('iso 20022') || promptLower.includes('pci') || promptLower.includes('apexpay'));
 
-  if (isFintechPrompt) {
+  if (isEcommerce) {
+    updatedXml = updatedXml
+      .replace(/Data Engineering/g, 'Event-Driven E-Commerce Pub/Sub Ingestion')
+      .replace(/Application Development/g, 'Next.js &amp; Spring Boot Microservices Core')
+      .replace(/MLOps/g, 'Vertex AI Agentic RAG &amp; Recommendation Core')
+      .replace(/Project Planning/g, 'PCI-DSS &amp; Global E-Commerce Compliance')
+      .replace(/Dimensional Data Modeling \(ERD\)/g, 'E-Commerce Dimensional Schema &amp; Order Lineage')
+      .replace(/TRACK 1: DATA ENGINEERING &amp; DIMENSIONAL MODELING FLOW \(DFD\/ERD Lifecycle\)/g, 'TRACK 1: REAL-TIME CLICKSTREAM &amp; ORDER INGESTION PIPELINE')
+      .replace(/TRACK 2: APPLICATION DEVELOPMENT &amp; COGNITIVE ARCHITECTURE FLOW \(App Code Flow\)/g, 'TRACK 2: VERTEX AI AGENTIC PRODUCT RECOMMENDATION &amp; SEARCH')
+      .replace(/TRACK 3: MLOps LIFECYCLE \(ML\/AI TRAINING FLOW\)/g, 'TRACK 3: REAL-TIME FRAUD DETECTION &amp; CART ABANDONMENT ML PIPELINE')
+      .replace(/GKE Containers/g, 'Spring Boot E-Commerce Microservices (GKE)')
+      .replace(/API Gateway/g, 'Apigee &amp; Cloud Armor Storefront Gateway')
+      .replace(/Canary deployment on GKE/g, 'Automated Blue/Green Storefront Deployment')
+      .replace(/Human-in-the-Loop Governance/g, 'High-Risk Order Review &amp; Fraud Gate')
+      // ERD Specific Replacements (Complete 1-to-1 E-Commerce Mapping)
+      .replace(/Dim_Patient/g, 'Dim_Customer')
+      .replace(/Patient Key/g, 'Customer Key (PK)')
+      .replace(/Patient ID/g, 'Customer ID')
+      .replace(/Patient Type/g, 'Customer Loyalty Tier (Gold/VIP)')
+      .replace(/Demographics/g, 'Demographics &amp; Shipping Region')
+      .replace(/Disease History/g, 'Purchase History &amp; Lifetime Value')
+      .replace(/Dim_Physician/g, 'Dim_Product')
+      .replace(/Physician Key/g, 'Product SKU Key (PK)')
+      .replace(/Physician ID/g, 'Product SKU')
+      .replace(/Specialization/g, 'Category &amp; Taxonomy')
+      .replace(/Affiliation/g, 'Brand &amp; Merchant ID')
+      .replace(/Ranking/g, 'Rating &amp; Review Score')
+      .replace(/Location/g, 'Warehouse Fulfillment Center')
+      .replace(/Dim_Payer/g, 'Dim_Payment_Method')
+      .replace(/Payer Key/g, 'Payment Method Key (PK)')
+      .replace(/Payer ID/g, 'Payment Gateway ID')
+      .replace(/Payer Name/g, 'Gateway (Stripe/Adyen/PayPal)')
+      .replace(/Type/g, 'Payment Type (Credit/ApplePay/BNPL)')
+      .replace(/Tier/g, 'PCI-DSS Compliance Tier')
+      .replace(/Dim_Oncology_Product/g, 'Dim_Store_Channel')
+      .replace(/Product Key/g, 'Channel Key (PK)')
+      .replace(/Product ID/g, 'Channel ID')
+      .replace(/Product Name/g, 'Channel Name (Web/Mobile/POS)')
+      .replace(/Therapy Area/g, 'Region (US/EU/APAC)')
+      .replace(/Fact_Patient_Encounters/g, 'Fact_Orders')
+      .replace(/Encounter ID/g, 'Order ID (PK)')
+      .replace(/Diagnosis ID/g, 'Cart Session ID')
+      .replace(/Physician ID/g, 'Product SKU (FK)')
+      .replace(/Payer ID/g, 'Payment Method ID (FK)')
+      .replace(/Patient ID/g, 'Customer ID (FK)')
+      .replace(/Fact_Oncology_Insights/g, 'Fact_Cart_Events')
+      .replace(/Fact_Competitive_Intel/g, 'Fact_Payment_Transactions')
+      .replace(/Insight Type/g, 'Cart Action (Add/Remove/Abandon)')
+      .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security on Customer &amp; Payment Data (PCI-DSS &amp; GDPR Compliant)');
+  } else if (isFintechPrompt) {
     updatedXml = updatedXml
       .replace(/Data Engineering/g, 'ISO 20022 Payment Ingestion (Swift/SEPA)')
       .replace(/Application Development/g, 'Sub-50ms ML Fraud Risk &amp; Scoring Engine')
@@ -1426,10 +1476,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security on Account Data (PCI-DSS &amp; Banking Compliance)');
   }
 
-  const isHealthcareOrPharma = promptLower.includes('patient') || promptLower.includes('hospital') || promptLower.includes('medical') || promptLower.includes('pharma') || promptLower.includes('oncology') || promptLower.includes('clinical') || promptLower.includes('health') || promptLower.includes('drug') || promptLower.includes('biotech');
+  const isHealthcareOrPharma = !isEcommerce && !isFintechPrompt && /\b(healthcare|patient|hospital|medical|pharma|oncology|clinical|biotech|drug discovery|clinical trial)\b/i.test(promptLower);
 
   // Universal Scrubber: Clean legacy ITACS/Oncology boilerplate out of templates for NON-healthcare/pharma diagrams
-  if (!isHealthcareOrPharma) {
+  if (!isHealthcareOrPharma && !isEcommerce && !isFintechPrompt) {
     updatedXml = updatedXml
       .replace(/Raw Scientific Literature &amp; PPT Decks/g, `${topic} Data Ingress &amp; Client Docs`)
       .replace(/Manual Data Sources Card/g, `${topic} Ingress Card`)
@@ -1476,7 +1526,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Oncology/gi, topic || 'Enterprise')
       .replace(/PubMed/gi, `${topic} API`)
       .replace(/ITACS/gi, topic || 'Enterprise');
-  } else {
+  } else if (isHealthcareOrPharma) {
     // For Healthcare/Pharma prompts: preserve generic medical vocabulary, only clean ITACS brand boilerplate
     updatedXml = updatedXml
       .replace(/Dim_Customer_Entity/g, 'Dim_Patient')
