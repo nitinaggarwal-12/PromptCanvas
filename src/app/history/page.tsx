@@ -427,7 +427,7 @@ export default function CanvasHistoryPage() {
           <div className="p-3 space-y-1">
             {[
               { id: 'editor', name: 'Design Canvas', icon: Network, href: '/workspace' },
-              { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid, href: '/templates' },
+              { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid, href: '/workspace?tab=templates' },
               { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
               { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
               { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },

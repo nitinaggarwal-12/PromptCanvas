@@ -134,9 +134,9 @@ export default function LandingPage() {
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm text-slate-400 font-medium shrink-0">
             <a href="#features" className="hover:text-teal-400 transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
-            <Link href="/templates" className="hover:text-teal-300 transition-colors text-teal-400 font-semibold flex items-center gap-1">
+            <Link href="/workspace?tab=templates" className="hover:text-teal-300 transition-colors text-teal-400 font-semibold flex items-center gap-1">
               <span>Templates Matrix</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-black">{TEMPLATE_CATALOG_ITEMS.length}</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-black">50</span>
             </Link>
             <a href="#value" className="hover:text-teal-400 transition-colors">Why PromptCanvas</a>
           </nav>
@@ -448,14 +448,14 @@ export default function LandingPage() {
             Bootstrap with Production-Grade Blueprints
           </h3>
           <p className="text-lg text-slate-400 mt-4 max-w-2xl mx-auto">
-            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>10 complete multi-cloud reference blueprints</strong> directly in the interactive studio.
+            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>50 complete multi-cloud reference blueprints</strong> directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
               href="/workspace?tab=templates"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4"
             >
-              <span>View All 10 Production Blueprints in Templates Gallery →</span>
+              <span>View All 50 Production Blueprints in Templates Gallery →</span>
             </Link>
           </div>
         </div>

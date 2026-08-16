@@ -22,7 +22,9 @@ import {
   DEFAULT_LAYOUT_DIRECTION_OPTIONS,
   SALES_CYCLE_STAGE_OPTIONS,
   LIFECYCLE_PHASE_OPTIONS,
-  getBlueprintMetadataById
+  BLUEPRINT_KNOWLEDGE_MATRIX,
+  getBlueprintMetadataById,
+  getFacetedBlueprintFilters
 } from '@/lib/blueprintKnowledgeMatrix';
 import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
 import Link from 'next/link';
@@ -414,7 +416,7 @@ function WorkspaceContent() {
   const [leftVersionSelection, setLeftVersionSelection] = useState<string>('v1_initial');
   const [rightVersionSelection, setRightVersionSelection] = useState<string>('v2_current');
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
-  const [templateCategoryFilter, setTemplateCategoryFilter] = useState<'all' | 'business' | 'technical'>('all');
+  const [templateCategoryFilter, setTemplateCategoryFilter] = useState<string>('all');
   const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
   const [previewModalTemplateId, setPreviewModalTemplateId] = useState<string | null>(null);
   const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null);
@@ -426,24 +428,21 @@ function WorkspaceContent() {
   // Global Keyboard Navigation for Master Template Preview Carousel
   useEffect(() => {
     if (!previewModalTemplateId) return;
-    const allTemplates = [
-      ...BUSINESS_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'business' as const })),
-      ...TECHNICAL_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'technical' as const }))
-    ];
+    const allTemplates = BLUEPRINT_KNOWLEDGE_MATRIX;
     function handlePreviewKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         setPreviewModalTemplateId(null);
       } else if (e.key === 'ArrowLeft') {
-        const idx = allTemplates.findIndex(t => t.id === previewModalTemplateId);
+        const idx = allTemplates.findIndex(t => t.combinedId === previewModalTemplateId);
         if (idx !== -1) {
           const prevIdx = (idx - 1 + allTemplates.length) % allTemplates.length;
-          setPreviewModalTemplateId(allTemplates[prevIdx].id);
+          setPreviewModalTemplateId(allTemplates[prevIdx].combinedId);
         }
       } else if (e.key === 'ArrowRight') {
-        const idx = allTemplates.findIndex(t => t.id === previewModalTemplateId);
+        const idx = allTemplates.findIndex(t => t.combinedId === previewModalTemplateId);
         if (idx !== -1) {
           const nextIdx = (idx + 1) % allTemplates.length;
-          setPreviewModalTemplateId(allTemplates[nextIdx].id);
+          setPreviewModalTemplateId(allTemplates[nextIdx].combinedId);
         }
       }
     }
@@ -875,14 +874,44 @@ function WorkspaceContent() {
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [newDiagramIsPrivate, setNewDiagramIsPrivate] = useState<boolean>(false);
 
-  // 🏛️ 7 Architectural Classification & Lifecycle Dropdown States
-  const [selectedPhaseName, setSelectedPhaseName] = useState<string>('Target State Logical Architecture');
-  const [selectedDomain, setSelectedDomain] = useState<string>('App & Integration');
-  const [selectedAbstractionLevel, setSelectedAbstractionLevel] = useState<string>('Logical');
-  const [selectedStackLayer, setSelectedStackLayer] = useState<string>('Layer 4 (Application)');
-  const [selectedLayoutDirection, setSelectedLayoutDirection] = useState<string>('LR (Left to Right)');
-  const [selectedSalesCycleStage, setSelectedSalesCycleStage] = useState<string>('Presales Pitch');
-  const [selectedLifecyclePhase, setSelectedLifecyclePhase] = useState<string>('Requirements → Design');
+  // 🏛️ 7 Architectural Classification & Lifecycle Dropdown States (Cascading Facets)
+  const [selectedPhaseName, setSelectedPhaseName] = useState<string>('ALL');
+  const [selectedDomain, setSelectedDomain] = useState<string>('ALL');
+  const [selectedAbstractionLevel, setSelectedAbstractionLevel] = useState<string>('ALL');
+  const [selectedStackLayer, setSelectedStackLayer] = useState<string>('ALL');
+  const [selectedLayoutDirection, setSelectedLayoutDirection] = useState<string>('ALL');
+  const [selectedSalesCycleStage, setSelectedSalesCycleStage] = useState<string>('ALL');
+  const [selectedLifecyclePhase, setSelectedLifecyclePhase] = useState<string>('ALL');
+
+  const facetedOptions = useMemo(() => {
+    return getFacetedBlueprintFilters({
+      phaseName: selectedPhaseName === 'ALL' ? undefined : selectedPhaseName,
+      domain: selectedDomain === 'ALL' ? undefined : selectedDomain,
+      abstractionLevel: selectedAbstractionLevel === 'ALL' ? undefined : selectedAbstractionLevel,
+      stackLayer: selectedStackLayer === 'ALL' ? undefined : selectedStackLayer,
+      defaultDirection: selectedLayoutDirection === 'ALL' ? undefined : (selectedLayoutDirection.startsWith('TD') ? 'TD' : selectedLayoutDirection.startsWith('LR') ? 'LR' : selectedLayoutDirection),
+      salesStage: selectedSalesCycleStage === 'ALL' ? undefined : selectedSalesCycleStage,
+      lifecyclePhase: selectedLifecyclePhase === 'ALL' ? undefined : selectedLifecyclePhase,
+    });
+  }, [
+    selectedPhaseName,
+    selectedDomain,
+    selectedAbstractionLevel,
+    selectedStackLayer,
+    selectedLayoutDirection,
+    selectedSalesCycleStage,
+    selectedLifecyclePhase
+  ]);
+
+  const handleResetFilters = useCallback(() => {
+    setSelectedPhaseName('ALL');
+    setSelectedDomain('ALL');
+    setSelectedAbstractionLevel('ALL');
+    setSelectedStackLayer('ALL');
+    setSelectedLayoutDirection('ALL');
+    setSelectedSalesCycleStage('ALL');
+    setSelectedLifecyclePhase('ALL');
+  }, []);
 
   const syncDimensionsForBlueprint = useCallback((archId: string) => {
     const meta = getBlueprintMetadataById(archId);
@@ -891,7 +920,7 @@ function WorkspaceContent() {
       if (meta.domain) setSelectedDomain(meta.domain);
       if (meta.abstractionLevel) setSelectedAbstractionLevel(meta.abstractionLevel);
       if (meta.stackLayer) setSelectedStackLayer(meta.stackLayer);
-      if (meta.defaultDirection) setSelectedLayoutDirection(meta.defaultDirection === 'TD' ? 'TD (Top to Down)' : 'LR (Left to Right)');
+      if (meta.defaultDirection) setSelectedLayoutDirection(meta.defaultDirection === 'TD' ? 'TD' : 'LR');
       if (meta.salesStage) setSelectedSalesCycleStage(meta.salesStage);
       if (meta.lifecyclePhase) setSelectedLifecyclePhase(meta.lifecyclePhase);
     }
@@ -2402,34 +2431,42 @@ function WorkspaceContent() {
   };
 
   function renderTemplatesView() {
-    const allTemplates = [
-      ...BUSINESS_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'business' as const })),
-      ...TECHNICAL_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'technical' as const }))
-    ];
+    const allTemplates = BLUEPRINT_KNOWLEDGE_MATRIX.map(bp => ({
+      id: bp.combinedId,
+      name: bp.diagramName,
+      whenToUse: bp.uiCardDesc,
+      prompt: bp.goldenExamplePayload,
+      category: bp.phaseName.startsWith('Phase 1') || bp.phaseName.startsWith('Phase 2') || bp.domain === 'Strategy & Governance' ? ('business' as const) : ('technical' as const),
+      phaseName: bp.phaseName,
+      phaseNumber: bp.phase,
+      domain: bp.domain,
+      abstractionLevel: bp.abstractionLevel,
+      primaryPersonas: bp.primaryPersonas,
+      keyTech: bp.coreGcpServices
+    }));
 
     const personaRelevantIds: Record<string, string[]> = {
-      executive: ['conceptual_diagram', 'unified_system_view', 'value_stream_map', 'asis_vs_tobe_process_flow', 'six_rs_migration_matrix', 'cloud_finops_chargeback', 'ai_coe_operating_model', 'tech_c4_system_context', 'tech_event_driven_eda'],
-      fintech: ['erd', 'tech_fintech_payments', 'secure_deployment_map', 'tech_streaming_analytics', 'tech_c4_system_context', 'tech_event_driven_eda'],
-      legal: ['data_residency_sovereign_map', 'federated_iam_sso', 'tech_ai_trism_guardrails', 'secure_deployment_map', 'tech_c4_system_context'],
-      architect: ['conceptual_diagram', 'unified_system_view', 'federated_iam_sso', 'tech_agentic_mesh', 'secure_deployment_map', 'tech_serverless_gcp', 'tech_multi_region_dr', 'tech_c4_system_context', 'tech_event_driven_eda', 'hybrid_strangler_transition'],
-      devops: ['sequence_diagram', 'devops_cicd_pipeline', 'tech_event_driven_eda', 'enterprise_sre_observability', 'golive_warroom_runbook'],
-      security: ['secure_deployment_map', 'federated_iam_sso', 'data_residency_sovereign_map', 'tech_ai_trism_guardrails', 'tech_c4_system_context'],
-      data: ['erd', 'agentic_rag', 'tech_streaming_analytics', 'tech_data_lakehouse_gcp', 'tech_genomics_clinical', 'unified_data_governance', 'dataops_anomaly_detection']
+      executive: BLUEPRINT_KNOWLEDGE_MATRIX.filter(b => b.domain === 'Strategy & Governance' || b.phaseName.startsWith('Phase 1') || b.phaseName.startsWith('Phase 2') || b.combinedId.includes('total_unified_system_view') || b.combinedId.includes('c4_system_context')).map(b => b.combinedId),
+      architect: BLUEPRINT_KNOWLEDGE_MATRIX.filter(b => b.domain === 'App & Integration' || b.abstractionLevel === 'Logical' || b.abstractionLevel === 'Conceptual' || b.combinedId.includes('landing_zone') || b.combinedId.includes('c4')).map(b => b.combinedId),
+      data: BLUEPRINT_KNOWLEDGE_MATRIX.filter(b => b.domain === 'Data & Analytics' || b.combinedId.includes('lakehouse') || b.combinedId.includes('erd') || b.combinedId.includes('multimodal') || b.combinedId.includes('lineage')).map(b => b.combinedId),
+      ai: BLUEPRINT_KNOWLEDGE_MATRIX.filter(b => b.domain === 'AI Agentic & LLMOps' || b.domain === 'AI & Agentic' || b.combinedId.includes('rag') || b.combinedId.includes('agent') || b.combinedId.includes('llm')).map(b => b.combinedId),
+      security: BLUEPRINT_KNOWLEDGE_MATRIX.filter(b => b.domain === 'Cloud Infra Security' || b.combinedId.includes('sec') || b.combinedId.includes('iam') || b.combinedId.includes('sovereign') || b.combinedId.includes('trism') || b.combinedId.includes('threat')).map(b => b.combinedId),
+      devops: BLUEPRINT_KNOWLEDGE_MATRIX.filter(b => b.combinedId.includes('cicd') || b.combinedId.includes('sre') || b.combinedId.includes('warroom') || b.combinedId.includes('incident') || b.combinedId.includes('bcdr') || b.combinedId.includes('runtime')).map(b => b.combinedId),
+      industry: BLUEPRINT_KNOWLEDGE_MATRIX.filter(b => b.domain === 'Industry' || b.phaseName.startsWith('Phase 6')).map(b => b.combinedId)
     };
 
-    function getPersonaBadge(id: string) {
-      if (personaRelevantIds.executive.includes(id)) return { label: '💼 Executive & Product', color: 'text-teal-400 bg-teal-500/10 border-teal-500/30' };
-      if (personaRelevantIds.fintech.includes(id)) return { label: '🏦 FinTech & Banking', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
-      if (personaRelevantIds.legal.includes(id)) return { label: '📋 Compliance & Legal', color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30' };
-      if (personaRelevantIds.architect.includes(id)) return { label: '🏛️ Cloud Architect', color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' };
-      if (personaRelevantIds.devops.includes(id)) return { label: '⚙️ DevOps Lead', color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' };
-      if (personaRelevantIds.security.includes(id)) return { label: '🛡️ Security CISO', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' };
-      return { label: '📊 Data & AI Engineer', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' };
+    function getPersonaBadge(item: typeof allTemplates[0]) {
+      if (item.domain === 'Industry' || item.phaseName.startsWith('Phase 6')) return { label: '🏭 Industry Domain', color: 'text-pink-400 bg-pink-500/10 border-pink-500/30' };
+      if (item.domain === 'AI Agentic & LLMOps') return { label: '🤖 AI & Agentic MLOps', color: 'text-sky-400 bg-sky-500/10 border-sky-500/30' };
+      if (item.domain === 'Data & Analytics') return { label: '📊 Data & Lakehouse', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' };
+      if (item.domain === 'Cloud Infra Security') return { label: '🛡️ Cloud & Security CISO', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' };
+      if (item.domain === 'Strategy & Governance') return { label: '💼 Strategy & Governance', color: 'text-teal-400 bg-teal-500/10 border-teal-500/30' };
+      return { label: '🏛️ Cloud & Systems Arch', color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' };
     };
 
     let filteredTemplates = templateCategoryFilter === 'all'
       ? allTemplates
-      : allTemplates.filter(t => t.category === templateCategoryFilter);
+      : allTemplates.filter(t => t.phaseName.startsWith(templateCategoryFilter) || t.domain === templateCategoryFilter || t.category === templateCategoryFilter);
 
     if (selectedPersonaFilter !== 'all') {
       const allowed = personaRelevantIds[selectedPersonaFilter] || [];
@@ -2445,7 +2482,7 @@ function WorkspaceContent() {
               <p className="text-sm text-slate-400 mt-1">Select an out-of-the-box publication architecture template to bootstrap your canvas instantly.</p>
             </div>
 
-            {/* Filter Toolbar: Persona Dropdown + Category Tabs */}
+            {/* Filter Toolbar: Persona Dropdown + Phase/Category Tabs */}
             <div className="flex flex-wrap items-center gap-3">
               {/* Persona Filter Dropdown */}
               <div className="relative inline-flex items-center">
@@ -2457,48 +2494,93 @@ function WorkspaceContent() {
                 >
                   <optgroup label="💼 BUSINESS & EXECUTIVE PERSONAS" className="bg-[#0b101d] text-teal-400 font-extrabold">
                     <option value="all">👤 All Enterprise Roles ({allTemplates.length} Blueprints)</option>
-                    <option value="executive">💼 Executive, Product &amp; Operations Leadership ({personaRelevantIds.executive.length})</option>
-                    <option value="fintech">🏦 FinTech, Banking &amp; Operational Risk Lead ({personaRelevantIds.fintech.length})</option>
-                    <option value="legal">📋 Legal, Compliance &amp; AI Safety Officer ({personaRelevantIds.legal.length})</option>
+                    <option value="executive">💼 Executive, Strategy &amp; C-Suite ({personaRelevantIds.executive.length})</option>
+                    <option value="industry">🏭 Industry Domain Leads ({personaRelevantIds.industry.length})</option>
                   </optgroup>
                   <optgroup label="⚙️ TECHNICAL ENGINEERING PERSONAS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                    <option value="architect">🏛️ Enterprise Cloud &amp; Systems Architect ({personaRelevantIds.architect.length})</option>
-                    <option value="devops">⚙️ DevOps, GitOps &amp; SRE Reliability Lead ({personaRelevantIds.devops.length})</option>
-                    <option value="security">🛡️ Security, Cyber &amp; CISO Governance Officer ({personaRelevantIds.security.length})</option>
-                    <option value="data">📊 Data Engineering, Lakehouse &amp; AI/ML Architect ({personaRelevantIds.data.length})</option>
+                    <option value="architect">🏛️ Enterprise Cloud &amp; Systems Architects ({personaRelevantIds.architect.length})</option>
+                    <option value="ai">🤖 AI Agentic &amp; LLMOps Engineers ({personaRelevantIds.ai.length})</option>
+                    <option value="data">📊 Data &amp; Medallion Lakehouse Engineers ({personaRelevantIds.data.length})</option>
+                    <option value="security">🛡️ Security, Cyber &amp; CISO Governance ({personaRelevantIds.security.length})</option>
+                    <option value="devops">⚙️ DevOps, GitOps &amp; SRE Reliability ({personaRelevantIds.devops.length})</option>
                   </optgroup>
                 </select>
                 <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
               </div>
 
               {/* Category Filter Tabs */}
-              <div className="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
+              <div className="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 flex-wrap">
                 <button
                   type="button"
                   onClick={() => setTemplateCategoryFilter('all')}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     templateCategoryFilter === 'all' ? 'bg-teal-accent text-bg-dark shadow-sm' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  All Blueprints ({allTemplates.length})
+                  All ({allTemplates.length})
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTemplateCategoryFilter('business')}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'business' ? 'bg-teal-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                  onClick={() => setTemplateCategoryFilter('Phase 1')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    templateCategoryFilter === 'Phase 1' ? 'bg-cyan-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  🏢 Business ({BUSINESS_ARCHITECTURE_TYPES.length})
+                  Phase 1 (4)
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTemplateCategoryFilter('technical')}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    templateCategoryFilter === 'technical' ? 'bg-indigo-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                  onClick={() => setTemplateCategoryFilter('Phase 2')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    templateCategoryFilter === 'Phase 2' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  ⚙️ Technical ({TECHNICAL_ARCHITECTURE_TYPES.length})
+                  Phase 2 (1)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplateCategoryFilter('Phase 3')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    templateCategoryFilter === 'Phase 3' ? 'bg-teal-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Phase 3 (10)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplateCategoryFilter('Phase 4')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    templateCategoryFilter === 'Phase 4' ? 'bg-indigo-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Phase 4 (13)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplateCategoryFilter('Phase 5')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    templateCategoryFilter === 'Phase 5' ? 'bg-purple-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Phase 5 (9)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplateCategoryFilter('Phase 6')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    templateCategoryFilter === 'Phase 6' ? 'bg-pink-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Phase 6 (7)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplateCategoryFilter('Phase 7')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    templateCategoryFilter === 'Phase 7' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Phase 7 (6)
                 </button>
               </div>
 
@@ -2507,7 +2589,7 @@ function WorkspaceContent() {
                 type="button"
                 onClick={() => setPreviewModalTemplateId(filteredTemplates[0]?.id || allTemplates[0]?.id)}
                 className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-teal-500/20 flex items-center gap-2 transition-all cursor-pointer hover:scale-[1.02]"
-                title="Browse All 40 Master Blueprints in High-Res Carousel (Back / Forward controls)"
+                title="Browse All 50 Master Blueprints in High-Res Carousel (Back / Forward controls)"
               >
                 <Eye className="w-4 h-4" />
                 <span>Preview All Blueprints</span>
@@ -2615,9 +2697,11 @@ function WorkspaceContent() {
                   </div>
 
                   {/* 3. Blueprint */}
+                  {/* 3. Blueprint */}
                   <div className="sm:col-span-4 space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300">
-                      Blueprint
+                    <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                      <span>Blueprint</span>
+                      <span className="text-[10px] text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
                     </label>
                     <select
                       value={selectedArchType}
@@ -2631,45 +2715,60 @@ function WorkspaceContent() {
                             setNewDiagramName(generateUniqueDiagramName());
                           }
                         } else {
-                          const archInfo = getArchitectureTypeById(newArch);
-                          if (archInfo) {
-                            setNewDiagramPrompt(archInfo.prompt);
-                            setNewDiagramName(generateUniqueDiagramName(archInfo.name));
+                          const meta = getBlueprintMetadataById(newArch);
+                          if (meta?.goldenExamplePayload) {
+                            setNewDiagramPrompt(meta.goldenExamplePayload);
+                            setNewDiagramName(generateUniqueDiagramName(meta.diagramName));
+                          } else {
+                            const archInfo = getArchitectureTypeById(newArch);
+                            if (archInfo) {
+                              setNewDiagramPrompt(archInfo.prompt);
+                              setNewDiagramName(generateUniqueDiagramName(archInfo.name));
+                            }
                           }
                         }
                       }}
                       className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-3 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer truncate"
                     >
                       <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
-                        ✨ Auto-Detect Architecture Type
+                        ✨ All Matching ({facetedOptions.matchingCount} Blueprints)
                       </option>
-                      {TEMPLATE_CATEGORIES.map((category) => {
-                        const items = TEMPLATE_CATALOG_ITEMS.filter((item) => item.categoryId === category.id);
-                        if (items.length === 0) return null;
-                        return (
-                          <optgroup key={category.id} label={`${category.name} (${items.length})`} className="bg-[#0B101D] text-teal-400 font-extrabold">
-                            {items.map((item) => (
-                              <option key={item.id} value={item.id} className="bg-[#0B101D] text-slate-200 font-medium">
-                                {item.name}
-                              </option>
-                            ))}
-                          </optgroup>
-                        );
-                      })}
+                      {facetedOptions.matchingBlueprints.length > 0 ? (
+                        facetedOptions.matchingBlueprints.map((item) => (
+                          <option key={item.combinedId} value={item.combinedId} className="bg-[#0B101D] text-slate-200 font-medium">
+                            {item.diagramName}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled value="" className="bg-[#0B101D] text-amber-400 font-bold">
+                          ⚠️ No blueprints match this combination
+                        </option>
+                      )}
                     </select>
                   </div>
                 </div>
 
-                {/* 2. 7 Architectural Classification & Lifecycle Dropdowns */}
+                {/* 2. 7 Architectural Classification & Lifecycle Dropdowns (Cascading Facets) */}
                 <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                      <Settings2 className="w-3.5 h-3.5 text-teal-400" />
-                      <span>Architectural Classification &amp; Lifecycle Dimensions</span>
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      7 Enterprise Parameters (Auto-Populated • Customizable)
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                        <Settings2 className="w-3.5 h-3.5 text-teal-400" />
+                        <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
+                        {facetedOptions.matchingCount} of {BLUEPRINT_KNOWLEDGE_MATRIX.length} Blueprints
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleResetFilters}
+                      className="text-[10px] font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                      title="Reset all dimension filters"
+                    >
+                      <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-300" />
+                      <span>Reset Filters</span>
+                    </button>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2.5">
@@ -2683,9 +2782,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedPhaseName(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {PHASE_NAME_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Phases</option>
+                        {PHASE_NAME_OPTIONS.map((opt) => {
+                          const count = facetedOptions.phaseCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -2699,9 +2804,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedDomain(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Domains</option>
+                        {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
+                          const count = facetedOptions.domainCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -2715,9 +2826,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {ABSTRACTION_LEVEL_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Levels</option>
+                        {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
+                          const count = facetedOptions.abstractionCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -2731,9 +2848,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedStackLayer(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Layers</option>
+                        {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
+                          const count = facetedOptions.stackLayerCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -2747,9 +2870,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedLayoutDirection(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Directions</option>
+                        {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
+                          const count = facetedOptions.directionCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt === 'LR' ? 'LR (Left to Right)' : opt === 'TD' ? 'TD (Top to Down)' : opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -2763,9 +2892,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {SALES_CYCLE_STAGE_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Stages</option>
+                        {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
+                          const count = facetedOptions.salesStageCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -2779,9 +2914,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {LIFECYCLE_PHASE_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Lifecycles</option>
+                        {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
+                          const count = facetedOptions.lifecycleCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                   </div>
@@ -2802,14 +2943,9 @@ function WorkspaceContent() {
             </form>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
             {filteredTemplates.map((t, idx) => {
-              const isBusiness = t.category === 'business';
-              const badgeColor = isBusiness
-                ? 'bg-teal-500/10 text-teal-400 border-teal-500/30'
-                : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
-              const personaBadge = getPersonaBadge(t.id);
-              const lineage = getBlueprintLineage(t.id);
+              const personaBadge = getPersonaBadge(t);
               const isHovered = hoveredTemplateId === t.id;
 
               return (
@@ -2824,15 +2960,11 @@ function WorkspaceContent() {
                   <div>
                     <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-md border ${
-                          lineage.isIndustrySpecialized 
-                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/40' 
-                            : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
-                        }`}>
-                          {lineage.uniqueId}
+                        <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-md border bg-cyan-500/20 text-cyan-300 border-cyan-500/40">
+                          {t.id.split('_')[0]}
                         </span>
-                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badgeColor}`}>
-                          {isBusiness ? '🏢 BUSINESS' : (lineage.isIndustrySpecialized ? '🏭 INDUSTRY' : '⚙️ TECHNICAL')}
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-slate-800 text-slate-300 border-slate-700">
+                          {t.domain}
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -2856,12 +2988,28 @@ function WorkspaceContent() {
                     <h3 className="font-extrabold text-sm text-white group-hover:text-teal-accent transition-colors mb-2 flex items-center justify-between">
                       <span>{t.name}</span>
                     </h3>
-                    <p className="text-xs text-slate-400 line-clamp-4 leading-relaxed mb-4">
-                      {t.prompt}
+                    <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-3">
+                      {t.whenToUse}
                     </p>
+
+                    {/* Featured GCP Services pills */}
+                    {t.keyTech && t.keyTech.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {t.keyTech.slice(0, 3).map((tech: string) => (
+                          <span key={tech} className="text-[9px] px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400 font-mono border border-slate-700/50">
+                            {tech}
+                          </span>
+                        ))}
+                        {t.keyTech.length > 3 && (
+                          <span className="text-[9px] px-1 py-0.5 rounded bg-slate-800/50 text-slate-500 font-mono">
+                            +{t.keyTech.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2 border-t border-panel-border/30">
+                  <div className="flex items-center gap-2 pt-3 border-t border-panel-border/30">
                     <button
                       type="button"
                       onClick={() => setPreviewModalTemplateId(t.id)}
@@ -4011,8 +4159,9 @@ function WorkspaceContent() {
 
                   {/* 3. Blueprint */}
                   <div className="sm:col-span-4 space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300">
-                      Blueprint
+                    <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                      <span>Blueprint</span>
+                      <span className="text-[10px] text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
                     </label>
                     <select
                       value={selectedArchType}
@@ -4026,45 +4175,60 @@ function WorkspaceContent() {
                             setNewDiagramName(generateUniqueDiagramName());
                           }
                         } else {
-                          const archInfo = getArchitectureTypeById(newArch);
-                          if (archInfo) {
-                            setNewDiagramPrompt(archInfo.prompt);
-                            setNewDiagramName(generateUniqueDiagramName(archInfo.name));
+                          const meta = getBlueprintMetadataById(newArch);
+                          if (meta?.goldenExamplePayload) {
+                            setNewDiagramPrompt(meta.goldenExamplePayload);
+                            setNewDiagramName(generateUniqueDiagramName(meta.diagramName));
+                          } else {
+                            const archInfo = getArchitectureTypeById(newArch);
+                            if (archInfo) {
+                              setNewDiagramPrompt(archInfo.prompt);
+                              setNewDiagramName(generateUniqueDiagramName(archInfo.name));
+                            }
                           }
                         }
                       }}
                       className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-3 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer truncate"
                     >
                       <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
-                        ✨ Auto-Detect Architecture Type
+                        ✨ All Matching ({facetedOptions.matchingCount} Blueprints)
                       </option>
-                      {TEMPLATE_CATEGORIES.map((category) => {
-                        const items = TEMPLATE_CATALOG_ITEMS.filter((item) => item.categoryId === category.id);
-                        if (items.length === 0) return null;
-                        return (
-                          <optgroup key={category.id} label={`${category.name} (${items.length})`} className="bg-[#0B101D] text-teal-400 font-extrabold">
-                            {items.map((item) => (
-                              <option key={item.id} value={item.id} className="bg-[#0B101D] text-slate-200 font-medium">
-                                {item.name}
-                              </option>
-                            ))}
-                          </optgroup>
-                        );
-                      })}
+                      {facetedOptions.matchingBlueprints.length > 0 ? (
+                        facetedOptions.matchingBlueprints.map((item) => (
+                          <option key={item.combinedId} value={item.combinedId} className="bg-[#0B101D] text-slate-200 font-medium">
+                            {item.diagramName}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled value="" className="bg-[#0B101D] text-amber-400 font-bold">
+                          ⚠️ No blueprints match this combination
+                        </option>
+                      )}
                     </select>
                   </div>
                 </div>
 
-                {/* 2. 7 Architectural Classification & Lifecycle Dropdowns */}
+                {/* 2. 7 Architectural Classification & Lifecycle Dropdowns (Cascading Facets) */}
                 <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                      <Settings2 className="w-3.5 h-3.5 text-teal-400" />
-                      <span>Architectural Classification &amp; Lifecycle Dimensions</span>
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      7 Enterprise Parameters (Auto-Populated • Customizable)
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                        <Settings2 className="w-3.5 h-3.5 text-teal-400" />
+                        <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
+                        {facetedOptions.matchingCount} of {BLUEPRINT_KNOWLEDGE_MATRIX.length} Blueprints
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleResetFilters}
+                      className="text-[10px] font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                      title="Reset all dimension filters"
+                    >
+                      <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-300" />
+                      <span>Reset Filters</span>
+                    </button>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2.5">
@@ -4078,9 +4242,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedPhaseName(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {PHASE_NAME_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Phases</option>
+                        {PHASE_NAME_OPTIONS.map((opt) => {
+                          const count = facetedOptions.phaseCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -4094,9 +4264,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedDomain(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Domains</option>
+                        {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
+                          const count = facetedOptions.domainCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -4110,9 +4286,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {ABSTRACTION_LEVEL_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Levels</option>
+                        {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
+                          const count = facetedOptions.abstractionCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -4126,9 +4308,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedStackLayer(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Layers</option>
+                        {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
+                          const count = facetedOptions.stackLayerCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -4142,9 +4330,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedLayoutDirection(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Directions</option>
+                        {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
+                          const count = facetedOptions.directionCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt === 'LR' ? 'LR (Left to Right)' : opt === 'TD' ? 'TD (Top to Down)' : opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -4158,9 +4352,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {SALES_CYCLE_STAGE_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Stages</option>
+                        {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
+                          const count = facetedOptions.salesStageCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -4174,9 +4374,15 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        {LIFECYCLE_PHASE_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                        ))}
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Lifecycles</option>
+                        {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
+                          const count = facetedOptions.lifecycleCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                   </div>
@@ -7268,8 +7474,9 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">
-                  Select Architecture Blueprint or Template
+                <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                  <span>Select Architecture Blueprint or Template</span>
+                  <span className="text-[10px] text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
                 </label>
                 <select
                   value={selectedTemplate}
@@ -7280,9 +7487,14 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       const archId = val.replace('arch_', '');
                       setSelectedArchType(archId);
                       syncDimensionsForBlueprint(archId);
-                      const arch = getArchitectureTypeById(archId);
-                      if (arch) {
-                        setNewDiagramPrompt(arch.prompt);
+                      const meta = getBlueprintMetadataById(archId);
+                      if (meta?.goldenExamplePayload) {
+                        setNewDiagramPrompt(meta.goldenExamplePayload);
+                      } else {
+                        const arch = getArchitectureTypeById(archId);
+                        if (arch) {
+                          setNewDiagramPrompt(arch.prompt);
+                        }
                       }
                     } else if (val !== 'custom') {
                       const idx = parseInt(val, 10);
@@ -7294,39 +7506,45 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   }}
                   className="w-full bg-slate-900 border border-teal-500/40 hover:border-teal-400 focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-teal-300 font-bold focus:outline-none transition-all cursor-pointer shadow-sm"
                 >
-                  <optgroup label="🏢 BUSINESS & STRATEGIC ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
-                    {BUSINESS_ARCHITECTURE_TYPES.map((b) => (
-                      <option key={b.id} value={`arch_${b.id}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
-                        🏢 {b.name}
+                  <option value="0" className="bg-[#0b101d] text-teal-300 font-bold py-1">
+                    ✨ Auto-Detect Architecture ({facetedOptions.matchingCount} Matching)
+                  </option>
+                  {facetedOptions.matchingBlueprints.length > 0 ? (
+                    facetedOptions.matchingBlueprints.map((item) => (
+                      <option key={item.combinedId} value={`arch_${item.combinedId}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
+                        🏛️ {item.diagramName}
                       </option>
-                    ))}
-                  </optgroup>
-
-                  <optgroup label="⚙️ TECHNICAL & CLOUD ARCHITECTURES" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                    {TECHNICAL_ARCHITECTURE_TYPES.map((tech) => (
-                      <option key={tech.id} value={`arch_${tech.id}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
-                        ⚙️ {tech.name}
-                      </option>
-                    ))}
-                  </optgroup>
-
-                  <optgroup label="✏️ FREEFORM & CUSTOM" className="bg-[#0b101d] text-slate-400 font-extrabold">
-                    <option value="0" className="bg-[#0b101d] text-slate-200 font-bold py-1">✨ {t.clean} Slate (Empty Interactive Canvas)</option>
-                    <option value="custom" className="bg-[#0b101d] text-teal-300 font-bold py-1">✍️ Custom Prompt (Write your own below...)</option>
-                  </optgroup>
+                    ))
+                  ) : (
+                    <option disabled value="" className="bg-[#0b101d] text-amber-400 font-bold py-1">
+                      ⚠️ No blueprints match this combination
+                    </option>
+                  )}
+                  <option value="custom" className="bg-[#0b101d] text-teal-300 font-bold py-1">✍️ Custom Freeform Prompt...</option>
                 </select>
               </div>
 
-              {/* 7 Architectural Classification & Lifecycle Dropdowns */}
+              {/* 7 Architectural Classification & Lifecycle Dropdowns (Cascading Facets) */}
               <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                    <Settings2 className="w-3.5 h-3.5 text-teal-400" />
-                    <span>Architectural Classification &amp; Lifecycle Dimensions</span>
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-mono">
-                    7 Parameters
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                      <Settings2 className="w-3.5 h-3.5 text-teal-400" />
+                      <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
+                      {facetedOptions.matchingCount} of {BLUEPRINT_KNOWLEDGE_MATRIX.length} Matching
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetFilters}
+                    className="text-[10px] font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                    title="Reset all dimension filters"
+                  >
+                    <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-300" />
+                    <span>Reset Filters</span>
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
@@ -7340,9 +7558,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedPhaseName(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      {PHASE_NAME_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Phases</option>
+                      {PHASE_NAME_OPTIONS.map((opt) => {
+                        const count = facetedOptions.phaseCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -7356,9 +7580,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedDomain(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Domains</option>
+                      {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
+                        const count = facetedOptions.domainCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -7372,9 +7602,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      {ABSTRACTION_LEVEL_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Levels</option>
+                      {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
+                        const count = facetedOptions.abstractionCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -7388,9 +7624,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedStackLayer(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Layers</option>
+                      {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
+                        const count = facetedOptions.stackLayerCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -7404,9 +7646,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedLayoutDirection(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Directions</option>
+                      {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
+                        const count = facetedOptions.directionCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt === 'LR' ? 'LR (Left to Right)' : opt === 'TD' ? 'TD (Top to Down)' : opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -7420,9 +7668,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      {SALES_CYCLE_STAGE_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Stages</option>
+                      {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
+                        const count = facetedOptions.salesStageCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -7436,9 +7690,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      {LIFECYCLE_PHASE_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Lifecycles</option>
+                      {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
+                        const count = facetedOptions.lifecycleCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 </div>
@@ -8710,24 +8970,30 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       {/* 🏛️ MASTER TEMPLATE CAROUSEL PREVIEW MODAL (AGNOSTIC OF ACTIVE CANVAS) */}
       {/* ========================================================================= */}
       {previewModalTemplateId && (() => {
-        const allTemplates = [
-          ...BUSINESS_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'business' as const })),
-          ...TECHNICAL_ARCHITECTURE_TYPES.map(t => ({ ...t, category: 'technical' as const }))
-        ];
-        const currentIdx = allTemplates.findIndex(t => t.id === previewModalTemplateId);
+        const allTemplates = BLUEPRINT_KNOWLEDGE_MATRIX;
+        const currentIdx = allTemplates.findIndex(t => t.combinedId === previewModalTemplateId);
         const currentTemplate = allTemplates[currentIdx !== -1 ? currentIdx : 0];
-        const masterXml = getDefaultXmlForArchitecture(currentTemplate.id) || '';
-        const isBusiness = currentTemplate.category === 'business';
+        const masterXml = getDefaultXmlForArchitecture(currentTemplate.combinedId) || '';
 
         const handlePrev = () => {
           const prevIdx = (currentIdx - 1 + allTemplates.length) % allTemplates.length;
-          setPreviewModalTemplateId(allTemplates[prevIdx].id);
+          setPreviewModalTemplateId(allTemplates[prevIdx].combinedId);
         };
 
         const handleNext = () => {
           const nextIdx = (currentIdx + 1) % allTemplates.length;
-          setPreviewModalTemplateId(allTemplates[nextIdx].id);
+          setPreviewModalTemplateId(allTemplates[nextIdx].combinedId);
         };
+
+        const phases = [
+          'Phase 1: Current State Assessment & Baseline',
+          'Phase 2: Business Vision & Strategy Alignment',
+          'Phase 3: Target State Logical Architecture',
+          'Phase 4: Technical Deep-Dive & Security Validation',
+          'Phase 5: Transition Planning & Operational Readiness',
+          'Phase 6: Industry Specialized Solutions',
+          'Phase 7: Universal Architecture Standards'
+        ];
 
         return (
           <div className="fixed inset-0 z-[1000] bg-slate-950/90 backdrop-blur-md flex flex-col w-screen h-screen overflow-hidden p-2 md:p-5 animate-fade-in select-none">
@@ -8740,17 +9006,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border ${
-                      isBusiness ? 'bg-teal-500/10 text-teal-400 border-teal-500/30' : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30'
-                    }`}>
-                      {isBusiness ? '🏢 BUSINESS ARCHITECTURE' : '⚙️ TECHNICAL CLOUD STACK'}
+                    <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-cyan-500/10 text-cyan-300 border-cyan-500/30">
+                      {currentTemplate.domain}
                     </span>
                     <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px] font-bold border border-slate-700">
                       Blueprint {currentIdx + 1} of {allTemplates.length}
                     </span>
                   </div>
                   <h2 className="text-sm md:text-base font-extrabold text-white mt-0.5 truncate">
-                    {currentTemplate.name}
+                    {currentTemplate.diagramName}
                   </h2>
                 </div>
               </div>
@@ -8769,24 +9033,23 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
                 {/* Direct Dropdown Switcher */}
                 <select
-                  value={currentTemplate.id}
+                  value={currentTemplate.combinedId}
                   onChange={(e) => setPreviewModalTemplateId(e.target.value)}
-                  className="bg-slate-900 border border-teal-500/40 text-teal-300 font-bold text-xs rounded-xl px-3 py-1.5 outline-none cursor-pointer max-w-[280px] truncate"
+                  className="bg-slate-900 border border-teal-500/40 text-teal-300 font-bold text-xs rounded-xl px-3 py-1.5 outline-none cursor-pointer max-w-[320px] truncate"
                 >
-                  <optgroup label="🏢 BUSINESS ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
-                    {BUSINESS_ARCHITECTURE_TYPES.map((t, idx) => (
-                      <option key={t.id} value={t.id}>
-                        {idx + 1}. {t.name}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="⚙️ TECHNICAL CLOUD STACKS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                    {TECHNICAL_ARCHITECTURE_TYPES.map((t, idx) => (
-                      <option key={t.id} value={t.id}>
-                        {BUSINESS_ARCHITECTURE_TYPES.length + idx + 1}. {t.name}
-                      </option>
-                    ))}
-                  </optgroup>
+                  {phases.map((phase) => {
+                    const phaseItems = allTemplates.filter(t => t.phaseName === phase);
+                    if (phaseItems.length === 0) return null;
+                    return (
+                      <optgroup key={phase} label={`📁 ${phase} (${phaseItems.length})`} className="bg-[#0b101d] text-teal-400 font-extrabold">
+                        {phaseItems.map((t) => (
+                          <option key={t.combinedId} value={t.combinedId} className="bg-[#0b101d] text-slate-200">
+                            {t.combinedId.split('_')[0]}: {t.diagramName}
+                          </option>
+                        ))}
+                      </optgroup>
+                    );
+                  })}
                 </select>
 
                 <button
@@ -8815,7 +9078,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   type="button"
                   onClick={() => {
                     setCurrentTab('editor');
-                    handleArchitectureSwitch(currentTemplate.id);
+                    handleArchitectureSwitch(currentTemplate.combinedId);
                     setPreviewModalTemplateId(null);
                   }}
                   className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-teal-500/20 flex items-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02]"
@@ -8838,11 +9101,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             {/* Main Preview Canvas Viewport */}
             <div className="flex-1 rounded-2xl border border-slate-800 bg-white dark:bg-slate-950 overflow-hidden relative mt-3 shadow-2xl flex items-center justify-center p-2 min-h-0">
               <DiagramViewer
-                key={`master_preview_${currentTemplate.id}_${previewModalTheme}`}
+                key={`master_preview_${currentTemplate.combinedId}_${previewModalTheme}`}
                 xml={masterXml}
-                diagramType={currentTemplate.id}
+                diagramType={currentTemplate.combinedId}
                 bgTheme={previewModalTheme}
-                useCaseName={currentTemplate.name}
+                useCaseName={currentTemplate.diagramName}
                 aspectRatioId="16:9"
               />
             </div>

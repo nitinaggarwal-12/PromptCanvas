@@ -51,7 +51,9 @@ import {
   DEFAULT_LAYOUT_DIRECTION_OPTIONS,
   SALES_CYCLE_STAGE_OPTIONS,
   LIFECYCLE_PHASE_OPTIONS,
-  getBlueprintMetadataById
+  BLUEPRINT_KNOWLEDGE_MATRIX,
+  getBlueprintMetadataById,
+  getFacetedBlueprintFilters
 } from '@/lib/blueprintKnowledgeMatrix';
 
 interface Diagram {
@@ -154,14 +156,44 @@ export default function Dashboard() {
   const [isCreating, setIsCreating] = useState(false);
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
 
-  // 🏛️ 7 Architectural Classification & Lifecycle Dropdown States
-  const [selectedPhaseName, setSelectedPhaseName] = useState<string>('Target State Logical Architecture');
-  const [selectedDomain, setSelectedDomain] = useState<string>('App & Integration');
-  const [selectedAbstractionLevel, setSelectedAbstractionLevel] = useState<string>('Logical');
-  const [selectedStackLayer, setSelectedStackLayer] = useState<string>('Layer 4 (Application)');
-  const [selectedLayoutDirection, setSelectedLayoutDirection] = useState<string>('LR (Left to Right)');
-  const [selectedSalesCycleStage, setSelectedSalesCycleStage] = useState<string>('Presales Pitch');
-  const [selectedLifecyclePhase, setSelectedLifecyclePhase] = useState<string>('Requirements → Design');
+  // 🏛️ 7 Architectural Classification & Lifecycle Dropdown States (Cascading Facets)
+  const [selectedPhaseName, setSelectedPhaseName] = useState<string>('ALL');
+  const [selectedDomain, setSelectedDomain] = useState<string>('ALL');
+  const [selectedAbstractionLevel, setSelectedAbstractionLevel] = useState<string>('ALL');
+  const [selectedStackLayer, setSelectedStackLayer] = useState<string>('ALL');
+  const [selectedLayoutDirection, setSelectedLayoutDirection] = useState<string>('ALL');
+  const [selectedSalesCycleStage, setSelectedSalesCycleStage] = useState<string>('ALL');
+  const [selectedLifecyclePhase, setSelectedLifecyclePhase] = useState<string>('ALL');
+
+  const facetedOptions = useMemo(() => {
+    return getFacetedBlueprintFilters({
+      phaseName: selectedPhaseName === 'ALL' ? undefined : selectedPhaseName,
+      domain: selectedDomain === 'ALL' ? undefined : selectedDomain,
+      abstractionLevel: selectedAbstractionLevel === 'ALL' ? undefined : selectedAbstractionLevel,
+      stackLayer: selectedStackLayer === 'ALL' ? undefined : selectedStackLayer,
+      defaultDirection: selectedLayoutDirection === 'ALL' ? undefined : (selectedLayoutDirection.startsWith('TD') ? 'TD' : selectedLayoutDirection.startsWith('LR') ? 'LR' : selectedLayoutDirection),
+      salesStage: selectedSalesCycleStage === 'ALL' ? undefined : selectedSalesCycleStage,
+      lifecyclePhase: selectedLifecyclePhase === 'ALL' ? undefined : selectedLifecyclePhase,
+    });
+  }, [
+    selectedPhaseName,
+    selectedDomain,
+    selectedAbstractionLevel,
+    selectedStackLayer,
+    selectedLayoutDirection,
+    selectedSalesCycleStage,
+    selectedLifecyclePhase
+  ]);
+
+  const handleResetFilters = () => {
+    setSelectedPhaseName('ALL');
+    setSelectedDomain('ALL');
+    setSelectedAbstractionLevel('ALL');
+    setSelectedStackLayer('ALL');
+    setSelectedLayoutDirection('ALL');
+    setSelectedSalesCycleStage('ALL');
+    setSelectedLifecyclePhase('ALL');
+  };
 
   const syncDimensionsForBlueprint = (archId: string) => {
     const meta = getBlueprintMetadataById(archId);
@@ -170,7 +202,7 @@ export default function Dashboard() {
       if (meta.domain) setSelectedDomain(meta.domain);
       if (meta.abstractionLevel) setSelectedAbstractionLevel(meta.abstractionLevel);
       if (meta.stackLayer) setSelectedStackLayer(meta.stackLayer);
-      if (meta.defaultDirection) setSelectedLayoutDirection(meta.defaultDirection === 'TD' ? 'TD (Top to Down)' : 'LR (Left to Right)');
+      if (meta.defaultDirection) setSelectedLayoutDirection(meta.defaultDirection === 'TD' ? 'TD' : 'LR');
       if (meta.salesStage) setSelectedSalesCycleStage(meta.salesStage);
       if (meta.lifecyclePhase) setSelectedLifecyclePhase(meta.lifecyclePhase);
     }
@@ -424,7 +456,7 @@ export default function Dashboard() {
         <div className="p-3 space-y-1">
           {[
             { id: "editor", name: "Design Canvas", icon: Network, href: "/workspace" },
-            { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/templates" },
+            { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/workspace?tab=templates" },
             { id: "history", name: "Historical Canvases", icon: History, href: "/history" },
             { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },
             { id: "audit", name: "Security Audit", icon: ShieldCheck, href: "/workspace?tab=audit" },
@@ -1023,8 +1055,9 @@ export default function Dashboard() {
               </div>
 
               <div className="space-y-2.5">
-                <label className="block text-base font-bold text-slate-200">
-                  Blueprint
+                <label className="block text-base font-bold text-slate-200 flex items-center justify-between">
+                  <span>Blueprint</span>
+                  <span className="text-xs text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
                 </label>
                 <select
                   id="modal-template-select"
@@ -1036,9 +1069,14 @@ export default function Dashboard() {
                       const archId = val.replace('arch_', '');
                       setSelectedArchType(archId);
                       syncDimensionsForBlueprint(archId);
-                      const arch = getArchitectureTypeById(archId);
-                      if (arch) {
-                        setNewDiagramPrompt(arch.prompt);
+                      const meta = getBlueprintMetadataById(archId);
+                      if (meta?.goldenExamplePayload) {
+                        setNewDiagramPrompt(meta.goldenExamplePayload);
+                      } else {
+                        const arch = getArchitectureTypeById(archId);
+                        if (arch) {
+                          setNewDiagramPrompt(arch.prompt);
+                        }
                       }
                     } else if (val !== 'custom') {
                       const idx = parseInt(val, 10);
@@ -1050,39 +1088,45 @@ export default function Dashboard() {
                   }}
                   className="w-full bg-[#0b0f19] border border-teal-500/50 hover:border-teal-400 rounded-xl px-5 py-4 text-base text-teal-300 font-bold focus:outline-none transition-all cursor-pointer shadow-lg"
                 >
-                  <optgroup label="🏢 BUSINESS & STRATEGIC ARCHITECTURES" className="bg-[#0b101d] text-teal-400 font-extrabold">
-                    {BUSINESS_ARCHITECTURE_TYPES.map((b) => (
-                      <option key={b.id} value={`arch_${b.id}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
-                        🏢 {b.name}
+                  <option value="0" className="bg-[#0b101d] text-teal-300 font-bold py-1">
+                    ✨ Auto-Detect Architecture ({facetedOptions.matchingCount} Matching)
+                  </option>
+                  {facetedOptions.matchingBlueprints.length > 0 ? (
+                    facetedOptions.matchingBlueprints.map((item) => (
+                      <option key={item.combinedId} value={`arch_${item.combinedId}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
+                        🏛️ {item.diagramName}
                       </option>
-                    ))}
-                  </optgroup>
-
-                  <optgroup label="⚙️ TECHNICAL & CLOUD ARCHITECTURES" className="bg-[#0b101d] text-indigo-400 font-extrabold">
-                    {TECHNICAL_ARCHITECTURE_TYPES.map((tech) => (
-                      <option key={tech.id} value={`arch_${tech.id}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
-                        ⚙️ {tech.name}
-                      </option>
-                    ))}
-                  </optgroup>
-
-                  <optgroup label="✏️ FREEFORM & CUSTOM" className="bg-[#0b101d] text-slate-400 font-extrabold">
-                    <option value="0" className="bg-[#0b101d] text-slate-200 font-bold py-1">✨ Clean Slate (Empty Interactive Canvas)</option>
-                    <option value="custom" className="bg-[#0b101d] text-teal-300 font-bold py-1">✍️ Custom Prompt (Write your own below...)</option>
-                  </optgroup>
+                    ))
+                  ) : (
+                    <option disabled value="" className="bg-[#0b101d] text-amber-400 font-bold py-1">
+                      ⚠️ No blueprints match this combination
+                    </option>
+                  )}
+                  <option value="custom" className="bg-[#0b101d] text-teal-300 font-bold py-1">✍️ Custom Freeform Prompt...</option>
                 </select>
               </div>
 
-              {/* 7 Architectural Classification & Lifecycle Dropdowns */}
+              {/* 7 Architectural Classification & Lifecycle Dropdowns (Cascading Facets) */}
               <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                    <Settings2 className="w-4 h-4 text-teal-400" />
-                    <span>Architectural Classification &amp; Lifecycle Dimensions</span>
-                  </span>
-                  <span className="text-[11px] text-slate-400 font-mono">
-                    7 Enterprise Parameters
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                      <Settings2 className="w-4 h-4 text-teal-400" />
+                      <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                    </span>
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
+                      {facetedOptions.matchingCount} of {BLUEPRINT_KNOWLEDGE_MATRIX.length} Matching
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetFilters}
+                    className="text-xs font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1.5 cursor-pointer transition-colors"
+                    title="Reset all dimension filters"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-slate-400 hover:text-teal-300" />
+                    <span>Reset Filters</span>
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -1096,9 +1140,15 @@ export default function Dashboard() {
                       onChange={(e) => setSelectedPhaseName(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
                     >
-                      {PHASE_NAME_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Phases</option>
+                      {PHASE_NAME_OPTIONS.map((opt) => {
+                        const count = facetedOptions.phaseCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -1112,9 +1162,15 @@ export default function Dashboard() {
                       onChange={(e) => setSelectedDomain(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
                     >
-                      {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Domains</option>
+                      {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
+                        const count = facetedOptions.domainCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -1128,9 +1184,15 @@ export default function Dashboard() {
                       onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
                     >
-                      {ABSTRACTION_LEVEL_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Levels</option>
+                      {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
+                        const count = facetedOptions.abstractionCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -1144,9 +1206,15 @@ export default function Dashboard() {
                       onChange={(e) => setSelectedStackLayer(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
                     >
-                      {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Layers</option>
+                      {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
+                        const count = facetedOptions.stackLayerCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -1160,9 +1228,15 @@ export default function Dashboard() {
                       onChange={(e) => setSelectedLayoutDirection(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
                     >
-                      {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Directions</option>
+                      {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
+                        const count = facetedOptions.directionCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt === 'LR' ? 'LR (Left to Right)' : opt === 'TD' ? 'TD (Top to Down)' : opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -1176,9 +1250,15 @@ export default function Dashboard() {
                       onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
                     >
-                      {SALES_CYCLE_STAGE_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Stages</option>
+                      {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
+                        const count = facetedOptions.salesStageCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -1192,9 +1272,15 @@ export default function Dashboard() {
                       onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all truncate"
                     >
-                      {LIFECYCLE_PHASE_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0B101D] text-slate-200">{opt}</option>
-                      ))}
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Lifecycles</option>
+                      {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
+                        const count = facetedOptions.lifecycleCounts[opt] || 0;
+                        return (
+                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            {opt} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 </div>
