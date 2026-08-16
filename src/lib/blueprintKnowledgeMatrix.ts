@@ -510,7 +510,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Zero-Trust GCP Network Topology with Cloud Armor WAF, GKE Autopilot, Cloud SQL PSA, Binary Authorization, and CMEK KMS.",
     "domain": "Cloud Infra Security",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Zero-Trust Physical Network Topology",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -543,7 +543,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Production-grade Hub-and-Spoke Shared VPC network fabric with 100G Dedicated Interconnect, Cloud Router BGP, PSC, and Cloud NGFW.",
     "domain": "Cloud Infra Security",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Hub-and-Spoke Shared VPC Topology",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -575,7 +575,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Multi-region landing zone, cross-region VPC peering, sovereign boundary enforcement, and Cloud Interconnect links.",
     "domain": "Cloud Infra Security",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Sovereign Perimeter & Boundary Mesh",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -606,7 +606,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Physical sandboxed compute runtime on GKE Autopilot with Agent Gateway, MCP tool worker pods, and Model Armor prompt interceptor.",
     "domain": "AI & Agentic",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Physical Microservice & GKE Topology",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -638,7 +638,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "100G Dedicated Interconnect, Partner Interconnect, Cloud VPN, Cross-Cloud Interconnect for AWS, NCC BGP routing, and Gemini AIOps.",
     "domain": "Cloud Infra Security",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Multi-Cloud Network Transit Mesh",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -764,7 +764,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Cloud Build polyrepo CI/CD, Artifact Registry, Trivy/SonarQube SAST, Binary Authorization, and GKE continuous deployment.",
     "domain": "Strategy & Governance",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Polyrepo GitOps Pipeline Flow",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -860,7 +860,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Physical ingestion of raw PDFs, FASTQ omics streams, Document AI extraction, GCS Bronze Lake, and BigQuery loading.",
     "domain": "Data & Analytics",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Multi-Modal Ingestion Pipeline",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -892,7 +892,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "High-throughput Cloud Pub/Sub stream ingestion, Cloud Dataflow (Apache Beam) exact-once windowing, and BigQuery BI engine.",
     "domain": "Data & Analytics",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Real-Time Stream Processing Flow",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -953,7 +953,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "OpenTelemetry collectors, Cloud Monitoring SLI/SLO error budgets, Cloud Trace, and PagerDuty escalation policies.",
     "domain": "Cloud Infra Security",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "SRE Observability & Incident Command",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -984,7 +984,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Enterprise Cutover War Room, T-24h to T+48h operational timeline, rollback criteria, and live executive command center.",
     "domain": "Strategy & Governance",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "War Room Operational Playbook",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -1108,7 +1108,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Distributed PyTorch/JAX model evaluation, MMLU/HELM benchmarking datasets, LLM-as-a-Judge jury, and promotion gates.",
     "domain": "AI Agentic & LLMOps",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Continuous MLOps Pipeline Flow",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -1140,7 +1140,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Cloud Monitoring automated data drift detection, statistical anomaly alarms, schema validation, and Slack SRE alerts.",
     "domain": "Data & Analytics",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "DataOps Quality Control Plane",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -1171,7 +1171,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Active-Passive multi-region DR with Cloud DNS health routing, Cloud Spanner/SQL cross-region replication, and automated RTO/RPO failover.",
     "domain": "Cloud Infra Security",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "Active-Active Multi-Region Mesh",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -1456,7 +1456,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "Detailed container internal architecture: REST controllers, JWT auth interceptors, SAGA domain services, repositories, and outbox poller.",
     "domain": "App & Integration",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "C4 Model Level 3 Component Standard",
     "defaultDirection": "TD",
     "coreGcpServices": [
@@ -1518,7 +1518,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "phaseGoal": "STRIDE security analysis mapping threat vectors ([S], [T], [R], [I], [D], [E]) to Google Cloud defenses across 4 security zones.",
     "domain": "Cloud Infra Security",
     "abstractionLevel": "Physical",
-    "stackLayer": "Layer 4 (Operations)",
+    "stackLayer": "Layer 5 (Operations)",
     "notationStandard": "STRIDE Threat Model & Zero-Trust Boundary Standard",
     "defaultDirection": "LR",
     "coreGcpServices": [
@@ -1797,7 +1797,7 @@ export const ARCHITECTURAL_STACK_LAYER_OPTIONS = [
   'Layer 2 (Intermediary)',
   'Layer 3 (Complex)',
   'Layer 4 (Application)',
-  'Layer 4 (Operations)'
+  'Layer 5 (Operations)'
 ];
 
 export const DEFAULT_LAYOUT_DIRECTION_OPTIONS = [

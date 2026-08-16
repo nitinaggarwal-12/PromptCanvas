@@ -2798,7 +2798,7 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedPhaseName(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Phases</option>
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 7 Phases (50 Blueprints)</option>
                         {PHASE_NAME_OPTIONS.map((opt) => {
                           const count = facetedOptions.phaseCounts[opt] || 0;
                           return (
@@ -2820,7 +2820,7 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedDomain(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Domains</option>
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 6 Domains</option>
                         {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
                           const count = facetedOptions.domainCounts[opt] || 0;
                           return (
@@ -2842,7 +2842,7 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Levels</option>
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 4 Abstractions</option>
                         {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
                           const count = facetedOptions.abstractionCounts[opt] || 0;
                           return (
@@ -2864,7 +2864,7 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedStackLayer(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Layers</option>
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 5 Layers</option>
                         {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
                           const count = facetedOptions.stackLayerCounts[opt] || 0;
                           return (
@@ -4277,7 +4277,7 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedPhaseName(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Phases</option>
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 7 Phases (50 Blueprints)</option>
                         {PHASE_NAME_OPTIONS.map((opt) => {
                           const count = facetedOptions.phaseCounts[opt] || 0;
                           return (
@@ -4299,7 +4299,7 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedDomain(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Domains</option>
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 6 Domains</option>
                         {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
                           const count = facetedOptions.domainCounts[opt] || 0;
                           return (
@@ -4321,7 +4321,7 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Levels</option>
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 4 Abstractions</option>
                         {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
                           const count = facetedOptions.abstractionCounts[opt] || 0;
                           return (
@@ -4343,7 +4343,7 @@ function WorkspaceContent() {
                         onChange={(e) => setSelectedStackLayer(e.target.value)}
                         className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Layers</option>
+                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 5 Layers</option>
                         {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
                           const count = facetedOptions.stackLayerCounts[opt] || 0;
                           return (
@@ -7741,7 +7741,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedPhaseName(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Phases</option>
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 7 Phases (50 Blueprints)</option>
                       {PHASE_NAME_OPTIONS.map((opt) => {
                         const count = facetedOptions.phaseCounts[opt] || 0;
                         return (
@@ -7763,7 +7763,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedDomain(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Domains</option>
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 6 Domains</option>
                       {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
                         const count = facetedOptions.domainCounts[opt] || 0;
                         return (
@@ -7785,7 +7785,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Levels</option>
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 4 Abstractions</option>
                       {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
                         const count = facetedOptions.abstractionCounts[opt] || 0;
                         return (
@@ -7807,7 +7807,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       onChange={(e) => setSelectedStackLayer(e.target.value)}
                       className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
                     >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Layers</option>
+                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 5 Layers</option>
                       {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
                         const count = facetedOptions.stackLayerCounts[opt] || 0;
                         return (
@@ -9296,7 +9296,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       }}
                       className="bg-slate-900 border border-slate-700/80 hover:border-cyan-400 focus:border-cyan-400 text-cyan-300 font-bold text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer max-w-[200px] truncate"
                     >
-                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All Phases ({allTemplates.length})</option>
+                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All 7 Phases (50 Blueprints)</option>
                       {PHASE_NAME_OPTIONS.map((p) => {
                         const count = allTemplates.filter(t => t.phaseName === p || t.phaseName.startsWith(p)).length;
                         return (
@@ -9327,7 +9327,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       }}
                       className="bg-slate-900 border border-slate-700/80 hover:border-purple-400 focus:border-purple-400 text-purple-300 font-bold text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer max-w-[170px] truncate"
                     >
-                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All Abstractions</option>
+                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All 4 Abstractions</option>
                       {ABSTRACTION_LEVEL_OPTIONS.map((lvl) => {
                         const count = allTemplates.filter(t => t.abstractionLevel === lvl).length;
                         return (
@@ -9358,7 +9358,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       }}
                       className="bg-slate-900 border border-slate-700/80 hover:border-amber-400 focus:border-amber-400 text-amber-300 font-bold text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer max-w-[180px] truncate"
                     >
-                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All Layers</option>
+                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All 5 Layers</option>
                       {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((lyr) => {
                         const count = allTemplates.filter(t => t.stackLayer === lyr).length;
                         return (
