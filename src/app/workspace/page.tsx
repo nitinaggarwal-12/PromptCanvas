@@ -83,7 +83,9 @@ import {
   History,
   Layers,
   Zap,
-  Palette
+  Palette,
+  Folder,
+  Grid
 } from 'lucide-react';
 import { CloudCostModal } from '@/components/workspace/CloudCostModal';
 import { ArchitectureCodeViewerModal } from '@/components/workspace/ArchitectureCodeViewerModal';
@@ -421,6 +423,9 @@ function WorkspaceContent() {
   const [templateCategoryFilter, setTemplateCategoryFilter] = useState<string>('all');
   const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
   const [previewModalTemplateId, setPreviewModalTemplateId] = useState<string | null>(null);
+  const [previewModalPhaseFilter, setPreviewModalPhaseFilter] = useState<string>('ALL');
+  const [previewModalAbstractionFilter, setPreviewModalAbstractionFilter] = useState<string>('ALL');
+  const [previewModalLayerFilter, setPreviewModalLayerFilter] = useState<string>('ALL');
   const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null);
   const [previewModalTheme, setPreviewModalTheme] = useState<'light' | 'dark'>('light');
   const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
@@ -431,26 +436,34 @@ function WorkspaceContent() {
   useEffect(() => {
     if (!previewModalTemplateId) return;
     const allTemplates = BLUEPRINT_KNOWLEDGE_MATRIX;
+    const filteredTemplates = allTemplates.filter(t => {
+      if (previewModalPhaseFilter !== 'ALL' && t.phaseName !== previewModalPhaseFilter && !t.phaseName.startsWith(previewModalPhaseFilter) && t.phase !== previewModalPhaseFilter) return false;
+      if (previewModalAbstractionFilter !== 'ALL' && t.abstractionLevel !== previewModalAbstractionFilter) return false;
+      if (previewModalLayerFilter !== 'ALL' && t.stackLayer !== previewModalLayerFilter) return false;
+      return true;
+    });
+    const pool = filteredTemplates.length > 0 ? filteredTemplates : allTemplates;
+
     function handlePreviewKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         setPreviewModalTemplateId(null);
       } else if (e.key === 'ArrowLeft') {
-        const idx = allTemplates.findIndex(t => t.combinedId === previewModalTemplateId);
+        const idx = pool.findIndex(t => t.combinedId === previewModalTemplateId);
         if (idx !== -1) {
-          const prevIdx = (idx - 1 + allTemplates.length) % allTemplates.length;
-          setPreviewModalTemplateId(allTemplates[prevIdx].combinedId);
+          const prevIdx = (idx - 1 + pool.length) % pool.length;
+          setPreviewModalTemplateId(pool[prevIdx].combinedId);
         }
       } else if (e.key === 'ArrowRight') {
-        const idx = allTemplates.findIndex(t => t.combinedId === previewModalTemplateId);
+        const idx = pool.findIndex(t => t.combinedId === previewModalTemplateId);
         if (idx !== -1) {
-          const nextIdx = (idx + 1) % allTemplates.length;
-          setPreviewModalTemplateId(allTemplates[nextIdx].combinedId);
+          const nextIdx = (idx + 1) % pool.length;
+          setPreviewModalTemplateId(pool[nextIdx].combinedId);
         }
       }
     }
     window.addEventListener('keydown', handlePreviewKeyDown);
     return () => window.removeEventListener('keydown', handlePreviewKeyDown);
-  }, [previewModalTemplateId]);
+  }, [previewModalTemplateId, previewModalPhaseFilter, previewModalAbstractionFilter, previewModalLayerFilter]);
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -2432,6 +2445,8 @@ function WorkspaceContent() {
       phaseNumber: bp.phase,
       domain: bp.domain,
       abstractionLevel: bp.abstractionLevel,
+      stackLayer: bp.stackLayer,
+      notationStandard: bp.notationStandard,
       primaryPersonas: bp.primaryPersonas,
       keyTech: bp.coreGcpServices
     }));
@@ -2963,6 +2978,15 @@ function WorkspaceContent() {
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-md border bg-cyan-500/20 text-cyan-300 border-cyan-500/40">
                           {t.id.split('_')[0]}
+                        </span>
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-cyan-500/10 text-cyan-300 border-cyan-500/30">
+                          Phase: {t.phaseName.split(':')[0]}
+                        </span>
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-purple-500/10 text-purple-300 border-purple-500/30">
+                          ABSTRACTION: {t.abstractionLevel}
+                        </span>
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/30">
+                          LAYER: {t.stackLayer}
                         </span>
                         <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-slate-800 text-slate-300 border-slate-700">
                           {t.domain}
@@ -9130,18 +9154,34 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       {/* ========================================================================= */}
       {previewModalTemplateId && (() => {
         const allTemplates = BLUEPRINT_KNOWLEDGE_MATRIX;
-        const currentIdx = allTemplates.findIndex(t => t.combinedId === previewModalTemplateId);
-        const currentTemplate = allTemplates[currentIdx !== -1 ? currentIdx : 0];
+        
+        // Dynamic Filtered Pool based on Modal Dropdowns
+        const filteredTemplates = allTemplates.filter((t) => {
+          if (previewModalPhaseFilter !== 'ALL' && t.phaseName !== previewModalPhaseFilter && !t.phaseName.startsWith(previewModalPhaseFilter) && t.phase !== previewModalPhaseFilter) {
+            return false;
+          }
+          if (previewModalAbstractionFilter !== 'ALL' && t.abstractionLevel !== previewModalAbstractionFilter) {
+            return false;
+          }
+          if (previewModalLayerFilter !== 'ALL' && t.stackLayer !== previewModalLayerFilter) {
+            return false;
+          }
+          return true;
+        });
+
+        const activeList = filteredTemplates.length > 0 ? filteredTemplates : allTemplates;
+        const currentIdx = activeList.findIndex(t => t.combinedId === previewModalTemplateId);
+        const currentTemplate = activeList[currentIdx !== -1 ? currentIdx : 0] || allTemplates[0];
         const masterXml = getDefaultXmlForArchitecture(currentTemplate.combinedId) || '';
 
         const handlePrev = () => {
-          const prevIdx = (currentIdx - 1 + allTemplates.length) % allTemplates.length;
-          setPreviewModalTemplateId(allTemplates[prevIdx].combinedId);
+          const prevIdx = (currentIdx - 1 + activeList.length) % activeList.length;
+          setPreviewModalTemplateId(activeList[prevIdx].combinedId);
         };
 
         const handleNext = () => {
-          const nextIdx = (currentIdx + 1) % allTemplates.length;
-          setPreviewModalTemplateId(allTemplates[nextIdx].combinedId);
+          const nextIdx = (currentIdx + 1) % activeList.length;
+          setPreviewModalTemplateId(activeList[nextIdx].combinedId);
         };
 
         const phases = [
@@ -9154,106 +9194,244 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           'Phase 7: Universal Architecture Standards'
         ];
 
+        const hasActiveFilters = previewModalPhaseFilter !== 'ALL' || previewModalAbstractionFilter !== 'ALL' || previewModalLayerFilter !== 'ALL';
+
         return (
           <div className="fixed inset-0 z-[1000] bg-slate-950/90 backdrop-blur-md flex flex-col w-screen h-screen overflow-hidden p-2 md:p-5 animate-fade-in select-none">
             {/* Header Control Toolbar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 rounded-2xl border border-teal-500/40 bg-[#0B0F19] shadow-2xl shrink-0">
-              {/* Left: Template Identity & Index Badge */}
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400 shrink-0">
-                  <Eye className="w-5 h-5" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-cyan-500/10 text-cyan-300 border-cyan-500/30">
-                      {currentTemplate.domain}
-                    </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px] font-bold border border-slate-700">
-                      Blueprint {currentIdx + 1} of {allTemplates.length}
-                    </span>
+            <div className="flex flex-col gap-2.5 px-5 py-3.5 rounded-2xl border border-teal-500/40 bg-[#0B0F19] shadow-2xl shrink-0">
+              {/* Row 1: Identity & Badges & Action Controls */}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                {/* Left: Template Identity & Dynamic Metadata Badges */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400 shrink-0 shadow-sm">
+                    <Eye className="w-5 h-5" />
                   </div>
-                  <h2 className="text-sm md:text-base font-extrabold text-white mt-0.5 truncate">
-                    {currentTemplate.diagramName}
-                  </h2>
+                  <div className="min-w-0 space-y-1">
+                    {/* Dynamic Badges: Phase Name as Phase, Abstraction Level as ABSTRACTION, Architectural Stack Layer as LAYER */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-cyan-500/15 text-cyan-300 border-cyan-500/30 flex items-center gap-1 shadow-sm">
+                        <Folder className="w-3 h-3 text-cyan-400" />
+                        <span>Phase: {currentTemplate.phaseName}</span>
+                      </span>
+                      <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-purple-500/15 text-purple-300 border-purple-500/30 flex items-center gap-1 shadow-sm">
+                        <Layers className="w-3 h-3 text-purple-400" />
+                        <span>ABSTRACTION: {currentTemplate.abstractionLevel}</span>
+                      </span>
+                      <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-amber-500/15 text-amber-300 border-amber-500/30 flex items-center gap-1 shadow-sm">
+                        <Grid className="w-3 h-3 text-amber-400" />
+                        <span>LAYER: {currentTemplate.stackLayer}</span>
+                      </span>
+                      <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-emerald-500/15 text-emerald-300 border-emerald-500/30 shadow-sm">
+                        🌐 {currentTemplate.domain}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px] font-bold border border-slate-700 shadow-sm">
+                        Blueprint {currentIdx + 1} of {activeList.length} {hasActiveFilters ? `(Filtered of ${allTemplates.length})` : ''}
+                      </span>
+                    </div>
+                    <h2 className="text-sm md:text-base font-extrabold text-white truncate flex items-center gap-2">
+                      <span>{currentTemplate.diagramName}</span>
+                      <span className="text-xs text-teal-400 font-mono font-bold bg-slate-900/80 px-2 py-0.5 rounded border border-teal-500/30">
+                        {currentTemplate.combinedId.split('_')[0]}
+                      </span>
+                    </h2>
+                  </div>
+                </div>
+
+                {/* Right: Theme Toggle, Load Blueprint & Close */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewModalTheme(t => t === 'light' ? 'dark' : 'light')}
+                    className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all cursor-pointer"
+                    title="Toggle Light / Dark Preview Theme"
+                  >
+                    {previewModalTheme === 'light' ? '☀️ Light' : '🌙 Dark'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentTab('editor');
+                      handleArchitectureSwitch(currentTemplate.combinedId);
+                      setPreviewModalTemplateId(null);
+                    }}
+                    className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-teal-500/20 flex items-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02]"
+                  >
+                    <span>Use Blueprint</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPreviewModalTemplateId(null)}
+                    className="p-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 transition-all cursor-pointer"
+                    title="Close Master Preview (Escape)"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
 
-              {/* Center: Back & Forward Carousel Navigation */}
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handlePrev}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs border border-slate-700 transition-all cursor-pointer shadow-sm"
-                  title="Previous Blueprint (Left Arrow Key)"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Prev</span>
-                </button>
-
-                {/* Direct Dropdown Switcher */}
-                <select
-                  value={currentTemplate.combinedId}
-                  onChange={(e) => setPreviewModalTemplateId(e.target.value)}
-                  className="bg-slate-900 border border-teal-500/40 text-teal-300 font-bold text-xs rounded-xl px-3 py-1.5 outline-none cursor-pointer max-w-[320px] truncate"
-                >
-                  {phases.map((phase) => {
-                    const phaseItems = allTemplates.filter(t => t.phaseName === phase);
-                    if (phaseItems.length === 0) return null;
-                    return (
-                      <optgroup key={phase} label={`📁 ${phase} (${phaseItems.length})`} className="bg-[#0b101d] text-teal-400 font-extrabold">
-                        {phaseItems.map((t) => (
-                          <option key={t.combinedId} value={t.combinedId} className="bg-[#0b101d] text-slate-200">
-                            {t.combinedId.split('_')[0]}: {t.diagramName}
+              {/* Row 2: Connected Dynamic Dropdowns Filter & Carousel Navigation Ribbon */}
+              <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-800/80">
+                {/* Left: Dynamic Connected Filter Dropdowns */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Phase Dropdown */}
+                  <div className="flex items-center gap-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Phase:</label>
+                    <select
+                      data-testid="modal-phase-select"
+                      value={previewModalPhaseFilter}
+                      onChange={(e) => {
+                        const newPhase = e.target.value;
+                        setPreviewModalPhaseFilter(newPhase);
+                        const match = allTemplates.find(t => {
+                          if (newPhase !== 'ALL' && t.phaseName !== newPhase && !t.phaseName.startsWith(newPhase) && t.phase !== newPhase) return false;
+                          if (previewModalAbstractionFilter !== 'ALL' && t.abstractionLevel !== previewModalAbstractionFilter) return false;
+                          if (previewModalLayerFilter !== 'ALL' && t.stackLayer !== previewModalLayerFilter) return false;
+                          return true;
+                        });
+                        if (match) setPreviewModalTemplateId(match.combinedId);
+                      }}
+                      className="bg-slate-900 border border-slate-700/80 hover:border-cyan-400 focus:border-cyan-400 text-cyan-300 font-bold text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer max-w-[200px] truncate"
+                    >
+                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All Phases ({allTemplates.length})</option>
+                      {PHASE_NAME_OPTIONS.map((p) => {
+                        const count = allTemplates.filter(t => t.phaseName === p || t.phaseName.startsWith(p)).length;
+                        return (
+                          <option key={p} value={p} className="bg-[#0b101d] text-slate-200">
+                            {p.split(':')[0]} ({count})
                           </option>
-                        ))}
-                      </optgroup>
-                    );
-                  })}
-                </select>
+                        );
+                      })}
+                    </select>
+                  </div>
 
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs border border-slate-700 transition-all cursor-pointer shadow-sm"
-                  title="Next Blueprint (Right Arrow Key)"
-                >
-                  <span>Next</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
+                  {/* Abstraction Level Dropdown */}
+                  <div className="flex items-center gap-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">ABSTRACTION:</label>
+                    <select
+                      data-testid="modal-abstraction-select"
+                      value={previewModalAbstractionFilter}
+                      onChange={(e) => {
+                        const newAbs = e.target.value;
+                        setPreviewModalAbstractionFilter(newAbs);
+                        const match = allTemplates.find(t => {
+                          if (previewModalPhaseFilter !== 'ALL' && t.phaseName !== previewModalPhaseFilter && !t.phaseName.startsWith(previewModalPhaseFilter) && t.phase !== previewModalPhaseFilter) return false;
+                          if (newAbs !== 'ALL' && t.abstractionLevel !== newAbs) return false;
+                          if (previewModalLayerFilter !== 'ALL' && t.stackLayer !== previewModalLayerFilter) return false;
+                          return true;
+                        });
+                        if (match) setPreviewModalTemplateId(match.combinedId);
+                      }}
+                      className="bg-slate-900 border border-slate-700/80 hover:border-purple-400 focus:border-purple-400 text-purple-300 font-bold text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer max-w-[170px] truncate"
+                    >
+                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All Abstractions</option>
+                      {ABSTRACTION_LEVEL_OPTIONS.map((lvl) => {
+                        const count = allTemplates.filter(t => t.abstractionLevel === lvl).length;
+                        return (
+                          <option key={lvl} value={lvl} className="bg-[#0b101d] text-slate-200">
+                            {lvl} ({count})
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
 
-              {/* Right: Theme Toggle, Load Blueprint & Close */}
-              <div className="flex items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setPreviewModalTheme(t => t === 'light' ? 'dark' : 'light')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all cursor-pointer"
-                  title="Toggle Light / Dark Preview Theme"
-                >
-                  {previewModalTheme === 'light' ? '☀️ Light' : '🌙 Dark'}
-                </button>
+                  {/* Stack Layer Dropdown */}
+                  <div className="flex items-center gap-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">LAYER:</label>
+                    <select
+                      data-testid="modal-layer-select"
+                      value={previewModalLayerFilter}
+                      onChange={(e) => {
+                        const newLyr = e.target.value;
+                        setPreviewModalLayerFilter(newLyr);
+                        const match = allTemplates.find(t => {
+                          if (previewModalPhaseFilter !== 'ALL' && t.phaseName !== previewModalPhaseFilter && !t.phaseName.startsWith(previewModalPhaseFilter) && t.phase !== previewModalPhaseFilter) return false;
+                          if (previewModalAbstractionFilter !== 'ALL' && t.abstractionLevel !== previewModalAbstractionFilter) return false;
+                          if (newLyr !== 'ALL' && t.stackLayer !== newLyr) return false;
+                          return true;
+                        });
+                        if (match) setPreviewModalTemplateId(match.combinedId);
+                      }}
+                      className="bg-slate-900 border border-slate-700/80 hover:border-amber-400 focus:border-amber-400 text-amber-300 font-bold text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer max-w-[180px] truncate"
+                    >
+                      <option value="ALL" className="bg-[#0b101d] text-teal-300 font-bold">✨ All Layers</option>
+                      {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((lyr) => {
+                        const count = allTemplates.filter(t => t.stackLayer === lyr).length;
+                        return (
+                          <option key={lyr} value={lyr} className="bg-[#0b101d] text-slate-200">
+                            {lyr} ({count})
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCurrentTab('editor');
-                    handleArchitectureSwitch(currentTemplate.combinedId);
-                    setPreviewModalTemplateId(null);
-                  }}
-                  className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-teal-500/20 flex items-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02]"
-                >
-                  <span>Use Blueprint</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                  {/* Reset Filters */}
+                  {hasActiveFilters && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPreviewModalPhaseFilter('ALL');
+                        setPreviewModalAbstractionFilter('ALL');
+                        setPreviewModalLayerFilter('ALL');
+                      }}
+                      className="px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-teal-300 text-[11px] font-bold border border-slate-700 flex items-center gap-1 transition-all cursor-pointer"
+                      title="Reset all filters"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Reset</span>
+                    </button>
+                  )}
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setPreviewModalTemplateId(null)}
-                  className="p-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 transition-all cursor-pointer"
-                  title="Close Master Preview (Escape)"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                {/* Right: Direct Blueprint Switcher & Carousel Controls */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs border border-slate-700 transition-all cursor-pointer shadow-sm"
+                    title="Previous Blueprint (Left Arrow Key)"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Prev</span>
+                  </button>
+
+                  {/* Direct Dropdown Switcher */}
+                  <select
+                    data-testid="modal-blueprint-select"
+                    value={currentTemplate.combinedId}
+                    onChange={(e) => setPreviewModalTemplateId(e.target.value)}
+                    className="bg-slate-900 border border-teal-500/40 text-teal-300 font-bold text-xs rounded-xl px-3 py-1.5 outline-none cursor-pointer max-w-[340px] truncate shadow-sm"
+                  >
+                    {phases.map((phase) => {
+                      const phaseItems = activeList.filter(t => t.phaseName === phase || t.phaseName.startsWith(phase));
+                      if (phaseItems.length === 0) return null;
+                      return (
+                        <optgroup key={phase} label={`📁 ${phase} (${phaseItems.length})`} className="bg-[#0b101d] text-teal-400 font-extrabold">
+                          {phaseItems.map((t) => (
+                            <option key={t.combinedId} value={t.combinedId} className="bg-[#0b101d] text-slate-200">
+                              {t.combinedId.split('_')[0]}: {t.diagramName}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
+                  </select>
+
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs border border-slate-700 transition-all cursor-pointer shadow-sm"
+                    title="Next Blueprint (Right Arrow Key)"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
 
