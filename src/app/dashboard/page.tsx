@@ -34,7 +34,9 @@ import {
   RefreshCw,
   History,
   X,
-  Settings2
+  Settings2,
+  Menu,
+  RotateCcw
 } from 'lucide-react';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { AIGenerationProgressModal } from '@/components/AIGenerationProgressModal';
@@ -134,6 +136,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -153,6 +156,7 @@ export default function Dashboard() {
   const [newDiagramName, setNewDiagramName] = useState('');
   const [newDiagramPrompt, setNewDiagramPrompt] = useState('');
   const [selectedArchType, setSelectedArchType] = useState('conceptual_diagram');
+  const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [isCreating, setIsCreating] = useState(false);
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
 
@@ -407,10 +411,10 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen w-screen bg-[#070a13] text-slate-100 overflow-hidden font-sans relative selection:bg-teal-500/30 selection:text-teal-200">
       
-      {/* Unified Sidebar Navigation */}
+      {/* Desktop Sidebar Navigation (Hidden on < 1024px) */}
       <aside 
         onMouseEnter={() => setIsSidebarOpen(true)}
-        className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 shrink-0 ${
+        className={`hidden lg:flex glass-panel border-r border-panel-border flex-col transition-all duration-300 z-20 shrink-0 ${
           isSidebarOpen ? 'w-64' : 'w-16'
         }`}
       >
@@ -520,6 +524,114 @@ export default function Dashboard() {
       </div>
     </aside>
 
+      {/* Mobile/Tablet Slide-Out Navigation Drawer */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity animate-fade-in"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          {/* Drawer */}
+          <aside className="relative w-72 max-w-[85vw] bg-[#090d16] border-r border-panel-border h-full flex flex-col justify-between shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+            <div>
+              {/* Header */}
+              <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
+                <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-teal-accent" />
+                  <span className="font-bold text-base tracking-wider bg-gradient-to-r from-teal-accent to-cyan-400 bg-clip-text text-transparent">
+                    PROMPT CANVAS
+                  </span>
+                </Link>
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                  title="Close Menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Action Button */}
+              <div className="p-3 border-b border-panel-border/30">
+                <Link
+                  href="/workspace?new=true"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-xs cursor-pointer shadow-md"
+                >
+                  <Plus className="w-4 h-4 stroke-[3]" />
+                  <span>New Architecture</span>
+                </Link>
+              </div>
+
+              {/* Nav Links */}
+              <div className="p-3 space-y-1">
+                {[
+                  { id: "editor", name: "Design Canvas", icon: Network, href: "/workspace" },
+                  { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/workspace?tab=templates" },
+                  { id: "history", name: "Historical Canvases", icon: History, href: "/history" },
+                  { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },
+                  { id: "audit", name: "Security Audit", icon: ShieldCheck, href: "/workspace?tab=audit" },
+                  { id: "walkthrough", name: "Interactive Tour", icon: BookOpen, href: "/workspace?tour=true" },
+                  { id: "settings", name: "Settings & AI Tier Config", icon: Settings, href: "/workspace?tab=settings" }
+                ].map((item) => {
+                  const Icon = item.icon;
+                  const isActive = item.id === "dashboard";
+                  
+                  return (
+                    <Link 
+                      key={item.id} 
+                      href={item.href} 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-bold transition-all ${
+                        isActive 
+                          ? "bg-teal-accent text-bg-dark font-extrabold"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-bg-dark" : "text-slate-400"}`} />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bottom Profile / User */}
+            <div className="p-3 border-t border-panel-border/30 bg-slate-950/60">
+              {user ? (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsProfileModalOpen(true);
+                  }}
+                  className="w-full flex items-center gap-2.5 p-2 rounded-xl bg-slate-900 border border-slate-800 text-left cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                    {(user.name || user.email)[0].toUpperCase()}
+                  </div>
+                  <div className="truncate">
+                    <p className="text-xs font-bold text-slate-200 truncate">{user.name || user.email}</p>
+                    <p className="text-[10px] text-teal-400 font-mono">{user.is_guest ? "Guest Session" : "Verified Pro"}</p>
+                  </div>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsAuthOpen(true);
+                  }}
+                  className="w-full py-2 px-3 rounded-xl bg-slate-900 border border-slate-800 text-teal-300 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Sign In / Profile</span>
+                </button>
+              )}
+            </div>
+          </aside>
+        </div>
+      )}
+
       {/* Main Dashboard Portal Container */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto relative">
         {/* Background radial overlays */}
@@ -530,18 +642,28 @@ export default function Dashboard() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.015)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30 pointer-events-none z-0" />
 
         {/* Header Bar */}
-        <header className="w-full border-b border-panel-border/30 h-16 bg-[#070a13]/80 backdrop-blur-md px-12 md:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
-        <div className="flex items-center gap-3">
+        <header className="w-full border-b border-panel-border/30 h-16 bg-[#070a13]/80 backdrop-blur-md px-4 sm:px-8 md:px-12 lg:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Mobile Hamburger Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="lg:hidden p-2 rounded-xl bg-slate-900 border border-panel-border text-slate-300 hover:text-teal-400 shrink-0 cursor-pointer"
+            title="Open Navigation Menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
               <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
-                <Network className="w-5 h-5 text-teal-accent" />
+                <Network className="w-4 h-4 sm:w-5 sm:h-5 text-teal-accent" />
               </div>
             </div>
-            <span className="font-extrabold tracking-wider text-sm text-white uppercase">Prompt Canvas</span>
+            <span className="font-extrabold tracking-wider text-xs sm:text-sm text-white uppercase hidden min-[420px]:inline">Prompt Canvas</span>
           </Link>
-          <span className="text-[11px] font-extrabold text-teal-accent uppercase tracking-widest px-3 py-1 rounded bg-teal-500/10 border border-teal-500/20">
-            Premium Portal
+          <span className="text-[10px] sm:text-[11px] font-extrabold text-teal-accent uppercase tracking-widest px-2 sm:px-3 py-1 rounded bg-teal-500/10 border border-teal-500/20">
+            Operations
           </span>
         </div>
 
@@ -639,7 +761,7 @@ export default function Dashboard() {
       )}
 
       {/* Main Portal View */}
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-12 md:px-16 py-14 space-y-12 relative z-10">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-10 md:py-14 space-y-8 sm:space-y-12 relative z-10">
         
         {/* Page Title Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">

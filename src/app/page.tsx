@@ -17,7 +17,8 @@ import {
   X,
   User,
   LogOut,
-  Mail
+  Mail,
+  Menu
 } from 'lucide-react';
 import { AuthModal } from '@/components/AuthModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
@@ -34,6 +35,7 @@ export default function LandingPage() {
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const checkAuth = async () => {
     try {
@@ -204,15 +206,80 @@ export default function LandingPage() {
                 </Link>
               </>
             )}
+
+            {/* Mobile Navigation Drawer Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+              className="lg:hidden p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-teal-400 cursor-pointer"
+              title="Toggle Menu"
+            >
+              {isMobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer Dropdown */}
+        {isMobileNavOpen && (
+          <div className="lg:hidden border-t border-slate-800 bg-[#070a13]/95 backdrop-blur-xl px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
+            <nav className="flex flex-col space-y-2 text-sm font-semibold text-slate-300">
+              <a 
+                href="#features" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 hover:text-teal-400 transition"
+              >
+                Features
+              </a>
+              <a 
+                href="#how-it-works" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 hover:text-teal-400 transition"
+              >
+                How It Works
+              </a>
+              <Link 
+                href="/workspace?tab=templates" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-teal-400 font-bold flex items-center justify-between"
+              >
+                <span>Templates Matrix</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">50 Blueprints</span>
+              </Link>
+              <a 
+                href="#value" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 hover:text-teal-400 transition"
+              >
+                Why PromptCanvas
+              </a>
+            </nav>
+            <div className="pt-3 border-t border-slate-800 flex flex-col gap-2">
+              <Link
+                href="/workspace?new=true"
+                onClick={() => setIsMobileNavOpen(false)}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 text-slate-950 font-black text-xs text-center shadow-md"
+              >
+                Build First Diagram
+              </Link>
+              <button
+                onClick={() => {
+                  setIsMobileNavOpen(false);
+                  setIsContactOpen(true);
+                }}
+                className="w-full py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs font-bold text-center"
+              >
+                Contact Us
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
       <section className="relative w-full max-w-8xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
-            <Sparkles className="w-4 h-4" /> Powered by Gemini 3.6 Flash & Draw.io
+            <Sparkles className="w-4 h-4" /> Powered by Gemini 3.7 Flash &amp; Draw.io
           </div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
@@ -255,7 +322,7 @@ export default function LandingPage() {
           </div>
 
           {/* Quick highlights - Floating capsules */}
-          <div className="grid grid-cols-3 gap-6 pt-10 border-t border-panel-border/30 w-full z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 pt-10 border-t border-panel-border/30 w-full z-10">
             <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-teal-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-teal-500/5">
               <p className="text-4xl font-black text-white">100%</p>
               <p className="text-sm text-slate-400 mt-1 font-semibold">Interactive Vector SVG</p>

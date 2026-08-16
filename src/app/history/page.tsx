@@ -40,7 +40,8 @@ import {
   ShieldAlert,
   Settings,
   BookOpen,
-  ClipboardList
+  ClipboardList,
+  Menu
 } from 'lucide-react';
 import { getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { UserProfileModal } from '@/components/UserProfileModal';
@@ -80,6 +81,7 @@ export default function CanvasHistoryPage() {
 
   // Layout & Navigation State
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
@@ -371,12 +373,12 @@ export default function CanvasHistoryPage() {
     <div className="flex h-screen w-screen bg-[#070a13] text-slate-100 font-sans overflow-hidden select-none selection:bg-teal-500/30 selection:text-teal-200">
       
       {/* ========================================================================= */}
-      {/* 1. UNIFIED APP COLLAPSIBLE LEFT SIDEBAR */}
+      {/* 1. UNIFIED APP COLLAPSIBLE LEFT SIDEBAR (Desktop) */}
       {/* ========================================================================= */}
       <aside 
         className={`${
           isSidebarOpen ? 'w-64' : 'w-16'
-        } bg-[#090d16]/95 border-r border-panel-border/80 transition-all duration-300 flex flex-col justify-between z-40 shrink-0 relative select-none`}
+        } hidden lg:flex bg-[#090d16]/95 border-r border-panel-border/80 transition-all duration-300 flex-col justify-between z-40 shrink-0 relative select-none`}
       >
         {/* Brand Header */}
         <div>
@@ -492,6 +494,114 @@ export default function CanvasHistoryPage() {
         </div>
       </aside>
 
+      {/* Mobile/Tablet Slide-Out Navigation Drawer */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity animate-fade-in"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          {/* Drawer */}
+          <aside className="relative w-72 max-w-[85vw] bg-[#090d16] border-r border-panel-border h-full flex flex-col justify-between shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+            <div>
+              {/* Header */}
+              <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
+                <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-teal-accent" />
+                  <span className="font-bold text-base tracking-wider bg-gradient-to-r from-teal-accent to-cyan-400 bg-clip-text text-transparent">
+                    PROMPT CANVAS
+                  </span>
+                </Link>
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                  title="Close Menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Action Button */}
+              <div className="p-3 border-b border-panel-border/30">
+                <Link
+                  href="/workspace?new=true"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-xs cursor-pointer shadow-md"
+                >
+                  <Plus className="w-4 h-4 stroke-[3]" />
+                  <span>New Architecture</span>
+                </Link>
+              </div>
+
+              {/* Nav Links */}
+              <div className="p-3 space-y-1">
+                {[
+                  { id: 'editor', name: 'Design Canvas', icon: Network, href: '/workspace' },
+                  { id: 'templates', name: 'Templates Gallery', icon: LayoutGrid, href: '/workspace?tab=templates' },
+                  { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
+                  { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
+                  { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },
+                  { id: 'walkthrough', name: 'Interactive Tour', icon: BookOpen, href: '/workspace?tour=true' },
+                  { id: 'settings', name: 'Settings & AI Tier Config', icon: Settings, href: '/workspace?tab=settings' }
+                ].map((item) => {
+                  const Icon = item.icon;
+                  const isActive = item.id === 'history';
+
+                  return (
+                    <Link 
+                      key={item.id} 
+                      href={item.href} 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-bold transition-all ${
+                        isActive 
+                          ? 'bg-teal-accent text-bg-dark font-extrabold'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-bg-dark' : 'text-slate-400'}`} />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bottom Profile / User */}
+            <div className="p-3 border-t border-panel-border/30 bg-slate-950/60">
+              {user ? (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsProfileModalOpen(true);
+                  }}
+                  className="w-full flex items-center gap-2.5 p-2 rounded-xl bg-slate-900 border border-slate-800 text-left cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                    {(user.name || user.email)[0].toUpperCase()}
+                  </div>
+                  <div className="truncate">
+                    <p className="text-xs font-bold text-slate-200 truncate">{user.name || user.email}</p>
+                    <p className="text-[10px] text-teal-400 font-mono">{user.is_guest ? 'Guest Session' : 'Verified Pro'}</p>
+                  </div>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsAuthOpen(true);
+                  }}
+                  className="w-full py-2 px-3 rounded-xl bg-slate-900 border border-slate-800 text-teal-300 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Sign In / Profile</span>
+                </button>
+              )}
+            </div>
+          </aside>
+        </div>
+      )}
+
       {/* ========================================================================= */}
       {/* 2. MAIN APPLICATION CONTAINER */}
       {/* ========================================================================= */}
@@ -500,13 +610,23 @@ export default function CanvasHistoryPage() {
         {/* ========================================================================= */}
         {/* TOP NAVBAR HEADER */}
         {/* ========================================================================= */}
-        <header className="h-14 border-b border-panel-border/80 flex items-center justify-between px-4 md:px-8 bg-[#090d16]/90 backdrop-blur-md gap-3 relative shrink-0 z-30">
+        <header className="h-14 border-b border-panel-border/80 flex items-center justify-between px-3 sm:px-4 md:px-8 bg-[#090d16]/90 backdrop-blur-md gap-3 relative shrink-0 z-30">
           {/* Left: Breadcrumbs & Sidebar Toggle */}
-          <div className="flex items-center gap-3 shrink-0 min-w-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 min-w-0">
+            {/* Mobile Hamburger Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="lg:hidden p-1.5 rounded-lg bg-slate-900 border border-panel-border text-slate-300 hover:text-teal-400 shrink-0 cursor-pointer"
+              title="Open Navigation Menu"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+
             {!isSidebarOpen && (
               <button 
                 onClick={() => setIsSidebarOpen(true)}
-                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                className="hidden lg:flex p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
                 title="Expand Sidebar"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -518,7 +638,8 @@ export default function CanvasHistoryPage() {
               <span className="text-slate-600">/</span>
               <span className="text-teal-400 font-bold flex items-center gap-1.5">
                 <History className="w-3.5 h-3.5" />
-                <span>Historical Canvases &amp; Snapshots</span>
+                <span className="hidden sm:inline">Historical Canvases &amp; Snapshots</span>
+                <span className="sm:hidden">History</span>
               </span>
             </div>
           </div>
@@ -614,7 +735,7 @@ export default function CanvasHistoryPage() {
           <div className="absolute top-0 right-0 w-[40vw] h-[40vw] rounded-full bg-teal-500/5 blur-[120px] pointer-events-none z-0" />
           <div className="absolute bottom-0 left-0 w-[35vw] h-[35vw] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none z-0" />
 
-          <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-10 space-y-8 relative z-10">
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-10 space-y-6 sm:space-y-8 relative z-10">
             
             {/* KPI & Title Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-800/80">
@@ -623,7 +744,7 @@ export default function CanvasHistoryPage() {
                   <History className="w-3.5 h-3.5" />
                   <span>Historical Canvases &amp; Version Snapshots</span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
                   Canvas Version <span className="bg-gradient-to-r from-teal-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">Archive &amp; Tiles</span>
                 </h1>
                 <p className="text-xs md:text-sm text-slate-400 leading-relaxed">
@@ -632,7 +753,7 @@ export default function CanvasHistoryPage() {
               </div>
 
               {/* KPI Stats Strip */}
-              <div className="grid grid-cols-3 gap-3 md:gap-4 shrink-0">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 shrink-0">
                 <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex flex-col justify-center shadow-lg">
                   <span className="text-[11px] font-semibold text-slate-400">Total Canvases</span>
                   <span className="text-2xl font-black text-teal-400 mt-0.5">{totalCanvases}</span>

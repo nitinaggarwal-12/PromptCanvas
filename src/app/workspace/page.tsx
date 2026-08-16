@@ -14,6 +14,7 @@ import { TechRadarAndConceptDriftGuardModal } from '@/components/TechRadarAndCon
 import { ConversationalRefactorBar, AuditComplianceDossierModal } from '@/components/ConversationalRefactorAndAuditDossier';
 import { FlagshipToolbarButtons, WorldClassFlagshipDrawer, ActiveFlagshipTool } from '@/components/WorldClassFlagshipSuite';
 import { SUPPORTED_LANGUAGES, translateDiagramXmlToLanguage, TRANSLATIONS, SupportedLanguage } from '@/lib/i18n';
+import { localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
 import {
   PHASE_NAME_OPTIONS,
   ARCHITECTURE_DOMAIN_OPTIONS,
@@ -40,6 +41,7 @@ import {
   Sparkles, 
   ChevronLeft, 
   ChevronRight, 
+  Menu,
   MessageSquare, 
   X,
   Loader2,
@@ -833,6 +835,7 @@ function WorkspaceContent() {
   
   // UI Panels
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(() => {
@@ -1038,6 +1041,9 @@ function WorkspaceContent() {
     }
     if (searchParams.get('tour') === 'true') {
       setTourStep(1);
+    }
+    if (searchParams.get('new') === 'true' || searchParams.get('create') === 'true' || searchParams.get('modal') === 'create') {
+      setIsCreateModalOpen(true);
     }
     const archParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
     if (archParam) {
@@ -2474,12 +2480,22 @@ function WorkspaceContent() {
     }
 
     return (
-      <div className="flex-1 overflow-y-auto p-8 bg-bg-dark select-none animate-fade-in">
-        <div className="max-w-[1600px] mx-auto space-y-8">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-bg-dark select-none animate-fade-in">
+        <div className="max-w-[1600px] mx-auto space-y-6 sm:space-y-8">
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-panel-border/40 pb-6">
-            <div>
-              <h1 className="text-2xl font-extrabold text-white">Architectural Blueprint Library</h1>
-              <p className="text-sm text-slate-400 mt-1">Select an out-of-the-box publication architecture template to bootstrap your canvas instantly.</p>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="lg:hidden p-2 rounded-xl bg-slate-900 border border-panel-border text-slate-300 hover:text-teal-400 shrink-0 cursor-pointer"
+                title="Open Navigation Menu"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-extrabold text-white">Architectural Blueprint Library</h1>
+                <p className="text-xs sm:text-sm text-slate-400 mt-0.5">Select an out-of-the-box publication architecture template to bootstrap your canvas instantly.</p>
+              </div>
             </div>
 
             {/* Filter Toolbar: Persona Dropdown + Phase/Category Tabs */}
@@ -3185,15 +3201,25 @@ function WorkspaceContent() {
     });
 
     return (
-      <div className="flex-1 overflow-hidden flex bg-bg-dark select-none animate-fade-in font-sans">
+      <div className="flex-1 overflow-hidden flex flex-col md:flex-row bg-bg-dark select-none animate-fade-in font-sans">
         {/* Expanded Left Directory Sidebar */}
-        <div className="w-80 md:w-96 lg:w-[380px] shrink-0 border-r border-panel-border/30 flex flex-col bg-[#090d16]">
+        <div className="w-full md:w-80 lg:w-[380px] max-h-[35vh] md:max-h-full shrink-0 border-b md:border-b-0 md:border-r border-panel-border/30 flex flex-col bg-[#090d16]">
           {/* Header Section */}
-          <div className="p-5 border-b border-panel-border/30 space-y-3">
+          <div className="p-4 sm:p-5 border-b border-panel-border/30 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-widest text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
-                Architecture Audit Hub
-              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsMobileMenuOpen(true)}
+                  className="lg:hidden p-1.5 rounded-lg bg-slate-900 border border-panel-border text-slate-300 hover:text-teal-400 shrink-0 cursor-pointer"
+                  title="Open Navigation Menu"
+                >
+                  <Menu className="w-4 h-4" />
+                </button>
+                <span className="text-[10px] font-black uppercase tracking-widest text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
+                  Architecture Audit Hub
+                </span>
+              </div>
               <span className="text-xs font-bold text-slate-400">
                 {filteredDiagrams.length} {filteredDiagrams.length === 1 ? 'Asset' : 'Assets'}
               </span>
@@ -5114,10 +5140,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
   return (
     <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
       
-      {/* Unified Sidebar Navigation & Library */}
+      {/* Desktop Sidebar Navigation (Hidden on < 1024px) */}
       <aside 
         onMouseEnter={() => setIsSidebarOpen(true)}
-        className={`glass-panel border-r border-panel-border flex flex-col transition-all duration-300 z-20 ${
+        className={`hidden lg:flex glass-panel border-r border-panel-border flex-col transition-all duration-300 z-20 shrink-0 ${
           isSidebarOpen ? 'w-64' : 'w-16'
         }`}
       >
@@ -5450,6 +5476,144 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         )}
       </aside>
 
+      {/* Mobile/Tablet Slide-Out Navigation Drawer */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity animate-fade-in"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          {/* Drawer */}
+          <aside className="relative w-72 max-w-[85vw] bg-[#090d16] border-r border-panel-border h-full flex flex-col justify-between shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+            <div>
+              {/* Header */}
+              <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
+                <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-teal-accent" />
+                  <span className="font-bold text-base tracking-wider bg-gradient-to-r from-teal-accent to-cyan-400 bg-clip-text text-transparent">
+                    PROMPT CANVAS
+                  </span>
+                </Link>
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                  title="Close Menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Action Button */}
+              <div className="p-3 border-b border-panel-border/30">
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    openCreateModal();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-xs cursor-pointer shadow-md"
+                >
+                  <Plus className="w-4 h-4 stroke-[3]" />
+                  <span>New Architecture</span>
+                </button>
+              </div>
+
+              {/* Nav Links */}
+              <div className="p-3 space-y-1">
+                {[
+                  { id: 'editor', name: t.designCanvas, icon: Network },
+                  { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
+                  { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
+                  { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
+                  { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
+                  { id: 'walkthrough', name: t.interactiveTour, icon: BookOpen },
+                  { id: 'settings', name: t.settingsTier, icon: Settings }
+                ].map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentTab === item.id;
+                  
+                  if (item.href) {
+                    return (
+                      <Link 
+                        key={item.id} 
+                        href={item.href} 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-bold transition-all ${
+                          isActive 
+                            ? 'bg-teal-accent text-bg-dark font-extrabold'
+                            : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                        }`}
+                      >
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-bg-dark' : 'text-slate-400'}`} />
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  }
+
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
+                        setCurrentTab(newTab);
+                        if (newTab === 'editor') {
+                          setIsAssistantOpen(true);
+                          if (!activeDiagram && diagrams.length > 0) {
+                            loadDiagramDetails(diagrams[0].id);
+                          }
+                        }
+                        if (newTab === 'walkthrough') {
+                          setTourStep(1);
+                        }
+                      }}
+                      className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-bold text-left transition-all cursor-pointer ${
+                        isActive 
+                          ? 'bg-teal-accent text-bg-dark font-extrabold'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-bg-dark' : 'text-slate-400'}`} />
+                      <span>{item.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bottom Profile / User */}
+            <div className="p-3 border-t border-panel-border/30 bg-slate-950/60">
+              {currentUser ? (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setCurrentTab('settings');
+                  }}
+                  className="w-full flex items-center gap-2.5 p-2 rounded-xl bg-slate-900 border border-slate-800 text-left cursor-pointer hover:border-teal-500/40 transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                    {(currentUser.name || currentUser.email)[0].toUpperCase()}
+                  </div>
+                  <div className="truncate">
+                    <p className="text-xs font-bold text-slate-200 truncate">{currentUser.name || currentUser.email}</p>
+                    <p className="text-[10px] text-teal-400 font-mono">{currentUser.is_guest ? 'Guest Session' : 'Verified Pro'}</p>
+                  </div>
+                </button>
+              ) : (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full py-2 px-3 rounded-xl bg-slate-900 border border-slate-800 text-teal-300 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer hover:border-teal-500/40 transition-colors"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Sign In / Profile</span>
+                </Link>
+              )}
+            </div>
+          </aside>
+        </div>
+      )}
+
       {/* 2. MAIN WORKSPACE: Split Pane */}
 
   {isPlaybookModalOpen && (
@@ -5642,12 +5806,22 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             {/* Top Navbar */}
             <header className={`h-14 border-b border-panel-border flex items-center justify-between px-3 md:px-6 bg-panel-dark/80 backdrop-blur-md gap-3 relative shrink-0 ${tourStep !== null ? 'z-[60]' : 'z-30'}`}>
               {/* Group 1: Left - Navigation Identity, Category & Version */}
-              <div className="flex items-center gap-2.5 shrink-0 min-w-0">
+              <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
+                {/* Mobile/Tablet Hamburger Menu Toggle */}
+                <button
+                  type="button"
+                  onClick={() => setIsMobileMenuOpen(true)}
+                  className="lg:hidden p-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-panel-border text-slate-300 hover:text-teal-400 shrink-0 transition-all cursor-pointer"
+                  title="Open Navigation Menu"
+                >
+                  <Menu className="w-4 h-4" />
+                </button>
+
                 {!isSidebarOpen && (
                   <button 
                     onClick={() => setIsSidebarOpen(true)}
                     title="Expand Navigation Sidebar"
-                    className="p-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-panel-border text-slate-300 hover:text-teal-accent shrink-0 transition-all cursor-pointer"
+                    className="hidden lg:flex p-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-panel-border text-slate-300 hover:text-teal-accent shrink-0 transition-all cursor-pointer"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -7436,7 +7610,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       value={newProjectName}
                       onChange={(e) => setNewProjectName(e.target.value)}
                       placeholder="e.g. Project-842"
-                      className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
+                      className="flex-1 min-w-0 bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
                     />
                     {earlierProjects.length > 0 && (
                       <select
@@ -7446,7 +7620,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             setNewProjectName(e.target.value);
                           }
                         }}
-                        className="bg-bg-dark border border-panel-border focus:border-teal-accent text-teal-400 rounded-xl px-2.5 py-2.5 text-xs outline-none cursor-pointer shrink-0"
+                        className="w-28 shrink-0 bg-bg-dark border border-panel-border focus:border-teal-accent text-teal-400 rounded-xl px-2 py-2.5 text-xs outline-none cursor-pointer truncate"
                         title="Choose from earlier projects"
                       >
                         <option value="" disabled>📂 Earlier</option>
