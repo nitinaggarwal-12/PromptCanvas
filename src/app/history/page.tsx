@@ -691,7 +691,7 @@ export default function CanvasHistoryPage() {
         {/* DISMISSIBLE GUEST MODE WARNING DISCLAIMER BANNER WITH X BUTTON */}
         {/* ========================================================================= */}
         {user?.is_guest && !isGuestDisclaimerDismissed && (
-          <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in">
+          <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in">
             <div className="flex items-center gap-2 font-medium min-w-0">
               <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
               <span className="truncate sm:whitespace-normal">

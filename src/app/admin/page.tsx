@@ -80,7 +80,7 @@ export default function SuperAdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#070a13] text-slate-100 font-sans selection:bg-amber-500/30">
+    <div className="min-h-screen flex flex-col bg-[#070a13] text-slate-100 font-sans selection:bg-amber-500/30">
       
       {/* Toast Notification */}
       {toastMsg && (
@@ -91,8 +91,8 @@ export default function SuperAdminDashboard() {
       )}
 
       {/* Top Header */}
-      <header className="sticky top-0 z-30 w-full bg-[#090d18]/90 border-b border-panel-border/60 backdrop-blur-md">
-        <div className="max-w-8xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-30 w-full bg-[#090d18]/90 border-b border-panel-border/60 backdrop-blur-md shrink-0">
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-12 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
@@ -107,7 +107,7 @@ export default function SuperAdminDashboard() {
               <div>
                 <h1 className="text-base font-black text-white tracking-wide">Admin Portal</h1>
                 <p className="text-xs text-amber-400 font-semibold flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> System Governance & User Directory
+                  <Sparkles className="w-3 h-3" /> System Governance &amp; User Directory
                 </p>
               </div>
             </div>
@@ -122,7 +122,7 @@ export default function SuperAdminDashboard() {
       </header>
 
       {/* Body Content */}
-      <main className="max-w-8xl mx-auto px-6 md:px-12 py-10 space-y-8">
+      <main className="flex-1 w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-8 md:py-10 space-y-6 sm:space-y-8">
         {error ? (
           <div className="p-8 bg-rose-950/40 border border-rose-500/40 rounded-2xl text-center max-w-md mx-auto space-y-3">
             <Shield className="w-12 h-12 text-rose-400 mx-auto" />

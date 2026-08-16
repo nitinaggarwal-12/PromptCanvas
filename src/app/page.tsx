@@ -105,7 +105,7 @@ export default function LandingPage() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 pointer-events-none z-0" />
 
       {/* Header/Navigation */}
-      <header className="sticky top-0 w-full z-50 border-b border-panel-border/30 bg-[#070a13]/80 backdrop-blur-md">
+      <header className="sticky top-0 w-full z-50 border-b border-panel-border/30 bg-[#070a13]/80 backdrop-blur-md shrink-0">
         <div className="w-full max-w-8xl mx-auto h-16 sm:h-20 px-3 sm:px-6 md:px-12 flex items-center justify-between gap-2 sm:gap-3">
           <Link 
             href="/" 
@@ -276,7 +276,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative w-full max-w-8xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10">
+      <section className="relative w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 md:pt-20 pb-16 md:pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
             <Sparkles className="w-4 h-4" /> Powered by Gemini 3.7 Flash &amp; Draw.io

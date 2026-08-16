@@ -718,7 +718,7 @@ export default function Dashboard() {
       </header>
 
       {user?.is_guest && !isGuestDisclaimerDismissed && (
-        <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-12 md:px-16 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 animate-fade-in">
+        <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-4 sm:px-8 md:px-12 lg:px-16 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in">
           <div className="flex items-center gap-2 font-medium min-w-0">
             <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
             <span className="truncate sm:whitespace-normal">
@@ -754,7 +754,7 @@ export default function Dashboard() {
       )}
 
       {isCreating && (
-        <div className="w-full bg-amber-500/15 border-b border-amber-500/30 py-2 px-12 md:px-16 flex items-center justify-center gap-2 text-amber-300 text-xs font-semibold animate-pulse z-40">
+        <div className="w-full bg-amber-500/15 border-b border-amber-500/30 py-2 px-4 sm:px-8 md:px-12 lg:px-16 flex items-center justify-center gap-2 text-amber-300 text-xs font-semibold animate-pulse z-40 shrink-0">
           <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
           <span>⚡ Gemini API active: Please wait for current generation to complete before starting another request.</span>
         </div>
