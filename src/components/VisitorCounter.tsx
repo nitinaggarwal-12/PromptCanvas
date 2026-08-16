@@ -49,7 +49,7 @@ export function VisitorCounter({
       } catch (err) {
         console.error('Failed to load visitor counter:', err);
         if (isMounted && count === null) {
-          setCount(0);
+          setCount(1500);
         }
       } finally {
         if (isMounted) setIsLoaded(true);

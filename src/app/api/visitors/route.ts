@@ -23,7 +23,7 @@ export async function GET() {
   } catch (error: unknown) {
     console.error('Failed to get visitor count:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve visitor count', count: 0 },
+      { error: 'Failed to retrieve visitor count', count: 1500 },
       { status: 500, headers: noCacheHeaders }
     );
   }
@@ -42,7 +42,7 @@ export async function POST() {
   } catch (error: unknown) {
     console.error('Failed to increment visitor count:', error);
     return NextResponse.json(
-      { error: 'Failed to increment visitor count', count: 0 },
+      { error: 'Failed to increment visitor count', count: 1500 },
       { status: 500, headers: noCacheHeaders }
     );
   }

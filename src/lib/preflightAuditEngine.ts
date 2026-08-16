@@ -10,67 +10,103 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xmlInput: string,
   archType: string = 'unified_system_view'
 ): string {
-  if (
-    archType === 'unified_flowchart' ||
-    archType === 'tech_multi_region_dr' ||
-    archType === 'tech_serverless_gcp' ||
-    archType === 'tech_c4_system_context' ||
-    archType === 'tech_modern_data_stack' ||
-    archType === 'tech_event_driven_eda' ||
-    archType === 'tech_event_driven_aws' ||
-    archType === 'tech_multi_cloud_dr' ||
-    archType === 'tech_hybrid_cloud' ||
-    archType === 'tech_zero_trust_mesh' ||
-    archType === 'six_rs_migration_matrix' ||
-    archType === 'hybrid_strangler_transition' ||
-    archType === 'cloud_finops_chargeback' ||
-    archType === 'ai_coe_operating_model' ||
-    archType === 'mcp_context_gateway' ||
-    archType === 'logical_ai_config_tenant' ||
-    archType === 'hub_and_spoke_agent_config' ||
-    archType === 'unified_data_governance' ||
-    archType === 'dataops_anomaly_detection' ||
-    archType === 'golive_warroom_runbook' ||
-    archType === 'enterprise_sre_observability' ||
-    archType === 'data_residency_sovereign_map' ||
-    archType === 'federated_iam_sso' ||
-    archType === 'tech_ai_trism_guardrails' ||
-    archType === 'tech_micro_frontends' ||
-    archType === 'tech_fintech_payments' ||
-    archType === 'tech_genomics_clinical' ||
-    archType === 'tech_supply_chain' ||
-    archType === 'tech_eval_safety' ||
-    archType === 'tech_agentic_mesh' ||
-    archType === 'data_ai_pipeline' ||
-    archType === 'tech_data_lakehouse_gcp' ||
-    archType === 'tech_modern_data_stack' ||
-    archType === 'business_agent_gov_hitl' ||
-    archType === 'business_agent_governance_hitl' ||
-    archType === 'golive_warroom_runbook' ||
-    archType === 'eval_safety_benchmarking' ||
-    archType === 'tech_multi_agent_langgraph' ||
-    archType === 'tech_agent_harness_runtime' ||
-    (xmlInput && (
-      xmlInput.includes('id="data-ai-pipeline-wbs"') ||
-      xmlInput.includes('id="gcp-lakehouse-wbs"') ||
-      xmlInput.includes('id="modern-data-stack-wbs"') ||
-      xmlInput.includes('id="agent-gov-hitl-wbs"') ||
-      xmlInput.includes('id="golive-warroom-wbs"') ||
-      xmlInput.includes('pageWidth="1400"') ||
-      xmlInput.includes('pageHeight="800"') ||
-      xmlInput.includes('id="frame_') ||
-      xmlInput.includes('id="gcp_multi_region_dr_case_b"') ||
+  const isMasterOrStructured = (
+    archType !== undefined && archType !== null && (
+      archType === 'unified_flowchart' ||
+      archType === 'tech_multi_region_dr' ||
+      archType === 'tech_serverless_gcp' ||
+      archType === 'tech_c4_system_context' ||
+      archType === 'tech_modern_data_stack' ||
+      archType === 'tech_event_driven_eda' ||
+      archType === 'tech_event_driven_aws' ||
+      archType === 'tech_multi_cloud_dr' ||
+      archType === 'tech_hybrid_cloud' ||
+      archType === 'tech_zero_trust_mesh' ||
+      archType === 'six_rs_migration_matrix' ||
+      archType === 'hybrid_strangler_transition' ||
+      archType === 'cloud_finops_chargeback' ||
+      archType === 'ai_coe_operating_model' ||
+      archType === 'mcp_context_gateway' ||
+      archType === 'logical_ai_config_tenant' ||
+      archType === 'hub_and_spoke_agent_config' ||
+      archType === 'unified_data_governance' ||
+      archType === 'dataops_anomaly_detection' ||
+      archType === 'golive_warroom_runbook' ||
+      archType === 'enterprise_sre_observability' ||
+      archType === 'data_residency_sovereign_map' ||
+      archType === 'federated_iam_sso' ||
+      archType === 'tech_ai_trism_guardrails' ||
+      archType === 'tech_micro_frontends' ||
+      archType === 'tech_fintech_payments' ||
+      archType === 'tech_genomics_clinical' ||
+      archType === 'tech_supply_chain' ||
+      archType === 'tech_eval_safety' ||
+      archType === 'tech_agentic_mesh' ||
+      archType === 'data_ai_pipeline' ||
+      archType === 'tech_data_lakehouse_gcp' ||
+      archType === 'business_agent_gov_hitl' ||
+      archType === 'business_agent_governance_hitl' ||
+      archType === 'eval_safety_benchmarking' ||
+      archType === 'tech_multi_agent_langgraph' ||
+      archType === 'tech_agent_harness_runtime' ||
+      archType === 'value_stream_map' ||
+      archType === 'asis_vs_tobe_process_flow' ||
+      archType === 'c4_component_lld' ||
+      archType === 'bpmn_process_workflow' ||
+      archType === 'threat_modeling_stride' ||
+      archType === 'data_lineage_provenance' ||
+      archType === 'healthcare_fhir_hl7' ||
+      archType === 'smart_factory_iot' ||
+      archType === 'hr_talent_ai' ||
+      archType === 'ecommerce_retail' ||
+      archType === 'incident_triage_swimlane' ||
+      archType === 'tech_streaming_analytics' ||
+      archType === 'tech_llmops_lifecycle' ||
+      archType === 'tech_llm_capacity_quota' ||
+      archType === 'multiflow_zerotrust_platform' ||
+      archType.startsWith('P1-') ||
+      archType.startsWith('P2-') ||
+      archType.startsWith('P3-') ||
+      archType.startsWith('P4-') ||
+      archType.startsWith('P5-') ||
+      archType.startsWith('IND-') ||
+      archType.startsWith('ARCH-') ||
+      archType.startsWith('p1-') ||
+      archType.startsWith('p2-') ||
+      archType.startsWith('p3-') ||
+      archType.startsWith('p4-') ||
+      archType.startsWith('p5-') ||
+      archType.startsWith('ind-') ||
+      archType.startsWith('arch-') ||
+      archType.includes('wbs') ||
+      archType.includes('blueprint')
+    )
+  ) || (
+    xmlInput && (
+      xmlInput.includes('PromptCanvas') ||
+      xmlInput.includes('wbs') ||
+      xmlInput.includes('WBS') ||
+      xmlInput.includes('Blueprint') ||
+      xmlInput.includes('Phase ') ||
+      xmlInput.includes('id="hdr_title_box"') ||
+      xmlInput.includes('id="hdr_meta_box"') ||
+      xmlInput.includes('id="box_workspace_outer"') ||
+      xmlInput.includes('id="box_mcp_gateway"') ||
+      xmlInput.includes('id="box_unified_view_outer"') ||
+      xmlInput.includes('Enterprise Site Reliability Engineering') ||
+      xmlInput.includes('Incident Management & Response Workflow') ||
+      xmlInput.includes('Multi-Modal Ingestion Flow') ||
+      xmlInput.includes('serverless_eda_architecture') ||
+      xmlInput.includes('Secure Deployment Topology Map') ||
+      xmlInput.includes('Capacity Quota Management') ||
       xmlInput.includes('id="c4_system_context"') ||
       xmlInput.includes('id="pharma_genomics_pipeline"') ||
-      xmlInput.includes('pharma_genomics') ||
-      xmlInput.includes('id="supply_chain"') ||
-      xmlInput.includes('tech_supply_chain') ||
-      xmlInput.includes('id="modern_data_stack"') ||
-      xmlInput.includes('id="event_driven_eda"') ||
-      xmlInput.includes('PromptCanvas-LayoutEngineV2') ||
-      xmlInput.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR')
-    ))
-  ) {
+      xmlInput.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR') ||
+      xmlInput.includes('PromptCanvas-LayoutEngineV2')
+    )
+  );
+
+  if (isMasterOrStructured) {
     return xmlInput.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
   }
 

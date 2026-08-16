@@ -26,85 +26,99 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     return { isValid: false, isHealed: true, xml: fallbackXml, healingLog };
   }
 
-  const isFlagship = (
-    archType === 'data_ai_pipeline' ||
-    archType === 'tech_data_lakehouse_gcp' ||
-    archType === 'tech_modern_data_stack' ||
-    archType === 'business_agent_gov_hitl' ||
-    archType === 'business_agent_governance_hitl' ||
-    archType === 'golive_warroom_runbook' ||
-    archType === 'eval_safety_benchmarking' ||
-    archType === 'tech_multi_agent_langgraph' ||
-    archType === 'tech_agent_harness_runtime' ||
-    archType === 'tech_c4_system_context' ||
-    archType === 'tech_event_driven_eda' ||
-    archType === 'six_rs_migration_matrix' ||
-    archType === 'hybrid_strangler_transition' ||
-    archType === 'cloud_finops_chargeback' ||
-    archType === 'ai_coe_operating_model' ||
-    archType === 'mcp_context_gateway' ||
-    archType === 'logical_ai_config_tenant' ||
-    archType === 'hub_and_spoke_agent_config' ||
-    archType === 'unified_data_governance' ||
-    archType === 'enterprise_sre_observability' ||
-    Boolean(archType && (archType.includes('incident_triage') || archType.includes('sre_observability'))) ||
+  const isMasterOrStructured = (
+    archType !== undefined && archType !== null && (
+      archType === 'data_ai_pipeline' ||
+      archType === 'tech_data_lakehouse_gcp' ||
+      archType === 'tech_modern_data_stack' ||
+      archType === 'business_agent_gov_hitl' ||
+      archType === 'business_agent_governance_hitl' ||
+      archType === 'golive_warroom_runbook' ||
+      archType === 'eval_safety_benchmarking' ||
+      archType === 'tech_multi_agent_langgraph' ||
+      archType === 'tech_agent_harness_runtime' ||
+      archType === 'tech_c4_system_context' ||
+      archType === 'tech_event_driven_eda' ||
+      archType === 'six_rs_migration_matrix' ||
+      archType === 'hybrid_strangler_transition' ||
+      archType === 'cloud_finops_chargeback' ||
+      archType === 'ai_coe_operating_model' ||
+      archType === 'mcp_context_gateway' ||
+      archType === 'logical_ai_config_tenant' ||
+      archType === 'hub_and_spoke_agent_config' ||
+      archType === 'unified_data_governance' ||
+      archType === 'enterprise_sre_observability' ||
+      archType === 'data_residency_sovereign_map' ||
+      archType === 'federated_iam_sso' ||
+      archType === 'tech_ai_trism_guardrails' ||
+      archType === 'tech_micro_frontends' ||
+      archType === 'tech_fintech_payments' ||
+      archType === 'tech_multimodal_ingestion' ||
+      archType === 'tech_serverless_gcp' ||
+      archType === 'secure_deployment_map' ||
+      archType === 'tech_genomics_clinical' ||
+      archType === 'tech_supply_chain' ||
+      archType === 'tech_eval_safety' ||
+      archType === 'tech_agentic_mesh' ||
+      archType === 'tech_streaming_analytics' ||
+      archType === 'tech_llmops_lifecycle' ||
+      archType === 'tech_llm_capacity_quota' ||
+      archType === 'value_stream_map' ||
+      archType === 'asis_vs_tobe_process_flow' ||
+      archType === 'c4_component_lld' ||
+      archType === 'bpmn_process_workflow' ||
+      archType === 'threat_modeling_stride' ||
+      archType === 'data_lineage_provenance' ||
+      archType === 'healthcare_fhir_hl7' ||
+      archType === 'smart_factory_iot' ||
+      archType === 'hr_talent_ai' ||
+      archType === 'ecommerce_retail' ||
+      archType === 'tech_multi_region_dr' ||
+      archType === 'dataops_anomaly_detection' ||
+      archType === 'incident_triage_swimlane' ||
+      archType === 'unified_flowchart' ||
+      archType === 'multiflow_zerotrust_platform' ||
+      archType.startsWith('P1-') ||
+      archType.startsWith('P2-') ||
+      archType.startsWith('P3-') ||
+      archType.startsWith('P4-') ||
+      archType.startsWith('P5-') ||
+      archType.startsWith('IND-') ||
+      archType.startsWith('ARCH-') ||
+      archType.startsWith('p1-') ||
+      archType.startsWith('p2-') ||
+      archType.startsWith('p3-') ||
+      archType.startsWith('p4-') ||
+      archType.startsWith('p5-') ||
+      archType.startsWith('ind-') ||
+      archType.startsWith('arch-') ||
+      archType.includes('wbs') ||
+      archType.includes('blueprint')
+    )
+  ) || (
+    inputXml.includes('PromptCanvas') ||
+    inputXml.includes('wbs') ||
+    inputXml.includes('WBS') ||
+    inputXml.includes('Blueprint') ||
+    inputXml.includes('Phase ') ||
+    inputXml.includes('id="hdr_title_box"') ||
+    inputXml.includes('id="hdr_meta_box"') ||
+    inputXml.includes('id="box_workspace_outer"') ||
+    inputXml.includes('id="box_mcp_gateway"') ||
+    inputXml.includes('id="box_unified_view_outer"') ||
     inputXml.includes('Enterprise Site Reliability Engineering') ||
     inputXml.includes('Incident Management & Response Workflow') ||
-    archType === 'data_residency_sovereign_map' ||
-    archType === 'federated_iam_sso' ||
-    archType === 'tech_ai_trism_guardrails' ||
-    archType === 'tech_micro_frontends' ||
-    archType === 'tech_fintech_payments' ||
-    archType === 'tech_multimodal_ingestion' ||
-    Boolean(archType && (archType.includes('multimodal_ingestion') || archType.includes('multimodal'))) ||
-    inputXml.includes('agentic_multimodal_ingestion') ||
     inputXml.includes('Multi-Modal Ingestion Flow') ||
-    archType === 'tech_serverless_gcp' ||
-    Boolean(archType && (archType.includes('serverless') || archType.includes('p4-app-l-08'))) ||
     inputXml.includes('serverless_eda_architecture') ||
-    inputXml.includes('SERVERLESS EDA ARCHITECTURE') ||
-    archType === 'secure_deployment_map' ||
-    Boolean(archType && (archType.includes('secure_deployment') || archType.includes('p4-sec-p-01'))) ||
-    inputXml.includes('secure_deployment_topology_map') ||
     inputXml.includes('Secure Deployment Topology Map') ||
-    archType === 'tech_genomics_clinical' ||
-    archType === 'tech_supply_chain' ||
-    archType === 'tech_eval_safety' ||
-    archType === 'tech_agentic_mesh' ||
-    archType === 'tech_streaming_analytics' ||
-    Boolean(archType && archType.includes('streaming')) ||
-    inputXml.includes('real_time_streaming') ||
-    inputXml.includes('streaming_analytics') ||
-    archType === 'tech_llmops_lifecycle' ||
-    Boolean(archType && (archType.includes('llmops') || archType.includes('prompt_config'))) ||
-    inputXml.includes('llmops_prompt_config_lifecycle') ||
-    inputXml.includes('LLMOps Prompt') ||
-    archType === 'tech_llm_capacity_quota' ||
-    Boolean(archType && (archType.includes('capacity_quota') || archType.includes('quota_management'))) ||
-    inputXml.includes('llm_capacity_quota_management') ||
     inputXml.includes('Capacity Quota Management') ||
-    inputXml.includes('id="data-ai-pipeline-wbs"') ||
-    inputXml.includes('id="gcp-lakehouse-wbs"') ||
-    inputXml.includes('id="modern-data-stack-wbs"') ||
-    inputXml.includes('id="agent-gov-hitl-wbs"') ||
-    inputXml.includes('id="golive-warroom-wbs"') ||
-    inputXml.includes('pageWidth="1400"') ||
-    inputXml.includes('pageHeight="800"') ||
-    inputXml.includes('id="frame_') ||
     inputXml.includes('id="c4_system_context"') ||
     inputXml.includes('id="pharma_genomics_pipeline"') ||
-    inputXml.includes('pharma_genomics') ||
-    inputXml.includes('id="supply_chain"') ||
-    inputXml.includes('tech_supply_chain') ||
-    inputXml.includes('id="modern_data_stack"') ||
-    inputXml.includes('modern_data_stack_lakehouse') ||
-    inputXml.includes('Modern Data Stack') ||
-    inputXml.includes('GCP Enterprise Data Lakehouse') ||
-    archType === 'unified_flowchart' ||
-    inputXml.includes('id="event_driven_eda"')
+    inputXml.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR') ||
+    inputXml.includes('PromptCanvas-LayoutEngineV2')
   );
 
-  let cleaned = isFlagship ? inputXml.trim() : preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
+  let cleaned = isMasterOrStructured ? inputXml.trim() : preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
 
   // 1. Strip Markdown Code Fences if present
   if (cleaned.includes('```')) {

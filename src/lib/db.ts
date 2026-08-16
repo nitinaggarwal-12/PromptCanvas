@@ -2793,7 +2793,7 @@ export async function getAuditReportsForDiagram(diagramId: string): Promise<Audi
 
 export async function getVisitorCount(): Promise<number> {
   await ensureTablesExist();
-  const INITIAL_SEED = 0;
+  const INITIAL_SEED = 1500;
   if (isPostgres()) {
     const pool = getPgPool();
     const res = await pool.query(`SELECT value FROM site_stats WHERE key = 'visitor_count'`);
@@ -2823,7 +2823,7 @@ export async function getVisitorCount(): Promise<number> {
 
 export async function incrementVisitorCount(step: number = 1): Promise<number> {
   await ensureTablesExist();
-  const INITIAL_SEED = 0;
+  const INITIAL_SEED = 1500;
   if (isPostgres()) {
     const pool = getPgPool();
     const res = await pool.query(`

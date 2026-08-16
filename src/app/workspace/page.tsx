@@ -1254,6 +1254,7 @@ function WorkspaceContent() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const childWindowRef = useRef<Window | null>(null);
   const activeXmlRef = useRef('');
+  const activeLoadingIdRef = useRef<string | null>(null);
   
   // State for editor integration
   const [pendingXml, setPendingXml] = useState<string | null>(null);
@@ -1356,10 +1357,13 @@ function WorkspaceContent() {
 
   // Fetch active diagram details when ID changes
   const loadDiagramDetails = useCallback(async (id: string) => {
+    activeLoadingIdRef.current = id;
     try {
       const res = await fetch(`/api/diagrams/${id}`);
+      if (activeLoadingIdRef.current !== id) return;
       if (res.status === 403 || res.status === 401) {
         const accessRes = await fetch(`/api/diagrams/${id}/access`);
+        if (activeLoadingIdRef.current !== id) return;
         const accessData = await accessRes.json();
         setRestrictedState({
           diagramId: id,
@@ -1380,6 +1384,7 @@ function WorkspaceContent() {
       }
       if (!res.ok) throw new Error('Failed to fetch diagram details');
       const data: Diagram = await res.json();
+      if (activeLoadingIdRef.current !== id) return;
       
       const urlBlueprint = typeof window !== 'undefined' 
         ? (new URLSearchParams(window.location.search).get('blueprint') || new URLSearchParams(window.location.search).get('arch') || new URLSearchParams(window.location.search).get('template'))
@@ -1434,6 +1439,8 @@ function WorkspaceContent() {
         setSelectedArchType(targetArch);
         if (matchingVer) {
           setActiveVersion(matchingVer);
+          activeXmlRef.current = matchingVer.xml_content || '';
+          setCustomXml(matchingVer.xml_content || '');
         } else {
           const refXml = getDefaultXmlForArchitecture(targetArch, data.name, data.name);
           const dynamicVer: DiagramVersion = {
@@ -1447,17 +1454,8 @@ function WorkspaceContent() {
             architecture_type: targetArch
           };
           setActiveVersion(dynamicVer);
-          if (data.id && refXml) {
-            fetch(`/api/diagrams/${data.id}/versions`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-              body: JSON.stringify({
-                xmlContent: refXml,
-                comment: `Architecture Backbone Sync: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
-                architectureType: targetArch
-              })
-            }).catch(console.error);
-          }
+          activeXmlRef.current = refXml || sortedVersions[0].xml_content || '';
+          setCustomXml(refXml || sortedVersions[0].xml_content || '');
         }
         
         // Restore previewVersion if specified in URL query
@@ -1518,19 +1516,10 @@ function WorkspaceContent() {
           architecture_type: targetArch
         };
         setActiveVersion(dynamicVer);
+        activeXmlRef.current = refXml || '';
+        setCustomXml(refXml || '');
         setPreviewVersion(null);
         setChatMessages([]);
-        if (data.id && refXml) {
-          fetch(`/api/diagrams/${data.id}/versions`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-            body: JSON.stringify({
-              xmlContent: refXml,
-              comment: `Initial Architecture Backbone: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
-              architectureType: targetArch
-            })
-          }).catch(console.error);
-        }
       }
 
       // Fetch persistent audit report history
@@ -1638,10 +1627,14 @@ function WorkspaceContent() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const diagramId = params.get('diagram') || params.get('id');
-    if (diagramId && (!activeDiagram || activeDiagram.id !== diagramId) && !restrictedState) {
-      loadDiagramDetails(diagramId);
+    if (diagramId) {
+      if ((!activeDiagram || activeDiagram.id !== diagramId) && !restrictedState) {
+        loadDiagramDetails(diagramId);
+      }
+    } else if (!activeDiagram && diagrams.length > 0 && !restrictedState) {
+      loadDiagramDetails(diagrams[0].id);
     }
-  }, [searchParams, activeDiagram, restrictedState, loadDiagramDetails]);
+  }, [searchParams, activeDiagram, restrictedState, diagrams, loadDiagramDetails]);
 
   // Auto-select diagram when visiting Audit tab if none is selected
   useEffect(() => {
@@ -1737,8 +1730,6 @@ function WorkspaceContent() {
       .catch(() => {});
   }, []);
 
-
-
   // Scroll chat to bottom
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -1752,19 +1743,7 @@ function WorkspaceContent() {
       if (!res.ok) throw new Error('Failed to fetch diagrams');
       const data = await res.json();
       setDiagrams(data);
-      if (Array.isArray(data) && data.length > 0) {
-        let targetDiagramId: string | null = null;
-        if (typeof window !== 'undefined') {
-          const params = new URLSearchParams(window.location.search);
-          targetDiagramId = params.get('diagram') || params.get('id');
-        }
-        if (!targetDiagramId) {
-          targetDiagramId = data[0].id;
-        }
-        if (targetDiagramId) {
-          await loadDiagramDetails(targetDiagramId);
-        }
-      } else if (Array.isArray(data) && data.length === 0) {
+      if (Array.isArray(data) && data.length === 0) {
         // Auto-initialize default architecture canvas
         const defaultXml = getDefaultXmlForArchitecture('unified_system_view', 'Unified Cloud Architecture #101', 'Unified Cloud Architecture #101');
         const createRes = await fetch('/api/diagrams', {
@@ -1798,7 +1777,13 @@ function WorkspaceContent() {
     
     try {
       const promptToGenerate = newDiagramPrompt.trim();
-      const defaultXml = getDefaultXmlForArchitecture(selectedArchType, promptToGenerate || finalDiagramName, promptToGenerate || finalDiagramName);
+      const effectiveArchType = selectedTemplate.startsWith('arch_')
+        ? selectedTemplate.replace('arch_', '')
+        : (selectedTemplate === '0' && facetedOptions.matchingBlueprints.length > 0
+            ? facetedOptions.matchingBlueprints[0].combinedId
+            : selectedArchType) || 'conceptual_diagram';
+
+      const defaultXml = getDefaultXmlForArchitecture(effectiveArchType, promptToGenerate || finalDiagramName, promptToGenerate || finalDiagramName);
 
       if (promptToGenerate) {
         setIsGenerating(true);
@@ -1810,7 +1795,7 @@ function WorkspaceContent() {
             body: JSON.stringify({
               name: finalDiagramName,
               prompt: promptToGenerate,
-              architectureType: selectedArchType,
+              architectureType: effectiveArchType,
               isPrivate: newDiagramIsPrivate
             })
           });
@@ -1844,7 +1829,7 @@ function WorkspaceContent() {
               name: finalDiagramName,
               xml: defaultXml,
               comment: 'Synthesized Enterprise Canvas',
-              architectureType: selectedArchType,
+              architectureType: effectiveArchType,
               isPrivate: newDiagramIsPrivate
             })
           });
@@ -1871,7 +1856,7 @@ function WorkspaceContent() {
           name: finalDiagramName,
           xml: defaultXml,
           comment: 'Initial canvas created',
-          architectureType: selectedArchType,
+          architectureType: effectiveArchType,
           isPrivate: newDiagramIsPrivate
         })
       });
