@@ -44,6 +44,7 @@ import {
   Menu
 } from 'lucide-react';
 import { getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { AuthModal } from '@/components/AuthModal';
 import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
@@ -289,10 +290,12 @@ export default function CanvasHistoryPage() {
 
   // Open Canvas in workspace
   const handleLaunchWorkspace = (diagramId: string, archType?: string | null) => {
-    if (archType && archType.startsWith('P')) {
-      router.push(`/workspace?blueprint=${archType}`);
+    if (diagramId) {
+      router.push(`/workspace?diagram=${diagramId}&tab=editor`);
+    } else if (archType) {
+      router.push(`/workspace?blueprint=${archType}&tab=editor`);
     } else {
-      router.push(`/workspace?diagram=${diagramId}`);
+      router.push(`/workspace?tab=editor`);
     }
   };
 
@@ -1135,8 +1138,17 @@ export default function CanvasHistoryPage() {
                     <div className="flex-1 relative bg-white overflow-hidden">
                       <iframe
                         key={`${activeModalCanvas.id}_v${activeVersion.version_number}`}
-                        src={`/workspace?blueprint=${activeModalCanvas.architecture_type || 'conceptual_diagram'}`}
+                        src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json&chrome=0"
                         className="w-full h-full border-none"
+                        onLoad={(e) => {
+                          const target = e.currentTarget;
+                          const xmlToLoad = activeVersion.xml_content || getDefaultXmlForArchitecture(activeModalCanvas.architecture_type || 'conceptual_diagram') || '';
+                          setTimeout(() => {
+                            try {
+                              target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: sanitizeDrawioXmlAttributes(xmlToLoad), fit: true }), '*');
+                            } catch(err) {}
+                          }, 500);
+                        }}
                         title={`Canvas Version v${activeVersion.version_number}`}
                       />
                     </div>

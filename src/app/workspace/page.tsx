@@ -1044,12 +1044,9 @@ function WorkspaceContent() {
   const [isPasswordSetupOpen, setIsPasswordSetupOpen] = useState(false);
 
   useEffect(() => {
-    if (!isInitialTabLoadedRef.current) {
-      isInitialTabLoadedRef.current = true;
-      const tabParam = searchParams.get('tab');
-      if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
-        setCurrentTab(tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
-      }
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
+      setCurrentTab(tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
     }
     if (searchParams.get('setupPassword') === 'true') {
       setIsPasswordSetupOpen(true);
@@ -1642,11 +1639,12 @@ function WorkspaceContent() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const diagramId = params.get('diagram') || params.get('id');
+    const blueprintParam = params.get('blueprint') || params.get('arch') || params.get('template');
     if (diagramId) {
       if ((!activeDiagram || activeDiagram.id !== diagramId) && !restrictedState) {
         loadDiagramDetails(diagramId);
       }
-    } else if (!activeDiagram && diagrams.length > 0 && !restrictedState) {
+    } else if (!blueprintParam && !activeDiagram && diagrams.length > 0 && !restrictedState) {
       loadDiagramDetails(diagrams[0].id);
     }
   }, [searchParams, activeDiagram, restrictedState, diagrams, loadDiagramDetails]);
