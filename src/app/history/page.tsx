@@ -50,6 +50,8 @@ import { UserProfileModal } from '@/components/UserProfileModal';
 import { AuthModal } from '@/components/AuthModal';
 import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
+import { useTheme } from '@/lib/themeContext';
+import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 
 interface DiagramVersionItem {
   id: string;
@@ -376,6 +378,8 @@ export default function CanvasHistoryPage() {
 
   // Summary Metrics
   const totalCanvases = diagrams.length;
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const totalVersions = useMemo(() => {
     return diagrams.reduce((sum, d) => sum + (d.version_count || d.versions?.length || 1), 0);
   }, [diagrams]);
@@ -387,7 +391,9 @@ export default function CanvasHistoryPage() {
   const activeVersion = modalVersions[selectedVersionIndex] || null;
 
   return (
-    <div className="flex h-screen w-screen bg-[#070a13] text-slate-100 font-sans overflow-hidden select-none selection:bg-teal-500/30 selection:text-teal-200">
+    <div className={`flex h-screen w-screen font-sans overflow-hidden select-none selection:bg-teal-500/30 selection:text-teal-200 transition-colors duration-300 ${
+      isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070a13] text-slate-100'
+    }`}>
       
       {/* ========================================================================= */}
       {/* 1. UNIFIED APP COLLAPSIBLE LEFT SIDEBAR (Desktop) */}
@@ -395,21 +401,23 @@ export default function CanvasHistoryPage() {
       <aside 
         className={`${
           isSidebarOpen ? 'w-64' : 'w-16'
-        } hidden lg:flex bg-[#090d16]/95 border-r border-panel-border/80 transition-all duration-300 flex-col justify-between z-40 shrink-0 relative select-none`}
+        } hidden lg:flex border-r transition-all duration-300 flex-col justify-between z-40 shrink-0 relative select-none ${
+          isLight ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'bg-[#090d16]/95 border-panel-border/80 text-slate-100'
+        }`}
       >
         {/* Brand Header */}
         <div>
-          <div className="h-14 border-b border-panel-border/40 flex items-center justify-between px-4 shrink-0">
+          <div className={`h-14 border-b flex items-center justify-between px-4 shrink-0 ${isLight ? 'border-slate-200' : 'border-panel-border/40'}`}>
             {isSidebarOpen ? (
               <Link href="/" className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
-                  <div className="w-full h-full bg-[#070a13] rounded-[6px] flex items-center justify-center">
+                  <div className={`w-full h-full rounded-[6px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#070a13]'}`}>
                     <Sparkles className="w-4 h-4 text-teal-accent" />
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-extrabold tracking-wider text-xs text-white uppercase">Prompt Canvas</span>
-                  <span className="text-[9px] text-teal-accent font-semibold tracking-wider">Enterprise AI</span>
+                  <span className={`font-extrabold tracking-wider text-xs uppercase ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt Canvas</span>
+                  <span className="text-[9px] text-teal-600 dark:text-teal-accent font-semibold tracking-wider">Enterprise AI</span>
                 </div>
               </Link>
             ) : (
@@ -420,7 +428,7 @@ export default function CanvasHistoryPage() {
             {isSidebarOpen && (
               <button 
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white cursor-pointer"
+                className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-hover text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
                 title="Collapse Sidebar"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -429,7 +437,7 @@ export default function CanvasHistoryPage() {
           </div>
 
           {/* Action Zone: Primary Creation CTA */}
-          <div className="p-3 border-b border-panel-border/30 relative shrink-0">
+          <div className={`p-3 border-b relative shrink-0 ${isLight ? 'border-slate-200' : 'border-panel-border/30'}`}>
             <Link
               href="/workspace?new=true"
               className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black transition-all shadow-md hover:shadow-teal-500/20 text-xs cursor-pointer ${
@@ -461,6 +469,8 @@ export default function CanvasHistoryPage() {
                   <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive 
                       ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                      : isLight
+                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
                   }`}>
                     <div className="flex items-center gap-3 min-w-0">
@@ -475,11 +485,11 @@ export default function CanvasHistoryPage() {
         </div>
 
         {/* Bottom Sidebar: User Profile & Expand Toggle */}
-        <div className="p-3 border-t border-panel-border/30 bg-slate-950/40">
+        <div className={`p-3 border-t ${isLight ? 'border-slate-200 bg-slate-50' : 'border-panel-border/30 bg-slate-950/40'}`}>
           {!isSidebarOpen ? (
             <button 
               onClick={() => setIsSidebarOpen(true)}
-              className="w-full flex justify-center p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+              className="w-full flex justify-center p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
               title="Expand Sidebar"
             >
               <ChevronRight className="w-4 h-4" />
@@ -487,22 +497,26 @@ export default function CanvasHistoryPage() {
           ) : user ? (
             <button
               onClick={() => setIsProfileModalOpen(true)}
-              className="w-full flex items-center justify-between p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition cursor-pointer"
+              className={`w-full flex items-center justify-between p-2 rounded-xl border text-left transition cursor-pointer ${
+                isLight ? 'bg-white hover:bg-slate-100 border-slate-200 text-slate-900' : 'bg-slate-900/80 hover:bg-slate-800 border-slate-800'
+              }`}
             >
               <div className="flex items-center gap-2.5 truncate">
-                <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs shrink-0">
+                <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold flex items-center justify-center text-xs shrink-0">
                   {(user.name || user.email)[0].toUpperCase()}
                 </div>
                 <div className="truncate">
-                  <p className="text-xs font-bold text-slate-200 truncate">{user.name || user.email}</p>
-                  <p className="text-[10px] text-teal-400 font-mono">{user.is_guest ? 'Guest Session' : 'Verified Pro'}</p>
+                  <p className={`text-xs font-bold truncate ${isLight ? 'text-slate-900' : 'text-slate-200'}`}>{user.name || user.email}</p>
+                  <p className="text-[10px] text-teal-600 dark:text-teal-400 font-mono">{user.is_guest ? 'Guest Session' : 'Verified Pro'}</p>
                 </div>
               </div>
             </button>
           ) : (
             <button
               onClick={() => setIsAuthOpen(true)}
-              className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-teal-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+              className={`w-full py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer ${
+                isLight ? 'bg-white hover:bg-slate-100 border-slate-300 text-teal-800' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-teal-300'
+              }`}
             >
               <User className="w-3.5 h-3.5" />
               <span>Sign In / Profile</span>
@@ -627,14 +641,18 @@ export default function CanvasHistoryPage() {
         {/* ========================================================================= */}
         {/* TOP NAVBAR HEADER */}
         {/* ========================================================================= */}
-        <header className="h-14 border-b border-panel-border/80 flex items-center justify-between px-3 sm:px-4 md:px-8 bg-[#090d16]/90 backdrop-blur-md gap-3 relative shrink-0 z-30">
+        <header className={`h-14 border-b flex items-center justify-between px-3 sm:px-4 md:px-8 backdrop-blur-md gap-3 relative shrink-0 z-30 transition-colors ${
+          isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-panel-border/80 bg-[#090d16]/90 text-white'
+        }`}>
           {/* Left: Breadcrumbs & Sidebar Toggle */}
           <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 min-w-0">
             {/* Mobile Hamburger Toggle */}
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-1.5 rounded-lg bg-slate-900 border border-panel-border text-slate-300 hover:text-teal-400 shrink-0 cursor-pointer"
+              className={`lg:hidden p-1.5 rounded-lg border shrink-0 cursor-pointer ${
+                isLight ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-slate-900 border-panel-border text-slate-300 hover:text-teal-400'
+              }`}
               title="Open Navigation Menu"
             >
               <Menu className="w-4 h-4" />
@@ -643,19 +661,21 @@ export default function CanvasHistoryPage() {
             {!isSidebarOpen && (
               <button 
                 onClick={() => setIsSidebarOpen(true)}
-                className="hidden lg:flex p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                className={`hidden lg:flex p-1.5 rounded-lg text-slate-400 cursor-pointer ${
+                  isLight ? 'hover:bg-slate-100 hover:text-slate-900' : 'hover:bg-slate-800 hover:text-white'
+                }`}
                 title="Expand Sidebar"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             )}
             
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-              <Link href="/" className="font-extrabold text-white hover:text-teal-300 transition-colors flex items-center gap-1.5" title="Return to Home Landing Page">
+            <div className={`flex items-center gap-2 text-xs font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <Link href="/" className={`font-extrabold transition-colors flex items-center gap-1.5 ${isLight ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-300'}`} title="Return to Home Landing Page">
                 <span>PromptCanvas</span>
               </Link>
-              <span className="text-slate-600">/</span>
-              <span className="text-teal-400 font-bold flex items-center gap-1.5">
+              <span className="text-slate-400">/</span>
+              <span className="text-teal-600 dark:text-teal-400 font-bold flex items-center gap-1.5">
                 <History className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Historical Canvases &amp; Snapshots</span>
                 <span className="sm:hidden">History</span>
@@ -665,13 +685,15 @@ export default function CanvasHistoryPage() {
 
           {/* Right: Quick Action Controls */}
           <div className="flex items-center gap-2.5">
+            <ThemeToggleBtn id="history-theme-toggle-btn" />
+
             {/* Blueprint Matrix Button */}
             <button
               onClick={() => setIsPlaybookModalOpen(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-bold text-xs transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-600 dark:text-amber-300 font-bold text-xs transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
               title="Open Strategic Blueprint Catalog & Matrix"
             >
-              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
               <span>Blueprint Matrix</span>
             </button>
 
@@ -679,10 +701,14 @@ export default function CanvasHistoryPage() {
             <button
               type="button"
               onClick={() => setIsUseCaseModalOpen(true)}
-              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-teal-300 border border-teal-500/30 hover:border-teal-400 font-bold text-xs transition-all cursor-pointer shadow-sm"
+              className={`hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition-all cursor-pointer shadow-sm ${
+                isLight
+                  ? 'bg-slate-100 hover:bg-slate-200 text-teal-800 border-slate-300'
+                  : 'bg-slate-900 hover:bg-slate-800 text-teal-300 border-teal-500/30 hover:border-teal-400'
+              }`}
               title="Open Guided Architecture Intake Wizard"
             >
-              <ClipboardList className="w-3.5 h-3.5 text-teal-400" />
+              <ClipboardList className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
               <span>Architecture Wizard</span>
             </button>
 
@@ -690,7 +716,9 @@ export default function CanvasHistoryPage() {
             <button
               onClick={fetchAllCanvases}
               disabled={isLoading}
-              className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-teal-300 transition cursor-pointer"
+              className={`p-1.5 rounded-xl border transition cursor-pointer ${
+                isLight ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300 hover:text-teal-300'
+              }`}
               title="Refresh Historical Canvases"
             >
               <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />
@@ -759,39 +787,47 @@ export default function CanvasHistoryPage() {
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-10 space-y-6 sm:space-y-8 relative z-10">
             
             {/* KPI & Title Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-800/80">
+            <div className={`flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
               <div className="space-y-2 max-w-3xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-bold">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 text-xs font-bold">
                   <History className="w-3.5 h-3.5" />
                   <span>Historical Canvases &amp; Version Snapshots</span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
-                  Canvas Version <span className="bg-gradient-to-r from-teal-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">Archive &amp; Tiles</span>
+                <h1 className={`text-2xl sm:text-3xl md:text-4xl font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                  Canvas Version <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Archive &amp; Tiles</span>
                 </h1>
-                <p className="text-xs md:text-sm text-slate-400 leading-relaxed">
+                <p className={`text-xs md:text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   Browse and inspect every historical canvas, architecture blueprint, and iterative snapshot created since project inception with instant vector preview, version time-travel, and star bookmarks.
                 </p>
               </div>
 
               {/* KPI Stats Strip */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 shrink-0">
-                <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex flex-col justify-center shadow-lg">
-                  <span className="text-[11px] font-semibold text-slate-400">Total Canvases</span>
-                  <span className="text-2xl font-black text-teal-400 mt-0.5">{totalCanvases}</span>
+                <div className={`p-4 rounded-2xl flex flex-col justify-center shadow-lg border ${
+                  isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900/80 border-slate-800 text-white'
+                }`}>
+                  <span className={`text-[11px] font-semibold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Total Canvases</span>
+                  <span className="text-2xl font-black text-teal-600 dark:text-teal-400 mt-0.5">{totalCanvases}</span>
                 </div>
-                <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex flex-col justify-center shadow-lg">
-                  <span className="text-[11px] font-semibold text-slate-400">Saved Versions</span>
-                  <span className="text-2xl font-black text-indigo-400 mt-0.5">{totalVersions}</span>
+                <div className={`p-4 rounded-2xl flex flex-col justify-center shadow-lg border ${
+                  isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900/80 border-slate-800 text-white'
+                }`}>
+                  <span className={`text-[11px] font-semibold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Saved Versions</span>
+                  <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-0.5">{totalVersions}</span>
                 </div>
-                <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex flex-col justify-center shadow-lg">
-                  <span className="text-[11px] font-semibold text-slate-400">Max Version Depth</span>
-                  <span className="text-2xl font-black text-amber-400 mt-0.5">v{maxVersionDepth}</span>
+                <div className={`p-4 rounded-2xl flex flex-col justify-center shadow-lg border ${
+                  isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900/80 border-slate-800 text-white'
+                }`}>
+                  <span className={`text-[11px] font-semibold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Max Version Depth</span>
+                  <span className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-0.5">v{maxVersionDepth}</span>
                 </div>
               </div>
             </div>
 
             {/* Search & Filter Toolbar */}
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
+            <div className={`space-y-3 p-4 rounded-2xl border backdrop-blur-sm ${
+              isLight ? 'bg-white border-slate-200 shadow-md' : 'bg-slate-900/60 border-slate-800/80'
+            }`}>
               <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
                 {/* Search Input */}
                 <div className="relative w-full lg:w-96">
@@ -801,12 +837,16 @@ export default function CanvasHistoryPage() {
                     placeholder="Search by canvas name, prompt, architecture..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-10 pr-12 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-400 transition font-medium"
+                    className={`w-full border rounded-xl pl-10 pr-12 py-2.5 text-xs transition font-medium focus:outline-none ${
+                      isLight
+                        ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500'
+                        : 'bg-slate-950 border-slate-700/80 text-slate-100 placeholder-slate-500 focus:border-teal-400'
+                    }`}
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-white font-bold cursor-pointer"
+                      className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-900 dark:hover:text-white font-bold cursor-pointer"
                     >
                       Clear
                     </button>
@@ -816,7 +856,9 @@ export default function CanvasHistoryPage() {
                 {/* Filter Chips & Sort Controls */}
                 <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
                   {/* Phase Filters */}
-                  <div className="inline-flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-bold">
+                  <div className={`inline-flex items-center p-1 rounded-xl border text-xs font-bold ${
+                    isLight ? 'bg-slate-100 border-slate-300' : 'bg-slate-950 border-slate-800'
+                  }`}>
                     {[
                       { id: 'all', label: 'All' },
                       { id: 'P1', label: 'Phase 1' },
@@ -831,8 +873,8 @@ export default function CanvasHistoryPage() {
                         onClick={() => setSelectedPhase(p.id)}
                         className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                           selectedPhase === p.id
-                            ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm'
-                            : 'text-slate-400 hover:text-white'
+                            ? isLight ? 'bg-white text-teal-700 font-extrabold shadow-sm border border-slate-200' : 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm'
+                            : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
                         }`}
                       >
                         {p.label}
@@ -845,7 +887,11 @@ export default function CanvasHistoryPage() {
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value as any)}
-                      className="bg-slate-950 border border-slate-700/80 text-slate-200 text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer focus:border-teal-400"
+                      className={`border text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer ${
+                        isLight
+                          ? 'bg-slate-50 border-slate-300 text-slate-800 focus:border-teal-500'
+                          : 'bg-slate-950 border-slate-700/80 text-slate-200 focus:border-teal-400'
+                      }`}
                     >
                       <option value="recent">⚡ Most Recent</option>
                       <option value="starred">⭐ Starred First</option>
@@ -858,9 +904,9 @@ export default function CanvasHistoryPage() {
               </div>
 
               {/* Quick Search Chips Strip */}
-              <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-800/60">
-                <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1 mr-1">
-                  <Sparkles className="w-3 h-3 text-teal-400" />
+              <div className={`flex flex-wrap items-center gap-1.5 pt-1 border-t ${isLight ? 'border-slate-200' : 'border-slate-800/60'}`}>
+                <span className={`text-[11px] font-bold flex items-center gap-1 mr-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  <Sparkles className="w-3 h-3 text-teal-500" />
                   <span>Popular Topics:</span>
                 </span>
                 {[
@@ -880,10 +926,10 @@ export default function CanvasHistoryPage() {
                     <button
                       key={chip.label}
                       onClick={() => setSearchQuery(chip.query)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer border ${
                         isSelected 
-                          ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 font-bold' 
-                          : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700'
+                          ? isLight ? 'bg-teal-50 text-teal-800 border-teal-300 font-bold' : 'bg-teal-500/20 text-teal-300 border-teal-500/40 font-bold' 
+                          : isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200' : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border-slate-800 hover:border-slate-700'
                       }`}
                     >
                       {chip.label}
@@ -901,12 +947,14 @@ export default function CanvasHistoryPage() {
             <span className="text-sm font-semibold">Loading historical canvases from database...</span>
           </div>
         ) : filteredDiagrams.length === 0 ? (
-          <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-12 text-center space-y-4 max-w-lg mx-auto my-12">
-            <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+          <div className={`border rounded-2xl p-12 text-center space-y-4 max-w-lg mx-auto my-12 ${
+            isLight ? 'bg-white border-slate-200 shadow-md' : 'bg-slate-900/40 border-slate-800'
+          }`}>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto ${isLight ? 'bg-slate-100 text-slate-500' : 'bg-slate-800 text-slate-400'}`}>
               <Search className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-white">No historical canvases found</h3>
-            <p className="text-xs text-slate-400">
+            <h3 className={`text-lg font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>No historical canvases found</h3>
+            <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
               No diagrams matched your search filter &quot;{searchQuery}&quot;. Try resetting your filters.
             </p>
             <button
@@ -915,7 +963,7 @@ export default function CanvasHistoryPage() {
                 setSelectedPhase('all');
                 setSelectedArchFilter('all');
               }}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-teal-300 font-bold text-xs rounded-lg transition"
+              className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-lg transition"
             >
               Reset Filters
             </button>
@@ -931,75 +979,93 @@ export default function CanvasHistoryPage() {
               return (
                 <div
                   key={diagram.id}
-                  className={`bg-slate-900/70 border rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:shadow-teal-500/5 group relative overflow-hidden ${
-                    isStarred ? 'border-amber-500/50 bg-slate-900/90' : 'border-slate-800 hover:border-teal-500/50'
+                  className={`border rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl group relative overflow-hidden ${
+                    isLight
+                      ? isStarred
+                        ? 'border-amber-400 bg-amber-50/20 shadow-md'
+                        : 'border-slate-200 bg-white hover:border-teal-400 shadow-sm'
+                      : isStarred
+                      ? 'border-amber-500/50 bg-slate-900/90 hover:shadow-teal-500/5'
+                      : 'border-slate-800 bg-slate-900/70 hover:border-teal-500/50 hover:shadow-teal-500/5'
                   }`}
                 >
                   {/* Top Header Strip with Star Icon */}
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-md bg-teal-950/80 text-teal-300 border border-teal-800/80 truncate max-w-[180px]">
+                      <span className={`text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-md border truncate max-w-[180px] ${
+                        isLight
+                          ? 'bg-teal-50 text-teal-800 border-teal-200'
+                          : 'bg-teal-950/80 text-teal-300 border border-teal-800/80'
+                      }`}>
                         {archMeta?.name || diagram.architecture_type || 'Custom Canvas'}
                       </span>
                       
                       <div className="flex items-center gap-2">
                         {diagram.is_private ? (
-                          <span className="text-[10px] font-bold text-amber-400 flex items-center gap-1">
+                          <span className="text-[10px] font-bold text-amber-500 flex items-center gap-1">
                             <Lock className="w-3 h-3" /> Private
                           </span>
                         ) : (
-                          <span className="text-[10px] font-bold text-slate-500 flex items-center gap-1">
+                          <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
                             <Globe className="w-3 h-3" /> Public
                           </span>
                         )}
                         
-                        {/* ONLY STAR ICON BUTTON AS REQUESTED */}
+                        {/* ONLY STAR ICON BUTTON */}
                         <button
                           type="button"
                           onClick={(e) => toggleStar(diagram.id, e)}
-                          className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                          className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
                           title={isStarred ? "Starred Master Blueprint (Click to Unstar)" : "Star as Master Template"}
                         >
                           <Star className={`w-4 h-4 transition-all ${
-                            isStarred ? 'fill-amber-400 text-amber-400 scale-110' : 'text-slate-500 hover:text-amber-300'
+                            isStarred ? 'fill-amber-400 text-amber-400 scale-110' : 'text-slate-400 hover:text-amber-300'
                           }`} />
                         </button>
                       </div>
                     </div>
 
                     {/* Canvas Title */}
-                    <h3 className="text-base md:text-lg font-bold text-white group-hover:text-teal-300 transition-colors line-clamp-2 mb-2">
+                    <h3 className={`text-base md:text-lg font-bold transition-colors line-clamp-2 mb-2 ${
+                      isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-300'
+                    }`}>
                       {diagram.name}
                     </h3>
 
                     {/* Description or Prompt Snippet */}
-                    <p className="text-xs text-slate-400 line-clamp-2 mb-4 italic">
+                    <p className={`text-xs line-clamp-2 mb-4 italic ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                       &quot;{diagram.latest_prompt || archMeta?.whenToUse || 'Pristine architectural canvas with continuous version history.'}&quot;
                     </p>
 
                     {/* Version & Date Metadata */}
-                    <div className="bg-slate-950/60 rounded-xl p-3 border border-slate-800/60 mb-5 flex items-center justify-between text-xs font-mono">
-                      <div className="flex items-center gap-1.5 text-indigo-300">
-                        <History className="w-3.5 h-3.5 text-indigo-400" />
+                    <div className={`rounded-xl p-3 border mb-5 flex items-center justify-between text-xs font-mono ${
+                      isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/60 border-slate-800/60'
+                    }`}>
+                      <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-300">
+                        <History className="w-3.5 h-3.5 text-indigo-500" />
                         <span className="font-bold">{verCount} Version{verCount > 1 ? 's' : ''}</span>
                         {diagram.max_version && diagram.max_version > 1 && (
-                          <span className="text-[10px] text-slate-500">(Max v{diagram.max_version})</span>
+                          <span className="text-[10px] text-slate-400">(Max v{diagram.max_version})</span>
                         )}
                       </div>
                       <div className="flex items-center gap-1 text-slate-400 text-[11px]">
-                        <Clock className="w-3 h-3 text-slate-500" />
+                        <Clock className="w-3 h-3 text-slate-400" />
                         <span>{new Date(dateStr).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
+                  <div className={`pt-4 border-t flex items-center justify-between gap-3 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
                     <button
                       onClick={() => handleOpenPreviewModal(diagram)}
-                      className="flex-1 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                      className={`flex-1 px-4 py-2.5 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
+                        isLight
+                          ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                          : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
+                      }`}
                     >
-                      <Eye className="w-3.5 h-3.5 text-teal-400" />
+                      <Eye className="w-3.5 h-3.5 text-teal-500" />
                       <span>Preview All Versions</span>
                     </button>
 

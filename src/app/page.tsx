@@ -26,9 +26,13 @@ import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { VisitorCounter } from '@/components/VisitorCounter';
 import { TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
+import { useTheme } from '@/lib/themeContext';
+import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 
 export default function LandingPage() {
   const router = useRouter();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -94,7 +98,9 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#070a13] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-clip">
+    <div className={`relative min-h-screen font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-clip transition-colors duration-300 ${
+      isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070a13] text-slate-100'
+    }`}>
       
       {/* Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-[120px] pointer-events-none z-0" />
@@ -105,7 +111,9 @@ export default function LandingPage() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 pointer-events-none z-0" />
 
       {/* Header/Navigation */}
-      <header className="sticky top-0 w-full z-50 border-b border-panel-border/30 bg-[#070a13]/80 backdrop-blur-md shrink-0">
+      <header className={`sticky top-0 w-full z-50 border-b backdrop-blur-md shrink-0 transition-colors ${
+        isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-panel-border/30 bg-[#070a13]/80 text-white'
+      }`}>
         <div className="w-full max-w-8xl mx-auto h-16 sm:h-20 px-3 sm:px-6 md:px-12 flex items-center justify-between gap-2 sm:gap-3">
           <Link 
             href="/" 
@@ -119,38 +127,47 @@ export default function LandingPage() {
             }}
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center shrink-0">
-              <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
+              <div className={`w-full h-full rounded-[10px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#070a13]'}`}>
                 <Network className="w-4 h-4 sm:w-5 sm:h-5 text-teal-accent" />
               </div>
             </div>
             <div className="shrink-0 flex items-center gap-1">
-              <span className="font-extrabold text-sm sm:text-lg tracking-wider text-white bg-clip-text bg-gradient-to-r from-white to-slate-300">
+              <span className={`font-extrabold text-sm sm:text-lg tracking-wider bg-clip-text ${
+                isLight ? 'text-slate-900 bg-gradient-to-r from-slate-950 to-slate-700' : 'text-white bg-gradient-to-r from-white to-slate-300'
+              }`}>
                 PROMPT
               </span>
-              <span className="font-light text-sm sm:text-lg tracking-wider text-teal-400 hidden min-[380px]:inline">
+              <span className="font-light text-sm sm:text-lg tracking-wider text-teal-500 hidden min-[380px]:inline">
                 CANVAS
               </span>
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm text-slate-400 font-medium shrink-0">
-            <a href="#features" className="hover:text-teal-400 transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-teal-400 transition-colors">How It Works</a>
-            <Link href="/workspace?tab=templates" className="hover:text-teal-300 transition-colors text-teal-400 font-semibold flex items-center gap-1">
+          <nav className={`hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium shrink-0 ${
+            isLight ? 'text-slate-600' : 'text-slate-400'
+          }`}>
+            <a href="#features" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">How It Works</a>
+            <Link href="/workspace?tab=templates" className="hover:text-teal-600 dark:hover:text-teal-300 transition-colors text-teal-600 dark:text-teal-400 font-semibold flex items-center gap-1">
               <span>Templates Matrix</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-black">50</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-700 dark:text-teal-300 font-black">50</span>
             </Link>
-            <a href="#value" className="hover:text-teal-400 transition-colors">Why PromptCanvas</a>
+            <a href="#value" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Why PromptCanvas</a>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 shrink-0">
+            <ThemeToggleBtn id="landing-theme-toggle-btn" />
             <VisitorCounter />
             <button
               id="header-contact-us-btn"
               onClick={() => setIsContactOpen(true)}
-              className="hidden lg:flex px-3.5 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-teal-500/40 text-slate-300 hover:text-white text-xs font-semibold items-center gap-1.5 transition-all cursor-pointer"
+              className={`hidden lg:flex px-3.5 py-1.5 rounded-lg border text-xs font-semibold items-center gap-1.5 transition-all cursor-pointer ${
+                isLight
+                  ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 hover:text-slate-900'
+                  : 'bg-slate-900/80 border-slate-800 hover:border-teal-500/40 text-slate-300 hover:text-white'
+              }`}
             >
-              <Mail className="w-3.5 h-3.5 text-teal-accent" />
+              <Mail className="w-3.5 h-3.5 text-teal-500" />
               <span>Contact Us</span>
             </button>
             {user ? (
@@ -161,9 +178,13 @@ export default function LandingPage() {
                 <button
                   id="header-user-profile-btn"
                   onClick={() => setIsProfileOpen(true)}
-                  className="hidden sm:flex px-2.5 md:px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-200 text-xs font-semibold items-center gap-2 transition-all"
+                  className={`hidden sm:flex px-2.5 md:px-3.5 py-1.5 rounded-lg border text-xs font-semibold items-center gap-2 transition-all ${
+                    isLight
+                      ? 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
+                      : 'bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200'
+                  }`}
                 >
-                  <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                  <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold flex items-center justify-center text-xs">
                     {(user.name || user.email)[0].toUpperCase()}
                   </div>
                   <span className="hidden xl:inline max-w-[120px] truncate">{user.name || user.email}</span>
@@ -181,9 +202,13 @@ export default function LandingPage() {
                 <button
                   id="header-explore-guest-btn"
                   onClick={handleExploreAsGuest}
-                  className="hidden md:flex px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 border border-slate-700 hover:border-teal-400 text-teal-300 text-xs font-bold transition-all items-center gap-1.5 cursor-pointer shadow-sm"
+                  className={`hidden md:flex px-3.5 py-1.5 rounded-lg border text-xs font-bold transition-all items-center gap-1.5 cursor-pointer shadow-sm ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-teal-800'
+                      : 'bg-slate-800/80 hover:bg-slate-800 border-slate-700 hover:border-teal-400 text-teal-300'
+                  }`}
                 >
-                  <User className="w-3.5 h-3.5 text-teal-400" />
+                  <User className="w-3.5 h-3.5 text-teal-500" />
                   <span>Explore as a Guest</span>
                 </button>
                 <button
@@ -192,7 +217,9 @@ export default function LandingPage() {
                     setAuthMode('signin');
                     setIsAuthOpen(true);
                   }}
-                  className="hidden sm:flex px-3 sm:px-4 py-2 text-xs sm:text-sm text-slate-300 hover:text-white font-medium transition-colors"
+                  className={`hidden sm:flex px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors ${
+                    isLight ? 'text-slate-700 hover:text-slate-900' : 'text-slate-300 hover:text-white'
+                  }`}
                 >
                   Sign In
                 </button>
@@ -211,7 +238,9 @@ export default function LandingPage() {
             <button
               type="button"
               onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-              className="lg:hidden p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-teal-400 cursor-pointer"
+              className={`lg:hidden p-2 rounded-lg border cursor-pointer ${
+                isLight ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-teal-400'
+              }`}
               title="Toggle Menu"
             >
               {isMobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -278,18 +307,18 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 md:pt-20 pb-16 md:pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
             <Sparkles className="w-4 h-4" /> Powered by Gemini 3.7 Flash &amp; Draw.io
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
+          <h1 className={`text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] ${isLight ? 'text-slate-900' : 'text-white'}`}>
             Sketch Cloud <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-emerald-400 to-indigo-400">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-emerald-500 to-indigo-500">
               Architecture with AI
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed">
+          <p className={`text-lg md:text-xl max-w-2xl leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
             Translate complex natural language prompts into professional, multi-tier Draw.io architecture diagrams. Audited for security, version-controlled, and instantly editable.
           </p>
 
@@ -306,34 +335,48 @@ export default function LandingPage() {
               <button
                 id="hero-explore-guest-btn"
                 onClick={handleExploreAsGuest}
-                className="px-7 py-4 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-teal-400 text-teal-300 font-bold text-center transition-all flex items-center justify-center gap-2 hover:bg-slate-800 shadow-md cursor-pointer"
+                className={`px-7 py-4 rounded-xl border font-bold text-center transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer ${
+                  isLight
+                    ? 'bg-white hover:bg-slate-50 border-slate-300 text-teal-800'
+                    : 'bg-slate-900 border-slate-700/80 hover:border-teal-400 text-teal-300 hover:bg-slate-800'
+                }`}
               >
-                <User className="w-4 h-4 text-teal-400" />
+                <User className="w-4 h-4 text-teal-500" />
                 <span>Explore as a Guest</span>
               </button>
             )}
             <Link
               href="/workspace?tour=true"
-              className="px-8 py-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-teal-500/40 text-slate-300 font-semibold text-center transition-all flex items-center justify-center gap-2 hover:bg-slate-800"
+              className={`px-8 py-4 rounded-xl border font-semibold text-center transition-all flex items-center justify-center gap-2 ${
+                isLight
+                  ? 'bg-white hover:bg-slate-50 border-slate-300 text-slate-700'
+                  : 'bg-slate-800/80 border-slate-700/60 hover:border-teal-500/40 text-slate-300 hover:bg-slate-800'
+              }`}
             >
-              <Play className="w-4 h-4 text-teal-400" />
+              <Play className="w-4 h-4 text-teal-500" />
               <span>Watch Tour</span>
             </Link>
           </div>
 
           {/* Quick highlights - Floating capsules */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 pt-10 border-t border-panel-border/30 w-full z-10">
-            <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-teal-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-teal-500/5">
-              <p className="text-4xl font-black text-white">100%</p>
-              <p className="text-sm text-slate-400 mt-1 font-semibold">Interactive Vector SVG</p>
+            <div className={`rounded-xl p-4 transition-all duration-300 border ${
+              isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
+            }`}>
+              <p className={`text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>100%</p>
+              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Interactive Vector SVG</p>
             </div>
-            <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-indigo-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-indigo-500/5">
-              <p className="text-4xl font-black text-white">&lt; 60s</p>
-              <p className="text-sm text-slate-400 mt-1 font-semibold">From Text to Diagram</p>
+            <div className={`rounded-xl p-4 transition-all duration-300 border ${
+              isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
+            }`}>
+              <p className={`text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>&lt; 60s</p>
+              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>From Text to Diagram</p>
             </div>
-            <div className="glass-panel border-panel-border/30 rounded-xl p-4 transition-all duration-300 hover:border-purple-500/30 hover:scale-[1.03] hover:shadow-lg hover:shadow-purple-500/5">
-              <p className="text-4xl font-black text-white">Built-in</p>
-              <p className="text-sm text-slate-400 mt-1 font-semibold">Gemini Security Auditor</p>
+            <div className={`rounded-xl p-4 transition-all duration-300 border ${
+              isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
+            }`}>
+              <p className={`text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>Built-in</p>
+              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Gemini Security Auditor</p>
             </div>
           </div>
         </div>
@@ -343,7 +386,9 @@ export default function LandingPage() {
           {/* Neon Glow Frame behind the picture */}
           <div className="absolute inset-0 bg-gradient-to-tr from-teal-500 to-indigo-500 rounded-2xl blur-[20px] opacity-30 transform scale-95" />
           
-          <div className="relative glass-panel-teal rounded-2xl p-2.5 overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-[1.02] max-w-md w-full">
+          <div className={`relative rounded-2xl p-2.5 overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-[1.02] max-w-md w-full border ${
+            isLight ? 'bg-white border-slate-200' : 'glass-panel-teal border-teal-500/20'
+          }`}>
             <Image 
               src="/pixar_robot_architect.jpg" 
               alt="AI Robot Cloud Architect Sketching"
@@ -362,25 +407,29 @@ export default function LandingPage() {
       </section>
 
       {/* The Problem & Solution Section */}
-      <section id="value" className="relative py-24 bg-slate-950/40 border-y border-panel-border/30">
+      <section id="value" className={`relative py-24 border-y transition-colors ${
+        isLight ? 'bg-slate-100/70 border-slate-200' : 'bg-slate-950/40 border-panel-border/30'
+      }`}>
         <div className="w-full max-w-8xl mx-auto px-6 md:px-12">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-3">The Problem & The Cure</h2>
-            <p className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+            <h2 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-3">The Problem & The Cure</h2>
+            <p className={`text-4xl md:text-5xl font-extrabold tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
               Diagramming is critical, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-amber-400">but building them by hand is a bottleneck.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-500">but building them by hand is a bottleneck.</span>
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
             {/* The Hard Way */}
-            <div className="glass-panel border-red-500/10 rounded-2xl p-8 flex flex-col justify-between hover:border-red-500/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-red-500/5 transition-all duration-300">
+            <div className={`rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 border ${
+              isLight ? 'bg-white border-red-200 shadow-md' : 'glass-panel border-red-500/10'
+            }`}>
               <div>
-                <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 mb-6">
                   <X className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-extrabold text-white mb-4">The Manual Bottleneck</h3>
-                <ul className="space-y-3.5 text-slate-400 text-lg">
+                <h3 className={`text-2xl font-extrabold mb-4 ${isLight ? 'text-slate-900' : 'text-white'}`}>The Manual Bottleneck</h3>
+                <ul className={`space-y-3.5 text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   <li className="flex items-start gap-2.5">
                     <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
                     <span>Dragging, connecting, and formatting 20+ nodes manually in Draw.io takes hours.</span>
@@ -395,32 +444,34 @@ export default function LandingPage() {
                   </li>
                 </ul>
               </div>
-              <p className="text-base text-red-400/70 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
+              <p className="text-base text-red-500 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
             </div>
 
             {/* The PromptCanvas Way */}
-            <div className="glass-panel border-teal-500/25 rounded-2xl p-8 flex flex-col justify-between hover:border-teal-500/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-300">
+            <div className={`rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 border ${
+              isLight ? 'bg-white border-teal-300 shadow-md' : 'glass-panel border-teal-500/25'
+            }`}>
               <div>
-                <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-6">
+                <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent mb-6">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-extrabold text-white mb-4">PromptCanvas Automation</h3>
-                <ul className="space-y-3.5 text-slate-300 text-lg">
+                <h3 className={`text-2xl font-extrabold mb-4 ${isLight ? 'text-slate-900' : 'text-white'}`}>PromptCanvas Automation</h3>
+                <ul className={`space-y-3.5 text-lg ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
                     <span>Describe your stack in natural text. PromptCanvas creates valid, fully-spaced XML layouts in seconds.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
                     <span>Iterate seamlessly. Ask the AI to &quot;add an ALB,&quot; &quot;connect DB to Redis,&quot; or &quot;redesign for GCP.&quot;</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
                     <span>Audits are built-in. Let the Gemini security auditor analyze node connections for security risks automatically.</span>
                   </li>
                 </ul>
               </div>
-              <p className="text-base text-teal-400 mt-8 font-semibold tracking-wide">Result: High-fidelity, live architecture maps created at the speed of thought.</p>
+              <p className="text-base text-teal-600 dark:text-teal-400 mt-8 font-semibold tracking-wide">Result: High-fidelity, live architecture maps created at the speed of thought.</p>
             </div>
           </div>
         </div>
@@ -429,77 +480,89 @@ export default function LandingPage() {
       {/* Features Grid Section */}
       <section id="features" className="relative py-24 max-w-8xl mx-auto px-6 md:px-12 z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-3">Product Capabilities</h2>
-          <h3 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+          <h2 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-3">Product Capabilities</h2>
+          <h3 className={`text-4xl md:text-5xl font-extrabold tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
             Designed for Architects, <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-indigo-400">Built with Industrial Safety.</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-indigo-500">Built with Industrial Safety.</span>
           </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Card 1 */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-teal-500/5">
-            <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-4 group-hover:scale-110 transition-transform">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl border ${
+            isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
+          }`}>
+            <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent mb-4 group-hover:scale-110 transition-transform">
               <Zap className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-lg mb-2">Prompt-to-Architecture</h4>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt-to-Architecture</h4>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
               Feed raw text prompts detailing databases, runtimes, security layers, or ingress. PromptCanvas renders standard, color-coded diagrams aligned to logical enterprise tiers.
             </p>
           </div>
 
           {/* Card 2 */}
-          <div className="glass-panel border-panel-border/40 hover:border-indigo-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/5">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl border ${
+            isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
+          }`}>
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
               <FileText className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-lg mb-2">Ready-To-Go Templates</h4>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Ready-To-Go Templates</h4>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
               Launch with 10 production-grade blueprints (Data Lakehouse, AWS EKS Microservices, RAG/Gemini AI pipelines, VPC networks) to instantly experiment and validate stacks.
             </p>
           </div>
 
           {/* Card 3 */}
-          <div className="glass-panel border-panel-border/40 hover:border-purple-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-purple-500/5">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition-transform">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl border ${
+            isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
+          }`}>
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-4 group-hover:scale-110 transition-transform">
               <History className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-lg mb-2">Infinite Version History</h4>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Infinite Version History</h4>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
               Every AI generation or manual update creates a historical snapshot. Compare versions, trace comments, and revert to previous states in one click.
             </p>
           </div>
 
           {/* Card 4 */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-teal-500/5">
-            <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent mb-4 group-hover:scale-110 transition-transform">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl border ${
+            isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
+          }`}>
+            <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent mb-4 group-hover:scale-110 transition-transform">
               <Shield className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-lg mb-2">Gemini Compliance Audit</h4>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Compliance Audit</h4>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
               Run security compliance reports directly in the app. Gemini audits your drawing&apos;s nodes and edges for single points of failure, unencrypted links, or exposed ports.
             </p>
           </div>
 
           {/* Card 5 */}
-          <div className="glass-panel border-panel-border/40 hover:border-indigo-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/5">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl border ${
+            isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
+          }`}>
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
               <Network className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-lg mb-2">Interactive 2D Canvas</h4>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Interactive 2D Canvas</h4>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
               Smooth vector-based renderer with panning, scroll-to-zoom, infinite grids, and an interactive side-tree nodes inspector that displays node connections clearly.
             </p>
           </div>
 
           {/* Card 6 */}
-          <div className="glass-panel border-panel-border/40 hover:border-purple-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-purple-500/5">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition-transform">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-xl border ${
+            isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
+          }`}>
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-4 group-hover:scale-110 transition-transform">
               <FileText className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-white text-lg mb-2">Pure Open XML Output</h4>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Pure Open XML Output</h4>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
               Export designs as fully valid Draw.io XML schemas. Copy, modify, share, or open them in your standard desktop Draw.io client with absolutely no vendor lock-in.
             </p>
           </div>
@@ -510,17 +573,17 @@ export default function LandingPage() {
       {/* Templates Gallery Section */}
       <section id="templates" className="relative py-24 max-w-8xl mx-auto px-6 md:px-16 z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-3">Pre-designed Stacks</h2>
-          <h3 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+          <h2 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-3">Pre-designed Stacks</h2>
+          <h3 className={`text-4xl md:text-5xl font-extrabold tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
             Bootstrap with Production-Grade Blueprints
           </h3>
-          <p className="text-lg text-slate-400 mt-4 max-w-2xl mx-auto">
+          <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
             Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>50 complete multi-cloud reference blueprints</strong> directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
               href="/workspace?tab=templates"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors underline underline-offset-4"
             >
               <span>View All 50 Production Blueprints in Templates Gallery →</span>
             </Link>
@@ -529,22 +592,24 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Template 1: AI RAG Pipeline */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-teal-500/5 flex flex-col justify-between">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
+            isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
+          }`}>
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent group-hover:scale-110 transition-transform">
                   <Sparkles className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">GCP Cloud</span>
               </div>
-              <h4 className="font-bold text-white text-lg mb-2">Vertex AI Retrieval-Augmented Generation (RAG)</h4>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Vertex AI Retrieval-Augmented Generation (RAG)</h4>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Multi-tier pipeline featuring Cloud Run API service, pgvector-enabled Cloud SQL database, Vertex AI Search indexing, and Gemini reasoning engine.
               </p>
             </div>
             <Link
               href="/workspace?modal=create&template=5"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors"
             >
               <span>Launch blueprint</span>
               <ArrowRight className="w-4 h-4" />
@@ -552,22 +617,24 @@ export default function LandingPage() {
           </div>
 
           {/* Template 2: Microservices Cluster */}
-          <div className="glass-panel border-panel-border/40 hover:border-indigo-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-indigo-500/5 flex flex-col justify-between">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
+            isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
+          }`}>
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
                   <Network className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">AWS Cloud</span>
               </div>
-              <h4 className="font-bold text-white text-lg mb-2">Kubernetes Microservices Cluster (EKS)</h4>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Kubernetes Microservices Cluster (EKS)</h4>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Elastic Kubernetes Service setup with ALB ingress controller, Amazon API Gateway, EKS worker nodes, DynamoDB state session, and Redis caching.
               </p>
             </div>
             <Link
               href="/workspace?modal=create&template=3"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
             >
               <span>Launch blueprint</span>
               <ArrowRight className="w-4 h-4" />
@@ -575,22 +642,24 @@ export default function LandingPage() {
           </div>
 
           {/* Template 3: Serverless App */}
-          <div className="glass-panel border-panel-border/40 hover:border-purple-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-purple-500/5 flex flex-col justify-between">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
+            isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
+          }`}>
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                   <Zap className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">GCP Cloud</span>
               </div>
-              <h4 className="font-bold text-white text-lg mb-2">Serverless Web Application</h4>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Serverless Web Application</h4>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Global HTTPS Load Balancer with Cloud CDN, Cloud Run compute for microservices, Cloud SQL (PostgreSQL), and Cloud Storage for assets.
               </p>
             </div>
             <Link
               href="/workspace?modal=create&template=1"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-400 hover:text-purple-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors"
             >
               <span>Launch blueprint</span>
               <ArrowRight className="w-4 h-4" />
@@ -598,22 +667,24 @@ export default function LandingPage() {
           </div>
 
           {/* Template 4: Data Lakehouse */}
-          <div className="glass-panel border-panel-border/40 hover:border-teal-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-teal-500/5 flex flex-col justify-between">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
+            isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
+          }`}>
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-accent group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent group-hover:scale-110 transition-transform">
                   <FileText className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">AWS Cloud</span>
               </div>
-              <h4 className="font-bold text-white text-lg mb-2">Modern AWS Data Lakehouse</h4>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Modern AWS Data Lakehouse</h4>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Amazon S3 raw/processed tiers, AWS Glue Catalog schema database, Athena ad-hoc serverless querying, Redshift warehouse, and QuickSight BI.
               </p>
             </div>
             <Link
               href="/workspace?modal=create&template=4"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors"
             >
               <span>Launch blueprint</span>
               <ArrowRight className="w-4 h-4" />
@@ -621,22 +692,24 @@ export default function LandingPage() {
           </div>
 
           {/* Template 5: Streaming Analytics */}
-          <div className="glass-panel border-panel-border/40 hover:border-indigo-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-indigo-500/5 flex flex-col justify-between">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
+            isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
+          }`}>
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
                   <History className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">GCP Cloud</span>
               </div>
-              <h4 className="font-bold text-white text-lg mb-2">Real-time Streaming Analytics</h4>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Real-time Streaming Analytics</h4>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Streaming ingestion via Cloud Pub/Sub, serverless stream/batch ETL processing with Cloud Dataflow, BigQuery storage, and Looker visualization dashboards.
               </p>
             </div>
             <Link
               href="/workspace?modal=create&template=2"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
             >
               <span>Launch blueprint</span>
               <ArrowRight className="w-4 h-4" />
@@ -644,22 +717,24 @@ export default function LandingPage() {
           </div>
 
           {/* Template 6: Event-Driven Microservices */}
-          <div className="glass-panel border-panel-border/40 hover:border-purple-500/45 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-purple-500/5 flex flex-col justify-between">
+          <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
+            isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
+          }`}>
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                   <Shield className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">AWS Cloud</span>
               </div>
-              <h4 className="font-bold text-white text-lg mb-2">Event-Driven Microservices</h4>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Event-Driven Microservices</h4>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Amazon EventBridge bus, decoupling with SQS queues and SNS topics, serverless event handlers via AWS Lambda, and DynamoDB for storage.
               </p>
             </div>
             <Link
               href="/workspace?modal=create&template=6"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-400 hover:text-purple-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors"
             >
               <span>Launch blueprint</span>
               <ArrowRight className="w-4 h-4" />
@@ -669,11 +744,13 @@ export default function LandingPage() {
       </section>
 
       {/* How it Works Section */}
-      <section id="how-it-works" className="relative py-32 bg-slate-950/40 border-y border-panel-border/30">
+      <section id="how-it-works" className={`relative py-32 border-y transition-colors ${
+        isLight ? 'bg-slate-100/70 border-slate-200' : 'bg-slate-950/40 border-panel-border/30'
+      }`}>
         <div className="w-full max-w-8xl mx-auto px-6 md:px-16">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-4">The Workflow</h2>
-            <h3 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+            <h2 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-4">The Workflow</h2>
+            <h3 className={`text-4xl md:text-6xl font-extrabold tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
               Create and Refine in Three Steps
             </h3>
           </div>
@@ -687,8 +764,8 @@ export default function LandingPage() {
               <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-2xl shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 1
               </div>
-              <h4 className="font-bold text-white text-xl md:text-2xl">Select or Input Prompt</h4>
-              <p className="text-base text-slate-400 max-w-sm leading-relaxed">
+              <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Select or Input Prompt</h4>
+              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Choose a pre-defined architecture template or enter a custom prompt describing your microservices, compute instances, database types, and connectors.
               </p>
             </div>
@@ -698,8 +775,8 @@ export default function LandingPage() {
               <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-2xl shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 2
               </div>
-              <h4 className="font-bold text-white text-xl md:text-2xl">Gemini Generates XML</h4>
-              <p className="text-base text-slate-400 max-w-sm leading-relaxed">
+              <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Generates XML</h4>
+              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Our backend compiler calls Gemini 3.6 Flash, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
               </p>
             </div>
@@ -709,8 +786,8 @@ export default function LandingPage() {
               <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-[#070a13] font-black text-2xl shadow-lg shadow-teal-500/20 hover:scale-110 transition-all duration-300">
                 3
               </div>
-              <h4 className="font-bold text-white text-xl md:text-2xl">Audit, Tweak, and Iterate</h4>
-              <p className="text-base text-slate-400 max-w-sm leading-relaxed">
+              <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Audit, Tweak, and Iterate</h4>
+              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Audit the security of your diagram instantly. Add new nodes using the chat prompt interface, edit components, or click &quot;Open in New Tab&quot; to edit visually in Draw.io.
               </p>
             </div>
@@ -721,17 +798,21 @@ export default function LandingPage() {
 
       {/* CTA Bottom Banner */}
       <section className="relative py-24 z-10 max-w-6xl mx-auto px-6 text-center">
-        <div className="rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl bg-[#090d16] bg-[radial-gradient(circle_at_top_right,rgba(20,184,166,0.08),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.08),transparent_50%)] border border-teal-500/20">
+        <div className={`rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl border ${
+          isLight
+            ? 'bg-gradient-to-br from-white via-teal-50/50 to-indigo-50/50 border-teal-200 shadow-xl'
+            : 'bg-[#090d16] bg-[radial-gradient(circle_at_top_right,rgba(20,184,166,0.08),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.08),transparent_50%)] border-teal-500/20'
+        }`}>
           {/* Decorative Grid inside CTA Card */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.015)_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-30 pointer-events-none" />
           
-          <Sparkles className="w-12 h-12 text-teal-accent mx-auto mb-6 animate-pulse" />
+          <Sparkles className="w-12 h-12 text-teal-500 dark:text-teal-accent mx-auto mb-6 animate-pulse" />
           
-          <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight max-w-4xl mx-auto">
+          <h2 className={`text-4xl md:text-6xl font-extrabold tracking-tight leading-tight max-w-4xl mx-auto ${isLight ? 'text-slate-900' : 'text-white'}`}>
             Design Compliant Cloud Stacks at the Speed of Thought
           </h2>
           
-          <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto mt-5 leading-relaxed">
+          <p className={`text-base md:text-lg max-w-2xl mx-auto mt-5 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
             Stop drawing connectors manually. Leverage Gemini AI to build, audit, and version Draw.io architecture diagrams automatically.
           </p>
 
@@ -749,18 +830,20 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-panel-border/30 bg-slate-950/60 py-14">
+      <footer className={`relative z-10 border-t py-14 transition-colors ${
+        isLight ? 'bg-white border-slate-200 text-slate-600' : 'bg-slate-950/60 border-panel-border/30 text-slate-400'
+      }`}>
         <div className="max-w-8xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <Network className="w-5 h-5 text-teal-accent" />
-            <span className="font-extrabold tracking-wider text-sm text-white">PROMPT CANVAS</span>
+            <Network className="w-5 h-5 text-teal-500 dark:text-teal-accent" />
+            <span className={`font-extrabold tracking-wider text-sm ${isLight ? 'text-slate-900' : 'text-white'}`}>PROMPT CANVAS</span>
           </div>
           <p className="text-sm text-slate-500">
             &copy; 2026 Prompt Canvas. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
           </p>
           <div className="flex gap-6 text-sm text-slate-400">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-teal-500 transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-teal-500 transition-colors">Terms of Service</a>
           </div>
         </div>
       </footer>

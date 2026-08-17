@@ -57,6 +57,8 @@ import {
   getBlueprintMetadataById,
   getFacetedBlueprintFilters
 } from '@/lib/blueprintKnowledgeMatrix';
+import { useTheme } from '@/lib/themeContext';
+import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 
 interface Diagram {
   id: string;
@@ -397,6 +399,8 @@ export default function Dashboard() {
   };
 
   // Filter and deduplicate diagrams based on search and unique IDs
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
   const filteredDiagrams = React.useMemo(() => {
     const seen = new Set<string>();
@@ -409,21 +413,25 @@ export default function Dashboard() {
   }, [diagrams, searchQuery]);
 
   return (
-    <div className="flex h-screen w-screen bg-[#070a13] text-slate-100 overflow-hidden font-sans relative selection:bg-teal-500/30 selection:text-teal-200">
+    <div className={`flex h-screen w-screen overflow-hidden font-sans relative selection:bg-teal-500/30 selection:text-teal-200 transition-colors duration-300 ${
+      isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070a13] text-slate-100'
+    }`}>
       
       {/* Desktop Sidebar Navigation (Hidden on < 1024px) */}
       <aside 
         onMouseEnter={() => setIsSidebarOpen(true)}
-        className={`hidden lg:flex glass-panel border-r border-panel-border flex-col transition-all duration-300 z-20 shrink-0 ${
+        className={`hidden lg:flex border-r flex-col transition-all duration-300 z-20 shrink-0 ${
           isSidebarOpen ? 'w-64' : 'w-16'
-        }`}
+        } ${isLight ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'glass-panel border-panel-border text-slate-100'}`}
       >
         {/* Sidebar Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
+        <div className={`h-16 flex items-center justify-between px-4 border-b shrink-0 ${isLight ? 'border-slate-200' : 'border-panel-border'}`}>
           {isSidebarOpen ? (
             <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
               <Sparkles className="w-5 h-5 text-teal-accent" />
-              <span className="font-bold text-lg tracking-wider bg-gradient-to-r from-teal-accent to-cyan-400 bg-clip-text text-transparent">
+              <span className={`font-bold text-lg tracking-wider bg-clip-text ${
+                isLight ? 'text-slate-900 bg-gradient-to-r from-teal-600 to-indigo-600' : 'text-transparent bg-gradient-to-r from-teal-accent to-cyan-400'
+              }`}>
                 PROMPT CANVAS
               </span>
             </Link>
@@ -435,7 +443,7 @@ export default function Dashboard() {
           {isSidebarOpen && (
             <button 
               onClick={() => setIsSidebarOpen(false)}
-              className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
+              className={`p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-hover text-slate-400 hover:text-slate-900 dark:hover:text-white`}
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -443,7 +451,7 @@ export default function Dashboard() {
         </div>
 
         {/* Action Zone: Primary Creation CTA */}
-        <div className="p-3 border-b border-panel-border/30 relative shrink-0">
+        <div className={`p-3 border-b relative shrink-0 ${isLight ? 'border-slate-200' : 'border-panel-border/30'}`}>
           <Link
             href="/workspace?new=true"
             className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black transition-all shadow-md hover:shadow-teal-500/20 text-xs cursor-pointer ${
@@ -475,6 +483,8 @@ export default function Dashboard() {
                 <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   isActive 
                     ? "bg-teal-accent text-bg-dark font-extrabold shadow-sm"
+                    : isLight
+                    ? "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                     : "text-slate-300 hover:text-white hover:bg-slate-800/80"
                 }`}>
                   <div className="flex items-center gap-3 min-w-0">
@@ -488,11 +498,11 @@ export default function Dashboard() {
         </div>
 
         {/* Bottom Sidebar: User Profile & Expand Toggle */}
-      <div className="p-3 border-t border-panel-border/30 bg-slate-950/40">
+      <div className={`p-3 border-t ${isLight ? 'border-slate-200 bg-slate-50' : 'border-panel-border/30 bg-slate-950/40'}`}>
         {!isSidebarOpen ? (
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="w-full flex justify-center p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+            className="w-full flex justify-center p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
             title="Expand Sidebar"
           >
             <ChevronRight className="w-4 h-4" />
@@ -500,22 +510,26 @@ export default function Dashboard() {
         ) : user ? (
           <button
             onClick={() => setIsProfileModalOpen(true)}
-            className="w-full flex items-center justify-between p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition cursor-pointer"
+            className={`w-full flex items-center justify-between p-2 rounded-xl border text-left transition cursor-pointer ${
+              isLight ? 'bg-white hover:bg-slate-100 border-slate-200 text-slate-900' : 'bg-slate-900/80 hover:bg-slate-800 border-slate-800'
+            }`}
           >
             <div className="flex items-center gap-2.5 truncate">
-              <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs shrink-0">
+              <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold flex items-center justify-center text-xs shrink-0">
                 {(user.name || user.email)[0].toUpperCase()}
               </div>
               <div className="truncate">
-                <p className="text-xs font-bold text-slate-200 truncate">{user.name || user.email}</p>
-                <p className="text-[10px] text-teal-400 font-mono">{user.is_guest ? "Guest Session" : "Verified Pro"}</p>
+                <p className={`text-xs font-bold truncate ${isLight ? 'text-slate-900' : 'text-slate-200'}`}>{user.name || user.email}</p>
+                <p className="text-[10px] text-teal-600 dark:text-teal-400 font-mono">{user.is_guest ? "Guest Session" : "Verified Pro"}</p>
               </div>
             </div>
           </button>
         ) : (
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-teal-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+            className={`w-full py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer ${
+              isLight ? 'bg-white hover:bg-slate-100 border-slate-300 text-teal-800' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-teal-300'
+            }`}
           >
             <User className="w-3.5 h-3.5" />
             <span>Sign In / Profile</span>
@@ -642,13 +656,17 @@ export default function Dashboard() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.015)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30 pointer-events-none z-0" />
 
         {/* Header Bar */}
-        <header className="w-full border-b border-panel-border/30 h-16 bg-[#070a13]/80 backdrop-blur-md px-4 sm:px-8 md:px-12 lg:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
+        <header className={`w-full border-b h-16 backdrop-blur-md px-4 sm:px-8 md:px-12 lg:px-16 flex items-center justify-between sticky top-0 z-30 shrink-0 transition-colors ${
+          isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-panel-border/30 bg-[#070a13]/80 text-white'
+        }`}>
         <div className="flex items-center gap-2.5 sm:gap-3">
           {/* Mobile Hamburger Toggle */}
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
-            className="lg:hidden p-2 rounded-xl bg-slate-900 border border-panel-border text-slate-300 hover:text-teal-400 shrink-0 cursor-pointer"
+            className={`lg:hidden p-2 rounded-xl border shrink-0 cursor-pointer ${
+              isLight ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-slate-900 border-panel-border text-slate-300 hover:text-teal-400'
+            }`}
             title="Open Navigation Menu"
           >
             <Menu className="w-5 h-5" />
@@ -656,27 +674,32 @@ export default function Dashboard() {
 
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
-              <div className="w-full h-full bg-[#070a13] rounded-[10px] flex items-center justify-center">
+              <div className={`w-full h-full rounded-[10px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#070a13]'}`}>
                 <Network className="w-4 h-4 sm:w-5 sm:h-5 text-teal-accent" />
               </div>
             </div>
-            <span className="font-extrabold tracking-wider text-xs sm:text-sm text-white uppercase hidden min-[420px]:inline">Prompt Canvas</span>
+            <span className={`font-extrabold tracking-wider text-xs sm:text-sm uppercase hidden min-[420px]:inline ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt Canvas</span>
           </Link>
-          <span className="text-[10px] sm:text-[11px] font-extrabold text-teal-accent uppercase tracking-widest px-2 sm:px-3 py-1 rounded bg-teal-500/10 border border-teal-500/20">
+          <span className="text-[10px] sm:text-[11px] font-extrabold text-teal-600 dark:text-teal-accent uppercase tracking-widest px-2 sm:px-3 py-1 rounded bg-teal-500/10 border border-teal-500/20">
             Operations
           </span>
         </div>
 
         <div className="flex items-center gap-3">
+          <ThemeToggleBtn id="dashboard-theme-toggle-btn" />
           {user && (
             <>
               <AccessRequestsInbox user={user} />
               <button
                 id="dashboard-user-profile-btn"
                 onClick={() => setIsProfileModalOpen(true)}
-                className="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer"
+                className={`px-3.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                  isLight
+                    ? 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
+                    : 'bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200'
+                }`}
               >
-                <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold flex items-center justify-center text-xs">
                   {(user.name || user.email)[0].toUpperCase()}
                 </div>
                 <span className="hidden sm:inline max-w-[120px] truncate">{user.name || user.email}</span>
@@ -686,18 +709,26 @@ export default function Dashboard() {
 
           <Link
             href="/templates"
-            className="px-4 py-2.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-teal-300 border border-teal-500/30 hover:border-teal-400 font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm"
+            className={`px-4 py-2.5 rounded-lg border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm ${
+              isLight
+                ? 'bg-slate-100 hover:bg-slate-200 text-teal-800 border-slate-300'
+                : 'bg-slate-800/90 hover:bg-slate-700 text-teal-300 border-teal-500/30 hover:border-teal-400'
+            }`}
           >
-            <Compass className="w-4 h-4 text-teal-400" />
+            <Compass className="w-4 h-4 text-teal-500" />
             <span>Templates Matrix ({TEMPLATE_CATALOG_ITEMS.length})</span>
           </Link>
 
           <button
             type="button"
             onClick={() => setIsUseCaseModalOpen(true)}
-            className="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700/90 text-teal-300 border border-teal-500/40 font-bold text-sm tracking-wide transition-all flex items-center gap-2 cursor-pointer"
+            className={`px-5 py-3 rounded-lg border font-bold text-sm tracking-wide transition-all flex items-center gap-2 cursor-pointer ${
+              isLight
+                ? 'bg-slate-100 hover:bg-slate-200 text-teal-800 border-slate-300'
+                : 'bg-slate-800 hover:bg-slate-700/90 text-teal-300 border-teal-500/40'
+            }`}
           >
-            <ClipboardList className="w-4.5 h-4.5 text-teal-400" />
+            <ClipboardList className="w-4.5 h-4.5 text-teal-500" />
             <span>📋 Use Case Intake Form</span>
           </button>
 
@@ -766,23 +797,25 @@ export default function Dashboard() {
         {/* Page Title Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-1">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-none">Enterprise Operations Portal</h1>
-            <p className="text-base text-slate-400">High-level telemetry, security compliance matrices, and active diagram workspaces.</p>
+            <h1 className={`text-4xl md:text-5xl font-extrabold tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise Operations Portal</h1>
+            <p className={`text-base ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>High-level telemetry, security compliance matrices, and active diagram workspaces.</p>
           </div>
           
           {/* Quick Telemetry Box */}
-          <div className="flex items-center gap-8 bg-slate-900/60 border border-panel-border/30 rounded-xl px-8 py-5 shadow-xl shadow-teal-500/[0.02] backdrop-blur-sm">
+          <div className={`flex items-center gap-8 border rounded-xl px-8 py-5 shadow-xl backdrop-blur-sm ${
+            isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900/60 border-panel-border/30 text-white'
+          }`}>
             <div className="text-center">
               <span className="block text-xs text-slate-500 font-extrabold uppercase tracking-wider">Compliance Matrix</span>
-              <span className="text-lg font-black text-teal-accent flex items-center gap-1.5 mt-1 justify-center">
-                <Shield className="w-5 h-5 text-teal-accent" />
+              <span className="text-lg font-black text-teal-600 dark:text-teal-accent flex items-center gap-1.5 mt-1 justify-center">
+                <Shield className="w-5 h-5 text-teal-600 dark:text-teal-accent" />
                 <span>94.2%</span>
               </span>
             </div>
-            <div className="h-10 w-[1px] bg-panel-border/50" />
+            <div className={`h-10 w-[1px] ${isLight ? 'bg-slate-200' : 'bg-panel-border/50'}`} />
             <div className="text-center">
               <span className="block text-xs text-slate-500 font-extrabold uppercase tracking-wider">Deployments Active</span>
-              <span className="text-lg font-black text-white mt-1 block">{diagrams.length > 0 ? `${diagrams.length} Active Architectures` : '0 Active Stacks'}</span>
+              <span className={`text-lg font-black mt-1 block ${isLight ? 'text-slate-900' : 'text-white'}`}>{diagrams.length > 0 ? `${diagrams.length} Active Architectures` : '0 Active Stacks'}</span>
             </div>
           </div>
         </div>
@@ -795,7 +828,7 @@ export default function Dashboard() {
               value: diagrams.length,
               sub: "Diagram architectures stored",
               icon: Layers,
-              color: "text-teal-400 bg-teal-500/10",
+              color: "text-teal-600 dark:text-teal-400 bg-teal-500/10",
               border: "hover:border-teal-500/35 hover:shadow-teal-500/5"
             },
             {
@@ -803,7 +836,7 @@ export default function Dashboard() {
               value: "A- Grade",
               sub: "Compliance rating active",
               icon: Shield,
-              color: "text-purple-400 bg-purple-500/10",
+              color: "text-purple-600 dark:text-purple-400 bg-purple-500/10",
               border: "hover:border-purple-500/35 hover:shadow-purple-500/5"
             },
             {
@@ -811,7 +844,7 @@ export default function Dashboard() {
               value: diagrams.length > 0 ? `${diagrams.length + 3} Worker Nodes` : "3 Gateway Nodes",
               sub: "DevOps, SecOps, Core Infrastructure",
               icon: Users,
-              color: "text-indigo-400 bg-indigo-500/10",
+              color: "text-indigo-600 dark:text-indigo-400 bg-indigo-500/10",
               border: "hover:border-indigo-500/35 hover:shadow-indigo-500/5"
             },
             {
@@ -819,18 +852,20 @@ export default function Dashboard() {
               value: "Enterprise Storage",
               sub: "AES-256 Multi-Tenant Connected",
               icon: Database,
-              color: "text-amber-400 bg-amber-500/10",
+              color: "text-amber-600 dark:text-amber-400 bg-amber-500/10",
               border: "hover:border-amber-500/35 hover:shadow-amber-500/5"
             }
           ].map((metric, idx) => (
-            <div key={idx} className={`glass-panel border-panel-border/30 rounded-xl p-5 flex items-start gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${metric.border}`}>
+            <div key={idx} className={`rounded-xl p-5 flex items-start gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg border ${
+              isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
+            } ${metric.border}`}>
               <div className={`w-11 h-11 rounded-lg flex items-center justify-center shrink-0 ${metric.color}`}>
                 <metric.icon className="w-5.5 h-5.5" />
               </div>
               <div className="space-y-1">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">{metric.name}</span>
-                <span className="text-3xl font-black text-white block tracking-tight leading-none mt-0.5">{metric.value}</span>
-                <span className="text-xs text-slate-400 block pt-0.5">{metric.sub}</span>
+                <span className={`text-3xl font-black block tracking-tight leading-none mt-0.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>{metric.value}</span>
+                <span className={`text-xs block pt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>{metric.sub}</span>
               </div>
             </div>
           ))}
@@ -839,28 +874,30 @@ export default function Dashboard() {
         {/* 2. Custom Analytical Visual Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Chart 1: Activity by Team */}
-          <div className="glass-panel border-panel-border/30 rounded-xl p-6 space-y-5">
+          <div className={`rounded-xl p-6 space-y-5 border ${
+            isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-slate-200'
+          }`}>
             <div>
-              <h3 className="text-base font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className={`text-base font-bold uppercase tracking-wider flex items-center gap-1.5 ${isLight ? 'text-slate-900' : 'text-slate-200'}`}>
                 <BarChart3 className="w-5 h-5 text-teal-accent" />
                 <span>Usecase Allocation Matrix</span>
               </h3>
-              <p className="text-sm text-slate-400 mt-1">Distribution of designs across active business departments.</p>
+              <p className={`text-sm mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Distribution of designs across active business departments.</p>
             </div>
             
             <div className="space-y-4 pt-2">
               {[
-                { name: "Enterprise Core Architecture", count: 5, pct: 45, color: "bg-teal-400" },
-                { name: "DevOps Build Pipelines", count: 4, pct: 30, color: "bg-indigo-400" },
-                { name: "AI RAG & Analytics Core", count: 3, pct: 15, color: "bg-purple-400" },
-                { name: "Retail Database Store", count: 2, pct: 10, color: "bg-amber-400" }
+                { name: "Enterprise Core Architecture", count: 5, pct: 45, color: "bg-teal-500" },
+                { name: "DevOps Build Pipelines", count: 4, pct: 30, color: "bg-indigo-500" },
+                { name: "AI RAG & Analytics Core", count: 3, pct: 15, color: "bg-purple-500" },
+                { name: "Retail Database Store", count: 2, pct: 10, color: "bg-amber-500" }
               ].map((team, idx) => (
                 <div key={idx} className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="font-semibold text-slate-300">{team.name}</span>
-                    <span className="text-slate-200 font-extrabold">{team.count} ({team.pct}%)</span>
+                    <span className={`font-semibold ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>{team.name}</span>
+                    <span className={`font-extrabold ${isLight ? 'text-slate-900' : 'text-slate-200'}`}>{team.count} ({team.pct}%)</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-bg-dark border border-panel-border/30 overflow-hidden">
+                  <div className={`w-full h-2 rounded-full border overflow-hidden ${isLight ? 'bg-slate-100 border-slate-200' : 'bg-bg-dark border-panel-border/30'}`}>
                     <div className={`h-full rounded-full ${team.color}`} style={{ width: `${team.pct}%` }} />
                   </div>
                 </div>
@@ -869,31 +906,35 @@ export default function Dashboard() {
           </div>
 
           {/* Chart 2: Security compliance scorecard */}
-          <div className="glass-panel border-panel-border/30 rounded-xl p-6 space-y-5">
+          <div className={`rounded-xl p-6 space-y-5 border ${
+            isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-slate-200'
+          }`}>
             <div>
-              <h3 className="text-base font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Shield className="w-5 h-5 text-purple-400" />
+              <h3 className={`text-base font-bold uppercase tracking-wider flex items-center gap-1.5 ${isLight ? 'text-slate-900' : 'text-slate-200'}`}>
+                <Shield className="w-5 h-5 text-purple-500" />
                 <span>Security Compliance Scorecard</span>
               </h3>
-              <p className="text-sm text-slate-400 mt-1">Average security ratings calculated by Gemini.</p>
+              <p className={`text-sm mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Average security ratings calculated by Gemini.</p>
             </div>
 
             <div className="space-y-5 pt-2">
-              <div className="flex items-center gap-6 bg-bg-dark/40 border border-panel-border/30 rounded-xl p-5">
-                <span className="text-6xl font-black text-teal-accent leading-none">A-</span>
+              <div className={`flex items-center gap-6 border rounded-xl p-5 ${
+                isLight ? 'bg-slate-50 border-slate-200' : 'bg-bg-dark/40 border-panel-border/30'
+              }`}>
+                <span className="text-6xl font-black text-teal-600 dark:text-teal-accent leading-none">A-</span>
                 <div>
                   <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block">Global Compliance Grade</span>
-                  <p className="text-sm text-slate-300 mt-1.5">Excellent posture. Minor risks identified in database subnets.</p>
+                  <p className={`text-sm mt-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>Excellent posture. Minor risks identified in database subnets.</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="bg-[#0b0f19] border border-panel-border/30 rounded-lg p-3.5">
-                  <span className="text-xl font-black text-emerald-400 block leading-none">0</span>
+                <div className={`border rounded-lg p-3.5 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#0b0f19] border-panel-border/30'}`}>
+                  <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 block leading-none">0</span>
                   <span className="text-xs text-slate-500 uppercase tracking-wider mt-1.5 block font-bold">Critical Risks</span>
                 </div>
-                <div className="bg-[#0b0f19] border border-panel-border/30 rounded-lg p-3.5">
-                  <span className="text-xl font-black text-amber-400 block leading-none">3</span>
+                <div className={`border rounded-lg p-3.5 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#0b0f19] border-panel-border/30'}`}>
+                  <span className="text-xl font-black text-amber-600 dark:text-amber-400 block leading-none">3</span>
                   <span className="text-xs text-slate-500 uppercase tracking-wider mt-1.5 block font-bold">Warnings</span>
                 </div>
               </div>
@@ -901,21 +942,23 @@ export default function Dashboard() {
           </div>
 
           {/* Card 3: Quick Start Presets Launcher */}
-          <div className="glass-panel border-panel-border/30 rounded-xl p-6 space-y-5">
+          <div className={`rounded-xl p-6 space-y-5 border ${
+            isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-slate-200'
+          }`}>
             <div>
-              <h3 className="text-base font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-5 h-5 text-teal-accent animate-pulse" />
+              <h3 className={`text-base font-bold uppercase tracking-wider flex items-center gap-1.5 ${isLight ? 'text-slate-900' : 'text-slate-200'}`}>
+                <Sparkles className="w-5 h-5 text-teal-500 dark:text-teal-accent animate-pulse" />
                 <span>Quick Launch Templates</span>
               </h3>
-              <p className="text-sm text-slate-400 mt-1">Select a pre-designed cloud architecture template to build instantly.</p>
+              <p className={`text-sm mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Select a pre-designed cloud architecture template to build instantly.</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-1">
               {[
-                { name: "GCP Serverless", desc: "Global CDN, Cloud Run, Cloud Storage", color: "border-teal-500/20 hover:border-teal-500/40 hover:shadow-teal-500/[0.03]" },
-                { name: "AWS Kubernetes", desc: "ALB, EKS Worker nodes, RDS Postgre", color: "border-amber-500/20 hover:border-amber-500/40 hover:shadow-amber-500/[0.03]" },
-                { name: "AI RAG Pipeline", desc: "pgvector DB, Vertex AI, Gemini models", color: "border-purple-500/20 hover:border-purple-500/40 hover:shadow-purple-500/[0.03]" },
-                { name: "DevOps CI/CD", desc: "GitHub Actions, Terraform builds", color: "border-indigo-500/20 hover:border-indigo-500/40 hover:shadow-indigo-500/[0.03]" }
+                { name: "GCP Serverless", desc: "Global CDN, Cloud Run, Cloud Storage", color: "border-teal-500/20 hover:border-teal-500/40" },
+                { name: "AWS Kubernetes", desc: "ALB, EKS Worker nodes, RDS Postgre", color: "border-amber-500/20 hover:border-amber-500/40" },
+                { name: "AI RAG Pipeline", desc: "pgvector DB, Vertex AI, Gemini models", color: "border-purple-500/20 hover:border-purple-500/40" },
+                { name: "DevOps CI/CD", desc: "GitHub Actions, Terraform builds", color: "border-indigo-500/20 hover:border-indigo-500/40" }
               ].map((tpl, idx) => (
                 <div 
                   key={idx}
@@ -924,10 +967,12 @@ export default function Dashboard() {
                     setNewDiagramPrompt(`Act as an Architect. Design a ${tpl.name} layout with ${tpl.desc}`);
                     setIsCreateModalOpen(true);
                   }}
-                  className={`glass-panel ${tpl.color} rounded-lg p-4 flex flex-col justify-between cursor-pointer hover:scale-[1.03] hover:shadow-lg transition-all duration-300 min-h-[105px] h-full`}
+                  className={`rounded-lg p-4 flex flex-col justify-between cursor-pointer hover:scale-[1.03] hover:shadow-lg transition-all duration-300 min-h-[105px] h-full border ${
+                    isLight ? 'bg-slate-50 border-slate-200 hover:border-teal-400' : 'glass-panel'
+                  } ${tpl.color}`}
                 >
-                  <span className="font-extrabold text-sm text-white block leading-snug">{tpl.name}</span>
-                  <span className="text-xs text-slate-400 block leading-relaxed mt-1.5 line-clamp-2">{tpl.desc}</span>
+                  <span className={`font-extrabold text-sm block leading-snug ${isLight ? 'text-slate-900' : 'text-white'}`}>{tpl.name}</span>
+                  <span className={`text-xs block leading-relaxed mt-1.5 line-clamp-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>{tpl.desc}</span>
                 </div>
               ))}
             </div>
@@ -936,36 +981,44 @@ export default function Dashboard() {
 
         {/* 3. Workspace Diagrams Manager */}
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-panel-border/30 pb-3">
+          <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-3 ${isLight ? 'border-slate-200' : 'border-panel-border/30'}`}>
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">Active Architecture Workspaces</h2>
+              <h2 className={`text-xl font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>Active Architecture Workspaces</h2>
               <p className="text-xs text-slate-500 mt-0.5">Review, audit, or delete active enterprise canvas files.</p>
             </div>
 
             {/* Search Bar */}
             <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+              <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search diagrams by name..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-[#0b0f19]/80 border border-panel-border/50 focus:border-teal-500/50 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-300 focus:outline-none transition-all placeholder-slate-600"
+                className={`w-full border rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none transition-all ${
+                  isLight
+                    ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500 placeholder-slate-400'
+                    : 'bg-[#0b0f19]/80 border-panel-border/50 focus:border-teal-500/50 text-slate-300 placeholder-slate-600'
+                }`}
               />
             </div>
           </div>
 
           {/* Diagrams List Table */}
           {isLoading ? (
-            <div className="h-64 flex flex-col items-center justify-center gap-3 glass-panel border-panel-border/20 rounded-xl">
+            <div className={`h-64 flex flex-col items-center justify-center gap-3 rounded-xl border ${
+              isLight ? 'bg-white border-slate-200' : 'glass-panel border-panel-border/20'
+            }`}>
               <Loader2 className="w-8 h-8 animate-spin text-teal-accent" />
               <span className="text-xs text-slate-500">Loading diagrams database...</span>
             </div>
           ) : filteredDiagrams.length === 0 ? (
-            <div className="h-64 flex flex-col items-center justify-center gap-4 glass-panel border-panel-border/20 rounded-xl text-center p-8 bg-panel-dark/10">
-              <FileText className="w-12 h-12 text-slate-600" />
+            <div className={`h-64 flex flex-col items-center justify-center gap-4 rounded-xl text-center p-8 border ${
+              isLight ? 'bg-white border-slate-200' : 'glass-panel border-panel-border/20 bg-panel-dark/10'
+            }`}>
+              <FileText className="w-12 h-12 text-slate-400" />
               <div>
-                <h4 className="font-bold text-sm text-slate-300">No workspaces found</h4>
+                <h4 className={`font-bold text-sm ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>No workspaces found</h4>
                 <p className="text-xs text-slate-500 mt-1 max-w-sm">Create a new cloud architecture workspace from scratch or launch one of our quick presets.</p>
               </div>
               <button
@@ -976,18 +1029,22 @@ export default function Dashboard() {
                   setSelectedTemplate('0');
                   setIsCreateModalOpen(true);
                 }}
-                className="px-5 py-2.5 rounded-lg bg-teal-accent/15 hover:bg-teal-accent text-teal-300 hover:text-bg-dark font-bold text-sm transition-all border border-teal-500/20 hover:border-transparent flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 rounded-lg bg-teal-accent/15 hover:bg-teal-accent text-teal-700 dark:text-teal-300 hover:text-bg-dark font-bold text-sm transition-all border border-teal-500/20 hover:border-transparent flex items-center gap-2 cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Create Diagram</span>
               </button>
             </div>
           ) : (
-            <div className="glass-panel border-panel-border/30 rounded-xl overflow-hidden shadow-lg">
+            <div className={`rounded-xl overflow-hidden shadow-lg border ${
+              isLight ? 'bg-white border-slate-200' : 'glass-panel border-panel-border/30'
+            }`}>
               <div className="overflow-x-auto w-full">
                 <table className="w-full border-collapse text-left text-xs">
                   <thead>
-                    <tr className="bg-panel-dark/40 border-b border-panel-border/50 text-slate-400 uppercase tracking-wider font-extrabold text-[10px]">
+                    <tr className={`border-b text-slate-500 dark:text-slate-400 uppercase tracking-wider font-extrabold text-[10px] ${
+                      isLight ? 'bg-slate-50 border-slate-200' : 'bg-panel-dark/40 border-panel-border/50'
+                    }`}>
                       <th className="px-8 py-5">Workspace Title</th>
                       <th className="px-8 py-5">Template Status</th>
                       <th className="px-8 py-5">Versions</th>
@@ -996,7 +1053,7 @@ export default function Dashboard() {
                       <th className="px-8 py-5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-panel-border/30">
+                  <tbody className={`divide-y ${isLight ? 'divide-slate-200' : 'divide-panel-border/30'}`}>
                     {filteredDiagrams.map((diagram) => {
                       const verCount = diagram.versions?.length || 1;
                       const hasGcp = diagram.name.toLowerCase().includes('gcp') || diagram.name.toLowerCase().includes('serverless');
@@ -1009,15 +1066,17 @@ export default function Dashboard() {
                         <tr 
                           key={diagram.id}
                           onClick={() => router.push(`/workspace?diagram=${diagram.id}`)}
-                          className="hover:bg-slate-900/30 transition-all cursor-pointer group"
+                          className={`transition-all cursor-pointer group ${isLight ? 'hover:bg-slate-50' : 'hover:bg-slate-900/30'}`}
                         >
                           <td className="px-8 py-5">
                             <div className="flex items-center gap-3.5">
-                              <div className="w-9 h-9 rounded bg-teal-500/10 flex items-center justify-center text-teal-accent">
+                              <div className="w-9 h-9 rounded bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent">
                                 <Network className="w-5 h-5" />
                               </div>
                               <div>
-                                <span className="font-extrabold text-white group-hover:text-teal-accent transition-colors block text-base">{diagram.name}</span>
+                                <span className={`font-extrabold transition-colors block text-base ${
+                                  isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-accent'
+                                }`}>{diagram.name}</span>
                                 <span className="text-xs text-slate-500 block truncate max-w-xs">{diagram.id}</span>
                               </div>
                             </div>
@@ -1025,30 +1084,30 @@ export default function Dashboard() {
                           <td className="px-8 py-5">
                             {staleness.isStale ? (
                               <span 
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30"
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-300 border border-amber-500/30"
                                 title={`Master Template Updated: ${staleness.reason}`}
                               >
                                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
                                 <span>Update Available</span>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
                                 <ShieldCheck className="w-3.5 h-3.5" />
                                 <span>Up-to-Date</span>
                               </span>
                             )}
                           </td>
-                          <td className="px-8 py-5 text-slate-300 font-bold text-sm">{verCount} version{verCount > 1 ? 's' : ''}</td>
+                          <td className={`px-8 py-5 font-bold text-sm ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>{verCount} version{verCount > 1 ? 's' : ''}</td>
                           <td className="px-8 py-5">
                             <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold border ${
-                              platform === 'GCP' ? 'bg-teal-500/10 text-teal-400 border-teal-500/20' :
-                              platform === 'AWS' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                              'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                              platform === 'GCP' ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20' :
+                              platform === 'AWS' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20' :
+                              'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20'
                             }`}>
                               {platform}
                             </span>
                           </td>
-                          <td className="px-8 py-5 text-slate-400 font-bold text-sm">
+                          <td className={`px-8 py-5 font-bold text-sm ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                             {new Date(diagram.updated_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(diagram.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </td>
                           <td className="px-8 py-5 text-right" onClick={e => e.stopPropagation()}>
@@ -1059,7 +1118,9 @@ export default function Dashboard() {
                                 disabled={isRefreshing}
                                 className={`px-2.5 py-1.5 rounded border transition-all cursor-pointer flex items-center gap-1.5 ${
                                   staleness.isStale
-                                    ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/10 animate-pulse'
+                                    ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-700 dark:text-amber-300 border-amber-500/40 shadow-sm animate-pulse'
+                                    : isLight
+                                    ? 'bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-700 border-slate-300 hover:border-teal-400'
                                     : 'bg-slate-800/80 hover:bg-teal-500/20 text-slate-300 hover:text-teal-300 border-slate-700 hover:border-teal-500/40'
                                 }`}
                                 title={
@@ -1074,14 +1135,18 @@ export default function Dashboard() {
 
                               <button
                                 onClick={() => router.push(`/workspace?diagram=${diagram.id}`)}
-                                className="px-3.5 py-1.5 rounded hover:bg-teal-accent hover:text-bg-dark text-slate-300 text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center gap-1.5 cursor-pointer animate-duration-150"
+                                className={`px-3.5 py-1.5 rounded text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer ${
+                                  isLight
+                                    ? 'bg-teal-600 hover:bg-teal-700 text-white border-transparent shadow-sm'
+                                    : 'hover:bg-teal-accent hover:text-bg-dark text-slate-300 border-slate-700 hover:border-transparent'
+                                }`}
                               >
                                 <span>Launch</span>
                                 <ArrowRight className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={(e) => handleDeleteDiagram(diagram.id, e)}
-                                className="p-1.5 rounded hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
+                                className="p-1.5 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-500 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
                                 title="Delete Diagram Workspace"
                               >
                                 <Trash2 className="w-4 h-4" />
