@@ -2,14 +2,19 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getDiagramVersion, updateDiagramVersionUseCases } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
-import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
+import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { cookies } from 'next/headers';
 
 const ai = new GoogleGenAI({});
 
 export async function POST(request: Request) {
   const user = await getAuthenticatedUser();
-  const lockKey = user?.id || 'anonymous_global';
+  const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+  const clientIp = rawIp.split(',')[0]?.trim() || '';
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get('promptcanvas_session')?.value;
+  const lockKey = deriveLockKey(user?.id, clientIp, sessionId);
 
   if (!acquireGeminiLock(lockKey)) {
     return NextResponse.json(

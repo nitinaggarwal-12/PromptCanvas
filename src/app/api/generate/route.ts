@@ -1,16 +1,21 @@
 import { NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/auth';
-import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
+import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { executeUnifiedDiagramPipeline } from '@/lib/unifiedDiagramEngine';
 import { isLayoutEngineV2Enabled } from '@/lib/featureFlags';
 import { classifyIntent } from '@/lib/router/intentClassifier';
 import { runV2Pipeline, runV2EditPipeline } from '@/lib/pipeline/v2Pipeline';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { createDiagram, saveDiagramVersion, getLatestDiagramVersion, updateDiagramArchitectureType } from '@/lib/db';
+import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   const user = await getAuthenticatedUser();
-  const lockKey = user?.id || 'anonymous_global';
+  const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+  const clientIp = rawIp.split(',')[0]?.trim() || '';
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get('promptcanvas_session')?.value;
+  const lockKey = deriveLockKey(user?.id, clientIp, sessionId);
 
   if (!acquireGeminiLock(lockKey)) {
     return NextResponse.json(
