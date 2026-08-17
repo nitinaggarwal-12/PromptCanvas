@@ -5330,6 +5330,26 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     isSetMasterModalOpen
   ]);
 
+  // Multi-Tab Synchronization via BroadcastChannel
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('BroadcastChannel' in window)) return;
+    const channel = new BroadcastChannel('promptcanvas_tab_sync');
+
+    channel.onmessage = (event) => {
+      const data = event.data;
+      if (data && data.type === 'DIAGRAM_UPDATED' && data.diagramId) {
+        fetchDiagrams();
+        if (activeDiagram && activeDiagram.id === data.diagramId && !isAnyAIBusy) {
+          loadDiagramDetails(data.diagramId);
+        }
+      }
+    };
+
+    return () => {
+      channel.close();
+    };
+  }, [activeDiagram?.id, isAnyAIBusy]);
+
   const [isForceRefreshing, setIsForceRefreshing] = useState(false);
   const [forceRefreshToast, setForceRefreshToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
 

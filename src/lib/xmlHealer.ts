@@ -343,6 +343,48 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     }
   }
 
+  // 6b. Detect and Break Circular Parent Loops and Heal Orphan Parents
+  const parentMap = new Map<string, string>();
+  for (const cell of cells) {
+    const id = String(cell['@_id'] || '');
+    const parent = String(cell['@_parent'] || '');
+    if (id && parent) {
+      parentMap.set(id, parent);
+    }
+  }
+
+  for (const cell of cells) {
+    const id = String(cell['@_id'] || '');
+    if (id === '0' || id === '1') continue;
+
+    let curr = id;
+    const visited = new Set<string>();
+    let hasCycle = false;
+
+    while (curr && parentMap.has(curr)) {
+      if (visited.has(curr)) {
+        hasCycle = true;
+        break;
+      }
+      visited.add(curr);
+      const nextParent = parentMap.get(curr)!;
+      if (nextParent === '0' || nextParent === '1') break;
+      curr = nextParent;
+    }
+
+    if (hasCycle) {
+      cell['@_parent'] = '1';
+      parentMap.set(id, '1');
+      isHealed = true;
+      healingLog.push(`Broken circular parent loop for cell id="${id}", reassigned parent="1".`);
+    } else if (cell['@_parent'] && !seenIds.has(String(cell['@_parent'])) && cell['@_parent'] !== '0' && cell['@_parent'] !== '1') {
+      cell['@_parent'] = '1';
+      parentMap.set(id, '1');
+      isHealed = true;
+      healingLog.push(`Fixed orphaned parent="${cell['@_parent']}" for cell id="${id}", reassigned parent="1".`);
+    }
+  }
+
   // Preserve pristine hand-tuned layout coordinates without shifting nodes off-screen
   root.mxCell = cells;
 

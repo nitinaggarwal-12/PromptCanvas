@@ -507,6 +507,9 @@ export async function ensureTablesExist(): Promise<void> {
     await pool.query(`
       ALTER TABLE diagram_versions ADD COLUMN IF NOT EXISTS graph_json TEXT;
     `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_diagram_versions_lookup ON diagram_versions (diagram_id, architecture_type, version_number DESC);
+    `);
   } else {
     const db = getSqliteDb();
     db.exec(`
@@ -757,6 +760,11 @@ export async function ensureTablesExist(): Promise<void> {
       db.exec('ALTER TABLE diagram_versions ADD COLUMN graph_json TEXT;');
     } catch {
       // Ignored if column already exists
+    }
+    try {
+      db.exec('CREATE INDEX IF NOT EXISTS idx_diagram_versions_lookup ON diagram_versions (diagram_id, architecture_type, version_number DESC);');
+    } catch {
+      // Ignored if index already exists
     }
   }
 

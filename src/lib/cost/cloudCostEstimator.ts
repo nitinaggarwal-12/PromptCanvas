@@ -27,8 +27,16 @@ export interface CloudCostReport {
 export function estimateCloudArchitectureCost(
   xmlContent: string,
   diagramName: string = 'Enterprise Cloud Architecture',
-  _archType: string = 'unified_system_view'
+  _archType: string = 'unified_system_view',
+  region: 'US' | 'EU' | 'APAC' = 'US'
 ): CloudCostReport {
+  const regionMultipliers = {
+    US: 1.0,
+    EU: 1.10,
+    APAC: 1.15
+  };
+  const multiplier = regionMultipliers[region] || 1.0;
+
   const itemsAll = parseXmlNodesAndEdges(xmlContent || '');
   const nodes = itemsAll.filter((i: DiagramNodeItem) => !i.isEdge);
 
@@ -117,13 +125,15 @@ export function estimateCloudArchitectureCost(
       providerCountGcp++;
     }
 
+    const finalUnitCost = Math.round(unitCost * multiplier);
+
     items.push({
       id: node.id || `cost_${idx}`,
       resourceName,
       category,
       count: 1,
-      unitMonthlyCostUsd: unitCost,
-      totalMonthlyCostUsd: unitCost,
+      unitMonthlyCostUsd: finalUnitCost,
+      totalMonthlyCostUsd: finalUnitCost,
       pricingTierDescription: desc,
       cloudProvider: prov
     });

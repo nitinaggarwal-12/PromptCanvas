@@ -5,6 +5,14 @@ import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
+    const contentLength = Number(request.headers.get('content-length') || '0');
+    if (contentLength > 5 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: 'Payload too large: Request body must not exceed 5MB.' },
+        { status: 413 }
+      );
+    }
+
     const user = await getAuthenticatedUser();
     const body = await request.json();
     const { diagramId, architectureType, prompt } = body;

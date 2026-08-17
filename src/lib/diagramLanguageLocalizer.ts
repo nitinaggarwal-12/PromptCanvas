@@ -453,5 +453,17 @@ export function localizeDrawioXmlDeep(xml: string, lang: SupportedLanguage): str
   for (const [from, to] of replacements) {
     out = out.split(from).join(to);
   }
+
+  // Ensure robust word wrapping and safe padding for non-Latin and compound languages
+  if (lang === 'zh' || lang === 'hi' || lang === 'ar') {
+    out = out.replace(/style="([^"]*)"/g, (match, styleContent) => {
+      let updatedStyle = styleContent;
+      if (!updatedStyle.includes('whiteSpace=wrap')) {
+        updatedStyle += ';whiteSpace=wrap;';
+      }
+      return `style="${updatedStyle}"`;
+    });
+  }
+
   return out;
 }

@@ -17,6 +17,14 @@ export async function POST(request: Request) {
   const sessionId = cookieStore.get('promptcanvas_session')?.value;
   const lockKey = deriveLockKey(user?.id, clientIp, sessionId);
 
+  const contentLength = Number(request.headers.get('content-length') || '0');
+  if (contentLength > 5 * 1024 * 1024) {
+    return NextResponse.json(
+      { error: 'Payload too large: Request body must not exceed 5MB.' },
+      { status: 413 }
+    );
+  }
+
   if (!acquireGeminiLock(lockKey)) {
     return NextResponse.json(
       { error: 'An AI request is already in progress. Please wait for it to complete before initiating another.' },

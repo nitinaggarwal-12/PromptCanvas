@@ -97,9 +97,13 @@ export default function DiagramViewer({
     containerDimensions = 'w-full max-w-[1350px] h-[1040px]';
   } else if (aspectRatioId === '21:9') {
     containerDimensions = 'w-full h-full max-w-full';
-  } else if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
+  }
+  
+  let customHeightStyle: React.CSSProperties | undefined = undefined;
+  if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
     const calcH = Math.min(1300, Math.max(600, Math.round(1000 * (customH / customW))));
-    containerDimensions = `w-full max-w-full h-[${calcH}px]`;
+    containerDimensions = 'w-full max-w-full';
+    customHeightStyle = { height: `${calcH}px` };
   }
 
   const bgColor = bgTheme === 'light' ? '#FFFFFF' : '#0F172A';
@@ -396,7 +400,10 @@ export default function DiagramViewer({
 
   return (
     <DiagramErrorBoundary fallbackXml={sanitizedXml}>
-      <div className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}>
+      <div 
+        style={customHeightStyle}
+        className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}
+      >
         <iframe
           key={`iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${xml ? (xml.length + '_' + xml.slice(0, 60).replace(/[^a-zA-Z0-9]/g, '')) : 'empty'}`}
           srcDoc={iframeHtml}
