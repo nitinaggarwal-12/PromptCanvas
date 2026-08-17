@@ -1,11 +1,24 @@
 import { NextResponse } from 'next/server';
-import { checkDatabaseHealth } from '@/lib/db';
+import { checkDatabaseHealth, purgeExpiredGuestSessionsAndDiagrams } from '@/lib/db';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+let lastAutoMaintenance = 0;
+const MAINTENANCE_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+export async function GET(request: Request) {
   const startTime = Date.now();
+  const { searchParams } = new URL(request.url);
+  const triggerMaintenance = searchParams.get('maintenance') === 'true';
+
+  let maintenanceStats = null;
+  const now = Date.now();
+  if (triggerMaintenance || (now - lastAutoMaintenance > MAINTENANCE_INTERVAL_MS)) {
+    lastAutoMaintenance = now;
+    maintenanceStats = await purgeExpiredGuestSessionsAndDiagrams();
+  }
+
   const dbHealth = await checkDatabaseHealth();
   const hasGeminiKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '');
 
@@ -28,6 +41,7 @@ export async function GET() {
       uptimeSeconds: Math.floor(process.uptime()),
       responseTimeMs: Date.now() - startTime,
       database: dbHealth,
+      maintenance: maintenanceStats || { status: 'idle', lastRun: new Date(lastAutoMaintenance).toISOString() },
       aiEngine: {
         configured: hasGeminiKey,
         defaultModel: GEMINI_MODEL_ID || 'gemini-3.7-flash',
