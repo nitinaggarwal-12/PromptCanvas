@@ -6804,7 +6804,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
 
               {isAssistantOpen && activeDiagram && (
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-1">
+                <div className="grid grid-cols-2 sm:grid-cols-6 gap-1.5 pt-1">
                   {/* Export & DaC Studio */}
                   <button
                     type="button"
@@ -6814,6 +6814,17 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   >
                     <Download className="w-3.5 h-3.5 text-teal-400" />
                     <span>{t.exportStudio}</span>
+                  </button>
+
+                  {/* Strategic Blueprint Matrix */}
+                  <button
+                    type="button"
+                    onClick={() => setIsPlaybookModalOpen(true)}
+                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/40 text-purple-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                    title="Open Enterprise Architecture Blueprint Matrix & Governance Catalog"
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+                    <span>Blueprint Matrix</span>
                   </button>
 
                   {/* Set as Master Template */}
