@@ -42,8 +42,8 @@ export async function getAuthenticatedUser(): Promise<User | null> {
       if (session && session.user) return session.user;
     }
 
-    // Dev mode fallback user for automated Puppeteer E2E test harness
-    if (process.env.NODE_ENV !== 'production') {
+    // Dev mode fallback user for automated Puppeteer E2E test harness (only when explicitly enabled)
+    if (process.env.ENABLE_E2E_MOCK_AUTH === 'true') {
       return {
         id: 'dev-admin-user',
         email: 'dev@promptcanvas.local',
