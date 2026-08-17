@@ -1066,6 +1066,10 @@ function WorkspaceContent() {
     }
     if (searchParams.get('new') === 'true' || searchParams.get('create') === 'true' || searchParams.get('modal') === 'create') {
       setIsCreateModalOpen(true);
+      if (searchParams.get('new') === 'true' || searchParams.get('create') === 'true') {
+        setActiveDiagram(null);
+        setActiveVersion(null);
+      }
     }
     const archParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
     if (archParam) {
@@ -1650,10 +1654,16 @@ function WorkspaceContent() {
     const diagramId = searchParams.get('diagram') || searchParams.get('id');
     const blueprintParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
     const isWelcomeParam = searchParams.get('welcome') === 'true' || searchParams.get('slate') === 'true';
+    const isNewParam = searchParams.get('new') === 'true' || searchParams.get('create') === 'true' || searchParams.get('modal') === 'create';
     
-    if (isWelcomeParam) {
-      setActiveDiagram(null);
-      setActiveVersion(null);
+    if (isWelcomeParam || isNewParam) {
+      if (isWelcomeParam || searchParams.get('new') === 'true' || searchParams.get('create') === 'true') {
+        setActiveDiagram(null);
+        setActiveVersion(null);
+      }
+      if (isNewParam) {
+        setIsCreateModalOpen(true);
+      }
       return;
     }
 
@@ -1661,10 +1671,8 @@ function WorkspaceContent() {
       if ((!activeDiagram || activeDiagram.id !== diagramId) && !restrictedState) {
         loadDiagramDetails(diagramId);
       }
-    } else if (!blueprintParam && !activeDiagram && diagrams.length > 0 && !restrictedState) {
-      loadDiagramDetails(diagrams[0].id);
     }
-  }, [searchParams, activeDiagram, restrictedState, diagrams, loadDiagramDetails]);
+  }, [searchParams, activeDiagram, restrictedState, loadDiagramDetails]);
 
   // Auto-select diagram when visiting Audit tab if none is selected
   useEffect(() => {
@@ -3213,26 +3221,57 @@ function WorkspaceContent() {
               const imgUrl = `/walkthrough/scenario_${sc.id}_${currentStep}.png`;
 
               return (
-                <div key={sc.id} className="glass-panel border-panel-border p-6 rounded-xl bg-panel-dark/40 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div 
+                  key={sc.id} 
+                  className={`p-6 rounded-2xl border grid grid-cols-1 lg:grid-cols-12 gap-8 transition-colors ${
+                    canvasTheme === 'light'
+                      ? 'bg-white border-slate-200 shadow-md text-slate-900'
+                      : 'glass-panel border-panel-border bg-panel-dark/40 text-slate-100 shadow-xl'
+                  }`}
+                >
                   {/* Left Controls/Prompts */}
                   <div className="lg:col-span-4 flex flex-col justify-between space-y-6">
                     <div>
-                      <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                      <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
                         SCENARIO 0{sc.id}
                       </span>
-                      <h3 className="font-extrabold text-white text-lg mt-2">{sc.title}</h3>
-                      <p className="text-xs text-slate-400 mt-1">{sc.desc}</p>
+                      <h3 className={`font-extrabold text-lg mt-2 ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>{sc.title}</h3>
+                      <p className={`text-xs mt-1 ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>{sc.desc}</p>
                     </div>
 
                     <div className="space-y-4">
-                      <div className="bg-bg-dark/60 border border-panel-border/30 rounded-lg p-3">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Creation Prompt</div>
-                        <p className="text-[11px] text-slate-300 leading-relaxed font-mono whitespace-pre-wrap">{sc.createPrompt}</p>
+                      <div className={`border rounded-xl p-3.5 ${
+                        canvasTheme === 'light'
+                          ? 'bg-slate-50 border-slate-200'
+                          : 'bg-bg-dark/60 border-panel-border/30'
+                      }`}>
+                        <div className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${
+                          canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'
+                        }`}>
+                          Creation Prompt
+                        </div>
+                        <p className={`text-[11px] leading-relaxed font-mono whitespace-pre-wrap ${
+                          canvasTheme === 'light' ? 'text-slate-800' : 'text-slate-200'
+                        }`}>
+                          {sc.createPrompt}
+                        </p>
                       </div>
 
-                      <div className="bg-bg-dark/60 border border-panel-border/30 rounded-lg p-3">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Refinement Prompt</div>
-                        <p className="text-[11px] text-slate-300 leading-relaxed font-mono whitespace-pre-wrap">{sc.modifyPrompt}</p>
+                      <div className={`border rounded-xl p-3.5 ${
+                        canvasTheme === 'light'
+                          ? 'bg-slate-50 border-slate-200'
+                          : 'bg-bg-dark/60 border-panel-border/30'
+                      }`}>
+                        <div className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${
+                          canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'
+                        }`}>
+                          Refinement Prompt
+                        </div>
+                        <p className={`text-[11px] leading-relaxed font-mono whitespace-pre-wrap ${
+                          canvasTheme === 'light' ? 'text-slate-800' : 'text-slate-200'
+                        }`}>
+                          {sc.modifyPrompt}
+                        </p>
                       </div>
                     </div>
 
@@ -3242,10 +3281,12 @@ function WorkspaceContent() {
                         <button
                           key={lbl.id}
                           onClick={() => setActiveSteps(prev => ({ ...prev, [sc.id]: lbl.id }))}
-                          className={`px-3 py-2 rounded-lg text-xs font-bold text-center transition-all cursor-pointer ${
+                          className={`px-3 py-2.5 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
                             currentStep === lbl.id
-                              ? 'bg-teal-accent text-bg-dark font-extrabold shadow-md border-transparent'
-                              : 'bg-bg-dark border border-panel-border/30 text-slate-400 hover:text-white hover:border-slate-500'
+                              ? 'bg-teal-500 hover:bg-teal-600 text-white font-extrabold shadow-md border-transparent'
+                              : canvasTheme === 'light'
+                                ? 'bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700'
+                                : 'bg-bg-dark border border-panel-border/30 text-slate-300 hover:text-white hover:border-slate-500'
                           }`}
                         >
                           {lbl.name}
@@ -3255,11 +3296,15 @@ function WorkspaceContent() {
                   </div>
 
                   {/* Right Image Viewer */}
-                  <div className="lg:col-span-8 bg-bg-dark/80 rounded-xl border border-panel-border/40 overflow-hidden relative shadow-inner flex items-center justify-center p-2 min-h-[450px]">
+                  <div className={`lg:col-span-8 rounded-2xl border overflow-hidden relative shadow-inner flex items-center justify-center p-3 min-h-[450px] ${
+                    canvasTheme === 'light'
+                      ? 'bg-slate-100/70 border-slate-200'
+                      : 'bg-bg-dark/80 border-panel-border/40'
+                  }`}>
                     <img 
                       src={imgUrl} 
                       alt={`${sc.title} - ${currentStep}`}
-                      className="max-w-full max-h-[500px] object-contain rounded-lg border border-panel-border/20 shadow-lg select-none"
+                      className="max-w-full max-h-[500px] object-contain rounded-xl border border-slate-300/30 shadow-lg select-none"
                       onError={(e) => {
                         e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 500'%3E%3Crect width='100%25' height='100%25' fill='%230f172a'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='14' fill='%23475569'%3EPuppeteer generating walkthrough screenshot...%3C/text%3E%3C/svg%3E";
                       }}
@@ -3966,122 +4011,196 @@ function WorkspaceContent() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             {/* Card 0: Personal User Studio Preferences & Customization */}
-            <div className="lg:col-span-2 glass-panel border-teal-500/40 rounded-3xl p-8 space-y-6 shadow-xl bg-slate-900/60">
-              <div className="flex items-center justify-between border-b border-panel-border/40 pb-4">
-                <h3 className="text-lg font-black text-white flex items-center gap-3">
-                  <Settings className="w-5 h-5 text-teal-accent" />
+            <div className={`lg:col-span-2 rounded-3xl p-8 space-y-6 shadow-xl transition-colors border ${
+              canvasTheme === 'light'
+                ? 'bg-white border-slate-200 shadow-md text-slate-900'
+                : 'glass-panel border-teal-500/40 bg-slate-900/60 text-white'
+            }`}>
+              <div className={`flex items-center justify-between border-b pb-4 ${
+                canvasTheme === 'light' ? 'border-slate-200' : 'border-panel-border/40'
+              }`}>
+                <h3 className={`text-lg font-black flex items-center gap-3 ${
+                  canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                }`}>
+                  <Settings className="w-5 h-5 text-teal-600 dark:text-teal-accent" />
                   <span>Personal User Studio Preferences &amp; Canvas Customization</span>
                 </h3>
-                <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-500/20 text-teal-300 border border-teal-500/40">
+                <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/40">
                   ⚡ Auto-Saved Studio Profile
                 </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Preference 1: Canvas Theme */}
-                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+                <div className={`p-5 rounded-2xl border space-y-3 transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-slate-950/80 border-slate-700/80 text-slate-100'
+                }`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Default Canvas Theme</span>
-                    <Sun className="w-4 h-4 text-amber-400" />
+                    <span className={`text-xs font-extrabold uppercase tracking-wider ${
+                      canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                    }`}>Default Canvas Theme</span>
+                    <Sun className="w-4 h-4 text-amber-500" />
                   </div>
                   <select
                     value={canvasTheme}
                     onChange={(e) => setCanvasTheme(e.target.value as 'light' | 'dark')}
-                    className="w-full bg-slate-900 border border-teal-500/50 text-teal-300 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
+                    className={`w-full font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer border transition-colors ${
+                      canvasTheme === 'light'
+                        ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                        : 'bg-slate-900 border-teal-500/50 text-teal-300'
+                    }`}
                   >
                     <option value="light">☀️ Light Theme (#FFFFFF Canvas)</option>
                     <option value="dark">🌙 Dark Theme (#0F172A Studio)</option>
                   </select>
-                  <p className="text-[11px] text-slate-400">Corporate light theme provides publication-grade contrast.</p>
+                  <p className={`text-[11px] ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                    Corporate light theme provides publication-grade contrast.
+                  </p>
                 </div>
 
                 {/* Preference 2: AI Compiler Reasoning Engine */}
-                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+                <div className={`p-5 rounded-2xl border space-y-3 transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-slate-950/80 border-slate-700/80 text-slate-100'
+                }`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Gemini AI Model Tier</span>
-                    <Sparkles className="w-4 h-4 text-teal-400" />
+                    <span className={`text-xs font-extrabold uppercase tracking-wider ${
+                      canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                    }`}>Gemini AI Model Tier</span>
+                    <Sparkles className="w-4 h-4 text-teal-500" />
                   </div>
                   <select
                     defaultValue="gemini-3.7-flash"
-                    className="w-full bg-slate-900 border border-slate-700 hover:border-teal-500/50 text-slate-100 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
+                    className={`w-full font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer border transition-colors ${
+                      canvasTheme === 'light'
+                        ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                        : 'bg-slate-900 border-slate-700 hover:border-teal-500/50 text-slate-100'
+                    }`}
                   >
                     <option value="gemini-3.7-flash">⚡ Gemini 3.7 Flash (Default - High Speed &amp; Hybrid Reasoning)</option>
                   </select>
-                  <p className="text-[11px] text-slate-400">Powered exclusively by Gemini 3.7 Flash for sub-second synthesis and architectural reasoning.</p>
+                  <p className={`text-[11px] ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                    Powered exclusively by Gemini 3.7 Flash for sub-second synthesis and architectural reasoning.
+                  </p>
                 </div>
 
                 {/* Preference 3: Default Presentation Aspect Ratio */}
-                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+                <div className={`p-5 rounded-2xl border space-y-3 transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-slate-950/80 border-slate-700/80 text-slate-100'
+                }`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Default Aspect Ratio</span>
-                    <Box className="w-4 h-4 text-indigo-400" />
+                    <span className={`text-xs font-extrabold uppercase tracking-wider ${
+                      canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                    }`}>Default Aspect Ratio</span>
+                    <Box className="w-4 h-4 text-indigo-500" />
                   </div>
                   <select
                     value={selectedAspectRatio}
                     onChange={(e) => handleAspectRatioChange(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 hover:border-teal-500/50 text-slate-100 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
+                    className={`w-full font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer border transition-colors ${
+                      canvasTheme === 'light'
+                        ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                        : 'bg-slate-900 border-slate-700 hover:border-teal-500/50 text-slate-100'
+                    }`}
                   >
                     <option value="16:9">📺 16:9 Executive Slides Widescreen</option>
                     <option value="4:3">📄 4:3 Academic Journal Figure</option>
                     <option value="21:9">🖥️ 21:9 Ultra-Wide Architecture Banner</option>
                   </select>
-                  <p className="text-[11px] text-slate-400">Auto-scales layout components to match canvas target.</p>
+                  <p className={`text-[11px] ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                    Auto-scales layout components to match canvas target.
+                  </p>
                 </div>
 
                 {/* Preference 4: Preflight Zero-Trust Audit on Export */}
-                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+                <div className={`p-5 rounded-2xl border space-y-3 transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-slate-950/80 border-slate-700/80 text-slate-100'
+                }`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Zero-Trust Preflight</span>
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <span className={`text-xs font-extrabold uppercase tracking-wider ${
+                      canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                    }`}>Zero-Trust Preflight</span>
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
                   </div>
                   <select
                     defaultValue="enabled"
-                    className="w-full bg-slate-900 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer"
+                    className={`w-full font-bold text-xs rounded-xl px-3 py-2 outline-none cursor-pointer border transition-colors ${
+                      canvasTheme === 'light'
+                        ? 'bg-white border-slate-300 text-emerald-700 focus:border-emerald-500'
+                        : 'bg-slate-900 border-emerald-500/40 text-emerald-300'
+                    }`}
                   >
                     <option value="enabled">✅ Enabled (Automated Security Audit)</option>
                     <option value="disabled">⏸️ Disabled (Fast Direct Export)</option>
                   </select>
-                  <p className="text-[11px] text-slate-400">Audits security perimeters prior to Draw.io / Terraform download.</p>
+                  <p className={`text-[11px] ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                    Audits security perimeters prior to Draw.io / Terraform download.
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Card 1: User Identity & Access Governance */}
-            <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
-              <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
-                <User className="w-5 h-5 text-teal-accent" />
+            <div className={`rounded-3xl p-8 space-y-6 shadow-xl border transition-colors ${
+              canvasTheme === 'light'
+                ? 'bg-white border-slate-200 shadow-md text-slate-900'
+                : 'glass-panel border-panel-border/60 text-white'
+            }`}>
+              <h3 className={`text-lg font-black border-b pb-4 flex items-center gap-3 ${
+                canvasTheme === 'light' ? 'text-slate-900 border-slate-200' : 'text-white border-panel-border/40'
+              }`}>
+                <User className="w-5 h-5 text-teal-600 dark:text-teal-accent" />
                 <span>User Identity &amp; Access Governance</span>
               </h3>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                <div className={`flex items-center justify-between p-4 rounded-2xl border transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'
+                }`}>
                   <div>
-                    <span className="text-xs font-bold text-slate-400 block">Authenticated Account</span>
-                    <span className="text-base font-black text-white mt-0.5 block">{currentUser?.email || 'Guest Session'}</span>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Authenticated Account
+                    </span>
+                    <span className={`text-base font-black mt-0.5 block ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                      {currentUser?.email || 'Guest Session'}
+                    </span>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-500/10 text-teal-300 border border-teal-500/30">
+                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                     {(currentUser as any)?.global_role || 'Admin'}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                    <span className="text-xs font-bold text-slate-400 block">Global Role Clearance</span>
-                    <span className="text-sm font-extrabold text-white mt-1 block">
+                  <div className={`p-4 rounded-2xl border transition-colors ${
+                    canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                  }`}>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Global Role Clearance
+                    </span>
+                    <span className={`text-sm font-extrabold mt-1 block ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
                       {isRoot ? 'Admin (Full Clearance)' : ((currentUser as any)?.global_role || 'Admin')}
                     </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                    <span className="text-xs font-bold text-slate-400 block">Root System Status</span>
-                    <span className={`text-sm font-extrabold mt-1 block ${isRoot ? 'text-amber-400' : 'text-slate-300'}`}>
+                  <div className={`p-4 rounded-2xl border transition-colors ${
+                    canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                  }`}>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Root System Status
+                    </span>
+                    <span className={`text-sm font-extrabold mt-1 block ${
+                      isRoot ? 'text-amber-600 dark:text-amber-400' : canvasTheme === 'light' ? 'text-slate-800' : 'text-slate-300'
+                    }`}>
                       {isRoot ? '⚡ Root Administrator' : 'Standard Author'}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                  <span className="text-xs font-bold text-slate-400 block">Active Personal Workspace</span>
-                  <span className="text-sm font-bold text-teal-300 mt-1 block font-mono">
+                <div className={`p-4 rounded-2xl border transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                }`}>
+                  <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                    Active Personal Workspace
+                  </span>
+                  <span className="text-sm font-bold text-teal-700 dark:text-teal-300 mt-1 block font-mono">
                     Personal Workspace ({currentUser?.id ? `id: ${currentUser.id.substring(0, 8)}...` : 'Active'})
                   </span>
                 </div>
@@ -4089,39 +4208,65 @@ function WorkspaceContent() {
             </div>
 
             {/* Card 2: Passwordless Magic Link & Security Policy */}
-            <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
-              <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
-                <ShieldCheck className="w-5 h-5 text-teal-accent" />
+            <div className={`rounded-3xl p-8 space-y-6 shadow-xl border transition-colors ${
+              canvasTheme === 'light'
+                ? 'bg-white border-slate-200 shadow-md text-slate-900'
+                : 'glass-panel border-panel-border/60 text-white'
+            }`}>
+              <h3 className={`text-lg font-black border-b pb-4 flex items-center gap-3 ${
+                canvasTheme === 'light' ? 'text-slate-900 border-slate-200' : 'text-white border-panel-border/40'
+              }`}>
+                <ShieldCheck className="w-5 h-5 text-teal-600 dark:text-teal-accent" />
                 <span>Passwordless Magic Link & Security Policy</span>
               </h3>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                <div className={`flex items-center justify-between p-4 rounded-2xl border transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'
+                }`}>
                   <div>
-                    <span className="text-xs font-bold text-slate-400 block">Authentication Engine</span>
-                    <span className="text-sm font-extrabold text-white mt-0.5 block">Passwordless Magic Links + JWT Session</span>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Authentication Engine
+                    </span>
+                    <span className={`text-sm font-extrabold mt-0.5 block ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                      Passwordless Magic Links + JWT Session
+                    </span>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Active
+                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Active
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                    <span className="text-xs font-bold text-slate-400 block">Token Expiration (TTL)</span>
-                    <span className="text-sm font-extrabold text-white mt-1 block">15 Minutes (Single-Use)</span>
+                  <div className={`p-4 rounded-2xl border transition-colors ${
+                    canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                  }`}>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Token Expiration (TTL)
+                    </span>
+                    <span className={`text-sm font-extrabold mt-1 block ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                      15 Minutes (Single-Use)
+                    </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                    <span className="text-xs font-bold text-slate-400 block">SMTP Email Transport</span>
-                    <span className="text-sm font-extrabold text-emerald-400 mt-1 block truncate" title="vibeandcode.ai@gmail.com">
+                  <div className={`p-4 rounded-2xl border transition-colors ${
+                    canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                  }`}>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      SMTP Email Transport
+                    </span>
+                    <span className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 mt-1 block truncate" title="vibeandcode.ai@gmail.com">
                       vibeandcode.ai@gmail.com
                     </span>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                  <span className="text-xs font-bold text-slate-400 block">Session Cookie Security</span>
-                  <span className="text-sm font-bold text-slate-200 mt-1 block">
+                <div className={`p-4 rounded-2xl border transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                }`}>
+                  <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                    Session Cookie Security
+                  </span>
+                  <span className={`text-sm font-bold mt-1 block ${canvasTheme === 'light' ? 'text-slate-800' : 'text-slate-200'}`}>
                     HttpOnly Cookie (`promptcanvas_session`), SameSite=Lax, PBKDF2 Password Hashing
                   </span>
                 </div>
@@ -4129,64 +4274,108 @@ function WorkspaceContent() {
             </div>
 
             {/* Card 3: Multi-Tenant Workspace & RLS Waterfall */}
-            <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
-              <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
-                <Users className="w-5 h-5 text-indigo-400" />
+            <div className={`rounded-3xl p-8 space-y-6 shadow-xl border transition-colors ${
+              canvasTheme === 'light'
+                ? 'bg-white border-slate-200 shadow-md text-slate-900'
+                : 'glass-panel border-panel-border/60 text-white'
+            }`}>
+              <h3 className={`text-lg font-black border-b pb-4 flex items-center gap-3 ${
+                canvasTheme === 'light' ? 'text-slate-900 border-slate-200' : 'text-white border-panel-border/40'
+              }`}>
+                <Users className="w-5 h-5 text-indigo-500" />
                 <span>Multi-Tenant Workspace & Waterfall RLS</span>
               </h3>
 
               <div className="space-y-4">
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+                <div className={`p-4 rounded-2xl border space-y-2 transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'
+                }`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-400">Row Level Security (RLS) Policy</span>
-                    <span className="text-xs font-extrabold text-teal-400">Waterfall Enforcement</span>
+                    <span className={`text-xs font-bold ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                      Row Level Security (RLS) Policy
+                    </span>
+                    <span className="text-xs font-extrabold text-teal-700 dark:text-teal-400">Waterfall Enforcement</span>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className={`text-xs leading-relaxed ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-300'}`}>
                     Access control filters diagram queries by workspace ownership and membership (`Owner`, `Editor`, `Viewer`). Root admin credentials bypass workspace isolation.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                    <span className="text-xs font-bold text-slate-400 block">Personal Workspaces</span>
-                    <span className="text-sm font-extrabold text-white mt-1 block">Private (Owner Only)</span>
+                  <div className={`p-4 rounded-2xl border transition-colors ${
+                    canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                  }`}>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Personal Workspaces
+                    </span>
+                    <span className={`text-sm font-extrabold mt-1 block ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                      Private (Owner Only)
+                    </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                    <span className="text-xs font-bold text-slate-400 block">Team Shared Workspaces</span>
-                    <span className="text-sm font-extrabold text-indigo-300 mt-1 block">Role-Based Member Access</span>
+                  <div className={`p-4 rounded-2xl border transition-colors ${
+                    canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                  }`}>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Team Shared Workspaces
+                    </span>
+                    <span className="text-sm font-extrabold text-indigo-700 dark:text-indigo-300 mt-1 block">
+                      Role-Based Member Access
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Card 4: AI Model & Database Infrastructure */}
-            <div className="glass-panel border-panel-border/60 rounded-3xl p-8 space-y-6 shadow-xl">
-              <h3 className="text-lg font-black text-white border-b border-panel-border/40 pb-4 flex items-center gap-3">
-                <Cpu className="w-5 h-5 text-teal-accent" />
+            <div className={`rounded-3xl p-8 space-y-6 shadow-xl border transition-colors ${
+              canvasTheme === 'light'
+                ? 'bg-white border-slate-200 shadow-md text-slate-900'
+                : 'glass-panel border-panel-border/60 text-white'
+            }`}>
+              <h3 className={`text-lg font-black border-b pb-4 flex items-center gap-3 ${
+                canvasTheme === 'light' ? 'text-slate-900 border-slate-200' : 'text-white border-panel-border/40'
+              }`}>
+                <Cpu className="w-5 h-5 text-teal-600 dark:text-teal-accent" />
                 <span>AI Compiler & Infrastructure Telemetry</span>
               </h3>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                <div className={`flex items-center justify-between p-4 rounded-2xl border transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'
+                }`}>
                   <div>
-                    <span className="text-xs font-bold text-slate-400 block">Active LLM Architecture Engine</span>
-                    <span className="text-sm font-extrabold text-white mt-0.5 block">Gemini 3.7 Flash / Flash (Google AI)</span>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Active LLM Architecture Engine
+                    </span>
+                    <span className={`text-sm font-extrabold mt-0.5 block ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                      Gemini 3.7 Flash / Flash (Google AI)
+                    </span>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                     Connected
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                    <span className="text-xs font-bold text-slate-400 block">Database Storage</span>
-                    <span className="text-sm font-extrabold text-white mt-1 block truncate" title="/Users/nitinagga/.gemini/jetski/dev.db">
+                  <div className={`p-4 rounded-2xl border transition-colors ${
+                    canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                  }`}>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Database Storage
+                    </span>
+                    <span className={`text-sm font-extrabold mt-1 block truncate ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`} title="/Users/nitinagga/.gemini/jetski/dev.db">
                       SQLite Local (`dev.db`)
                     </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                    <span className="text-xs font-bold text-slate-400 block">Database Health</span>
-                    <span className="text-sm font-extrabold text-emerald-400 mt-1 block">Healthy (Online)</span>
+                  <div className={`p-4 rounded-2xl border transition-colors ${
+                    canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800/80'
+                  }`}>
+                    <span className={`text-xs font-bold block ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Database Health
+                    </span>
+                    <span className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 mt-1 block">
+                      Healthy (Online)
+                    </span>
                   </div>
                 </div>
               </div>
@@ -4201,7 +4390,9 @@ function WorkspaceContent() {
   // --- UI Helpers ---
   function renderEmptyWorkspaceDashboard() {
     return (
-      <div className="w-full h-full overflow-y-auto py-12 px-6 md:py-16 relative bg-gradient-to-b from-[#070b12] to-[#030509] select-none">
+      <div className={`w-full h-full overflow-y-auto py-12 px-6 md:py-16 relative select-none transition-colors duration-300 ${
+        canvasTheme === 'light' ? 'bg-[#F8FAFC]' : 'bg-gradient-to-b from-[#070b12] to-[#030509]'
+      }`}>
         {/* Subtle Tech Grid overlay */}
         <div 
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -4219,19 +4410,27 @@ function WorkspaceContent() {
         <div className="max-w-[1600px] mx-auto space-y-12 z-10 relative">
           
           {/* Top Hero & Live Prompt Studio Card */}
-          <div className="bg-[#0B101D] border border-panel-border/70 rounded-3xl p-8 md:p-10 backdrop-blur-md space-y-6 shadow-2xl relative overflow-hidden">
+          <div className={`border rounded-3xl p-8 md:p-10 backdrop-blur-md space-y-6 relative overflow-hidden transition-colors ${
+            canvasTheme === 'light'
+              ? 'bg-white border-slate-200 shadow-md text-slate-900'
+              : 'bg-[#0B101D] border-panel-border/70 text-white shadow-2xl'
+          }`}>
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-teal-500/10 blur-[100px] rounded-full pointer-events-none" />
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-2">
-                <span className="inline-flex items-center gap-1.5 text-xs font-black text-teal-400 uppercase tracking-widest px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/30">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <span className="inline-flex items-center gap-1.5 text-xs font-black text-teal-600 dark:text-teal-400 uppercase tracking-widest px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/30">
+                  <Sparkles className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
                   <span>AI Architectural Prompt Studio</span>
                 </span>
-                <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-                  Sketch Architecture <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-400">With Pure Intent.</span>
+                <h2 className={`text-3xl md:text-5xl font-black tracking-tight ${
+                  canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                }`}>
+                  Sketch Architecture <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-cyan-500 to-indigo-500">With Pure Intent.</span>
                 </h2>
-                <p className="text-sm md:text-base text-slate-400 max-w-3xl leading-relaxed">
+                <p className={`text-sm md:text-base max-w-3xl leading-relaxed ${
+                  canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                }`}>
                   Describe any cloud, microservices, AI swarm, or enterprise system. Gemini AI compiles it into a collision-free, interactive Draw.io vector architecture.
                 </p>
               </div>
@@ -4240,12 +4439,14 @@ function WorkspaceContent() {
             {/* Direct Embedded Prompt Input Form */}
             <form onSubmit={handleCreateDiagram} className="space-y-4 pt-2">
               <div className="space-y-1.5">
-                <label className="flex items-center justify-between text-xs font-bold text-slate-300">
-                  <span className="flex items-center gap-1.5 text-teal-300">
-                    <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                <label className={`flex items-center justify-between text-xs font-bold ${
+                  canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                }`}>
+                  <span className="flex items-center gap-1.5 text-teal-600 dark:text-teal-300 font-extrabold">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
                     <span>Prompt</span>
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono">Gemini 3.7 Flash</span>
+                  <span className={`text-[10px] font-mono ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>Gemini 3.7 Flash</span>
                 </label>
                 <textarea
                   value={newDiagramPrompt}
@@ -4258,7 +4459,11 @@ function WorkspaceContent() {
                   }}
                   placeholder="Describe the system architecture you want to build (e.g. Distributed Core Banking Ledger with Kafka Transactional Outbox, Redis Caching, and PCI-DSS compliant Cloud Run microservices)..."
                   rows={3}
-                  className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-2xl p-5 text-sm md:text-base outline-none resize-none shadow-inner transition-all leading-relaxed font-sans"
+                  className={`w-full border rounded-2xl p-5 text-sm md:text-base outline-none resize-none shadow-inner transition-all leading-relaxed font-sans ${
+                    canvasTheme === 'light'
+                      ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500 focus:bg-white'
+                      : 'bg-[#070A13] border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500'
+                  }`}
                 />
               </div>
 
@@ -4267,10 +4472,12 @@ function WorkspaceContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
                   {/* 1. Project */}
                   <div className="sm:col-span-4 space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                    <label className={`block text-xs font-bold flex items-center justify-between ${
+                      canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                    }`}>
                       <span>Project</span>
                       {earlierProjects.length > 0 && (
-                        <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                        <span className="text-[10px] text-teal-600 dark:text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
                       )}
                     </label>
                     <div className="flex items-center gap-1.5">
@@ -4279,7 +4486,11 @@ function WorkspaceContent() {
                         value={newProjectName}
                         onChange={(e) => setNewProjectName(e.target.value)}
                         placeholder="e.g. Project-Alpha-101"
-                        className="flex-1 min-w-0 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium truncate"
+                        className={`flex-1 min-w-0 border rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500 focus:bg-white'
+                            : 'bg-[#070A13] border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500'
+                        }`}
                       />
                       {earlierProjects.length > 0 && (
                         <select
@@ -4289,12 +4500,16 @@ function WorkspaceContent() {
                               setNewProjectName(e.target.value);
                             }
                           }}
-                          className="w-24 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-400 rounded-xl px-2 py-2.5 text-xs outline-none cursor-pointer shrink-0"
+                          className={`w-24 border rounded-xl px-2 py-2.5 text-xs outline-none cursor-pointer shrink-0 font-bold ${
+                            canvasTheme === 'light'
+                              ? 'bg-white border-slate-300 text-teal-700 focus:border-teal-500'
+                              : 'bg-[#070A13] border-slate-700/80 focus:border-teal-400 text-teal-400'
+                          }`}
                           title="Choose from earlier projects"
                         >
                           <option value="" disabled>📂 Earlier</option>
                           {earlierProjects.map((p: string) => (
-                            <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                            <option key={p} value={p} className={canvasTheme === 'light' ? 'bg-white text-slate-900' : 'bg-[#0B101D] text-slate-200'}>
                               {p}
                             </option>
                           ))}
@@ -4305,7 +4520,9 @@ function WorkspaceContent() {
 
                   {/* 2. Diagram Name */}
                   <div className="sm:col-span-4 space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300">
+                    <label className={`block text-xs font-bold ${
+                      canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                    }`}>
                       Diagram Name
                     </label>
                     <input
@@ -4313,15 +4530,21 @@ function WorkspaceContent() {
                       value={newDiagramName}
                       onChange={(e) => setNewDiagramName(e.target.value)}
                       placeholder="Diagram Name"
-                      className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium"
+                      className={`w-full border rounded-xl px-3.5 py-2.5 text-xs md:text-sm outline-none transition-all font-medium ${
+                        canvasTheme === 'light'
+                          ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500 focus:bg-white'
+                          : 'bg-[#070A13] border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500'
+                      }`}
                     />
                   </div>
 
                   {/* 3. Blueprint */}
                   <div className="sm:col-span-4 space-y-1.5">
-                    <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                    <label className={`block text-xs font-bold flex items-center justify-between ${
+                      canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                    }`}>
                       <span>Blueprint</span>
-                      <span className="text-[10px] text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
+                      <span className="text-[10px] text-teal-600 dark:text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
                     </label>
                     <select
                       value={selectedArchType}
@@ -4348,19 +4571,23 @@ function WorkspaceContent() {
                           }
                         }
                       }}
-                      className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-3 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer truncate"
+                      className={`w-full border font-bold rounded-xl px-3 py-2.5 text-xs md:text-sm outline-none transition-all cursor-pointer truncate ${
+                        canvasTheme === 'light'
+                          ? 'bg-white border-slate-300 text-teal-800 focus:border-teal-500'
+                          : 'bg-[#070A13] border-slate-700/80 text-teal-300 focus:border-teal-400'
+                      }`}
                     >
-                      <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
+                      <option value="unified_system_view" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-extrabold' : 'bg-[#0B101D] text-teal-300 font-extrabold'}>
                         ✨ All Matching ({facetedOptions.matchingCount} Blueprints)
                       </option>
                       {facetedOptions.matchingBlueprints.length > 0 ? (
                         facetedOptions.matchingBlueprints.map((item) => (
-                          <option key={item.combinedId} value={item.combinedId} className="bg-[#0B101D] text-slate-200 font-medium">
+                          <option key={item.combinedId} value={item.combinedId} className={canvasTheme === 'light' ? 'bg-white text-slate-900 font-medium' : 'bg-[#0B101D] text-slate-200 font-medium'}>
                             {item.diagramName}
                           </option>
                         ))
                       ) : (
-                        <option disabled value="" className="bg-[#0B101D] text-amber-400 font-bold">
+                        <option disabled value="" className="bg-amber-500/10 text-amber-600 font-bold">
                           ⚠️ No blueprints match this combination
                         </option>
                       )}
@@ -4369,24 +4596,28 @@ function WorkspaceContent() {
                 </div>
 
                 {/* 2. 7 Architectural Classification & Lifecycle Dropdowns (Cascading Facets) */}
-                <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
+                <div className={`border rounded-2xl p-3.5 space-y-2.5 transition-colors ${
+                  canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-[#070A13]/90 border-slate-800/90'
+                }`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                        <Settings2 className="w-3.5 h-3.5 text-teal-400" />
+                      <span className="text-[11px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
+                        <Settings2 className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
                         <span>Architectural Classification &amp; Lifecycle Dimensions</span>
                       </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-700 dark:text-teal-300 font-mono">
                         {facetedOptions.matchingCount} of {BLUEPRINT_KNOWLEDGE_MATRIX.length} Blueprints
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={handleResetFilters}
-                      className="text-[10px] font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                      className={`text-[10px] font-bold hover:underline flex items-center gap-1 cursor-pointer transition-colors ${
+                        canvasTheme === 'light' ? 'text-slate-600 hover:text-teal-700' : 'text-slate-400 hover:text-teal-300'
+                      }`}
                       title="Reset all dimension filters"
                     >
-                      <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-300" />
+                      <RotateCcw className="w-3 h-3" />
                       <span>Reset Filters</span>
                     </button>
                   </div>
@@ -4394,19 +4625,25 @@ function WorkspaceContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2.5">
                     {/* 1. Phase Name */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Phase Name">
+                      <label className={`block text-[11px] font-bold truncate ${
+                        canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                      }`} title="Phase Name">
                         Phase Name
                       </label>
                       <select
                         value={selectedPhaseName}
                         onChange={(e) => setSelectedPhaseName(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                        className={`w-full border text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 7 Phases (50 Blueprints)</option>
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All 7 Phases (50 Blueprints)</option>
                         {PHASE_NAME_OPTIONS.map((opt) => {
                           const count = facetedOptions.phaseCounts[opt] || 0;
                           return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-900' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
                               {opt} ({count})
                             </option>
                           );
@@ -4416,19 +4653,25 @@ function WorkspaceContent() {
 
                     {/* 2. Architecture Domain */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architecture Domain">
+                      <label className={`block text-[11px] font-bold truncate ${
+                        canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                      }`} title="Architecture Domain">
                         Architecture Domain
                       </label>
                       <select
                         value={selectedDomain}
                         onChange={(e) => setSelectedDomain(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                        className={`w-full border text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 6 Domains</option>
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All 6 Domains</option>
                         {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
                           const count = facetedOptions.domainCounts[opt] || 0;
                           return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-900' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
                               {opt} ({count})
                             </option>
                           );
@@ -4438,19 +4681,25 @@ function WorkspaceContent() {
 
                     {/* 3. Abstraction Level */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Abstraction Level">
+                      <label className={`block text-[11px] font-bold truncate ${
+                        canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                      }`} title="Abstraction Level">
                         Abstraction Level
                       </label>
                       <select
                         value={selectedAbstractionLevel}
                         onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                        className={`w-full border text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 4 Abstractions</option>
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All 4 Abstractions</option>
                         {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
                           const count = facetedOptions.abstractionCounts[opt] || 0;
                           return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-900' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
                               {opt} ({count})
                             </option>
                           );
@@ -4460,19 +4709,25 @@ function WorkspaceContent() {
 
                     {/* 4. Architectural Stack Layer */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architectural Stack Layer">
+                      <label className={`block text-[11px] font-bold truncate ${
+                        canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                      }`} title="Architectural Stack Layer">
                         Stack Layer
                       </label>
                       <select
                         value={selectedStackLayer}
                         onChange={(e) => setSelectedStackLayer(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                        className={`w-full border text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 5 Layers</option>
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All 5 Layers</option>
                         {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
                           const count = facetedOptions.stackLayerCounts[opt] || 0;
                           return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-900' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
                               {opt} ({count})
                             </option>
                           );
@@ -4482,19 +4737,25 @@ function WorkspaceContent() {
 
                     {/* 5. Default Layout Direction */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Default Layout Direction">
+                      <label className={`block text-[11px] font-bold truncate ${
+                        canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                      }`} title="Default Layout Direction">
                         Layout Direction
                       </label>
                       <select
                         value={selectedLayoutDirection}
                         onChange={(e) => setSelectedLayoutDirection(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                        className={`w-full border text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Directions</option>
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All Directions</option>
                         {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
                           const count = facetedOptions.directionCounts[opt] || 0;
                           return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-900' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
                               {opt === 'LR' ? 'LR (Left to Right)' : opt === 'TD' ? 'TD (Top to Down)' : opt} ({count})
                             </option>
                           );
@@ -4504,19 +4765,25 @@ function WorkspaceContent() {
 
                     {/* 6. Sales Cycle Stage */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Sales Cycle Stage">
+                      <label className={`block text-[11px] font-bold truncate ${
+                        canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                      }`} title="Sales Cycle Stage">
                         Sales Stage
                       </label>
                       <select
                         value={selectedSalesCycleStage}
                         onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                        className={`w-full border text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Stages</option>
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All Stages</option>
                         {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
                           const count = facetedOptions.salesStageCounts[opt] || 0;
                           return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-900' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
                               {opt} ({count})
                             </option>
                           );
@@ -4526,19 +4793,25 @@ function WorkspaceContent() {
 
                     {/* 7. Lifecycle Phase */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-300 truncate" title="Lifecycle Phase">
+                      <label className={`block text-[11px] font-bold truncate ${
+                        canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                      }`} title="Lifecycle Phase">
                         Lifecycle Phase
                       </label>
                       <select
                         value={selectedLifecyclePhase}
                         onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
-                        className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                        className={`w-full border text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
                       >
-                        <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Lifecycles</option>
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All Lifecycles</option>
                         {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
                           const count = facetedOptions.lifecycleCounts[opt] || 0;
                           return (
-                            <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-900' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
                               {opt} ({count})
                             </option>
                           );
@@ -7617,13 +7890,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         <CheckCircle2 className="w-4 h-4 text-teal-400" />
                       )}
                     </h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      Master multi-tier cloud topology, VPC perimeters, system boundaries & enterprise AI platforms.
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Master multi-tier cloud topology, VPC perimeters, system boundaries &amp; enterprise AI platforms.
                     </p>
                   </div>
-                  <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
+                  <div className="pt-1 text-[10px] font-semibold text-slate-300 flex items-center gap-1.5 border-t border-slate-800/80">
                     <span className="text-teal-400 font-bold">Default Blueprint:</span>
-                    <span>currentLanguage === 'hi' ? '10. एकीकृत सिस्टम दृश्य' : '10. Unified System View'</span>
+                    <span>{currentLanguage === 'hi' ? '10. एकीकृत सिस्टम दृश्य' : '10. Unified System View'}</span>
                   </div>
                 </div>
 
@@ -7641,21 +7914,21 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       <Database className="w-5 h-5" />
                     </div>
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 uppercase tracking-wider">
-                      📊 Data & Schemas
+                      📊 Data &amp; Schemas
                     </span>
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
-                      <span>Data Engineer & Database Modeler</span>
+                      <span>Data Engineer &amp; Database Modeler</span>
                       {selectedPersona === 'data_engineer' && (
                         <CheckCircle2 className="w-4 h-4 text-indigo-400" />
                       )}
                     </h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      Design ERDs, dimensional fact/dimension tables, Feature Stores, dbt pipelines & ETL flows.
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Design ERDs, dimensional fact/dimension tables, Feature Stores, dbt pipelines &amp; ETL flows.
                     </p>
                   </div>
-                  <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
+                  <div className="pt-1 text-[10px] font-semibold text-slate-300 flex items-center gap-1.5 border-t border-slate-800/80">
                     <span className="text-indigo-400 font-bold">Default Blueprint:</span>
                     <span>2. Dimensional Data Model (ERD)</span>
                   </div>
@@ -7675,21 +7948,21 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       <Cpu className="w-5 h-5" />
                     </div>
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">
-                      🤖 GenAI & Agents
+                      🤖 GenAI &amp; Agents
                     </span>
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
-                      <span>AI & Cognitive Systems Engineer</span>
+                      <span>AI &amp; Cognitive Systems Engineer</span>
                       {selectedPersona === 'ai_engineer' && (
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       )}
                     </h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      Build Agentic RAG systems, ReAct reasoning loops, Vertex AI training & model registries.
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Build Agentic RAG systems, ReAct reasoning loops, Vertex AI training &amp; model registries.
                     </p>
                   </div>
-                  <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
+                  <div className="pt-1 text-[10px] font-semibold text-slate-300 flex items-center gap-1.5 border-t border-slate-800/80">
                     <span className="text-emerald-400 font-bold">Default Blueprint:</span>
                     <span>3. Cognitive Architecture (Agentic RAG)</span>
                   </div>
@@ -7709,23 +7982,23 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       <ShieldCheck className="w-5 h-5" />
                     </div>
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
-                      🛡️ Security & Governance
+                      🛡️ Security &amp; Governance
                     </span>
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
-                      <span>Cybersecurity & Compliance Lead</span>
+                      <span>Cybersecurity &amp; Compliance Lead</span>
                       {selectedPersona === 'security_lead' && (
                         <CheckCircle2 className="w-4 h-4 text-amber-400" />
                       )}
                     </h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      Audit IAM policies, SOC2/HIPAA compliance, adversarial threat models & governance state machines.
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Audit IAM policies, SOC2/HIPAA compliance, adversarial threat models &amp; governance state machines.
                     </p>
                   </div>
-                  <div className="pt-1 text-[10px] font-semibold text-slate-400 flex items-center gap-1.5 border-t border-slate-800/80">
+                  <div className="pt-1 text-[10px] font-semibold text-slate-300 flex items-center gap-1.5 border-t border-slate-800/80">
                     <span className="text-amber-400 font-bold">Default Blueprint:</span>
-                    <span>9. Governance & State Machine</span>
+                    <span>9. Governance &amp; State Machine</span>
                   </div>
                 </div>
               </div>
@@ -7735,7 +8008,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 <button
                   type="button"
                   onClick={() => setTourStep(null)}
-                  className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                  className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
                 >
                   Skip Persona Selection
                 </button>

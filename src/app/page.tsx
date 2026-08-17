@@ -91,9 +91,9 @@ export default function LandingPage() {
     e.preventDefault();
     try {
       const res = await fetch('/api/auth/guest', { method: 'POST' });
-      router.push('/workspace');
+      router.push('/workspace?new=true');
     } catch {
-      router.push('/workspace');
+      router.push('/workspace?new=true');
     }
   };
 
@@ -818,7 +818,7 @@ export default function LandingPage() {
 
           <div className="mt-8 flex justify-center">
             <Link
-              href={user ? "/workspace" : "#"}
+              href={user ? "/workspace?new=true" : "#"}
               onClick={handleBuildDiagramClick}
               className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
             >
