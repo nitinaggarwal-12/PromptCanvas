@@ -204,6 +204,33 @@ function getSqliteDb(): DatabaseSync {
   }
 }
 
+// Global Promise-based Mutex queue to serialize SQLite write transactions and prevent race conditions
+let sqliteTransactionLock = Promise.resolve();
+
+export async function runSqliteTransaction<T>(callback: (db: DatabaseSync) => T | Promise<T>): Promise<T> {
+  const previousLock = sqliteTransactionLock;
+  let releaseLock: () => void;
+  sqliteTransactionLock = new Promise<void>((resolve) => {
+    releaseLock = resolve;
+  });
+
+  await previousLock;
+  const db = getSqliteDb();
+  try {
+    db.exec('BEGIN TRANSACTION;');
+    const result = await callback(db);
+    db.exec('COMMIT;');
+    return result;
+  } catch (error) {
+    try {
+      db.exec('ROLLBACK;');
+    } catch (_) {}
+    throw error;
+  } finally {
+    releaseLock!();
+  }
+}
+
 // Database Health Check for SRE Liveness & Readiness Probes
 export async function checkDatabaseHealth(): Promise<{ ok: boolean; type: 'postgres' | 'sqlite'; latencyMs: number; error?: string }> {
   const start = Date.now();
@@ -1081,9 +1108,7 @@ export async function createDiagram(
       client.release();
     }
   } else {
-    const db = getSqliteDb();
-    db.exec('BEGIN TRANSACTION;');
-    try {
+    return await runSqliteTransaction(async (db) => {
       const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private) VALUES (?, ?, ?, ?, ?)');
       insertDiagram.run(diagramId, name, userId || null, architectureType || 'unified_system_view', privateValSqlite);
 
@@ -1109,16 +1134,11 @@ export async function createDiagram(
         const getVersion = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
         version = getVersion.get(versionId) as unknown as DiagramVersion;
       }
-      db.exec('COMMIT;');
 
       const getDiag = db.prepare('SELECT * FROM diagrams WHERE id = ?');
       const diagram = getDiag.get(diagramId) as unknown as Diagram;
       return { diagram, version };
-    } catch (error) {
-      db.exec('ROLLBACK;');
-      console.error('Failed to create diagram in SQLite:', error);
-      throw error;
-    }
+    });
   }
 }
 
@@ -1178,9 +1198,7 @@ export async function saveDiagramVersion(
       client.release();
     }
   } else {
-    const db = getSqliteDb();
-    db.exec('BEGIN TRANSACTION;');
-    try {
+    return await runSqliteTransaction(async (db) => {
       const maxVersionStmt = db.prepare("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ? AND (architecture_type = ? OR architecture_type IS NULL)");
       const versionResult = maxVersionStmt.get(diagramId, architectureType || 'unified_system_view') as { max_version: number };
       const nextVersionNumber = versionResult.max_version + 1;
@@ -1207,14 +1225,9 @@ export async function saveDiagramVersion(
       const updateDiagram = db.prepare("UPDATE diagrams SET updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");
       updateDiagram.run(diagramId);
 
-      db.exec('COMMIT;');
       const getVersion = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
       return getVersion.get(versionId) as unknown as DiagramVersion;
-    } catch (error) {
-      db.exec('ROLLBACK;');
-      console.error('Failed to save diagram version in SQLite:', error);
-      throw error;
-    }
+    });
   }
 }
 
@@ -1866,9 +1879,7 @@ export async function resolveAccessRequest(
       client.release();
     }
   } else {
-    const db = getSqliteDb();
-    db.exec('BEGIN TRANSACTION;');
-    try {
+    return await runSqliteTransaction(async (db) => {
       const updateStmt = db.prepare(
         `UPDATE access_requests
          SET status = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now'))
@@ -1886,7 +1897,6 @@ export async function resolveAccessRequest(
         );
         collabStmt.run(collabId, reqRecord.diagram_id, reqRecord.requester_user_id, reqRecord.requested_role);
       }
-      db.exec('COMMIT;');
 
       await logUserEvent(
         ownerUserId,
@@ -1897,10 +1907,7 @@ export async function resolveAccessRequest(
 
       const getReq = db.prepare('SELECT * FROM access_requests WHERE id = ?');
       return getReq.get(requestId) as unknown as AccessRequest;
-    } catch (err) {
-      db.exec('ROLLBACK;');
-      throw err;
-    }
+    });
   }
 }
 
@@ -2134,9 +2141,7 @@ export async function syncDatabase(
       client.release();
     }
   } else {
-    const db = getSqliteDb();
-    db.exec('BEGIN TRANSACTION;');
-    try {
+    await runSqliteTransaction((db) => {
       db.exec('DELETE FROM diagram_versions;');
       db.exec('DELETE FROM diagrams;');
 
@@ -2167,13 +2172,7 @@ export async function syncDatabase(
           ver.technical_usecase || null
         );
       }
-
-      db.exec('COMMIT;');
-    } catch (error) {
-      db.exec('ROLLBACK;');
-      console.error('Failed to sync database in SQLite:', error);
-      throw error;
-    }
+    });
   }
 }
 
