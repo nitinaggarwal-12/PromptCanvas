@@ -195,6 +195,24 @@ function getSqliteDb(): DatabaseSync {
   }
 }
 
+// Database Health Check for SRE Liveness & Readiness Probes
+export async function checkDatabaseHealth(): Promise<{ ok: boolean; type: 'postgres' | 'sqlite'; latencyMs: number; error?: string }> {
+  const start = Date.now();
+  try {
+    if (isPostgres()) {
+      const pool = getPgPool();
+      await pool.query('SELECT 1');
+      return { ok: true, type: 'postgres', latencyMs: Date.now() - start };
+    } else {
+      const db = getSqliteDb();
+      db.prepare('SELECT 1').get();
+      return { ok: true, type: 'sqlite', latencyMs: Date.now() - start };
+    }
+  } catch (err: any) {
+    return { ok: false, type: isPostgres() ? 'postgres' : 'sqlite', latencyMs: Date.now() - start, error: err.message };
+  }
+}
+
 // Ensure database tables exist for active driver
 export async function ensureTablesExist(): Promise<void> {
   if (tablesInitialized || globalForDb._tablesInitialized) return;
