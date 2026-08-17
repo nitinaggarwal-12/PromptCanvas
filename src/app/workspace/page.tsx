@@ -433,6 +433,7 @@ function WorkspaceContent() {
   const [isExecutiveSummaryOpen, setIsExecutiveSummaryOpen] = useState(false);
   const [isPlaybookModalOpen, setIsPlaybookModalOpen] = useState(false);
   const [isPromptStudioExpanded, setIsPromptStudioExpanded] = useState<boolean>(false);
+  const [showQuickStartGuide, setShowQuickStartGuide] = useState<boolean>(true);
   const [templateSearchQuery, setTemplateSearchQuery] = useState<string>('');
 
   // Global Keyboard Navigation for Master Template Preview Carousel
@@ -2591,6 +2592,40 @@ function WorkspaceContent() {
             </div>
           </div>
 
+          {/* Quick Filter Chips Strip for Blueprints */}
+          <div className="flex flex-wrap items-center gap-1.5 -mt-2">
+            <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1 mr-1">
+              <Sparkles className="w-3 h-3 text-teal-400" />
+              <span>Popular Blueprints:</span>
+            </span>
+            {[
+              { label: 'All', query: '' },
+              { label: '🤖 Agentic RAG', query: 'rag' },
+              { label: '🌊 Lakehouse', query: 'lakehouse' },
+              { label: '🗄️ Dimensional ERD', query: 'erd' },
+              { label: '🛡️ Security & TRiSM', query: 'security' },
+              { label: '☁️ AWS Multi-Cloud', query: 'aws' },
+              { label: '💳 FinTech Core', query: 'fintech' },
+              { label: '🛒 Retail Scale', query: 'retail' }
+            ].map((chip) => {
+              const isSelected = templateSearchQuery.toLowerCase() === chip.query.toLowerCase();
+              return (
+                <button
+                  key={chip.label}
+                  type="button"
+                  onClick={() => setTemplateSearchQuery(chip.query)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                    isSelected 
+                      ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 font-bold' 
+                      : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  {chip.label}
+                </button>
+              );
+            })}
+          </div>
+
           {/* Phase Filter Tabs Ribbon */}
           <div className="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 overflow-x-auto no-scrollbar">
             <button
@@ -2732,6 +2767,48 @@ function WorkspaceContent() {
                   <span>✕ Collapse Studio</span>
                 </button>
               </div>
+
+              {/* 3-Step Quick Start Onboarding Guide */}
+              {showQuickStartGuide && (
+                <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-teal-500/30 text-xs space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-teal-300 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                      <span>3-Step Quick Start Guide for New Architects:</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowQuickStartGuide(false)}
+                      className="text-[10px] text-slate-400 hover:text-slate-200 cursor-pointer"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                    <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-950/70 border border-slate-800">
+                      <span className="w-4 h-4 rounded-full bg-teal-500/20 text-teal-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">1</span>
+                      <div>
+                        <p className="font-bold text-slate-200 text-[11px]">1. Describe System Intent</p>
+                        <p className="text-[10px] text-slate-400 leading-tight">Write custom requirements or select a preset domain below.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-950/70 border border-slate-800">
+                      <span className="w-4 h-4 rounded-full bg-indigo-500/20 text-indigo-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">2</span>
+                      <div>
+                        <p className="font-bold text-slate-200 text-[11px]">2. Target Blueprint</p>
+                        <p className="text-[10px] text-slate-400 leading-tight">Select target blueprint (GCP, AWS, RAG, ERD, Security).</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-950/70 border border-slate-800">
+                      <span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">3</span>
+                      <div>
+                        <p className="font-bold text-slate-200 text-[11px]">3. Compile &amp; Refine</p>
+                        <p className="text-[10px] text-slate-400 leading-tight">Gemini AI generates collision-free Draw.io XML with business cases.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Direct Embedded Prompt Input Form */}
               <form onSubmit={handleCreateDiagram} className="space-y-4 pt-1">
@@ -3079,21 +3156,48 @@ function WorkspaceContent() {
 
           {/* Blueprint Cards Grid - Immediately Visible */}
           {filteredTemplates.length === 0 ? (
-            <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-12 text-center space-y-3">
-              <p className="text-base font-bold text-slate-300">No architecture blueprints match your filter criteria.</p>
-              <p className="text-xs text-slate-500">Try adjusting your search terms or clearing your filters.</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setTemplateCategoryFilter('all');
-                  setSelectedPersonaFilter('all');
-                  setTemplateSearchQuery('');
-                  handleResetFilters();
-                }}
-                className="px-4 py-2 rounded-xl bg-teal-500/20 text-teal-300 font-bold text-xs border border-teal-500/40 hover:bg-teal-500/30 transition-all cursor-pointer"
-              >
-                Reset All Filters
-              </button>
+            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-10 text-center space-y-4 max-w-xl mx-auto my-8 animate-fade-in">
+              <div className="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center mx-auto text-teal-400">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-base font-bold text-slate-200">
+                  {templateSearchQuery ? `No pre-built blueprints match "${templateSearchQuery}"` : 'No blueprints match your filter criteria'}
+                </p>
+                <p className="text-xs text-slate-400">
+                  You can compile this architecture directly with Gemini AI or explore popular topics.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPromptStudioExpanded(true);
+                    setNewDiagramPrompt(templateSearchQuery ? `Design an enterprise architecture for: ${templateSearchQuery}` : 'Design an enterprise cloud architecture.');
+                    setNewDiagramName(templateSearchQuery || 'Custom Architecture');
+                    if (typeof window !== 'undefined') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Generate &ldquo;{templateSearchQuery || 'Custom Architecture'}&rdquo; with AI</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTemplateCategoryFilter('all');
+                    setSelectedPersonaFilter('all');
+                    setTemplateSearchQuery('');
+                    handleResetFilters();
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-all cursor-pointer"
+                >
+                  Reset All Filters
+                </button>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
@@ -5796,9 +5900,9 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
-              <span>🏆 PAGE 2: EXECUTIVE ARCHITECTURE PLAYBOOK &amp; GOVERNANCE METADATA TABLE</span>
+              <span>📐 STRATEGIC BLUEPRINT MATRIX &amp; GOVERNANCE CATALOG</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-black text-white">Enterprise Architecture Governance Profile</h2>
+            <h2 className="text-2xl md:text-3xl font-black text-white">Enterprise Architecture Blueprint Matrix</h2>
           </div>
           <button
             onClick={() => setIsPlaybookModalOpen(false)}

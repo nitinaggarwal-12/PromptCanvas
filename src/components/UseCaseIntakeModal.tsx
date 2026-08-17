@@ -173,7 +173,7 @@ export function UseCaseIntakeModal({ isOpen, onClose, onSubmitUseCase }: UseCase
             </div>
             <div>
               <h3 className="text-base font-black text-slate-100 flex items-center gap-2">
-                <span>📋 NEW USE CASE INTAKE FORM</span>
+                <span>✨ GUIDED ARCHITECTURE INTAKE WIZARD</span>
                 <span className="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-bold border border-teal-500/30">AI Architecture Synthesis</span>
               </h3>
               <p className="text-xs text-slate-400">Describe your architectural requirements to compile a tailored publication-grade Draw.io topology.</p>
