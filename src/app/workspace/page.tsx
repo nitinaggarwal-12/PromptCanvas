@@ -86,7 +86,8 @@ import {
   Zap,
   Palette,
   Folder,
-  Grid
+  Grid,
+  Copy
 } from 'lucide-react';
 import { CloudCostModal } from '@/components/workspace/CloudCostModal';
 import { ArchitectureCodeViewerModal } from '@/components/workspace/ArchitectureCodeViewerModal';
@@ -113,7 +114,7 @@ import { AspectRatioSelector } from '@/components/AspectRatioSelector';
 import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { ExecutiveStrategicSummaryModal } from '@/components/ExecutiveStrategicSummaryModal';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
-import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture, normalizeArchitectureId } from '@/lib/architectureTypes';
 import { getExactAgenticMeshXml } from '@/lib/newEnterpriseReferenceXmls';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
@@ -435,6 +436,7 @@ function WorkspaceContent() {
   const [isPromptStudioExpanded, setIsPromptStudioExpanded] = useState<boolean>(false);
   const [showQuickStartGuide, setShowQuickStartGuide] = useState<boolean>(true);
   const [templateSearchQuery, setTemplateSearchQuery] = useState<string>('');
+  const [expandedMsgIds, setExpandedMsgIds] = useState<Set<string>>(new Set());
 
   // Global Keyboard Navigation for Master Template Preview Carousel
   useEffect(() => {
@@ -5102,57 +5104,25 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       setTourStep(3);
     }
     if (!newArchId || newArchId.startsWith('slot_')) return;
-    if (newArchId === selectedArchType && tourStep !== 2 && newArchId !== 'eval_safety_benchmarking') return;
+    if (newArchId === selectedArchType && tourStep !== 2) return;
 
-    if (newArchId === 'eval_safety_benchmarking') {
-      const refXml = getDefaultXmlForArchitecture('eval_safety_benchmarking');
-      const tempVersion: DiagramVersion = {
-        id: `temp_ref_${newArchId}_${Date.now()}`,
-        diagram_id: activeDiagram?.id || 'temp',
-        version_number: (activeDiagram?.versions?.length || 0) + 1,
-        xml_content: refXml || '',
-        comment: `Master Reference Backbone: Vertex AI Safety & Eval Flow`,
-        created_by: 'System',
-        created_at: new Date().toISOString(),
-        architecture_type: newArchId
-      };
-      setActiveVersion(tempVersion);
-      setSelectedArchType(newArchId);
-      if (activeDiagram?.id) {
-        fetch(`/api/diagrams/${activeDiagram.id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-          body: JSON.stringify({ architecture_type: newArchId }),
-        }).catch(console.error);
-        setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
-        fetch(`/api/diagrams/${activeDiagram.id}/versions`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-          body: JSON.stringify({
-            xml_content: refXml || '',
-            comment: `Vertex AI Safety & Eval Flow Exact Spec`,
-            architecture_type: newArchId
-          }),
-        }).then(r => r.json()).then(newVer => {
-          if (newVer && newVer.id) {
-            setActiveVersion(newVer);
-            setActiveDiagram(prev => prev ? {
-              ...prev,
-              architecture_type: newArchId,
-              versions: [newVer, ...(prev.versions || []).filter(v => v.id !== newVer.id)]
-            } : prev);
-          }
-        }).catch(console.error);
-      }
-      return;
-    }
+    setSelectedArchType(newArchId);
+    const archMeta = getArchitectureTypeById(newArchId);
+    const archName = archMeta?.name || newArchId;
 
     const existingVersionsForArch = activeDiagram?.versions?.filter(
-      v => (v.architecture_type || 'conceptual_diagram') === newArchId
+      v => normalizeArchitectureId(v.architecture_type || 'conceptual_diagram') === normalizeArchitectureId(newArchId)
     ) || [];
 
     if (existingVersionsForArch.length > 0) {
-      setSelectedArchType(newArchId);
+      // 1. Switch to existing version for this topology
+      const sorted = [...existingVersionsForArch].sort((a, b) => b.version_number - a.version_number);
+      const targetVersion = sorted[0];
+      setActiveVersion(targetVersion);
+      setPreviewVersion(null);
+      activeXmlRef.current = targetVersion.xml_content;
+      setCustomXml(targetVersion.xml_content);
+
       if (activeDiagram?.id) {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
           method: 'PATCH',
@@ -5161,13 +5131,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         }).catch(console.error);
         setActiveDiagram(prev => prev ? { ...prev, architecture_type: newArchId } : prev);
       }
-      const sorted = [...existingVersionsForArch].sort((a, b) => b.version_number - a.version_number);
-      setActiveVersion(sorted[0]);
-      setPreviewVersion(null);
-      if (newArchId === 'technical_diagram' || newArchId === 'conceptual_diagram' || newArchId === 'erd') {
-        setViewMode('canvas');
-        setLayoutPreset('detailed');
-      }
+
       const messages: ChatMessage[] = [];
       [...existingVersionsForArch]
         .sort((a, b) => a.version_number - b.version_number)
@@ -5185,17 +5149,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             id: v.id,
             sender: (v.created_by || '').toString().toLowerCase() === 'ai' ? 'ai' : 'user',
             text: (v.created_by || '').toString().toLowerCase() === 'ai' 
-              ? `Generated diagram version v${v.version_number}: "${v.comment || 'AI Refined Architecture'}"`
-              : `Manually saved version v${v.version_number}: "${v.comment || 'Saved changes'}"`,
+              ? `Generated diagram version v${v.version_number}: "${v.comment || archName}"`
+              : `Saved version v${v.version_number}: "${v.comment || 'Saved changes'}"`,
             timestamp: new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             versionNumber: v.version_number
           });
         });
       setChatMessages(messages);
-      // Load pristine Master Reference Architecture Blueprint tailored to active prompt/domain
-      setSelectedArchType(newArchId);
-      const archMeta = getArchitectureTypeById(newArchId);
-      const archName = archMeta?.name || newArchId;
+    } else {
+      // 2. No version exists yet for this topology -> load pristine Master Reference Blueprint tailored to prompt/domain
       const promptContext = activeDiagram?.versions?.[0]?.prompt || (activeDiagram as any)?.latest_prompt || promptInput || activeDiagram?.name || '';
       const baseRefXml = getDefaultXmlForArchitecture(newArchId, promptContext, promptContext);
       const nextVerNum = (activeDiagram?.versions?.length || 0) + 1;
@@ -5209,7 +5171,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         created_by: 'System',
         created_at: new Date().toISOString(),
         prompt: promptContext || undefined,
-        architecture_type: newArchId
+        architecture_type: newArchId,
+        ai_reasoning: `Domain-tailored ${archName} topology generated from prompt context.`,
+        business_usecase: `Strategic architecture model for ${promptContext || archName}.`,
+        technical_usecase: `Calibrated multi-tier cloud infrastructure for ${archName}.`
       };
 
       setActiveVersion(newVer);
@@ -5229,8 +5194,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
           body: JSON.stringify({
             xml_content: baseRefXml || '',
-            comment: `Master Reference Blueprint: ${archName}`,
-            architecture_type: newArchId
+            comment: `Master Blueprint: ${archName}`,
+            architecture_type: newArchId,
+            prompt: promptContext,
+            ai_reasoning: newVer.ai_reasoning,
+            business_usecase: newVer.business_usecase,
+            technical_usecase: newVer.technical_usecase
           })
         })
           .then(res => res.json())
@@ -5273,13 +5242,16 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           .catch(console.error);
       }
 
-      setChatMessages([{
-        id: `msg_ai_${Date.now()}`,
-        sender: 'ai',
-        text: `✨ Successfully loaded Master Blueprint for **${archName}** (v${nextVerNum}). All 2D topology nodes and lifelines are perfectly aligned!`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        versionNumber: nextVerNum
-      }]);
+      setChatMessages(prev => [
+        ...prev,
+        {
+          id: `msg_ai_${Date.now()}`,
+          sender: 'ai',
+          text: `✨ Loaded **${archName}** (v${nextVerNum}) tailored for "${promptContext || archName}".`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          versionNumber: nextVerNum
+        }
+      ]);
     }
   };
 
@@ -6355,11 +6327,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             type="button"
                             onClick={() => {
                               const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
-                              const idx = allArchs.findIndex(a => a.id === selectedArchType);
-                              if (idx > 0) handleArchitectureSwitch(allArchs[idx - 1].id);
+                              const currentNorm = normalizeArchitectureId(selectedArchType);
+                              let idx = allArchs.findIndex(a => a.id === selectedArchType || normalizeArchitectureId(a.id) === currentNorm);
+                              if (idx <= 0) idx = allArchs.length;
+                              handleArchitectureSwitch(allArchs[idx - 1].id);
                             }}
-                            disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) <= 0}
-                            className="p-1.5 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 rounded-lg disabled:opacity-30 cursor-pointer transition-all"
+                            className="p-1.5 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 rounded-lg cursor-pointer transition-all hover:scale-105 active:scale-95"
                             title="Backward: Previous Architecture Topology (← ArrowLeft)"
                           >
                             <ChevronLeft className="w-3.5 h-3.5" />
@@ -6400,11 +6373,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             type="button"
                             onClick={() => {
                               const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
-                              const idx = allArchs.findIndex(a => a.id === selectedArchType);
-                              if (idx >= 0 && idx < allArchs.length - 1) handleArchitectureSwitch(allArchs[idx + 1].id);
+                              const currentNorm = normalizeArchitectureId(selectedArchType);
+                              let idx = allArchs.findIndex(a => a.id === selectedArchType || normalizeArchitectureId(a.id) === currentNorm);
+                              const nextIdx = (idx >= 0 && idx < allArchs.length - 1) ? idx + 1 : 0;
+                              handleArchitectureSwitch(allArchs[nextIdx].id);
                             }}
-                            disabled={[...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].findIndex(a => a.id === selectedArchType) >= [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES].length - 1}
-                            className="p-1.5 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 rounded-lg disabled:opacity-30 cursor-pointer transition-all"
+                            className="p-1.5 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 rounded-lg cursor-pointer transition-all hover:scale-105 active:scale-95"
                             title="Forward: Next Architecture Topology (→ ArrowRight)"
                           >
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -7075,38 +7049,128 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         <p className="text-sm text-slate-500">Ask the AI to generate your first architecture diagram!</p>
                       </div>
                     ) : (
-                      chatMessages.map((msg) => (
-                        <div 
-                          key={msg.id}
-                          className={`flex flex-col max-w-[85%] ${
-                            msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
-                          }`}
-                        >
-                          <div className={`p-3 rounded-lg text-sm leading-relaxed ${
-                            msg.sender === 'user'
-                              ? 'bg-teal-accent text-bg-dark font-medium rounded-tr-none'
-                              : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border'
-                          }`}>
-                            {msg.text}
+                      chatMessages.map((msg) => {
+                        const msgVer = (activeDiagram?.versions || []).find(v => v.version_number === msg.versionNumber) || 
+                          (msg.versionNumber === activeVersion?.version_number ? activeVersion : null);
+                        const hasSpec = msgVer && (msgVer.prompt || msgVer.ai_reasoning || msgVer.business_usecase || msgVer.technical_usecase);
+                        const isExpanded = expandedMsgIds.has(msg.id);
 
-                            {msg.sender === 'ai' && (msg.versionNumber || activeDiagram) && (
-                              <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center gap-2">
-                                <button
-                                  onClick={() => setIsSetMasterModalOpen(true)}
-                                  className="flex items-center gap-1 text-[10px] font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
-                                  title="Promote or save this active version as the Master Template"
-                                >
-                                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                  <span>⭐ Set as Master Template</span>
-                                </button>
-                              </div>
-                            )}
+                        return (
+                          <div 
+                            key={msg.id}
+                            className={`flex flex-col max-w-[90%] ${
+                              msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
+                            }`}
+                          >
+                            <div className={`p-3 rounded-lg text-sm leading-relaxed ${
+                              msg.sender === 'user'
+                                ? 'bg-teal-accent text-bg-dark font-medium rounded-tr-none'
+                                : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border shadow-md'
+                            }`}>
+                              <div>{msg.text}</div>
+
+                              {/* Rich Prompt & Spec Accordion */}
+                              {msg.sender === 'ai' && hasSpec && (
+                                <div className="mt-2.5 pt-2 border-t border-slate-700/60">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setExpandedMsgIds(prev => {
+                                        const next = new Set(prev);
+                                        if (next.has(msg.id)) next.delete(msg.id);
+                                        else next.add(msg.id);
+                                        return next;
+                                      });
+                                    }}
+                                    className="flex items-center justify-between w-full text-[11px] font-extrabold text-teal-400 hover:text-teal-300 bg-slate-900/80 hover:bg-slate-900 border border-teal-500/30 px-2.5 py-1.5 rounded-md transition-all cursor-pointer"
+                                  >
+                                    <span className="flex items-center gap-1.5">
+                                      <span>🔍</span>
+                                      <span>{isExpanded ? 'Hide Architecture Spec & Prompt' : 'View Architecture Spec & Prompt'}</span>
+                                    </span>
+                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                                  </button>
+
+                                  {isExpanded && (
+                                    <div className="mt-2 space-y-2 bg-slate-950/90 border border-slate-800 rounded-lg p-3 text-xs animate-in fade-in duration-200">
+                                      {msgVer.prompt && (
+                                        <div className="space-y-1">
+                                          <div className="flex items-center justify-between text-[10px] font-extrabold text-teal-300 uppercase tracking-wider">
+                                            <span>🎯 Target Domain Prompt:</span>
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                if (msgVer.prompt) navigator.clipboard.writeText(msgVer.prompt);
+                                              }}
+                                              className="text-[10px] text-slate-400 hover:text-white flex items-center gap-1"
+                                              title="Copy Prompt"
+                                            >
+                                              <Copy className="w-3 h-3" />
+                                              <span>Copy</span>
+                                            </button>
+                                          </div>
+                                          <p className="text-slate-300 bg-slate-900/80 p-2 rounded border border-slate-800 font-mono text-[11px] leading-relaxed select-all">
+                                            {msgVer.prompt}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {msgVer.ai_reasoning && (
+                                        <div className="space-y-1 pt-1">
+                                          <div className="text-[10px] font-extrabold text-indigo-300 uppercase tracking-wider">
+                                            🧠 AI Architectural Rationale:
+                                          </div>
+                                          <p className="text-slate-300 text-[11px] leading-relaxed">
+                                            {msgVer.ai_reasoning}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {msgVer.business_usecase && (
+                                        <div className="space-y-1 pt-1">
+                                          <div className="text-[10px] font-extrabold text-amber-300 uppercase tracking-wider">
+                                            💼 Business Objectives &amp; Scope:
+                                          </div>
+                                          <p className="text-slate-300 text-[11px] leading-relaxed">
+                                            {msgVer.business_usecase}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {msgVer.technical_usecase && (
+                                        <div className="space-y-1 pt-1">
+                                          <div className="text-[10px] font-extrabold text-emerald-300 uppercase tracking-wider">
+                                            ⚙️ Technical Stack &amp; Governance:
+                                          </div>
+                                          <p className="text-slate-300 text-[11px] leading-relaxed font-mono">
+                                            {msgVer.technical_usecase}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {msg.sender === 'ai' && (msg.versionNumber || activeDiagram) && (
+                                <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center gap-2">
+                                  <button
+                                    onClick={() => setIsSetMasterModalOpen(true)}
+                                    className="flex items-center gap-1 text-[10px] font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                                    title="Promote or save this active version as the Master Template"
+                                  >
+                                    <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                    <span>⭐ Set as Master Template</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                            <span className="text-[10px] text-slate-500 mt-1 px-1">
+                              {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
+                            </span>
                           </div>
-                          <span className="text-[10px] text-slate-500 mt-1 px-1">
-                            {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
-                          </span>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                     {isGenerating && (
                       <div className="flex items-center gap-2 mr-auto bg-slate-hover/50 border border-panel-border p-3 rounded-lg rounded-tl-none max-w-[85%]">
@@ -9270,9 +9334,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       <ExecutiveStrategicSummaryModal
         isOpen={isExecutiveSummaryOpen}
         onClose={() => setIsExecutiveSummaryOpen(false)}
-        diagramTitle={activeDiagram?.name && !activeDiagram.name.match(/^\d+\./) ? activeDiagram.name : 'PromptCanvas: Universal Enterprise AI Architecture Compiler'}
+        diagramTitle={activeDiagram?.name || getArchitectureTypeById(selectedArchType)?.name || 'Enterprise Architecture Platform'}
         architectureType={selectedArchType}
-        xmlContent={(activeDiagram as any)?.xml_content || (activeDiagram?.versions && activeDiagram.versions[0]?.xml_content) || getExactAgenticMeshXml()}
+        xmlContent={customXml || activeXmlRef.current || activeVersion?.xml_content || (activeDiagram as any)?.xml_content || ''}
+        prompt={activeVersion?.prompt || (activeDiagram as any)?.prompt || promptInput || ''}
+        businessUsecase={activeVersion?.business_usecase || (activeDiagram as any)?.business_usecase || ''}
+        technicalUsecase={activeVersion?.technical_usecase || (activeDiagram as any)?.technical_usecase || ''}
+        aiReasoning={activeVersion?.ai_reasoning || (activeDiagram as any)?.ai_reasoning || ''}
       />
 
       {/* BYOK MULTI-CONNECTION ENTERPRISE VAULT & HEALTH MONITOR MODAL */}
