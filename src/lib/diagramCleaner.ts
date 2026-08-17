@@ -1715,5 +1715,12 @@ export function sanitizeDrawioXmlAttributes(xml: string): string {
 
   // Ensure &amp; entities are valid
   cleaned = cleaned.replace(/&amp;amp;/g, '&amp;');
+
+  // 3. XSS Sanitization: Neutralize <script>, javascript: pseudo-protocols, and inline DOM event attributes
+  cleaned = cleaned
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/javascript\s*:/gi, 'blocked_script:')
+    .replace(/\son[a-zA-Z]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)/gi, '');
+
   return cleaned;
 }
