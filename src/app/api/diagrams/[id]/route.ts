@@ -58,6 +58,23 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   try {
     const user = await getAuthenticatedUser();
     const { id } = await params;
+    
+    // Verify diagram exists and user has edit permissions
+    const diagram = await getDiagram(id, user?.id);
+    if (!diagram) {
+      return NextResponse.json(
+        { error: `Diagram with ID ${id} not found` },
+        { status: 404 }
+      );
+    }
+
+    if (diagram.access_level === 'Viewer') {
+      return NextResponse.json(
+        { error: 'Forbidden: You have read-only access to this diagram.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const archType = body.architecture_type || body.architectureType;
     const xmlContent = body.xml_content || body.xmlContent;

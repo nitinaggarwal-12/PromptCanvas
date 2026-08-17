@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDiagram, saveDiagramVersion } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 interface RouteParams {
   params: Promise<{
@@ -10,10 +11,11 @@ interface RouteParams {
 // POST /api/diagrams/[id]/versions - Save a new version of a diagram
 export async function POST(request: Request, { params }: RouteParams) {
   try {
+    const user = await getAuthenticatedUser();
     const { id: diagramId } = await params;
     
-    // Verify diagram exists
-    const diagram = await getDiagram(diagramId);
+    // Verify diagram exists and user has edit permissions
+    const diagram = await getDiagram(diagramId, user?.id);
     if (!diagram) {
       return NextResponse.json(
         { error: `Diagram with ID ${diagramId} not found` },
@@ -21,10 +23,17 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
+    if (diagram.access_level === 'Viewer') {
+      return NextResponse.json(
+        { error: 'Forbidden: You have read-only access to this diagram.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const xmlContent = body.xmlContent ?? body.xml_content;
     const comment = body.comment;
-    const createdBy = body.createdBy ?? body.created_by;
+    const createdBy = body.createdBy ?? body.created_by ?? (user?.name || user?.email || 'User');
     const architectureType = body.architectureType ?? body.architecture_type;
 
     if (xmlContent === undefined || typeof xmlContent !== 'string') {
