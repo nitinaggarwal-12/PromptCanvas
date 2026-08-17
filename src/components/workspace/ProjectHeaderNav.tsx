@@ -25,6 +25,7 @@ interface ProjectHeaderNavProps {
   selectedArchType: string;
   activeVersionNumber?: number;
   disabled?: boolean;
+  theme?: 'light' | 'dark';
   onSelectDiagram: (diagramId: string) => void;
   onCreateNewProject: (name: string) => void;
   onSelectBlueprint: (blueprintId: string) => void;
@@ -37,6 +38,7 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
   selectedArchType,
   activeVersionNumber = 1,
   disabled = false,
+  theme = 'dark',
   onSelectDiagram,
   onCreateNewProject,
   onSelectBlueprint,
@@ -51,6 +53,8 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
   const projectContainerRef = useRef<HTMLDivElement>(null);
   const viewContainerRef = useRef<HTMLDivElement>(null);
   const inlineInputRef = useRef<HTMLInputElement>(null);
+
+  const isLight = theme === 'light';
 
   // Sort projects with latest on top
   const sortedProjects = useMemo(() => {
@@ -112,14 +116,17 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
         setIsViewDropdownOpen(false);
       }
     }
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
-  // Focus inline creation input
+  // Focus input when creating inline project
   useEffect(() => {
-    if (isCreatingProject && inlineInputRef.current) {
-      inlineInputRef.current.focus();
+    if (isCreatingProject) {
+      inlineInputRef.current?.focus();
     }
   }, [isCreatingProject]);
 
@@ -152,26 +159,44 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
             setProjectSearchQuery('');
             setIsCreatingProject(false);
           }}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#090D18] hover:bg-slate-900 border border-teal-500/50 hover:border-teal-400 text-teal-200 font-extrabold text-xs transition-all shadow-md cursor-pointer group"
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-extrabold text-xs transition-all shadow-sm cursor-pointer group border ${
+            isLight
+              ? 'bg-white hover:bg-slate-50 border-slate-300 hover:border-teal-600 text-teal-800'
+              : 'bg-[#090D18] hover:bg-slate-900 border-teal-500/50 hover:border-teal-400 text-teal-200'
+          }`}
           title="Switch Project, Search Projects, or Create a New Project"
         >
-          <Folder className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-          <span className="text-[10px] uppercase font-mono text-teal-400/70 hidden sm:inline">Project:</span>
-          <span className="truncate max-w-[140px] sm:max-w-[190px] md:max-w-[240px] text-white group-hover:text-teal-200">
+          <Folder className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
+          <span className={`text-[10px] uppercase font-mono hidden sm:inline ${isLight ? 'text-teal-700 font-bold' : 'text-teal-400/70'}`}>
+            Project:
+          </span>
+          <span className={`truncate max-w-[140px] sm:max-w-[190px] md:max-w-[240px] font-bold ${
+            isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-200'
+          }`}>
             {activeDiagram?.name || 'Select Project'}
           </span>
-          <ChevronDown className={`w-3.5 h-3.5 text-teal-400 transition-transform ${isProjectDropdownOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${
+            isProjectDropdownOpen ? 'rotate-180' : ''
+          } ${isLight ? 'text-slate-600' : 'text-teal-400'}`} />
         </button>
 
         {/* Project Dropdown Menu */}
         {isProjectDropdownOpen && (
-          <div className="header-dropdown-menu absolute left-0 top-full mt-2 w-[380px] max-w-[92vw] bg-[#070A13] border border-teal-500/40 rounded-2xl shadow-2xl z-[99999] overflow-hidden flex flex-col max-h-[480px] animate-in fade-in zoom-in-95 duration-150">
+          <div className={`header-dropdown-menu absolute left-0 top-full mt-2 w-[380px] max-w-[92vw] rounded-2xl shadow-2xl z-[99999] overflow-hidden flex flex-col max-h-[480px] animate-in fade-in zoom-in-95 duration-150 border ${
+            isLight
+              ? 'bg-white border-slate-200 text-slate-800'
+              : 'bg-[#070A13] border-teal-500/40 text-slate-100'
+          }`}>
             
             {/* Header / Search & New Project */}
-            <div className="p-3 border-b border-slate-800 bg-[#090D18] flex flex-col gap-2">
+            <div className={`p-3 border-b flex flex-col gap-2 ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#090D18] border-slate-800'
+            }`}>
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <Folder className="w-3.5 h-3.5 text-teal-400" />
+                <span className={`text-[11px] font-black uppercase tracking-wider flex items-center gap-1.5 ${
+                  isLight ? 'text-slate-700' : 'text-slate-300'
+                }`}>
+                  <Folder className="w-3.5 h-3.5 text-teal-500" />
                   <span>Projects ({sortedProjects.length})</span>
                 </span>
                 
@@ -179,7 +204,11 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsCreatingProject(true)}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-teal-300 text-xs font-bold transition-all cursor-pointer shadow-sm"
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-sm border ${
+                      isLight
+                        ? 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-800'
+                        : 'bg-teal-500/20 hover:bg-teal-500/30 border-teal-500/40 text-teal-300'
+                    }`}
                   >
                     <Plus className="w-3 h-3" />
                     <span>New Project</span>
@@ -192,7 +221,11 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
                       placeholder="Project Name..."
                       value={newProjectNameInput}
                       onChange={(e) => setNewProjectNameInput(e.target.value)}
-                      className="bg-slate-900 border border-teal-400 rounded-lg px-2 py-0.5 text-xs text-white outline-none w-32 font-semibold"
+                      className={`border rounded-lg px-2 py-0.5 text-xs outline-none w-32 font-semibold ${
+                        isLight
+                          ? 'bg-white border-teal-500 text-slate-900 placeholder-slate-400'
+                          : 'bg-slate-900 border-teal-400 text-white placeholder-slate-500'
+                      }`}
                     />
                     <button
                       type="submit"
@@ -204,7 +237,7 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
                     <button
                       type="button"
                       onClick={() => setIsCreatingProject(false)}
-                      className="p-0.5 text-slate-400 hover:text-white"
+                      className="p-0.5 text-slate-400 hover:text-slate-600"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -213,74 +246,90 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
               </div>
 
               {/* Search Bar */}
-              <div className="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 rounded-xl px-2.5 py-1">
-                <Search className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+              <div className={`flex items-center gap-2 border rounded-xl px-2.5 py-1 ${
+                isLight ? 'bg-white border-slate-300' : 'bg-slate-900/90 border-slate-700/80'
+              }`}>
+                <Search className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
                 <input
                   type="text"
                   autoFocus
                   placeholder="Search saved projects..."
                   value={projectSearchQuery}
                   onChange={(e) => setProjectSearchQuery(e.target.value)}
-                  className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-medium"
+                  className={`w-full text-xs outline-none font-medium ${
+                    isLight ? 'bg-transparent text-slate-900 placeholder-slate-400' : 'bg-transparent text-slate-100 placeholder-slate-400'
+                  }`}
                 />
                 {projectSearchQuery && (
-                  <button type="button" onClick={() => setProjectSearchQuery('')} className="text-slate-400 hover:text-white">
+                  <button
+                    type="button"
+                    onClick={() => setProjectSearchQuery('')}
+                    className="text-slate-400 hover:text-slate-600"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Projects List (Latest on Top) */}
-            <div className="p-2 overflow-y-auto max-h-[340px] space-y-1.5 divide-y divide-slate-800/40">
-              {filteredProjects.map((d, idx) => {
-                const isActive = d.id === activeDiagram?.id;
-                return (
-                  <button
-                    key={d.id}
-                    type="button"
-                    onClick={() => {
-                      onSelectDiagram(d.id);
-                      setIsProjectDropdownOpen(false);
-                    }}
-                    className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-start justify-between gap-2 cursor-pointer group ${
-                      isActive
-                        ? 'bg-teal-950/70 border-teal-400 text-white shadow-md'
-                        : 'bg-slate-900/40 hover:bg-slate-900 border-transparent hover:border-slate-700 text-slate-200'
-                    }`}
-                  >
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        {idx === 0 && (
-                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                            LATEST
-                          </span>
-                        )}
-                        {isActive && (
-                          <span className="text-[9px] font-black text-teal-400 flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-teal-950 border border-teal-800">
-                            <Check className="w-2.5 h-2.5" /> ACTIVE
-                          </span>
-                        )}
-                        <span className="text-[9px] font-mono text-slate-400">
-                          v{d.versions?.length || 1}
-                        </span>
-                      </div>
-                      <p className="text-xs font-bold text-slate-100 group-hover:text-teal-200 truncate">
-                        {d.name}
-                      </p>
-                      <p className="text-[10px] text-slate-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-slate-500" />
-                        Updated {formatRelativeTime(String(d.updated_at || ''))}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-
-              {filteredProjects.length === 0 && (
-                <div className="py-8 text-center text-slate-500 text-xs">
+            {/* Project List */}
+            <div className="p-2 space-y-1 overflow-y-auto max-h-[320px]">
+              {filteredProjects.length === 0 ? (
+                <div className="p-6 text-center text-xs text-slate-400">
                   No projects match &ldquo;{projectSearchQuery}&rdquo;
                 </div>
+              ) : (
+                filteredProjects.map((diag, index) => {
+                  const isCurrent = diag.id === activeDiagram?.id;
+                  const isLatest = index === 0;
+                  const verCount = diag.versions?.length || 1;
+                  const timeVal = diag.updated_at || diag.created_at;
+                  const timeFormatted = formatRelativeTime(timeVal instanceof Date ? timeVal.toISOString() : String(timeVal || ''));
+
+                  return (
+                    <button
+                      key={diag.id}
+                      type="button"
+                      onClick={() => {
+                        onSelectDiagram(diag.id);
+                        setIsProjectDropdownOpen(false);
+                      }}
+                      className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 cursor-pointer ${
+                        isCurrent
+                          ? isLight
+                            ? 'bg-teal-50 border-teal-400 text-teal-950 shadow-sm'
+                            : 'bg-teal-950/70 border-teal-400 text-white shadow-md'
+                          : isLight
+                            ? 'bg-slate-50/70 hover:bg-slate-100 border-slate-200 text-slate-800'
+                            : 'bg-slate-900/40 hover:bg-slate-900 border-transparent hover:border-slate-700 text-slate-200'
+                      }`}
+                    >
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          {isLatest && (
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.2 rounded bg-amber-400 text-slate-950">
+                              LATEST
+                            </span>
+                          )}
+                          <span className="text-[10px] font-mono text-slate-400">v{verCount}</span>
+                        </div>
+                        <p className={`text-xs font-bold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                          {diag.name}
+                        </p>
+                        <div className="flex items-center gap-2 text-[10px] text-slate-400 font-medium">
+                          <Clock className="w-2.5 h-2.5" />
+                          <span>Updated {timeFormatted}</span>
+                        </div>
+                      </div>
+
+                      {isCurrent && (
+                        <span className="text-[10px] font-black text-teal-500 flex items-center gap-1 shrink-0">
+                          <Check className="w-3.5 h-3.5" /> ACTIVE
+                        </span>
+                      )}
+                    </button>
+                  );
+                })
               )}
             </div>
 
@@ -288,9 +337,9 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
         )}
       </div>
 
-      <span className="text-slate-700 hidden sm:inline">/</span>
+      <span className={`font-mono text-xs hidden sm:inline ${isLight ? 'text-slate-300' : 'text-slate-600'}`}>/</span>
 
-      {/* 🏛️ PILL 2: ACTIVE ARCHITECTURE VIEW IN PROJECT */}
+      {/* 🏛️ PILL 2: PROJECT VIEW SELECTOR (Only Blueprints Active In THIS Project) */}
       <div ref={viewContainerRef} className="relative">
         <button
           type="button"
@@ -300,34 +349,52 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
             setIsViewDropdownOpen(!isViewDropdownOpen);
             setIsProjectDropdownOpen(false);
           }}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#090D18] hover:bg-slate-900 border border-indigo-500/50 hover:border-indigo-400 text-indigo-200 font-extrabold text-xs transition-all shadow-md cursor-pointer group"
-          title="Switch Architecture View in this project or Add a New View from Catalog"
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-extrabold text-xs transition-all shadow-sm cursor-pointer group border ${
+            isLight
+              ? 'bg-indigo-50/70 hover:bg-indigo-100/70 border-indigo-200 hover:border-indigo-400 text-indigo-900'
+              : 'bg-[#090D18] hover:bg-slate-900 border-indigo-500/50 hover:border-indigo-400 text-indigo-200'
+          }`}
+          title="Switch Active Architecture View inside this project or add from 50 blueprint catalog"
         >
-          <Layers className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-          <span className="text-[10px] uppercase font-mono text-indigo-400/70 hidden md:inline">View:</span>
-          
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="truncate max-w-[130px] sm:max-w-[180px] md:max-w-[240px] text-white group-hover:text-indigo-200">
-              {currentViewTitle}
-            </span>
-            <span className="text-[10px] font-mono font-black px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/80 shrink-0">
-              v{activeVersionNumber}
-            </span>
-          </div>
-
-          <ChevronDown className={`w-3.5 h-3.5 text-indigo-400 transition-transform ${isViewDropdownOpen ? 'rotate-180' : ''}`} />
+          <Layers className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} />
+          <span className={`text-[10px] uppercase font-mono hidden sm:inline ${isLight ? 'text-indigo-700 font-bold' : 'text-indigo-400/70'}`}>
+            View:
+          </span>
+          <span className={`truncate max-w-[140px] sm:max-w-[180px] md:max-w-[220px] font-bold ${
+            isLight ? 'text-slate-900 group-hover:text-indigo-800' : 'text-white group-hover:text-indigo-200'
+          }`}>
+            {currentViewTitle}
+          </span>
+          <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+            isLight ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-indigo-950 text-indigo-300 border border-indigo-800'
+          }`}>
+            v{activeVersionNumber}
+          </span>
+          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${
+            isViewDropdownOpen ? 'rotate-180' : ''
+          } ${isLight ? 'text-slate-600' : 'text-indigo-400'}`} />
         </button>
 
-        {/* View Dropdown Menu */}
+        {/* Views in Project Dropdown */}
         {isViewDropdownOpen && (
-          <div className="header-dropdown-menu absolute left-0 top-full mt-2 w-[340px] max-w-[92vw] bg-[#070A13] border border-indigo-500/40 rounded-2xl shadow-2xl z-[99999] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
+          <div className={`header-dropdown-menu absolute left-0 top-full mt-2 w-[340px] max-w-[92vw] rounded-2xl shadow-2xl z-[99999] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 border ${
+            isLight
+              ? 'bg-white border-slate-200 text-slate-800'
+              : 'bg-[#070A13] border-indigo-500/40 text-slate-100'
+          }`}>
             
-            <div className="p-3 border-b border-slate-800 bg-[#090D18] flex items-center justify-between">
-              <span className="text-[11px] font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Views in this Project</span>
+            <div className={`p-3 border-b flex items-center justify-between ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#090D18] border-slate-800'
+            }`}>
+              <span className={`text-[11px] font-black uppercase tracking-wider flex items-center gap-1.5 ${
+                isLight ? 'text-slate-700' : 'text-slate-300'
+              }`}>
+                <Layers className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Views In This Project</span>
               </span>
-              <span className="text-[10px] font-mono text-indigo-400">
+              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
+                isLight ? 'bg-indigo-50 text-indigo-800 border-indigo-200' : 'bg-indigo-950/80 text-indigo-300 border-indigo-800/80'
+              }`}>
                 {activeDiagramViews.length} View{activeDiagramViews.length === 1 ? '' : 's'}
               </span>
             </div>
@@ -346,16 +413,22 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
                     }}
                     className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 cursor-pointer ${
                       isActive
-                        ? 'bg-indigo-950/70 border-indigo-400 text-white shadow-md'
-                        : 'bg-slate-900/40 hover:bg-slate-900 border-transparent hover:border-slate-700 text-slate-200'
+                        ? isLight
+                          ? 'bg-indigo-50 border-indigo-400 text-indigo-950 shadow-sm'
+                          : 'bg-indigo-950/70 border-indigo-400 text-white shadow-md'
+                        : isLight
+                          ? 'bg-slate-50/70 hover:bg-slate-100 border-slate-200 text-slate-800'
+                          : 'bg-slate-900/40 hover:bg-slate-900 border-transparent hover:border-slate-700 text-slate-200'
                     }`}
                   >
                     <div className="min-w-0 flex-1 space-y-0.5">
-                      <p className="text-xs font-bold text-slate-100 truncate">{v.name}</p>
-                      <span className="text-[10px] font-mono text-indigo-400/80">v{v.latestVersion}</span>
+                      <p className={`text-xs font-bold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                        {v.name}
+                      </p>
+                      <span className="text-[10px] font-mono text-indigo-500">v{v.latestVersion}</span>
                     </div>
                     {isActive && (
-                      <span className="text-[10px] font-black text-indigo-400 flex items-center gap-1 shrink-0">
+                      <span className="text-[10px] font-black text-indigo-500 flex items-center gap-1 shrink-0">
                         <Check className="w-3 h-3" /> ACTIVE
                       </span>
                     )}
@@ -365,14 +438,18 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
             </div>
 
             {/* Add New Architecture View Action Button */}
-            <div className="p-2 border-t border-slate-800 bg-[#090D18]">
+            <div className={`p-2 border-t ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#090D18] border-slate-800'}`}>
               <button
                 type="button"
                 onClick={() => {
                   setIsViewDropdownOpen(false);
                   onOpenBlueprintCatalog();
                 }}
-                className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 text-xs font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.01]"
+                className={`w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-sm ${
+                  isLight
+                    ? 'bg-white hover:bg-indigo-50 border-indigo-300 text-indigo-700'
+                    : 'bg-indigo-950/50 hover:bg-indigo-900/60 border-indigo-500/40 text-indigo-300'
+                }`}
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>+ Add View from 50 Blueprint Catalog</span>

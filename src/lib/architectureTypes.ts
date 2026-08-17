@@ -531,6 +531,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     return null;
   }
   const id = normalizeArchitectureId(archId);
+  if (id === 'blank_canvas' || id === 'arch_blank_canvas') {
+    return `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
+  }
   let xml = '';
 
   if (id === 'conceptual_diagram') {

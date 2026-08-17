@@ -126,6 +126,7 @@ import { TopDownTemplatesExplorer } from '@/components/workspace/TopDownTemplate
 import { UnifiedProjectSelector } from '@/components/workspace/UnifiedProjectSelector';
 import { ProjectHeaderNav } from '@/components/workspace/ProjectHeaderNav';
 import { GeminiEnterpriseBottomChat } from '@/components/workspace/GeminiEnterpriseBottomChat';
+import { WelcomeGetStartedSlate } from '@/components/workspace/WelcomeGetStartedSlate';
 
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
@@ -867,6 +868,7 @@ function WorkspaceContent() {
     }
     return false;
   });
+  const [createModalTab, setCreateModalTab] = useState<'simple' | 'advanced'>('simple');
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isInlineEditorOpen, setIsInlineEditorOpen] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -1644,9 +1646,16 @@ function WorkspaceContent() {
   // --- Effects ---
   // Synchronize initial diagram selection once page loads
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const diagramId = params.get('diagram') || params.get('id');
-    const blueprintParam = params.get('blueprint') || params.get('arch') || params.get('template');
+    const diagramId = searchParams.get('diagram') || searchParams.get('id');
+    const blueprintParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
+    const isWelcomeParam = searchParams.get('welcome') === 'true' || searchParams.get('slate') === 'true';
+    
+    if (isWelcomeParam) {
+      setActiveDiagram(null);
+      setActiveVersion(null);
+      return;
+    }
+
     if (diagramId) {
       if ((!activeDiagram || activeDiagram.id !== diagramId) && !restrictedState) {
         loadDiagramDetails(diagramId);
@@ -1666,6 +1675,7 @@ function WorkspaceContent() {
   // Real-time URL query parameter synchronizer
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    const isWelcome = searchParams.get('welcome') === 'true';
     const params = new URLSearchParams();
 
     // Tab
@@ -1673,15 +1683,10 @@ function WorkspaceContent() {
       params.set('tab', currentTab);
     }
 
-    // Active Diagram
-    if (activeDiagram) {
+    if (isWelcome) {
+      params.set('welcome', 'true');
+    } else if (activeDiagram) {
       params.set('diagram', activeDiagram.id);
-    } else {
-      const currentParams = new URLSearchParams(window.location.search);
-      const urlDiagram = currentParams.get('diagram');
-      if (urlDiagram) {
-        params.set('diagram', urlDiagram);
-      }
     }
 
     // View Mode
@@ -5191,17 +5196,23 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-bg-dark text-slate-100 overflow-hidden font-sans">
+    <div className={`flex h-screen w-screen transition-colors duration-300 overflow-hidden font-sans ${
+      canvasTheme === 'light' ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#060911] text-slate-100'
+    }`}>
       
       {/* Desktop Sidebar Navigation (Hidden on < 1024px) */}
       <aside 
         onMouseEnter={() => setIsSidebarOpen(true)}
-        className={`hidden lg:flex glass-panel border-r border-panel-border flex-col transition-all duration-300 z-20 shrink-0 ${
+        className={`hidden lg:flex flex-col transition-all duration-300 z-20 shrink-0 border-r ${
+          canvasTheme === 'light' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'bg-[#070A13] border-slate-800 text-slate-200'
+        } ${
           isSidebarOpen ? 'w-64' : 'w-16'
         }`}
       >
         {/* Sidebar Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-panel-border shrink-0">
+        <div className={`h-16 flex items-center justify-between px-4 border-b shrink-0 ${
+          canvasTheme === 'light' ? 'border-slate-200 bg-white' : 'border-slate-800 bg-[#070A13]'
+        }`}>
           {isSidebarOpen ? (
             <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
               <Sparkles className="w-5 h-5 text-teal-accent" />
@@ -5218,7 +5229,9 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             <button 
               id="collapse-sidebar-btn"
               onClick={() => setIsSidebarOpen(false)}
-              className="p-1 rounded hover:bg-slate-hover text-slate-400 hover:text-white"
+              className={`p-1 rounded transition-colors ${
+                canvasTheme === 'light' ? 'hover:bg-slate-100 text-slate-400 hover:text-slate-900' : 'hover:bg-slate-800 text-slate-400 hover:text-white'
+              }`}
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -5258,10 +5271,18 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 isActive 
                   ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                  : canvasTheme === 'light'
+                    ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
               }`}>
                 <div className="flex items-center gap-3 min-w-0">
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-bg-dark' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${
+                    isActive
+                      ? 'text-bg-dark'
+                      : canvasTheme === 'light'
+                        ? 'text-slate-500'
+                        : 'text-slate-400'
+                  }`} />
                   {isSidebarOpen && <span className="truncate">{item.name}</span>}
                 </div>
               </div>
@@ -5494,20 +5515,30 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
         {/* 4. PINNED BOTTOM FOOTER: Search Input */}
         {isSidebarOpen && (
-          <div className="p-3 border-t border-panel-border/30 shrink-0">
+          <div className={`p-3 border-t shrink-0 ${
+            canvasTheme === 'light' ? 'border-slate-200 bg-slate-50' : 'border-slate-800 bg-[#070A13]'
+          }`}>
             <div className="relative">
               <input
                 type="text"
                 value={sidebarSearch}
                 onChange={(e) => setSidebarSearch(e.target.value)}
                 placeholder={t.filterDesigns}
-                className="w-full bg-slate-900 border border-panel-border/80 focus:border-teal-accent rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all"
+                className={`w-full border rounded-lg pl-8 pr-3 py-1.5 text-xs focus:outline-none transition-all ${
+                  canvasTheme === 'light'
+                    ? 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-600'
+                    : 'bg-slate-900 border-slate-700 text-slate-100 placeholder-slate-500 focus:border-teal-accent'
+                }`}
               />
-              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
+              <Search className={`w-3.5 h-3.5 absolute left-2.5 top-2 ${
+                canvasTheme === 'light' ? 'text-slate-400' : 'text-slate-500'
+              }`} />
               {sidebarSearch && (
                 <button
                   onClick={() => setSidebarSearch('')}
-                  className="absolute right-2 top-2 p-0.5 rounded text-slate-500 hover:text-white"
+                  className={`absolute right-2 top-2 p-0.5 rounded ${
+                    canvasTheme === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-slate-500 hover:text-white'
+                  }`}
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -5849,22 +5880,22 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
             </div>
           )}
-          {!activeDiagram ? (
-            <div className="flex-1 flex flex-col items-center justify-center bg-bg-dark text-slate-400 gap-3">
-              <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
-              <p className="text-sm font-semibold text-slate-300">Opening Design Canvas &amp; AI Chatbox...</p>
-            </div>
-          ) : (
           <>
             {/* Top Navbar */}
-            <header className={`h-14 border-b border-panel-border flex items-center justify-between px-3 md:px-6 bg-panel-dark/80 backdrop-blur-md gap-3 relative shrink-0 ${tourStep !== null ? 'z-[60]' : 'z-30'}`}>
+            <header className={`h-14 border-b flex items-center justify-between px-3 md:px-6 backdrop-blur-md gap-3 relative shrink-0 transition-colors ${tourStep !== null ? 'z-[60]' : 'z-30'} ${
+              canvasTheme === 'light' ? 'bg-white/95 border-slate-200 text-slate-900 shadow-sm' : 'bg-[#070A13]/95 border-slate-800 text-white'
+            }`}>
               {/* Group 1: Left - Navigation Identity, Category & Version */}
               <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
                 {/* Mobile/Tablet Hamburger Menu Toggle */}
                 <button
                   type="button"
                   onClick={() => setIsMobileMenuOpen(true)}
-                  className="lg:hidden p-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-panel-border text-slate-300 hover:text-teal-400 shrink-0 transition-all cursor-pointer"
+                  className={`lg:hidden p-1.5 rounded-lg border shrink-0 transition-all cursor-pointer ${
+                    canvasTheme === 'light'
+                      ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 hover:text-teal-700'
+                      : 'bg-slate-900/80 hover:bg-slate-800 border-panel-border text-slate-300 hover:text-teal-400'
+                  }`}
                   title="Open Navigation Menu"
                 >
                   <Menu className="w-4 h-4" />
@@ -5874,7 +5905,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   <button 
                     onClick={() => setIsSidebarOpen(true)}
                     title="Expand Navigation Sidebar"
-                    className="hidden lg:flex p-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-panel-border text-slate-300 hover:text-teal-accent shrink-0 transition-all cursor-pointer"
+                    className={`hidden lg:flex p-1.5 rounded-lg border shrink-0 transition-all cursor-pointer ${
+                      canvasTheme === 'light'
+                        ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 hover:text-teal-700'
+                        : 'bg-slate-900/80 hover:bg-slate-800 border-panel-border text-slate-300 hover:text-teal-accent'
+                    }`}
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -5884,10 +5919,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   <button
                     type="button"
                     onClick={() => setCurrentTab('editor')}
-                    className="text-teal-300 hover:text-teal-200 font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="text-teal-500 hover:text-teal-600 dark:text-teal-300 dark:hover:text-teal-200 font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
                     title="Editor Canvas"
                   >
-                    <Network className="w-4 h-4 text-teal-400" />
+                    <Network className="w-4 h-4 text-teal-500" />
                   </button>
                   {/* Two Clean Controls: Project Selector & Architecture View Selector */}
                   <ProjectHeaderNav
@@ -5896,6 +5931,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     selectedArchType={selectedArchType}
                     activeVersionNumber={displayedVersion?.version_number || activeVersion?.version_number || 1}
                     disabled={isAnyAIBusy}
+                    theme={canvasTheme}
                     onSelectDiagram={(diagramId) => loadDiagramDetails(diagramId)}
                     onCreateNewProject={async (name) => {
                       const finalName = name.trim() || generateUniqueDiagramName();
@@ -5941,16 +5977,52 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
               {/* Group 3: Right - Consolidated Action Hub */}
               <div className="flex items-center gap-1.5 shrink-0 min-w-0">
+                
+                {/* ☀️ / 🌙 Theme Toggle Button */}
+                <button
+                  type="button"
+                  id="workspace-theme-toggle-btn"
+                  onClick={() => {
+                    const next = canvasTheme === 'dark' ? 'light' : 'dark';
+                    setCanvasTheme(next);
+                    try {
+                      localStorage.setItem('promptcanvas_theme', next);
+                    } catch {}
+                  }}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border font-extrabold text-xs transition-all shadow-sm cursor-pointer shrink-0 ${
+                    canvasTheme === 'light'
+                      ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                      : 'bg-slate-900/90 hover:bg-slate-800 border-slate-700 text-amber-300'
+                  }`}
+                  title={canvasTheme === 'light' ? "Switch to Dark Theme" : "Switch to Light Theme"}
+                >
+                  {canvasTheme === 'light' ? (
+                    <>
+                      <Sun className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Light</span>
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Dark</span>
+                    </>
+                  )}
+                </button>
+
                 <AccessRequestsInbox user={currentUser} />
                 {activeDiagram && (
                   <>
                     <button
                       type="button"
                       onClick={() => setIsExecutiveSummaryOpen(true)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
+                        canvasTheme === 'light'
+                          ? 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-900'
+                          : 'border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200'
+                      }`}
                       title="Open C-Suite Executive Strategic Summary & Board Brief"
                     >
-                      <Briefcase className="w-3.5 h-3.5 text-amber-300" />
+                      <Briefcase className="w-3.5 h-3.5 text-amber-500" />
                       <span className="hidden xl:inline">Executive</span>
                       <span>Suite</span>
                     </button>
@@ -5958,10 +6030,14 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     <button
                       type="button"
                       onClick={() => setIsUseCaseModalOpen(true)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-teal-400/60 bg-teal-400/15 hover:bg-teal-400/25 text-teal-200 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
+                        canvasTheme === 'light'
+                          ? 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-900'
+                          : 'border-teal-400/60 bg-teal-400/15 hover:bg-teal-400/25 text-teal-200'
+                      }`}
                       title="Open New Use Case Architectural Intake Form"
                     >
-                      <ClipboardList className="w-3.5 h-3.5 text-teal-300" />
+                      <ClipboardList className="w-3.5 h-3.5 text-teal-500" />
                       <span className="hidden xl:inline">Intake</span>
                       <span>Form</span>
                     </button>
@@ -5969,10 +6045,14 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     <button
                       type="button"
                       onClick={() => setIsVersionDiffModalOpen(true)}
-                      className="hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-teal-500/50 hover:border-teal-400 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0"
+                      className={`hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
+                        canvasTheme === 'light'
+                          ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                          : 'border-teal-500/50 hover:border-teal-400 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300'
+                      }`}
                       title="Compare diagram versions & inspect visual geometric diffs"
                     >
-                      <FileCode className="w-3.5 h-3.5 text-teal-400" />
+                      <FileCode className="w-3.5 h-3.5 text-teal-500" />
                       <span>Diff</span>
                     </button>
 
@@ -5988,19 +6068,23 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             openInNewTab();
                           }
                         }}
-                        className="appearance-none bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-slate-200 font-bold text-xs rounded-lg pl-2 pr-5 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 w-full truncate"
+                        className={`appearance-none font-bold text-xs rounded-lg pl-2 pr-5 py-1.5 outline-none cursor-pointer transition-all shadow-sm w-full truncate border ${
+                          canvasTheme === 'light'
+                            ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800 focus:ring-teal-500/30'
+                            : 'bg-slate-900/90 hover:bg-slate-800/90 border-panel-border text-slate-200 focus:ring-teal-400/30'
+                        }`}
                       >
-                        <option value="" disabled className="bg-[#0b101d] text-slate-400 py-1 font-bold">
+                        <option value="" disabled className={canvasTheme === 'light' ? 'bg-white text-slate-500 py-1 font-bold' : 'bg-[#0b101d] text-slate-400 py-1 font-bold'}>
                           ✏️ Edit ▾
                         </option>
-                        <option value="inline" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                        <option value="inline" className={canvasTheme === 'light' ? 'bg-white text-slate-800 py-1 font-bold' : 'bg-[#0b101d] text-slate-200 py-1 font-bold'}>
                           ✏️ Edit Inline
                         </option>
-                        <option value="newtab" className="bg-[#0b101d] text-slate-200 py-1 font-bold">
+                        <option value="newtab" className={canvasTheme === 'light' ? 'bg-white text-slate-800 py-1 font-bold' : 'bg-[#0b101d] text-slate-200 py-1 font-bold'}>
                           ↗️ New Tab
                         </option>
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-1.5 pointer-events-none" />
+                      <ChevronDown className={`w-3.5 h-3.5 absolute right-1.5 pointer-events-none ${canvasTheme === 'light' ? 'text-slate-600' : 'text-teal-400'}`} />
                     </div>
                   </>
                 )}
@@ -6011,11 +6095,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         <div className="flex-1 flex min-h-0 relative">
           
           {/* CENTER PANE: Diagram Viewport & Gemini Enterprise AI Chat */}
-          <section className={`flex-1 flex flex-col h-full relative overflow-hidden min-w-0 transition-colors duration-300 ${canvasTheme === 'light' && viewMode === 'canvas' ? 'bg-[#F1F5F9]' : 'bg-bg-dark'} flex`}>
+          <section className={`flex-1 flex flex-col h-full relative overflow-hidden min-w-0 transition-colors duration-300 ${canvasTheme === 'light' && viewMode === 'canvas' ? 'bg-[#F8FAFC]' : 'bg-bg-dark'} flex`}>
             
             {/* Center Pane Top Control Bar (Clean Status & Zoom Controls) */}
             {activeDiagram && (
-              <div className="h-12 border-b border-panel-border flex items-center justify-between px-4 bg-panel-dark/60 backdrop-blur z-20 shrink-0">
+              <div className={`h-12 border-b flex items-center justify-between px-4 backdrop-blur z-20 shrink-0 transition-colors ${
+                canvasTheme === 'light' ? 'bg-white/90 border-slate-200 text-slate-800' : 'bg-panel-dark/60 border-panel-border text-slate-200'
+              }`}>
                 <div className="flex items-center gap-3">
                   {/* Mode Indicator Badge */}
                   {isInlineEditorOpen ? (
@@ -6091,36 +6177,52 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setIsPanMode(!isPanMode)}
-                        className={`p-1.5 rounded-md hover:bg-slate-hover transition-all cursor-pointer flex items-center justify-center ${
-                          (isPanMode || isSpacePressed) ? 'text-teal-accent bg-teal-500/10 border border-teal-500/20 shadow-[0_0_10px_rgba(20,184,166,0.15)]' : 'text-slate-400 border border-transparent'
+                        className={`p-1.5 rounded-md transition-all cursor-pointer flex items-center justify-center ${
+                          (isPanMode || isSpacePressed) 
+                            ? 'text-teal-600 dark:text-teal-accent bg-teal-500/15 border border-teal-500/30 shadow-[0_0_10px_rgba(20,184,166,0.15)]' 
+                            : canvasTheme === 'light'
+                              ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent'
+                              : 'text-slate-400 hover:text-white hover:bg-slate-800 border border-transparent'
                         }`}
                         title={(isPanMode || isSpacePressed) ? "Hand Tool (Pan Canvas) - Active (Press Spacebar to toggle)" : "Hand Tool (Pan Canvas) - Inactive (Hold Spacebar to pan temporarily)"}
                       >
                         <Hand className="w-4 h-4" />
                       </button>
 
-                      <div className="flex items-center bg-bg-dark/80 rounded-lg border border-panel-border px-1 py-0.5 text-xs text-slate-300">
+                      <div className={`flex items-center rounded-lg border px-1 py-0.5 text-xs ${
+                        canvasTheme === 'light'
+                          ? 'bg-slate-100 border-slate-300 text-slate-800'
+                          : 'bg-bg-dark/80 border-panel-border text-slate-300'
+                      }`}>
                         <button
                           onClick={() => setZoom(z => Math.max(0.4, Number((z - 0.1).toFixed(1))))}
-                          className="p-1 hover:text-teal-accent transition-colors cursor-pointer font-bold"
+                          className={`p-1 font-bold transition-colors cursor-pointer ${
+                            canvasTheme === 'light' ? 'text-slate-600 hover:text-teal-700' : 'text-slate-400 hover:text-teal-accent'
+                          }`}
                           title="Zoom Out"
                         >
                           -
                         </button>
-                        <span className="w-12 text-center font-mono text-[11px] text-teal-accent font-bold">
+                        <span className={`w-12 text-center font-mono text-[11px] font-bold ${
+                          canvasTheme === 'light' ? 'text-teal-700' : 'text-teal-accent'
+                        }`}>
                           {Math.round(zoom * 100)}%
                         </span>
                         <button
                           onClick={() => setZoom(z => Math.min(2.5, Number((z + 0.1).toFixed(1))))}
-                          className="p-1 hover:text-teal-accent transition-colors cursor-pointer font-bold"
+                          className={`p-1 font-bold transition-colors cursor-pointer ${
+                            canvasTheme === 'light' ? 'text-slate-600 hover:text-teal-700' : 'text-slate-400 hover:text-teal-accent'
+                          }`}
                           title="Zoom In"
                         >
                           +
                         </button>
-                        <div className="h-3 w-[1px] bg-panel-border mx-1" />
+                        <div className={`h-3 w-[1px] mx-1 ${canvasTheme === 'light' ? 'bg-slate-300' : 'bg-panel-border'}`} />
                         <button
                           onClick={() => { setZoom(1.0); setPan({ x: 0, y: 0 }); }}
-                          className="px-2 py-0.5 text-[10px] hover:text-white transition-colors cursor-pointer font-medium"
+                          className={`px-2 py-0.5 text-[10px] font-medium transition-colors cursor-pointer ${
+                            canvasTheme === 'light' ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
+                          }`}
                           title="Reset Zoom & Pan"
                         >
                           Reset
@@ -6152,223 +6254,64 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               className={getTourClass(tourStep, 4, "flex-1 w-full h-full relative overflow-hidden")}
             >
               {!activeDiagram ? (
-                <div className="w-full h-full overflow-y-auto p-8 md:p-12 relative flex items-center justify-center bg-gradient-to-b from-[#090d16] to-[#05080e]">
-                  {/* Subtle Grid overlay */}
-                  <div 
-                    className="absolute inset-0 opacity-[0.03] pointer-events-none"
-                    style={{
-                      backgroundImage: `
-                        linear-gradient(to right, rgba(20, 184, 166, 0.5) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(20, 184, 166, 0.5) 1px, transparent 1px)
-                      `,
-                      backgroundSize: '30px 30px'
-                    }}
-                  />
-
-                  <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start z-10">
-                    {/* Embedded AI Prompt Studio (Left 7 Cols) */}
-                    <div className="lg:col-span-7 glass-panel border-teal-500/40 rounded-2xl p-6 shadow-2xl bg-slate-900/90 space-y-4">
-                      <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400">
-                            <Sparkles className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <h3 className="font-extrabold text-sm text-white">AI Architectural Prompt Studio</h3>
-                            <p className="text-[11px] text-teal-400 font-mono">Compile text to zero-trust Draw.io vector SVG</p>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-teal-950/80 text-teal-300 border border-teal-800/80">
-                          AI Engine: Pro
-                        </span>
-                      </div>
-
-                      <form onSubmit={handleCreateDiagram} className="space-y-3.5">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center justify-between">
-                              <span>Project</span>
-                              {earlierProjects.length > 0 && (
-                                <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
-                              )}
-                            </label>
-                            <div className="flex items-center gap-1">
-                              <input
-                                type="text"
-                                value={newProjectName}
-                                onChange={(e) => setNewProjectName(e.target.value)}
-                                placeholder="Project Name"
-                                className="w-full bg-slate-950 border border-slate-700/80 focus:border-teal-400 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-all font-semibold"
-                              />
-                              {earlierProjects.length > 0 && (
-                                <select
-                                  value=""
-                                  onChange={(e) => {
-                                    if (e.target.value) {
-                                      setNewProjectName(e.target.value);
-                                    }
-                                  }}
-                                  className="bg-slate-950 border border-slate-700/80 focus:border-teal-400 text-teal-400 rounded-xl px-2 py-2 text-xs outline-none cursor-pointer shrink-0"
-                                  title="Choose from earlier projects"
-                                >
-                                  <option value="" disabled>📂 Earlier</option>
-                                  {earlierProjects.map((p: string) => (
-                                    <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
-                                      {p}
-                                    </option>
-                                  ))}
-                                </select>
-                              )}
-                            </div>
-                          </div>
-
-                          <div>
-                            <label className="block text-xs font-bold text-slate-300 mb-1">
-                              Diagram Name
-                            </label>
-                            <input
-                              type="text"
-                              required
-                              value={newDiagramName}
-                              onChange={(e) => setNewDiagramName(e.target.value)}
-                              placeholder="e.g. ApexPay Global Multi-Region Payment Mesh"
-                              className="w-full bg-slate-950 border border-slate-700/80 focus:border-teal-400 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-all font-semibold"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center justify-between">
-                            <span>Prompt / System Requirements</span>
-                            <span className="text-[10px] text-teal-400 font-mono">Gemini 3.7 Flash</span>
-                          </label>
-                          <textarea
-                            rows={4}
-                            value={newDiagramPrompt}
-                            onChange={(e) => setNewDiagramPrompt(e.target.value)}
-                            placeholder="e.g., Design a high-throughput event-driven microservices platform on AWS. Include API Gateway, EKS Kubernetes cluster, Kafka event mesh, DynamoDB for orders, and Redis for low-latency session caching..."
-                            className="w-full bg-slate-950 border border-slate-700/80 focus:border-teal-400 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none transition-all resize-none leading-relaxed font-medium"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">
-                            Blueprint
-                          </label>
-                          <select
-                            value={selectedTemplate}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setSelectedTemplate(val);
-                              if (val.startsWith('arch_')) {
-                                const archId = val.replace('arch_', '');
-                                setSelectedArchType(archId);
-                                const arch = getArchitectureTypeById(archId);
-                                if (arch) setNewDiagramPrompt(arch.prompt);
-                              }
-                            }}
-                            className="w-full bg-slate-950 border border-slate-800 focus:border-teal-400 rounded-xl px-3 py-2 text-xs text-teal-300 font-bold focus:outline-none transition-all cursor-pointer"
-                          >
-                            <optgroup label="🏢 BUSINESS & STRATEGIC BLUEPRINTS" className="bg-[#0b101d] text-teal-400 font-bold">
-                              {BUSINESS_ARCHITECTURE_TYPES.map((b) => (
-                                <option key={b.id} value={`arch_${b.id}`} className="bg-[#0b101d] text-slate-200">
-                                  🏢 {b.name}
-                                </option>
-                              ))}
-                            </optgroup>
-                            <optgroup label="⚙️ TECHNICAL & CLOUD TOPOLOGIES" className="bg-[#0b101d] text-indigo-400 font-bold">
-                              {TECHNICAL_ARCHITECTURE_TYPES.map((tech) => (
-                                <option key={tech.id} value={`arch_${tech.id}`} className="bg-[#0b101d] text-slate-200">
-                                  ⚙️ {tech.name}
-                                </option>
-                              ))}
-                            </optgroup>
-                          </select>
-                        </div>
-
-                        <button
-                          type="submit"
-                          disabled={isAnyAIBusy}
-                          className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                        >
-                          {isGenerating ? (
-                            <>
-                              <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-                              <span>Compiling Zero-Trust Vector Blueprint...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Sparkles className="w-4 h-4 fill-current" />
-                              <span>⚡ Synthesize Architecture with AI</span>
-                            </>
-                          )}
-                        </button>
-                      </form>
-                    </div>
-
-                    {/* Quick Start Presets (Right 5 Cols) */}
-                    <div className="lg:col-span-5 space-y-3.5">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-xs font-black text-slate-300 uppercase tracking-wider">Quick Start Presets</h4>
-                        <Link
-                          href="/templates"
-                          className="text-[11px] font-bold text-teal-400 hover:text-teal-300 transition-colors flex items-center gap-1"
-                        >
-                          <span>Browse 37 Templates</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </Link>
-                      </div>
-                      <div className="space-y-3">
-                        {[
-                          {
-                            name: "GCP Serverless App",
-                            prompt: "Act as a GCP Cloud Architect. Design a serverless web application architecture with Global HTTPS Load Balancer, Cloud CDN, Cloud Run microservices, Cloud SQL (PostgreSQL), and Cloud Storage.",
-                            provider: "GCP",
-                            color: "bg-teal-500/10 text-teal-400 border-teal-500/20"
-                          },
-                          {
-                            name: "AWS Kubernetes Cluster",
-                            prompt: "Act as an AWS Solutions Architect. Design a microservices architecture on EKS with Application Load Balancer, API Gateway, worker nodes, RDS PostgreSQL, DynamoDB, and ElastiCache Redis.",
-                            provider: "AWS",
-                            color: "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                          },
-                          {
-                            name: "AI Agentic RAG Pipeline",
-                            prompt: "Act as an AI Cloud Architect. Design a Retrieval-Augmented Generation (RAG) system with Cloud Run API, Cloud SQL pgvector, Vertex AI Search for document retrieval, and Gemini 3.7 Flash for reasoning.",
-                            provider: "AI / LLM",
-                            color: "bg-purple-500/10 text-purple-400 border-purple-500/20"
-                          },
-                          {
-                            name: "Enterprise Event-Driven Kafka",
-                            prompt: "Act as an Enterprise Architect. Design an event-driven architecture with Apache Kafka cluster, Schema Registry, Flink stream processing, Dead Letter Queue (DLQ), and microservice consumers.",
-                            provider: "Event-Driven",
-                            color: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
-                          }
-                        ].map((preset, idx) => (
-                          <div 
-                            key={idx}
-                            onClick={() => {
-                              setNewDiagramName(generateUniqueDiagramName(preset.name));
-                              setNewDiagramPrompt(preset.prompt);
-                            }}
-                            className="glass-panel border-panel-border/60 hover:border-teal-500/60 rounded-xl p-3.5 flex flex-col justify-between hover:scale-[1.01] transition-all cursor-pointer group bg-slate-950/60 hover:bg-slate-900/90"
-                          >
-                            <div className="flex items-center justify-between mb-1.5">
-                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${preset.color}`}>
-                                {preset.provider}
-                              </span>
-                              <span className="text-[10px] text-teal-400 opacity-0 group-hover:opacity-100 transition-opacity font-bold">
-                                Use Preset ➔
-                              </span>
-                            </div>
-                            <h5 className="font-extrabold text-xs text-white group-hover:text-teal-300 transition-colors mb-1">{preset.name}</h5>
-                            <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed font-medium">{preset.prompt}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <WelcomeGetStartedSlate
+                  theme={canvasTheme}
+                  isGenerating={isGenerating}
+                  onGenerateFromPrompt={async (promptText) => {
+                    const finalName = generateUniqueDiagramName();
+                    setIsGenerating(true);
+                    try {
+                      const res = await fetch('/api/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
+                        body: JSON.stringify({
+                          name: finalName,
+                          prompt: promptText,
+                          architectureType: selectedArchType || 'conceptual_diagram',
+                          isPrivate: false
+                        })
+                      });
+                      if (res.ok) {
+                        const data = await res.json();
+                        await fetchDiagrams();
+                        if (data.diagram?.id) {
+                          await loadDiagramDetails(data.diagram.id);
+                        }
+                      }
+                    } catch (err) {
+                      console.error('Failed to generate diagram:', err);
+                    } finally {
+                      setIsGenerating(false);
+                    }
+                  }}
+                  onOpenBlueprintCatalog={() => setIsPlaybookModalOpen(true)}
+                  onStartBlankCanvas={async () => {
+                    const blankName = `Custom Diagram #${Math.floor(100 + Math.random() * 900)}`;
+                    const blankXml = getDefaultXmlForArchitecture('blank_canvas', blankName, blankName);
+                    try {
+                      const res = await fetch('/api/diagrams', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
+                        body: JSON.stringify({
+                          name: blankName,
+                          xml: blankXml,
+                          comment: 'Initialized blank canvas',
+                          architectureType: 'blank_canvas',
+                          isPrivate: false
+                        })
+                      });
+                      if (res.ok) {
+                        const data = await res.json();
+                        await fetchDiagrams();
+                        if (data.diagram?.id) {
+                          await loadDiagramDetails(data.diagram.id);
+                        }
+                      }
+                    } catch (err) {
+                      console.error('Failed to create blank canvas:', err);
+                    }
+                  }}
+                />
               ) : isInlineEditorOpen ? (
                 /* Phase 2: In-Place Inline Editor */
                 <div className="w-full h-full relative z-10 flex flex-col bg-bg-dark animate-fade-in">
@@ -6729,6 +6672,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               isAuditing={isAuditing}
               costEstimateMonthly={costReport.totalMonthlyCostUsd}
               dynamicPlaceholder={dynamicPlaceholder}
+              theme={canvasTheme}
               onPromptChange={(val) => setPromptInput(val)}
               onSendPrompt={handleSendPrompt}
               onSelectSuggestion={(s) => setPromptInput(s)}
@@ -6793,7 +6737,6 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           )}
         </div>
           </>
-        )}
       </main>
       )}
 
@@ -6806,30 +6749,87 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
       {/* 1. Create Diagram Modal */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="glass-panel border-panel-border rounded-2xl p-6 md:p-8 w-full max-w-2xl shadow-2xl space-y-5">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in p-4">
+          <div className={`rounded-3xl p-6 md:p-8 w-full max-w-2xl shadow-2xl space-y-5 border transition-all ${
+            canvasTheme === 'light'
+              ? 'bg-white border-slate-200 text-slate-900'
+              : 'bg-[#0B101D] border-teal-500/30 text-slate-100'
+          }`}>
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <h3 className="font-extrabold text-xl text-white flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-teal-400" />
+                <h3 className={`font-black text-xl flex items-center gap-2 ${
+                  canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                }`}>
+                  <Sparkles className="w-5 h-5 text-teal-500" />
                   <span>Create New Architecture Diagram</span>
                 </h3>
-                <p className="text-xs text-slate-400">Configure your project, select an enterprise blueprint, and tune architectural parameters.</p>
+                <p className={`text-xs ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                  Configure your project container, define system requirements, or customize an enterprise blueprint.
+                </p>
               </div>
               <button 
                 onClick={() => setIsCreateModalOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
+                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                  canvasTheme === 'light'
+                    ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-900'
+                    : 'hover:bg-slate-800 text-slate-400 hover:text-white'
+                }`}
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
+
+            {/* Mode Switcher Tabs */}
+            <div className={`flex items-center p-1 rounded-xl border ${
+              canvasTheme === 'light'
+                ? 'bg-slate-100 border-slate-200'
+                : 'bg-slate-950 border-slate-800'
+            }`}>
+              <button
+                type="button"
+                id="create-modal-tab-simple"
+                onClick={() => setCreateModalTab('simple')}
+                className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  createModalTab === 'simple'
+                    ? canvasTheme === 'light'
+                      ? 'bg-white text-teal-800 shadow-sm'
+                      : 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm'
+                    : canvasTheme === 'light'
+                      ? 'text-slate-600 hover:text-slate-900'
+                      : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Quick AI Prompt (Simple)</span>
+              </button>
+              <button
+                type="button"
+                id="create-modal-tab-advanced"
+                onClick={() => setCreateModalTab('advanced')}
+                className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  createModalTab === 'advanced'
+                    ? canvasTheme === 'light'
+                      ? 'bg-white text-indigo-800 shadow-sm'
+                      : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-sm'
+                    : canvasTheme === 'light'
+                      ? 'text-slate-600 hover:text-slate-900'
+                      : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Settings2 className="w-3.5 h-3.5" />
+                <span>Blueprint Matrix &amp; 7 Dimensions (Advanced)</span>
+              </button>
+            </div>
+
             <form onSubmit={handleCreateDiagram} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
                 <div className="sm:col-span-6 space-y-1.5">
-                  <label className="block text-xs font-semibold text-slate-300 flex items-center justify-between">
-                    <span>Project</span>
+                  <label className={`block text-xs font-semibold flex items-center justify-between ${
+                    canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                  }`}>
+                    <span>Project Container</span>
                     {earlierProjects.length > 0 && (
-                      <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                      <span className="text-[10px] text-teal-500 font-mono">({earlierProjects.length} earlier)</span>
                     )}
                   </label>
                   <div className="flex items-center gap-1.5">
@@ -6837,8 +6837,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       type="text"
                       value={newProjectName}
                       onChange={(e) => setNewProjectName(e.target.value)}
-                      placeholder="e.g. Project-842"
-                      className="flex-1 min-w-0 bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
+                      placeholder="e.g. Google Cloud Project #101"
+                      className={`flex-1 min-w-0 border rounded-xl px-3.5 py-2.5 text-xs md:text-sm focus:outline-none transition-all ${
+                        canvasTheme === 'light'
+                          ? 'bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
+                          : 'bg-bg-dark border-panel-border focus:border-teal-accent text-slate-100 placeholder-slate-400'
+                      }`}
                     />
                     {earlierProjects.length > 0 && (
                       <select
@@ -6848,12 +6852,16 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             setNewProjectName(e.target.value);
                           }
                         }}
-                        className="w-28 shrink-0 bg-bg-dark border border-panel-border focus:border-teal-accent text-teal-400 rounded-xl px-2 py-2.5 text-xs outline-none cursor-pointer truncate"
+                        className={`w-28 shrink-0 border text-teal-600 dark:text-teal-400 rounded-xl px-2 py-2.5 text-xs outline-none cursor-pointer truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-slate-50 border-slate-300'
+                            : 'bg-bg-dark border-panel-border'
+                        }`}
                         title="Choose from earlier projects"
                       >
                         <option value="" disabled>📂 Earlier</option>
                         {earlierProjects.map((p: string) => (
-                          <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                          <option key={p} value={p} className={canvasTheme === 'light' ? 'bg-white text-slate-900' : 'bg-[#0B101D] text-slate-200'}>
                             {p}
                           </option>
                         ))}
@@ -6862,30 +6870,42 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   </div>
                 </div>
                 <div className="sm:col-span-6 space-y-1.5">
-                  <label className="block text-xs font-semibold text-slate-300">Diagram Name</label>
+                  <label className={`block text-xs font-semibold ${
+                    canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                  }`}>Diagram Name</label>
                   <input
                     type="text"
                     required
                     value={newDiagramName}
                     onChange={(e) => setNewDiagramName(e.target.value)}
                     placeholder="e.g., Google Cloud E-Commerce"
-                    className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all"
+                    className={`w-full border rounded-xl px-3.5 py-2.5 text-xs md:text-sm focus:outline-none transition-all ${
+                      canvasTheme === 'light'
+                        ? 'bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
+                        : 'bg-bg-dark border-panel-border focus:border-teal-accent text-slate-100 placeholder-slate-400'
+                    }`}
                     autoFocus
                   />
                 </div>
               </div>
 
+              {/* Template / Blueprint Selector */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
-                  <span>Select Architecture Blueprint or Template</span>
-                  <span className="text-[10px] text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
+                <label className={`block text-xs font-bold flex items-center justify-between ${
+                  canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                }`}>
+                  <span>Architecture Starting Point</span>
+                  <span className="text-[10px] text-teal-500 font-mono">({facetedOptions.matchingCount} matching)</span>
                 </label>
                 <select
                   value={selectedTemplate}
                   onChange={(e) => {
                     const val = e.target.value;
                     setSelectedTemplate(val);
-                    if (val.startsWith('arch_')) {
+                    if (val === 'arch_blank_canvas') {
+                      setSelectedArchType('blank_canvas');
+                      setNewDiagramPrompt('');
+                    } else if (val.startsWith('arch_')) {
                       const archId = val.replace('arch_', '');
                       setSelectedArchType(archId);
                       syncDimensionsForBlueprint(archId);
@@ -6906,14 +6926,21 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       }
                     }
                   }}
-                  className="w-full bg-slate-900 border border-teal-500/40 hover:border-teal-400 focus:border-teal-accent rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-teal-300 font-bold focus:outline-none transition-all cursor-pointer shadow-sm"
+                  className={`w-full border rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold focus:outline-none transition-all cursor-pointer shadow-sm ${
+                    canvasTheme === 'light'
+                      ? 'bg-slate-50 border-slate-300 text-teal-900 focus:border-teal-500'
+                      : 'bg-slate-900 border-teal-500/40 text-teal-300 focus:border-teal-accent'
+                  }`}
                 >
-                  <option value="0" className="bg-[#0b101d] text-teal-300 font-bold py-1">
+                  <option value="0" className={canvasTheme === 'light' ? 'bg-white text-teal-800' : 'bg-[#0b101d] text-teal-300'}>
                     ✨ Auto-Detect Architecture ({facetedOptions.matchingCount} Matching)
+                  </option>
+                  <option value="arch_blank_canvas" className={canvasTheme === 'light' ? 'bg-white text-slate-800' : 'bg-[#0b101d] text-slate-200'}>
+                    ⬜ Clean Blank Canvas (Draw.io + GCP Stencils)
                   </option>
                   {facetedOptions.matchingBlueprints.length > 0 ? (
                     facetedOptions.matchingBlueprints.map((item) => (
-                      <option key={item.combinedId} value={`arch_${item.combinedId}`} className="bg-[#0b101d] text-slate-100 font-bold py-1">
+                      <option key={item.combinedId} value={`arch_${item.combinedId}`} className={canvasTheme === 'light' ? 'bg-white text-slate-800' : 'bg-[#0b101d] text-slate-100'}>
                         🏛️ {item.diagramName}
                       </option>
                     ))
@@ -6922,228 +6949,199 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       ⚠️ No blueprints match this combination
                     </option>
                   )}
-                  <option value="custom" className="bg-[#0b101d] text-teal-300 font-bold py-1">✍️ Custom Freeform Prompt...</option>
+                  <option value="custom" className={canvasTheme === 'light' ? 'bg-white text-teal-800' : 'bg-[#0b101d] text-teal-300'}>
+                    ✍️ Custom Freeform Prompt...
+                  </option>
                 </select>
               </div>
 
-              {/* 7 Architectural Classification & Lifecycle Dropdowns (Cascading Facets) */}
-              <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-3.5 space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                      <Settings2 className="w-3.5 h-3.5 text-teal-400" />
-                      <span>Architectural Classification &amp; Lifecycle Dimensions</span>
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
-                      {facetedOptions.matchingCount} of {BLUEPRINT_KNOWLEDGE_MATRIX.length} Matching
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleResetFilters}
-                    className="text-[10px] font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
-                    title="Reset all dimension filters"
-                  >
-                    <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-300" />
-                    <span>Reset Filters</span>
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
-                  {/* 1. Phase Name */}
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Phase Name">
-                      Phase Name
-                    </label>
-                    <select
-                      value={selectedPhaseName}
-                      onChange={(e) => setSelectedPhaseName(e.target.value)}
-                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
+              {/* 7 Dimensions Matrix (Only in Advanced Tab) */}
+              {createModalTab === 'advanced' && (
+                <div className={`border rounded-2xl p-3.5 space-y-2.5 ${
+                  canvasTheme === 'light'
+                    ? 'bg-slate-50 border-slate-200'
+                    : 'bg-[#070A13]/90 border-slate-800/90'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-teal-500 flex items-center gap-1.5">
+                        <Settings2 className="w-3.5 h-3.5" />
+                        <span>Architectural Classification &amp; Lifecycle Dimensions</span>
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-300 font-mono">
+                        {facetedOptions.matchingCount} of {BLUEPRINT_KNOWLEDGE_MATRIX.length} Matching
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleResetFilters}
+                      className="text-[10px] font-bold text-slate-400 hover:text-teal-500 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                      title="Reset all dimension filters"
                     >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 7 Phases (50 Blueprints)</option>
-                      {PHASE_NAME_OPTIONS.map((opt) => {
-                        const count = facetedOptions.phaseCounts[opt] || 0;
-                        return (
-                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                            {opt} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
+                      <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-500" />
+                      <span>Reset Filters</span>
+                    </button>
                   </div>
 
-                  {/* 2. Architecture Domain */}
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architecture Domain">
-                      Architecture Domain
-                    </label>
-                    <select
-                      value={selectedDomain}
-                      onChange={(e) => setSelectedDomain(e.target.value)}
-                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
-                    >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 6 Domains</option>
-                      {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
-                        const count = facetedOptions.domainCounts[opt] || 0;
-                        return (
-                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                            {opt} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                    {/* 1. Phase Name */}
+                    <div className="space-y-1">
+                      <label className={`block text-[11px] font-bold truncate ${canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'}`} title="Phase Name">
+                        Phase Name
+                      </label>
+                      <select
+                        value={selectedPhaseName}
+                        onChange={(e) => setSelectedPhaseName(e.target.value)}
+                        className={`w-full border text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-800 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
+                      >
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-700' : 'bg-[#0B101D] text-teal-300'}>✨ All 7 Phases (50 Blueprints)</option>
+                        {PHASE_NAME_OPTIONS.map((opt) => {
+                          const count = facetedOptions.phaseCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-800' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
 
-                  {/* 3. Abstraction Level */}
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Abstraction Level">
-                      Abstraction Level
-                    </label>
-                    <select
-                      value={selectedAbstractionLevel}
-                      onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
-                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
-                    >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 4 Abstractions</option>
-                      {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
-                        const count = facetedOptions.abstractionCounts[opt] || 0;
-                        return (
-                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                            {opt} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
+                    {/* 2. Architecture Domain */}
+                    <div className="space-y-1">
+                      <label className={`block text-[11px] font-bold truncate ${canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'}`} title="Architecture Domain">
+                        Domain
+                      </label>
+                      <select
+                        value={selectedDomain}
+                        onChange={(e) => setSelectedDomain(e.target.value)}
+                        className={`w-full border text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-800 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
+                      >
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-700' : 'bg-[#0B101D] text-teal-300'}>✨ All 6 Domains</option>
+                        {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
+                          const count = facetedOptions.domainCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-800' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
 
-                  {/* 4. Architectural Stack Layer */}
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architectural Stack Layer">
-                      Stack Layer
-                    </label>
-                    <select
-                      value={selectedStackLayer}
-                      onChange={(e) => setSelectedStackLayer(e.target.value)}
-                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
-                    >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 5 Layers</option>
-                      {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
-                        const count = facetedOptions.stackLayerCounts[opt] || 0;
-                        return (
-                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                            {opt} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
+                    {/* 3. Abstraction Level */}
+                    <div className="space-y-1">
+                      <label className={`block text-[11px] font-bold truncate ${canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'}`} title="Abstraction Level">
+                        Abstraction
+                      </label>
+                      <select
+                        value={selectedAbstractionLevel}
+                        onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
+                        className={`w-full border text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-800 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
+                      >
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-700' : 'bg-[#0B101D] text-teal-300'}>✨ All 4 Abstractions</option>
+                        {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
+                          const count = facetedOptions.abstractionCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-800' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
 
-                  {/* 5. Default Layout Direction */}
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Default Layout Direction">
-                      Layout Direction
-                    </label>
-                    <select
-                      value={selectedLayoutDirection}
-                      onChange={(e) => setSelectedLayoutDirection(e.target.value)}
-                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
-                    >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Directions</option>
-                      {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
-                        const count = facetedOptions.directionCounts[opt] || 0;
-                        return (
-                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                            {opt === 'LR' ? 'LR (Left to Right)' : opt === 'TD' ? 'TD (Top to Down)' : opt} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-
-                  {/* 6. Sales Cycle Stage */}
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Sales Cycle Stage">
-                      Sales Stage
-                    </label>
-                    <select
-                      value={selectedSalesCycleStage}
-                      onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
-                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
-                    >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Stages</option>
-                      {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
-                        const count = facetedOptions.salesStageCounts[opt] || 0;
-                        return (
-                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                            {opt} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-
-                  {/* 7. Lifecycle Phase */}
-                  <div className="space-y-1 sm:col-span-2">
-                    <label className="block text-[11px] font-bold text-slate-300 truncate" title="Lifecycle Phase">
-                      Lifecycle Phase
-                    </label>
-                    <select
-                      value={selectedLifecyclePhase}
-                      onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
-                      className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate"
-                    >
-                      <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All Lifecycles</option>
-                      {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
-                        const count = facetedOptions.lifecycleCounts[opt] || 0;
-                        return (
-                          <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                            {opt} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
+                    {/* 4. Stack Layer */}
+                    <div className="space-y-1">
+                      <label className={`block text-[11px] font-bold truncate ${canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'}`} title="Architectural Stack Layer">
+                        Stack Layer
+                      </label>
+                      <select
+                        value={selectedStackLayer}
+                        onChange={(e) => setSelectedStackLayer(e.target.value)}
+                        className={`w-full border text-xs rounded-xl px-2.5 py-1.5 outline-none cursor-pointer transition-all truncate ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-slate-800 focus:border-teal-500'
+                            : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                        }`}
+                      >
+                        <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-700' : 'bg-[#0B101D] text-teal-300'}>✨ All 5 Layers</option>
+                        {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
+                          const count = facetedOptions.stackLayerCounts[opt] || 0;
+                          return (
+                            <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? (count > 0 ? 'bg-white text-slate-800' : 'bg-white text-slate-400') : (count > 0 ? 'bg-[#0B101D] text-slate-200' : 'bg-[#0B101D] text-slate-500')}>
+                              {opt} ({count})
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
+              {/* Initial Prompt Area */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-400 flex items-center justify-between">
-                  <span>Initial AI Prompt <span className="text-slate-500 font-normal">(Optional)</span></span>
-                  <span className="text-[10px] text-teal-400 font-mono">Gemini 3.7 Flash</span>
+                <label className={`block text-xs font-semibold flex items-center justify-between ${
+                  canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-400'
+                }`}>
+                  <span>System Requirements &amp; AI Directives</span>
+                  <span className="text-[10px] text-teal-500 font-mono">Gemini 3.7 Flash</span>
                 </label>
                 <textarea
-                  rows={2}
+                  rows={3}
                   value={newDiagramPrompt}
                   onChange={(e) => setNewDiagramPrompt(e.target.value)}
-                  placeholder="e.g., Act as a GCP Data Architect. Design a streaming data pipeline with Pub/Sub and BigQuery..."
-                  className="w-full bg-bg-dark border border-panel-border focus:border-teal-accent rounded-xl p-3 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none transition-all resize-none"
+                  placeholder="e.g., Design a production-grade multi-tier enterprise architecture on Google Cloud with GKE Autopilot, Cloud Armor, and Cloud SQL PostgreSQL..."
+                  className={`w-full border rounded-xl p-3 text-xs md:text-sm focus:outline-none transition-all resize-none ${
+                    canvasTheme === 'light'
+                      ? 'bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
+                      : 'bg-bg-dark border-panel-border focus:border-teal-accent text-slate-100 placeholder-slate-400'
+                  }`}
                 />
               </div>
+
+              {/* Privacy Setting */}
               <div className="pt-1">
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer select-none">
+                <label className={`flex items-center gap-2 text-xs font-bold cursor-pointer select-none ${
+                  canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                }`}>
                   <input
                     type="checkbox"
                     checked={newDiagramIsPrivate}
                     onChange={(e) => setNewDiagramIsPrivate(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-teal-400 focus:ring-teal-400 focus:ring-offset-slate-900 cursor-pointer"
+                    className="w-4 h-4 rounded border-slate-400 text-teal-500 focus:ring-teal-400 cursor-pointer"
                   />
                   {newDiagramIsPrivate ? (
-                    <span className="flex items-center gap-1 text-amber-300">
-                      <Lock className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="flex items-center gap-1 text-amber-600 dark:text-amber-300">
+                      <Lock className="w-3.5 h-3.5 text-amber-500" />
                       <span>Private Diagram (Only visible to me)</span>
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-teal-300">
-                      <Globe className="w-3.5 h-3.5 text-teal-400" />
-                      <span>Public Diagram (Shared & reusable across sessions)</span>
+                    <span className="flex items-center gap-1 text-teal-600 dark:text-teal-300">
+                      <Globe className="w-3.5 h-3.5 text-teal-500" />
+                      <span>Public Diagram (Shared &amp; reusable across sessions)</span>
                     </span>
                   )}
                 </label>
               </div>
+
+              {/* Action Button */}
               <button
                 type="submit"
                 disabled={isAnyAIBusy}
-                className="w-full py-3.5 rounded-2xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-base transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-3.5 rounded-2xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-sm md:text-base transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {isGenerating ? (
                   <>
@@ -7151,7 +7149,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     <span>Synthesizing Architecture...</span>
                   </>
                 ) : (
-                  <span>Create Canvas</span>
+                  <span>🚀 Create &amp; Open Architecture Canvas</span>
                 )}
               </button>
             </form>

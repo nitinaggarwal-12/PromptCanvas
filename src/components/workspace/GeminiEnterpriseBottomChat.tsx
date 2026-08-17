@@ -45,6 +45,7 @@ interface GeminiEnterpriseBottomChatProps {
   isAuditing: boolean;
   costEstimateMonthly: number;
   dynamicPlaceholder?: string;
+  theme?: 'light' | 'dark';
   
   // Handlers
   onPromptChange: (val: string) => void;
@@ -70,6 +71,7 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
   isAuditing,
   costEstimateMonthly,
   dynamicPlaceholder = "Ask Gemini to refine architecture, add cloud tiers, enforce security policies...",
+  theme = 'dark',
   onPromptChange,
   onSendPrompt,
   onSelectSuggestion,
@@ -84,6 +86,8 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
   const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const historyEndRef = useRef<HTMLDivElement>(null);
+
+  const isLight = theme === 'light';
 
   // Auto scroll history when opened or updated
   useEffect(() => {
@@ -117,21 +121,27 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
   const hasDiffChanges = versionDiff.added.length > 0 || versionDiff.removed.length > 0 || versionDiff.modified.length > 0;
 
   return (
-    <div className="w-full bg-[#070A13]/95 backdrop-blur-xl border-t border-slate-800 shadow-2xl flex flex-col z-30 shrink-0 transition-all">
+    <div className={`w-full border-t shadow-2xl flex flex-col z-30 shrink-0 transition-all ${
+      isLight ? 'bg-white/95 backdrop-blur-xl border-slate-200' : 'bg-[#070A13]/95 backdrop-blur-xl border-slate-800'
+    }`}>
       
       {/* 📜 EXPANDABLE HISTORY & AUDIT TRAIL DRAWER */}
       {isHistoryDrawerOpen && (
-        <div className={`border-b border-slate-800 bg-[#090D18]/98 overflow-y-auto px-4 md:px-8 py-4 space-y-4 transition-all ${
-          isDrawerExpanded ? 'max-h-[500px]' : 'max-h-[280px]'
-        }`}>
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div className={`border-b overflow-y-auto px-4 md:px-8 py-4 space-y-4 transition-all ${
+          isLight ? 'bg-slate-50/98 border-slate-200' : 'bg-[#090D18]/98 border-slate-800'
+        } ${isDrawerExpanded ? 'max-h-[500px]' : 'max-h-[280px]'}`}>
+          <div className={`flex items-center justify-between border-b pb-2 ${
+            isLight ? 'border-slate-200' : 'border-slate-800'
+          }`}>
             <div className="flex items-center gap-2">
-              <History className="w-4 h-4 text-teal-400" />
-              <h4 className="text-xs font-black uppercase tracking-wider text-slate-200">
+              <History className={`w-4 h-4 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
+              <h4 className={`text-xs font-black uppercase tracking-wider ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
                 Project Chat &amp; Architecture Audit Log
               </h4>
               {displayedVersion && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-950 text-teal-300 border border-teal-800">
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+                  isLight ? 'bg-teal-50 text-teal-800 border-teal-200' : 'bg-teal-950 text-teal-300 border border-teal-800'
+                }`}>
                   Active View v{displayedVersion.version_number}
                 </span>
               )}
@@ -141,7 +151,9 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
               <button
                 type="button"
                 onClick={() => setIsDrawerExpanded(!isDrawerExpanded)}
-                className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className={`p-1 rounded transition-colors ${
+                  isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
                 title={isDrawerExpanded ? "Minimize Drawer" : "Expand Drawer"}
               >
                 {isDrawerExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
@@ -149,7 +161,9 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
               <button
                 type="button"
                 onClick={() => setIsHistoryDrawerOpen(false)}
-                className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className={`p-1 rounded transition-colors ${
+                  isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
                 title="Close History Drawer"
               >
                 <ChevronDown className="w-4 h-4" />
@@ -161,7 +175,7 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
             
             {/* Column 1: Chat Messages */}
             <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              <span className={`text-[10px] font-bold uppercase tracking-wider block ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Prompt &amp; AI Evolution History
               </span>
               {chatMessages.map((msg) => (
@@ -169,15 +183,19 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
                   key={msg.id}
                   className={`p-2.5 rounded-xl border text-xs leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-teal-950/40 border-teal-500/40 text-teal-100 ml-4'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-200 mr-4'
+                      ? isLight
+                        ? 'bg-teal-50 border-teal-200 text-teal-950 ml-4'
+                        : 'bg-teal-950/40 border-teal-500/40 text-teal-100 ml-4'
+                      : isLight
+                        ? 'bg-white border-slate-200 text-slate-800 mr-4 shadow-sm'
+                        : 'bg-slate-900/60 border-slate-800 text-slate-200 mr-4'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="text-[10px] font-black uppercase text-teal-400">
+                    <span className={`text-[10px] font-black uppercase ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
                       {msg.sender === 'user' ? '👤 Architect' : '✨ Gemini Enterprise'}
                     </span>
-                    <span className="text-[9px] text-slate-500 font-mono">{msg.timestamp}</span>
+                    <span className={`text-[9px] font-mono ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>{msg.timestamp}</span>
                   </div>
                   <p>{msg.text}</p>
                 </div>
@@ -186,34 +204,36 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
             </div>
 
             {/* Column 2: Audit Trail of Changes in this version */}
-            <div className="space-y-2 border-l border-slate-800 pl-4">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+            <div className={`space-y-2 border-l pl-4 ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider block ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 Component Changes (Audit Trail)
               </span>
               {displayedVersion ? (
-                <div className="space-y-1.5 bg-[#05070E] p-2.5 rounded-xl border border-slate-800 text-[10px] font-mono max-h-[200px] overflow-y-auto">
-                  <div className="text-slate-400 font-bold mb-1">
+                <div className={`space-y-1.5 p-2.5 rounded-xl border text-[10px] font-mono max-h-[200px] overflow-y-auto ${
+                  isLight ? 'bg-white border-slate-200 text-slate-700 shadow-sm' : 'bg-[#05070E] border-slate-800 text-slate-300'
+                }`}>
+                  <div className={`font-bold mb-1 ${isLight ? 'text-slate-800' : 'text-slate-400'}`}>
                     Version v{displayedVersion.version_number}: {displayedVersion.comment || 'Initial Baseline'}
                   </div>
                   {!hasDiffChanges ? (
-                    <p className="text-slate-500 italic">No structural changes detected.</p>
+                    <p className="text-slate-400 italic">No structural changes detected.</p>
                   ) : (
                     <>
                       {versionDiff.added.map((item: string, i: number) => (
-                        <div key={`add-${i}`} className="text-emerald-400 flex items-start gap-1">
-                          <span className="font-bold text-emerald-500">+</span>
+                        <div key={`add-${i}`} className="text-emerald-600 dark:text-emerald-400 flex items-start gap-1">
+                          <span className="font-bold text-emerald-600 dark:text-emerald-500">+</span>
                           <span>Added {item}</span>
                         </div>
                       ))}
                       {versionDiff.modified.map((item: string, i: number) => (
-                        <div key={`mod-${i}`} className="text-amber-400 flex items-start gap-1">
-                          <span className="font-bold text-amber-500">~</span>
+                        <div key={`mod-${i}`} className="text-amber-600 dark:text-amber-400 flex items-start gap-1">
+                          <span className="font-bold text-amber-600 dark:text-amber-500">~</span>
                           <span>Modified {item}</span>
                         </div>
                       ))}
                       {versionDiff.removed.map((item: string, i: number) => (
-                        <div key={`rem-${i}`} className="text-rose-400 flex items-start gap-1">
-                          <span className="font-bold text-rose-500">-</span>
+                        <div key={`rem-${i}`} className="text-rose-600 dark:text-rose-400 flex items-start gap-1">
+                          <span className="font-bold text-rose-600 dark:text-rose-500">-</span>
                           <span>Removed {item}</span>
                         </div>
                       ))}
@@ -221,7 +241,7 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
                   )}
                 </div>
               ) : (
-                <p className="text-xs text-slate-500">No active version selected.</p>
+                <p className="text-xs text-slate-400">No active version selected.</p>
               )}
             </div>
 
@@ -232,7 +252,9 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
       {/* 💡 FLOATING SUGGESTION CHIPS ROW */}
       {suggestions.length > 0 && !isGenerating && (
         <div className="px-4 md:px-8 pt-2.5 pb-1 flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-1 text-[10px] font-extrabold uppercase text-teal-400 shrink-0 select-none mr-1">
+          <div className={`flex items-center gap-1 text-[10px] font-extrabold uppercase shrink-0 select-none mr-1 ${
+            isLight ? 'text-teal-700' : 'text-teal-400'
+          }`}>
             <Sparkles className="w-3 h-3" />
             <span>Suggested:</span>
           </div>
@@ -241,7 +263,11 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
               key={idx}
               type="button"
               onClick={() => onSelectSuggestion(suggestion)}
-              className="shrink-0 text-[11px] font-semibold bg-slate-900/90 hover:bg-teal-950/60 hover:text-teal-200 text-slate-300 border border-slate-700/80 hover:border-teal-500/60 px-3 py-1 rounded-full transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+              className={`shrink-0 text-[11px] font-semibold px-3 py-1 rounded-full transition-all cursor-pointer shadow-sm hover:scale-[1.02] border ${
+                isLight
+                  ? 'bg-slate-100 hover:bg-teal-50 hover:text-teal-900 text-slate-700 border-slate-200 hover:border-teal-300'
+                  : 'bg-slate-900/90 hover:bg-teal-950/60 hover:text-teal-200 text-slate-300 border-slate-700/80 hover:border-teal-500/60'
+              }`}
               title={suggestion}
             >
               {suggestion}
@@ -254,13 +280,17 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
       <div className="px-4 md:px-8 py-2.5 flex items-center justify-between gap-3 max-w-7xl mx-auto w-full">
         
         {/* Gemini Sparkle Branding */}
-        <div className="hidden lg:flex items-center gap-2 shrink-0 select-none text-slate-400">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-500/20 to-indigo-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 shadow-md">
+        <div className={`hidden lg:flex items-center gap-2 shrink-0 select-none ${isLight ? 'text-slate-700' : 'text-slate-400'}`}>
+          <div className={`w-8 h-8 rounded-xl flex items-center justify-center shadow-md border ${
+            isLight
+              ? 'bg-gradient-to-br from-teal-50 to-indigo-50 border-teal-200 text-teal-700'
+              : 'bg-gradient-to-br from-teal-500/20 to-indigo-500/20 border-teal-500/40 text-teal-400'
+          }`}>
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs font-black text-white block leading-none">Gemini Enterprise</span>
-            <span className="text-[9px] font-mono text-teal-400 leading-none">3.7 Flash AI</span>
+            <span className={`text-xs font-black block leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Enterprise</span>
+            <span className={`text-[9px] font-mono leading-none ${isLight ? 'text-teal-700 font-bold' : 'text-teal-400'}`}>3.7 Flash AI</span>
           </div>
         </div>
 
@@ -279,7 +309,11 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
                 onSendPrompt(e);
               }
             }}
-            className="w-full bg-[#0B0F1C] border border-slate-700 hover:border-teal-500/70 focus:border-teal-400 rounded-2xl pl-4 pr-24 py-2.5 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all shadow-inner ring-1 ring-slate-800 focus:ring-2 focus:ring-teal-400/40 font-medium"
+            className={`w-full rounded-2xl pl-4 pr-24 py-2.5 text-xs md:text-sm font-medium focus:outline-none resize-none transition-all shadow-inner border ring-1 ${
+              isLight
+                ? 'bg-slate-50 border-slate-300 hover:border-teal-600 focus:border-teal-600 text-slate-900 placeholder-slate-400 ring-slate-200 focus:ring-2 focus:ring-teal-500/30'
+                : 'bg-[#0B0F1C] border-slate-700 hover:border-teal-500/70 focus:border-teal-400 text-slate-100 placeholder-slate-400 ring-slate-800 focus:ring-2 focus:ring-teal-400/40'
+            }`}
           />
 
           {/* Action Tools Inside Input Box */}
@@ -289,10 +323,14 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
             <button
               type="button"
               onClick={() => setIsHistoryDrawerOpen(!isHistoryDrawerOpen)}
-              className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+              className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer border ${
                 isHistoryDrawerOpen
-                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? isLight
+                    ? 'bg-teal-100 text-teal-900 border-teal-300'
+                    : 'bg-teal-500/20 text-teal-300 border-teal-500/40'
+                  : isLight
+                    ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200 border-transparent'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800 border-transparent'
               }`}
               title="View Version Timeline & Audit History"
             >
@@ -316,7 +354,11 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
         <button
           type="button"
           onClick={() => setIsHistoryDrawerOpen(!isHistoryDrawerOpen)}
-          className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-teal-400"
+          className={`lg:hidden p-2 rounded-xl border ${
+            isLight
+              ? 'bg-slate-100 border-slate-300 text-slate-700 hover:text-teal-700'
+              : 'bg-slate-900 border-slate-700 text-slate-300 hover:text-teal-400'
+          }`}
           title="History"
         >
           <History className="w-4 h-4" />
@@ -325,7 +367,9 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
       </div>
 
       {/* 🛠️ BOTTOM COMPACT ACTION TOOLBAR (Persistent Governance, FinOps & Delivery Dock) */}
-      <div className="px-4 md:px-8 py-1.5 bg-[#050811] border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 overflow-x-auto no-scrollbar">
+      <div className={`px-4 md:px-8 py-1.5 border-t flex items-center justify-between text-[11px] overflow-x-auto no-scrollbar ${
+        isLight ? 'bg-slate-100/90 border-slate-200 text-slate-700' : 'bg-[#050811] border-slate-800/80 text-slate-400'
+      }`}>
         
         <div className="flex items-center gap-2">
           {/* Security Audit */}
@@ -333,10 +377,14 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
             type="button"
             onClick={onAuditDiagram}
             disabled={isAuditing}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-950/40 hover:bg-teal-900/50 border border-teal-500/40 text-teal-300 font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50"
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 border ${
+              isLight
+                ? 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-800'
+                : 'bg-teal-950/40 hover:bg-teal-900/50 border-teal-500/40 text-teal-300'
+            }`}
             title="Run CIS GCP & Zero-Trust Security Audit"
           >
-            {isAuditing ? <Loader2 className="w-3 h-3 animate-spin text-teal-400" /> : <Shield className="w-3 h-3 text-teal-400" />}
+            {isAuditing ? <Loader2 className="w-3 h-3 animate-spin text-teal-500" /> : <Shield className="w-3 h-3 text-teal-500" />}
             <span>Security Audit</span>
           </button>
 
@@ -344,10 +392,14 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
           <button
             type="button"
             onClick={onOpenCostModal}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-500/40 text-emerald-300 font-bold transition-all cursor-pointer shadow-sm"
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer shadow-sm border ${
+              isLight
+                ? 'bg-emerald-50 hover:bg-emerald-100 border-emerald-300 text-emerald-800'
+                : 'bg-emerald-950/40 hover:bg-emerald-900/50 border-emerald-500/40 text-emerald-300'
+            }`}
             title="View Live GCP Cost Estimation"
           >
-            <DollarSign className="w-3 h-3 text-emerald-400" />
+            <DollarSign className="w-3 h-3 text-emerald-500" />
             <span>Est. ${costEstimateMonthly.toLocaleString()}/mo</span>
           </button>
 
@@ -355,10 +407,14 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
           <button
             type="button"
             onClick={onOpenComposeModal}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-950/40 hover:bg-sky-900/50 border border-sky-500/40 text-sky-300 font-bold transition-all cursor-pointer shadow-sm"
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer shadow-sm border ${
+              isLight
+                ? 'bg-sky-50 hover:bg-sky-100 border-sky-300 text-sky-800'
+                : 'bg-sky-950/40 hover:bg-sky-900/50 border-sky-500/40 text-sky-300'
+            }`}
             title="Generate PRD, SDD & Architecture Document"
           >
-            <FileText className="w-3 h-3 text-sky-400" />
+            <FileText className="w-3 h-3 text-sky-500" />
             <span>Compose Doc</span>
           </button>
         </div>
@@ -368,10 +424,14 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
           <button
             type="button"
             onClick={onOpenPlaybookModal}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/40 text-purple-300 font-bold transition-all cursor-pointer shadow-sm"
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer shadow-sm border ${
+              isLight
+                ? 'bg-purple-50 hover:bg-purple-100 border-purple-300 text-purple-800'
+                : 'bg-purple-950/40 hover:bg-purple-900/50 border-purple-500/40 text-purple-300'
+            }`}
             title="Architecture Knowledge Matrix"
           >
-            <BookOpen className="w-3 h-3 text-purple-400" />
+            <BookOpen className="w-3 h-3 text-purple-500" />
             <span className="hidden sm:inline">Blueprint Matrix</span>
           </button>
 
@@ -379,10 +439,14 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
           <button
             type="button"
             onClick={onOpenSetMasterModal}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/40 text-amber-300 font-extrabold transition-all cursor-pointer shadow-sm"
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-extrabold transition-all cursor-pointer shadow-sm border ${
+              isLight
+                ? 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-900'
+                : 'bg-amber-950/40 hover:bg-amber-900/50 border-amber-500/40 text-amber-300'
+            }`}
             title="Promote diagram as Master Blueprint"
           >
-            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+            <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
             <span className="hidden sm:inline">Set Master</span>
           </button>
 
@@ -390,10 +454,14 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
           <button
             type="button"
             onClick={onOpenExportModal}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-teal-500/50 text-teal-300 font-bold transition-all cursor-pointer shadow-sm"
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer shadow-sm border ${
+              isLight
+                ? 'bg-white hover:bg-slate-50 border-slate-300 hover:border-teal-500 text-slate-800'
+                : 'bg-slate-900 hover:bg-slate-800 border-slate-700 hover:border-teal-500/50 text-teal-300'
+            }`}
             title="Export PNG, PDF, SVG, Draw.io XML, Terraform"
           >
-            <Download className="w-3 h-3 text-teal-400" />
+            <Download className={`w-3.5 h-3.5 ${isLight ? 'text-slate-700' : 'text-teal-400'}`} />
             <span>Export Studio</span>
           </button>
         </div>
