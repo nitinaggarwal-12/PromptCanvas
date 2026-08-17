@@ -126,6 +126,8 @@ import { TopDownTemplatesExplorer } from '@/components/workspace/TopDownTemplate
 import { UnifiedProjectSelector } from '@/components/workspace/UnifiedProjectSelector';
 import { ProjectHeaderNav } from '@/components/workspace/ProjectHeaderNav';
 import { GeminiEnterpriseBottomChat } from '@/components/workspace/GeminiEnterpriseBottomChat';
+import { GeminiEnterpriseLeftStudio } from '@/components/workspace/GeminiEnterpriseLeftStudio';
+import { ProjectPromptDossierModal } from '@/components/workspace/ProjectPromptDossierModal';
 import { WelcomeGetStartedSlate } from '@/components/workspace/WelcomeGetStartedSlate';
 import { useTheme } from '@/lib/themeContext';
 
@@ -424,6 +426,7 @@ function WorkspaceContent() {
   const [currentUser, setCurrentUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isVersionDiffModalOpen, setIsVersionDiffModalOpen] = useState(false);
+  const [isPromptDossierOpen, setIsPromptDossierOpen] = useState(false);
   const [leftVersionSelection, setLeftVersionSelection] = useState<string>('v1_initial');
   const [rightVersionSelection, setRightVersionSelection] = useState<string>('v2_current');
   const [isUseCaseModalOpen, setIsUseCaseModalOpen] = useState(false);
@@ -3626,105 +3629,148 @@ function WorkspaceContent() {
                     { id: 'responsive', label: '📱 Responsive & Aspect Ratio', desc: '16:9, 4:3, 9:16 Fit' },
                     { id: 'accessibility', label: '♿ WCAG Accessibility', desc: 'Contrast Ratio & Colorblind' },
                     { id: 'vendor', label: '🏷️ Vendor Icon Coverage', desc: 'Official Brand Logos' },
-                  ].map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => handleSelectCategoryTab(cat.id)}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                        selectedAuditCategory === cat.id
-                          ? 'bg-teal-500/20 text-teal-300 border border-teal-500/50 shadow-md shadow-teal-950/40'
-                          : 'bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white hover:bg-slate-800/80'
-                      }`}
-                    >
-                      <span>{cat.label}</span>
-                    </button>
-                  ))}
+                  ].map((cat) => {
+                    const isSelected = selectedAuditCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => handleSelectCategoryTab(cat.id)}
+                        className={`px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5 ${
+                          isSelected
+                            ? canvasTheme === 'light'
+                              ? 'bg-teal-600 text-white font-black border border-teal-700 shadow-md shadow-teal-500/20'
+                              : 'bg-teal-500/20 text-teal-300 font-black border border-teal-500/50 shadow-md shadow-teal-950/40'
+                            : canvasTheme === 'light'
+                            ? 'bg-white text-slate-800 font-bold border border-slate-300 hover:text-slate-950 hover:bg-slate-100 hover:border-slate-400 shadow-sm'
+                            : 'bg-slate-900/60 text-slate-400 font-bold border border-slate-800 hover:text-white hover:bg-slate-800/80'
+                        }`}
+                      >
+                        <span>{cat.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Audit Version Delta Comparison Card */}
                 {showAuditDelta && auditHistory.length > 1 && (
-                  <div className="glass-panel border-purple-500/30 rounded-3xl p-6 bg-purple-950/20 space-y-4 animate-fade-in border">
+                  <div className={`rounded-3xl p-6 space-y-4 animate-fade-in border ${
+                    canvasTheme === 'light'
+                      ? 'bg-purple-50/70 border-purple-200 text-purple-950 shadow-md'
+                      : 'glass-panel border-purple-500/30 bg-purple-950/20 text-white'
+                  }`}>
                     <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-purple-400" />
-                        <h4 className="text-sm font-black text-white">Audit Version Delta (v{auditHistory[1]?.version_number} ➔ v{auditHistory[0]?.version_number})</h4>
+                        <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                        <h4 className={`text-sm font-black ${canvasTheme === 'light' ? 'text-purple-950' : 'text-white'}`}>
+                          Audit Version Delta (v{auditHistory[1]?.version_number} ➔ v{auditHistory[0]?.version_number})
+                        </h4>
                       </div>
-                      <span className="text-xs font-black text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                      <span className="text-xs font-black text-emerald-700 dark:text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30">
                         Score Delta: +{auditHistory[0]?.score - auditHistory[1]?.score}% Improvement
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                      <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-1">
-                        <span className="font-extrabold text-slate-400 block">Baseline Version (v{auditHistory[1]?.version_number})</span>
-                        <span className="text-sm font-bold text-amber-300 block">Score: {auditHistory[1]?.score}%</span>
-                        <p className="text-slate-400 mt-1">Identified initial infrastructure security risks and missing ingress/database controls.</p>
+                      <div className={`p-4 rounded-2xl border space-y-1 ${
+                        canvasTheme === 'light'
+                          ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
+                          : 'bg-slate-900/60 border-slate-800 text-slate-200'
+                      }`}>
+                        <span className="font-extrabold text-slate-500 dark:text-slate-400 block">Baseline Version (v{auditHistory[1]?.version_number})</span>
+                        <span className="text-sm font-bold text-amber-700 dark:text-amber-300 block">Score: {auditHistory[1]?.score}%</span>
+                        <p className={`${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'} mt-1`}>
+                          Identified initial infrastructure security risks and missing ingress/database controls.
+                        </p>
                       </div>
 
-                      <div className="p-4 rounded-2xl bg-slate-900/60 border border-teal-500/30 space-y-1">
-                        <span className="font-extrabold text-teal-400 block">Remediated Version (v{auditHistory[0]?.version_number})</span>
-                        <span className="text-sm font-bold text-emerald-400 block">Score: {auditHistory[0]?.score}% (100% Remediated)</span>
-                        <p className="text-slate-300 mt-1">Gemini auto-injected WAF security policies, CMEK encryption, and multi-region HA replicas.</p>
+                      <div className={`p-4 rounded-2xl border space-y-1 ${
+                        canvasTheme === 'light'
+                          ? 'bg-teal-50 border-teal-300 text-teal-950 shadow-sm'
+                          : 'bg-slate-900/60 border-teal-500/30 text-slate-200'
+                      }`}>
+                        <span className="font-extrabold text-teal-700 dark:text-teal-400 block">Remediated Version (v{auditHistory[0]?.version_number})</span>
+                        <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400 block">Score: {auditHistory[0]?.score}% (100% Remediated)</span>
+                        <p className={`${canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'} mt-1`}>
+                          Gemini auto-injected WAF security policies, CMEK encryption, and multi-region HA replicas.
+                        </p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {isAuditing ? (
-                  <div className="glass-panel border-teal-500/40 rounded-3xl p-16 md:p-24 text-center space-y-10 shadow-2xl animate-pulse bg-slate-900/90 min-h-[500px] flex flex-col justify-center items-center">
+                  <div className={`rounded-3xl p-16 md:p-24 text-center space-y-10 shadow-2xl animate-pulse min-h-[500px] flex flex-col justify-center items-center border ${
+                    canvasTheme === 'light'
+                      ? 'bg-white border-teal-300 text-slate-900'
+                      : 'glass-panel border-teal-500/40 bg-slate-900/90 text-white'
+                  }`}>
                     <div className="w-24 h-24 rounded-3xl bg-teal-500/10 border-2 border-teal-500/40 flex items-center justify-center mx-auto shadow-2xl shadow-teal-500/20">
-                      <Loader2 className="w-12 h-12 text-teal-400 animate-spin" />
+                      <Loader2 className="w-12 h-12 text-teal-500 dark:text-teal-400 animate-spin" />
                     </div>
                     <div className="space-y-4 max-w-3xl mx-auto">
                       <div className="flex items-center justify-center gap-2">
-                        <span className="px-5 py-2 rounded-full text-xs md:text-sm font-black bg-teal-500/20 text-teal-300 border border-teal-500/40 uppercase tracking-widest animate-pulse shadow-md">
+                        <span className="px-5 py-2 rounded-full text-xs md:text-sm font-black bg-teal-500/20 text-teal-800 dark:text-teal-300 border border-teal-500/40 uppercase tracking-widest animate-pulse shadow-md">
                           Live Inspection in Progress
                         </span>
                       </div>
-                      <h3 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight capitalize">
+                      <h3 className={`text-4xl md:text-5xl font-black tracking-tight leading-tight capitalize ${
+                        canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                      }`}>
                         Auditing {selectedAuditCategory === 'visual' ? 'Visual Collision & Geometry' : selectedAuditCategory === 'topology' ? 'Cloud Architecture Topology' : selectedAuditCategory === 'responsive' ? 'Responsive & Aspect Ratio' : selectedAuditCategory === 'accessibility' ? 'WCAG Accessibility' : selectedAuditCategory === 'vendor' ? 'Vendor Icon Coverage' : 'Security & Compliance'}...
                       </h3>
-                      <p className="text-base md:text-lg font-medium text-slate-300 leading-relaxed max-w-2xl mx-auto">
+                      <p className={`text-base md:text-lg font-medium leading-relaxed max-w-2xl mx-auto ${
+                        canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                      }`}>
                         Gemini 3.6 is parsing 2D bounding boxes, checking topology rules, and evaluating {selectedAuditCategory} posture against domain benchmarks...
                       </p>
                     </div>
                     
                     <div className="w-full max-w-2xl mx-auto space-y-4 pt-4">
-                      <div className="w-full bg-slate-800 rounded-full h-4 overflow-hidden border border-slate-700 shadow-inner">
+                      <div className={`w-full rounded-full h-4 overflow-hidden border shadow-inner ${
+                        canvasTheme === 'light' ? 'bg-slate-200 border-slate-300' : 'bg-slate-800 border-slate-700'
+                      }`}>
                         <div className="bg-gradient-to-r from-teal-500 via-cyan-400 to-emerald-400 h-full w-3/4 animate-pulse rounded-full shadow-lg shadow-teal-500/50"></div>
                       </div>
-                      <div className="flex justify-between text-xs md:text-sm font-black text-slate-400 uppercase tracking-wider px-2">
-                        <span className="text-teal-400">Parsing XML Layout</span>
-                        <span className="text-cyan-300">Evaluating Category Rules</span>
+                      <div className="flex justify-between text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider px-2">
+                        <span className="text-teal-600 dark:text-teal-400">Parsing XML Layout</span>
+                        <span className="text-cyan-600 dark:text-cyan-300">Evaluating Category Rules</span>
                         <span className="text-slate-500">Generating Report</span>
                       </div>
                     </div>
                   </div>
                 ) : auditReport ? (
-                  <div className="glass-panel border-panel-border/40 rounded-3xl p-8 space-y-8 shadow-2xl">
+                  <div className={`rounded-3xl p-8 space-y-8 shadow-xl border ${
+                    canvasTheme === 'light'
+                      ? 'bg-white border-slate-200 text-slate-900'
+                      : 'glass-panel border-panel-border/40 text-white shadow-2xl'
+                  }`}>
                     
                     {/* Compliance Score Header */}
-                    <div className="flex items-center gap-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+                    <div className={`flex items-center gap-6 rounded-2xl p-6 border ${
+                      canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'
+                    }`}>
                       <div className={`w-20 h-20 rounded-full border-4 flex items-center justify-center font-black text-xl shrink-0 shadow-lg ${
                         auditScore >= 90
-                          ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 shadow-emerald-500/20'
+                          ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 shadow-emerald-500/20'
                           : auditScore >= 75
-                          ? 'border-teal-accent text-teal-accent bg-teal-500/10 shadow-teal-500/20'
-                          : 'border-amber-400 text-amber-400 bg-amber-500/10 shadow-amber-500/20'
+                          ? 'border-teal-500 text-teal-600 dark:text-teal-accent bg-teal-500/10 shadow-teal-500/20'
+                          : 'border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-500/10 shadow-amber-500/20'
                       }`}>
                         {auditScore}%
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <span className={`text-xs font-black px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
-                            auditScore >= 90 ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' : 'bg-teal-500/10 text-teal-300 border-teal-500/30'
+                            auditScore >= 90 ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/30' : 'bg-teal-500/15 text-teal-800 dark:text-teal-300 border-teal-500/30'
                           }`}>
                             {auditScore >= 90 ? 'Grade: Excellent' : auditScore >= 75 ? 'Grade: Good' : 'Grade: Needs Hardening'}
                           </span>
-                          <span className="text-xs text-slate-400">{auditGaps.length} Gaps Detected</span>
+                          <span className={`text-xs ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                            {auditGaps.length} Gaps Detected
+                          </span>
                         </div>
-                        <h4 className="text-xl font-black text-white mt-1">
+                        <h4 className={`text-xl font-black mt-1 ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
                           {selectedAuditCategory === 'visual'
                             ? 'Visual Collision & Layout Geometry Audit'
                             : selectedAuditCategory === 'topology'
@@ -3737,7 +3783,7 @@ function WorkspaceContent() {
                             ? 'Vendor Icon & Brand Logo Coverage Audit'
                             : 'Architecture Security & Compliance Audit'}
                         </h4>
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className={`text-xs mt-1 ${canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-400'}`}>
                           {selectedAuditCategory === 'visual'
                             ? 'Select layout gaps below to automatically re-calculate spacing, eliminate text-over-line slicing, and widen inter-row channels.'
                             : selectedAuditCategory === 'topology'
@@ -3757,8 +3803,10 @@ function WorkspaceContent() {
                     {auditGaps.length > 0 ? (
                       <div className="space-y-4 border-t border-panel-border/30 pt-6">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                            <ShieldAlert className="w-5 h-5 text-amber-400" />
+                          <h3 className={`text-base font-extrabold flex items-center gap-2 ${
+                            canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                          }`}>
+                            <ShieldAlert className="w-5 h-5 text-amber-500" />
                             <span>Actionable Remediation Checklist ({auditGaps.length})</span>
                           </h3>
                           <button
@@ -3770,7 +3818,7 @@ function WorkspaceContent() {
                                 setSelectedGapIds(auditGaps.map(g => g.id));
                               }
                             }}
-                            className="text-xs font-bold text-teal-400 hover:text-teal-300 transition-colors cursor-pointer"
+                            className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline transition-colors cursor-pointer"
                           >
                             {selectedGapIds.length === auditGaps.length ? 'Deselect All' : 'Select All Gaps'}
                           </button>
@@ -3791,7 +3839,11 @@ function WorkspaceContent() {
                                 }}
                                 className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
                                   isChecked
-                                    ? 'bg-teal-500/10 border-teal-500/40 text-white shadow-lg shadow-teal-500/5'
+                                    ? canvasTheme === 'light'
+                                      ? 'bg-teal-50 border-teal-400 text-slate-900 shadow-sm'
+                                      : 'bg-teal-500/10 border-teal-500/40 text-white shadow-lg shadow-teal-500/5'
+                                    : canvasTheme === 'light'
+                                    ? 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                                     : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:bg-slate-900/70 hover:text-slate-200'
                                 }`}
                               >
@@ -3799,24 +3851,32 @@ function WorkspaceContent() {
                                   type="checkbox"
                                   checked={isChecked}
                                   onChange={() => {}}
-                                  className="mt-1 w-4 h-4 rounded border-slate-700 text-teal-400 focus:ring-teal-400/30 bg-slate-950 cursor-pointer"
+                                  className="mt-1 w-4 h-4 rounded border-slate-400 text-teal-600 focus:ring-teal-400/30 cursor-pointer"
                                 />
                                 <div className="flex-1 space-y-1.5">
                                   <div className="flex items-center justify-between gap-3">
-                                    <h4 className="text-sm font-extrabold text-white">{gap.title}</h4>
+                                    <h4 className={`text-sm font-extrabold ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                                      {gap.title}
+                                    </h4>
                                     <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${
                                       gap.severity === 'HIGH'
-                                        ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                                        ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30'
                                         : gap.severity === 'MEDIUM'
-                                        ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
-                                        : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                                        ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30'
+                                        : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
                                     }`}>
                                       {gap.severity} RISK
                                     </span>
                                   </div>
-                                  <p className="text-xs text-slate-300 leading-relaxed">{gap.description}</p>
-                                  <div className="text-xs font-semibold text-teal-300 bg-teal-500/5 border border-teal-500/10 rounded-xl p-3 flex items-center gap-2 mt-2">
-                                    <Sparkles className="w-4 h-4 text-teal-accent shrink-0" />
+                                  <p className={`text-xs leading-relaxed ${canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'}`}>
+                                    {gap.description}
+                                  </p>
+                                  <div className={`text-xs font-semibold rounded-xl p-3 flex items-center gap-2 mt-2 border ${
+                                    canvasTheme === 'light'
+                                      ? 'bg-teal-50 border-teal-200 text-teal-950 font-bold'
+                                      : 'bg-teal-500/5 border-teal-500/10 text-teal-300'
+                                  }`}>
+                                    <Sparkles className="w-4 h-4 text-teal-500 dark:text-teal-accent shrink-0" />
                                     <span>Proposed Fix: {gap.remediation}</span>
                                   </div>
                                 </div>
@@ -3826,10 +3886,18 @@ function WorkspaceContent() {
                         </div>
 
                         {/* Remediate Button Banner */}
-                        <div className="pt-4 flex items-center justify-between bg-slate-900/80 p-5 rounded-2xl border border-teal-500/30">
+                        <div className={`pt-4 flex items-center justify-between p-5 rounded-2xl border ${
+                          canvasTheme === 'light'
+                            ? 'bg-slate-100 border-slate-300 text-slate-900'
+                            : 'bg-slate-900/80 border-teal-500/30 text-white'
+                        }`}>
                           <div>
-                            <span className="text-sm font-extrabold text-white block">Auto-Remediate Selected Gaps</span>
-                            <span className="text-xs text-slate-400 mt-0.5 block">Gemini will add missing security components & save a new version.</span>
+                            <span className={`text-sm font-extrabold block ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                              Auto-Remediate Selected Gaps
+                            </span>
+                            <span className={`text-xs mt-0.5 block ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                              Gemini will add missing security components &amp; save a new version.
+                            </span>
                           </div>
                           <button
                             type="button"
@@ -3843,15 +3911,17 @@ function WorkspaceContent() {
                         </div>
                       </div>
                     ) : (
-                      <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-bold flex items-center gap-3">
-                        <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
+                      <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-sm font-bold flex items-center gap-3">
+                        <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span>All {selectedAuditCategory || 'architecture'} gaps have been remediated! Architecture score is 100%.</span>
                       </div>
                     )}
                     
                     {/* Full Audit Report Narrative */}
-                    <div className="text-sm text-slate-300 space-y-3 border-t border-panel-border/30 pt-6 max-h-[450px] overflow-y-auto pr-3 leading-relaxed">
-                      <h3 className="text-sm font-black text-white uppercase tracking-wider mb-2">
+                    <div className={`text-sm space-y-3 border-t pt-6 max-h-[450px] overflow-y-auto pr-3 leading-relaxed ${
+                      canvasTheme === 'light' ? 'text-slate-800 border-slate-200' : 'text-slate-300 border-panel-border/30'
+                    }`}>
+                      <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
                         Detailed {selectedAuditCategory ? selectedAuditCategory.charAt(0).toUpperCase() + selectedAuditCategory.slice(1) : 'Audit'} Findings
                       </h3>
                       {renderAuditMarkdown(auditReport)}
@@ -5548,7 +5618,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         className={`hidden lg:flex flex-col transition-all duration-300 z-20 shrink-0 border-r ${
           canvasTheme === 'light' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'bg-[#070A13] border-slate-800 text-slate-200'
         } ${
-          isSidebarOpen ? 'w-64' : 'w-16'
+          isSidebarOpen ? (currentTab === 'editor' && activeDiagram ? 'w-[340px]' : 'w-64') : 'w-16'
         }`}
       >
         {/* Sidebar Header */}
@@ -5853,6 +5923,35 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </button>
             );
           })}
+
+          {/* 4. GEMINI ENTERPRISE AI STUDIO & REAL PROMPT DOSSIER (Docked in Left Sidebar) */}
+          {isSidebarOpen && currentTab === 'editor' && activeDiagram && (
+            <div className="pt-3 mt-3 border-t border-slate-200 dark:border-slate-800/80">
+              <GeminiEnterpriseLeftStudio
+                activeDiagram={activeDiagram}
+                activeVersion={activeVersion}
+                displayedVersion={displayedVersion}
+                selectedArchType={selectedArchType}
+                suggestions={suggestions}
+                promptInput={promptInput}
+                isGenerating={isGenerating}
+                isAuditing={isAuditing}
+                costEstimateMonthly={costReport.totalMonthlyCostUsd}
+                dynamicPlaceholder={dynamicPlaceholder}
+                theme={canvasTheme}
+                onPromptChange={(val) => setPromptInput(val)}
+                onSendPrompt={handleSendPrompt}
+                onSelectSuggestion={(s) => setPromptInput(s)}
+                onOpenExportModal={() => setIsExportModalOpen(true)}
+                onOpenPlaybookModal={() => setIsPlaybookModalOpen(true)}
+                onOpenSetMasterModal={() => setIsSetMasterModalOpen(true)}
+                onOpenCostModal={() => setIsCostModalOpen(true)}
+                onOpenComposeModal={() => setIsComposeOpen(true)}
+                onAuditDiagram={() => handleAuditDiagram()}
+                onOpenPromptDossier={() => setIsPromptDossierOpen(true)}
+              />
+            </div>
+          )}
         </div>
 
         {/* 4. PINNED BOTTOM FOOTER: Search Input */}
@@ -6303,6 +6402,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     }}
                     onSelectBlueprint={(newArchId) => handleArchitectureSwitch(newArchId)}
                     onOpenBlueprintCatalog={() => setIsPlaybookModalOpen(true)}
+                    onOpenPromptDossier={() => setIsPromptDossierOpen(true)}
                   />
                 </div>
               </div>
@@ -6999,33 +7099,6 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
             )}
           </div>
-
-          {/* Gemini Enterprise AI Chat & Refinement Dock (Below Canvas) */}
-          {activeDiagram && (
-            <GeminiEnterpriseBottomChat
-              activeDiagram={activeDiagram}
-              activeVersion={activeVersion}
-              displayedVersion={displayedVersion}
-              selectedArchType={selectedArchType}
-              chatMessages={chatMessages}
-              suggestions={suggestions}
-              promptInput={promptInput}
-              isGenerating={isGenerating}
-              isAuditing={isAuditing}
-              costEstimateMonthly={costReport.totalMonthlyCostUsd}
-              dynamicPlaceholder={dynamicPlaceholder}
-              theme={canvasTheme}
-              onPromptChange={(val) => setPromptInput(val)}
-              onSendPrompt={handleSendPrompt}
-              onSelectSuggestion={(s) => setPromptInput(s)}
-              onOpenExportModal={() => setIsExportModalOpen(true)}
-              onOpenPlaybookModal={() => setIsPlaybookModalOpen(true)}
-              onOpenSetMasterModal={() => setIsSetMasterModalOpen(true)}
-              onOpenCostModal={() => setIsCostModalOpen(true)}
-              onOpenComposeModal={() => setIsComposeOpen(true)}
-              onAuditDiagram={() => handleAuditDiagram()}
-            />
-          )}
         </section>
 
           {/* Mobile Bottom Navigation View Switcher (Only visible on screens < 768px) */}
@@ -9012,6 +9085,19 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           </div>
         );
       })()}
+
+      {/* 📜 PROJECT REAL USE CASE PROMPT & AUDIT DOSSIER MODAL */}
+      <ProjectPromptDossierModal
+        isOpen={isPromptDossierOpen}
+        onClose={() => setIsPromptDossierOpen(false)}
+        diagram={activeDiagram}
+        activeVersion={activeVersion || displayedVersion}
+        onSelectVersion={(ver) => {
+          setPreviewVersion(ver as any);
+          setIsPromptDossierOpen(false);
+        }}
+        theme={canvasTheme}
+      />
 
       {forceRefreshToast && (
         <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-2xl border flex items-center gap-2.5 text-xs font-bold transition-all animate-bounce ${

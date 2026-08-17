@@ -30,6 +30,7 @@ interface ProjectHeaderNavProps {
   onCreateNewProject: (name: string) => void;
   onSelectBlueprint: (blueprintId: string) => void;
   onOpenBlueprintCatalog: () => void;
+  onOpenPromptDossier?: () => void;
 }
 
 export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
@@ -42,7 +43,8 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
   onSelectDiagram,
   onCreateNewProject,
   onSelectBlueprint,
-  onOpenBlueprintCatalog
+  onOpenBlueprintCatalog,
+  onOpenPromptDossier
 }) => {
   const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
   const [isViewDropdownOpen, setIsViewDropdownOpen] = useState(false);
@@ -294,7 +296,7 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
                         onSelectDiagram(diag.id);
                         setIsProjectDropdownOpen(false);
                       }}
-                      className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 cursor-pointer ${
+                      className={`w-full text-left p-3 rounded-xl border transition-all flex flex-col gap-1 cursor-pointer ${
                         isCurrent
                           ? isLight
                             ? 'bg-teal-50 border-teal-400 text-teal-950 shadow-sm'
@@ -304,29 +306,43 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
                             : 'bg-slate-900/40 hover:bg-slate-900 border-transparent hover:border-slate-700 text-slate-200'
                       }`}
                     >
-                      <div className="min-w-0 flex-1 space-y-0.5">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between gap-2 w-full">
+                        <div className="flex items-center gap-1.5 min-w-0">
                           {isLatest && (
-                            <span className="text-[9px] font-black uppercase px-1.5 py-0.2 rounded bg-amber-400 text-slate-950">
+                            <span className="text-[9px] font-black uppercase px-1.5 py-0.2 rounded bg-amber-400 text-slate-950 shrink-0">
                               LATEST
                             </span>
                           )}
-                          <span className="text-[10px] font-mono text-slate-400">v{verCount}</span>
+                          <p className={`text-xs font-bold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                            {diag.name}
+                          </p>
                         </div>
-                        <p className={`text-xs font-bold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
-                          {diag.name}
-                        </p>
-                        <div className="flex items-center gap-2 text-[10px] text-slate-400 font-medium">
-                          <Clock className="w-2.5 h-2.5" />
-                          <span>Updated {timeFormatted}</span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className="text-[10px] font-mono text-slate-400">v{verCount}</span>
+                          {isCurrent && (
+                            <span className="text-[10px] font-black text-teal-500 flex items-center gap-0.5">
+                              <Check className="w-3 h-3" />
+                            </span>
+                          )}
                         </div>
                       </div>
 
-                      {isCurrent && (
-                        <span className="text-[10px] font-black text-teal-500 flex items-center gap-1 shrink-0">
-                          <Check className="w-3.5 h-3.5" /> ACTIVE
-                        </span>
+                      {/* Associated Real Use Case Prompt Snippet */}
+                      {diag.versions?.[0]?.prompt && (
+                        <p className={`text-[11px] line-clamp-1 italic font-normal ${
+                          isLight ? 'text-slate-500' : 'text-slate-400'
+                        }`}>
+                          💡 &ldquo;{diag.versions[0].prompt}&rdquo;
+                        </p>
                       )}
+
+                      <div className="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
+                        <span>{diag.architecture_type ? diag.architecture_type.replace(/_/g, ' ') : 'Architecture'}</span>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-2.5 h-2.5" />
+                          <span>{timeFormatted}</span>
+                        </div>
+                      </div>
                     </button>
                   );
                 })
@@ -459,6 +475,29 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
           </div>
         )}
       </div>
+
+      {/* 📜 PILL 3: PROMPT & AUDIT DOSSIER TRIGGER */}
+      {onOpenPromptDossier && activeDiagram && (
+        <>
+          <span className={`font-mono text-xs hidden sm:inline ${isLight ? 'text-slate-300' : 'text-slate-600'}`}>/</span>
+          <button
+            type="button"
+            id="workspace-prompt-dossier-btn"
+            disabled={disabled}
+            onClick={onOpenPromptDossier}
+            className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-extrabold text-xs transition-all shadow-sm cursor-pointer border ${
+              isLight
+                ? 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-800'
+                : 'bg-teal-500/15 hover:bg-teal-500/25 border-teal-500/40 text-teal-300'
+            }`}
+            title="Inspect Real Use Case Prompt, Prompt History, and 1-to-1 Diagram Validation Matrix"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+            <span className="hidden md:inline">Prompt</span>
+            <span>Dossier</span>
+          </button>
+        </>
+      )}
 
     </div>
   );
