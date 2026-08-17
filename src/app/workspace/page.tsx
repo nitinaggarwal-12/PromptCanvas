@@ -121,9 +121,9 @@ import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
 import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
 import { checkDiagramStaleness } from '@/lib/diagramStaleness';
-import { TEMPLATE_CATEGORIES, TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
 import { TopDownHierarchySelector } from '@/components/workspace/TopDownHierarchySelector';
 import { TopDownTemplatesExplorer } from '@/components/workspace/TopDownTemplatesExplorer';
+import { UnifiedProjectSelector } from '@/components/workspace/UnifiedProjectSelector';
 
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
@@ -5887,215 +5887,44 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   >
                     <Network className="w-4 h-4 text-teal-400" />
                   </button>
-                  <div className="relative inline-flex items-center shrink-0">
-                    <span className="text-[10px] uppercase tracking-wider font-extrabold text-slate-400 mr-1.5 hidden xl:inline flex items-center gap-1">
-                      📁 Project:
-                    </span>
-                    <div className="relative">
-                      <button
-                        type="button"
-                        id="workspace-canvas-project-selector"
-                        onClick={() => {
-                          const next = !isCanvasDropdownOpen;
-                          setIsCanvasDropdownOpen(next);
-                          if (next) {
-                            setIsArchDropdownOpen(false);
-                            setIsVersionDropdownOpen(false);
+                  {/* Unified Project & Top-Down Architecture Hub */}
+                  <UnifiedProjectSelector
+                    activeDiagram={activeDiagram}
+                    diagrams={diagrams}
+                    selectedArchType={selectedArchType}
+                    activeVersionNumber={displayedVersion?.version_number || activeVersion?.version_number || 1}
+                    disabled={isAnyAIBusy}
+                    onSelectDiagram={(diagramId) => loadDiagramDetails(diagramId)}
+                    onCreateNewDiagram={async (name, templateArchId) => {
+                      const finalName = name.trim() || generateUniqueDiagramName();
+                      const archToUse = templateArchId || selectedArchType || 'tech_llm_capacity_quota';
+                      const defaultXml = getDefaultXmlForArchitecture(archToUse, finalName, finalName);
+                      try {
+                        const res = await fetch('/api/diagrams', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
+                          body: JSON.stringify({
+                            name: finalName,
+                            xml: defaultXml,
+                            comment: `Created project: ${finalName}`,
+                            architectureType: archToUse,
+                            isPrivate: false
+                          })
+                        });
+                        if (res.ok) {
+                          const data = await res.json();
+                          await fetchDiagrams();
+                          if (data.diagram?.id) {
+                            await loadDiagramDetails(data.diagram.id);
                           }
-                          setCanvasSearchQuery('');
-                        }}
-                        className="flex items-center justify-between gap-2 bg-gradient-to-r from-teal-950/90 to-slate-900 hover:from-teal-900/90 border border-teal-500/60 hover:border-teal-400 text-teal-200 font-extrabold text-xs rounded-lg pl-3 pr-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-md focus:ring-2 focus:ring-teal-400/40 max-w-[220px] sm:max-w-[280px] md:max-w-[340px]"
-                        title="Switch between your saved Canvas Projects (Historical & Current)"
-                      >
-                        <span className="truncate">
-                          ✨ {activeDiagram?.name || 'Select Canvas Project'}
-                        </span>
-                        <ChevronDown className="w-3.5 h-3.5 text-teal-300 shrink-0" />
-                      </button>
-
-                      {isCanvasDropdownOpen && (
-                        <div className="header-dropdown-menu fixed sm:absolute left-4 sm:left-0 top-14 sm:top-full mt-1.5 w-[320px] sm:w-[360px] bg-[#090d16] border border-teal-500/40 rounded-xl shadow-2xl z-[9999] overflow-hidden flex flex-col max-h-[480px]">
-                          {/* Search Input Bar */}
-                          <div className="p-2 border-b border-slate-800/80 bg-slate-900/90 flex flex-col gap-1.5">
-                            <div className="flex items-center gap-2">
-                              <Search className="w-3.5 h-3.5 text-teal-400 shrink-0 ml-1" />
-                              <input
-                                type="text"
-                                autoFocus
-                                placeholder="Search ApexPay, FinTech, DevOps..."
-                                value={canvasSearchQuery}
-                                onChange={(e) => setCanvasSearchQuery(e.target.value)}
-                                className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-1"
-                              />
-                              {canvasSearchQuery && (
-                                <button
-                                  type="button"
-                                  onClick={() => setCanvasSearchQuery('')}
-                                  className="text-[10px] text-slate-400 hover:text-slate-200 font-bold px-1.5"
-                                >
-                                  Clear
-                                </button>
-                              )}
-                            </div>
-                            {/* Forward / Backward Arrow Navigation Sub-Toolbar */}
-                            <div className="flex items-center justify-between px-1 pt-1 border-t border-slate-800/60 text-[11px]">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const idx = diagrams.findIndex(d => d.id === activeDiagram?.id);
-                                  if (idx > 0) loadDiagramDetails(diagrams[idx - 1].id);
-                                }}
-                                disabled={diagrams.findIndex(d => d.id === activeDiagram?.id) <= 0}
-                                className="flex items-center gap-1 text-slate-400 hover:text-teal-300 disabled:opacity-30 disabled:hover:text-slate-400 font-bold px-1.5 py-0.5 rounded cursor-pointer"
-                                title="Backward (Previous Canvas)"
-                              >
-                                <ChevronLeft className="w-3.5 h-3.5" />
-                                <span>Prev Canvas</span>
-                              </button>
-                              <span className="text-[10px] text-slate-500 font-mono">Projects ({diagrams.length})</span>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const idx = diagrams.findIndex(d => d.id === activeDiagram?.id);
-                                  if (idx >= 0 && idx < diagrams.length - 1) loadDiagramDetails(diagrams[idx + 1].id);
-                                }}
-                                disabled={diagrams.findIndex(d => d.id === activeDiagram?.id) >= diagrams.length - 1}
-                                className="flex items-center gap-1 text-slate-400 hover:text-teal-300 disabled:opacity-30 disabled:hover:text-slate-400 font-bold px-1.5 py-0.5 rounded cursor-pointer"
-                                title="Forward (Next Canvas)"
-                              >
-                                <span>Next Canvas</span>
-                                <ChevronRight className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Filtered Canvas List */}
-                          <div className="overflow-y-auto py-1 max-h-[380px] divide-y divide-slate-800/40">
-                            {/* FLAGSHIP BOARDROOM BLUEPRINTS LISTING IN CANVAS DROPDOWN */}
-                            {[
-                              {
-                                id: 'tech_c4_system_context',
-                                num: '11',
-                                name: '11. C4 Enterprise System Context & Container Model (L1 & L2)',
-                                desc: 'McKinsey Boardroom Blueprint • Zero-Trust & Microservices'
-                              },
-                              {
-                                id: 'federated_iam_sso',
-                                num: '12',
-                                name: '12. Google Cloud Federated IAM & SSO Zero-Trust Architecture',
-                                desc: 'Google Cloud Master Blueprint • Cloud Identity, IAP & Workload Identity'
-                              },
-                              {
-                                id: 'tech_event_driven_eda',
-                                num: '13',
-                                name: '13. Enterprise Event-Driven Microservices Architecture (EDA)',
-                                desc: 'McKinsey Boardroom Blueprint • Kafka Mesh, DLQ & CEP Fraud Engine'
-                              }
-                            ]
-                              .filter((bp) => {
-                                const q = canvasSearchQuery.toLowerCase().trim();
-                                if (!q) return true;
-                                return (
-                                  bp.name.toLowerCase().includes(q) ||
-                                  bp.num === q ||
-                                  bp.id.toLowerCase().includes(q) ||
-                                  bp.desc.toLowerCase().includes(q)
-                                );
-                              })
-                              .map((bp) => {
-                                const isActive = selectedArchType === bp.id;
-                                return (
-                                  <button
-                                    key={bp.id}
-                                    type="button"
-                                    onClick={() => {
-                                      setIsCanvasDropdownOpen(false);
-                                      handleArchitectureSwitch(bp.id);
-                                    }}
-                                    className={`w-full text-left px-3 py-2.5 transition-colors flex items-start justify-between gap-2 hover:bg-teal-950/40 ${
-                                      isActive ? 'bg-teal-900/30 border-l-2 border-teal-400' : ''
-                                    }`}
-                                  >
-                                    <div className="min-w-0 flex-1">
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="text-amber-400 font-extrabold text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30">
-                                          🏆 BOARDROOM
-                                        </span>
-                                        {isActive && (
-                                          <span className="text-teal-400 font-extrabold text-[11px]">✨ ACTIVE</span>
-                                        )}
-                                      </div>
-                                      <p className="text-xs font-bold text-slate-100 truncate mt-1">{bp.name}</p>
-                                      <p className="text-[10px] text-teal-400/90 mt-0.5 font-medium">{bp.desc}</p>
-                                    </div>
-                                  </button>
-                                );
-                              })}
-
-                            {diagrams
-                              .filter((d) =>
-                                (d.name || '').toLowerCase().includes(canvasSearchQuery.toLowerCase())
-                              )
-                              .map((d) => {
-                                const isActive = d.id === activeDiagram?.id;
-                                return (
-                                  <button
-                                    key={d.id}
-                                    type="button"
-                                    onClick={() => {
-                                      setIsCanvasDropdownOpen(false);
-                                      loadDiagramDetails(d.id);
-                                    }}
-                                    className={`w-full text-left px-3 py-2.5 transition-colors flex items-start justify-between gap-2 hover:bg-teal-950/40 ${
-                                      isActive ? 'bg-teal-900/30 border-l-2 border-teal-400' : ''
-                                    }`}
-                                  >
-                                    <div className="min-w-0 flex-1">
-                                      <div className="flex items-center gap-1.5">
-                                        {isActive ? (
-                                          <span className="text-teal-400 font-extrabold text-[11px]">✨ ACTIVE</span>
-                                        ) : (
-                                          <span className="text-slate-400 text-xs">📁</span>
-                                        )}
-                                        <p className="text-xs font-bold text-slate-100 truncate">{d.name}</p>
-                                      </div>
-                                      <p className="text-[10px] text-slate-400 mt-0.5">
-                                        Updated {formatRelativeTime(d.updated_at)}
-                                      </p>
-                                    </div>
-                                  </button>
-                                );
-                              })}
-                            {diagrams.filter((d) =>
-                              (d.name || '').toLowerCase().includes(canvasSearchQuery.toLowerCase())
-                            ).length === 0 &&
-                              [
-                                '11', 'c4', '12', 'modern', 'data', '13', 'event', 'eda', 'kafka'
-                              ].filter(k => k.includes(canvasSearchQuery.toLowerCase())).length === 0 && (
-                                <div className="p-4 text-center text-xs text-slate-400 font-semibold">
-                                  No canvas projects matching "{canvasSearchQuery}"
-                                </div>
-                              )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                        }
+                      } catch (err) {
+                        console.error('Failed to create new project:', err);
+                      }
+                    }}
+                    onSelectBlueprint={(newArchId) => handleArchitectureSwitch(newArchId)}
+                  />
                 </div>
-
-                {activeDiagram && (
-                  <>
-                    <div className="h-4 w-px bg-panel-border/60 mx-1 shrink-0" />
-                    
-                    {/* Top-Down Hierarchical Architecture Navigator (Phase → Domain → Leaf Blueprint) */}
-                    <TopDownHierarchySelector
-                      selectedArchType={selectedArchType}
-                      onSelectBlueprint={(newArchId) => handleArchitectureSwitch(newArchId)}
-                      activeVersionNumber={displayedVersion?.version_number || activeVersion?.version_number || 1}
-                      disabled={isAnyAIBusy}
-                    />
-                  </>
-                )}
               </div>
 
               {/* Group 2: Center - Status Indicators */}
