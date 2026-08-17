@@ -121,8 +121,9 @@ import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
 import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
 import { checkDiagramStaleness } from '@/lib/diagramStaleness';
-import { getBlueprintLineage } from '@/lib/architectureLineage';
 import { TEMPLATE_CATEGORIES, TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
+import { TopDownHierarchySelector } from '@/components/workspace/TopDownHierarchySelector';
+import { TopDownTemplatesExplorer } from '@/components/workspace/TopDownTemplatesExplorer';
 
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
@@ -2628,82 +2629,6 @@ function WorkspaceContent() {
             })}
           </div>
 
-          {/* Phase Filter Tabs Ribbon */}
-          <div className="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 overflow-x-auto no-scrollbar">
-            <button
-              type="button"
-              onClick={() => setTemplateCategoryFilter('all')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                templateCategoryFilter === 'all' ? 'bg-teal-accent text-bg-dark shadow-sm font-black' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              All (50)
-            </button>
-            <button
-              type="button"
-              onClick={() => setTemplateCategoryFilter('Phase 1')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                templateCategoryFilter === 'Phase 1' ? 'bg-cyan-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Phase 1: Baseline (4)
-            </button>
-            <button
-              type="button"
-              onClick={() => setTemplateCategoryFilter('Phase 2')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                templateCategoryFilter === 'Phase 2' ? 'bg-emerald-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Phase 2: Strategy (1)
-            </button>
-            <button
-              type="button"
-              onClick={() => setTemplateCategoryFilter('Phase 3')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                templateCategoryFilter === 'Phase 3' ? 'bg-teal-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Phase 3: Target State (10)
-            </button>
-            <button
-              type="button"
-              onClick={() => setTemplateCategoryFilter('Phase 4')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                templateCategoryFilter === 'Phase 4' ? 'bg-indigo-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Phase 4: Security &amp; Tech (13)
-            </button>
-            <button
-              type="button"
-              onClick={() => setTemplateCategoryFilter('Phase 5')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                templateCategoryFilter === 'Phase 5' ? 'bg-purple-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Phase 5: Transition &amp; SRE (9)
-            </button>
-            <button
-              type="button"
-              onClick={() => setTemplateCategoryFilter('Phase 6')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                templateCategoryFilter === 'Phase 6' ? 'bg-pink-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Phase 6: Industry (7)
-            </button>
-            <button
-              type="button"
-              onClick={() => setTemplateCategoryFilter('Phase 7')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                templateCategoryFilter === 'Phase 7' ? 'bg-amber-500 text-white shadow-sm font-black' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Phase 7: Standards (6)
-            </button>
-          </div>
-
           {/* Collapsible AI Architectural Prompt Studio Banner & Panel */}
           {!isPromptStudioExpanded ? (
             <div 
@@ -3156,183 +3081,39 @@ function WorkspaceContent() {
             </div>
           )}
 
-          {/* Blueprint Cards Grid - Immediately Visible */}
-          {filteredTemplates.length === 0 ? (
-            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-10 text-center space-y-4 max-w-xl mx-auto my-8 animate-fade-in">
-              <div className="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center mx-auto text-teal-400">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-base font-bold text-slate-200">
-                  {templateSearchQuery ? `No pre-built blueprints match "${templateSearchQuery}"` : 'No blueprints match your filter criteria'}
-                </p>
-                <p className="text-xs text-slate-400">
-                  You can compile this architecture directly with Gemini AI or explore popular topics.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsPromptStudioExpanded(true);
-                    setNewDiagramPrompt(templateSearchQuery ? `Design an enterprise architecture for: ${templateSearchQuery}` : 'Design an enterprise cloud architecture.');
-                    setNewDiagramName(templateSearchQuery || 'Custom Architecture');
-                    if (typeof window !== 'undefined') {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }
-                  }}
-                  className="px-4 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  <span>Generate &ldquo;{templateSearchQuery || 'Custom Architecture'}&rdquo; with AI</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTemplateCategoryFilter('all');
-                    setSelectedPersonaFilter('all');
-                    setTemplateSearchQuery('');
-                    handleResetFilters();
-                  }}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-all cursor-pointer"
-                >
-                  Reset All Filters
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
-              {filteredTemplates.map((t, idx) => {
-                const personaBadge = getPersonaBadge(t);
-                const isHovered = hoveredTemplateId === t.id;
-
-                return (
-                  <div 
-                    key={t.id} 
-                    onMouseEnter={() => setHoveredTemplateId(t.id)}
-                    onMouseLeave={() => setHoveredTemplateId(null)}
-                    className={`glass-panel border-panel-border/50 hover:border-teal-500/40 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:scale-[1.01] relative ${
-                      isHovered ? 'ring-1 ring-teal-500/30 bg-slate-900/90' : ''
-                    }`}
-                  >
-                    <div>
-                      <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-md border bg-cyan-500/20 text-cyan-300 border-cyan-500/40">
-                            {t.id.split('_')[0]}
-                          </span>
-                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-cyan-500/10 text-cyan-300 border-cyan-500/30">
-                            Phase: {t.phaseName.split(':')[0]}
-                          </span>
-                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-purple-500/10 text-purple-300 border-purple-500/30">
-                            ABSTRACTION: {t.abstractionLevel}
-                          </span>
-                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/30">
-                            LAYER: {t.stackLayer}
-                          </span>
-                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-slate-800 text-slate-300 border-slate-700">
-                            {t.domain}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${personaBadge.color}`}>
-                            {personaBadge.label}
-                          </span>
-                          {/* Eye Preview Button on Card */}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setPreviewModalTemplateId(t.id);
-                            }}
-                            className="p-1 rounded-md bg-slate-800/80 hover:bg-teal-500/20 text-slate-400 hover:text-teal-300 border border-slate-700/60 hover:border-teal-500/50 transition-all cursor-pointer"
-                            title={`Quick Preview Master Template: ${t.name}`}
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                      <h3 className="font-extrabold text-sm text-white group-hover:text-teal-accent transition-colors mb-2 flex items-center justify-between">
-                        <span>{t.name}</span>
-                      </h3>
-                      <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-3">
-                        {t.whenToUse}
-                      </p>
-
-                      {/* Featured GCP Services pills */}
-                      {t.keyTech && t.keyTech.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {t.keyTech.slice(0, 3).map((tech: string) => (
-                            <span key={tech} className="text-[9px] px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400 font-mono border border-slate-700/50">
-                              {tech}
-                            </span>
-                          ))}
-                          {t.keyTech.length > 3 && (
-                            <span className="text-[9px] px-1 py-0.5 rounded bg-slate-800/50 text-slate-500 font-mono">
-                              +{t.keyTech.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-3 border-t border-panel-border/30">
-                      <button
-                        type="button"
-                        onClick={() => setPreviewModalTemplateId(t.id)}
-                        className="px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-all border border-slate-700 flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
-                        title="Preview Master Template without opening canvas"
-                      >
-                        <Eye className="w-3.5 h-3.5 text-teal-400" />
-                        <span>Preview</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsPromptStudioExpanded(true);
-                          setSelectedArchType(t.id);
-                          syncDimensionsForBlueprint(t.id);
-                          const meta = getBlueprintMetadataById(t.id);
-                          if (meta?.goldenExamplePayload) {
-                            setNewDiagramPrompt(meta.goldenExamplePayload);
-                            setNewDiagramName(generateUniqueDiagramName(meta.diagramName));
-                          } else {
-                            setNewDiagramPrompt(t.whenToUse);
-                            setNewDiagramName(generateUniqueDiagramName(t.name));
-                          }
-                          if (typeof window !== 'undefined') {
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }
-                        }}
-                        className="px-2.5 py-2 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 hover:text-indigo-200 text-xs font-bold transition-all border border-indigo-500/30 flex items-center justify-center gap-1 cursor-pointer shrink-0"
-                        title="Customize this blueprint in the AI Prompt Studio"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                        <span>Customize</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setCurrentTab('editor');
-                          handleArchitectureSwitch(t.id);
-                          if (typeof window !== 'undefined') {
-                            const params = new URLSearchParams(window.location.search);
-                            params.delete('tab');
-                            const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
-                            window.history.replaceState({}, '', newUrl);
-                          }
-                        }}
-                        className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-teal-accent text-slate-300 hover:text-bg-dark text-xs font-bold transition-all border border-slate-700 hover:border-transparent flex items-center justify-center gap-1 cursor-pointer truncate"
-                      >
-                        <span>Use Blueprint →</span>
-                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          {/* Top-Down Hierarchical Architecture Templates Explorer (Phase → Domain → Leaf Blueprints) */}
+          <TopDownTemplatesExplorer
+            searchQuery={templateSearchQuery}
+            activeBlueprintId={selectedArchType}
+            onSelectBlueprint={(blueprintId) => {
+              setCurrentTab('editor');
+              handleArchitectureSwitch(blueprintId);
+              if (typeof window !== 'undefined') {
+                const params = new URLSearchParams(window.location.search);
+                params.delete('tab');
+                const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+                window.history.replaceState({}, '', newUrl);
+              }
+            }}
+            onPreviewBlueprint={(blueprintId) => {
+              setPreviewModalTemplateId(blueprintId);
+            }}
+            onCustomizeWithPrompt={(bp) => {
+              setIsPromptStudioExpanded(true);
+              setSelectedArchType(bp.combinedId);
+              syncDimensionsForBlueprint(bp.combinedId);
+              if (bp.goldenExamplePayload) {
+                setNewDiagramPrompt(bp.goldenExamplePayload);
+                setNewDiagramName(generateUniqueDiagramName(bp.diagramName));
+              } else {
+                setNewDiagramPrompt(bp.uiCardDesc);
+                setNewDiagramName(generateUniqueDiagramName(bp.diagramName));
+              }
+              if (typeof window !== 'undefined') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+          />
         </div>
       </div>
     );
@@ -6306,387 +6087,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   <>
                     <div className="h-4 w-px bg-panel-border/60 mx-1 shrink-0" />
                     
-                    {/* Unified Hover-Triggered Cascading Diagram & Version Navigator */}
-                    <div 
-                      className="relative inline-flex items-center shrink-0"
-                      onMouseEnter={() => {
-                        setIsArchDropdownOpen(true);
-                        setIsCanvasDropdownOpen(false);
-                        if (!hoveredArchId) setHoveredArchId(selectedArchType);
-                      }}
-                      onMouseLeave={() => {
-                        setIsArchDropdownOpen(false);
-                      }}
-                    >
-                      <span className="text-[10px] uppercase tracking-wider font-extrabold text-teal-400/90 mr-1.5 hidden xl:inline">
-                        📐 Blueprint:
-                      </span>
-                      <div className="relative">
-                        <div className="inline-flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
-                              const currentNorm = normalizeArchitectureId(selectedArchType);
-                              let idx = allArchs.findIndex(a => a.id === selectedArchType || normalizeArchitectureId(a.id) === currentNorm);
-                              if (idx <= 0) idx = allArchs.length;
-                              handleArchitectureSwitch(allArchs[idx - 1].id);
-                            }}
-                            className="p-1.5 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 rounded-lg cursor-pointer transition-all hover:scale-105 active:scale-95"
-                            title="Backward: Previous Architecture Topology (← ArrowLeft)"
-                          >
-                            <ChevronLeft className="w-3.5 h-3.5" />
-                          </button>
-
-                          <button
-                            type="button"
-                            id="workspace-header-architecture-select"
-                            disabled={isAnyAIBusy}
-                            onClick={() => {
-                              const next = !isArchDropdownOpen;
-                              setIsArchDropdownOpen(next);
-                              if (next) {
-                                setIsCanvasDropdownOpen(false);
-                                setHoveredArchId(selectedArchType);
-                              }
-                              setArchSearchQuery('');
-                            }}
-                            className={getTourClass(
-                              tourStep,
-                              2,
-                              "flex items-center justify-between gap-2 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 font-extrabold text-xs rounded-lg pl-3 pr-2.5 py-1.5 outline-none cursor-pointer transition-all shadow-sm focus:ring-2 focus:ring-teal-400/30 max-w-[240px] md:max-w-[300px]"
-                            )}
-                            title="Hover or click to view all diagrams & cascading versions"
-                          >
-                            <span className="truncate">
-                              {getArchitectureTypeById(selectedArchType)?.name || 'Select Architecture'}
-                            </span>
-                            <div className="flex items-center gap-1 shrink-0">
-                              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-teal-950/80 text-teal-400 border border-teal-800/60 font-bold">
-                                v{displayedVersion?.version_number || activeVersion?.version_number || 1}
-                              </span>
-                              <ChevronDown className={`w-3.5 h-3.5 text-teal-400 transition-transform ${isArchDropdownOpen ? 'rotate-180' : ''}`} />
-                            </div>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const allArchs = [...BUSINESS_ARCHITECTURE_TYPES, ...TECHNICAL_ARCHITECTURE_TYPES];
-                              const currentNorm = normalizeArchitectureId(selectedArchType);
-                              let idx = allArchs.findIndex(a => a.id === selectedArchType || normalizeArchitectureId(a.id) === currentNorm);
-                              const nextIdx = (idx >= 0 && idx < allArchs.length - 1) ? idx + 1 : 0;
-                              handleArchitectureSwitch(allArchs[nextIdx].id);
-                            }}
-                            className="p-1.5 bg-slate-900/90 hover:bg-slate-800/90 border border-panel-border hover:border-teal-500/40 text-teal-300 rounded-lg cursor-pointer transition-all hover:scale-105 active:scale-95"
-                            title="Forward: Next Architecture Topology (→ ArrowRight)"
-                          >
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-
-                        {/* CASCADING TWO-PANE HOVER FLYOUT MENU */}
-                        {isArchDropdownOpen && (
-                          <div 
-                            className="header-dropdown-menu fixed sm:absolute left-0 top-14 sm:top-full mt-1.5 w-[760px] max-w-[95vw] bg-[#090d16] border border-teal-500/50 rounded-2xl shadow-2xl z-[9999] overflow-hidden flex flex-row max-h-[500px]"
-                            onMouseEnter={() => setIsArchDropdownOpen(true)}
-                          >
-                            {/* Left Pane: Search & Architecture List */}
-                            <div className="w-[390px] border-r border-slate-800 flex flex-col shrink-0 bg-[#090d16]">
-                              {/* Search Input Bar */}
-                              <div className="p-2.5 border-b border-slate-800/80 bg-slate-900/90 flex flex-col gap-1.5">
-                                <div className="flex items-center gap-2">
-                                  <Search className="w-3.5 h-3.5 text-indigo-400 shrink-0 ml-1" />
-                                  <input
-                                    type="text"
-                                    autoFocus
-                                    placeholder="Search 42 diagrams..."
-                                    value={archSearchQuery}
-                                    onChange={(e) => setArchSearchQuery(e.target.value)}
-                                    className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-semibold py-0.5"
-                                  />
-                                  {archSearchQuery && (
-                                    <button
-                                      type="button"
-                                      onClick={() => setArchSearchQuery('')}
-                                      className="text-[10px] text-slate-400 hover:text-slate-200 font-bold px-1.5"
-                                    >
-                                      Clear
-                                    </button>
-                                  )}
-                                </div>
-                                <div className="flex items-center justify-between px-1 pt-1 border-t border-slate-800/60 text-[10px] text-slate-400">
-                                  <span>Hover any diagram to inspect versions</span>
-                                  <span className="text-teal-400 font-mono">42 Blueprints</span>
-                                </div>
-                              </div>
-
-                              {/* Filtered Architecture List */}
-                              <div className="overflow-y-auto py-1.5 flex-1 divide-y divide-slate-800/40">
-                                {/* Business Architectures */}
-                                {BUSINESS_ARCHITECTURE_TYPES.filter(t =>
-                                  t.name.toLowerCase().includes(archSearchQuery.toLowerCase()) ||
-                                  (t.whenToUse || '').toLowerCase().includes(archSearchQuery.toLowerCase())
-                                ).length > 0 && (
-                                  <div className="px-2 py-1">
-                                    <p className="text-[10px] uppercase font-extrabold tracking-wider text-teal-400 px-2 py-1">
-                                      🏢 Business Architectures
-                                    </p>
-                                    {BUSINESS_ARCHITECTURE_TYPES.filter(t =>
-                                      t.name.toLowerCase().includes(archSearchQuery.toLowerCase()) ||
-                                      (t.whenToUse || '').toLowerCase().includes(archSearchQuery.toLowerCase())
-                                    ).map(t => {
-                                      const isSelected = selectedArchType === t.id;
-                                      const isHovered = (hoveredArchId || selectedArchType) === t.id;
-                                      const existingVers = (activeDiagram?.versions || []).filter(v => (v.architecture_type || 'conceptual_diagram') === t.id);
-                                      const verCount = existingVers.length > 0 ? existingVers.length : 1;
-
-                                      return (
-                                        <button
-                                          key={t.id}
-                                          type="button"
-                                          onMouseEnter={() => setHoveredArchId(t.id)}
-                                          onClick={() => {
-                                            setIsArchDropdownOpen(false);
-                                            handleArchitectureSwitch(t.id);
-                                          }}
-                                          className={`w-full text-left px-2.5 py-2 rounded-xl transition-all flex items-center justify-between gap-2 cursor-pointer ${
-                                            isHovered
-                                              ? 'bg-teal-950/70 border border-teal-500/50 text-teal-200 font-extrabold shadow-sm'
-                                              : isSelected
-                                              ? 'bg-slate-900/80 text-teal-300 font-bold'
-                                              : 'text-slate-300 hover:bg-slate-900/60 font-semibold'
-                                          }`}
-                                        >
-                                          <div className="min-w-0 flex-1">
-                                            <span className="text-xs truncate block">{t.name}</span>
-                                          </div>
-                                          <div className="flex items-center gap-1.5 shrink-0">
-                                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400">
-                                              {verCount}v
-                                            </span>
-                                            {isSelected && (
-                                              <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
-                                            )}
-                                            <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isHovered ? 'text-teal-400 translate-x-0.5' : 'text-slate-600'}`} />
-                                          </div>
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-
-                                {/* Technical Architectures */}
-                                {TECHNICAL_ARCHITECTURE_TYPES.filter(t =>
-                                  t.name.toLowerCase().includes(archSearchQuery.toLowerCase()) ||
-                                  (t.whenToUse || '').toLowerCase().includes(archSearchQuery.toLowerCase())
-                                ).length > 0 && (
-                                  <div className="px-2 py-1">
-                                    <p className="text-[10px] uppercase font-extrabold tracking-wider text-indigo-400 px-2 py-1">
-                                      ⚙️ Technical Architectures
-                                    </p>
-                                    {TECHNICAL_ARCHITECTURE_TYPES.filter(t =>
-                                      t.name.toLowerCase().includes(archSearchQuery.toLowerCase()) ||
-                                      (t.whenToUse || '').toLowerCase().includes(archSearchQuery.toLowerCase())
-                                    ).map(t => {
-                                      const isSelected = selectedArchType === t.id;
-                                      const isHovered = (hoveredArchId || selectedArchType) === t.id;
-                                      const existingVers = (activeDiagram?.versions || []).filter(v => (v.architecture_type || 'conceptual_diagram') === t.id);
-                                      const verCount = existingVers.length > 0 ? existingVers.length : 1;
-
-                                      return (
-                                        <button
-                                          key={t.id}
-                                          type="button"
-                                          onMouseEnter={() => setHoveredArchId(t.id)}
-                                          onClick={() => {
-                                            setIsArchDropdownOpen(false);
-                                            handleArchitectureSwitch(t.id);
-                                          }}
-                                          className={`w-full text-left px-2.5 py-2 rounded-xl transition-all flex items-center justify-between gap-2 cursor-pointer ${
-                                            isHovered
-                                              ? 'bg-indigo-950/70 border border-indigo-500/50 text-indigo-200 font-extrabold shadow-sm'
-                                              : isSelected
-                                              ? 'bg-slate-900/80 text-indigo-300 font-bold'
-                                              : 'text-slate-300 hover:bg-slate-900/60 font-semibold'
-                                          }`}
-                                        >
-                                          <div className="min-w-0 flex-1">
-                                            <span className="text-xs truncate block">{t.name}</span>
-                                          </div>
-                                          <div className="flex items-center gap-1.5 shrink-0">
-                                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400">
-                                              {verCount}v
-                                            </span>
-                                            {isSelected && (
-                                              <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
-                                            )}
-                                            <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isHovered ? 'text-indigo-400 translate-x-0.5' : 'text-slate-600'}`} />
-                                          </div>
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Right Pane: Cascading Version Inspector with Star indicator */}
-                            {(() => {
-                              const targetArchId = hoveredArchId || selectedArchType;
-                              const targetArchMeta = getArchitectureTypeById(targetArchId);
-                              const targetArchVersions = (activeDiagram?.versions || [])
-                                .filter(v => (v.architecture_type || 'conceptual_diagram') === targetArchId)
-                                .sort((a, b) => b.version_number - a.version_number);
-
-                              return (
-                                <div className="flex-1 bg-[#060a14] p-3 flex flex-col overflow-y-auto">
-                                  {/* Version Header */}
-                                  <div className="pb-2.5 mb-2.5 border-b border-slate-800/80 flex items-center justify-between gap-2">
-                                    <div className="min-w-0">
-                                      <span className="text-[10px] font-mono text-teal-400 font-extrabold uppercase">
-                                        Versions for Diagram
-                                      </span>
-                                      <h4 className="text-xs font-black text-white truncate max-w-[300px]">
-                                        {targetArchMeta?.name || targetArchId}
-                                      </h4>
-                                    </div>
-                                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 shrink-0">
-                                      {targetArchVersions.length > 0 ? `${targetArchVersions.length} Snapshot${targetArchVersions.length > 1 ? 's' : ''}` : '1 Master Blueprint'}
-                                    </span>
-                                  </div>
-
-                                  {/* Version Cards List */}
-                                  <div className="space-y-2 flex-1 overflow-y-auto pr-1">
-                                    {targetArchVersions.length > 0 ? (
-                                      targetArchVersions.map((ver, idx) => {
-                                        const isCurrent = (selectedArchType === targetArchId && (displayedVersion?.id || activeVersion?.id) === ver.id) || (selectedArchType === targetArchId && !displayedVersion && !activeVersion && idx === 0);
-
-                                        return (
-                                          <button
-                                            key={ver.id || idx}
-                                            type="button"
-                                            onClick={() => {
-                                              if (selectedArchType !== targetArchId) {
-                                                setSelectedArchType(targetArchId);
-                                                if (typeof window !== 'undefined') {
-                                                  window.history.replaceState(null, '', `/workspace?arch=${targetArchId}`);
-                                                }
-                                              }
-                                              setActiveVersion(ver);
-                                              setPreviewVersion(null);
-                                              activeXmlRef.current = ver.xml_content;
-                                              setCustomXml(ver.xml_content);
-                                              if (activeDiagram?.id) {
-                                                fetch(`/api/diagrams/${activeDiagram.id}`, {
-                                                  method: 'PATCH',
-                                                  headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-                                                  body: JSON.stringify({ architecture_type: targetArchId }),
-                                                }).catch(console.error);
-                                                setActiveDiagram(prev => prev ? {
-                                                  ...prev,
-                                                  architecture_type: targetArchId
-                                                } : prev);
-                                              }
-                                              setIsArchDropdownOpen(false);
-                                            }}
-                                            className={`w-full text-left p-2.5 rounded-xl border transition-all cursor-pointer group ${
-                                              isCurrent
-                                                ? 'bg-teal-950/80 border-teal-500 shadow-md shadow-teal-500/10'
-                                                : 'bg-slate-900/50 border-slate-800 hover:bg-slate-800/60 hover:border-slate-700'
-                                            }`}
-                                          >
-                                            <div className="flex items-center justify-between gap-2 mb-1">
-                                              <div className="flex items-center gap-1.5">
-                                                <span className={`text-[11px] font-mono font-extrabold px-1.5 py-0.5 rounded ${
-                                                  isCurrent ? 'bg-teal-400 text-slate-950' : 'bg-slate-800 text-teal-300'
-                                                }`}>
-                                                  v{ver.version_number}
-                                                </span>
-                                                <span className="text-[10px] text-slate-400 font-mono">
-                                                  {formatRelativeTime(ver.created_at)}
-                                                </span>
-                                              </div>
-
-                                              {/* Star on Current Active Version */}
-                                              {isCurrent ? (
-                                                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-extrabold">
-                                                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                                  <span>CURRENT</span>
-                                                </div>
-                                              ) : (
-                                                <div className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold text-slate-400 hover:text-amber-300 flex items-center gap-1">
-                                                  <Star className="w-3 h-3 text-slate-500 group-hover:text-amber-400" />
-                                                  <span>Make Current</span>
-                                                </div>
-                                              )}
-                                            </div>
-
-                                            <p className="text-xs font-semibold text-slate-200 line-clamp-2 mb-1">
-                                              {ver.comment || ver.prompt || 'Architectural Refinement'}
-                                            </p>
-
-                                            <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                                              <span>Author: {ver.created_by || 'system'}</span>
-                                              <span className="text-teal-400/80">Click to switch ➔</span>
-                                            </div>
-                                          </button>
-                                        );
-                                      })
-                                    ) : (
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          setIsArchDropdownOpen(false);
-                                          handleArchitectureSwitch(targetArchId);
-                                        }}
-                                        className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer ${
-                                          selectedArchType === targetArchId
-                                            ? 'bg-teal-950/80 border-teal-500 shadow-md shadow-teal-500/10'
-                                            : 'bg-slate-900/50 border-slate-800 hover:bg-slate-800/60 hover:border-slate-700'
-                                        }`}
-                                      >
-                                        <div className="flex items-center justify-between gap-2 mb-1">
-                                          <div className="flex items-center gap-1.5">
-                                            <span className={`text-[11px] font-mono font-extrabold px-1.5 py-0.5 rounded ${
-                                              selectedArchType === targetArchId ? 'bg-teal-400 text-slate-950' : 'bg-slate-800 text-teal-300'
-                                            }`}>
-                                              v1
-                                            </span>
-                                            <span className="text-[10px] text-slate-400 font-mono">Master Spec</span>
-                                          </div>
-
-                                          {selectedArchType === targetArchId ? (
-                                            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-extrabold">
-                                              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                              <span>CURRENT</span>
-                                            </div>
-                                          ) : (
-                                            <div className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
-                                              <Star className="w-3 h-3 text-slate-500" />
-                                              <span>Load Blueprint</span>
-                                            </div>
-                                          )}
-                                        </div>
-
-                                        <p className="text-xs font-semibold text-slate-200 line-clamp-2 mb-1">
-                                          {targetArchMeta?.whenToUse || 'Pristine 2D zero-trust architecture master blueprint.'}
-                                        </p>
-
-                                        <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                                          <span>Author: System Master</span>
-                                          <span className="text-teal-400">Click to load ➔</span>
-                                        </div>
-                                      </button>
-                                    )}
-                                  </div>
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    {/* Top-Down Hierarchical Architecture Navigator (Phase → Domain → Leaf Blueprint) */}
+                    <TopDownHierarchySelector
+                      selectedArchType={selectedArchType}
+                      onSelectBlueprint={(newArchId) => handleArchitectureSwitch(newArchId)}
+                      activeVersionNumber={displayedVersion?.version_number || activeVersion?.version_number || 1}
+                      disabled={isAnyAIBusy}
+                    />
                   </>
                 )}
               </div>
@@ -6778,95 +6185,22 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             style={{ width: isAssistantOpen ? `${assistantWidth}px` : '44px' }}
             className={getTourClass(tourStep, 3, `border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden ${isResizingAssistant ? '' : 'transition-all duration-200'} ${mobileTab === 'assistant' ? 'fixed inset-0 top-14 bottom-14 z-40 bg-panel-dark/95 backdrop-blur-xl md:static md:inset-auto md:h-full flex' : 'hidden md:flex'}`)}
           >
-            {/* Left Assistant Panel Header & Architectural Tool Strip */}
-            <div className="p-2.5 border-b border-panel-border flex flex-col gap-2 bg-panel-dark/40 shrink-0 select-none">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 min-w-0">
-                  <MessageSquare className="w-4 h-4 text-teal-accent shrink-0" />
-                  {isAssistantOpen && (
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-200 truncate">Architect Suite & AI</span>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsAssistantOpen(!isAssistantOpen)}
-                  title={isAssistantOpen ? "Collapse Assistant Panel" : "Expand Assistant Panel"}
-                  className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
-                >
-                  {isAssistantOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                </button>
+            {/* Left Assistant Panel Header */}
+            <div className="p-2.5 border-b border-panel-border flex items-center justify-between bg-panel-dark/40 shrink-0 select-none">
+              <div className="flex items-center gap-2 min-w-0">
+                <MessageSquare className="w-4 h-4 text-teal-accent shrink-0" />
+                {isAssistantOpen && (
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-200 truncate">Architect Suite & AI</span>
+                )}
               </div>
-
-              {isAssistantOpen && activeDiagram && (
-                <div className="grid grid-cols-2 sm:grid-cols-6 gap-1.5 pt-1">
-                  {/* Export & DaC Studio */}
-                  <button
-                    type="button"
-                    onClick={() => setIsExportModalOpen(true)}
-                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-teal-500/50 text-teal-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
-                    title="Export Diagram PNG, PDF, PPTX, Python .py, D2 .d2"
-                  >
-                    <Download className="w-3.5 h-3.5 text-teal-400" />
-                    <span>{t.exportStudio}</span>
-                  </button>
-
-                  {/* Strategic Blueprint Matrix */}
-                  <button
-                    type="button"
-                    onClick={() => setIsPlaybookModalOpen(true)}
-                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/40 text-purple-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
-                    title="Open Enterprise Architecture Blueprint Matrix & Governance Catalog"
-                  >
-                    <BookOpen className="w-3.5 h-3.5 text-purple-400" />
-                    <span>Blueprint Matrix</span>
-                  </button>
-
-                  {/* Set as Master Template */}
-                  <button
-                    type="button"
-                    onClick={() => setIsSetMasterModalOpen(true)}
-                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/50 text-amber-300 text-[11px] font-extrabold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
-                    title="Promote or save active diagram as the Master Template"
-                  >
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    <span>Set Master</span>
-                  </button>
-
-                  {/* Cloud Cost Estimator */}
-                  <button
-                    type="button"
-                    onClick={() => setIsCostModalOpen(true)}
-                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/40 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
-                    title="View Cloud Cost Estimator & Infracost breakdown"
-                  >
-                    <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Est. ${costReport.totalMonthlyCostUsd.toLocaleString()}/mo</span>
-                  </button>
-
-                  {/* Compose Doc */}
-                  <button
-                    type="button"
-                    onClick={() => setIsComposeOpen(true)}
-                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-sky-950/40 hover:bg-sky-900/40 border border-sky-500/40 text-sky-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
-                    title="Compose formal System Documentation (PRD, SDD, Threat Model)"
-                  >
-                    <FileText className="w-3.5 h-3.5 text-sky-400" />
-                    <span>{t.composeDoc}</span>
-                  </button>
-
-                  {/* Audit Security */}
-                  <button
-                    type="button"
-                    onClick={() => handleAuditDiagram()}
-                    disabled={isAuditing}
-                    className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-teal-950/40 hover:bg-teal-900/40 border border-teal-500/40 text-teal-accent text-[11px] font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50"
-                    title="Run static security audit on architecture"
-                  >
-                    {isAuditing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Shield className="w-3.5 h-3.5" />}
-                    <span>{isAuditing ? 'Auditing...' : 'Security Audit'}</span>
-                  </button>
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                title={isAssistantOpen ? "Collapse Assistant Panel" : "Expand Assistant Panel"}
+                className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
+              >
+                {isAssistantOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              </button>
             </div>
 
             {isAssistantOpen && (
@@ -7181,6 +6515,80 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     <div ref={chatEndRef} />
                   </div>
                 </div>
+
+                {/* Bottom Pinned Action Hub / Architectural Tool Strip */}
+                {activeDiagram && (
+                  <div className="p-2 border-t border-panel-border bg-[#070A13] backdrop-blur shrink-0 select-none shadow-xl z-10">
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {/* Export & DaC Studio */}
+                      <button
+                        type="button"
+                        onClick={() => setIsExportModalOpen(true)}
+                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-teal-500/50 text-teal-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                        title="Export Diagram PNG, PDF, PPTX, Python .py, D2 .d2"
+                      >
+                        <Download className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                        <span className="truncate">{t.exportStudio}</span>
+                      </button>
+
+                      {/* Strategic Blueprint Matrix */}
+                      <button
+                        type="button"
+                        onClick={() => setIsPlaybookModalOpen(true)}
+                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/40 text-purple-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                        title="Open Enterprise Architecture Blueprint Matrix & Governance Catalog"
+                      >
+                        <BookOpen className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                        <span className="truncate">Blueprint Matrix</span>
+                      </button>
+
+                      {/* Set as Master Template */}
+                      <button
+                        type="button"
+                        onClick={() => setIsSetMasterModalOpen(true)}
+                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/50 text-amber-300 text-[11px] font-extrabold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                        title="Promote or save active diagram as the Master Template"
+                      >
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />
+                        <span className="truncate">Set Master</span>
+                      </button>
+
+                      {/* Cloud Cost Estimator */}
+                      <button
+                        type="button"
+                        onClick={() => setIsCostModalOpen(true)}
+                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/40 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                        title="View Cloud Cost Estimator & Infracost breakdown"
+                      >
+                        <DollarSign className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span className="truncate">Est. ${costReport.totalMonthlyCostUsd.toLocaleString()}/mo</span>
+                      </button>
+
+                      {/* Compose Doc */}
+                      <button
+                        type="button"
+                        onClick={() => setIsComposeOpen(true)}
+                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-sky-950/40 hover:bg-sky-900/40 border border-sky-500/40 text-sky-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                        title="Compose formal System Documentation (PRD, SDD, Threat Model)"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                        <span className="truncate">{t.composeDoc}</span>
+                      </button>
+
+                      {/* Audit Security */}
+                      <button
+                        type="button"
+                        onClick={() => handleAuditDiagram()}
+                        disabled={isAuditing}
+                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-teal-950/40 hover:bg-teal-900/40 border border-teal-500/40 text-teal-accent text-[11px] font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 hover:scale-[1.02]"
+                        title="Run static security audit on architecture"
+                      >
+                        {isAuditing ? <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" /> : <Shield className="w-3.5 h-3.5 shrink-0" />}
+                        <span className="truncate">{isAuditing ? 'Auditing...' : 'Security Audit'}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </section>
