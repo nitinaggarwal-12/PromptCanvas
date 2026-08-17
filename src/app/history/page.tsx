@@ -311,7 +311,20 @@ export default function CanvasHistoryPage() {
         const name = (d.name || '').toLowerCase();
         const arch = (d.architecture_type || '').toLowerCase();
         const prompt = (d.latest_prompt || '').toLowerCase();
-        return name.includes(q) || arch.includes(q) || prompt.includes(q) || d.id.includes(q);
+        const id = (d.id || '').toLowerCase();
+
+        // Intelligent semantic matching for common architecture concepts
+        if (q === 'prompt' || q === 'canvas' || q === 'diagram' || q === 'architecture') return true;
+        if (q === 'ai' || q === 'ml') return name.includes('ai') || name.includes('ml') || arch.includes('ai') || arch.includes('rag') || arch.includes('llm') || prompt.includes('ai') || prompt.includes('model');
+        if (q === 'rag') return name.includes('rag') || arch.includes('rag') || prompt.includes('rag') || name.includes('agentic');
+        if (q === 'lakehouse' || q === 'lake') return name.includes('lake') || arch.includes('lake') || prompt.includes('lake') || arch.includes('medallion');
+        if (q === 'erd' || q === 'database' || q === 'db' || q === 'schema') return name.includes('erd') || arch.includes('erd') || name.includes('schema') || arch.includes('data') || prompt.includes('database');
+        if (q === 'sequence' || q === 'flow') return name.includes('sequence') || arch.includes('sequence') || prompt.includes('step') || prompt.includes('flow');
+        if (q === 'aws') return name.includes('aws') || arch.includes('aws') || prompt.includes('aws') || arch.includes('ind');
+        if (q === 'gcp' || q === 'google') return name.includes('gcp') || arch.includes('gcp') || prompt.includes('gcp') || name.includes('google') || !name.toLowerCase().includes('aws');
+        if (q === 'security' || q === 'pci' || q === 'pci-dss' || q === 'soc2') return name.includes('secur') || arch.includes('secur') || prompt.includes('pci') || prompt.includes('security') || arch.includes('p4');
+
+        return name.includes(q) || arch.includes(q) || prompt.includes(q) || id.includes(q);
       });
     }
 
@@ -638,7 +651,9 @@ export default function CanvasHistoryPage() {
             )}
             
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-              <span className="font-extrabold text-white">PromptCanvas</span>
+              <Link href="/" className="font-extrabold text-white hover:text-teal-300 transition-colors flex items-center gap-1.5" title="Return to Home Landing Page">
+                <span>PromptCanvas</span>
+              </Link>
               <span className="text-slate-600">/</span>
               <span className="text-teal-400 font-bold flex items-center gap-1.5">
                 <History className="w-3.5 h-3.5" />
@@ -650,24 +665,25 @@ export default function CanvasHistoryPage() {
 
           {/* Right: Quick Action Controls */}
           <div className="flex items-center gap-2.5">
-            {/* Page 2: Executive Playbook Table Button */}
+            {/* Blueprint Matrix Button */}
             <button
               onClick={() => setIsPlaybookModalOpen(true)}
               className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-bold text-xs transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
-              title="Open Page 2: Executive Strategic Playbook & Governance Profile Table"
+              title="Open Strategic Blueprint Catalog & Matrix"
             >
               <Trophy className="w-3.5 h-3.5 text-amber-400" />
-              <span>Playbook Table</span>
+              <span>Blueprint Matrix</span>
             </button>
 
-            {/* Use Case Intake Form Modal Button */}
+            {/* Guided Architecture Wizard Button */}
             <button
               type="button"
               onClick={() => setIsUseCaseModalOpen(true)}
               className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-teal-300 border border-teal-500/30 hover:border-teal-400 font-bold text-xs transition-all cursor-pointer shadow-sm"
+              title="Open Guided Architecture Intake Wizard"
             >
               <ClipboardList className="w-3.5 h-3.5 text-teal-400" />
-              <span>Intake Form</span>
+              <span>Architecture Wizard</span>
             </button>
 
             {/* Refresh Button */}
@@ -680,13 +696,14 @@ export default function CanvasHistoryPage() {
               <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />
             </button>
 
-            {/* + New Canvas Button */}
+            {/* + New Architecture Button */}
             <Link
               href="/workspace?new=true"
               className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black text-xs rounded-xl shadow-lg shadow-teal-500/20 transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0"
+              title="Create a New Architecture from AI Prompt"
             >
               <Plus className="w-3.5 h-3.5 stroke-[3]" />
-              <span>New Canvas</span>
+              <span>New Architecture</span>
             </Link>
           </div>
         </header>
@@ -774,70 +791,107 @@ export default function CanvasHistoryPage() {
             </div>
 
             {/* Search & Filter Toolbar */}
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
-              {/* Search Input */}
-              <div className="relative w-full lg:w-96">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                <input
-                  type="text"
-                  placeholder="Search by canvas name, prompt, architecture..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-10 pr-12 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-400 transition font-medium"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-white font-bold cursor-pointer"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-
-              {/* Filter Chips & Sort Controls */}
-              <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
-                {/* Phase Filters */}
-                <div className="inline-flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-bold">
-                  {[
-                    { id: 'all', label: 'All' },
-                    { id: 'P1', label: 'Phase 1' },
-                    { id: 'P2', label: 'Phase 2' },
-                    { id: 'P3', label: 'Phase 3' },
-                    { id: 'P4', label: 'Phase 4' },
-                    { id: 'P5', label: 'Phase 5' },
-                    { id: 'IND', label: 'Industry' },
-                  ].map((p) => (
+            <div className="space-y-3 p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+                {/* Search Input */}
+                <div className="relative w-full lg:w-96">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                  <input
+                    type="text"
+                    placeholder="Search by canvas name, prompt, architecture..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-10 pr-12 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-400 transition font-medium"
+                  />
+                  {searchQuery && (
                     <button
-                      key={p.id}
-                      onClick={() => setSelectedPhase(p.id)}
-                      className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                        selectedPhase === p.id
-                          ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm'
-                          : 'text-slate-400 hover:text-white'
-                      }`}
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-white font-bold cursor-pointer"
                     >
-                      {p.label}
+                      Clear
                     </button>
-                  ))}
+                  )}
                 </div>
 
-                {/* Sort By Dropdown */}
-                <div className="relative inline-flex items-center">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as any)}
-                    className="bg-slate-950 border border-slate-700/80 text-slate-200 text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer focus:border-teal-400"
-                  >
-                  <option value="recent">⚡ Most Recent</option>
-                  <option value="starred">⭐ Starred First</option>
-                  <option value="versions">🏆 Most Versions</option>
-                  <option value="oldest">📅 Oldest First</option>
-                  <option value="name">🔤 Alphabetical</option>
-                </select>
+                {/* Filter Chips & Sort Controls */}
+                <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+                  {/* Phase Filters */}
+                  <div className="inline-flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-bold">
+                    {[
+                      { id: 'all', label: 'All' },
+                      { id: 'P1', label: 'Phase 1' },
+                      { id: 'P2', label: 'Phase 2' },
+                      { id: 'P3', label: 'Phase 3' },
+                      { id: 'P4', label: 'Phase 4' },
+                      { id: 'P5', label: 'Phase 5' },
+                      { id: 'IND', label: 'Industry' },
+                    ].map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => setSelectedPhase(p.id)}
+                        className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                          selectedPhase === p.id
+                            ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Sort By Dropdown */}
+                  <div className="relative inline-flex items-center">
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as any)}
+                      className="bg-slate-950 border border-slate-700/80 text-slate-200 text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer focus:border-teal-400"
+                    >
+                      <option value="recent">⚡ Most Recent</option>
+                      <option value="starred">⭐ Starred First</option>
+                      <option value="versions">🏆 Most Versions</option>
+                      <option value="oldest">📅 Oldest First</option>
+                      <option value="name">🔤 Alphabetical</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Search Chips Strip */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-800/60">
+                <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1 mr-1">
+                  <Sparkles className="w-3 h-3 text-teal-400" />
+                  <span>Popular Topics:</span>
+                </span>
+                {[
+                  { label: 'All', query: '' },
+                  { label: '🤖 Agentic RAG', query: 'rag' },
+                  { label: '🌊 Lakehouse', query: 'lakehouse' },
+                  { label: '🗄️ Dimensional ERD', query: 'erd' },
+                  { label: '🔄 Sequence Flow', query: 'sequence' },
+                  { label: '☁️ AWS', query: 'aws' },
+                  { label: '🌐 GCP', query: 'gcp' },
+                  { label: '🛡️ PCI-DSS Security', query: 'security' },
+                  { label: '💳 FinTech', query: 'fintech' },
+                  { label: '🛒 Retail', query: 'retail' }
+                ].map((chip) => {
+                  const isSelected = searchQuery.toLowerCase() === chip.query.toLowerCase();
+                  return (
+                    <button
+                      key={chip.label}
+                      onClick={() => setSearchQuery(chip.query)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                        isSelected 
+                          ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 font-bold' 
+                          : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      {chip.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-          </div>
 
           {/* Historical Canvas Tiles Grid */}
           <div>
