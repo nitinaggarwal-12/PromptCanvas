@@ -169,7 +169,16 @@ function getPgPool(): Pool {
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.DATABASE_URL?.includes('railway') || process.env.NODE_ENV === 'production'
         ? { rejectUnauthorized: false }
-        : false
+        : false,
+      max: 20,
+      min: 2,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 5000,
+      maxUses: 7500
+    });
+
+    pgPoolInstance.on('error', (err) => {
+      console.error('[PostgreSQL Pool] Unexpected error on idle client:', err);
     });
   }
   return pgPoolInstance;
@@ -210,6 +219,45 @@ export async function checkDatabaseHealth(): Promise<{ ok: boolean; type: 'postg
     }
   } catch (err: any) {
     return { ok: false, type: isPostgres() ? 'postgres' : 'sqlite', latencyMs: Date.now() - start, error: err.message };
+  }
+}
+
+// Maintenance: Automatically purge expired guest sessions, magic links, and stale temp diagrams older than 30 days
+export async function purgeExpiredGuestSessionsAndDiagrams(): Promise<{ purgedSessions: number; purgedTokens: number; purgedDiagrams: number }> {
+  await ensureTablesExist();
+  try {
+    if (isPostgres()) {
+      const pool = getPgPool();
+      const resSessions = await pool.query('DELETE FROM sessions WHERE expires_at < NOW()');
+      const resTokens = await pool.query('DELETE FROM magic_link_tokens WHERE expires_at < NOW()');
+      const resDiagrams = await pool.query(`
+        DELETE FROM diagrams 
+        WHERE (user_id LIKE 'guest-%' OR id LIKE 'bp_%' OR id LIKE 'temp_%')
+          AND updated_at < NOW() - INTERVAL '30 days'
+      `);
+      return {
+        purgedSessions: resSessions.rowCount || 0,
+        purgedTokens: resTokens.rowCount || 0,
+        purgedDiagrams: resDiagrams.rowCount || 0
+      };
+    } else {
+      const db = getSqliteDb();
+      const resSessions = db.prepare(`DELETE FROM sessions WHERE expires_at < strftime('%Y-%m-%d %H:%M:%f', 'now')`).run();
+      const resTokens = db.prepare(`DELETE FROM magic_link_tokens WHERE expires_at < strftime('%Y-%m-%d %H:%M:%f', 'now')`).run();
+      const resDiagrams = db.prepare(`
+        DELETE FROM diagrams 
+        WHERE (user_id LIKE 'guest-%' OR id LIKE 'bp_%' OR id LIKE 'temp_%')
+          AND updated_at < strftime('%Y-%m-%d %H:%M:%f', 'now', '-30 days')
+      `).run();
+      return {
+        purgedSessions: Number(resSessions.changes || 0),
+        purgedTokens: Number(resTokens.changes || 0),
+        purgedDiagrams: Number(resDiagrams.changes || 0)
+      };
+    }
+  } catch (err) {
+    console.error('[DB Maintenance] Error during expired session purge:', err);
+    return { purgedSessions: 0, purgedTokens: 0, purgedDiagrams: 0 };
   }
 }
 
