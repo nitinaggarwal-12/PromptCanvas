@@ -5087,12 +5087,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           });
         });
       setChatMessages(messages);
-    } else {
-      // Load pristine Master Reference Architecture Blueprint
+      // Load pristine Master Reference Architecture Blueprint tailored to active prompt/domain
       setSelectedArchType(newArchId);
       const archMeta = getArchitectureTypeById(newArchId);
       const archName = archMeta?.name || newArchId;
-      const baseRefXml = getDefaultXmlForArchitecture(newArchId);
+      const promptContext = activeDiagram?.versions?.[0]?.prompt || (activeDiagram as any)?.latest_prompt || promptInput || activeDiagram?.name || '';
+      const baseRefXml = getDefaultXmlForArchitecture(newArchId, promptContext, promptContext);
       const nextVerNum = (activeDiagram?.versions?.length || 0) + 1;
 
       const newVer: DiagramVersion = {
@@ -5100,9 +5100,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         diagram_id: activeDiagram?.id || 'temp',
         version_number: nextVerNum,
         xml_content: baseRefXml || '',
-        comment: `Master Reference Blueprint: ${archName}`,
+        comment: `Master Blueprint (${archName}) - Adapted to prompt`,
         created_by: 'System',
         created_at: new Date().toISOString(),
+        prompt: promptContext || undefined,
         architecture_type: newArchId
       };
 
@@ -5239,7 +5240,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     });
 
     try {
-      const masterXml = getDefaultXmlForArchitecture(archToRefresh);
+      const promptContext = activeDiagram?.versions?.[0]?.prompt || (activeDiagram as any)?.latest_prompt || promptInput || activeDiagram?.name || '';
+      const masterXml = getDefaultXmlForArchitecture(archToRefresh, promptContext, promptContext);
       const nextVerNum = (activeDiagram.versions?.length || 0) + 1;
 
       let freshVer: DiagramVersion = {
@@ -5250,6 +5252,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         comment: `Master Template Live API: ${archName}`,
         created_by: 'System',
         created_at: new Date().toISOString(),
+        prompt: promptContext || undefined,
         architecture_type: archToRefresh
       };
 
