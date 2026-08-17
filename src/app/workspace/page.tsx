@@ -39,6 +39,7 @@ import {
   Edit3, 
   ExternalLink, 
   Sparkles, 
+  AlertTriangle, 
   ChevronLeft, 
   ChevronRight, 
   Menu,
@@ -7585,9 +7586,38 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 </div>
               ) : (
                 /* Phase 1: 2D Interactive Canvas with AI Studio Radial Grid */
-                <div 
-                  className="w-full h-full flex items-center justify-center p-2 md:p-4 relative overflow-auto select-none cursor-grab active:cursor-grabbing"
-                  onMouseDown={(e) => {
+                <div className="w-full h-full flex flex-col relative overflow-hidden">
+                  {/* Historical Snapshot Forking Warning Banner */}
+                  {previewVersion && previewVersion.id !== activeVersion?.id && (
+                    <div className="w-full bg-amber-500/15 border-b border-amber-500/40 px-4 py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-amber-200 text-xs font-semibold backdrop-blur-md z-30 shrink-0 animate-fade-in shadow-md">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span className="truncate">
+                          Viewing Historical Snapshot <b className="text-white">v{previewVersion.version_number}</b> (Read-Only) — Submitting a prompt will fork this into a new version <b className="text-teal-300">v{(activeDiagram?.versions?.length || 0) + 1}</b>.
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                        <button
+                          type="button"
+                          onClick={() => setPreviewVersion(null)}
+                          className="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-amber-300 rounded-lg border border-amber-500/30 text-xs font-bold cursor-pointer transition"
+                        >
+                          Return to Latest (v{activeVersion?.version_number || (activeDiagram?.versions?.length || 1)})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRestoreVersion(previewVersion)}
+                          className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold cursor-pointer transition shadow-sm"
+                        >
+                          Restore as Draft
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div 
+                    className="w-full flex-1 flex items-center justify-center p-2 md:p-4 relative overflow-auto select-none cursor-grab active:cursor-grabbing"
+                    onMouseDown={(e) => {
                     if (e.target === e.currentTarget || (e.target as HTMLElement).id === 'radial-grid-background') {
                       const startX = e.clientX - pan.x;
                       const startY = e.clientY - pan.y;
@@ -7670,22 +7700,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
-            
-            {/* Reset preview banner if active */}
-            {previewVersion && (
-              <div className="bg-amber-500/15 border-t border-amber-500/30 px-4 py-2 flex items-center justify-between text-xs text-amber-300 z-10 animate-fade-in shrink-0">
-                <span>You are previewing a historical snapshot (v{previewVersion.version_number}).</span>
-                <button 
-                  onClick={() => setPreviewVersion(null)}
-                  className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-600 text-bg-dark font-semibold transition-all cursor-pointer"
-                >
-                  Back to Active Draft
-                </button>
               </div>
             )}
-          </section>
+          </div>
+        </section>
 
           {/* Mobile Bottom Navigation View Switcher (Only visible on screens < 768px) */}
           {activeDiagram && (
