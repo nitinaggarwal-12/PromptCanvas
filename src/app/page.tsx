@@ -87,9 +87,9 @@ export default function LandingPage() {
     e.preventDefault();
     try {
       const res = await fetch('/api/auth/guest', { method: 'POST' });
-      router.push('/dashboard');
+      router.push('/workspace');
     } catch {
-      router.push('/dashboard');
+      router.push('/workspace');
     }
   };
 
@@ -170,10 +170,10 @@ export default function LandingPage() {
                 </button>
                 <Link
                   id="header-launch-app-btn"
-                  href="/dashboard"
+                  href="/workspace"
                   className="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
                 >
-                  Launch App
+                  Launch Workspace
                 </Link>
               </>
             ) : (
@@ -198,11 +198,11 @@ export default function LandingPage() {
                 </button>
                 <Link
                   id="header-launch-app-btn"
-                  href="/dashboard"
+                  href="/workspace"
                   onClick={handleLaunchAppClick}
                   className="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
                 >
-                  Launch App
+                  Launch Workspace
                 </Link>
               </>
             )}
@@ -737,7 +737,7 @@ export default function LandingPage() {
 
           <div className="mt-8 flex justify-center">
             <Link
-              href={user ? "/dashboard" : "#"}
+              href={user ? "/workspace" : "#"}
               onClick={handleBuildDiagramClick}
               className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
             >
@@ -773,7 +773,7 @@ export default function LandingPage() {
         onSuccess={(loggedUser) => {
           setUser(loggedUser);
           setIsAuthOpen(false);
-          router.push('/dashboard');
+          router.push('/workspace');
         }}
       />
 
