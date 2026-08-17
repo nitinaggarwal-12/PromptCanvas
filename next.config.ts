@@ -38,11 +38,11 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://viewer.diagrams.net",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https:",
-              "frame-src 'self' https://embed.diagrams.net https://app.diagrams.net",
+              "frame-src 'self' https://embed.diagrams.net https://app.diagrams.net https://viewer.diagrams.net",
               "connect-src 'self' https://generativelanguage.googleapis.com https://api.iconify.design https://raw.githubusercontent.com"
             ].join('; ')
           }

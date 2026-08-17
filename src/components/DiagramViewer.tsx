@@ -7,6 +7,7 @@ import { getArchitectureMeta } from '@/lib/architectureMetadata';
 import { SupportedLanguage, translateDiagramXmlToLanguage } from '@/lib/i18n';
 import { localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
+import { DiagramErrorBoundary } from './DiagramErrorBoundary';
 
 interface DiagramViewerProps {
   currentLanguage?: SupportedLanguage;
@@ -394,14 +395,16 @@ export default function DiagramViewer({
   const containerBgClass = bgTheme === 'light' ? 'bg-white border-slate-300 shadow-xl' : 'bg-[#0F172A] border-panel-border/20 shadow-2xl';
 
   return (
-    <div className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}>
-      <iframe
-        key={`iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${xml ? (xml.length + '_' + xml.slice(0, 60).replace(/[^a-zA-Z0-9]/g, '')) : 'empty'}`}
-        srcDoc={iframeHtml}
-        className="w-full h-full border-0 bg-transparent"
-        title="Draw.io Diagram Viewer with Business Use Case Panel"
-        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-      />
-    </div>
+    <DiagramErrorBoundary fallbackXml={sanitizedXml}>
+      <div className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}>
+        <iframe
+          key={`iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${xml ? (xml.length + '_' + xml.slice(0, 60).replace(/[^a-zA-Z0-9]/g, '')) : 'empty'}`}
+          srcDoc={iframeHtml}
+          className="w-full h-full border-0 bg-transparent"
+          title="Draw.io Diagram Viewer with Business Use Case Panel"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        />
+      </div>
+    </DiagramErrorBoundary>
   );
 }
