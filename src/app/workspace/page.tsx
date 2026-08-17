@@ -124,6 +124,8 @@ import { checkDiagramStaleness } from '@/lib/diagramStaleness';
 import { TopDownHierarchySelector } from '@/components/workspace/TopDownHierarchySelector';
 import { TopDownTemplatesExplorer } from '@/components/workspace/TopDownTemplatesExplorer';
 import { UnifiedProjectSelector } from '@/components/workspace/UnifiedProjectSelector';
+import { ProjectHeaderNav } from '@/components/workspace/ProjectHeaderNav';
+import { GeminiEnterpriseBottomChat } from '@/components/workspace/GeminiEnterpriseBottomChat';
 
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
@@ -5887,18 +5889,17 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   >
                     <Network className="w-4 h-4 text-teal-400" />
                   </button>
-                  {/* Unified Project & Top-Down Architecture Hub */}
-                  <UnifiedProjectSelector
+                  {/* Two Clean Controls: Project Selector & Architecture View Selector */}
+                  <ProjectHeaderNav
                     activeDiagram={activeDiagram}
                     diagrams={diagrams}
                     selectedArchType={selectedArchType}
                     activeVersionNumber={displayedVersion?.version_number || activeVersion?.version_number || 1}
                     disabled={isAnyAIBusy}
                     onSelectDiagram={(diagramId) => loadDiagramDetails(diagramId)}
-                    onCreateNewDiagram={async (name, templateArchId) => {
+                    onCreateNewProject={async (name) => {
                       const finalName = name.trim() || generateUniqueDiagramName();
-                      const archToUse = templateArchId || selectedArchType || 'tech_llm_capacity_quota';
-                      const defaultXml = getDefaultXmlForArchitecture(archToUse, finalName, finalName);
+                      const defaultXml = getDefaultXmlForArchitecture('conceptual_diagram', finalName, finalName);
                       try {
                         const res = await fetch('/api/diagrams', {
                           method: 'POST',
@@ -5907,7 +5908,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                             name: finalName,
                             xml: defaultXml,
                             comment: `Created project: ${finalName}`,
-                            architectureType: archToUse,
+                            architectureType: 'conceptual_diagram',
                             isPrivate: false
                           })
                         });
@@ -5923,6 +5924,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       }
                     }}
                     onSelectBlueprint={(newArchId) => handleArchitectureSwitch(newArchId)}
+                    onOpenBlueprintCatalog={() => setIsPlaybookModalOpen(true)}
                   />
                 </div>
               </div>
@@ -6005,438 +6007,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
             </header>
 
-        {/* Workspace Body: Split Pane */}
+        {/* Workspace Body: Immersive Diagram Canvas with Gemini Enterprise Bottom Dock */}
         <div className="flex-1 flex min-h-0 relative">
           
-          {/* A. LEFT PANE: Chat & Prompt Panel */}
-          <section 
-            id="tour-ai-panel"
-            style={{ width: isAssistantOpen ? `${assistantWidth}px` : '44px' }}
-            className={getTourClass(tourStep, 3, `border-r border-panel-border flex flex-col bg-panel-dark/30 h-full max-h-full shrink-0 overflow-hidden ${isResizingAssistant ? '' : 'transition-all duration-200'} ${mobileTab === 'assistant' ? 'fixed inset-0 top-14 bottom-14 z-40 bg-panel-dark/95 backdrop-blur-xl md:static md:inset-auto md:h-full flex' : 'hidden md:flex'}`)}
-          >
-            {/* Left Assistant Panel Header */}
-            <div className="p-2.5 border-b border-panel-border flex items-center justify-between bg-panel-dark/40 shrink-0 select-none">
-              <div className="flex items-center gap-2 min-w-0">
-                <MessageSquare className="w-4 h-4 text-teal-accent shrink-0" />
-                {isAssistantOpen && (
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-200 truncate">Architect Suite & AI</span>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsAssistantOpen(!isAssistantOpen)}
-                title={isAssistantOpen ? "Collapse Assistant Panel" : "Expand Assistant Panel"}
-                className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
-              >
-                {isAssistantOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-              </button>
-            </div>
-
-            {isAssistantOpen && (
-              <>
-                {/* Pinned Top Section: Taller Chatbot Input Box & Clear Suggested Refinement Cards */}
-                <div className="p-3.5 border-b border-panel-border bg-panel-dark/95 backdrop-blur shrink-0 z-10 shadow-md space-y-3">
-                  <form onSubmit={handleSendPrompt} className="relative">
-                    <textarea
-                      value={promptInput}
-                      onChange={(e) => setPromptInput(e.target.value)}
-                      placeholder={dynamicPlaceholder}
-                      disabled={!activeDiagram || isAnyAIBusy}
-                      rows={4}
-                      className="w-full bg-slate-900/90 border-2 border-slate-500/80 hover:border-teal-400 focus:border-teal-accent rounded-xl pl-3.5 pr-11 py-3 text-xs md:text-sm text-slate-100 placeholder-slate-400 focus:outline-none resize-none transition-all disabled:opacity-50 leading-relaxed shadow-lg ring-1 ring-slate-600/40 focus:ring-2 focus:ring-teal-400/40 font-medium"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleSendPrompt(e);
-                        }
-                      }}
-                    />
-                    <button
-                      type="submit"
-                      disabled={!activeDiagram || isAnyAIBusy || !promptInput.trim()}
-                      title="Send Prompt (Enter)"
-                      className="absolute right-3 bottom-3.5 p-2 rounded-lg bg-teal-accent hover:bg-teal-hover disabled:bg-slate-800 text-bg-dark disabled:text-slate-600 transition-all cursor-pointer shadow-md"
-                    >
-                      <Send className="w-4 h-4" />
-                    </button>
-                  </form>
-
-                  {activeDiagram && suggestions.length > 0 && (
-                    <div className="space-y-1.5 pt-1">
-                      <h5 className="text-[10px] text-teal-300 font-extrabold uppercase tracking-wider flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-teal-accent" />
-                        <span>{t.suggestedRefinements}</span>
-                      </h5>
-                      <div className="space-y-1.5">
-                        {suggestions.map((suggestion, idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => setPromptInput(suggestion)}
-                            disabled={isAnyAIBusy}
-                            className="w-full text-left text-xs bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-teal-accent border border-slate-700/80 hover:border-teal-500/50 p-2.5 rounded-lg transition-all flex items-center justify-between gap-2 group cursor-pointer disabled:opacity-50 shadow-sm"
-                            title={suggestion}
-                          >
-                            <span className="leading-snug font-medium">{suggestion}</span>
-                            <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-teal-400 shrink-0 transition-colors" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <p className="text-[10px] text-slate-500 text-center font-medium">
-                    {t.refineHint}
-                  </p>
-                </div>
-
-                {/* Scrollable Lower Section: Version Details, Prompt Applied, Audit Trail & Chat History */}
-                <div className="flex-1 min-h-0 overflow-y-auto space-y-4">
-                  {/* Selected Version Details & Prompt Card */}
-                  {activeDiagram && displayedVersion && (
-                    <div className="p-4 border-b border-panel-border bg-slate-900/40 space-y-3 animate-fade-in">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-black text-teal-accent">Version {displayedVersion.version_number}</span>
-                        <span className="text-[10px] text-slate-500 shrink-0">
-                          {new Date(displayedVersion.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })} at {new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-
-                      <div className="space-y-1">
-                        <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Change Description</span>
-                        <p className="text-xs text-slate-300 leading-normal bg-bg-dark/40 px-2 py-1.5 rounded border border-panel-border/30">
-                          {displayedVersion.comment || 'Initial version'}
-                        </p>
-                      </div>
-
-                      {displayedVersion.prompt && (
-                        <div className="space-y-1">
-                          <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Prompt Applied</span>
-                          <p className="text-xs text-slate-300 bg-[#090d16] border border-panel-border/30 rounded p-2 italic leading-relaxed max-h-24 overflow-y-auto select-text font-sans scrollbar-thin">
-                            &ldquo;{displayedVersion.prompt}&rdquo;
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Audit Trail of Changes */}
-                      {(() => {
-                        const sorted = activeDiagram?.versions
-                          ?.filter(v => (v.architecture_type || 'conceptual_diagram') === selectedArchType)
-                          .slice()
-                          .sort((a, b) => a.version_number - b.version_number) || [];
-                        const curIdx = sorted.findIndex(v => v.id === displayedVersion.id);
-                        const parent = curIdx > 0 ? sorted[curIdx - 1] : null;
-
-                        const diff = parent 
-                          ? computeVersionDiff(displayedVersion.xml_content, parent.xml_content)
-                          : { added: parseXmlNodesAndEdges(displayedVersion.xml_content).map(i => i.isEdge ? `Connection` : i.label), removed: [], modified: [] };
-
-                        const hasChanges = diff.added.length > 0 || diff.removed.length > 0 || diff.modified.length > 0;
-
-                        return (
-                          <div className="space-y-1.5 pt-2 border-t border-panel-border/30">
-                            <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Audit Trail (Components Changes)</span>
-                            {!hasChanges ? (
-                              <p className="text-[10px] text-slate-500 italic">No structural changes detected.</p>
-                            ) : (
-                              <div className="space-y-1 max-h-28 overflow-y-auto pr-1 bg-bg-dark/40 p-2 rounded border border-panel-border/30 font-mono text-[9px]">
-                                {diff.added.map((item, i) => (
-                                  <div key={`add-${i}`} className="flex items-start gap-1.5 text-emerald-400 font-medium">
-                                    <span className="text-emerald-500 font-extrabold shrink-0">+</span>
-                                    <span>Added {item}</span>
-                                  </div>
-                                ))}
-                                {diff.modified.map((item, i) => (
-                                  <div key={`mod-${i}`} className="flex items-start gap-1.5 text-amber-400 font-medium">
-                                    <span className="text-amber-500 font-extrabold shrink-0">~</span>
-                                    <span>{item}</span>
-                                  </div>
-                                ))}
-                                {diff.removed.map((item, i) => (
-                                  <div key={`rem-${i}`} className="flex items-start gap-1.5 text-rose-400 font-medium">
-                                    <span className="text-rose-500 font-extrabold shrink-0">-</span>
-                                    <span className="line-through opacity-70">Removed {item}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })()}
-
-                      <div className="pt-2 flex flex-wrap gap-1.5">
-                        {displayedVersion.ai_reasoning && (
-                          <button
-                            onClick={() => {
-                              setInspectVersion(displayedVersion);
-                              setIsInspectModalOpen(true);
-                            }}
-                            className="flex-1 min-w-[90px] flex items-center justify-center gap-1 py-1 px-2 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-[9px] font-bold transition-all cursor-pointer"
-                          >
-                            <Sparkles className="w-3.5 h-3.5" />
-                            <span>Inspect Plan</span>
-                          </button>
-                        )}
-
-                        <button
-                          onClick={() => setIsSetMasterModalOpen(true)}
-                          className="flex-1 min-w-[110px] flex items-center justify-center gap-1 py-1 px-2 rounded bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 text-[9px] font-extrabold transition-all cursor-pointer shadow-sm"
-                          title="Set this version as the official master template"
-                        >
-                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                          <span>Set as Master</span>
-                        </button>
-                        
-                        {previewVersion && (
-                          <button
-                            onClick={() => handleRestoreVersion(previewVersion)}
-                            className="flex-1 min-w-[90px] flex items-center justify-center gap-1 py-1 px-2 rounded bg-teal-accent hover:bg-teal-hover text-bg-dark text-[9px] font-bold transition-all cursor-pointer"
-                          >
-                            <RotateCcw className="w-3 h-3" />
-                            <span>Restore version</span>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Chat Messages */}
-                  <div className="p-4 space-y-4">
-                    {!activeDiagram ? (
-                      <div className="py-8 flex flex-col items-center justify-center text-center p-4">
-                        <Sparkles className="w-8 h-8 text-slate-600 mb-2" />
-                        <p className="text-sm text-slate-500">Select a diagram from the sidebar to start designing with AI.</p>
-                      </div>
-                    ) : chatMessages.length === 0 ? (
-                      <div className="py-8 flex flex-col items-center justify-center text-center p-4">
-                        <MessageSquare className="w-8 h-8 text-slate-600 mb-2" />
-                        <p className="text-sm text-slate-500">Ask the AI to generate your first architecture diagram!</p>
-                      </div>
-                    ) : (
-                      chatMessages.map((msg) => {
-                        const msgVer = (activeDiagram?.versions || []).find(v => v.version_number === msg.versionNumber) || 
-                          (msg.versionNumber === activeVersion?.version_number ? activeVersion : null);
-                        const hasSpec = msgVer && (msgVer.prompt || msgVer.ai_reasoning || msgVer.business_usecase || msgVer.technical_usecase);
-                        const isExpanded = expandedMsgIds.has(msg.id);
-
-                        return (
-                          <div 
-                            key={msg.id}
-                            className={`flex flex-col max-w-[90%] ${
-                              msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
-                            }`}
-                          >
-                            <div className={`p-3 rounded-lg text-sm leading-relaxed ${
-                              msg.sender === 'user'
-                                ? 'bg-teal-accent text-bg-dark font-medium rounded-tr-none'
-                                : 'bg-slate-hover text-slate-100 rounded-tl-none border border-panel-border shadow-md'
-                            }`}>
-                              <div>{msg.text}</div>
-
-                              {/* Rich Prompt & Spec Accordion */}
-                              {msg.sender === 'ai' && hasSpec && (
-                                <div className="mt-2.5 pt-2 border-t border-slate-700/60">
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setExpandedMsgIds(prev => {
-                                        const next = new Set(prev);
-                                        if (next.has(msg.id)) next.delete(msg.id);
-                                        else next.add(msg.id);
-                                        return next;
-                                      });
-                                    }}
-                                    className="flex items-center justify-between w-full text-[11px] font-extrabold text-teal-400 hover:text-teal-300 bg-slate-900/80 hover:bg-slate-900 border border-teal-500/30 px-2.5 py-1.5 rounded-md transition-all cursor-pointer"
-                                  >
-                                    <span className="flex items-center gap-1.5">
-                                      <span>🔍</span>
-                                      <span>{isExpanded ? 'Hide Architecture Spec & Prompt' : 'View Architecture Spec & Prompt'}</span>
-                                    </span>
-                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                                  </button>
-
-                                  {isExpanded && (
-                                    <div className="mt-2 space-y-2 bg-slate-950/90 border border-slate-800 rounded-lg p-3 text-xs animate-in fade-in duration-200">
-                                      {msgVer.prompt && (
-                                        <div className="space-y-1">
-                                          <div className="flex items-center justify-between text-[10px] font-extrabold text-teal-300 uppercase tracking-wider">
-                                            <span>🎯 Target Domain Prompt:</span>
-                                            <button
-                                              type="button"
-                                              onClick={() => {
-                                                if (msgVer.prompt) navigator.clipboard.writeText(msgVer.prompt);
-                                              }}
-                                              className="text-[10px] text-slate-400 hover:text-white flex items-center gap-1"
-                                              title="Copy Prompt"
-                                            >
-                                              <Copy className="w-3 h-3" />
-                                              <span>Copy</span>
-                                            </button>
-                                          </div>
-                                          <p className="text-slate-300 bg-slate-900/80 p-2 rounded border border-slate-800 font-mono text-[11px] leading-relaxed select-all">
-                                            {msgVer.prompt}
-                                          </p>
-                                        </div>
-                                      )}
-
-                                      {msgVer.ai_reasoning && (
-                                        <div className="space-y-1 pt-1">
-                                          <div className="text-[10px] font-extrabold text-indigo-300 uppercase tracking-wider">
-                                            🧠 AI Architectural Rationale:
-                                          </div>
-                                          <p className="text-slate-300 text-[11px] leading-relaxed">
-                                            {msgVer.ai_reasoning}
-                                          </p>
-                                        </div>
-                                      )}
-
-                                      {msgVer.business_usecase && (
-                                        <div className="space-y-1 pt-1">
-                                          <div className="text-[10px] font-extrabold text-amber-300 uppercase tracking-wider">
-                                            💼 Business Objectives &amp; Scope:
-                                          </div>
-                                          <p className="text-slate-300 text-[11px] leading-relaxed">
-                                            {msgVer.business_usecase}
-                                          </p>
-                                        </div>
-                                      )}
-
-                                      {msgVer.technical_usecase && (
-                                        <div className="space-y-1 pt-1">
-                                          <div className="text-[10px] font-extrabold text-emerald-300 uppercase tracking-wider">
-                                            ⚙️ Technical Stack &amp; Governance:
-                                          </div>
-                                          <p className="text-slate-300 text-[11px] leading-relaxed font-mono">
-                                            {msgVer.technical_usecase}
-                                          </p>
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-
-                              {msg.sender === 'ai' && (msg.versionNumber || activeDiagram) && (
-                                <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center gap-2">
-                                  <button
-                                    onClick={() => setIsSetMasterModalOpen(true)}
-                                    className="flex items-center gap-1 text-[10px] font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
-                                    title="Promote or save this active version as the Master Template"
-                                  >
-                                    <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                    <span>⭐ Set as Master Template</span>
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                            <span className="text-[10px] text-slate-500 mt-1 px-1">
-                              {msg.timestamp} {msg.versionNumber && `• v${msg.versionNumber}`}
-                            </span>
-                          </div>
-                        );
-                      })
-                    )}
-                    {isGenerating && (
-                      <div className="flex items-center gap-2 mr-auto bg-slate-hover/50 border border-panel-border p-3 rounded-lg rounded-tl-none max-w-[85%]">
-                        <Loader2 className="w-4 h-4 animate-spin text-teal-accent" />
-                        <span className="text-xs text-slate-400 animate-pulse">PromptCanvas-Graph is sketching...</span>
-                      </div>
-                    )}
-                    <div ref={chatEndRef} />
-                  </div>
-                </div>
-
-                {/* Bottom Pinned Action Hub / Architectural Tool Strip */}
-                {activeDiagram && (
-                  <div className="p-2 border-t border-panel-border bg-[#070A13] backdrop-blur shrink-0 select-none shadow-xl z-10">
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {/* Export & DaC Studio */}
-                      <button
-                        type="button"
-                        onClick={() => setIsExportModalOpen(true)}
-                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-teal-500/50 text-teal-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
-                        title="Export Diagram PNG, PDF, PPTX, Python .py, D2 .d2"
-                      >
-                        <Download className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-                        <span className="truncate">{t.exportStudio}</span>
-                      </button>
-
-                      {/* Strategic Blueprint Matrix */}
-                      <button
-                        type="button"
-                        onClick={() => setIsPlaybookModalOpen(true)}
-                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/40 text-purple-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
-                        title="Open Enterprise Architecture Blueprint Matrix & Governance Catalog"
-                      >
-                        <BookOpen className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                        <span className="truncate">Blueprint Matrix</span>
-                      </button>
-
-                      {/* Set as Master Template */}
-                      <button
-                        type="button"
-                        onClick={() => setIsSetMasterModalOpen(true)}
-                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/50 text-amber-300 text-[11px] font-extrabold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
-                        title="Promote or save active diagram as the Master Template"
-                      >
-                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />
-                        <span className="truncate">Set Master</span>
-                      </button>
-
-                      {/* Cloud Cost Estimator */}
-                      <button
-                        type="button"
-                        onClick={() => setIsCostModalOpen(true)}
-                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/40 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
-                        title="View Cloud Cost Estimator & Infracost breakdown"
-                      >
-                        <DollarSign className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span className="truncate">Est. ${costReport.totalMonthlyCostUsd.toLocaleString()}/mo</span>
-                      </button>
-
-                      {/* Compose Doc */}
-                      <button
-                        type="button"
-                        onClick={() => setIsComposeOpen(true)}
-                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-sky-950/40 hover:bg-sky-900/40 border border-sky-500/40 text-sky-300 text-[11px] font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
-                        title="Compose formal System Documentation (PRD, SDD, Threat Model)"
-                      >
-                        <FileText className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                        <span className="truncate">{t.composeDoc}</span>
-                      </button>
-
-                      {/* Audit Security */}
-                      <button
-                        type="button"
-                        onClick={() => handleAuditDiagram()}
-                        disabled={isAuditing}
-                        className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-teal-950/40 hover:bg-teal-900/40 border border-teal-500/40 text-teal-accent text-[11px] font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 hover:scale-[1.02]"
-                        title="Run static security audit on architecture"
-                      >
-                        {isAuditing ? <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" /> : <Shield className="w-3.5 h-3.5 shrink-0" />}
-                        <span className="truncate">{isAuditing ? 'Auditing...' : 'Security Audit'}</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </section>
-
-          {/* Resizable Split Pane Divider Handle */}
-          {isAssistantOpen && (
-            <div
-              onMouseDown={handleMouseDownAssistantResize}
-              title="Drag to resize Assistant Chatbot panel width"
-              className={`hidden md:flex w-1.5 hover:w-2 bg-panel-border/40 hover:bg-teal-400/80 active:bg-teal-400 cursor-col-resize h-full z-30 transition-all items-center justify-center shrink-0 group select-none ${
-                isResizingAssistant ? 'bg-teal-400 w-2 shadow-lg shadow-teal-500/20' : ''
-              }`}
-            >
-              <div className="w-0.5 h-6 rounded-full bg-slate-600 group-hover:bg-bg-dark transition-colors" />
-            </div>
-          )}
-
-          {/* B. CENTER PANE: Diagram Viewport & In-Place Editor */}
-          <section className={`flex-1 flex flex-col h-full relative overflow-hidden min-w-0 transition-colors duration-300 ${canvasTheme === 'light' && viewMode === 'canvas' ? 'bg-[#F1F5F9]' : 'bg-bg-dark'} ${mobileTab === 'assistant' ? 'hidden md:flex' : 'flex'}`}>
+          {/* CENTER PANE: Diagram Viewport & Gemini Enterprise AI Chat */}
+          <section className={`flex-1 flex flex-col h-full relative overflow-hidden min-w-0 transition-colors duration-300 ${canvasTheme === 'light' && viewMode === 'canvas' ? 'bg-[#F1F5F9]' : 'bg-bg-dark'} flex`}>
             
             {/* Center Pane Top Control Bar (Clean Status & Zoom Controls) */}
             {activeDiagram && (
@@ -7139,6 +6714,32 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               </div>
             )}
           </div>
+
+          {/* Gemini Enterprise AI Chat & Refinement Dock (Below Canvas) */}
+          {activeDiagram && (
+            <GeminiEnterpriseBottomChat
+              activeDiagram={activeDiagram}
+              activeVersion={activeVersion}
+              displayedVersion={displayedVersion}
+              selectedArchType={selectedArchType}
+              chatMessages={chatMessages}
+              suggestions={suggestions}
+              promptInput={promptInput}
+              isGenerating={isGenerating}
+              isAuditing={isAuditing}
+              costEstimateMonthly={costReport.totalMonthlyCostUsd}
+              dynamicPlaceholder={dynamicPlaceholder}
+              onPromptChange={(val) => setPromptInput(val)}
+              onSendPrompt={handleSendPrompt}
+              onSelectSuggestion={(s) => setPromptInput(s)}
+              onOpenExportModal={() => setIsExportModalOpen(true)}
+              onOpenPlaybookModal={() => setIsPlaybookModalOpen(true)}
+              onOpenSetMasterModal={() => setIsSetMasterModalOpen(true)}
+              onOpenCostModal={() => setIsCostModalOpen(true)}
+              onOpenComposeModal={() => setIsComposeOpen(true)}
+              onAuditDiagram={() => handleAuditDiagram()}
+            />
+          )}
         </section>
 
           {/* Mobile Bottom Navigation View Switcher (Only visible on screens < 768px) */}
