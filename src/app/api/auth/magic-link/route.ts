@@ -1,13 +1,26 @@
 import { NextResponse } from 'next/server';
 import { createMagicLinkToken } from '@/lib/db';
+import { checkRateLimit } from '@/lib/rateLimiter';
 
 export async function POST(request: Request) {
   try {
+    const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+    const ipAddress = rawIp.split(',')[0]?.trim() || '127.0.0.1';
+
     const body = await request.json();
     const { email } = body;
 
     if (!email || typeof email !== 'string' || !email.includes('@')) {
       return NextResponse.json({ error: 'Please provide a valid email address.' }, { status: 400 });
+    }
+
+    // Rate Limit: Max 5 magic link requests per 15 minutes per IP/email
+    const rateCheck = checkRateLimit(`magic_${ipAddress}_${email.toLowerCase()}`, 5, 15 * 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Too many magic link requests. Please try again in ${rateCheck.retryAfterSec} seconds.` },
+        { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfterSec) } }
+      );
     }
 
     const token = await createMagicLinkToken(email);
