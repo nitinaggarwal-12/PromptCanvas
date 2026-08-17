@@ -16,13 +16,35 @@ function getAiClient(customKey?: string): GoogleGenAI {
   return new GoogleGenAI({ apiKey });
 }
 
-/**
- * 🧠 Live Gemini-Powered Structured AST Diagram Customizer (Gemini 3.7 Flash Enforced)
- * Takes a collision-free Draw.io XML template backbone and prompts Gemini to return
- * a strictly validated JSON mapping of domain-specific titles, subtitles, and badges.
- * Injects the semantic content directly into the exact template nodes, guaranteeing
- * 100% ZERO geometric mutation, zero container drift, and perfect 1400x800 alignment.
- */
+async function generateContentWithRetry(
+  ai: GoogleGenAI,
+  params: any,
+  maxRetries = 3
+): Promise<any> {
+  let lastError: any = null;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await ai.models.generateContent(params);
+      return response;
+    } catch (err: any) {
+      lastError = err;
+      const status = err?.status || err?.statusCode || (err?.message?.includes('429') ? 429 : 0);
+      const isRateLimit = status === 429 || err?.message?.includes('RESOURCE_EXHAUSTED') || err?.message?.includes('quota');
+      const isTransient = isRateLimit || status >= 500 || err?.message?.includes('fetch failed') || err?.message?.includes('ECONNRESET');
+
+      if (attempt < maxRetries && isTransient) {
+        const baseDelay = isRateLimit ? 2000 : 800;
+        const delayMs = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 400;
+        console.warn(`[Gemini Customizer] Attempt ${attempt} encountered transient error (${err.message}). Retrying in ${Math.round(delayMs)}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      } else {
+        break;
+      }
+    }
+  }
+  throw lastError;
+}
+
 export async function customizeDiagramTemplateWithGemini(
   templateXml: string,
   userPrompt: string,
@@ -95,7 +117,7 @@ OUTPUT JSON SCHEMA:
   try {
     console.log(`[Gemini Customizer] Calling ${modelName} with Structured AST for prompt: "${userPrompt.slice(0, 60)}"...`);
     const ai = getAiClient(userApiKey);
-    const response = await ai.models.generateContent({
+    const response = await generateContentWithRetry(ai, {
       model: modelName,
       contents: `### TARGET ENTERPRISE USE-CASE PROMPT:
 "${userPrompt}"
