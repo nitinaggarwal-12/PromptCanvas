@@ -1,232 +1,117 @@
 export function buildAsIsToBeProcessFlowXml(): string {
-  return `
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-08-10T16:35:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
   <diagram id="asis_vs_tobe_process_flow" name="As-Is vs. To-Be Process &amp; Architecture Flow">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
+    <mxGraphModel dx="1760" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="1050" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- FULL CANVAS FRAME -->
-        <mxCell id="frame_asis_tobe" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="0" y="0" width="1560" height="920" as="geometry" />
+        <!-- ==================== TOP TITLE & METRICS BANNER ==================== -->
+        <mxCell id="top_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;🔄 🚀&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="14" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_box_left" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;ENTERPRISE ARCHITECTURE MODERNIZATION FLOW (AS-IS vs. TO-BE PROCESS)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="12" width="1350" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:600;&quot;&gt;On-Premises Monolithic Batch Pipeline $\rightarrow$ Google Cloud Lakehouse &amp;amp; Gemini Enterprise Real-Time Cognitive Mesh (Latency -99.9%, OpEx -68%)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="36" width="1350" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;To-Be Architecture&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Modern Cloud State&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="14" width="190" height="44" as="geometry"/>
         </mxCell>
 
-        <!-- ========================================================================= -->
-        <!-- TOP TITLE & GCAF HEADER BANNER (Full Width: X: 20 to 1540) -->
-        <!-- ========================================================================= -->
-        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:16px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;Enterprise Architecture &amp;amp; Process Modernization Flow (As-Is vs. To-Be)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:normal;&quot;&gt;On-Premises Monolithic Legacy to Google Cloud Lakehouse &amp;amp; Gemini Enterprise Cognitive Architecture&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=16;" vertex="1" parent="1">
-          <mxGeometry x="20" y="15" width="840" height="56" as="geometry" />
+        <!-- ==================== TOP SWIMLANE: AS-IS CURRENT STATE ==================== -->
+        <mxCell id="cont_asis" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFBFB;strokeColor=#F87171;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="35" y="75" width="1685" height="380" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_asis_title" value="&lt;b style=&quot;color:#991B1B;font-size:12px;&quot;&gt;🔴 AS-IS CURRENT STATE: Fragile On-Prem Monolith &amp;amp; 24-48h Nightly Batch ETL Latency&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="45" y="85" width="1665" height="32" as="geometry"/>
         </mxCell>
 
-        <mxCell id="hdr_box_metrics" value="&lt;div style=&quot;font-size:11.5px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;line-height:1.4;&quot;&gt;&lt;b style=&quot;color:#DC2626;&quot;&gt;As-Is:&lt;/b&gt; 24-48h Batch ETL &amp;amp; Manual Review &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#16A34A;&quot;&gt;To-Be:&lt;/b&gt; Sub-50ms Real-Time Streaming &amp;amp; Gemini 3.1 Pro&lt;br&gt;&lt;span style=&quot;background:#FEE2E2;color:#991B1B;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:10px;&quot;&gt;Latency: -99.9%&lt;/span&gt; &lt;span style=&quot;background:#DCFCE7;color:#15803D;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:10px;&quot;&gt;OpEx Reduction: -68% ($395k vs $1.24M)&lt;/span&gt; &lt;span style=&quot;background:#E0F2FE;color:#0369A1;padding:1px 6px;border-radius:4px;font-weight:bold;font-size:10px;&quot;&gt;Availability: 99.99% Multi-Region&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;fillColor=#F8FAFC;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="870" y="15" width="670" height="56" as="geometry" />
+        <mxCell id="node_legacy_ingress" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;1. Legacy Ingress (On-Prem VMs)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#7F1D1D;line-height:1.4;padding-top:4px;&quot;&gt;• Manual SFTP / FTP File Drops&lt;br&gt;• Siloed Data Sources (No Global View)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="140" width="340" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- ========================================================================= -->
-        <!-- TOP SWIMLANE: AS-IS CURRENT STATE (LEGACY ON-PREM & BATCH SILOS) (Y: 85 to Y: 325) -->
-        <!-- ========================================================================= -->
-        <mxCell id="tab_asis" value="&lt;b style=&quot;font-size:13px;color:#991B1B;&quot;&gt;AS-IS&lt;br&gt;CURRENT&lt;br&gt;STATE&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7F1D1D;&quot;&gt;On-Premises&lt;br&gt;&amp;amp; Monolith&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="20" y="85" width="80" height="235" as="geometry" />
+        <mxCell id="node_legacy_etl" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;2. Nightly Batch ETL Scripts&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#7F1D1D;line-height:1.4;padding-top:4px;&quot;&gt;• Informatica / SSIS 8-Hour Execution Window&lt;br&gt;• Frequent Job Failures &amp;amp; Production DB Locks&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="460" y="140" width="360" height="110" as="geometry"/>
         </mxCell>
 
-        <mxCell id="cont_asis" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFBFB;strokeColor=#FCA5A5;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="100" y="85" width="1440" height="235" as="geometry" />
+        <mxCell id="node_legacy_db" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;3. Legacy RDBMS Core Monolith&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#7F1D1D;line-height:1.4;padding-top:4px;&quot;&gt;• Oracle 11g / Sybase Single-AZ Cluster&lt;br&gt;• Escalating License Fees ($1.24M/yr)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=6;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="880" y="135" width="340" height="120" as="geometry"/>
         </mxCell>
 
-        <mxCell id="badge_asis_title" value="&lt;b style=&quot;color:#991B1B;font-size:12px;&quot;&gt;🔴 AS-IS ARCHITECTURE: Fragile Monolithic Batch Pipeline &amp;amp; Multi-Week Human Hand-offs&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="115" y="92" width="750" height="22" as="geometry" />
+        <mxCell id="node_legacy_review" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;4. Manual Spreadsheet Reviews&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#7F1D1D;line-height:1.4;padding-top:4px;&quot;&gt;• Static SSRS / Cognos PDF Reports&lt;br&gt;• 2-3 Week Lead Time for Ad-hoc Insights&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="140" width="340" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- As-Is Stage 1: Legacy Ingress -->
-        <mxCell id="node_legacy_ingress" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:server.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;1. Legacy Ingress&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7F1D1D;font-weight:normal;&quot;&gt;On-Prem VMs &amp;amp; Monolith&lt;br&gt;FTP / SFTP Batch File Drops&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="120" y="122" width="220" height="110" as="geometry" />
+        <!-- As-Is Connectors -->
+        <mxCell id="edge_asis_1" value="Midnight Dump" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EF4444;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCA5A5;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_legacy_ingress" target="node_legacy_etl">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- As-Is Stage 2: Overnight Batch ETL -->
-        <mxCell id="node_legacy_etl" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:refresh-cw.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;2. Nightly Batch ETL&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7F1D1D;font-weight:normal;&quot;&gt;Informatica / SSIS Scripts&lt;br&gt;24-48h Latency • Table Locks&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="410" y="122" width="230" height="110" as="geometry" />
+        <mxCell id="edge_asis_2" value="Table Lock Load" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EF4444;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCA5A5;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_legacy_etl" target="node_legacy_db">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- As-Is Stage 3: Monolithic Relational DB -->
-        <mxCell id="node_legacy_db" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;3. Legacy RDBMS Core&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7F1D1D;font-weight:normal;&quot;&gt;Oracle / Sybase Monolith&lt;br&gt;Single-AZ • High Licensing&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="710" y="117" width="220" height="115" as="geometry" />
-        </mxCell>
-
-        <!-- As-Is Stage 4: Manual Review Gate -->
-        <mxCell id="node_legacy_review" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:users.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;4. Manual Ticket Review&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7F1D1D;font-weight:normal;&quot;&gt;ServiceNow &amp;amp; Spreadsheet Logs&lt;br&gt;2-3 Weeks Committee Waiting&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="122" width="230" height="110" as="geometry" />
-        </mxCell>
-
-        <!-- As-Is Stage 5: Static BI Reports -->
-        <mxCell id="node_legacy_bi" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:file-bar-chart.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;5. Static BI Delivery&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#7F1D1D;font-weight:normal;&quot;&gt;Cognos / SSRS Export&lt;br&gt;No Semantic AI • Stale CSVs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1300" y="122" width="220" height="110" as="geometry" />
-        </mxCell>
-
-        <!-- As-Is Flow Arrows -->
-        <mxCell id="edge_asis_1" value="Batch Dump&lt;br&gt;(Midnight)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=2;fontColor=#B91C1C;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCA5A5;" edge="1" parent="1" source="node_legacy_ingress" target="node_legacy_etl">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_asis_2" value="Table Lock&lt;br&gt;ETL Load" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=2;fontColor=#B91C1C;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCA5A5;" edge="1" parent="1" source="node_legacy_etl" target="node_legacy_db">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_asis_3" value="Manual Ticket&lt;br&gt;Sign-off" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=2;fontColor=#B91C1C;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCA5A5;" edge="1" parent="1" source="node_legacy_db" target="node_legacy_review">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_asis_4" value="Manual Email&lt;br&gt;Distribution" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=2;fontColor=#B91C1C;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCA5A5;" edge="1" parent="1" source="node_legacy_review" target="node_legacy_bi">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_asis_3" value="Manual Export" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EF4444;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCA5A5;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_legacy_db" target="node_legacy_review">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
         <!-- As-Is Pain Point Strip -->
-        <mxCell id="asis_pain_points" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#7F1D1D;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;⚠️ Major Bottlenecks:&lt;/b&gt; Single point of failure • 100% manual ticket triage • No semantic grounding • Escalating license costs ($1.24M/yr) • 3-4 week lead times&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#F87171;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="120" y="250" width="1400" height="34" as="geometry" />
+        <mxCell id="asis_pain_points" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#7F1D1D;&quot;&gt;&lt;tr&gt;&lt;td&gt;⚠️ &lt;b&gt;As-Is Bottlenecks:&lt;/b&gt; Single point of failure • 100% manual ticket triage • No semantic AI grounding • Escalating license costs ($1.24M/yr) • 3-4 week lead times&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#F87171;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="280" width="1580" height="40" as="geometry"/>
         </mxCell>
 
-        <!-- ========================================================================= -->
-        <!-- CENTER TRANSITION: STRANGLER FIG MODERNIZATION BRIDGE (Y: 335 to Y: 385) -->
-        <!-- ========================================================================= -->
-        <mxCell id="bridge_bar" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#1E3A8A;&quot;&gt;⚡ GOOGLE CLOUD STRANGLER FIG MODERNIZATION BRIDGE &amp;nbsp;|&amp;nbsp; &lt;span style=&quot;font-weight:normal;color:#2563EB;&quot;&gt;Apigee API Interceptor (Edge Traffic Routing) • Datastream CDC Ingestion (Zero-Downtime Sync) • Gemini Enterprise AST Compiler&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="20" y="335" width="1520" height="42" as="geometry" />
+        <!-- ==================== STRANGLER BRIDGE DIVIDER ==================== -->
+        <mxCell id="bridge_bar" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#1E3A8A;&quot;&gt;⚡ GOOGLE CLOUD STRANGLER FIG MODERNIZATION BRIDGE: Apigee Edge Proxy • Datastream CDC Ingestion • Gemini Code Assist&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="475" width="1685" height="40" as="geometry"/>
         </mxCell>
 
-        <!-- Transition Downward Connectors (Direct, Vertical with Clean Labels) -->
-        <mxCell id="down_vector_1" value="Strangler Proxy Ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=1;fontColor=#1D4ED8;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;" edge="1" parent="1" source="node_legacy_ingress" target="node_tobe_ingress">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="160" y="290" />
-              <mxPoint x="160" y="420" />
-            </Array>
-          </mxGeometry>
+        <!-- ==================== BOTTOM SWIMLANE: TO-BE MODERN STATE ==================== -->
+        <mxCell id="cont_tobe" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="35" y="535" width="1685" height="430" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_tobe_title" value="&lt;b style=&quot;color:#15803D;font-size:12px;&quot;&gt;🟢 TO-BE MODERN CLOUD ARCHITECTURE: Real-Time Pub/Sub Streaming, BigQuery Lakehouse &amp;amp; Gemini 3.7 Cognitive Copilot&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="45" y="545" width="1665" height="32" as="geometry"/>
         </mxCell>
 
-        <mxCell id="down_vector_2" value="Datastream CDC Zero-Downtime Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=1;fontColor=#1D4ED8;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;" edge="1" parent="1" source="node_legacy_db" target="node_tobe_lakehouse">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="750" y="280" />
-              <mxPoint x="750" y="330" />
-              <mxPoint x="380" y="330" />
-              <mxPoint x="380" y="615" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="node_tobe_ingress" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;1. Apigee &amp;amp; Cloud Pub/Sub&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#166534;line-height:1.4;padding-top:4px;&quot;&gt;• Real-time Streaming Event Ingestion&lt;br&gt;• Millions QPS Autoscaling Buffer&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="605" width="340" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- ========================================================================= -->
-        <!-- BOTTOM SWIMLANE: TO-BE TARGET STATE (GOOGLE CLOUD & GEMINI ENTERPRISE) (Y: 395 to Y: 895) -->
-        <!-- ========================================================================= -->
-        <mxCell id="tab_tobe" value="&lt;b style=&quot;font-size:13px;color:#15803D;&quot;&gt;TO-BE&lt;br&gt;TARGET&lt;br&gt;STATE&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;&quot;&gt;Google Cloud&lt;br&gt;&amp;amp; Gemini 3.1&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="20" y="395" width="80" height="500" as="geometry" />
+        <mxCell id="node_tobe_dataflow" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;2. Serverless Cloud Dataflow&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#166534;line-height:1.4;padding-top:4px;&quot;&gt;• Exactly-Once Stream Processing (Beam)&lt;br&gt;• Sub-50ms Processing Latency&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="460" y="605" width="360" height="110" as="geometry"/>
         </mxCell>
 
-        <mxCell id="cont_tobe" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7FDF9;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="100" y="395" width="1440" height="500" as="geometry" />
+        <mxCell id="node_tobe_lakehouse" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;3. BigQuery &amp;amp; AlloyDB Lakehouse&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#166534;line-height:1.4;padding-top:4px;&quot;&gt;• Unified Storage &amp;amp; Analytical Layer&lt;br&gt;• 99.99% Multi-Region SLA&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=6;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="880" y="600" width="340" height="120" as="geometry"/>
         </mxCell>
 
-        <mxCell id="badge_tobe_title" value="&lt;b style=&quot;color:#15803D;font-size:12px;&quot;&gt;🟢 TO-BE ARCHITECTURE: Autonomous Gemini Enterprise Cognitive Architecture &amp;amp; Real-Time Lakehouse Mesh&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="115" y="402" width="850" height="22" as="geometry" />
+        <mxCell id="node_tobe_gemini" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#854D0E;&quot;&gt;4. Gemini 3.7 Pro Cognitive Agent&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#713F12;line-height:1.4;padding-top:4px;&quot;&gt;• Automated Real-time Reasoning &amp;amp; Triage&lt;br&gt;• Looker Interactive Conversational BI&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF08A;strokeColor=#EAB308;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="605" width="340" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- To-Be Stage 1: Cloud Pub/Sub & Edge Ingress -->
-        <mxCell id="node_tobe_ingress" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:radio.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;1. Real-Time Ingress&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;font-weight:normal;&quot;&gt;Cloud Pub/Sub Topics&lt;br&gt;Cloud Armor WAF &amp;amp; Apigee Edge&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="120" y="435" width="220" height="115" as="geometry" />
+        <!-- To-Be Connectors -->
+        <mxCell id="edge_tobe_1" value="Stream Ingest" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_tobe_ingress" target="node_tobe_dataflow">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- To-Be Stage 2: Cloud Dataflow Streaming Pipeline -->
-        <mxCell id="node_tobe_stream" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:git-pull-request.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;2. Streaming ETL Engine&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;font-weight:normal;&quot;&gt;Cloud Dataflow (Apache Beam)&lt;br&gt;Sub-50ms Exact-Once Windowing&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="410" y="435" width="230" height="115" as="geometry" />
+        <mxCell id="edge_tobe_2" value="Storage Write API" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_tobe_dataflow" target="node_tobe_lakehouse">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- To-Be Stage 3: Gemini 3.1 Pro & Vertex AI Reasoning Hub -->
-        <mxCell id="node_tobe_ai_hub" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:sparkles.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;3. Gemini 3.1 Pro Engine&lt;br&gt;&lt;span style=&quot;font-size:10.5px;color:#0284C7;font-weight:bold;&quot;&gt;Vertex AI Vector Search&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#166534;&quot;&gt;Tangential Curved ReAct Reasoning&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="710" y="435" width="220" height="115" as="geometry" />
+        <mxCell id="edge_tobe_3" value="Cognitive Analysis" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FDE68A;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_tobe_lakehouse" target="node_tobe_gemini">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- To-Be Stage 4: Autonomous MCP & HITL Guardrail Gate -->
-        <mxCell id="node_tobe_gov" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:shield-check.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;4. AI TRiSM &amp;amp; HITL Gate&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#15803D;font-weight:bold;&quot;&gt;&amp;gt;=95% Fast Path • &amp;lt;75% Escalation&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;21 CFR Part 11 Audit Trail&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="435" width="230" height="115" as="geometry" />
-        </mxCell>
-
-        <!-- To-Be Stage 5: Modern Serving & SRE Cockpit -->
-        <mxCell id="node_tobe_serving" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:box.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;5. Serverless Serving &amp;amp; BI&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;font-weight:normal;&quot;&gt;Cloud Run Microservices&lt;br&gt;Looker Studio AI SRE Cockpit&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1300" y="435" width="220" height="115" as="geometry" />
-        </mxCell>
-
-        <!-- To-Be Flow Arrows -->
-        <mxCell id="edge_tobe_1" value="Streaming Events&lt;br&gt;(Continuous)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#15803D;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;" edge="1" parent="1" source="node_tobe_ingress" target="node_tobe_stream">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_tobe_2" value="Feature Vector&lt;br&gt;Extraction" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#15803D;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;" edge="1" parent="1" source="node_tobe_stream" target="node_tobe_ai_hub">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_tobe_3" value="Model Inference&lt;br&gt;&amp;amp; Grounding" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2.5;fontColor=#1D4ED8;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;" edge="1" parent="1" source="node_tobe_ai_hub" target="node_tobe_gov">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_tobe_4" value="Approved Action&lt;br&gt;&amp;amp; Dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2.5;fontColor=#15803D;fontSize=10;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;" edge="1" parent="1" source="node_tobe_gov" target="node_tobe_serving">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- TO-BE SUB-TIER: GOOGLE CLOUD ENTERPRISE LAKEHOUSE & ZERO-TRUST PERSISTENCE MESH -->
-        <!-- ========================================================================= -->
-        <mxCell id="box_lakehouse_tier" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="120" y="585" width="1400" height="235" as="geometry" />
-        </mxCell>
-
-        <mxCell id="lbl_lakehouse_tier" value="&lt;b style=&quot;color:#0F172A;font-size:12px;&quot;&gt;🗄️ Google Cloud Unified Enterprise Lakehouse &amp;amp; Zero-Trust Data Mesh (VPC Service Controls Perimeter)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="135" y="592" width="750" height="22" as="geometry" />
-        </mxCell>
-
-        <!-- BigQuery Lakehouse Card -->
-        <mxCell id="node_tobe_lakehouse" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;BigQuery BigLake&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;Apache Iceberg &amp;amp; Delta Tables&lt;br&gt;Storage Write API • BI Engine&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="145" y="625" width="225" height="120" as="geometry" />
-        </mxCell>
-
-        <!-- AlloyDB HA Card -->
-        <mxCell id="node_tobe_alloydb" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:hard-drive.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;AlloyDB for PostgreSQL&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;pgvector Embeddings Index&lt;br&gt;4x Faster OLTP • 99.99% SLA&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="425" y="625" width="235" height="120" as="geometry" />
-        </mxCell>
-
-        <!-- Dataplex Governance Card -->
-        <mxCell id="node_tobe_dataplex" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Dataplex Data Fabric&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;ABAC Policy Enforcement&lt;br&gt;Automated Quality &amp;amp; Lineage&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="715" y="625" width="235" height="120" as="geometry" />
-        </mxCell>
-
-        <!-- Cloud KMS & Secret Manager Card -->
-        <mxCell id="node_tobe_kms" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:key.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Cloud KMS &amp;amp; CMEK&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;Hardware HSM Keys&lt;br&gt;Envelope Field Encryption&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1005" y="625" width="225" height="120" as="geometry" />
-        </mxCell>
-
-        <!-- Cloud Operations Suite Card -->
-        <mxCell id="node_tobe_monitoring" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:line-chart.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Cloud Operations&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;Log Analytics &amp;amp; Trace&lt;br&gt;PagerDuty &amp;amp; SRE Alerting&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1285" y="625" width="215" height="120" as="geometry" />
-        </mxCell>
-
-        <!-- Lakehouse Integration Connectors -->
-        <mxCell id="edge_lakehouse_sync" value="BigQuery Storage Write API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;fontColor=#0369A1;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" edge="1" parent="1" source="node_tobe_stream" target="node_tobe_lakehouse">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="525" y="565" />
-              <mxPoint x="257" y="565" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <mxCell id="edge_vector_sync" value="pgvector Embeddings Grounding" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;fontColor=#0369A1;fontSize=9.5;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#BAE6FD;" edge="1" parent="1" source="node_tobe_ai_hub" target="node_tobe_alloydb">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="820" y="565" />
-              <mxPoint x="542" y="565" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Strategic Advantages Banner (Bottom) -->
-        <mxCell id="tobe_advantages" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#15803D;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;🚀 Strategic Target State Advantages:&lt;/b&gt; Real-time sub-second streaming • Gemini 3.1 Pro continuous reasoning • Automated HITL governance • 99.99% multi-region HA • 68% lower OpEx ($395k vs $1.24M)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="120" y="845" width="1400" height="34" as="geometry" />
+        <!-- To-Be Value Strip -->
+        <mxCell id="tobe_value_points" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#15803D;&quot;&gt;&lt;tr&gt;&lt;td&gt;✨ &lt;b&gt;To-Be Business Value:&lt;/b&gt; -99.9% latency reduction • Real-time stream processing • Autonomous AI incident triage • -68% OpEx cost reduction ($395k/yr) • Instant decision-making&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="745" width="1580" height="40" as="geometry"/>
         </mxCell>
 
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>
-  `.trim();
+</mxfile>`;
 }

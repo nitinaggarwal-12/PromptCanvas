@@ -1,325 +1,142 @@
 export function buildAgenticRagWidescreenXml(): string {
   return `<mxfile host="embed.diagrams.net">
   <diagram id="agentic_rag_master" name="Cognitive Architecture (Agentic RAG)">
-    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1740" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1760" pageHeight="1050" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
-        <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:24px;&quot;&gt;🧠 ☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="6" width="35" height="35" as="geometry"/>
+        <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;🧠 ☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="14" width="40" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18.5px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;ENTERPRISE COGNITIVE ARCHITECTURE &amp;amp; AGENTIC RAG PLATFORM&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="68" y="6" width="1050" height="24" as="geometry"/>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;ENTERPRISE COGNITIVE ARCHITECTURE &amp;amp; AGENTIC RAG PLATFORM (P4-AI-L-01)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="12" width="1350" height="24" as="geometry"/>
         </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11px;color:#475569;font-weight:600;&quot;&gt;Production Blueprint: Multimodal Ingress, Vertex AI Multi-Agent ReAct Reasoner, Hybrid RAG Graph Mesh, Sandboxed Tools &amp;amp; Governance&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="68" y="30" width="1050" height="18" as="geometry"/>
-        </mxCell>
-
-        <!-- Top Right Gemini Platform Logo -->
-        <mxCell id="top_gemini_brand" value="&lt;b style=&quot;font-size:18px;color:#2563EB;&quot;&gt;Gemini&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Enterprise AI Core&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1190" y="6" width="130" height="40" as="geometry"/>
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:600;&quot;&gt;Production Architecture: Multimodal Ingress, Vertex AI Multi-Agent ReAct Reasoner, Hybrid Vector/Graph RAG Mesh, Sandboxed MCP Tools &amp;amp; Enterprise Governance&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="36" width="1350" height="20" as="geometry"/>
         </mxCell>
 
+        <mxCell id="top_gemini_brand" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.7 Pro&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Reasoning &amp;amp; Tool Core&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="14" width="180" height="44" as="geometry"/>
+        </mxCell>
 
         <!-- ==================== ZONE 1: THE INTERFACE (USER INTERACTION) ==================== -->
-        <!-- x = 20 .. 240 (width = 220) -->
         <mxCell id="zone_1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="20" y="52" width="220" height="575" as="geometry"/>
+          <mxGeometry x="35" y="75" width="340" height="910" as="geometry"/>
         </mxCell>
-        <mxCell id="zone_1_hdr" value="&lt;b style=&quot;font-size:9px;color:#1E3A8A;&quot;&gt;Zone 1: The Interface&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(User Interaction &amp;amp; Ingress)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="55" width="210" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Ingress Channels Box -->
-        <mxCell id="card_ui_channels" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;📱 💻 🎙️ 🌐&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Multi-Channel Ingress Client&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Web App, Mobile SDK, Slack/Teams Bot,&lt;br&gt;Voice Assistant, Chrome Extension&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="84" width="204" height="65" as="geometry"/>
+        <mxCell id="zone_1_hdr" value="&lt;b style=&quot;font-size:12px;color:#1E3A8A;&quot;&gt;Zone 1: The Interface &amp;amp; User Ingress&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="82" width="330" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Main User Interface / Chat App Centerpiece -->
-        <mxCell id="user_chat" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;color:#2563EB;&quot;&gt;💬 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#0F172A;&quot;&gt;User Interface / Chat App&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;Agentic Copilot Workspace&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#334155;padding-top:4px;&quot;&gt;• Real-time SSE Token Streaming&lt;br&gt;• Multimodal Uploads (PDF, CSV, Audio)&lt;br&gt;• Citations, Grounding Badges &amp;amp; XAI Tree&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="28" y="156" width="204" height="110" as="geometry"/>
+        <mxCell id="card_ui_channels" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;width:40px;text-align:center;&quot;&gt;📱&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Multi-Channel Ingress Client&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;Web App, Mobile SDK, Slack/Teams Bot, Voice SDK&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="55" y="125" width="300" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Client Ingress Security & Sanitization -->
-        <mxCell id="card_ui_sanitization" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#DC2626;&quot;&gt;🛡️ 🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Client-Side Input Sanitizer&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Prompt Injection Filter, Rate Limiter &amp;amp;&lt;br&gt;Client-Side PII Pre-Check (DLP)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="274" width="204" height="60" as="geometry"/>
+        <mxCell id="user_chat" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:26px;width:44px;text-align:center;color:#2563EB;&quot;&gt;💬&lt;/td&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;Agentic Copilot Workspace&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#334155;line-height:1.4;&quot;&gt;• Real-time SSE Token Streaming&lt;br&gt;• Multimodal Uploads (PDF, CSV, Audio)&lt;br&gt;• Dynamic Citations &amp;amp; XAI Tree&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=left;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="55" y="225" width="300" height="140" as="geometry"/>
         </mxCell>
 
-        <!-- Session & State Manager -->
-        <mxCell id="card_ui_session_mgr" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🔑 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Session &amp;amp; Identity Manager&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;OAuth2 / OIDC Token Exchange,&lt;br&gt;Ephemeral Chat State &amp;amp; Websocket Session&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="342" width="204" height="60" as="geometry"/>
+        <mxCell id="card_ui_sanitization" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;width:40px;text-align:center;&quot;&gt;🛡️&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Client-Side Input Sanitizer&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;Prompt Injection Filter, Rate Limiter &amp;amp; DLP Pre-Check&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="55" y="385" width="300" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Human Feedback & Inline Rating -->
-        <mxCell id="card_ui_feedback" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;👍 👎 💬&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Active User Feedback Collector&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Thumbs Up/Down, Edit Suggestions &amp;amp;&lt;br&gt;RLHF Annotation Event Dispatcher&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="410" width="204" height="60" as="geometry"/>
+        <mxCell id="card_ui_session_mgr" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;width:40px;text-align:center;&quot;&gt;🔑&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Session &amp;amp; Identity Manager&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;OAuth2 / OIDC Token Exchange &amp;amp; Ephemeral State&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="55" y="485" width="300" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Interactive Artifact Previewer -->
-        <mxCell id="card_ui_artifact_viewer" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#059669;&quot;&gt;📊 📄 💻&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Interactive Artifact Canvas&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Live React Components, SVGs,&lt;br&gt;Draw.io XML Viewport &amp;amp; PDF Previews&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="478" width="204" height="60" as="geometry"/>
+        <mxCell id="card_ui_feedback" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;width:40px;text-align:center;&quot;&gt;👍&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Active User Feedback Collector&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:normal;&quot;&gt;Inline Rating &amp;amp; RLHF Annotation Dispatcher&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="55" y="585" width="300" height="80" as="geometry"/>
         </mxCell>
 
-        <mxCell id="lbl_zone1_status" value="&lt;span style=&quot;font-size:6px;color:#1E3A8A;font-weight:bold;&quot;&gt;Zero-Trust End-User Ingress&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="28" y="605" width="204" height="14" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== ZONE 2: THE AGENTIC CORE (ORCHESTRATION & REASONING) ==================== -->
-        <!-- x = 248 .. 808 (width = 560) -->
+        <!-- ==================== ZONE 2: THE AGENTIC CORE (ORCHESTRATION) ==================== -->
         <mxCell id="zone_2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="248" y="52" width="560" height="575" as="geometry"/>
+          <mxGeometry x="415" y="75" width="460" height="910" as="geometry"/>
         </mxCell>
-        <mxCell id="zone_2_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Zone 2: The Agentic Core&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(Orchestration, Reasoning, Memory &amp;amp; Multi-Agent Mesh)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="255" y="55" width="545" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Secure Managed Gemini Enterprise Boundary (Dashed) -->
-        <mxCell id="sec_bound" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#64748B;strokeWidth=1.8;strokeDashArray=6 6;" vertex="1" parent="1">
-          <mxGeometry x="255" y="82" width="545" height="520" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_sec_bound_title" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;🔒 Secure Managed Gemini Enterprise Ecosystem Boundary (VPC-SC Perimeter)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="262" y="84" width="400" height="15" as="geometry"/>
+        <mxCell id="zone_2_hdr" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Zone 2: The Agentic Core &amp;amp; Reasoning Engine&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="420" y="82" width="450" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Agent Orchestrator Container -->
-        <mxCell id="orchestrator_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="262" y="102" width="532" height="490" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_orch_title" value="&lt;b style=&quot;font-size:8.5px;color:#1D4ED8;&quot;&gt;☁️ Agent Orchestrator (Vertex AI Agent Builder / LangGraph Mesh)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="270" y="105" width="450" height="18" as="geometry"/>
+        <mxCell id="card_orchestrator_core" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#1D4ED8;border-bottom:1px solid #BFDBFE;padding-bottom:4px;&quot;&gt;☁️ Vertex AI Multi-Agent ReAct Reasoner&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;line-height:1.4;padding-top:4px;&quot;&gt;• Step-by-Step Chain-of-Thought Decomposition&lt;br&gt;• Dynamic Query Planner &amp;amp; Hybrid Routing&lt;br&gt;• Multi-Agent Collaboration &amp;amp; Consensus Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="435" y="125" width="420" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- 3 Header Cards: System Prompt, Short-Term Memory, Semantic Vector Memory -->
-        <!-- 1. System Prompt / Persona -->
-        <mxCell id="sys_prompt" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🎭 📜&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;System Prompt / Persona&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Role Identity, Tool Guardrails&lt;br&gt;&amp;amp; Step-by-Step Chain-of-Thought&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="270" y="128" width="168" height="65" as="geometry"/>
+        <mxCell id="card_memory_subsystem" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;font-size:12px;font-weight:bold;color:#0F172A;border-bottom:1px solid #CBD5E1;padding-bottom:4px;&quot;&gt;🧠 Multi-Tier Contextual Memory Subsystem&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:4px;&quot;&gt;&lt;b&gt;Short-Term Working Memory:&lt;/b&gt;&lt;br&gt;In-Memory Window &amp;amp; Entity Scratchpad&lt;/td&gt;&lt;td style=&quot;font-size:10px;color:#334155;padding:4px;&quot;&gt;&lt;b&gt;Long-Term Episodic Memory:&lt;/b&gt;&lt;br&gt;Redis Memorystore / Spanner Graph Store&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="435" y="255" width="420" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- 2. Conversation Memory -->
-        <mxCell id="conv_mem" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#059669;&quot;&gt;🧠 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Conversation Memory&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Short-Term Sliding Context Window&lt;br&gt;&amp;amp; Redis Enterprise Cache&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="445" y="128" width="170" height="65" as="geometry"/>
+        <mxCell id="card_gemini_models" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:12px;font-weight:bold;color:#2563EB;border-bottom:1px solid #BFDBFE;padding-bottom:4px;&quot;&gt;✨ Gemini Foundation Intelligence Grid&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:center;padding:4px;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Gemini 3.7 Pro&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Complex Reasoning&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;text-align:center;padding:4px;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Gemini 3.7 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Sub-Second Routing&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;text-align:center;padding:4px;&quot;&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Embeddings v2&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;768d Dense Vectors&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="435" y="385" width="420" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- 3. Long-Term Episodic Memory -->
-        <mxCell id="long_term_mem" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#7C3AED;&quot;&gt;📚 🗄️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Episodic Long-Term Memory&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;User Preference Knowledge Graph&lt;br&gt;&amp;amp; Past Task Solution Store&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="622" y="128" width="164" height="65" as="geometry"/>
+        <!-- ==================== ZONE 3: HYBRID RAG & KNOWLEDGE RETRIEVAL MESH ==================== -->
+        <mxCell id="zone_3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="915" y="75" width="440" height="910" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone_3_hdr" value="&lt;b style=&quot;font-size:12px;color:#166534;&quot;&gt;Zone 3: Hybrid RAG &amp;amp; Knowledge Retrieval Mesh&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="920" y="82" width="430" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- The Reasoner: Gemini 3.7 Flash (LLM) Centerpiece -->
-        <mxCell id="reasoner_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="270" y="200" width="516" height="240" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_reasoner_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;The Reasoner: Gemini 3.7 Flash (Cognitive Planning Engine)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="280" y="204" width="496" height="16" as="geometry"/>
+        <mxCell id="card_vector_search" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#166534;&quot;&gt;🔍 Vertex AI Vector Search (ScaNN)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Billion-Scale Sub-Millisecond ANN Index&lt;br&gt;• Asymmetric Dense Vector Dot-Product&lt;br&gt;• Metadata Filtering &amp;amp; Partition Sharding&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="935" y="125" width="400" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- Central Circular ReAct Loop Hub -->
-        <mxCell id="react_center" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;color:#2563EB;padding-bottom:1px;&quot;&gt;🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#1E3A8A;&quot;&gt;ReAct Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Autonomous Planning&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.8;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="483" y="260" width="90" height="90" as="geometry"/>
+        <mxCell id="card_graph_rag" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#166534;&quot;&gt;🕸️ Knowledge Graph &amp;amp; Semantic Spanner RAG&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Multi-Hop Entity Relationship Traversal&lt;br&gt;• GraphRAG Community Summarization&lt;br&gt;• Temporal &amp;amp; Lineage Context Grounding&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="935" y="255" width="400" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- 4 Orbital Step Nodes arranged in a Perfect Circle (12 o'clock, 3 o'clock, 6 o'clock, 9 o'clock) -->
-        <!-- 1. Thought (12 o'clock) -->
-        <mxCell id="react_thought" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;🧠 1. Thought&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Deconstruct Query &amp;amp; Plan&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="458" y="222" width="140" height="32" as="geometry"/>
+        <mxCell id="card_reranker" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#166534;&quot;&gt;⚡ Cross-Encoder Reranker &amp;amp; Context Compressor&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Precision RRF (Reciprocal Rank Fusion)&lt;br&gt;• Deduplication &amp;amp; Dynamic Token Window Pruning&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="935" y="385" width="400" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- 2. Action (3 o'clock) -->
-        <mxCell id="react_action" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;⚡ 2. Action&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Select &amp;amp; Call Tool API&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="638" y="289" width="136" height="32" as="geometry"/>
+        <!-- ==================== ZONE 4: TOOLS, EXECUTION & GOVERNANCE ==================== -->
+        <mxCell id="zone_4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1395" y="75" width="330" height="910" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone_4_hdr" value="&lt;b style=&quot;font-size:12px;color:#6B21A8;&quot;&gt;Zone 4: Tools, Execution &amp;amp; Guardrails&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="82" width="320" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- 3. Observation (6 o'clock) -->
-        <mxCell id="react_obs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;👁️ 3. Observation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Parse Tool Output &amp;amp; Validate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="458" y="356" width="140" height="32" as="geometry"/>
+        <mxCell id="card_sandboxed_tools" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#6B21A8;&quot;&gt;🛠️ Sandboxed MCP Tools &amp;amp; APIs&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Cloud Run Micro-Agent Executors&lt;br&gt;• BigQuery Analytics Connectors&lt;br&gt;• Enterprise ERP / CRM OpenAPI Tools&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C084FC;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="125" width="300" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- 4. Synthesis (9 o'clock) -->
-        <mxCell id="react_syn" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;✨ 4. Synthesis&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Reason &amp;amp; Iterate if Needed&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="282" y="289" width="136" height="32" as="geometry"/>
+        <mxCell id="card_guardrails_rag" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#6B21A8;&quot;&gt;🛡️ Model Armor &amp;amp; Safety Filter&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Hallucination &amp;amp; Citation Verification&lt;br&gt;• Automated PII Masking &amp;amp; DLP Redaction&lt;br&gt;• Immutable Audit Log Sink&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C084FC;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="255" width="300" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- Circular Arc Connectors (1 -> 2 -> 3 -> 4 -> 1) -->
-        <mxCell id="e_r1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="react_thought" target="react_action">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="706" y="238"/></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="e_r2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="react_action" target="react_obs">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="706" y="372"/></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="e_r3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="react_obs" target="react_syn">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="372"/></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="e_r4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="react_syn" target="react_thought">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="238"/></Array></mxGeometry>
+        <!-- ==================== CONNECTORS ==================== -->
+        <mxCell id="e_ui_to_orch" value="1. Prompt &amp; Session" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="user_chat" target="card_orchestrator_core">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- Sub-Agent Dynamic Mesh Bar below ReAct -->
-        <mxCell id="card_subagent_mesh" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;🤖 🤝 🤖 🤝 🤖&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Hierarchical Multi-Agent Sub-Swarm Dispatcher&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Specialized Workers: Web Search Agent • SQL Data Agent • Python Code Agent • Document Summarizer&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="278" y="394" width="500" height="40" as="geometry"/>
+        <mxCell id="e_orch_to_rag" value="2. Hybrid Semantic Retrieval" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_orchestrator_core" target="card_vector_search">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- Bottom Tier: Guardrails, Faithfulness Verifier, and Function Calling Router -->
-        <mxCell id="card_guardrails_rag" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#DC2626;&quot;&gt;🛡️ ⚖️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;LlamaGuard &amp;amp; Safety Filter&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Toxicity, Jailbreak &amp;amp; PII Redaction&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="270" y="448" width="168" height="48" as="geometry"/>
+        <mxCell id="e_rag_to_rerank" value="3. Fusion &amp; Rerank" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_vector_search" target="card_reranker">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_faithfulness_rag" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#059669;&quot;&gt;🔍 ✅&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Faithfulness &amp;amp; Hallucination Gate&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Cross-verifies generated claims against chunks&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="445" y="448" width="170" height="48" as="geometry"/>
+        <mxCell id="e_rerank_to_orch" value="4. Grounded Context" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_reranker" target="card_gemini_models">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_tool_func_router" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#2563EB;&quot;&gt;🔌 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Function Calling &amp;amp; MCP Router&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Dynamic JSON schema parameter parser&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="622" y="448" width="164" height="48" as="geometry"/>
+        <mxCell id="e_orch_to_tools" value="5. Execute Tool" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_gemini_models" target="card_sandboxed_tools">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- Continuous Agent Feedback & Telemetry Tracing -->
-        <mxCell id="card_rag_triad_eval" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#166534;&quot;&gt;📈 🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#166534;&quot;&gt;Automated RAG Triad Evaluator (Context Relevance, Groundedness &amp;amp; Answer Relevance)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Continuous evaluation logs metrics to BigQuery &amp;amp; triggers automated prompt tuning&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="270" y="502" width="516" height="42" as="geometry"/>
+        <mxCell id="e_tools_to_guard" value="6. Validate &amp; Mask" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_sandboxed_tools" target="card_guardrails_rag">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- User Query Connector Line -->
-        <mxCell id="e_user_to_agent" value="&lt;b style=&quot;font-size:5.5px;color:#0F172A;&quot;&gt;User Query &amp;amp; SSE Stream&lt;/b&gt;" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+        <mxCell id="e_guard_to_ui" value="7. Stream Response &amp; Citations" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=1;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_guardrails_rag" target="user_chat">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="232" y="210" as="sourcePoint"/>
-            <mxPoint x="262" y="210" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1560" y="550"/>
+              <mxPoint x="205" y="550"/>
+            </Array>
           </mxGeometry>
-        </mxCell>
-
-
-        <!-- ==================== ZONE 3: THE TOOL ECOSYSTEM (SECURED ENVIRONMENT) ==================== -->
-        <!-- x = 816 .. 1336 (width = 520) -->
-        <mxCell id="zone_3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="816" y="52" width="520" height="575" as="geometry"/>
-        </mxCell>
-        <mxCell id="zone_3_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Zone 3: The Tool &amp;amp; Knowledge Ecosystem&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(Secured Private GCP &amp;amp; Partner VPC Environment)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="825" y="55" width="505" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 1: Document Index & Hybrid Semantic Retrieval -->
-        <mxCell id="box_tool_doc_index" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="84" width="502" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_doc_idx_hdr" value="&lt;b style=&quot;font-size:8px;color:#7C3AED;&quot;&gt;📚 Document Index &amp;amp; Hybrid Semantic Search (Vertex AI Vector Search)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="86" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_doc_chunker" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Document Chunking &amp;amp; OCR&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;PDFs, DOCX, Text, Tables&lt;br&gt;Hierarchical Late Chunking&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="835" y="106" width="155" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_dense_sparse_embed" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Hybrid Embedding Mesh&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Dense: text-embedding-004 (768d)&lt;br&gt;Sparse: BM25 Lexical Tokens&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="998" y="106" width="158" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_reranker_cross" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Vertex AI Reranker&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Cross-Encoder Scoring&lt;br&gt;Top-K Precision Filtration&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="1164" y="106" width="155" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_doc_idx_sub" value="&lt;span style=&quot;font-size:5.5px;color:#7C3AED;font-weight:bold;&quot;&gt;⚡ Semantic Retrieval Connector: Returns Top-K Grounded Passages with Source Byte Offsets&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="160" width="480" height="15" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 2: Enterprise Databases & Knowledge Graph -->
-        <mxCell id="box_tool_enterprise_db" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="192" width="502" height="105" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_db_hdr" value="&lt;b style=&quot;font-size:8px;color:#1D4ED8;&quot;&gt;🗄️ Enterprise Databases &amp;amp; Knowledge Graph (Structured / Semi-Structured)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="195" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_bq_lakehouse_rag" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;BigQuery Lakehouse&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Petabyte Fact Tables &amp;amp;&lt;br&gt;BigQuery Vector Indexing&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="835" y="215" width="155" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_alloydb_sql_rag" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;AlloyDB for PostgreSQL&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;pgvector Real-Time HNSW &amp;amp;&lt;br&gt;ACID Transaction Core&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="998" y="215" width="158" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_spanner_graph_rag" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Cloud Spanner Graph (GQL)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Enterprise Entity Ontology &amp;amp;&lt;br&gt;Multi-Hop Relationship Graph&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="1164" y="215" width="155" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_db_sql_gen" value="&lt;span style=&quot;font-size:5.5px;color:#1D4ED8;font-weight:bold;&quot;&gt;⚡ Text-to-SQL Query Generation: Auto-generates parameterized SQL queries with column RLS security&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="270" width="480" height="15" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 3: Sandboxed Code Execution & Real-Time APIs -->
-        <mxCell id="box_tool_execution_env" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="305" width="502" height="105" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_tools_env_hdr" value="&lt;b style=&quot;font-size:8px;color:#D97706;&quot;&gt;⚡ Sandboxed Execution &amp;amp; External Tool Integrations&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="308" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_gvisor_sandbox" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;gVisor Code Sandbox&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Isolated Python / Node.js Runner&lt;br&gt;for Math, Plotting &amp;amp; Pandas&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="835" y="328" width="155" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_saas_rest_apis" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Enterprise SaaS REST APIs&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Salesforce CRM, ServiceNow,&lt;br&gt;SAP S/4HANA &amp;amp; Jira Cloud&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="998" y="328" width="158" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_mcp_server_hub" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Model Context Protocol (MCP)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Standardized Tool Protocol Hub&lt;br&gt;Lazy-loaded External Tools&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="1164" y="328" width="155" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_tools_sub_exec" value="&lt;span style=&quot;font-size:5.5px;color:#D97706;font-weight:bold;&quot;&gt;⚡ Zero-Trust Sandboxed Execution: Ephemeral containers with strictly egress-controlled firewall rules&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="383" width="480" height="15" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 4: Human-in-the-Loop (HITL) Action Approval Gate -->
-        <mxCell id="box_tool_hitl_approval" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="418" width="502" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_hitl_hdr" value="&lt;b style=&quot;font-size:8px;color:#166534;&quot;&gt;👤 Human-in-the-Loop (HITL) High-Risk Action Approval Gate&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="420" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_hitl_desc" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Dual-Sign-Off Workflow for Sensitive Actions (Financial Trades, DB Deletions, Outbound Customer Emails)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Suspends execution state, renders diff UI to human reviewer, and resumes agent plan upon cryptographic approval token.&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="835" y="440" width="480" height="45" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 5: Observability, Tracing & Cloud Operations -->
-        <mxCell id="box_tool_observability" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="500" width="502" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_obs_hdr" value="&lt;b style=&quot;font-size:8px;color:#1D4ED8;&quot;&gt;📊 Observability, Cloud Trace &amp;amp; Cost Attribution (Cloud Operations)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="502" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_obs_desc" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;End-to-End Distributed Tracing (Cloud Trace &amp;amp; OpenTelemetry)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Sub-millisecond token latency telemetry, prompt token cost tracking by department, and automated error replay debugging.&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="835" y="522" width="480" height="45" as="geometry"/>
-        </mxCell>
-
-        <!-- Routing Connector from Function Calling / MCP to Tools -->
-        <mxCell id="e_agent_to_tools" value="&lt;b style=&quot;font-size:6px;color:#7C3AED;&quot;&gt;Tool Execution &amp;amp; MCP Protocol&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#DDD6FE;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="794" y="472" as="sourcePoint"/>
-            <mxPoint x="825" y="472" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
-
-        <!-- ==================== BOTTOM HORIZONTAL BAR: ENTERPRISE SECURITY & COMPLIANCE ==================== -->
-        <!-- x = 20 .. 1336 (width = 1316) -->
-        <mxCell id="bar_btm_gov_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="20" y="632" width="1316" height="58" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_btm_gov_title" value="&lt;b style=&quot;font-size:10.5px;color:#1E3A8A;&quot;&gt;🛡️ ENTERPRISE SECURITY, ZERO-TRUST PERIMETER &amp;amp; COMPLIANCE MESH&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;Unified Google Cloud Platform Guardrails Spanning All 3 Cognitive Zones&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="636" width="380" height="50" as="geometry"/>
-        </mxCell>
-
-        <!-- Governance Cards across bottom -->
-        <mxCell id="gov_card_iam_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;👤 Cloud IAM &amp;amp; ABAC&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Fine-Grained Role Policies&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="425" y="639" width="135" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_vpcsc_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;💠 VPC Service Controls&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Zero Data Exfiltration Perimeter&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="570" y="639" width="145" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_cmek_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;🔑 Cloud KMS CMEK&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;FIPS 140-2 Level 3 HSM Keys&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="725" y="639" width="135" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_scc_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;🛡️ Security Command Center&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Gemini Threat Intelligence&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="870" y="639" width="145" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_dlp_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;🔒 Sensitive Data Protection&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Cloud DLP PII Masking&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1025" y="639" width="145" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_audit_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;📋 Cloud Audit Logs&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Chronicle SIEM Streaming&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="639" width="145" height="42" as="geometry"/>
         </mxCell>
 
       </root>
@@ -329,331 +146,5 @@ export function buildAgenticRagWidescreenXml(): string {
 }
 
 export function buildCognitiveRagXml(): string {
-  return `<mxfile host="embed.diagrams.net">
-  <diagram id="agentic_rag_master" name="Cognitive Architecture (Agentic RAG)">
-    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-
-        <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
-        <mxCell id="top_cloud_logo" value="&lt;span style=&quot;font-size:24px;&quot;&gt;🧠 ☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="6" width="35" height="35" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18.5px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;ENTERPRISE COGNITIVE ARCHITECTURE &amp;amp; AGENTIC RAG PLATFORM&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="68" y="6" width="1050" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11px;color:#475569;font-weight:600;&quot;&gt;Production Blueprint: Multimodal Ingress, Vertex AI Multi-Agent ReAct Reasoner, Hybrid RAG Graph Mesh, Sandboxed Tools &amp;amp; Governance&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="68" y="30" width="1050" height="18" as="geometry"/>
-        </mxCell>
-
-        <!-- Top Right Gemini Platform Logo -->
-        <mxCell id="top_gemini_brand" value="&lt;b style=&quot;font-size:18px;color:#2563EB;&quot;&gt;Gemini&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Enterprise AI Core&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1190" y="6" width="130" height="40" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== ZONE 1: THE INTERFACE (USER INTERACTION) ==================== -->
-        <!-- x = 20 .. 240 (width = 220) -->
-        <mxCell id="zone_1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="20" y="52" width="220" height="575" as="geometry"/>
-        </mxCell>
-        <mxCell id="zone_1_hdr" value="&lt;b style=&quot;font-size:9px;color:#1E3A8A;&quot;&gt;Zone 1: The Interface&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(User Interaction &amp;amp; Ingress)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="55" width="210" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Ingress Channels Box -->
-        <mxCell id="card_ui_channels" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;📱 💻 🎙️ 🌐&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Multi-Channel Ingress Client&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Web App, Mobile SDK, Slack/Teams Bot,&lt;br&gt;Voice Assistant, Chrome Extension&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="84" width="204" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- Main User Interface / Chat App Centerpiece -->
-        <mxCell id="user_chat" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;color:#2563EB;&quot;&gt;💬 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#0F172A;&quot;&gt;User Interface / Chat App&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;Agentic Copilot Workspace&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#334155;padding-top:4px;&quot;&gt;• Real-time SSE Token Streaming&lt;br&gt;• Multimodal Uploads (PDF, CSV, Audio)&lt;br&gt;• Citations, Grounding Badges &amp;amp; XAI Tree&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="28" y="156" width="204" height="110" as="geometry"/>
-        </mxCell>
-
-        <!-- Client Ingress Security & Sanitization -->
-        <mxCell id="card_ui_sanitization" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#DC2626;&quot;&gt;🛡️ 🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Client-Side Input Sanitizer&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Prompt Injection Filter, Rate Limiter &amp;amp;&lt;br&gt;Client-Side PII Pre-Check (DLP)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="274" width="204" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- Session & State Manager -->
-        <mxCell id="card_ui_session_mgr" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🔑 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Session &amp;amp; Identity Manager&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;OAuth2 / OIDC Token Exchange,&lt;br&gt;Ephemeral Chat State &amp;amp; Websocket Session&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="342" width="204" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- Human Feedback & Inline Rating -->
-        <mxCell id="card_ui_feedback" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;👍 👎 💬&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Active User Feedback Collector&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Thumbs Up/Down, Edit Suggestions &amp;amp;&lt;br&gt;RLHF Annotation Event Dispatcher&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="410" width="204" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- Interactive Artifact Previewer -->
-        <mxCell id="card_ui_artifact_viewer" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#059669;&quot;&gt;📊 📄 💻&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Interactive Artifact Canvas&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Live React Components, SVGs,&lt;br&gt;Draw.io XML Viewport &amp;amp; PDF Previews&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="28" y="478" width="204" height="60" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="lbl_zone1_status" value="&lt;span style=&quot;font-size:6px;color:#1E3A8A;font-weight:bold;&quot;&gt;Zero-Trust End-User Ingress&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="28" y="605" width="204" height="14" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== ZONE 2: THE AGENTIC CORE (ORCHESTRATION & REASONING) ==================== -->
-        <!-- x = 248 .. 808 (width = 560) -->
-        <mxCell id="zone_2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="248" y="52" width="560" height="575" as="geometry"/>
-        </mxCell>
-        <mxCell id="zone_2_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Zone 2: The Agentic Core&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(Orchestration, Reasoning, Memory &amp;amp; Multi-Agent Mesh)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="255" y="55" width="545" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Secure Managed Gemini Enterprise Boundary (Dashed) -->
-        <mxCell id="sec_bound" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#64748B;strokeWidth=1.8;strokeDashArray=6 6;" vertex="1" parent="1">
-          <mxGeometry x="255" y="82" width="545" height="520" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_sec_bound_title" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;🔒 Secure Managed Gemini Enterprise Ecosystem Boundary (VPC-SC Perimeter)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="262" y="84" width="400" height="15" as="geometry"/>
-        </mxCell>
-
-        <!-- Agent Orchestrator Container -->
-        <mxCell id="orchestrator_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="262" y="102" width="532" height="490" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_orch_title" value="&lt;b style=&quot;font-size:8.5px;color:#1D4ED8;&quot;&gt;☁️ Agent Orchestrator (Vertex AI Agent Builder / LangGraph Mesh)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="270" y="105" width="450" height="18" as="geometry"/>
-        </mxCell>
-
-        <!-- 3 Header Cards: System Prompt, Short-Term Memory, Semantic Vector Memory -->
-        <!-- 1. System Prompt / Persona -->
-        <mxCell id="sys_prompt" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🎭 📜&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;System Prompt / Persona&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Role Identity, Tool Guardrails&lt;br&gt;&amp;amp; Step-by-Step Chain-of-Thought&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="270" y="128" width="168" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- 2. Conversation Memory -->
-        <mxCell id="conv_mem" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#059669;&quot;&gt;🧠 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Conversation Memory&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;Short-Term Sliding Context Window&lt;br&gt;&amp;amp; Redis Enterprise Cache&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="445" y="128" width="170" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- 3. Long-Term Episodic Memory -->
-        <mxCell id="long_term_mem" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#7C3AED;&quot;&gt;📚 🗄️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#0F172A;&quot;&gt;Episodic Long-Term Memory&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;User Preference Knowledge Graph&lt;br&gt;&amp;amp; Past Task Solution Store&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="622" y="128" width="164" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- The Reasoner: Gemini 3.7 Flash (LLM) Centerpiece -->
-        <mxCell id="reasoner_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="270" y="200" width="516" height="240" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_reasoner_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;The Reasoner: Gemini 3.7 Flash (Cognitive Planning Engine)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="280" y="204" width="496" height="16" as="geometry"/>
-        </mxCell>
-
-        <!-- Central Circular ReAct Loop Hub -->
-        <mxCell id="react_center" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;color:#2563EB;padding-bottom:1px;&quot;&gt;🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#1E3A8A;&quot;&gt;ReAct Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Autonomous Planning&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.8;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="483" y="260" width="90" height="90" as="geometry"/>
-        </mxCell>
-
-        <!-- 4 Orbital Step Nodes arranged in a Perfect Circle (12 o'clock, 3 o'clock, 6 o'clock, 9 o'clock) -->
-        <!-- 1. Thought (12 o'clock) -->
-        <mxCell id="react_thought" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;🧠 1. Thought&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Deconstruct Query &amp;amp; Plan&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="458" y="222" width="140" height="32" as="geometry"/>
-        </mxCell>
-
-        <!-- 2. Action (3 o'clock) -->
-        <mxCell id="react_action" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;⚡ 2. Action&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Select &amp;amp; Call Tool API&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="638" y="289" width="136" height="32" as="geometry"/>
-        </mxCell>
-
-        <!-- 3. Observation (6 o'clock) -->
-        <mxCell id="react_obs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;👁️ 3. Observation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Parse Tool Output &amp;amp; Validate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="458" y="356" width="140" height="32" as="geometry"/>
-        </mxCell>
-
-        <!-- 4. Synthesis (9 o'clock) -->
-        <mxCell id="react_syn" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;✨ 4. Synthesis&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Reason &amp;amp; Iterate if Needed&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="282" y="289" width="136" height="32" as="geometry"/>
-        </mxCell>
-
-        <!-- Circular Arc Connectors (1 -> 2 -> 3 -> 4 -> 1) -->
-        <mxCell id="e_r1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="react_thought" target="react_action">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="706" y="238"/></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="e_r2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="react_action" target="react_obs">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="706" y="372"/></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="e_r3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="react_obs" target="react_syn">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="372"/></Array></mxGeometry>
-        </mxCell>
-        <mxCell id="e_r4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="react_syn" target="react_thought">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="238"/></Array></mxGeometry>
-        </mxCell>
-
-        <!-- Sub-Agent Dynamic Mesh Bar below ReAct -->
-        <mxCell id="card_subagent_mesh" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;🤖 🤝 🤖 🤝 🤖&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Hierarchical Multi-Agent Sub-Swarm Dispatcher&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Specialized Workers: Web Search Agent • SQL Data Agent • Python Code Agent • Document Summarizer&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="278" y="394" width="500" height="40" as="geometry"/>
-        </mxCell>
-
-        <!-- Bottom Tier: Guardrails, Faithfulness Verifier, and Function Calling Router -->
-        <mxCell id="card_guardrails_rag" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#DC2626;&quot;&gt;🛡️ ⚖️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;LlamaGuard &amp;amp; Safety Filter&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Toxicity, Jailbreak &amp;amp; PII Redaction&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="270" y="448" width="168" height="48" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="card_faithfulness_rag" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#059669;&quot;&gt;🔍 ✅&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Faithfulness &amp;amp; Hallucination Gate&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Cross-verifies generated claims against chunks&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="445" y="448" width="170" height="48" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="card_tool_func_router" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#2563EB;&quot;&gt;🔌 ⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Function Calling &amp;amp; MCP Router&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Dynamic JSON schema parameter parser&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="622" y="448" width="164" height="48" as="geometry"/>
-        </mxCell>
-
-        <!-- Continuous Agent Feedback & Telemetry Tracing -->
-        <mxCell id="card_rag_triad_eval" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#166534;&quot;&gt;📈 🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#166534;&quot;&gt;Automated RAG Triad Evaluator (Context Relevance, Groundedness &amp;amp; Answer Relevance)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Continuous evaluation logs metrics to BigQuery &amp;amp; triggers automated prompt tuning&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="270" y="502" width="516" height="42" as="geometry"/>
-        </mxCell>
-
-        <!-- User Query Connector Line -->
-        <mxCell id="e_user_to_agent" value="&lt;b style=&quot;font-size:5.5px;color:#0F172A;&quot;&gt;User Query &amp;amp; SSE Stream&lt;/b&gt;" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="232" y="210" as="sourcePoint"/>
-            <mxPoint x="262" y="210" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
-
-        <!-- ==================== ZONE 3: THE TOOL ECOSYSTEM (SECURED ENVIRONMENT) ==================== -->
-        <!-- x = 816 .. 1336 (width = 520) -->
-        <mxCell id="zone_3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="816" y="52" width="520" height="575" as="geometry"/>
-        </mxCell>
-        <mxCell id="zone_3_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Zone 3: The Tool &amp;amp; Knowledge Ecosystem&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;(Secured Private GCP &amp;amp; Partner VPC Environment)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="825" y="55" width="505" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 1: Document Index & Hybrid Semantic Retrieval -->
-        <mxCell id="box_tool_doc_index" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="84" width="502" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_doc_idx_hdr" value="&lt;b style=&quot;font-size:8px;color:#7C3AED;&quot;&gt;📚 Document Index &amp;amp; Hybrid Semantic Search (Vertex AI Vector Search)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="86" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_doc_chunker" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Document Chunking &amp;amp; OCR&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;PDFs, DOCX, Text, Tables&lt;br&gt;Hierarchical Late Chunking&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="835" y="106" width="155" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_dense_sparse_embed" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Hybrid Embedding Mesh&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Dense: text-embedding-004 (768d)&lt;br&gt;Sparse: BM25 Lexical Tokens&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="998" y="106" width="158" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_reranker_cross" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Vertex AI Reranker&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Cross-Encoder Scoring&lt;br&gt;Top-K Precision Filtration&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="1164" y="106" width="155" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_doc_idx_sub" value="&lt;span style=&quot;font-size:5.5px;color:#7C3AED;font-weight:bold;&quot;&gt;⚡ Semantic Retrieval Connector: Returns Top-K Grounded Passages with Source Byte Offsets&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="160" width="480" height="15" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 2: Enterprise Databases & Knowledge Graph -->
-        <mxCell id="box_tool_enterprise_db" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="192" width="502" height="105" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_db_hdr" value="&lt;b style=&quot;font-size:8px;color:#1D4ED8;&quot;&gt;🗄️ Enterprise Databases &amp;amp; Knowledge Graph (Structured / Semi-Structured)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="195" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_bq_lakehouse_rag" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;BigQuery Lakehouse&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Petabyte Fact Tables &amp;amp;&lt;br&gt;BigQuery Vector Indexing&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="835" y="215" width="155" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_alloydb_sql_rag" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;AlloyDB for PostgreSQL&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;pgvector Real-Time HNSW &amp;amp;&lt;br&gt;ACID Transaction Core&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="998" y="215" width="158" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_spanner_graph_rag" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Cloud Spanner Graph (GQL)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Enterprise Entity Ontology &amp;amp;&lt;br&gt;Multi-Hop Relationship Graph&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="1164" y="215" width="155" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_db_sql_gen" value="&lt;span style=&quot;font-size:5.5px;color:#1D4ED8;font-weight:bold;&quot;&gt;⚡ Text-to-SQL Query Generation: Auto-generates parameterized SQL queries with column RLS security&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="270" width="480" height="15" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 3: Sandboxed Code Execution & Real-Time APIs -->
-        <mxCell id="box_tool_execution_env" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="305" width="502" height="105" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_tools_env_hdr" value="&lt;b style=&quot;font-size:8px;color:#D97706;&quot;&gt;⚡ Sandboxed Execution &amp;amp; External Tool Integrations&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="308" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_gvisor_sandbox" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;gVisor Code Sandbox&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Isolated Python / Node.js Runner&lt;br&gt;for Math, Plotting &amp;amp; Pandas&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="835" y="328" width="155" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_saas_rest_apis" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Enterprise SaaS REST APIs&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Salesforce CRM, ServiceNow,&lt;br&gt;SAP S/4HANA &amp;amp; Jira Cloud&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="998" y="328" width="158" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_mcp_server_hub" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Model Context Protocol (MCP)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Standardized Tool Protocol Hub&lt;br&gt;Lazy-loaded External Tools&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="1164" y="328" width="155" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_tools_sub_exec" value="&lt;span style=&quot;font-size:5.5px;color:#D97706;font-weight:bold;&quot;&gt;⚡ Zero-Trust Sandboxed Execution: Ephemeral containers with strictly egress-controlled firewall rules&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="383" width="480" height="15" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 4: Human-in-the-Loop (HITL) Action Approval Gate -->
-        <mxCell id="box_tool_hitl_approval" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="418" width="502" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_hitl_hdr" value="&lt;b style=&quot;font-size:8px;color:#166534;&quot;&gt;👤 Human-in-the-Loop (HITL) High-Risk Action Approval Gate&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="420" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_hitl_desc" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;Dual-Sign-Off Workflow for Sensitive Actions (Financial Trades, DB Deletions, Outbound Customer Emails)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Suspends execution state, renders diff UI to human reviewer, and resumes agent plan upon cryptographic approval token.&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="835" y="440" width="480" height="45" as="geometry"/>
-        </mxCell>
-
-        <!-- Tool 5: Observability, Tracing & Cloud Operations -->
-        <mxCell id="box_tool_observability" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="825" y="500" width="502" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_obs_hdr" value="&lt;b style=&quot;font-size:8px;color:#1D4ED8;&quot;&gt;📊 Observability, Cloud Trace &amp;amp; Cost Attribution (Cloud Operations)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="835" y="502" width="480" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="card_obs_desc" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;End-to-End Distributed Tracing (Cloud Trace &amp;amp; OpenTelemetry)&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Sub-millisecond token latency telemetry, prompt token cost tracking by department, and automated error replay debugging.&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="835" y="522" width="480" height="45" as="geometry"/>
-        </mxCell>
-
-        <!-- Routing Connector from Function Calling / MCP to Tools -->
-        <mxCell id="e_agent_to_tools" value="&lt;b style=&quot;font-size:6px;color:#7C3AED;&quot;&gt;Tool Execution &amp;amp; MCP Protocol&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#DDD6FE;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="794" y="472" as="sourcePoint"/>
-            <mxPoint x="825" y="472" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
-
-        <!-- ==================== BOTTOM HORIZONTAL BAR: ENTERPRISE SECURITY & COMPLIANCE ==================== -->
-        <!-- x = 20 .. 1336 (width = 1316) -->
-        <mxCell id="bar_btm_gov_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="20" y="632" width="1316" height="58" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_btm_gov_title" value="&lt;b style=&quot;font-size:10.5px;color:#1E3A8A;&quot;&gt;🛡️ ENTERPRISE SECURITY, ZERO-TRUST PERIMETER &amp;amp; COMPLIANCE MESH&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;Unified Google Cloud Platform Guardrails Spanning All 3 Cognitive Zones&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="636" width="380" height="50" as="geometry"/>
-        </mxCell>
-
-        <!-- Governance Cards across bottom -->
-        <mxCell id="gov_card_iam_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;👤 Cloud IAM &amp;amp; ABAC&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Fine-Grained Role Policies&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="425" y="639" width="135" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_vpcsc_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;💠 VPC Service Controls&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Zero Data Exfiltration Perimeter&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="570" y="639" width="145" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_cmek_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;🔑 Cloud KMS CMEK&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;FIPS 140-2 Level 3 HSM Keys&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="725" y="639" width="135" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_scc_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;🛡️ Security Command Center&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Gemini Threat Intelligence&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="870" y="639" width="145" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_dlp_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;🔒 Sensitive Data Protection&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Cloud DLP PII Masking&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1025" y="639" width="145" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="gov_card_audit_btm" value="&lt;b style=&quot;font-size:6px;color:#0F172A;&quot;&gt;📋 Cloud Audit Logs&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Chronicle SIEM Streaming&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="639" width="145" height="42" as="geometry"/>
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+  return buildAgenticRagWidescreenXml();
 }

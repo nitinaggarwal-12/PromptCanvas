@@ -1,182 +1,117 @@
-/**
- * 🏛️ MASTER BLUEPRINT 4: DATAOPS & ANOMALY DETECTION ARCHITECTURE
- * Pixel-Perfect Replica of DataOps & Anomaly Detection Architecture (To-Be State)
- */
-
 export function buildDataOpsAnomalyDetectionXml(): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
   <diagram id="dataops_anomaly_detection" name="DataOps &amp; Anomaly Detection Architecture">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF">
+    <mxGraphModel dx="1760" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="1050" background="#FFFFFF">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- MAIN TITLE (TOP LEFT) -->
-        <mxCell id="main_title_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="16" width="860" height="54" as="geometry"/>
+        <!-- ==================== HEADER BANNER ==================== -->
+        <mxCell id="top_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;🛡️ 📊&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="14" width="40" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;font-family:sans-serif;&quot;&gt;Enterprise DataOps &amp;amp; Anomaly Detection Architecture (To-Be State)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Dataplex Quality Governance • Automated SODA/Monte Carlo Testing • Vertex AI Grounding Guard&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="45" y="18" width="830" height="50" as="geometry"/>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;ENTERPRISE DATAOPS &amp;amp; ANOMALY DETECTION ARCHITECTURE (TO-BE STATE)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="12" width="1350" height="24" as="geometry"/>
         </mxCell>
-
-
-        <!-- ==================== TOP ZONE: STRATEGY & LOOKER OBSERVABILITY DASHBOARD ==================== -->
-        <!-- x = 30 .. 1560, y = 85 .. 275 (height = 190) -->
-        <mxCell id="tier1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="85" width="1530" height="190" as="geometry"/>
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:600;&quot;&gt;Dataplex Data Quality Governance • Automated SODA/Monte Carlo Testing • Real-Time Statistical Anomaly Scorer &amp;amp; Vertex AI Grounding Sentinel&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="36" width="1350" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="tier1_bar" value="&lt;b style=&quot;font-size:11px;color:#FFFFFF;&quot;&gt;ZONE 1: DATA STRATEGY, EXECUTIVE GOVERNANCE &amp;amp; REAL-TIME QUALITY DASHBOARD&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="85" width="1530" height="30" as="geometry"/>
+        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Dataplex Quality&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;DataOps Engine&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="14" width="190" height="44" as="geometry"/>
         </mxCell>
 
-        <!-- CDO & Data Architect (Left) -->
-        <mxCell id="top_cdo_box" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;👔 CDO &amp;amp; Data Architecture Board&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;padding-top:2px;&quot;&gt;Enterprise Data Quality SLAs • Compliance Policies (SOC 2, HIPAA, CSV)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="45" y="125" width="280" height="135" as="geometry"/>
+        <!-- ==================== COLUMN 1: DATA INGESTION & QUALITY GATES ==================== -->
+        <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#60A5FA;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="35" y="75" width="380" height="910" as="geometry"/>
+        </mxCell>
+        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:12px;color:#1D4ED8;&quot;&gt;📥 1. DATA INGESTION &amp;amp; QUALITY GATES&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="82" width="370" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- Looker Studio Dashboard Centerpiece -->
-        <mxCell id="box_looker_dash" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;4&quot; style=&quot;font-size:11.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #BFDBFE;padding-bottom:2px;&quot;&gt;📊 Looker Studio Enterprise Data Observability Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Data Freshness&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#16A34A;font-weight:bold;&quot;&gt;⚡ &amp;lt; 10s (Optimal)&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Schema Drift&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#16A34A;font-weight:bold;&quot;&gt;🟢 0 Breaking Drifts&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Volume Anomalies&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#16A34A;font-weight:bold;&quot;&gt;🟢 0 Active Alerts&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Hallucination Prevention&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#16A34A;font-weight:bold;&quot;&gt;100% Validated&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="340" y="125" width="860" height="135" as="geometry"/>
+        <mxCell id="box_soda_testing" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;🧪 SODA Declarative Quality Testing&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Declarative SQL Contract Assertions&lt;br&gt;• Null-Check, Schema Type &amp;amp; Range Validation&lt;br&gt;• Continuous Quality Scoring to Dataplex Catalog&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="55" y="125" width="340" height="115" as="geometry"/>
         </mxCell>
 
-        <!-- SRE Ops Lead & Summary (Right) -->
-        <mxCell id="top_sre_box" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🎧 SRE &amp;amp; DataOps Leads&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;padding-top:2px;&quot;&gt;24/7 Automated Pipeline Observability &amp;amp; Anomaly Triage&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1215" y="125" width="330" height="135" as="geometry"/>
+        <mxCell id="box_monte_carlo" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;📈 Monte Carlo Observability Mesh&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Automated Field-Level Lineage Tracing&lt;br&gt;• Real-time Volume &amp;amp; Freshness Drop Alarms&lt;br&gt;• Upstream Bug Blast-Radius Graph Visualization&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="55" y="260" width="340" height="115" as="geometry"/>
         </mxCell>
 
-
-        <!-- ==================== SECOND ZONE: INCIDENT MANAGEMENT & SRE VIEW ==================== -->
-        <!-- x = 30 .. 1560, y = 290 .. 380 (height = 90) -->
-        <mxCell id="tier2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="290" width="1530" height="90" as="geometry"/>
+        <!-- ==================== COLUMN 2: DATAPLEX STATISTICAL ANOMALY ENGINE ==================== -->
+        <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#F87171;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="455" y="75" width="400" height="910" as="geometry"/>
+        </mxCell>
+        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:12px;color:#991B1B;&quot;&gt;🧠 2. STATISTICAL ANOMALY ENGINE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="82" width="390" height="25" as="geometry"/>
         </mxCell>
 
-        <mxCell id="inc_box_mon" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;&quot;&gt;📈 Cloud Monitoring Metric Alarms&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Automated drift &amp;amp; latency threshold alarms&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="45" y="305" width="460" height="60" as="geometry"/>
+        <mxCell id="box_anomaly_detector" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#991B1B;&quot;&gt;⚡ Dataplex Anomaly &amp;amp; Drift Engine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#7F1D1D;line-height:1.4;padding-top:4px;&quot;&gt;• Real-time Schema Drift &amp;amp; Morphing Detection&lt;br&gt;• Machine Learning Distribution Shift Alarms&lt;br&gt;• Auto-Quarantines Corrupt Records to Poison DLQ&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="475" y="125" width="360" height="130" as="geometry"/>
         </mxCell>
 
-        <mxCell id="inc_box_pd" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#991B1B;&quot;&gt;🚨 PagerDuty &amp;amp; War Room Escalation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Instant automated on-call paging for data corruption&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="535" y="305" width="470" height="60" as="geometry"/>
+        <mxCell id="box_pagerduty_escalation" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#991B1B;&quot;&gt;🚨 SRE Incident &amp;amp; PagerDuty Escalation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#7F1D1D;line-height:1.4;padding-top:4px;&quot;&gt;• Automated Critical Quality Breach Paging&lt;br&gt;• War Room Slack Channels &amp;amp; Auto-RCA Logs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="475" y="275" width="360" height="105" as="geometry"/>
         </mxCell>
 
-        <mxCell id="inc_box_rca" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#166534;&quot;&gt;🔄 Root Cause Analysis (RCA) Feedback Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Auto-updates Dataplex validation rules upon resolution&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1035" y="305" width="510" height="60" as="geometry"/>
+        <!-- ==================== COLUMN 3: CLEAN LAKEHOUSE & VERTEX GROUNDING ==================== -->
+        <mxCell id="col3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="895" y="75" width="410" height="910" as="geometry"/>
+        </mxCell>
+        <mxCell id="col3_hdr" value="&lt;b style=&quot;font-size:12px;color:#166534;&quot;&gt;🗄️ 3. CLEAN BIGQUERY LAKEHOUSE STORE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="900" y="82" width="400" height="25" as="geometry"/>
         </mxCell>
 
-
-        <!-- ==================== THIRD ZONE: DATAPLEX INTEGRATED DATAOPS CONTROL PLANE ==================== -->
-        <!-- x = 30 .. 1060, y = 395 .. 630 (height = 235) -->
-        <mxCell id="box_dataplex_dataops" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E293B;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="395" width="1030" height="235" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_dataplex_ops_title" value="&lt;b style=&quot;font-size:11px;color:#FFFFFF;&quot;&gt;🛡️ DATAPLEX INTEGRATED DATAOPS CONTROL PLANE &amp;amp; ANOMALY DETECTION ENGINE&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="395" width="1030" height="30" as="geometry"/>
+        <mxCell id="box_bigquery_clean" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;BigQuery Certified Clean Gold Tier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;line-height:1.4;padding-top:4px;&quot;&gt;• 100% Quality-Enforced Data Products&lt;br&gt;• Column-Level Tagging &amp;amp; Dynamic Data Masking&lt;br&gt;• GxP &amp;amp; 21 CFR Part 11 Computer System Validation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=6;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="915" y="125" width="370" height="125" as="geometry"/>
         </mxCell>
 
-        <!-- SODA Quality Testing -->
-        <mxCell id="box_soda" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;🧪 SODA Automated Quality Testing&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Declarative SQL-based validation assertions&lt;br&gt;• Null-check, uniqueness &amp;amp; schema contract tests&lt;br&gt;• Continuous scoring output to Dataplex catalog&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="45" y="435" width="310" height="135" as="geometry"/>
+        <mxCell id="box_grounding_guard" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;Vertex AI Grounding Sentinel (Anti-Hallucination)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;line-height:1.4;padding-top:4px;&quot;&gt;• Verifies LLM Prompts against Gold Schemas&lt;br&gt;• Eliminates Hallucinated Fact Dispatches (100% Validated)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="915" y="270" width="370" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- Center Anomaly Engine & Drift Monitor -->
-        <mxCell id="box_engine" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#991B1B;&quot;&gt;🧠 Statistical Anomaly Engine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Active Schema Drift &amp;amp; Type Morphing Alarms&lt;br&gt;• Distribution Shift &amp;amp; Variance Detection&lt;br&gt;• Prevents corrupted data reaching downstream AI&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="375" y="435" width="330" height="135" as="geometry"/>
+        <!-- ==================== COLUMN 4: LOOKER OBSERVABILITY COCKPIT ==================== -->
+        <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1345" y="75" width="375" height="910" as="geometry"/>
+        </mxCell>
+        <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:12px;color:#6B21A8;&quot;&gt;📊 4. EXECUTIVE QUALITY COCKPIT&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="82" width="365" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- CARLO Continuous Observability -->
-        <mxCell id="box_carlo" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;📈 Monte Carlo Observability Mesh&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• End-to-End Automated Lineage Tracking&lt;br&gt;• Real-time volume change &amp;amp; freshness tracking&lt;br&gt;• Blast-radius visualization for upstream bugs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="725" y="435" width="320" height="135" as="geometry"/>
+        <mxCell id="box_looker_cockpit" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#6B21A8;&quot;&gt;Looker Studio Data Observability Cockpit&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Freshness: &amp;lt;10s • Schema Drift: 0 Drifts&lt;br&gt;• Real-time CDO Quality Scorecards &amp;amp; SLA Tracking&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="125" width="345" height="115" as="geometry"/>
         </mxCell>
 
-        <!-- Dataplex CSV & Reliability Guardrails Bar -->
-        <mxCell id="bar_csv" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;🛡️ Computer System Validation (CSV) Checkpoints • Regulated GxP &amp;amp; 21 CFR Part 11 Audit Trail&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="580" width="1000" height="38" as="geometry"/>
+        <mxCell id="box_cdo_board" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#6B21A8;&quot;&gt;👔 Chief Data Officer (CDO) Signoff&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Enterprise Data Governance Attestation&lt;br&gt;• Regulated Audit-Ready Artifact Export&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C084FC;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="260" width="345" height="110" as="geometry"/>
         </mxCell>
 
-
-        <!-- ==================== FOURTH ZONE: ENFORCED PIPELINE & CONSUMPTION ==================== -->
-        <!-- x = 1080 .. 1560, y = 395 .. 630 (height = 235) -->
-        <mxCell id="box_consumption_zone" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="395" width="480" height="235" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_consumption_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;✨ ENFORCED PIPELINE CONSUMPTION &amp;amp; AI GROUNDING&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="395" width="480" height="30" as="geometry"/>
+        <!-- Connectors -->
+        <mxCell id="e1" value="1. Assert Quality" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="box_soda_testing" target="box_anomaly_detector">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- Validated GCS Storage -->
-        <mxCell id="box_gcs_val" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🗄️ Validated Cloud Storage (GCS) Lakes&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;padding-top:2px;&quot;&gt;SOC 2 / CSV Certified Gold Tier Parquet Datasets&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1095" y="435" width="450" height="65" as="geometry"/>
+        <mxCell id="e2" value="2. Lineage Track" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="box_monte_carlo" target="box_anomaly_detector">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- Vertex AI Grounding & Hallucination Prevention -->
-        <mxCell id="box_vertex_ground" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#047857;&quot;&gt;🧠 Vertex AI Model Grounding &amp;amp; Vector Search&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Strict prevention of LLM hallucinations via verified grounding data&lt;br&gt;• 100% traceable embeddings linked directly to certified source lineage&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1.5;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1095" y="510" width="450" height="108" as="geometry"/>
+        <mxCell id="e3" value="3. Breach Alarm" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCA5A5;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="box_anomaly_detector" target="box_pagerduty_escalation">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-
-        <!-- ==================== BOTTOM ZONE: UNIFIED MODERN DATA STACK ==================== -->
-        <!-- x = 30 .. 1560, y = 645 .. 835 (height = 190) -->
-        <mxCell id="box_data_stack_outer" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="645" width="1530" height="190" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_lakehouse_title" value="&lt;b style=&quot;font-size:11px;color:#FFFFFF;&quot;&gt;🗄️ UNIFIED MODERN DATA STACK (SOURCE INGESTION &amp;amp; LAKEHOUSE TIER)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="645" width="1530" height="30" as="geometry"/>
+        <mxCell id="e4" value="4. [Passed Gate]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="box_anomaly_detector" target="box_bigquery_clean">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- 6 Data Stack Components across 1530px -->
-        <mxCell id="ds_bq" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;BigQuery&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;font-weight:normal;&quot;&gt;Analytics Lake&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="685" width="235" height="135" as="geometry"/>
-        </mxCell>
-        <mxCell id="ds_gcs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🗄️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Storage&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;font-weight:normal;&quot;&gt;Raw Object Lake&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="295" y="685" width="235" height="135" as="geometry"/>
-        </mxCell>
-        <mxCell id="ds_sql" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🛢️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud SQL&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;font-weight:normal;&quot;&gt;OLTP Relational DB&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="545" y="685" width="235" height="135" as="geometry"/>
-        </mxCell>
-        <mxCell id="ds_df" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;⚡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Dataflow&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;font-weight:normal;&quot;&gt;Beam Streaming ETL&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="795" y="685" width="235" height="135" as="geometry"/>
-        </mxCell>
-        <mxCell id="ds_dp" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;⚙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Dataproc&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;font-weight:normal;&quot;&gt;Managed Spark Clusters&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1045" y="685" width="235" height="135" as="geometry"/>
-        </mxCell>
-        <mxCell id="ds_saas" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;☁️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;External SaaS&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;font-weight:normal;&quot;&gt;Salesforce / Workday APIs&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1295" y="685" width="250" height="135" as="geometry"/>
+        <mxCell id="e5" value="5. Ground Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="box_bigquery_clean" target="box_grounding_guard">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
+        <mxCell id="e6" value="6. Render Metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7E22CE;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="box_bigquery_clean" target="box_looker_cockpit">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
 
-        <!-- ==================== FLOW CONNECTORS ==================== -->
-        <!-- Ingestion to Testing & Engines -->
-        <mxCell id="e_ds_soda" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_bq" target="box_soda"/>
-        <mxCell id="e_gcs_soda" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_gcs" target="box_soda"/>
-        <mxCell id="e_sql_soda" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_sql" target="box_soda"/>
-        <mxCell id="e_df_engine" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_df" target="box_engine"/>
-        <mxCell id="e_dp_carlo" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_dp" target="box_carlo"/>
-        <mxCell id="e_saas_carlo" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_saas" target="box_carlo"/>
-
-        <!-- Control Plane Interconnections -->
-        <mxCell id="e_soda_engine" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_soda" target="box_engine"/>
-        <mxCell id="e_engine_carlo" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_engine" target="box_carlo"/>
-
-        <!-- Control Plane to Incident Management -->
-        <mxCell id="e_carlo_mon" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_carlo" target="inc_box_mon"/>
-        <mxCell id="e_engine_pd" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_engine" target="inc_box_pd"/>
-        <mxCell id="e_pd_rca" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="inc_box_pd" target="inc_box_rca"/>
-        <mxCell id="e_rca_dataplex" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;dashed=1;" edge="1" parent="1" source="inc_box_rca" target="box_dataplex_dataops"/>
-
-        <!-- Observability to Governance -->
-        <mxCell id="e_mon_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="inc_box_mon" target="box_looker_dash"/>
-        <mxCell id="e_cdo_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="top_cdo_box" target="box_looker_dash"/>
-        <mxCell id="e_looker_sre" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_looker_dash" target="top_sre_box"/>
-
-        <!-- Control Plane to Validated Consumption & Grounding -->
-        <mxCell id="e_dataplex_val" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_dataplex_dataops" target="box_gcs_val"/>
-        <mxCell id="e_val_ground" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#047857;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gcs_val" target="box_vertex_ground"/>
-
-
-        <!-- ==================== FOOTER LEGEND ==================== -->
-        <mxCell id="legend_box" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;DataOps Fabric:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Dataplex Governance Control Plane&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;Anomaly &amp;amp; Schema Drift Alarms&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Vertex AI Grounding Guard&lt;/b&gt;&lt;/td&gt;&lt;td&gt;📊 &lt;b&gt;Looker Studio Observability&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Enterprise Data Quality Standard&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="850" width="1530" height="38" as="geometry"/>
+        <mxCell id="e7" value="7. Audit Signoff" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7E22CE;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="box_looker_cockpit" target="box_cdo_board">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
       </root>

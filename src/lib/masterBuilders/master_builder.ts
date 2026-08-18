@@ -14,7 +14,7 @@ export function buildCompleteWellArchitectedGcpDrMasterXml(): string {
 <mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
   <!-- PAGE 1: ENTERPRISE TECHNICAL INFRASTRUCTURE, DATA FLOW & ZERO-TRUST PERIMETER -->
   <diagram id="gcp_dr_page1_architecture" name="Page 1: Deep Infrastructure &amp; Zero-Trust Topology">
-    <mxGraphModel dx="1600" dy="1150" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1640" pageHeight="1150" background="#FFFFFF">
+    <mxGraphModel dx="1780" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="1200" background="#FFFFFF">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
