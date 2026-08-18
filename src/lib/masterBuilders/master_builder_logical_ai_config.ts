@@ -36,15 +36,15 @@ export function buildLogicalAiConfigTenantXml(): string {
         <!-- LEFT SECTION: ACTORS & CONFIG MANAGEMENT -->
         <!-- App Owners, Devs Persona -->
         <mxCell id="box_persona_devs" value="&lt;font style=&quot;font-size:22px;&quot;&gt;👥&lt;/font&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;App Owners,&lt;br&gt;Devs&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="10" y="475" width="70" height="50" as="geometry"/>
+          <mxGeometry x="10" y="475" width="55" height="50" as="geometry"/>
         </mxCell>
 
         <!-- Logical AI Config Management Console Box -->
-        <mxCell id="box_config_console" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Logical AI&lt;br&gt;Config&lt;br&gt;Management&lt;br&gt;Console&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
-          <mxGeometry x="78" y="468" width="84" height="66" as="geometry"/>
+        <mxCell id="box_config_console" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Logical AI&lt;br&gt;Config&lt;br&gt;Console&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="72" y="468" width="74" height="66" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_config_apis" value="&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Logical AI&lt;br&gt;Config Updates&lt;br&gt;APIs&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="78" y="538" width="84" height="30" as="geometry"/>
+        <mxCell id="lbl_config_apis" value="&lt;font style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Config Updates&lt;br&gt;APIs&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="72" y="538" width="74" height="30" as="geometry"/>
         </mxCell>
 
         <!-- Arrow Persona to Console -->
@@ -54,7 +54,7 @@ export function buildLogicalAiConfigTenantXml(): string {
 
         <!-- Enterprise IAM Box -->
         <mxCell id="box_iam" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Enterprise&lt;br&gt;IAM&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
-          <mxGeometry x="135" y="474" width="70" height="54" as="geometry"/>
+          <mxGeometry x="156" y="474" width="66" height="54" as="geometry"/>
         </mxCell>
         <mxCell id="edge_console_to_iam" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E293B;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="box_config_console" target="box_iam">
           <mxGeometry relative="1" as="geometry"/>

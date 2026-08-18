@@ -144,11 +144,34 @@ export function buildMultimodalIngestionXml(): string {
         </mxCell>
 
 
-        <!-- Connectors between Columns -->
-        <mxCell id="e_c1_c2" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col1_bg" target="col2_bg"/>
-        <mxCell id="e_c2_c3" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col2_bg" target="col3_bg"/>
-        <mxCell id="e_c3_c4" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col3_bg" target="col4_bg"/>
+        <!-- ==================== FLOW CONNECTORS ==================== -->
+        <mxCell id="e_c1_c2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col1_bg" target="col2_bg"/>
+        <mxCell id="e_c2_c3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col2_bg" target="col3_bg"/>
+        <mxCell id="e_c3_c4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col3_bg" target="col4_bg"/>
 
+        <!-- Ingress to Pre-Processing -->
+        <mxCell id="e_user_gcs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_user_app" target="card_gcs_proc"/>
+        <mxCell id="e_ge_maps" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_ge_app" target="card_maps_api"/>
+        <mxCell id="e_voice_stt" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_mod_voice" target="card_stt"/>
+        <mxCell id="e_img_vision" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_mod_image" target="card_vision_video"/>
+
+        <!-- Pre-Processing to Agent Orchestrator -->
+        <mxCell id="e_gcs_orch" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_gcs_proc" target="box_orch_agent"/>
+        <mxCell id="e_stt_orch" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_stt" target="box_orch_agent"/>
+        <mxCell id="e_vision_orch" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_vision_video" target="box_orch_agent"/>
+        <mxCell id="e_maps_orch" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_maps_api" target="box_orch_agent"/>
+
+        <!-- Orchestration Internal Pipeline -->
+        <mxCell id="e_orch_embed" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_orch_agent" target="card_embed_api"/>
+        <mxCell id="e_embed_vec" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_embed_api" target="card_vector_search"/>
+        <mxCell id="e_vec_reason" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_vector_search" target="card_reasoning_engine"/>
+
+        <!-- Reasoning Engine to Downstream Knowledge & Actions -->
+        <mxCell id="e_reason_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_reasoning_engine" target="card_act_bq"/>
+        <mxCell id="e_reason_kg" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_reasoning_engine" target="card_act_kg"/>
+        <mxCell id="e_bq_insights" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_act_bq" target="card_act_insights"/>
+        <mxCell id="e_insights_alert" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_act_insights" target="card_act_alert"/>
+        <mxCell id="e_reason_ge" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_reasoning_engine" target="card_act_ge"/>
 
         <!-- ==================== BOTTOM HORIZONTAL GOVERNANCE BAR ==================== -->
         <mxCell id="box_btm_gov" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">

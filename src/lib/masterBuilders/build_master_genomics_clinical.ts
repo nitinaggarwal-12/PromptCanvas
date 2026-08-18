@@ -109,10 +109,34 @@ export function buildGenomicsClinicalXml(): string {
         </mxCell>
 
 
-        <!-- Connectors between Zones -->
-        <mxCell id="e_z1_z2" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_onprem_container" target="box_gcp_main_container"/>
-        <mxCell id="e_z2_z3" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gcp_main_container" target="card_agentic_interface"/>
-        <mxCell id="e_z3_z4" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_agentic_interface" target="box_managed_services"/>
+        <!-- ==================== FLOW CONNECTORS ==================== -->
+        <mxCell id="e_z1_z2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_onprem_container" target="box_gcp_main_container"/>
+        <mxCell id="e_z2_z3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gcp_main_container" target="card_agentic_interface"/>
+        <mxCell id="e_z3_z4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_agentic_interface" target="box_managed_services"/>
+
+        <!-- On-Prem Ingestion -->
+        <mxCell id="e_seq_fastq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_seq_analyzers" target="card_fastq"/>
+        <mxCell id="e_fastq_prep" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_fastq" target="box_gemini_dataprep"/>
+
+        <!-- Data Prep to Workloads -->
+        <mxCell id="e_prep_protein" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gemini_dataprep" target="box_protein_design"/>
+        <mxCell id="e_prep_gke" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gemini_dataprep" target="box_gke_cluster"/>
+
+        <!-- Modeling to Pipeline Execution -->
+        <mxCell id="e_protein_gemini" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_protein_design" target="box_gemini_models"/>
+        <mxCell id="e_gke_clinico" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gke_cluster" target="node_clinico_genomic"/>
+        <mxCell id="e_models_binding" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gemini_models" target="node_drug_binding"/>
+        <mxCell id="e_clinico_binding" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="node_clinico_genomic" target="node_drug_binding"/>
+
+        <!-- Pipeline to Agentic Routing -->
+        <mxCell id="e_binding_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="node_drug_binding" target="bar_agentic_loop"/>
+        <mxCell id="e_loop_agent" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="bar_agentic_loop" target="card_agentic_interface"/>
+
+        <!-- Agentic Interface to Managed Services -->
+        <mxCell id="e_agent_m1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_agentic_interface" target="card_m1_foundation"/>
+        <mxCell id="e_agent_m2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_agentic_interface" target="card_m2_bigquery"/>
+        <mxCell id="e_agent_m3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_agentic_interface" target="card_m3_vertex"/>
+        <mxCell id="e_m2_m5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_m2_bigquery" target="card_m5_looker"/>
 
 
         <!-- ==================== FOOTER LEGEND ==================== -->

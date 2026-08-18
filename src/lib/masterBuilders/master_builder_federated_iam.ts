@@ -156,17 +156,17 @@ export function buildFederatedIamSsoXml(): string {
         <!-- 3 Workload Target Cards (Stacked vertically) -->
         <!-- 1. App Engine App -->
         <mxCell id="card_app_engine" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:gauge.svg&quot; width=&quot;26&quot; height=&quot;26&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#202124;text-align:left;&quot;&gt;App Engine&lt;br&gt;App&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#5F6368;font-weight:normal;&quot;&gt;Serverless Web App&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8AB4F8;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="610" y="320" width="190" height="60" as="geometry" />
+          <mxGeometry x="600" y="320" width="165" height="60" as="geometry" />
         </mxCell>
 
         <!-- 2. Cloud Run Service -->
         <mxCell id="card_cloud_run" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud-run.svg&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#202124;text-align:left;&quot;&gt;Cloud Run&lt;br&gt;Service&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#5F6368;font-weight:normal;&quot;&gt;Microservices Container&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8AB4F8;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="610" y="395" width="190" height="60" as="geometry" />
+          <mxGeometry x="600" y="395" width="165" height="60" as="geometry" />
         </mxCell>
 
         <!-- 3. Compute Engine instance (via Load Balancer) -->
         <mxCell id="card_compute_engine" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:cpu.svg&quot; width=&quot;26&quot; height=&quot;26&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#202124;text-align:left;&quot;&gt;Compute Engine&lt;br&gt;instance&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#5F6368;font-weight:normal;&quot;&gt;(via Load Balancer / IAP TCP)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8AB4F8;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="595" y="470" width="215" height="68" as="geometry" />
+          <mxGeometry x="590" y="470" width="175" height="68" as="geometry" />
         </mxCell>
 
         <!-- Connectors: IAP -> App Engine, Cloud Run, Compute Engine -->

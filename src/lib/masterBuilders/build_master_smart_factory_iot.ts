@@ -332,9 +332,9 @@ export function buildSmartFactoryIotXml(): string {
             <mxPoint x="1125" y="247" as="sourcePoint"/>
             <mxPoint x="364" y="495" as="targetPoint"/>
             <Array as="points">
-              <mxPoint x="920" y="247"/>
-              <mxPoint x="920" y="570"/>
-              <mxPoint x="364" y="570"/>
+              <mxPoint x="918" y="247"/>
+              <mxPoint x="918" y="618"/>
+              <mxPoint x="364" y="618"/>
             </Array>
           </mxGeometry>
         </mxCell>

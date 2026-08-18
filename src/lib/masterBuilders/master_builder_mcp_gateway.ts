@@ -87,22 +87,22 @@ export function buildMcpContextGatewayXml(): string {
         <mxCell id="box_mcp_gateway" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="280" y="80" width="460" height="520" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_mcp_title" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;Model Context Protocol (MCP) Gateway&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#475569;&quot;&gt;(Node.js/Python)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="280" y="86" width="460" height="30" as="geometry"/>
+        <mxCell id="lbl_mcp_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Model Context Protocol (MCP) Gateway&lt;/b&gt;&amp;nbsp;&lt;font style=&quot;font-size:9.5px;color:#475569;&quot;&gt;(Node.js/Python)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="280" y="84" width="400" height="24" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_mcp_icons" value="&lt;font style=&quot;font-size:16px;&quot;&gt;🟢 🐍&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="660" y="86" width="65" height="24" as="geometry"/>
+        <mxCell id="lbl_mcp_icons" value="&lt;font style=&quot;font-size:14px;&quot;&gt;🟢 🐍&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="670" y="84" width="55" height="24" as="geometry"/>
         </mxCell>
 
         <!-- TIER 1: UNIVERSAL CONTEXT INGESTION -->
         <mxCell id="box_mcp_tier1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;arcSize=3;" vertex="1" parent="1">
-          <mxGeometry x="295" y="120" width="430" height="140" as="geometry"/>
+          <mxGeometry x="295" y="114" width="430" height="146" as="geometry"/>
         </mxCell>
         <mxCell id="lbl_mcp_tier1" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Universal Context Ingestion &amp;amp; Adapters&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="295" y="124" width="430" height="18" as="geometry"/>
+          <mxGeometry x="295" y="118" width="430" height="18" as="geometry"/>
         </mxCell>
         <mxCell id="lbl_mcp_tier1_icons" value="&lt;font style=&quot;font-size:14px;&quot;&gt;📊 📑&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="660" y="124" width="55" height="18" as="geometry"/>
+          <mxGeometry x="660" y="118" width="55" height="18" as="geometry"/>
         </mxCell>
 
         <!-- Adapter Cards on Left of Tier 1 -->
@@ -327,11 +327,8 @@ export function buildMcpContextGatewayXml(): string {
         <mxCell id="box_unified_view_outer" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="880" y="80" width="170" height="520" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_unified_view_ctx" value="&lt;font style=&quot;font-size:9px;color:#64748B;&quot;&gt;Generalized context&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="880" y="64" width="170" height="16" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_unified_view_hdr" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Total Unified&lt;br&gt;System View&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="880" y="88" width="170" height="34" as="geometry"/>
+        <mxCell id="lbl_unified_view_hdr" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Total Unified System View&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;(Generalized context)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="880" y="84" width="170" height="32" as="geometry"/>
         </mxCell>
 
         <!-- Inner Box: Enterprise Context / Platform View -->

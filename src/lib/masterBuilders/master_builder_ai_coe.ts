@@ -223,9 +223,31 @@ export function buildPristineAiCoeXml(): string {
         </mxCell>
 
 
-        <!-- Connectors between Columns -->
-        <mxCell id="e_inp_coe" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="node_exec_strategy" target="cont_ai_coe"/>
-        <mxCell id="e_coe_sys" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="cont_ai_coe" target="cont_system_view"/>
+        <!-- ==================== FLOW CONNECTORS ==================== -->
+        <mxCell id="e_inp_coe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="node_exec_strategy" target="cont_ai_coe"/>
+        <mxCell id="e_coe_sys" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="cont_ai_coe" target="cont_system_view"/>
+
+        <!-- Strategy to Governance Box -->
+        <mxCell id="e_strat_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="node_exec_strategy" target="box_gov_strat"/>
+        <mxCell id="e_biz_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="node_business_plan" target="box_gov_strat"/>
+        <mxCell id="e_cloud_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="node_cloud_plans" target="box_gov_strat"/>
+        <mxCell id="e_gamp_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="node_gamp5" target="box_gov_strat"/>
+
+        <!-- Governance to Circular Process Engine -->
+        <mxCell id="e_gov_loops" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gov_strat" target="loop_user_onboarding"/>
+        <mxCell id="e_loop1_loop2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="loop_user_onboarding" target="loop_prompt_curation"/>
+        <mxCell id="e_loop2_loop3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="loop_prompt_curation" target="loop_feedback"/>
+        <mxCell id="e_loops_analytics" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="loop_feedback" target="box_analytics"/>
+
+        <!-- Analytics to System Output Views -->
+        <mxCell id="e_an_coe_out" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_analytics" target="node_coe_operating_model"/>
+        <mxCell id="e_an_platform" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_analytics" target="node_wbs_platform"/>
+        <mxCell id="e_an_pso" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_analytics" target="node_pso_support"/>
+
+        <!-- Closed Loop Funding Governance -->
+        <mxCell id="e_an_execs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_analytics" target="node_execs_leads"/>
+        <mxCell id="e_execs_funding" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="node_execs_leads" target="node_funding"/>
+        <mxCell id="e_funding_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;dashed=1;" edge="1" parent="1" source="node_funding" target="box_gov_strat"/>
 
 
         <!-- ==================== FOOTER LEGEND ==================== -->

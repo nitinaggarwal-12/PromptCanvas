@@ -48,7 +48,7 @@ export function buildAiTrismGuardrailsXml(): string {
 
         <!-- ==================== MAIN GCP PLATFORM CONTAINER ==================== -->
         <mxCell id="gcp_platform_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
-          <mxGeometry x="280" y="110" width="810" height="745" as="geometry"/>
+          <mxGeometry x="280" y="110" width="885" height="745" as="geometry"/>
         </mxCell>
         <mxCell id="gcp_platform_logo" value="🌐 &lt;b style=&quot;font-size:14px;color:#1E293B;&quot;&gt;Google Cloud Platform — Security Perimeter&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="295" y="118" width="400" height="26" as="geometry"/>

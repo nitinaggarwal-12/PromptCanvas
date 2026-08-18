@@ -10,11 +10,11 @@ export function buildDataLineageXml(): string {
         <mxCell id="top_logo" value="&lt;span style=&quot;font-size:24px;&quot;&gt;🧬&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="10" width="35" height="35" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;DATA GOVERNANCE: COLUMN-LEVEL DATA LINEAGE &amp;amp; PROVENANCE GRAPH&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="65" y="10" width="1050" height="24" as="geometry"/>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:17px;color:#0F172A;&quot;&gt;DATA GOVERNANCE: COLUMN-LEVEL DATA LINEAGE &amp;amp; PROVENANCE GRAPH&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="65" y="8" width="1050" height="22" as="geometry"/>
         </mxCell>
         <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11px;color:#475569;font-weight:600;&quot;&gt;End-to-End Traceability: Ingestion Raw $\rightarrow$ Dataform / dbt Staging $\rightarrow$ Curated Marts $\rightarrow$ BigQuery Column Tracking $\rightarrow$ Looker BI Metrics&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="65" y="32" width="1050" height="18" as="geometry"/>
+          <mxGeometry x="65" y="34" width="1050" height="18" as="geometry"/>
         </mxCell>
         <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.7 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Lineage Engine&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1220" y="10" width="140" height="36" as="geometry"/>

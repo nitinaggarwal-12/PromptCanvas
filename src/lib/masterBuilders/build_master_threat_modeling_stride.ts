@@ -10,11 +10,11 @@ export function buildThreatModelingStrideXml(): string {
         <mxCell id="top_logo" value="&lt;span style=&quot;font-size:24px;&quot;&gt;🛡️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="10" width="35" height="35" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;ZERO-TRUST SECURITY: STRIDE THREAT MODEL &amp;amp; ATTACK VECTOR BOUNDARY MAP&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="65" y="10" width="1250" height="24" as="geometry"/>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:17px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;ZERO-TRUST SECURITY: STRIDE THREAT MODEL &amp;amp; ATTACK VECTOR BOUNDARY MAP&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="65" y="8" width="1250" height="22" as="geometry"/>
         </mxCell>
         <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:10px;color:#475569;font-weight:700;letter-spacing:0.3px;&quot;&gt;ANALYSIS: Spoofing (S), Tampering (T), Repudiation (R), Information Disclosure (I), Denial of Service (D), Elevation of Privilege (E)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="65" y="32" width="1250" height="18" as="geometry"/>
+          <mxGeometry x="65" y="34" width="1250" height="18" as="geometry"/>
         </mxCell>
         
         <!-- Gemini Security Analyst Badge (Dark HUD Glassmorphic Pill) -->
@@ -265,7 +265,7 @@ export function buildThreatModelingStrideXml(): string {
 
         <!-- Floating Badge [6] IAM Validation -->
         <mxCell id="pill_transit_6" value="&lt;b style=&quot;font-size:7.5px;color:#15803D;&quot;&gt;[6] IAM Validation&lt;/b&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1132" y="325" width="45" height="38" as="geometry"/>
+          <mxGeometry x="1118" y="351" width="36" height="18" as="geometry"/>
         </mxCell>
 
         <!-- 1. [I] Information Disclosure Guard (VPC-SC) -->

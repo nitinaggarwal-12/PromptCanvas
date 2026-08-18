@@ -145,6 +145,35 @@ export function buildDataOpsAnomalyDetectionXml(): string {
         </mxCell>
 
 
+        <!-- ==================== FLOW CONNECTORS ==================== -->
+        <!-- Ingestion to Testing & Engines -->
+        <mxCell id="e_ds_soda" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_bq" target="box_soda"/>
+        <mxCell id="e_gcs_soda" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_gcs" target="box_soda"/>
+        <mxCell id="e_sql_soda" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_sql" target="box_soda"/>
+        <mxCell id="e_df_engine" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_df" target="box_engine"/>
+        <mxCell id="e_dp_carlo" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_dp" target="box_carlo"/>
+        <mxCell id="e_saas_carlo" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="ds_saas" target="box_carlo"/>
+
+        <!-- Control Plane Interconnections -->
+        <mxCell id="e_soda_engine" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_soda" target="box_engine"/>
+        <mxCell id="e_engine_carlo" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_engine" target="box_carlo"/>
+
+        <!-- Control Plane to Incident Management -->
+        <mxCell id="e_carlo_mon" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_carlo" target="inc_box_mon"/>
+        <mxCell id="e_engine_pd" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_engine" target="inc_box_pd"/>
+        <mxCell id="e_pd_rca" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="inc_box_pd" target="inc_box_rca"/>
+        <mxCell id="e_rca_dataplex" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;dashed=1;" edge="1" parent="1" source="inc_box_rca" target="box_dataplex_dataops"/>
+
+        <!-- Observability to Governance -->
+        <mxCell id="e_mon_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="inc_box_mon" target="box_looker_dash"/>
+        <mxCell id="e_cdo_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="top_cdo_box" target="box_looker_dash"/>
+        <mxCell id="e_looker_sre" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_looker_dash" target="top_sre_box"/>
+
+        <!-- Control Plane to Validated Consumption & Grounding -->
+        <mxCell id="e_dataplex_val" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_dataplex_dataops" target="box_gcs_val"/>
+        <mxCell id="e_val_ground" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#047857;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gcs_val" target="box_vertex_ground"/>
+
+
         <!-- ==================== FOOTER LEGEND ==================== -->
         <mxCell id="legend_box" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;DataOps Fabric:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Dataplex Governance Control Plane&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;Anomaly &amp;amp; Schema Drift Alarms&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Vertex AI Grounding Guard&lt;/b&gt;&lt;/td&gt;&lt;td&gt;📊 &lt;b&gt;Looker Studio Observability&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Enterprise Data Quality Standard&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="850" width="1530" height="38" as="geometry"/>

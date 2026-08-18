@@ -191,10 +191,44 @@ export function buildManufacturingOptimizationXml(): string {
         </mxCell>
 
 
-        <!-- Connectors between Columns -->
-        <mxCell id="e_c1_c2" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col1_bg" target="col2_bg"/>
-        <mxCell id="e_c2_c3" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col2_bg" target="col3_bg"/>
-        <mxCell id="e_c3_c4" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col3_bg" target="col4_bg"/>
+        <!-- ==================== FLOW CONNECTORS ==================== -->
+        <mxCell id="e_c1_c2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col1_bg" target="col2_bg"/>
+        <mxCell id="e_c2_c3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col2_bg" target="col3_bg"/>
+        <mxCell id="e_c3_c4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col3_bg" target="col4_bg"/>
+
+        <!-- Shop Floor to Edge Ingest -->
+        <mxCell id="e_turb_ps" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_ge_turbines" target="card_pubsub_mfg"/>
+        <mxCell id="e_cam_ps" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_cameras_badge" target="card_pubsub_mfg"/>
+        <mxCell id="e_fact_ps" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_factory_machinery" target="card_pubsub_mfg"/>
+
+        <!-- Ingestion to MDE Engine -->
+        <mxCell id="e_ps_df" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_pubsub_mfg" target="card_dataflow_mfg"/>
+        <mxCell id="e_df_mde" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_dataflow_mfg" target="card_mde_engine"/>
+
+        <!-- MDE to Lakehouse and Feature Store -->
+        <mxCell id="e_mde_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_mde_engine" target="card_bq_mfg"/>
+        <mxCell id="e_mde_feat" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_mde_engine" target="card_vertex_feat_store"/>
+
+        <!-- Lakehouse/Features into Gemini Multimodal Anomaly & Reasoner -->
+        <mxCell id="e_bq_gemini" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_bq_mfg" target="box_anomaly_gemini"/>
+        <mxCell id="e_feat_gemini" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_vertex_feat_store" target="box_anomaly_gemini"/>
+        <mxCell id="e_anomaly_pm" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_anomaly_gemini" target="box_pred_maint_gemini"/>
+        <mxCell id="e_pm_twin" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="card_digital_twin_sim"/>
+
+        <!-- Model Monitoring Feedback Loop -->
+        <mxCell id="e_drift_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;dashed=1;" edge="1" parent="1" source="card_vertex_drift_guard" target="card_dataflow_mfg"/>
+
+        <!-- Gemini Reasoning into Looker and Closed-Loop Actions -->
+        <mxCell id="e_pm_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="card_looker_mfg"/>
+        <mxCell id="e_pm_btn1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="btn_sched_maint"/>
+        <mxCell id="e_pm_btn2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="btn_opt_speed"/>
+        <mxCell id="e_pm_btn3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="btn_order_parts"/>
+        <mxCell id="e_pm_estop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_anomaly_gemini" target="card_emergency_stop_siren"/>
+        <mxCell id="e_pm_tech" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="btn_sched_maint" target="card_field_tech_fcm"/>
+
+        <!-- Actuator Feedback Loop -->
+        <mxCell id="e_act_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.2;endArrow=classic;dashed=1;" edge="1" parent="1" source="btn_opt_speed" target="card_plc_actuator_target"/>
+        <mxCell id="e_estop_reject" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.2;endArrow=classic;dashed=1;" edge="1" parent="1" source="card_emergency_stop_siren" target="card_edge_tpu_rejector"/>
 
 
         <!-- ==================== FOOTER LEGEND ==================== -->
