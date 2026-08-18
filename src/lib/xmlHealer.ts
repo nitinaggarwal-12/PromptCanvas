@@ -1,6 +1,7 @@
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
+import { buildCompleteWellArchitectedGcpDrMasterXml } from './masterBuilders/master_builder';
 
 export interface XmlHealerResult {
   isValid: boolean;
@@ -20,9 +21,14 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
   const healingLog: string[] = [];
   let isHealed = false;
 
-  if (!inputXml || typeof inputXml !== 'string') {
-    healingLog.push('Input XML was empty or invalid type.');
-    const fallbackXml = createFallbackDrawioXml();
+  const isCompletelyEmpty = !inputXml || 
+    typeof inputXml !== 'string' || 
+    inputXml.includes('<root><mxCell id="0"/><mxCell id="1" parent="0"/></root>') ||
+    !inputXml.includes('vertex="1"');
+
+  if (isCompletelyEmpty) {
+    healingLog.push('Input XML had 0 vertices or was empty. Injected full master template.');
+    const fallbackXml = createFallbackDrawioXml(archType);
     return { isValid: false, isHealed: true, xml: fallbackXml, healingLog };
   }
 
@@ -560,9 +566,10 @@ function autoRepairXmlSyntax(xml: string): string {
 function createFallbackDrawioXml(archType?: string): string {
   try {
     const { getDefaultXmlForArchitecture } = require('./architectureTypes');
-    return getDefaultXmlForArchitecture(archType || 'unified_system_view');
+    const xml = getDefaultXmlForArchitecture(archType || 'unified_system_view');
+    if (xml && xml.length > 500) return xml;
   } catch {
-    const { getTechnicalArchitectureXml } = require('./technicalArchitectureXmls');
-    return getTechnicalArchitectureXml(archType || 'unified_system_view');
+    // Fallback to static master builder
   }
+  return buildCompleteWellArchitectedGcpDrMasterXml();
 }
