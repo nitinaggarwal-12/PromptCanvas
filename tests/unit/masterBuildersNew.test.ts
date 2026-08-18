@@ -18,7 +18,7 @@ describe("Complete 52 Master Enterprise Blueprint Catalog Integrity Suite", () =
       });
 
       it("should generate valid Draw.io XML with zero unescaped ampersands", () => {
-        const xml = getDefaultXmlForArchitecture(arch.id);
+        const xml = getDefaultXmlForArchitecture(arch.id) || "";
         expect(xml).toBeDefined();
         expect(xml.length).toBeGreaterThan(200);
         expect(xml).toContain("<mxfile");
