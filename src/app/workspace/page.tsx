@@ -140,10 +140,26 @@ export function generateUniqueProjectName(): string {
   return `Google Cloud Project #${code}`;
 }
 
-export function generateUniqueDiagramName(baseName?: string): string {
+export function extractArchitectureTitleFromPrompt(prompt: string): string {
+  if (!prompt || typeof prompt !== 'string') return 'Enterprise Architecture';
+  const clean = prompt
+    .replace(/\b(act as|build|create|design|generate|an|a|the|with|and|for|in|on|of|to|system|architecture|diagram|platform|pipeline)\b/gi, ' ')
+    .replace(/[^a-zA-Z0-9\s-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const words = clean.split(' ').filter(w => w.length > 2).slice(0, 4);
+  if (words.length === 0) return 'Enterprise Architecture';
+  return words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+export function generateUniqueDiagramName(baseNameOrPrompt?: string): string {
   const code = Math.floor(100 + Math.random() * 900);
-  if (baseName) {
-    const cleanBase = baseName
+  if (baseNameOrPrompt) {
+    if (baseNameOrPrompt.length > 40 || /build|create|design|architect|develop/i.test(baseNameOrPrompt)) {
+      const derived = extractArchitectureTitleFromPrompt(baseNameOrPrompt);
+      return `${derived} #${code}`;
+    }
+    const cleanBase = baseNameOrPrompt
       .replace(/\s*\(WBS\s*[\d.]+\)/gi, '')
       .replace(/\s*-\s*System Design/gi, '')
       .replace(/\s*-\s*Enterprise Edition/gi, '')
@@ -6835,7 +6851,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   theme={canvasTheme}
                   isGenerating={isGenerating}
                   onGenerateFromPrompt={async (promptText, explicitProjectName) => {
-                    const finalName = explicitProjectName || pendingProjectName || generateUniqueDiagramName();
+                    const finalName = explicitProjectName || pendingProjectName || generateUniqueDiagramName(promptText);
                     setCurrentGeneratingPrompt(promptText);
                     setIsGenerating(true);
                     try {
@@ -6845,7 +6861,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         body: JSON.stringify({
                           name: finalName,
                           prompt: promptText,
-                          architectureType: selectedArchType || 'conceptual_diagram',
+                          architectureType: selectedArchType && selectedArchType !== 'total_unified_system_view' ? selectedArchType : undefined,
                           isPrivate: false
                         })
                       });
