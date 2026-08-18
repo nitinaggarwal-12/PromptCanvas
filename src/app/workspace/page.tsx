@@ -3391,14 +3391,24 @@ function WorkspaceContent() {
       }`}>
         <div className="max-w-[1600px] mx-auto space-y-8">
           
-          <div className={`border-b pb-6 ${canvasTheme === 'light' ? 'border-slate-200' : 'border-panel-border/30'}`}>
-            <h2 className={`text-2xl font-black flex items-center gap-2 ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
-              <BookOpen className="w-6 h-6 text-teal-accent" />
-              <span>Visual Onboarding Walkthrough</span>
-            </h2>
-            <p className={`text-xs mt-2 max-w-2xl ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
-              Explore 5 pre-compiled, high-demand enterprise architectures. See how PromptCanvas accepts prompts, refines diagrams, and compiles complete Business and Technical briefs automatically.
-            </p>
+          <div className={`border-b pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 ${canvasTheme === 'light' ? 'border-slate-200' : 'border-panel-border/30'}`}>
+            <div>
+              <h2 className={`text-2xl font-black flex items-center gap-2 ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                <BookOpen className="w-6 h-6 text-teal-accent" />
+                <span>Visual Onboarding Walkthrough</span>
+              </h2>
+              <p className={`text-xs mt-2 max-w-2xl ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                Explore pre-compiled enterprise architectures, or open the interactive Persona Playbooks guide for first-time users.
+              </p>
+            </div>
+            <Link
+              href="/guide"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-teal-500/20 hover:scale-105 transition-all shrink-0"
+            >
+              <Sparkles className="w-4 h-4 text-white" />
+              <span>Open Persona Workflows &amp; GIF Guide</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 gap-10">

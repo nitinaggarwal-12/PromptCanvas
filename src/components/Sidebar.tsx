@@ -16,7 +16,8 @@ import {
   LayoutGrid,
   ShieldAlert,
   Settings,
-  FolderGit2
+  FolderGit2,
+  BookOpen
 } from 'lucide-react';
 import type { Workspace } from '@/lib/db';
 import type { SupportedLanguage } from '@/lib/i18n';
@@ -73,6 +74,12 @@ export function Sidebar({
             <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
               <LayoutGrid className="w-4 h-4 text-slate-500" />
               <span>Dashboard Overview</span>
+            </div>
+          </Link>
+          <Link href="/guide" className="block">
+            <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-teal-400 hover:bg-teal-500/10 border border-teal-500/20 transition-all">
+              <BookOpen className="w-4 h-4 text-teal-400" />
+              <span>User Guide &amp; Playbooks</span>
             </div>
           </Link>
           {isSuperAdmin && (

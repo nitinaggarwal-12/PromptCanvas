@@ -148,6 +148,9 @@ export default function LandingPage() {
           }`}>
             <a href="#features" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">How It Works</a>
+            <Link href="/guide" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-semibold">
+              User Guide &amp; Workflows
+            </Link>
             <Link href="/workspace?tab=templates" className="hover:text-teal-600 dark:hover:text-teal-300 transition-colors text-teal-600 dark:text-teal-400 font-semibold flex items-center gap-1">
               <span>Templates Matrix</span>
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-700 dark:text-teal-300 font-black">50</span>
