@@ -452,7 +452,34 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
         // Float label safely above the connector line in open channel space
         if (cell.mxGeometry) {
           const geo = cell.mxGeometry;
-          if (!geo.mxPoint || !geo.mxPoint['@_as'] || geo.mxPoint['@_as'] !== 'offset') {
+          if (Array.isArray(geo.mxPoint)) {
+            const hasOffset = geo.mxPoint.some((p: any) => p && p['@_as'] === 'offset');
+            if (!hasOffset) {
+              geo.mxPoint.push({
+                '@_as': 'offset',
+                '@_x': '0',
+                '@_y': '-16'
+              });
+              isHealed = true;
+            }
+          } else if (geo.mxPoint && typeof geo.mxPoint === 'object') {
+            if (geo.mxPoint['@_as'] && geo.mxPoint['@_as'] !== 'offset') {
+              geo.mxPoint = [
+                geo.mxPoint,
+                {
+                  '@_as': 'offset',
+                  '@_x': '0',
+                  '@_y': '-16'
+                }
+              ];
+              isHealed = true;
+            } else if (!geo.mxPoint['@_as']) {
+              geo.mxPoint['@_as'] = 'offset';
+              geo.mxPoint['@_x'] = '0';
+              geo.mxPoint['@_y'] = '-16';
+              isHealed = true;
+            }
+          } else if (!geo.mxPoint) {
             geo.mxPoint = {
               '@_as': 'offset',
               '@_x': '0',
