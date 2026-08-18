@@ -983,41 +983,41 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "legacy_data_dependency_map",
-    name: "Legacy Data Dependency Map (P1-APP-L-01)",
+    name: "Google Cloud Discovery & Assessment: Legacy Silos to Modern Migration Waves (P1-APP-L-01)",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Zero-Trust Infrastructure",
     badge: "Discovery",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use to map legacy on-prem spaghetti dependencies, database coupling, shadow IT extracts, StratoZone inventory probes, and Migration Center wave planning.",
+    whenToUse: "Use to assess on-prem legacy silos (Mainframe, Oracle RAC, SAP ECC, Shadow DBs), spaghetti integration matrices, StratoZone Discovery, Sensitive Data Protection (DLP), and 4-wave cloud migration roadmap.",
     bestFor: [
-      "On-premises legacy monolith and shadow DB discovery",
-      "StratoZone agentless discovery probe and network netflow mapping",
-      "Migration Center wave planning (Wave 1: Low-hanging, Wave 2: Core Data, Wave 3: Mainframe)",
-      "Automated Strangler Fig facade routing and cutover scheduling"
+      "On-prem legacy silos and spaghetti integration matrix mapping",
+      "StratoZone Collector Appliance & Migration Center TCO profiling",
+      "Sensitive Data Protection (DLP) automated PII classification",
+      "Gemini 3.7 Flash 4-wave migration plan (Rehost, Replatform, Refactor, Retire)"
     ],
-    keyTech: ["StratoZone", "Migration Center", "Cloud Run Strangler Proxy", "BigQuery Lakehouse", "Gemini 3.7 Flash"],
+    keyTech: ["StratoZone", "Google Cloud Migration Center", "Sensitive Data Protection (DLP)", "Compute Engine", "Database Migration Service (DMS)", "Cloud Run", "Gemini 3.7 Flash"],
     thumbnail: "/templates/legacy_data_dependency_map.png",
-    promptSummary: "Legacy Data Dependency Map: On-Prem Legacy Spaghetti -> StratoZone Discovery Probe -> Migration Center Waves -> Cloud Target Architecture."
+    promptSummary: "Discovery & Assessment: On-Prem Legacy Silos -> Spaghetti Matrix -> StratoZone & Migration Center -> 4-Wave Modern Migration Plan."
   },
   {
     id: "gcp_landing_zone_vpc",
-    name: "GCP Landing Zone & Shared VPC Network Fabric (P4-SEC-P-02)",
+    name: "Google Cloud Infrastructure: Landing Zone & Shared VPC Topology (P4-SEC-P-02)",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Zero-Trust Infrastructure",
     badge: "Networking",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for production enterprise Hub-and-Spoke Shared VPC network fabric with 100G Dedicated Interconnect, Cloud NAT HA, Private Service Connect (PSC), and VPC-SC perimeter.",
+    whenToUse: "Use for physical zero-trust network fabric with 100G Dedicated Interconnect, Cloud Router BGP, Hub-and-Spoke Shared VPC, PSC Hub 10.100.0.0/24, GKE Autopilot, and VPC-SC perimeter.",
     bestFor: [
-      "Enterprise Hub-and-Spoke Shared VPC with Central Host Project",
-      "100G Dedicated Interconnect & Cloud Router BGP Dual-Region Redundancy",
-      "Private Service Connect (PSC) 10.50.0.0/24 private endpoints",
-      "Cloud Next-Gen Firewall (NGFW) with IDS/IPS & VPC-SC data perimeter"
+      "Corporate DC & 100G Dedicated Interconnect with MACsec Layer 2 Encryption",
+      "Shared VPC Host Project Hub with Cloud Router BGP, Cloud NAT, and Cloud Armor WAF",
+      "Production Workload Spokes with GKE Autopilot, Serverless Direct VPC, and PSA",
+      "Zero-Trust Perimeter with VPC-SC, Cloud KMS HSM Dual Rings, SCC, and Org Policies"
     ],
-    keyTech: ["Shared VPC Host Project", "Dedicated Interconnect 100G", "Private Service Connect", "Cloud NGFW", "VPC-SC Perimeter", "Gemini 3.7 Flash"],
+    keyTech: ["Shared VPC Host Project", "100G Dedicated Interconnect", "Cloud Router BGP", "Private Service Connect (PSC)", "Cloud Armor WAF", "GKE Autopilot", "VPC-SC Perimeter", "Cloud KMS HSM", "Security Command Center", "Gemini 3.7 Flash"],
     thumbnail: "/templates/gcp_landing_zone_vpc.png",
-    promptSummary: "GCP Landing Zone & Shared VPC: Hybrid WAN -> Central Hub Host Project -> Production Workload Spoke -> Managed Services Enclave (PSC)."
+    promptSummary: "GCP Landing Zone & Shared VPC: On-Prem & Transit 100G -> Shared VPC Host Project Hub -> Workload Spoke Projects -> Zero-Trust Perimeter (VPC-SC) -> Observability & Management."
   },
   {
     id: "enterprise_agent_runtime",

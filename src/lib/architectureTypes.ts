@@ -359,17 +359,17 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
   },
   {
     id: "legacy_data_dependency_map",
-    name: "Legacy Data Dependency Map (P1-APP-L-01)",
+    name: "Google Cloud Discovery & Assessment: Legacy Silos to Modern Migration Waves (P1-APP-L-01)",
     category: "Migration & Modernization",
-    whenToUse: "Visualizes legacy on-premises spaghetti dependencies, database coupling, shadow IT extracts, StratoZone inventory probes, and Migration Center wave planning.",
-    prompt: "Act as a Principal Google Cloud Migration & Discovery Architect. Design a production-grade Legacy Data Dependency Map blueprint featuring on-prem legacy spaghetti dependencies, shadow DBs, StratoZone probe, and Migration Center wave planning powered by Gemini 3.7 Flash."
+    whenToUse: "Visualizes on-prem legacy silos (Mainframe, Oracle RAC, SAP ECC, Shadow DBs), spaghetti integration matrix, StratoZone Discovery Appliance, Sensitive Data Protection (DLP), and 4-wave cloud migration roadmap.",
+    prompt: "Act as a Principal Google Cloud Migration & Discovery Architect. Design a production-grade Discovery & Assessment blueprint featuring on-prem legacy silos, spaghetti integration matrix, StratoZone Discovery Appliance, Migration Center, DLP scanning, and 4-wave modernization plan powered by Gemini 3.7 Flash."
   },
   {
     id: "gcp_landing_zone_vpc",
-    name: "GCP Landing Zone & Shared VPC Network Fabric (P4-SEC-P-02)",
+    name: "Google Cloud Infrastructure: Landing Zone & Shared VPC Topology (P4-SEC-P-02)",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "Production-grade Hub-and-Spoke Shared VPC network fabric with 100G Dedicated Interconnect, Cloud NAT HA, Private Service Connect (PSC), Cloud NGFW, and VPC-SC isolation.",
-    prompt: "Act as a Principal Google Cloud Network & Security Architect. Design a production-grade GCP Landing Zone & Hub-and-Spoke Shared VPC Network Fabric blueprint featuring Dedicated Interconnect, Cloud Router BGP, PSC Endpoints, GKE/Serverless Subnets, and VPC-SC perimeter powered by Gemini 3.7 Flash."
+    whenToUse: "Physical zero-trust network fabric with 100G Dedicated Interconnect, Cloud Router BGP, Hub-and-Spoke Shared VPC, PSC Hub 10.100.0.0/24, GKE Autopilot, Serverless Direct VPC, PSA, VPC-SC perimeter, and Cloud Asset Inventory.",
+    prompt: "Act as a Principal Google Cloud Network & Security Architect. Design a production-grade GCP Landing Zone & Hub-and-Spoke Shared VPC Topology blueprint featuring 100G Interconnect, Cloud Router BGP, PSC Hub, GKE Autopilot, VPC-SC perimeter, and Cloud Asset Inventory powered by Gemini 3.7 Flash."
   },
   {
     id: "enterprise_agent_runtime",
