@@ -134,6 +134,7 @@ import { ProjectPromptDossierModal } from '@/components/workspace/ProjectPromptD
 import { BlueprintCatalogModal } from '@/components/workspace/BlueprintCatalogModal';
 import { WelcomeGetStartedSlate } from '@/components/workspace/WelcomeGetStartedSlate';
 import { useTheme } from '@/lib/themeContext';
+import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
@@ -551,8 +552,9 @@ function WorkspaceContent() {
     }
   }
   const [selectedPersona, setSelectedPersona] = useState<string>('architect');
+  const [advisorySuggestions, setAdvisorySuggestions] = useState<string[]>([]);
   
-  const { suggestions, dynamicPlaceholder } = React.useMemo(() => {
+  const { suggestions: baseSuggestions, dynamicPlaceholder } = React.useMemo(() => {
     if (!activeDiagram) return { suggestions: [], dynamicPlaceholder: 'Select a diagram first...' };
 
     const name = String(activeDiagram?.name || '').toLowerCase();
@@ -802,6 +804,13 @@ function WorkspaceContent() {
       dynamicPlaceholder: `e.g., Add API Gateway or Security Gate to ${diagName}...`
     };
   }, [activeDiagram, activeVersion?.xml_content, selectedPersona, currentLanguage]);
+  
+  const suggestions = React.useMemo(() => {
+    if (advisorySuggestions.length > 0) {
+      return [...advisorySuggestions, ...baseSuggestions.filter(s => !advisorySuggestions.includes(s))];
+    }
+    return baseSuggestions;
+  }, [advisorySuggestions, baseSuggestions]);
   
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
   // v1 Canvas & Edit States (Inspired by AI Studio Blueprint Canvas)
@@ -1233,6 +1242,7 @@ function WorkspaceContent() {
   // Loading & Layout View Mode States
   const [isLoadingDiagrams, setIsLoadingDiagrams] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isChatThinking, setIsChatThinking] = useState(false);
   const [aiStepTelemetry, setAiStepTelemetry] = useState<string | null>(null);
   const [layoutPreset, setLayoutPreset] = useState<'detailed' | 'clean' | 'lucid' | 'obsidian' | 'vendor'>('detailed');
   const [isLiveFlowEnabled, setIsLiveFlowEnabled] = useState(false);
@@ -1981,7 +1991,7 @@ function WorkspaceContent() {
     }
   };
 
-  // Mock AI Generation Loop (Phase 2 Mock, to be replaced by Gemini in Phase 5)
+  // Gemini Enterprise AI Architecture Advisory & Refinement Handler
   async function handleSendPrompt(e: React.FormEvent) {
     e.preventDefault();
     if (!promptInput.trim() || !activeDiagram) return;
@@ -2001,27 +2011,67 @@ function WorkspaceContent() {
     };
     setChatMessages(prev => [...prev, userMessage]);
     
-    setIsGenerating(true);
-    
     try {
-      // Call the AI generate API (refinement mode)
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-        body: JSON.stringify({
-          prompt: userPrompt,
-          diagramId: activeDiagram.id,
-          architectureType: activeDiagram.architecture_type || selectedArchType
-        })
-      });
+      // 🧠 1. Classify User Intent: Architecture Question/Advisory vs Topology Mutation
+      const intentResult = classifyChatIntent(userPrompt);
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || errorData.details || 'Failed to generate diagram refinement');
+      if (intentResult.intent === 'question') {
+        setIsChatThinking(true);
+        // 🏛️ Informational / Advisory Q&A: Answer truthfully in writing without modifying the diagram XML
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
+          body: JSON.stringify({
+            prompt: userPrompt,
+            diagramName: activeDiagram.name,
+            architectureType: activeDiagram.architecture_type || selectedArchType,
+            xmlContent: displayedVersion?.xml_content || activeVersion?.xml_content || '',
+            businessUsecase: displayedVersion?.business_usecase || activeVersion?.business_usecase || '',
+            technicalUsecase: displayedVersion?.technical_usecase || activeVersion?.technical_usecase || '',
+            conversationHistory: chatMessages.slice(-6)
+          })
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Failed to process architecture advisory query');
+        }
+
+        const chatData = await res.json();
+        const aiMessage: ChatMessage = {
+          id: Math.random().toString(),
+          sender: 'ai',
+          text: chatData.answer || chatData.summary || 'Architecture advisory generated.',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setChatMessages(prev => [...prev, aiMessage]);
+
+        // If actionable suggestions were returned, update dynamic suggestions
+        if (chatData.suggestions && Array.isArray(chatData.suggestions) && chatData.suggestions.length > 0) {
+          const newSuggestionPrompts = chatData.suggestions.map((s: any) => s.actionPrompt || s.label);
+          setAdvisorySuggestions(newSuggestionPrompts);
+        }
+      } else {
+        setIsGenerating(true);
+        // 🛠️ Structural Architecture Mutation: Call /api/generate to synthesize or refine the diagram
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
+          body: JSON.stringify({
+            prompt: userPrompt,
+            diagramId: activeDiagram.id,
+            architectureType: activeDiagram.architecture_type || selectedArchType
+          })
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || errorData.details || 'Failed to generate diagram refinement');
+        }
+        
+        // Reload diagram details to get the new version and update the chat/timeline
+        await loadDiagramDetails(activeDiagram.id);
       }
-      
-      // Reload diagram details to get the new version and update the chat/timeline
-      await loadDiagramDetails(activeDiagram.id);
     } catch (err: unknown) {
       console.error('AI generation error:', err);
       const errMsg = err instanceof Error ? err.message : 'An unexpected error occurred during diagram generation.';
@@ -2035,6 +2085,7 @@ function WorkspaceContent() {
       setChatMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsGenerating(false);
+      setIsChatThinking(false);
     }
   };
 
@@ -6207,8 +6258,9 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 displayedVersion={displayedVersion}
                 selectedArchType={selectedArchType}
                 suggestions={suggestions}
+                chatMessages={chatMessages}
                 promptInput={promptInput}
-                isGenerating={isGenerating}
+                isGenerating={isGenerating || isChatThinking}
                 isAuditing={isAuditing}
                 costEstimateMonthly={costReport.totalMonthlyCostUsd}
                 dynamicPlaceholder={dynamicPlaceholder}
@@ -7453,8 +7505,9 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     displayedVersion={displayedVersion}
                     selectedArchType={selectedArchType}
                     suggestions={suggestions}
+                    chatMessages={chatMessages}
                     promptInput={promptInput}
-                    isGenerating={isGenerating}
+                    isGenerating={isGenerating || isChatThinking}
                     isAuditing={isAuditing}
                     costEstimateMonthly={costReport.totalMonthlyCostUsd}
                     dynamicPlaceholder={dynamicPlaceholder}

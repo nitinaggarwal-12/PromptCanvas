@@ -24,6 +24,7 @@ import {
 import { Diagram, DiagramVersion } from '@/lib/db';
 import { computeVersionDiff } from '@/lib/versionDiff';
 import { parseXmlNodesAndEdges } from '@/lib/graph/xmlNodesParser';
+import { renderMarkdownToHtml } from '@/lib/renderMarkdown';
 
 export interface ChatMessage {
   id: string;
@@ -197,7 +198,14 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
                     </span>
                     <span className={`text-[9px] font-mono ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>{msg.timestamp}</span>
                   </div>
-                  <p>{msg.text}</p>
+                  {msg.sender === 'ai' ? (
+                    <div 
+                      className="prose prose-sm max-w-none text-xs leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(msg.text, theme) }}
+                    />
+                  ) : (
+                    <p className="whitespace-pre-wrap">{msg.text}</p>
+                  )}
                 </div>
               ))}
               <div ref={historyEndRef} />

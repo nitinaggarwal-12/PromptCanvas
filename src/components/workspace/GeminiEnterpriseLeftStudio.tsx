@@ -23,6 +23,15 @@ import {
   Maximize2
 } from 'lucide-react';
 import { Diagram, DiagramVersion } from '@/lib/db';
+import { renderMarkdownToHtml } from '@/lib/renderMarkdown';
+
+export interface ChatMessage {
+  id: string;
+  sender: 'user' | 'ai';
+  text: string;
+  timestamp: string;
+  versionNumber?: number;
+}
 
 interface GeminiEnterpriseLeftStudioProps {
   activeDiagram: Diagram | null;
@@ -30,6 +39,7 @@ interface GeminiEnterpriseLeftStudioProps {
   displayedVersion: DiagramVersion | null;
   selectedArchType: string;
   suggestions: string[];
+  chatMessages?: ChatMessage[];
   promptInput: string;
   isGenerating: boolean;
   isAuditing: boolean;
@@ -56,6 +66,7 @@ export const GeminiEnterpriseLeftStudio: React.FC<GeminiEnterpriseLeftStudioProp
   displayedVersion,
   selectedArchType,
   suggestions,
+  chatMessages = [],
   promptInput,
   isGenerating,
   isAuditing,
@@ -75,12 +86,26 @@ export const GeminiEnterpriseLeftStudio: React.FC<GeminiEnterpriseLeftStudioProp
 }) => {
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [isToolsExpanded, setIsToolsExpanded] = useState(true);
+  const [isQaResponseExpanded, setIsQaResponseExpanded] = useState(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const qaRef = useRef<HTMLDivElement>(null);
   const isLight = theme === 'light';
 
   const versions = activeDiagram?.versions || [];
   const currentVer = activeVersion || displayedVersion || (versions.length > 0 ? versions[versions.length - 1] : null);
   const realPrompt = currentVer?.prompt || versions[0]?.prompt || "Multi-tier enterprise architecture on Google Cloud";
+
+  // Find latest AI response if any
+  const aiMessages = chatMessages.filter(m => m.sender === 'ai');
+  const latestAiMessage = aiMessages.length > 0 ? aiMessages[aiMessages.length - 1] : null;
+  const userQuestions = chatMessages.filter(m => m.sender === 'user');
+  const latestUserQuestion = userQuestions.length > 0 ? userQuestions[userQuestions.length - 1] : null;
+
+  React.useEffect(() => {
+    if (latestAiMessage && qaRef.current) {
+      qaRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [latestAiMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -219,6 +244,76 @@ export const GeminiEnterpriseLeftStudio: React.FC<GeminiEnterpriseLeftStudioProp
           </div>
         )}
       </div>
+
+      {/* 🏛️ ARCHITECTURE Q&A & ADVISORY RESPONSE (Truthful text analysis without diagram modification) */}
+      {(latestAiMessage || (isGenerating && latestUserQuestion)) && (
+        <div ref={qaRef} className={`p-3 rounded-2xl border space-y-2 transition-all ${
+          isLight
+            ? 'bg-white border-teal-300/80 shadow-md ring-1 ring-teal-500/20'
+            : 'bg-[#080D1A] border-teal-500/50 shadow-lg ring-1 ring-teal-400/20'
+        }`}>
+          <div 
+            onClick={() => setIsQaResponseExpanded(!isQaResponseExpanded)}
+            className="flex items-center justify-between cursor-pointer border-b pb-2 border-slate-200 dark:border-slate-800"
+          >
+            <div className="flex items-center gap-1.5">
+              <div className="w-5 h-5 rounded-lg bg-teal-500/20 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                <Sparkles className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <span className="text-[11px] font-black tracking-wide block text-teal-600 dark:text-teal-400">
+                  Architecture Q&amp;A Advisory
+                </span>
+                <span className="text-[9px] font-mono text-slate-400 block -mt-0.5">
+                  Truthful Analysis • 0 Diagram Mutations
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full border ${
+                isLight ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-emerald-950/60 text-emerald-300 border-emerald-800'
+              }`}>
+                Advisory Active
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isQaResponseExpanded ? 'rotate-180' : ''}`} />
+            </div>
+          </div>
+
+          {isQaResponseExpanded && (
+            <div className="space-y-2.5 pt-1">
+              {latestUserQuestion && (
+                <div className={`p-2 rounded-xl text-xs font-medium border ${
+                  isLight ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-slate-900/80 border-slate-800 text-slate-200'
+                }`}>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">
+                    Your Question:
+                  </div>
+                  <p className="line-clamp-2 italic">&ldquo;{latestUserQuestion.text}&rdquo;</p>
+                </div>
+              )}
+
+              {isGenerating ? (
+                <div className={`p-3 rounded-xl border flex items-center gap-2.5 text-xs ${
+                  isLight ? 'bg-teal-50/50 border-teal-200 text-teal-900' : 'bg-teal-950/20 border-teal-800/60 text-teal-200'
+                }`}>
+                  <Loader2 className="w-4 h-4 animate-spin text-teal-500 shrink-0" />
+                  <span>Evaluating diagram topology against GCP Well-Architected Framework...</span>
+                </div>
+              ) : latestAiMessage ? (
+                <div className={`p-2.5 rounded-xl border max-h-64 overflow-y-auto custom-scrollbar text-xs leading-relaxed ${
+                  isLight ? 'bg-slate-50/80 border-slate-200' : 'bg-slate-950/60 border-slate-800'
+                }`}>
+                  <div 
+                    className="prose prose-sm max-w-none text-xs"
+                    dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(latestAiMessage.text, theme) }}
+                  />
+                </div>
+              ) : null}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 3. ARCHITECTURAL UTILITIES GRID */}
       <div className={`p-3 rounded-2xl border space-y-2 transition-all ${
