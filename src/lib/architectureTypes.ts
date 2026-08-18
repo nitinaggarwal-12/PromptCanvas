@@ -497,7 +497,7 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('p5-dat-p-08') || id.includes('dataops_anomaly') || id.includes('dataops')) return 'dataops_anomaly_detection';
   if (id.includes('p5-gov-p-09') || id.includes('bcdr_multi_region') || id.includes('multi_region_dr') || id.includes('multi_cloud_dr')) return 'tech_multi_region_dr';
   if (id.includes('ind-fintech-01') || id.includes('ind-fintech-03') || id.includes('financial_advising') || id.includes('fintech') || id.includes('payments')) return 'tech_fintech_payments';
-  if (id.includes('ind-mfg-02') || id.includes('equipment_optimization')) return 'smart_factory_iot';
+  if (id.includes('ind-mfg-02') || id.includes('equipment_optimization') || id.includes('supply_chain')) return 'tech_supply_chain';
   if (id.includes('ind-pharma-03') || id.includes('ind-pharma-01') || id.includes('pharma_genomics') || id.includes('genomics') || id.includes('clinical')) return 'tech_genomics_clinical';
   if (id.includes('ind-retail-04') || id.includes('omnichannel_ecommerce') || id.includes('ecommerce') || id.includes('retail')) return 'ecommerce_retail';
   if (id.includes('ind-mfg-05') || id.includes('smart_manufacturing') || id.includes('smart_factory') || id.includes('manufacturing_iot')) return 'smart_factory_iot';
@@ -614,7 +614,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactMultimodalIngestionXml();
   } else if (id === 'tech_genomics_clinical' || id.includes('genomics') || id.includes('clinical')) {
     xml = getExactGenomicsClinicalXml();
-  } else if (id === 'tech_supply_chain' || id.includes('supply_chain') || id.includes('logistics')) {
+  } else if (id === 'tech_supply_chain' || id.includes('supply_chain') || id.includes('logistics') || id.includes('ind-mfg-02') || id.includes('equipment_optimization')) {
     xml = getExactSupplyChainXml();
   } else if (id === 'tech_eval_safety' || id.includes('eval_safety') || id.includes('benchmarking')) {
     xml = getExactEvalSafetyXml();

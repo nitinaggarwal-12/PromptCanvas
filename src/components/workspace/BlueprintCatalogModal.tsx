@@ -118,34 +118,34 @@ export const BLUEPRINT_CATALOG_ITEMS: BlueprintCatalogItem[] = [
   {
     id: 'supply_chain',
     number: 39,
-    name: 'End-to-End Smart Supply Chain & Industrial Predictive Logistics',
+    name: 'Google Cloud Industry 4.0: Smart Factory IoT & Predictive Maintenance Architecture',
     category: 'Industry 4.0',
-    icon: '🚢',
+    icon: '🏭',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Global manufacturing, logistics, and multi-tier supplier visibility; Real-time supply chain disruption forecasting.',
-    whereToUse: 'Supply Chain Operations Blueprint; ERP Modernization Deck; Global Logistics Steering Committee.',
+    whenToUse: 'GDC Edge sensor aggregation, MQTT/OPC-UA protocols, Cloud Dataflow streaming, Bigtable time series, Vertex AI anomaly fusing, and Looker OEE Cockpit.',
+    whereToUse: 'Smart Factory IoT Specification; OT/IT Convergence Blueprint; Plant Reliability & Maintenance RFC.',
     personas: {
-      creator: 'Principal Industrial Solutions Architect / Supply Chain Lead',
-      consumer: 'Chief Supply Chain Officer (CSCO), VP Logistics, Plant Operations Directors'
+      creator: 'Principal Industrial Solutions Architect / OT-IT Convergence Lead',
+      consumer: 'VP Manufacturing Operations, Plant Managers, SRE Reliability Engineers'
     },
-    bigTechStandpoint: 'Edge-to-cloud IoT ingestion via OPC-UA/MQTT, Pub/Sub streaming ETL, BigQuery Manufacturing Engine, and closed-loop actuator feedback.',
-    consultingStandpoint: 'End-to-end supply chain control tower providing OTIF (On-Time In-Full) tracking and automated ERP work orders.'
+    bigTechStandpoint: 'GDC Edge Gateway, MQTT/OPC-UA, Cloud Dataflow Streaming, Bigtable Time Series, Vertex AI Multimodal Anomaly & Looker OEE Cockpit.',
+    consultingStandpoint: 'Predicts bearing and spindle failure 14 days before breakdown while automating SAP PM work orders.'
   },
   {
     id: 'ecommerce_retail',
     number: 41,
-    name: 'Multi-Region Omnichannel E-Commerce & Retail Microservices',
+    name: 'Google Cloud Retail Platform: OmniChannel Intelligent Commerce & Retail AI Architecture',
     category: 'Industry 4.0',
-    icon: '🛒',
+    icon: '🛍️',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'High-throughput retail peak events (Black Friday / Cyber Monday); Omnichannel inventory synchronization and personalized recommendations.',
+    whenToUse: 'Vertex AI Search & Recommendations for Retail, AlloyDB AI pgvector product discovery, Gemini 3.7 agentic concierge, and multi-region Cloud Spanner cart.',
     whereToUse: 'Retail Digital Architecture Blueprint; E-Commerce Replatforming RFC; PCI-DSS Audit Package.',
     personas: {
       creator: 'Principal E-Commerce Architect / Lead Retail Systems Engineer',
       consumer: 'Chief Digital Officer, VP E-Commerce Engineering, Head of Merchandising'
     },
-    bigTechStandpoint: 'Global Cloud Spanner multi-region ACID consistency, Vertex AI Personalized Search, and Apigee Enterprise Gateway.',
-    consultingStandpoint: 'Omnichannel cart conversion engine maximizing GMV with sub-100ms checkout and real-time inventory reservation.'
+    bigTechStandpoint: 'Vertex AI Search & Recommendations, AlloyDB pgvector Discovery, Gemini 3.7 Agentic Concierge, Multimodal Vision, Multi-Region Cloud Spanner Cart, Pub/Sub Event Bus & BigQuery Lakehouse.',
+    consultingStandpoint: 'Sub-10ms visual similarity lookup, omnichannel cart sync, and real-time conversion funnel telemetry.'
   },
   {
     id: 'smart_factory_iot',

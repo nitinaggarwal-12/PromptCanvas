@@ -12,7 +12,8 @@ import {
   getExactBpmnWorkflowXml,
   getExactThreatModelingStrideXml,
   getExactDataLineageXml,
-  getExactHealthcareFhirXml
+  getExactHealthcareFhirXml,
+  getExactSupplyChainXml
 } from '../../src/lib/newEnterpriseReferenceXmls';
 import { getDefaultXmlForArchitecture, normalizeArchitectureId } from '../../src/lib/architectureTypes';
 
@@ -23,9 +24,10 @@ describe('New Enterprise Master Builders Integrity Test Suite', () => {
     { id: 'enterprise_agent_runtime', getter: getExactEnterpriseAgentRuntimeXml, expectedKey: 'GKE Autopilot' },
     { id: 'ai_agent_approval_workflow', getter: getExactAiAgentApprovalWorkflowXml, expectedKey: 'Binary Authorization' },
     { id: 'incident_triage_swimlane', getter: getExactIncidentTriageSwimlaneXml, expectedKey: 'Gemini Cloud Assist' },
-    { id: 'ecommerce_retail', getter: getExactEcommerceRetailXml, expectedKey: 'Vertex AI Search for Retail' },
+    { id: 'ecommerce_retail', getter: getExactEcommerceRetailXml, expectedKey: 'Vertex AI Retail Search' },
     { id: 'hr_talent_ai', getter: getExactHrTalentAiXml, expectedKey: 'Document AI' },
     { id: 'smart_factory_iot', getter: getExactSmartFactoryIotXml, expectedKey: 'Google Distributed Cloud' },
+    { id: 'tech_supply_chain', getter: getExactSupplyChainXml, expectedKey: 'Google Distributed Cloud' },
     { id: 'c4_component_lld', getter: getExactC4ComponentLldXml, expectedKey: 'C4 MODEL LEVEL 3' },
     { id: 'bpmn_process_workflow', getter: getExactBpmnWorkflowXml, expectedKey: 'BPMN 2.0' },
     { id: 'threat_modeling_stride', getter: getExactThreatModelingStrideXml, expectedKey: 'STRIDE' },
