@@ -115,6 +115,30 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
               ? `Describe your system requirements for ${projectName}, select a pre-verified enterprise blueprint, or start with a blank canvas.`
               : 'Describe your system in natural language, select a pre-verified enterprise blueprint, or start with a blank canvas.'}
           </p>
+
+          {/* Visual 3-Step Lifecycle Explanation Strip */}
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[11px] font-bold py-1">
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border shadow-sm ${
+              isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-slate-900/80 border-slate-800 text-slate-300'
+            }`}>
+              <span className="w-4 h-4 rounded-full bg-teal-500 text-slate-950 font-black text-[10px] flex items-center justify-center">1</span>
+              <span>Describe Requirements or Pick Blueprint</span>
+            </div>
+            <span className={isLight ? 'text-slate-400' : 'text-slate-600'}>➔</span>
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border shadow-sm ${
+              isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-slate-900/80 border-slate-800 text-slate-300'
+            }`}>
+              <span className="w-4 h-4 rounded-full bg-indigo-500 text-white font-black text-[10px] flex items-center justify-center">2</span>
+              <span>Gemini AI Compiles Auto-Saved Architecture (v1)</span>
+            </div>
+            <span className={isLight ? 'text-slate-400' : 'text-slate-600'}>➔</span>
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border shadow-sm ${
+              isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-slate-900/80 border-slate-800 text-slate-300'
+            }`}>
+              <span className="w-4 h-4 rounded-full bg-purple-500 text-white font-black text-[10px] flex items-center justify-center">3</span>
+              <span>Chat to Refine (v1→v2), Edit in Draw.io &amp; Export</span>
+            </div>
+          </div>
         </div>
 
         {/* 3 Main Choice Cards Grid - Vertically Compressed */}

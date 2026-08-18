@@ -183,6 +183,13 @@ export const GeminiEnterpriseLeftStudio: React.FC<GeminiEnterpriseLeftStudioProp
               {isGenerating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
             </button>
           </div>
+
+          <div className={`text-[10px] px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 font-medium border ${
+            isLight ? 'bg-indigo-50/70 border-indigo-200 text-indigo-800' : 'bg-indigo-950/40 border-indigo-800/60 text-indigo-300'
+          }`}>
+            <Sparkles className="w-3 h-3 text-indigo-500 shrink-0" />
+            <span>Iterate: Enter any change to create <strong>v{(currentVer?.version_number || 1) + 1}</strong> with full rollback in history.</span>
+          </div>
         </form>
 
         {/* 1-Click Suggestions Chips */}
