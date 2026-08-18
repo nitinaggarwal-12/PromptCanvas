@@ -6896,10 +6896,10 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 />
               ) : isInlineEditorOpen ? (
                 /* Phase 2: In-Place Inline Editor */
-                <div className="w-full h-full relative z-10 flex flex-col bg-bg-dark animate-fade-in">
+                <div className={`w-full h-full relative z-10 flex flex-col animate-fade-in ${canvasTheme === 'light' ? 'bg-[#F8FAFC]' : 'bg-bg-dark'}`}>
                   <iframe
                     ref={iframeRef}
-                    src="https://embed.diagrams.net/?embed=1&ui=dark&spin=1&proto=json&pv=0"
+                    src={`https://embed.diagrams.net/?embed=1&ui=${canvasTheme === 'light' ? 'kennedy&dark=0' : 'dark&dark=1'}&spin=1&proto=json&pv=0`}
                     className="w-full h-full border-0 bg-transparent"
                     title="In-Place Draw.io Editor"
                   />

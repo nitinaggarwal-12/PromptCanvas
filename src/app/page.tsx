@@ -791,8 +791,7 @@ export default function LandingPage() {
 
           <div className="mt-8 flex justify-center">
             <Link
-              href={user ? "/workspace?new=true" : "#"}
-              onClick={handleBuildDiagramClick}
+              href="/workspace?new=true"
               className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Launch Free Workspace</span>
