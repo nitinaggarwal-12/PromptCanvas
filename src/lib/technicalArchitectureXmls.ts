@@ -59,31 +59,31 @@ const TECH_XML_MCP_CONTEXT_GATEWAY = getExactMcpContextGatewayXml();
 // 1.8 Product Plan - Logical AI Config (Tenant Architecture) (Logical AI Config | To-Be)
 const TECH_XML_LOGICAL_AI_CONFIG_TENANT = getExactLogicalAiConfigTenantXml();
 
-// 1.9 WBS 2.2.2 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)
+// 1.9 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)
 const TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG = getExactHubAndSpokeAgentConfigXml();
 
-// 1.10 WBS 3.1.4: Unified Data Governance & Access Control Architecture (To-Be State)
+// 1.10 Unified Data Governance & Access Control Architecture (To-Be State)
 const TECH_XML_UNIFIED_DATA_GOVERNANCE = getExactUnifiedDataGovernanceXml();
 
-// 1.11 WBS 3.1.7: DataOps & Anomaly Detection Architecture (To-Be State)
+// 1.11 DataOps & Anomaly Detection Architecture (To-Be State)
 const TECH_XML_DATAOPS_ANOMALY_DETECTION = getExactDataOpsAnomalyDetectionXml();
 
-// 1.12 WBS 6.2.1: Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State)
+// 1.12 Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State)
 const TECH_XML_GOLIVE_WARROOM_RUNBOOK = getExactGoLiveWarRoomRunbookXml();
 
-// 1.13 WBS 6.1.1: Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)
+// 1.13 Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)
 const TECH_XML_ENTERPRISE_SRE_OBSERVABILITY = getExactEnterpriseSreObservabilityXml();
 
-// 1.14 WBS 5.1.6: Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase)
+// 1.14 Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase)
 const TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP = getExactDataResidencySovereignMapXml();
 
-// 1.15 WBS 5.1.4: Federated IAM & SSO Architecture (To-Be State)
+// 1.15 Federated IAM & SSO Architecture (To-Be State)
 const TECH_XML_FEDERATED_IAM_SSO = getExactFederatedIamSsoXml();
 
-// 1.16 WBS 4.3.1: AI TRiSM Security Guardrail Pipeline System (Bespoke Security Solution)
+// 1.16 AI TRiSM Security Guardrail Pipeline System (Bespoke Security Solution)
 const TECH_XML_AI_TRISM_GUARDRAILS = getExactAiTrismGuardrailsXml();
 
-// 1.17 WBS 4.2.1: Micro-Frontend & UI Architecture (Client Implementation - To-Be State)
+// 1.17 Micro-Frontend & UI Architecture (Client Implementation - To-Be State)
 const TECH_XML_MICRO_FRONTENDS = getExactMicroFrontendsXml();
 
 
@@ -284,7 +284,7 @@ const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
         <mxCell id="1" parent="0" />
 
         <!-- TOP MAIN TITLE BANNER -->
-        <mxCell id="title_banner" value="&lt;b&gt;McKinsey-Grade C4 Enterprise System Context &amp;amp; Container Model (L1 &amp;amp; L2) - 1340px Widescreen Boardroom Layout&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxCell id="title_banner" value="&lt;b&gt;Enterprise C4 System Context &amp;amp; Container Model (L1 &amp;amp; L2) - 1340px Widescreen Boardroom Layout&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="30" y="10" width="1320" height="28" as="geometry" />
         </mxCell>
 
@@ -717,7 +717,7 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
         <mxCell id="1" parent="0" />
 
         <!-- TOP EXECUTIVE BOARDROOM TITLE BANNER & SUBTITLE -->
-        <mxCell id="title_banner" value="&lt;b&gt;McKinsey-Grade Enterprise Event-Driven Microservices Architecture (EDA) Blueprint&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxCell id="title_banner" value="&lt;b&gt;Enterprise Event-Driven Microservices Architecture (EDA) Blueprint&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="30" y="8" width="1320" height="26" as="geometry" />
         </mxCell>
         <mxCell id="title_sub" value="Designed for Widescreen Boardroom Presentation Layout (1340px width)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#475569;" vertex="1" parent="1">

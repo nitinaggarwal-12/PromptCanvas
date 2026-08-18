@@ -1,7 +1,7 @@
 export function buildValueStreamMapXml(): string {
   return `
 <mxfile host="app.diagrams.net" modified="2026-08-10T16:00:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="vsm_ai_architecture_delivery" name="WBS 1.2.1: Enterprise AI Architecture &amp; Delivery Value Stream Map (VSM)">
+  <diagram id="vsm_ai_architecture_delivery" name="Enterprise AI Architecture &amp; Delivery Value Stream Map (VSM)">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -13,7 +13,7 @@ export function buildValueStreamMapXml(): string {
         </mxCell>
 
         <!-- TOP TITLE & BANNER -->
-        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:15px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;WBS 1.2.1: Enterprise AI Architecture &amp;amp; Delivery Value Stream Map (VSM)&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:normal;&quot;&gt;(Executive &amp;amp; Business Strategy / Flow Efficiency Category)&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:15px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;Enterprise AI Architecture &amp;amp; Delivery Value Stream Map (VSM)&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:normal;&quot;&gt;(Executive &amp;amp; Business Strategy / Flow Efficiency Category)&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="15" width="560" height="52" as="geometry" />
         </mxCell>
 

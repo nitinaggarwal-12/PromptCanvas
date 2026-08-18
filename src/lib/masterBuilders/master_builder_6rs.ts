@@ -1,5 +1,5 @@
 /**
- * 🏛️ BLUEPRINT: WBS 0.1.2: 6Rs MIGRATION DISPOSITION MATRIX (ASSESSMENT PHASE)
+ * 🏛️ BLUEPRINT: 6Rs MIGRATION DISPOSITION MATRIX (ASSESSMENT PHASE)
  * Exact High-Fidelity Replica of 6Rs Migration Disposition Matrix Architecture Blueprint
  * Vertically compressed into 1600x720 widescreen viewport with zero dead space.
  */
@@ -7,19 +7,19 @@
 export function build6RsMigrationMatrixXml(): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
-  <diagram id="six_rs_migration_matrix" name="WBS 0.1.2: 6Rs Migration Disposition Matrix">
+  <diagram id="six_rs_migration_matrix" name="6Rs Migration Disposition Matrix">
     <mxGraphModel dx="1600" dy="720" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="720" background="#FFFFFF">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- ================= MAIN HEADER ================= -->
-        <mxCell id="hdr_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 0.1.2: 6Rs Migration Disposition Matrix (Assessment Phase)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+        <mxCell id="hdr_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;font-family:sans-serif;&quot;&gt;6Rs Migration Disposition Matrix (Assessment Phase)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="30" y="10" width="700" height="26" as="geometry"/>
         </mxCell>
 
         <!-- ================= TOP-LEFT METADATA CARD (COMPRESSED) ================= -->
-        <mxCell id="meta_card" value="&lt;div style=&quot;line-height:14px;font-size:9.5px;color:#334155;text-align:left;font-family:sans-serif;&quot;&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;GCAF Pillar:&lt;/b&gt; Cost Optimization &amp;amp; Operational Excellence &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#0F172A;&quot;&gt;Phase:&lt;/b&gt; Phase 0: Assessment &amp;amp; Planning&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Persona:&lt;/b&gt; 4. Cloud Infrastructure Lead &amp;amp; Data Architect &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#0F172A;&quot;&gt;Target Audience:&lt;/b&gt; C-Suite, PMO, Migration Teams&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Prerequisites:&lt;/b&gt; Legacy Data &amp;amp; System Dependency Map (WBS 0.1.1)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.2;align=left;verticalAlign=middle;spacingLeft=10;arcSize=4;" vertex="1" parent="1">
+        <mxCell id="meta_card" value="&lt;div style=&quot;line-height:14px;font-size:9.5px;color:#334155;text-align:left;font-family:sans-serif;&quot;&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;GCAF Pillar:&lt;/b&gt; Cost Optimization &amp;amp; Operational Excellence &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#0F172A;&quot;&gt;Phase:&lt;/b&gt; Phase 0: Assessment &amp;amp; Planning&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Persona:&lt;/b&gt; 4. Cloud Infrastructure Lead &amp;amp; Data Architect &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#0F172A;&quot;&gt;Target Audience:&lt;/b&gt; C-Suite, PMO, Migration Teams&lt;br&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Prerequisites:&lt;/b&gt; Legacy Data &amp;amp; System Dependency Map ()&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.2;align=left;verticalAlign=middle;spacingLeft=10;arcSize=4;" vertex="1" parent="1">
           <mxGeometry x="30" y="40" width="460" height="64" as="geometry"/>
         </mxCell>
 

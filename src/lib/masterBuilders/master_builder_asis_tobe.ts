@@ -1,7 +1,7 @@
 export function buildAsIsToBeProcessFlowXml(): string {
   return `
 <mxfile host="app.diagrams.net" modified="2026-08-10T16:35:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="asis_vs_tobe_process_flow" name="WBS 0.1.1: As-Is vs. To-Be Process &amp; Architecture Flow">
+  <diagram id="asis_vs_tobe_process_flow" name="As-Is vs. To-Be Process &amp; Architecture Flow">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -15,7 +15,7 @@ export function buildAsIsToBeProcessFlowXml(): string {
         <!-- ========================================================================= -->
         <!-- TOP TITLE & GCAF HEADER BANNER (Full Width: X: 20 to 1540) -->
         <!-- ========================================================================= -->
-        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:16px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;WBS 0.1.1: Enterprise Architecture &amp;amp; Process Modernization Flow (As-Is vs. To-Be)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:normal;&quot;&gt;On-Premises Monolithic Legacy to Google Cloud Lakehouse &amp;amp; Gemini Enterprise Cognitive Architecture&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=16;" vertex="1" parent="1">
+        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:16px;color:#0F172A;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;Enterprise Architecture &amp;amp; Process Modernization Flow (As-Is vs. To-Be)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:normal;&quot;&gt;On-Premises Monolithic Legacy to Google Cloud Lakehouse &amp;amp; Gemini Enterprise Cognitive Architecture&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=16;" vertex="1" parent="1">
           <mxGeometry x="20" y="15" width="840" height="56" as="geometry" />
         </mxCell>
 

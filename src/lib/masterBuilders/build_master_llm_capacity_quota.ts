@@ -1,330 +1,195 @@
 export function buildLlmCapacityQuotaXml(): string {
   return `<mxfile host="embed.diagrams.net">
   <diagram id="llm_capacity_quota_management" name="Comprehensive Topology for (LLM) Capacity Quota Management (P5-AI-L-05)">
-    <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1340" pageHeight="640" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- ==================== TOP TITLE BANNER ==================== -->
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:24px;color:#0F172A;&quot;&gt;Comprehensive Topology for (LLM) Capacity Quota Management&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="10" width="1280" height="34" as="geometry"/>
+        <mxCell id="main_title_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="700" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;LLM Capacity &amp;amp; Quota Management Topology (P5-AI-L-05)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Multi-Region Inference Routing • Distributed Rate Limiting • SRE Observability&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="18" width="670" height="50" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== LEFT INGRESS & CLOUD INFRASTRUCTURE ==================== -->
+
+        <!-- ==================== LEFT: CONSUMER APPS & CLOUD INFRASTRUCTURE ==================== -->
         
-        <!-- Consumer Applications Icon -->
-        <mxCell id="card_consumer_apps" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:26px;&quot;&gt;💻📱&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;Consumer&lt;br&gt;Applications&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="25" y="225" width="75" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- Main Cloud Infrastructure Container (Spans x = 115 .. 970) -->
-        <mxCell id="box_cloud_infra" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="115" y="55" width="855" height="545" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_cloud_infra" value="&lt;table style=&quot;width:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:20px;font-size:14px;&quot;&gt;🌐&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#475569;&quot;&gt;Cloud Infrastructure&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="125" y="60" width="200" height="22" as="geometry"/>
+        <!-- Consumer Applications Card -->
+        <mxCell id="card_consumer_apps" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:28px;&quot;&gt;💻📱&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Consumer Apps&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#64748B;&quot;&gt;Web, Mobile &amp;amp; Internal APIs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="270" width="120" height="110" as="geometry"/>
         </mxCell>
 
         <!-- Ingress API Calls Arrow -->
-        <mxCell id="e_apps_gateway" value="API calls" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=7.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="95" y="255" as="sourcePoint"/>
-            <mxPoint x="135" y="255" as="targetPoint"/>
-          </mxGeometry>
+        <mxCell id="e_apps_gateway" value="API Calls" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;padding=2;" edge="1" parent="1" source="card_consumer_apps" target="card_edge_gateway">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Main Cloud Infrastructure Container (Spans x = 180 .. 1120) -->
+        <mxCell id="box_cloud_infra" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="180" y="90" width="940" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_cloud_infra" value="🌐 &lt;b style=&quot;font-size:13px;color:#1E293B;&quot;&gt;Google Cloud Infrastructure — High Availability LLM Gateway Plane&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="195" y="98" width="500" height="24" as="geometry"/>
         </mxCell>
 
         <!-- Edge API Gateway -->
-        <mxCell id="card_edge_gateway" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🚪&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;Edge API&lt;br&gt;Gateway&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#475569;line-height:1.2;padding-top:2px;&quot;&gt;(e.g., Apigee or custom GKE Gateway). Initial security, authenticates applications&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="135" y="200" width="75" height="110" as="geometry"/>
+        <mxCell id="card_edge_gateway" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;🚪&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Apigee / GKE&lt;br&gt;API Gateway&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;line-height:1.25;padding-top:4px;&quot;&gt;JWT Auth • TLS 1.3&lt;br&gt;WAF Cloud Armor&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="200" y="260" width="115" height="130" as="geometry"/>
         </mxCell>
 
-        <!-- Per-Application / User Rate Limiting Header -->
-        <mxCell id="lbl_rate_limit_hdr" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Per-Application/User&lt;br&gt;Rate Limiting&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="220" y="85" width="115" height="22" as="geometry"/>
+        <!-- Quota Management Service Container -->
+        <mxCell id="box_quota_section" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="345" y="140" width="165" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_rate_limit_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#1E40AF;&quot;&gt;⚡ Quota &amp;amp; Rate Limiter&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="350" y="146" width="155" height="22" as="geometry"/>
         </mxCell>
 
-        <!-- Top Distributed Cache (Redis) -->
-        <mxCell id="card_redis_top" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🛢️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#991B1B;&quot;&gt;Distributed Cache&lt;br&gt;(e.g., Redis)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="235" y="112" width="85" height="42" as="geometry"/>
-        </mxCell>
-        <mxCell id="desc_redis_top" value="&lt;div style=&quot;font-size:6.5px;color:#475569;text-align:center;line-height:1.2;&quot;&gt;Tracks and enforces rate limits (e.g. requests per minute, tokens per user/application)&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="220" y="156" width="115" height="38" as="geometry"/>
+        <!-- Top Distributed Cache (Redis Tier 1) -->
+        <mxCell id="card_redis_top" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🛢️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#991B1B;&quot;&gt;Memorystore Redis&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;padding-top:2px;&quot;&gt;Token Bucket Rate Limiter&lt;br&gt;Requests / Min / App&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="360" y="180" width="135" height="85" as="geometry"/>
         </mxCell>
 
-        <!-- Quota Management Service Box -->
-        <mxCell id="card_quota_service" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;⚙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;Quota&lt;br&gt;Management&lt;br&gt;Service&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#475569;&quot;&gt;(e.g., Redis)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="235" y="200" width="85" height="110" as="geometry"/>
+        <!-- Quota Management Service Core Box -->
+        <mxCell id="card_quota_service" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;⚙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Quota Governor&lt;br&gt;Microservice&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;line-height:1.25;padding-top:4px;&quot;&gt;Dynamic Priority Queue&lt;br&gt;Pre-flight Token Estimation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="360" y="280" width="135" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- Bottom Distributed Cache (Redis) -->
-        <mxCell id="card_redis_btm" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🛢️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#991B1B;&quot;&gt;Distributed Cache&lt;br&gt;(e.g., Redis)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="235" y="420" width="85" height="42" as="geometry"/>
-        </mxCell>
-        <mxCell id="desc_redis_btm" value="&lt;div style=&quot;font-size:6.5px;color:#475569;text-align:center;line-height:1.2;&quot;&gt;Tracks &amp;amp; and rate limits (e. requests per minute, tokens per user/application)&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="220" y="365" width="115" height="48" as="geometry"/>
+        <!-- Bottom Distributed Cache (Redis Tier 2) -->
+        <mxCell id="card_redis_btm" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🛢️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#991B1B;&quot;&gt;Quota Budget Store&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;padding-top:2px;&quot;&gt;Monthly Token Allocations&lt;br&gt;Burst Credit Throttle&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="360" y="410" width="135" height="85" as="geometry"/>
         </mxCell>
 
         <!-- Edge Gateway -> Quota Service Connector -->
-        <mxCell id="e_gw_quota" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="210" y="255" as="sourcePoint"/>
-            <mxPoint x="235" y="255" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
+        <mxCell id="e_gw_quota" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="card_edge_gateway" target="card_quota_service"/>
 
         <!-- Quota Service <-> Redis Connectors -->
-        <mxCell id="e_quota_redis_top" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="277" y="200" as="sourcePoint"/>
-            <mxPoint x="277" y="154" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_quota_redis_btm" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="277" y="310" as="sourcePoint"/>
-            <mxPoint x="277" y="420" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
+        <mxCell id="e_quota_redis_top" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1" source="card_quota_service" target="card_redis_top"/>
+        <mxCell id="e_quota_redis_btm" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1" source="card_quota_service" target="card_redis_btm"/>
+
 
         <!-- Cross-Region Load Balancer -->
-        <mxCell id="card_cslb" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;⚖️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cross-Region&lt;br&gt;Load Balancer&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#475569;&quot;&gt;(e.g., Google Cloud Load Balancing)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="345" y="215" width="85" height="80" as="geometry"/>
+        <mxCell id="card_cslb" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;⚖️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Cloud Global LB&lt;br&gt;(Cross-Region)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;line-height:1.25;padding-top:4px;&quot;&gt;Health Check Sensing&lt;br&gt;Capacity Aware Routing&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="535" y="270" width="125" height="110" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e_quota_cslb" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="320" y="255" as="sourcePoint"/>
-            <mxPoint x="345" y="255" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
+        <mxCell id="e_quota_cslb" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="card_quota_service" target="card_cslb"/>
 
 
-        <!-- ==================== CENTER: MULTI-REGION MANAGED GKE CLUSTERS ==================== -->
+        <!-- ==================== MULTI-REGION MANAGED GKE CLUSTERS ==================== -->
 
         <!-- Region 1: us-central1 Container -->
-        <mxCell id="box_region1" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="450" y="90" width="200" height="195" as="geometry"/>
+        <mxCell id="box_region1" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="690" y="140" width="220" height="235" as="geometry"/>
         </mxCell>
-        <mxCell id="hdr_region1" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;🌐 Region 1 (e.g., us-central1)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="458" y="92" width="180" height="18" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="box_gke_cluster1" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="460" y="112" width="180" height="165" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_gke1" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;☸️ Managed GKE Inference Cluster&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="466" y="115" width="170" height="16" as="geometry"/>
+        <mxCell id="hdr_region1" value="&lt;b style=&quot;font-size:10px;color:#1E40AF;&quot;&gt;🌐 Region 1 (us-central1)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="700" y="145" width="200" height="20" as="geometry"/>
         </mxCell>
 
         <!-- LLM Serving Pod 1 -->
-        <mxCell id="card_pod1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:18px;font-size:12px;text-align:center;&quot;&gt;🧊&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;LLM serving Pod&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;(e.g., running vLLM, TGI)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="470" y="136" width="160" height="42" as="geometry"/>
+        <mxCell id="card_pod1" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;&quot;&gt;🧊 LLM Serving Pods (vLLM)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Continuous Batching Engine&lt;br&gt;• KV-Cache PagedAttention&lt;br&gt;• Autoscaling HPA on P99 Latency&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="700" y="170" width="200" height="90" as="geometry"/>
         </mxCell>
 
         <!-- Vertex AI FinOps Agent 1 -->
-        <mxCell id="card_finops_agent1" value="&lt;b style=&quot;font-size:7px;color:#166534;&quot;&gt;🤖 Vertex AI FinOps Agent&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="495" y="195" width="130" height="26" as="geometry"/>
+        <mxCell id="card_finops_agent1" value="&lt;b style=&quot;font-size:9px;color:#166534;&quot;&gt;🤖 Vertex AI FinOps Sidecar Agent&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#15803D;&quot;&gt;Real-time Prompt Token Telemetry&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="700" y="270" width="200" height="42" as="geometry"/>
         </mxCell>
-        <mxCell id="e_pod_agent1" value="" style="edgeStyle=none;html=1;strokeColor=#16A34A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1" source="card_pod1" target="card_finops_agent1"/>
 
-        <!-- Hardware Acceleration Badges 1 -->
-        <mxCell id="badge_gpu1" value="&lt;span style=&quot;font-size:6.5px;font-weight:bold;color:#047857;&quot;&gt;🟩 NVIDIA GPUs&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="466" y="248" width="75" height="18" as="geometry"/>
-        </mxCell>
-        <mxCell id="badge_tpu1" value="&lt;span style=&quot;font-size:6.5px;font-weight:bold;color:#047857;&quot;&gt;🟩 TPUs&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="555" y="248" width="75" height="18" as="geometry"/>
+        <mxCell id="badge_hw1" value="&lt;span style=&quot;font-size:8px;font-weight:bold;color:#047857;&quot;&gt;🟩 NVIDIA H100 GPUs • TPU v5e&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="700" y="322" width="200" height="24" as="geometry"/>
         </mxCell>
 
 
         <!-- Region 2: europe-west1 Container -->
-        <mxCell id="box_region2" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="450" y="325" width="200" height="195" as="geometry"/>
+        <mxCell id="box_region2" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="690" y="395" width="220" height="235" as="geometry"/>
         </mxCell>
-        <mxCell id="hdr_region2" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;🌐 Region 2 (e.g., europe-west1)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="458" y="327" width="180" height="18" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="box_gke_cluster2" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="460" y="347" width="180" height="165" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_gke2" value="&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;☸️ Managed GKE Inference Cluster&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="466" y="350" width="170" height="16" as="geometry"/>
+        <mxCell id="hdr_region2" value="&lt;b style=&quot;font-size:10px;color:#1E40AF;&quot;&gt;🌐 Region 2 (europe-west1)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="700" y="400" width="200" height="20" as="geometry"/>
         </mxCell>
 
         <!-- LLM Serving Pod 2 -->
-        <mxCell id="card_pod2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:18px;font-size:12px;text-align:center;&quot;&gt;🧊&lt;/td&gt;&lt;td&gt;&lt;b style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;LLM serving Pods&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;(e.g., running vLLM or TGI)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="470" y="371" width="160" height="42" as="geometry"/>
+        <mxCell id="card_pod2" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;&quot;&gt;🧊 LLM Serving Pods (TGI)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• FlashAttention 2 Inference&lt;br&gt;• Speculative Decoding Runtime&lt;br&gt;• Dynamic GPU Multi-Tenancy&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="700" y="425" width="200" height="90" as="geometry"/>
         </mxCell>
 
         <!-- Vertex AI FinOps Agent 2 -->
-        <mxCell id="card_finops_agent2" value="&lt;b style=&quot;font-size:7px;color:#166534;&quot;&gt;🤖 Vertex AI FinOps Agent&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="495" y="430" width="130" height="26" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_pod_agent2" value="" style="edgeStyle=none;html=1;strokeColor=#16A34A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1" source="card_pod2" target="card_finops_agent2"/>
-
-        <!-- Hardware Acceleration Badges 2 -->
-        <mxCell id="badge_gpu2" value="&lt;span style=&quot;font-size:6.5px;font-weight:bold;color:#047857;&quot;&gt;🟩 NVIDIA GPUs&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="466" y="483" width="75" height="18" as="geometry"/>
-        </mxCell>
-        <mxCell id="badge_tpu2" value="&lt;span style=&quot;font-size:6.5px;font-weight:bold;color:#047857;&quot;&gt;🟩 TPUs&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="555" y="483" width="75" height="18" as="geometry"/>
+        <mxCell id="card_finops_agent2" value="&lt;b style=&quot;font-size:9px;color:#166534;&quot;&gt;🤖 Vertex AI FinOps Sidecar Agent&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#15803D;&quot;&gt;Real-time Prompt Token Telemetry&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="700" y="525" width="200" height="42" as="geometry"/>
         </mxCell>
 
-        <!-- Dynamic Routing Connectors from LB to Region 1 & Region 2 -->
-        <mxCell id="e_lb_reg1" value="Dynamic Traffic&lt;br&gt;routing on region" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=6.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="430" y="240" as="sourcePoint"/>
-            <mxPoint x="450" y="180" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="440" y="240"/>
-              <mxPoint x="440" y="180"/>
-            </Array>
-          </mxGeometry>
+        <mxCell id="badge_hw2" value="&lt;span style=&quot;font-size:8px;font-weight:bold;color:#047857;&quot;&gt;🟩 NVIDIA L4 GPUs • TPU v5p&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="700" y="577" width="200" height="24" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e_lb_reg2" value="Dynamic traffic routing&lt;br&gt;regional availability,&lt;br&gt;capacity, and latency&lt;br&gt;health checks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=6.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="430" y="270" as="sourcePoint"/>
-            <mxPoint x="450" y="415" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="440" y="270"/>
-              <mxPoint x="440" y="415"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
+        <!-- Routing Connectors from LB -->
+        <mxCell id="e_lb_reg1" value="Primary Route" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="card_cslb" target="box_region1"/>
+        <mxCell id="e_lb_reg2" value="Failover / Spillage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="card_cslb" target="box_region2"/>
 
 
-        <!-- ==================== CENTER-RIGHT: FINOPS COST & USAGE HUB ==================== -->
-
-        <!-- Intercept Usage Metrics Callout -->
-        <mxCell id="card_usage_metrics_note" value="&lt;div style=&quot;font-size:6.5px;color:#0F172A;line-height:1.3;&quot;&gt;&lt;b&gt;Intercept Usage metrics:&lt;/b&gt;&lt;br&gt;• Intercept inference requests&lt;br&gt;• Prompt and completion token counts&lt;br&gt;• Model types used&lt;br&gt;• Request latency&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#FEF9C3;strokeColor=#CA8A04;strokeWidth=1;align=left;verticalAlign=top;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="670" y="85" width="145" height="75" as="geometry"/>
+        <!-- ==================== FINOPS COST & USAGE HUB ==================== -->
+        <!-- FinOps API Gateway & BigQuery -->
+        <mxCell id="card_finops_gateway" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;📊&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI FinOps&lt;br&gt;Telemetry Ingestion&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud Pub/Sub Streaming Bus&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="935" y="170" width="165" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- Vertex AI FinOps API Gateway -->
-        <mxCell id="card_finops_gateway" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🌐&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI FinOps&lt;br&gt;API Gateway&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="690" y="200" width="105" height="75" as="geometry"/>
+        <mxCell id="card_finops_db" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;&quot;&gt;BigQuery FinOps Store&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Partitioned by Tenant/Prompt&lt;br&gt;Token Cost Attribution&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="935" y="280" width="165" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- FinOps Cost Reporting Database (BigQuery) -->
-        <mxCell id="card_finops_db" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;FinOps Cost&lt;br&gt;Reporting Database&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;color:#475569;&quot;&gt;(e.g., BigQuery)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="690" y="315" width="105" height="75" as="geometry"/>
+        <!-- Looker FinOps Card (LIGHT THEME - NO BLACK BACKGROUND) -->
+        <mxCell id="card_looker_finops" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #BFDBFE;padding-bottom:2px;&quot;&gt;📈 Looker FinOps Cost Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Token Usage&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;font-weight:bold;color:#2563EB;&quot;&gt;42.8M&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Cost / Team&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;font-weight:bold;color:#16A34A;&quot;&gt;$1.42/k&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Budget Alert&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;font-weight:bold;color:#0284C7;&quot;&gt;Optimal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="935" y="395" width="165" height="100" as="geometry"/>
         </mxCell>
 
-        <!-- FinOps Cost Dashboard (Looker) Card -->
-        <mxCell id="card_looker_finops" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:6px;color:#FFFFFF;background:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;padding:2px;font-weight:bold;border-bottom:1px solid #334155;&quot;&gt;FinOps Cost Dashboard (Looker)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📊&lt;br&gt;&lt;span style=&quot;font-size:5.5px;&quot;&gt;Token Usage&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📈&lt;br&gt;&lt;span style=&quot;font-size:5.5px;&quot;&gt;Cost / Team&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;🟢&lt;br&gt;&lt;span style=&quot;font-size:5.5px;&quot;&gt;Budget Alert&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="670" y="420" width="145" height="85" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_finops_dash" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;FinOps Cost Dashboard&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;font-weight:normal;&quot;&gt;(e.g., Looker)&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="670" y="508" width="145" height="20" as="geometry"/>
-        </mxCell>
-
-        <!-- Connectors into FinOps Hub -->
-        <mxCell id="e_pod1_finops_gw" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="640" y="160" as="sourcePoint"/>
-            <mxPoint x="690" y="220" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_pod2_finops_gw" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="640" y="390" as="sourcePoint"/>
-            <mxPoint x="690" y="255" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_agent_finops_gw" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="625" y="443" as="sourcePoint"/>
-            <mxPoint x="690" y="443" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
+        <!-- FinOps Telemetry Connectors -->
+        <mxCell id="e_pod1_finops" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1" source="card_finops_agent1" target="card_finops_gateway"/>
+        <mxCell id="e_pod2_finops" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1" source="card_finops_agent2" target="card_finops_gateway"/>
         <mxCell id="e_finops_gw_db" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_finops_gateway" target="card_finops_db"/>
         <mxCell id="e_finops_db_dash" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_finops_db" target="card_looker_finops"/>
 
 
-        <!-- ==================== RIGHT: SRE DASHBOARDS & MONITORING ==================== -->
+        <!-- ==================== RIGHT: SRE OBSERVABILITY DASHBOARDS (LIGHT CLEAN THEME) ==================== -->
         <mxCell id="box_sre_dashboards" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="980" y="55" width="330" height="545" as="geometry"/>
+          <mxGeometry x="1150" y="90" width="420" height="740" as="geometry"/>
         </mxCell>
-        <mxCell id="hdr_sre" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;SRE Dashboards &amp;amp; Monitoring&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Real-time Dashboards powered by&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="990" y="60" width="310" height="26" as="geometry"/>
-        </mxCell>
-
-        <!-- Cloud Monitoring & Cloud Logging Icons Header -->
-        <mxCell id="badge_cloud_mon" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:18px;font-size:13px;text-align:center;&quot;&gt;📈&lt;/td&gt;&lt;td style=&quot;font-weight:bold;&quot;&gt;Cloud&lt;br&gt;Monitoring&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="1015" y="90" width="115" height="34" as="geometry"/>
-        </mxCell>
-        <mxCell id="badge_cloud_log" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:18px;font-size:13px;text-align:center;&quot;&gt;📑&lt;/td&gt;&lt;td style=&quot;font-weight:bold;&quot;&gt;Cloud&lt;br&gt;Logging&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="90" width="115" height="34" as="geometry"/>
+        <mxCell id="hdr_sre" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;📊 SRE Observability &amp;amp; Capacity Governance&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Real-Time Telemetry powered by Cloud Monitoring &amp;amp; Cloud Logging&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="98" width="400" height="30" as="geometry"/>
         </mxCell>
 
-        <!-- 4 SRE Dark Dashboard Cards Stacked -->
+        <!-- 4 SRE Clean Light Dashboard Cards Stacked -->
 
         <!-- 1. Rate Limiting Dashboard -->
-        <mxCell id="sre_dash1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;color:#FFFFFF;background:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:7.5px;font-weight:bold;color:#E2E8F0;padding:2px 4px;border-bottom:1px solid #334155;&quot;&gt;Rate Limiting Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📊&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Method Requests (RPS)&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📈&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Top Consumers&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📉&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Quota Utilization/App&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="990" y="135" width="310" height="95" as="geometry"/>
+        <mxCell id="sre_dash1" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #E2E8F0;padding-bottom:3px;&quot;&gt;🚦 Rate Limiting &amp;amp; Throttling Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Total RPS&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#2563EB;&quot;&gt;14,250&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Top Consumers&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#0F172A;&quot;&gt;BU-Finance&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Quota Drops&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;0.00%&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="140" width="390" height="105" as="geometry"/>
         </mxCell>
 
         <!-- 2. Cross-Region LB Dashboard -->
-        <mxCell id="sre_dash2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;color:#FFFFFF;background:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:7.5px;font-weight:bold;color:#E2E8F0;padding:2px 4px;border-bottom:1px solid #334155;&quot;&gt;Cross-Region LB Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;🌐&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Traffic Distribution&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;⏱️&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Call-to-Call Latency&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;🟢&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Backend Health&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="990" y="245" width="310" height="95" as="geometry"/>
+        <mxCell id="sre_dash2" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #E2E8F0;padding-bottom:3px;&quot;&gt;🌐 Global Traffic &amp;amp; Failover Routing&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;us-central1&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#0284C7;&quot;&gt;68.4%&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;europe-west1&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#0284C7;&quot;&gt;31.6%&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;P95 Latency&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;42ms&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="260" width="390" height="105" as="geometry"/>
         </mxCell>
 
         <!-- 3. LLM Inference Health Dashboard -->
-        <mxCell id="sre_dash3" value="&lt;table style=&quot;width:100%;border-collapse:collapse;color:#FFFFFF;background:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:7.5px;font-weight:bold;color:#E2E8F0;padding:2px 4px;border-bottom:1px solid #334155;&quot;&gt;LLM Inference Health Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📈&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Model P99 Latency&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;⚡&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;GPU Utilization&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;⚠️&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Error Rates by Model&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="990" y="355" width="310" height="95" as="geometry"/>
+        <mxCell id="sre_dash3" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #E2E8F0;padding-bottom:3px;&quot;&gt;⚡ GPU / TPU Cluster Health &amp;amp; P99 Latency&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;TTFT (First Token)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;180ms&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;GPU Utilization&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#2563EB;&quot;&gt;84.2%&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Error Rate&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;&amp;lt; 0.01%&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="380" width="390" height="105" as="geometry"/>
         </mxCell>
 
         <!-- 4. Capacity Planning Dashboard -->
-        <mxCell id="sre_dash4" value="&lt;table style=&quot;width:100%;border-collapse:collapse;color:#FFFFFF;background:#0F172A;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:7.5px;font-weight:bold;color:#E2E8F0;padding:2px 4px;border-bottom:1px solid #334155;&quot;&gt;Capacity Planning Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;🗄️&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Active TPU/GPU Alloc.&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;⏳&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Pending Request Queues&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📈&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#94A3B8;&quot;&gt;Capacity Forecasts&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="990" y="465" width="310" height="95" as="geometry"/>
+        <mxCell id="sre_dash4" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #E2E8F0;padding-bottom:3px;&quot;&gt;🗄️ Capacity Forecast &amp;amp; Quota Reservation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Reserved TPUs&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#0F172A;&quot;&gt;128 Nodes&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Queue Wait&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;0 ms&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;30-Day Forecast&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#2563EB;&quot;&gt;+18% Growth&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="500" width="390" height="105" as="geometry"/>
         </mxCell>
 
-        <!-- Dashed Connectors from FinOps API Gateway into SRE Dashboards -->
-        <mxCell id="e_gw_sre1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="795" y="225" as="sourcePoint"/>
-            <mxPoint x="990" y="180" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_gw_sre2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="795" y="240" as="sourcePoint"/>
-            <mxPoint x="990" y="290" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_gw_sre3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="795" y="255" as="sourcePoint"/>
-            <mxPoint x="990" y="400" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_gw_sre4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="795" y="270" as="sourcePoint"/>
-            <mxPoint x="990" y="510" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
+        <!-- SRE Telemetry Connector -->
+        <mxCell id="e_gw_sre" value="Real-time Metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;fontSize=8.5;fontColor=#2563EB;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="card_finops_gateway" target="box_sre_dashboards"/>
 
-        <!-- ==================== BOTTOM LEFT LEGEND ==================== -->
-        <mxCell id="box_legend" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="495" width="130" height="95" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_legend_title" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="497" width="80" height="14" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg_item1" value="&lt;span style=&quot;font-size:6.5px;color:#2563EB;font-weight:bold;&quot;&gt;➡ Request Traffic&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="513" width="120" height="14" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg_item2" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;font-weight:bold;&quot;&gt;➡ Monitoring Data&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="530" width="120" height="14" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg_item3" value="&lt;span style=&quot;font-size:6.5px;color:#0F172A;font-weight:bold;&quot;&gt;⇢ Monitoring Data&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="547" width="120" height="14" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg_item4" value="&lt;span style=&quot;font-size:6.5px;color:#16A34A;font-weight:bold;&quot;&gt;➡ FinOps Reporting&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="564" width="120" height="14" as="geometry"/>
+
+        <!-- ==================== FOOTER LEGEND ==================== -->
+        <mxCell id="legend_box" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;LLM Quota Fabric:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;API Ingress &amp;amp; Rate Limits&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;Memorystore Redis Cache&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;FinOps Token Attribution&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟣 &lt;b&gt;Multi-Region GKE Clusters&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Google Cloud SRE&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="870" width="1540" height="38" as="geometry"/>
         </mxCell>
 
       </root>

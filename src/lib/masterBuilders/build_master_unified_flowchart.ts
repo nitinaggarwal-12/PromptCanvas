@@ -1,5 +1,5 @@
 /**
- * 🏛️ MASTER BUILDER: Unified End-to-End Enterprise Flowchart Architecture (WBS 1.1.0)
+ * 🏛️ MASTER BUILDER: Unified End-to-End Enterprise Flowchart Architecture ()
  * 
  * FULL-WIDTH 4-COLUMN BALANCED DISTRIBUTION (NO EMPTY RIGHT SIDE, ZERO CLUTTER):
  * - Col 1 (x=80..350):   Client Portal [1] &bull; SIEM Reject [2b] &bull; Vector Search [4] &bull; Chunking Agent [8]
@@ -35,7 +35,9 @@ const SVG_TELEMETRY = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w
 const SVG_PAGERDUTY = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M12%2022c1.1%200%202-.9%202-2h-4c0%201.1.9%202%202%202zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5%201.5v.68C7.64%205.36%206%207.92%206%2011v5l-2%202v1h16v-1l-2-2z%22%2F%3E%3C%2Fsvg%3E";
 
 export function buildMasterUnifiedFlowchartXml(): string {
-  return `<mxGraphModel dx="1460" dy="1420" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1460" pageHeight="1420" background="#FFFFFF">
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="unified_flowchart" name="Unified Enterprise Flowchart">
+    <mxGraphModel dx="1460" dy="1420" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1460" pageHeight="1420" background="#FFFFFF">
   <root>
     <mxCell id="0" />
     <mxCell id="1" parent="0" />
@@ -440,5 +442,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
     </mxCell>
 
   </root>
-</mxGraphModel>`;
+</mxGraphModel>
+  </diagram>
+</mxfile>`;
 }

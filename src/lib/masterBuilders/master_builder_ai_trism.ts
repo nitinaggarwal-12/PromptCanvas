@@ -3,432 +3,241 @@ import * as path from 'path';
 
 export function buildAiTrismGuardrailsXml(): string {
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="ai_trism_guardrails" name="WBS 4.3.1: AI TRiSM Security Guardrail Pipeline System">
+  <diagram id="ai_trism_guardrails" name="AI TRiSM Security Guardrail Pipeline System">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- TOP TITLE BANNER -->
-        <mxCell id="main_title_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="16" width="620" height="64" as="geometry"/>
+        <!-- ==================== TOP TITLE BANNER ==================== -->
+        <mxCell id="main_title_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="700" height="64" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:20px;color:#0F172A;&quot;&gt;WBS 4.3.1: AI TRiSM Security Guardrail Pipeline System&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:15px;color:#334155;&quot;&gt;(Bespoke Security Solution)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="20" width="590" height="56" as="geometry"/>
-        </mxCell>
-
-        <!-- TOP RIGHT METADATA TABLE -->
-        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;width:32%;&quot;&gt;Diagram Name:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;width:68%;&quot;&gt;AI TRiSM Security Guardrail&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;GCAF Pillar:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;Security, Privacy &amp;amp; Compliance&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Architecture State:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;To-Be&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Persona (Creator):&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;6. DevSecOps&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Target Audience:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;CISO, AI Sec&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Effort:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;High&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Tech Stack:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;Cloud DLP, Vertex AI Guardrails&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Compliance:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;EU AI Act&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Update Freq:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;Continuously&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;vertical-align:top;&quot;&gt;Classification Reasoning:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;line-height:1.2;&quot;&gt;High (Likely due to critical dependency for threat defense, data sovereignty, and regulatory compliance)&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Blueprint ID:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;font-family:monospace;color:#0284C7;font-weight:bold;&quot;&gt;tech_ai_trism_guardrails&lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="16" width="480" height="270" as="geometry"/>
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:20px;color:#0F172A;&quot;&gt;AI TRiSM Security Guardrail Pipeline System&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;color:#334155;font-weight:600;&quot;&gt;Trust, Risk &amp;amp; Security Management • Bidirectional Ingress/Egress Guardrails&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="20" width="670" height="56" as="geometry"/>
         </mxCell>
 
-        <!-- LEFT CONTAINER: AGENT RUNTIME PLATFORM (PREREQUISITE) -->
-        <mxCell id="agent_runtime_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#64748B;strokeWidth=1.5;arcSize=4;" vertex="1" parent="1">
-          <mxGeometry x="30" y="195" width="200" height="535" as="geometry"/>
+        <!-- ==================== LEFT CONTAINER: AGENT RUNTIME PLATFORM (PREREQUISITE) ==================== -->
+        <mxCell id="agent_runtime_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="110" width="230" height="745" as="geometry"/>
         </mxCell>
-        <mxCell id="agent_runtime_title" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;Agent Runtime Platform&lt;br&gt;(Prerequisite)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="200" width="190" height="35" as="geometry"/>
-        </mxCell>
-
-        <!-- Inner Agent Card -->
-        <mxCell id="agent_runtime_inner" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="42" y="250" width="176" height="395" as="geometry"/>
+        <mxCell id="agent_runtime_title" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;🤖 Agent Runtime Platform&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Prerequisite Core Runtime Context&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="118" width="220" height="34" as="geometry"/>
         </mxCell>
 
-        <!-- Top Agent Group Icons -->
-        <mxCell id="ag_top_icon1" value="⚙️🤖" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="58" y="280" width="60" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="ag_top_icon2" value="⚡👥" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="138" y="280" width="60" height="60" as="geometry"/>
+        <!-- Supervisor Agent Card -->
+        <mxCell id="card_agent_supervisor" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🧠 Reasoning Supervisor&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:4px;&quot;&gt;• Chain-of-Thought Planner&lt;br&gt;• Intent Classification Engine&lt;br&gt;• Memory &amp;amp; Session State Store&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="45" y="165" width="200" height="110" as="geometry"/>
         </mxCell>
 
-        <mxCell id="ag_ellipsis1" value="•••" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;fontColor=#64748B;" vertex="1" parent="1">
-          <mxGeometry x="100" y="380" width="60" height="24" as="geometry"/>
+        <!-- Worker Subagents Grid -->
+        <mxCell id="card_agent_workers" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;⚡ Specialized Tool Agents&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:4px;&quot;&gt;• SQL Analytics Agent&lt;br&gt;• API &amp;amp; Retrieval Agent (RAG)&lt;br&gt;• Code Generation &amp;amp; Exec&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="45" y="295" width="200" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- Bottom Agent Group Icons -->
-        <mxCell id="ag_bot_icon1" value="⚙️🤖" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="58" y="445" width="60" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="ag_bot_icon2" value="⚡👥" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="138" y="445" width="60" height="60" as="geometry"/>
+        <!-- Core Application Context Card -->
+        <mxCell id="card_agent_context" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E293B;&quot;&gt;Core Application Context&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#475569;padding-top:4px;&quot;&gt;Microservices Mesh • MCP Host&lt;br&gt;LangGraph / Vertex Agent Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="425" width="200" height="75" as="geometry"/>
         </mxCell>
 
-        <mxCell id="ag_core_label" value="&lt;span style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Core Application Logic,&lt;br&gt;Agent Execution Context&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="575" width="170" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="ag_ellipsis2" value="•••" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;fontColor=#64748B;" vertex="1" parent="1">
-          <mxGeometry x="100" y="665" width="60" height="24" as="geometry"/>
+        <!-- Model Response Consumer Box -->
+        <mxCell id="card_agent_sink" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#7E22CE;&quot;&gt;📥 Verified Output Consumer&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:4px;&quot;&gt;• Sanitized Response Stream&lt;br&gt;• Audit Log Verification Token&lt;br&gt;• User Client Presentation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="45" y="660" width="200" height="110" as="geometry"/>
         </mxCell>
 
-        <!-- MAIN GCP PLATFORM CONTAINER -->
-        <mxCell id="gcp_platform_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
-          <mxGeometry x="250" y="110" width="840" height="745" as="geometry"/>
+
+        <!-- ==================== MAIN GCP PLATFORM CONTAINER ==================== -->
+        <mxCell id="gcp_platform_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="280" y="110" width="810" height="745" as="geometry"/>
         </mxCell>
-        <mxCell id="gcp_platform_logo" value="🌐 &lt;b style=&quot;font-size:14px;color:#475569;&quot;&gt;Google Cloud Platform&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="265" y="120" width="260" height="30" as="geometry"/>
+        <mxCell id="gcp_platform_logo" value="🌐 &lt;b style=&quot;font-size:14px;color:#1E293B;&quot;&gt;Google Cloud Platform — Security Perimeter&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="295" y="118" width="400" height="26" as="geometry"/>
         </mxCell>
 
-        <!-- WBS 4.3.1 AI TRISM SECURITY GUARDRAIL PIPELINE SYSTEM CONTAINER -->
+        <!-- AI TRISM SECURITY GUARDRAIL PIPELINE SYSTEM CONTAINER -->
         <mxCell id="guardrail_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
-          <mxGeometry x="320" y="170" width="465" height="660" as="geometry"/>
+          <mxGeometry x="295" y="155" width="490" height="685" as="geometry"/>
         </mxCell>
-        <mxCell id="guardrail_title" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;WBS 4.3.1 AI TRiSM Security Guardrail Pipeline System&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="335" y="175" width="430" height="25" as="geometry"/>
+        <mxCell id="guardrail_title" value="&lt;b style=&quot;font-size:12.5px;color:#1D4ED8;&quot;&gt;🛡️ AI TRiSM Security Guardrail Pipeline System&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="310" y="160" width="450" height="25" as="geometry"/>
         </mxCell>
 
         <!-- INGRESS FLOW CONTAINER -->
-        <mxCell id="ingress_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;arcSize=4;" vertex="1" parent="1">
-          <mxGeometry x="335" y="205" width="435" height="365" as="geometry"/>
+        <mxCell id="ingress_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="310" y="190" width="460" height="375" as="geometry"/>
         </mxCell>
-        <mxCell id="ingress_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Ingress Flow&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="345" y="210" width="120" height="20" as="geometry"/>
+        <mxCell id="ingress_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;⬇️ Ingress Flow (Pre-Inference Sanitization)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="320" y="194" width="300" height="22" as="geometry"/>
         </mxCell>
 
         <!-- 1. Input Guardrail (Adversarial Check & Defense) -->
-        <mxCell id="input_guard_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="350" y="240" width="255" height="135" as="geometry"/>
-        </mxCell>
-        <mxCell id="input_guard_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Input Guardrail&lt;br&gt;(Adversarial Check &amp;amp; Defense)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="355" y="245" width="245" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="icon_vertex_input" value="✨&lt;br&gt;&lt;span style=&quot;font-size:9px;&quot;&gt;Vertex AI&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
-          <mxGeometry x="355" y="295" width="60" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="input_guard_text" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Vertex AI Guardrails / Custom Logic&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;line-height:1.3;&quot;&gt;• Check for prompt injection&lt;br&gt;• Jailbreaks&lt;br&gt;• Adversarial attacks&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="415" y="280" width="185" height="60" as="geometry"/>
+        <mxCell id="input_guard_card" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;✨ Vertex AI Model Armor / Input Guardrail&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:4px;&quot;&gt;• Prompt Injection &amp;amp; Jailbreak Detection&lt;br&gt;• Toxic Content &amp;amp; Malicious Payload Classifier&lt;br&gt;• System Prompt Leakage &amp;amp; Override Interceptor&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="325" y="222" width="280" height="120" as="geometry"/>
         </mxCell>
 
-        <!-- Blocked Threat Path alert icon -->
-        <mxCell id="threat_alert1" value="⚠️" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="640" y="325" width="25" height="25" as="geometry"/>
-        </mxCell>
-        <mxCell id="threat_alert2" value="⚠️" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="675" y="350" width="25" height="25" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_blocked_path" value="⚠️ &lt;b style=&quot;font-size:9.5px;color:#991B1B;&quot;&gt;Blocked Threat Path&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="430" y="405" width="150" height="20" as="geometry"/>
+        <!-- Blocked Threat Path callout -->
+        <mxCell id="lbl_blocked_path" value="&lt;b style=&quot;font-size:9.5px;color:#DC2626;&quot;&gt;⚠️ Blocked Threat Path&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#64748B;&quot;&gt;Auto-Quarantined &amp;amp; Dropped&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#F87171;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="615" y="222" width="145" height="50" as="geometry"/>
         </mxCell>
 
         <!-- 2. PII Scrubbing & Data Masking -->
-        <mxCell id="pii_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="350" y="435" width="255" height="115" as="geometry"/>
-        </mxCell>
-        <mxCell id="pii_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;PII Scrubbing &amp;amp;&lt;br&gt;Data Masking&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="415" y="440" width="185" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="icon_dlp" value="🛡️🔍&lt;br&gt;&lt;span style=&quot;font-size:8.5px;&quot;&gt;Cloud DLP&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="355" y="455" width="60" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="pii_desc" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Cloud DLP&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;line-height:1.2;&quot;&gt;Detects and replacements PII&lt;br&gt;(emails, names, dates, etc.)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="415" y="475" width="185" height="40" as="geometry"/>
+        <mxCell id="pii_card" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🔍 Cloud Sensitive Data Protection (DLP)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:4px;&quot;&gt;• Real-time PII Identification (SSN, Email, CC)&lt;br&gt;• Crypto-Tokenization &amp;amp; Synthetic Masking&lt;br&gt;• HIPAA &amp;amp; GDPR Compliance Redaction Gate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="325" y="365" width="280" height="120" as="geometry"/>
         </mxCell>
 
         <!-- 3. TRiSM Threat Logging & Alerting Engine Box -->
-        <mxCell id="trism_engine_box" value="&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;TRiSM Threat&lt;br&gt;Logging &amp;amp;&lt;br&gt;Alerting Engine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="625" y="450" width="125" height="110" as="geometry"/>
-        </mxCell>
-        <mxCell id="threat_alert_dlp" value="⚠️&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#DC2626;&quot;&gt;Audit&lt;br&gt;gRPC&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;" vertex="1" parent="1">
-          <mxGeometry x="605" y="475" width="40" height="35" as="geometry"/>
+        <mxCell id="trism_engine_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🚨 TRiSM Threat&lt;br&gt;Logging Engine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;padding-top:2px;&quot;&gt;Chronicle SIEM&lt;br&gt;Cloud Audit Logs&lt;br&gt;Pub/Sub Alert Bus&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="615" y="365" width="145" height="120" as="geometry"/>
         </mxCell>
 
         <!-- Connectors inside Ingress Flow -->
         <mxCell id="e_input_to_pii" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="input_guard_card" target="pii_card">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e_threats_top" value="Threats" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;strokeDashed=1;endArrow=classic;fontSize=9;fontColor=#DC2626;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="605" y="300" as="sourcePoint"/>
-            <mxPoint x="685" y="450" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="685" y="300"/>
-            </Array>
-          </mxGeometry>
+        <mxCell id="e_threats_top" value="Threat Alert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;strokeDashed=1;endArrow=classic;fontSize=8.5;fontColor=#DC2626;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="input_guard_card" target="lbl_blocked_path">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e_pii_audit_log" value="Audit logging" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;strokeDashed=1;endArrow=classic;fontSize=8.5;fontColor=#16A34A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="480" y="550" as="sourcePoint"/>
-            <mxPoint x="685" y="560" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="480" y="580"/>
-              <mxPoint x="685" y="580"/>
-            </Array>
-          </mxGeometry>
+        <mxCell id="e_blocked_to_trism" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.2;strokeDashed=1;endArrow=classic;" edge="1" parent="1" source="lbl_blocked_path" target="trism_engine_box">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-
-        <!-- EGRESS FLOW CONTAINER -->
-        <mxCell id="egress_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;arcSize=4;" vertex="1" parent="1">
-          <mxGeometry x="335" y="600" width="435" height="215" as="geometry"/>
-        </mxCell>
-        <mxCell id="egress_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Egress Flow&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="345" y="605" width="120" height="20" as="geometry"/>
-        </mxCell>
-
-        <!-- Output Filter Card -->
-        <mxCell id="output_filter_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="350" y="635" width="410" height="165" as="geometry"/>
-        </mxCell>
-        <mxCell id="output_filter_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Output Filter (hallucination&lt;br&gt;defense &amp;amp; safety check)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="380" y="640" width="220" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="icon_vertex_output" value="✨&lt;br&gt;&lt;span style=&quot;font-size:8.5px;&quot;&gt;Vertex AI&lt;br&gt;Guardrails&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
-          <mxGeometry x="355" y="695" width="70" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="output_filter_desc" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Vertex AI Guardrails&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;line-height:1.3;&quot;&gt;• Checks model responses for&lt;br&gt;• Hallucinations, offensive content&lt;br&gt;• PII leakage&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="430" y="685" width="190" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- Red PII Scrubbing badge inside Egress -->
-        <mxCell id="badge_pii_scrub" value="&lt;b style=&quot;color:#FFFFFF;font-size:10px;&quot;&gt;PII Scrubbing&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DC2626;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="640" y="695" width="105" height="32" as="geometry"/>
-        </mxCell>
-        <mxCell id="threat_alert_egress" value="⚠️" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="680" y="668" width="25" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Prompt Injection Defense Callout (Red Bubble) -->
-        <mxCell id="callout_prompt_inj" value="&lt;b style=&quot;color:#FFFFFF;font-size:10.5px;&quot;&gt;Prompt Injection&lt;br&gt;Defense&lt;/b&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.5;size=16;position=0.3;fillColor=#B91C1C;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="585" y="775" width="125" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- EXTERNAL AI MODELS & PROVIDERS -->
-        <mxCell id="ext_ai_models_box" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;External AI Models&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;(GCP Vertex AI, etc.)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="840" y="240" width="165" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="ext_provider_box" value="&lt;span style=&quot;font-size:11px;color:#0F172A;&quot;&gt;External provider&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="840" y="315" width="165" height="40" as="geometry"/>
-        </mxCell>
-
-        <!-- Connectors into External AI Models -->
-        <mxCell id="e_scrubbed_input" value="Scrubbed/&lt;br&gt;Masked&lt;br&gt;Agent Input" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="605" y="265" as="sourcePoint"/>
-            <mxPoint x="840" y="265" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_raw_output" value="Raw Model&lt;br&gt;Output" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelPosition=left;spacingRight=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="840" y="335" as="sourcePoint"/>
-            <mxPoint x="770" y="675" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="815" y="335"/>
-              <mxPoint x="815" y="675"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Raw Agent Input connector from Agent Runtime Platform -->
-        <mxCell id="e_agent_to_guardrail" value="Raw Agent Input&lt;br&gt;(Prompts/&lt;br&gt;Commands)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="230" y="325" as="sourcePoint"/>
-            <mxPoint x="350" y="325" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Scrubbed/Validated Model Output back to Agent Runtime Platform -->
-        <mxCell id="e_guardrail_to_agent" value="Scrubbed/&lt;br&gt;Validated&lt;br&gt;&lt;br&gt;Model&lt;br&gt;Output" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="350" y="718" as="sourcePoint"/>
-            <mxPoint x="130" y="645" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="230" y="718"/>
-              <mxPoint x="230" y="718"/>
-              <mxPoint x="130" y="718"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- LOOKER STUDIO (TRISM OBSERVABILITY DASHBOARD) -->
-        <mxCell id="looker_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=4;" vertex="1" parent="1">
-          <mxGeometry x="840" y="415" width="270" height="170" as="geometry"/>
-        </mxCell>
-        <mxCell id="looker_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Looker Studio&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;(TRiSM Observability Dashboard)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="850" y="420" width="250" height="30" as="geometry"/>
-        </mxCell>
-
-        <!-- Mini Dashboard Widgets -->
-        <mxCell id="looker_widgets_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="848" y="462" width="254" height="110" as="geometry"/>
-        </mxCell>
-        <mxCell id="looker_widgets_title" value="&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Widgets&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="852" y="465" width="60" height="15" as="geometry"/>
-        </mxCell>
-
-        <!-- Widget 1: PII Scrubbing Rates -->
-        <mxCell id="w1_box" value="&lt;div style=&quot;font-size:7.5px;color:#0F172A;font-weight:bold;margin-bottom:2px;&quot;&gt;PII Scrubbing&lt;br&gt;Rates&lt;/div&gt;
-&lt;div style=&quot;height:24px;display:flex;align-items:flex-end;gap:2px;justify-content:center;&quot;&gt;
-  &lt;div style=&quot;width:6px;height:12px;background:#3B82F6;&quot;&gt;&lt;/div&gt;
-  &lt;div style=&quot;width:6px;height:18px;background:#3B82F6;&quot;&gt;&lt;/div&gt;
-  &lt;div style=&quot;width:6px;height:10px;background:#3B82F6;&quot;&gt;&lt;/div&gt;
-  &lt;div style=&quot;width:6px;height:22px;background:#3B82F6;&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E2E8F0;align=center;verticalAlign=top;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="854" y="482" width="75" height="80" as="geometry"/>
-        </mxCell>
-
-        <!-- Widget 2: Threat Deflections -->
-        <mxCell id="w2_box" value="&lt;div style=&quot;font-size:7.5px;color:#0F172A;font-weight:bold;margin-bottom:2px;&quot;&gt;Threat&lt;br&gt;Deflections&lt;/div&gt;
-&lt;div style=&quot;height:24px;border-bottom:1px solid #CBD5E1;display:flex;align-items:center;justify-content:center;&quot;&gt;
-  &lt;span style=&quot;color:#DC2626;font-size:14px;&quot;&gt;📉&lt;/span&gt;
-&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E2E8F0;align=center;verticalAlign=top;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="937" y="482" width="75" height="80" as="geometry"/>
-        </mxCell>
-
-        <!-- Widget 3: Compliance Status -->
-        <mxCell id="w3_box" value="&lt;div style=&quot;font-size:7.5px;color:#0F172A;font-weight:bold;margin-bottom:2px;&quot;&gt;Compliance&lt;br&gt;Status&lt;/div&gt;
-&lt;div style=&quot;height:24px;border-bottom:1px solid #CBD5E1;display:flex;align-items:center;justify-content:center;&quot;&gt;
-  &lt;span style=&quot;color:#16A34A;font-size:14px;&quot;&gt;📈&lt;/span&gt;
-&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E2E8F0;align=center;verticalAlign=top;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="482" width="75" height="80" as="geometry"/>
-        </mxCell>
-
-        <!-- Connectors to/from Looker Studio & Threat Engine -->
-        <mxCell id="e_trism_to_looker" value="EU AI Act&lt;br&gt;Compliance&lt;br&gt;Engine" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="475" as="sourcePoint"/>
-            <mxPoint x="840" y="475" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_pull_compliance" value="Pull active&lt;br&gt;Compliance&lt;br&gt;Enforcement" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;strokeDashed=1;endArrow=classic;fontSize=8.5;fontColor=#16A34A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="840" y="550" as="sourcePoint"/>
-            <mxPoint x="750" y="550" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- BOTTOM CONFIGURATION & INFRASTRUCTURE CONTROLS -->
-        <mxCell id="cloud_iam_box" value="🛡️ 🌐 🔒&lt;br&gt;&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Cloud IAM, VPC-SC, Secret&lt;br&gt;Secret Manager&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="840" y="730" width="200" height="65" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="config_repo_box" value="⚙️📁&lt;br&gt;&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Config&lt;br&gt;Repository&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="898" y="635" width="85" height="55" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="e_sec_config" value="gRPC&lt;br&gt;Secure&lt;br&gt;Configuration&lt;br&gt;Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontColor=#7C3AED;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="898" y="660" as="sourcePoint"/>
-            <mxPoint x="770" y="660" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_iam_config" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="cloud_iam_box" target="config_repo_box">
+        <mxCell id="e_pii_audit_log" value="Audit Log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;strokeDashed=1;endArrow=classic;fontSize=8.5;fontColor=#16A34A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="pii_card" target="trism_engine_box">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- PERSONAS (RIGHT SIDE) -->
-        <!-- CISO & AI Sec Personas -->
-        <mxCell id="persona_ciso" value="👥🛡️&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;CISO &amp;amp; AI Sec&lt;br&gt;Personas&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
-          <mxGeometry x="1170" y="445" width="130" height="60" as="geometry"/>
+
+        <!-- EGRESS FLOW CONTAINER -->
+        <mxCell id="egress_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="310" y="580" width="460" height="245" as="geometry"/>
+        </mxCell>
+        <mxCell id="egress_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;⬆️ Egress Flow (Post-Inference Verification)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="320" y="585" width="320" height="22" as="geometry"/>
         </mxCell>
 
-        <!-- DevSecOps Persona -->
-        <mxCell id="git_icon" value="🐙&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;DevSecOps&lt;br&gt;(e.g., Git)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
-          <mxGeometry x="1035" y="625" width="80" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="persona_devsecops" value="👨‍💻&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;DevSecOps&lt;br&gt;Persona&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;(Creator)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
-          <mxGeometry x="1225" y="615" width="115" height="75" as="geometry"/>
+        <!-- Output Filter Card -->
+        <mxCell id="output_filter_card" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🛡️ Output Filter (Hallucination Defense &amp;amp; Safety)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:4px;&quot;&gt;• Vertex AI Grounding Citation &amp;amp; Faithfulness Scorer&lt;br&gt;• Toxic, Hate &amp;amp; Bias Output Classifier&lt;br&gt;• Reverse-PII De-anonymization &amp;amp; Data Leak Defense&lt;br&gt;• Enforced Policy Compliance (EU AI Act &amp;amp; NIST AI RMF)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="325" y="615" width="430" height="195" as="geometry"/>
         </mxCell>
 
-        <!-- Persona Connectors -->
-        <mxCell id="e_ciso_looker" value="Review Security&lt;br&gt;Posture" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;strokeDashed=1;endArrow=classic;startArrow=classic;fontSize=9;fontColor=#16A34A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1110" y="475" as="sourcePoint"/>
-            <mxPoint x="1170" y="475" as="targetPoint"/>
-          </mxGeometry>
+
+        <!-- ==================== EXTERNAL AI MODELS & CLOUD FOUNDATION ==================== -->
+        <!-- External AI Models Box -->
+        <mxCell id="ext_ai_models_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;✨ Vertex AI Foundation Models&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;padding-top:2px;&quot;&gt;Gemini 3.7 Pro / Flash (Zero-Data Retention)&lt;br&gt;Dedicated PSC Private Endpoint (VPC-SC)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="810" y="190" width="265" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="e_devsecops_ciso" value="Review Security&lt;br&gt;Posture &amp;amp; Compliance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;strokeDashed=1;endArrow=classic;fontSize=8.5;fontColor=#475569;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+
+        <!-- External Provider / Anthropic / PaLM Box -->
+        <mxCell id="ext_provider_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🌐 Multi-Model Model Garden&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;padding-top:2px;&quot;&gt;Claude 3.5 Sonnet • Llama 3 • Embeddings&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="810" y="275" width="265" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Connectors into External AI Models -->
+        <mxCell id="e_scrubbed_input" value="Scrubbed Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#16A34A;labelBackgroundColor=#FFFFFF;padding=2;" edge="1" parent="1" source="pii_card" target="ext_ai_models_box">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1280" y="615" as="sourcePoint"/>
-            <mxPoint x="1245" y="515" as="targetPoint"/>
             <Array as="points">
-              <mxPoint x="1280" y="565"/>
-              <mxPoint x="1245" y="565"/>
+              <mxPoint x="790" y="425"/>
+              <mxPoint x="790" y="222"/>
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e_devsecops_git" value="Defines DLP Rules,&lt;br&gt;Configures&lt;br&gt;Guardrails Policies" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#7C3AED;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+
+        <mxCell id="e_raw_output" value="Raw Inference Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9333EA;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#9333EA;labelBackgroundColor=#FFFFFF;padding=2;" edge="1" parent="1" source="ext_provider_box" target="output_filter_card">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1225" y="650" as="sourcePoint"/>
-            <mxPoint x="1115" y="650" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_git_config" value="Config" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#7C3AED;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1035" y="650" as="sourcePoint"/>
-            <mxPoint x="983" y="650" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="790" y="302"/>
+              <mxPoint x="790" y="650"/>
+            </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- BOTTOM RIGHT LEGEND -->
-        <mxCell id="legend_box" value="&lt;div style=&quot;font-weight:bold;font-size:11px;margin-bottom:4px;color:#0F172A;text-align:left;&quot;&gt;Legend&lt;/div&gt;
-&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;width:24px;&quot;&gt;🔍&lt;/td&gt;&lt;td style=&quot;width:35%;&quot;&gt;DLP&lt;/td&gt;
-    &lt;td style=&quot;width:24px;&quot;&gt;➔&lt;/td&gt;&lt;td&gt;Symbols&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;✨&lt;/td&gt;&lt;td&gt;Vertex AI&lt;/td&gt;
-    &lt;td&gt;➔&lt;/td&gt;&lt;td&gt;Financial data&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;⚠️&lt;/td&gt;&lt;td&gt;Threats&lt;/td&gt;
-    &lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;Usage metrics&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;Compliance&lt;/td&gt;
-    &lt;td&gt;🟦&lt;/td&gt;&lt;td&gt;Financial&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;➔&lt;/td&gt;&lt;td&gt;Secure Config&lt;/td&gt;
-    &lt;td&gt;🟩&lt;/td&gt;&lt;td&gt;Colors&lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1100" y="715" width="310" height="145" as="geometry"/>
+        <!-- Ingress Arrow from Agent Runtime into Guardrail -->
+        <mxCell id="e_agent_to_guardrail" value="Raw Agent Input" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9.5;fontColor=#1E40AF;labelBackgroundColor=#FFFFFF;padding=2;" edge="1" parent="1" source="card_agent_supervisor" target="input_guard_card">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Egress Return Arrow from Output Filter back into Verified Output Consumer -->
+        <mxCell id="e_guardrail_to_agent" value="Verified Model Output" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;fontSize=9.5;fontColor=#15803D;labelBackgroundColor=#FFFFFF;padding=2;" edge="1" parent="1" source="output_filter_card" target="card_agent_sink">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="715"/>
+              <mxPoint x="300" y="715"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- ==================== LOOKER STUDIO (TRISM OBSERVABILITY DASHBOARD) ==================== -->
+        <mxCell id="looker_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="810" y="355" width="265" height="205" as="geometry"/>
+        </mxCell>
+        <mxCell id="looker_title" value="&lt;b style=&quot;font-size:12px;color:#1D4ED8;&quot;&gt;📊 Looker Studio TRiSM Dashboard&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Real-Time Security &amp;amp; Compliance Telemetry&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="815" y="360" width="255" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 3 Dashboard Metric Widgets -->
+        <mxCell id="w1_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#1E40AF;&quot;&gt;PII Scrubbed&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;font-weight:bold;color:#2563EB;padding-top:2px;&quot;&gt;99.98%&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#64748B;&quot;&gt;14.2M Tokens/day&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="820" y="400" width="75" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="w2_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#991B1B;&quot;&gt;Threats Deflected&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;font-weight:bold;color:#DC2626;padding-top:2px;&quot;&gt;1,420&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#64748B;&quot;&gt;Zero Injections&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FECACA;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="905" y="400" width="75" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="w3_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#15803D;&quot;&gt;EU AI Act Status&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;font-weight:bold;color:#16A34A;padding-top:2px;&quot;&gt;100%&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#64748B;&quot;&gt;Audit Ready&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="990" y="400" width="75" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lbl_looker_note" value="&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Automated SIEM aggregation via BigQuery BI Engine&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="820" y="490" width="245" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Connectors between TRiSM engine and Looker -->
+        <mxCell id="e_trism_to_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="trism_engine_box" target="looker_outer">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== BOTTOM CONFIGURATION & INFRASTRUCTURE CONTROLS ==================== -->
+        <!-- Cloud IAM & VPC-SC Box -->
+        <mxCell id="cloud_iam_box" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🔐 Cloud IAM, VPC-SC &amp;amp; Secret Manager&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#334155;line-height:1.25;padding-top:2px;&quot;&gt;• Least Privilege Service Accounts&lt;br&gt;• CMEK Automated Key Rotation (Cloud KMS)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="810" y="580" width="265" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Config Repository GitOps Box -->
+        <mxCell id="config_repo_box" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;⚙️ GitOps Policy Repository&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#334155;line-height:1.25;padding-top:2px;&quot;&gt;• Declarative OPA Guardrail Policies&lt;br&gt;• Automated CI/CD Regression Evaluation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="810" y="685" width="265" height="85" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_sec_config" value="Policy Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontColor=#7C3AED;labelBackgroundColor=#FFFFFF;padding=2;" edge="1" parent="1" source="config_repo_box" target="output_filter_card">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_iam_config" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#64748B;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="cloud_iam_box" target="config_repo_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== PERSONAS (RIGHT COLUMN) ==================== -->
+        <!-- CISO & AI Sec Persona Card -->
+        <mxCell id="persona_ciso" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;🛡️👥&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;CISO &amp;amp; AI Sec Teams&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Executive Security Oversight&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="385" width="200" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- DevSecOps Persona Card -->
+        <mxCell id="persona_devsecops" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;👨‍💻🐙&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;DevSecOps Engineer&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Pipeline &amp;amp; Guardrail Maintainer&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="680" width="200" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Connectors -->
+        <mxCell id="e_ciso_looker" value="Audit Security" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;strokeDashed=1;endArrow=classic;startArrow=classic;fontSize=8.5;fontColor=#16A34A;labelBackgroundColor=#FFFFFF;padding=2;" edge="1" parent="1" source="persona_ciso" target="looker_outer">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_devsecops_git" value="Defines Guardrail Rules" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontColor=#7C3AED;labelBackgroundColor=#FFFFFF;padding=2;" edge="1" parent="1" source="persona_devsecops" target="config_repo_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== FOOTER LEGEND ==================== -->
+        <mxCell id="legend_box" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;AI TRiSM Fabric:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Bidirectional Guardrails&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;PII Cloud DLP Masking&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;Prompt Injection Interceptor&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟣 &lt;b&gt;GitOps Policy Sync&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Gemini Platform&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="870" width="1540" height="38" as="geometry"/>
         </mxCell>
 
       </root>
@@ -437,3 +246,4 @@ export function buildAiTrismGuardrailsXml(): string {
 </mxfile>
 `.trim();
 }
+

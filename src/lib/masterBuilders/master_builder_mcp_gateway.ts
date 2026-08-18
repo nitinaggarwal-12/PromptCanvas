@@ -1,19 +1,19 @@
 /**
- * 🏛️ BLUEPRINT 5: WBS 2.1.5 MODEL CONTEXT PROTOCOL (MCP) GATEWAY
- * Exact High-Fidelity Replica of WBS 2.1.5 Model Context Protocol Gateway Blueprint
+ * 🏛️ BLUEPRINT 5: MODEL CONTEXT PROTOCOL (MCP) GATEWAY
+ * Exact High-Fidelity Replica of Model Context Protocol Gateway Blueprint
  */
 
 export function buildMcpContextGatewayXml(): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
-  <diagram id="mcp_context_gateway" name="WBS 2.1.5: Model Context Protocol Gateway (MCP Context Gateway)">
+  <diagram id="mcp_context_gateway" name="Model Context Protocol Gateway (MCP Context Gateway)">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1620" pageHeight="950" background="#FFFFFF">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- MAIN HEADER AND SUBTITLE -->
-        <mxCell id="hdr_title_box" value="&lt;b style=&quot;font-size:16.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 2.1.5: Model Context Protocol Gateway (MCP Context Gateway)&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:13px;color:#334155;font-weight:normal;&quot;&gt;(To-Be / Operational Excellence Category)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="hdr_title_box" value="&lt;b style=&quot;font-size:16.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;Model Context Protocol Gateway (MCP Context Gateway)&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:13px;color:#334155;font-weight:normal;&quot;&gt;(To-Be / Operational Excellence Category)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="16" width="560" height="54" as="geometry"/>
         </mxCell>
         
@@ -245,7 +245,7 @@ export function buildMcpContextGatewayXml(): string {
         <mxCell id="lbl_cog_doc" value="&lt;font style=&quot;font-size:16px;color:#0284C7;&quot;&gt;📑🔍&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#0F172A;&quot;&gt;Vector&lt;br&gt;Search&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#0284C7;strokeWidth=1;align=center;verticalAlign=middle;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="365" y="470" width="80" height="42" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_cog_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Cognitive Arch / Agentic RAG&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;(WBS Prerequisite)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+        <mxCell id="lbl_cog_title" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Cognitive Arch / Agentic RAG&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;(Architecture Prerequisite)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="305" y="524" width="150" height="30" as="geometry"/>
         </mxCell>
 
@@ -334,8 +334,8 @@ export function buildMcpContextGatewayXml(): string {
           <mxGeometry x="880" y="88" width="170" height="34" as="geometry"/>
         </mxCell>
 
-        <!-- Inner Box: WBS Context / Platform View -->
-        <mxCell id="box_wbs_ctx_view" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;WBS Context /&lt;br&gt;Platform View&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.5px;color:#475569;&quot;&gt;(e.g., related to&lt;br&gt;broader enterprise&lt;br&gt;systems)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
+        <!-- Inner Box: Enterprise Context / Platform View -->
+        <mxCell id="box_wbs_ctx_view" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Enterprise Context /&lt;br&gt;Platform View&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.5px;color:#475569;&quot;&gt;(e.g., related to&lt;br&gt;broader enterprise&lt;br&gt;systems)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;arcSize=4;" vertex="1" parent="1">
           <mxGeometry x="898" y="140" width="134" height="290" as="geometry"/>
         </mxCell>
 

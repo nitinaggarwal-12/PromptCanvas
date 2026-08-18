@@ -3,7 +3,7 @@ import * as path from 'path';
 
 export function buildZeroTrustMeshXml(): string {
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="zero_trust_mesh" name="WBS 4.1.1: Zero-Trust Network Mesh Architecture">
+  <diagram id="zero_trust_mesh" name="Zero-Trust Network Mesh Architecture">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -13,7 +13,7 @@ export function buildZeroTrustMeshXml(): string {
         <mxCell id="main_title_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="16" width="600" height="64" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;WBS 4.1.1: Zero-Trust Network Mesh &amp;amp; BeyondCorp&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13.5px;color:#334155;&quot;&gt;(Context-Aware Ingress, Istio mTLS Mesh &amp;amp; VPC Service Controls)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;Zero-Trust Network Mesh &amp;amp; BeyondCorp&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13.5px;color:#334155;&quot;&gt;(Context-Aware Ingress, Istio mTLS Mesh &amp;amp; VPC Service Controls)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="45" y="20" width="570" height="56" as="geometry"/>
         </mxCell>
 

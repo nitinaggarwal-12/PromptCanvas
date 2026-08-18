@@ -211,7 +211,7 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
   },
   tech_multi_region_dr: {
     id: "tech_multi_region_dr",
-    title: "Master Multi-Region Active-Passive Disaster Recovery (Pilot Light Case B)",
+    title: "Master Multi-Region Active-Passive Disaster Recovery (Pilot Light DR)",
     category: "Cloud Infrastructure & Networking",
     useCase: "ENTERPRISE BUSINESS CONTINUITY & ZERO-TRUST DR",
     businessUseCase: "100% Google Cloud Well-Architected Certified Active-Passive Multi-Region Disaster Recovery architecture across GCP US-East1 (Active) and US-West1 (Pilot Light Standby) with Zero-Trust VPC-SC perimeters, Private Service Connect, Global L7 HTTPS Load Balancing + Cloud Armor WAF, Cloud Run Microservices A-D, Memorystore for Redis HA with Circuit Breakers, Cloud SQL HA with cross-region asynchronous replication (<5min data lag), Dual-Region GCS Object Storage, and automated SRE failover/failback runbooks.",

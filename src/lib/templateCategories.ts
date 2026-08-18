@@ -238,11 +238,11 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "tech_multi_region_dr",
-    name: "Master Multi-Region Active-Passive DR (Case B)",
+    name: "Master Multi-Region Active-Passive DR",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Infrastructure",
     badge: "Master Certified SRE Template",
-    whenToUse: "Use when designing enterprise-grade multi-region active-passive disaster recovery (Pilot Light Case B) with Zero-Trust VPC-SC perimeters, Private Service Connect, 1:1 Terraform IaC parity, and comprehensive FMEA failure mode analysis.",
+    whenToUse: "Use when designing enterprise-grade multi-region active-passive disaster recovery (Pilot Light DR) with Zero-Trust VPC-SC perimeters, Private Service Connect, 1:1 Terraform IaC parity, and comprehensive FMEA failure mode analysis.",
     bestFor: [
       "Google Cloud Well-Architected Certified (6 Pillars Assessment)",
       "Zero-Trust Perimeter (VPC-SC, PSC 10.10.1.5, KMS CMEK Dual Key Rings, Secret Manager)",

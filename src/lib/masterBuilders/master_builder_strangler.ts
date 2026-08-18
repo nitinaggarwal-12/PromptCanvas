@@ -4,7 +4,7 @@ import path from 'path';
 export function buildPristineStranglerFigXml(): string {
   return `
 <mxfile host="app.diagrams.net" modified="2026-08-08T17:40:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="hybrid_strangler_transition" name="WBS 0.1.3: Hybrid / Strangler Fig Transition Architecture">
+  <diagram id="hybrid_strangler_transition" name="Hybrid / Strangler Fig Transition Architecture">
     <mxGraphModel dx="1400" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="850" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -16,7 +16,7 @@ export function buildPristineStranglerFigXml(): string {
         </mxCell>
 
         <!-- TOP MAIN TITLE & SUBTITLE -->
-        <mxCell id="title_main" value="&lt;b style=&quot;font-size:28px;color:#000000;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;&quot;&gt;WBS 0.1.3 Hybrid / Strangler Fig Transition Architecture&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="title_main" value="&lt;b style=&quot;font-size:28px;color:#000000;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;&quot;&gt;Hybrid / Strangler Fig Transition Architecture&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="35" y="25" width="900" height="40" as="geometry" />
         </mxCell>
         <mxCell id="title_sub" value="&lt;span style=&quot;font-size:18px;color:#222222;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;&quot;&gt;Phase 0: Assessment Transition&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -373,7 +373,7 @@ export function buildPristineStranglerFigXml(): string {
         <mxCell id="1_p2" parent="0_p2" />
 
         <!-- PAGE 2 HEADER BANNER -->
-        <mxCell id="p2_hdr" value="&lt;b&gt;EXECUTIVE STRANGLER FIG MIGRATION PLAYBOOK &amp;amp; GOVERNANCE METADATA PROFILE — WBS 0.1.3&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_p2">
+        <mxCell id="p2_hdr" value="&lt;b&gt;EXECUTIVE STRANGLER FIG MIGRATION PLAYBOOK &amp;amp; GOVERNANCE METADATA PROFILE — &lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_p2">
           <mxGeometry x="35" y="10" width="1310" height="28" as="geometry" />
         </mxCell>
         <mxCell id="p2_line" value="" style="line;strokeWidth=2;strokeColor=#0F172A;" vertex="1" parent="1_p2">
@@ -381,7 +381,7 @@ export function buildPristineStranglerFigXml(): string {
         </mxCell>
 
         <!-- KPI SUMMARY BAR -->
-        <mxCell id="kpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE ID&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;WBS 0.1.3 Strangler Fig Transition&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_p2">
+        <mxCell id="kpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE ID&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;Strangler Fig Transition&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_p2">
           <mxGeometry x="35" y="55" width="310" height="55" as="geometry" />
         </mxCell>
 

@@ -1,19 +1,19 @@
 /**
- * 🏛️ MASTER BLUEPRINT 3: WBS 3.1.4 UNIFIED DATA GOVERNANCE & ACCESS CONTROL ARCHITECTURE
- * Pixel-Perfect Replica of WBS 3.1.4 Unified Data Governance & Access Control Architecture (To-Be State)
+ * 🏛️ MASTER BLUEPRINT 3: UNIFIED DATA GOVERNANCE & ACCESS CONTROL ARCHITECTURE
+ * Pixel-Perfect Replica of Unified Data Governance & Access Control Architecture (To-Be State)
  */
 
 export function buildUnifiedDataGovernanceXml(): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-04-01T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
-  <diagram id="unified_data_governance" name="WBS 3.1.4: Unified Data Governance &amp; Access Control Architecture">
+  <diagram id="unified_data_governance" name="Unified Data Governance &amp; Access Control Architecture">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1620" pageHeight="950" background="#FFFFFF">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- MAIN TITLE (TOP LEFT) -->
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:24px;color:#0F172A;font-family:sans-serif;&quot;&gt;WBS 3.1.4: Unified Data Governance &amp;amp; Access Control Architecture (To-Be State)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:24px;color:#0F172A;font-family:sans-serif;&quot;&gt;Unified Data Governance &amp;amp; Access Control Architecture (To-Be State)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="30" y="16" width="1150" height="36" as="geometry"/>
         </mxCell>
 

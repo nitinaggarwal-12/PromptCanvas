@@ -4,7 +4,7 @@ import path from 'path';
 export function buildPristineFinopsXml(): string {
   return `
 <mxfile host="app.diagrams.net" modified="2026-08-08T17:48:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="cloud_finops_chargeback" name="WBS 1.1.3: Cloud FinOps &amp; Chargeback Model">
+  <diagram id="cloud_finops_chargeback" name="Cloud FinOps &amp; Chargeback Model">
     <mxGraphModel dx="1500" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1480" pageHeight="860" background="#FFFFFF">
       <root>
         <mxCell id="0" />
@@ -16,7 +16,7 @@ export function buildPristineFinopsXml(): string {
         </mxCell>
 
         <!-- TOP TITLE BANNER (Left & Right Boxes exact 1:1 match to uploaded design) -->
-        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:15px;color:#000000;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;WBS 1.1.3: Cloud FinOps &amp;amp; Chargeback Model&lt;br&gt;(FinOps &amp;amp; Economics Category)&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="hdr_box_left" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:15px;color:#000000;font-family:system-ui,-apple-system,sans-serif;&quot;&gt;Cloud FinOps &amp;amp; Chargeback Model&lt;br&gt;(FinOps &amp;amp; Economics Category)&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1E293B;strokeWidth=1.5;fillColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="20" width="460" height="50" as="geometry" />
         </mxCell>
 
@@ -496,7 +496,7 @@ export function buildPristineFinopsXml(): string {
         <mxCell id="1_p2" parent="0_p2" />
 
         <!-- PAGE 2 HEADER BANNER -->
-        <mxCell id="p2_hdr" value="&lt;b&gt;EXECUTIVE CLOUD FINOPS &amp;amp; UNIT ECONOMICS PLAYBOOK — WBS 1.1.3 GOVERNANCE PROFILE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_p2">
+        <mxCell id="p2_hdr" value="&lt;b&gt;EXECUTIVE CLOUD FINOPS &amp;amp; UNIT ECONOMICS PLAYBOOK — GOVERNANCE PROFILE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1_p2">
           <mxGeometry x="35" y="10" width="1310" height="28" as="geometry" />
         </mxCell>
         <mxCell id="p2_line" value="" style="line;strokeWidth=2;strokeColor=#0F172A;" vertex="1" parent="1_p2">
@@ -504,7 +504,7 @@ export function buildPristineFinopsXml(): string {
         </mxCell>
 
         <!-- KPI SUMMARY BAR -->
-        <mxCell id="kpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE ID&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;WBS 1.1.3 Cloud FinOps Model&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_p2">
+        <mxCell id="kpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE ID&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;Cloud FinOps Model&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_p2">
           <mxGeometry x="35" y="55" width="310" height="55" as="geometry" />
         </mxCell>
 

@@ -1,6 +1,6 @@
 export function buildMicroFrontendsXml(): string {
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="micro_frontends_ui" name="WBS 4.2.1: Micro-Frontend & Modular UI Presentation">
+  <diagram id="micro_frontends_ui" name="Micro-Frontend &amp; Modular UI Presentation">
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -10,7 +10,7 @@ export function buildMicroFrontendsXml(): string {
         <mxCell id="main_title_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="30" y="16" width="620" height="64" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;WBS 4.2.1: Micro-Frontend &amp;amp; Modular UI Presentation&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;color:#334155;&quot;&gt;Module Federation, Client Event Bus, Real-Time WebSockets &amp;amp; Zero-Trust APIs&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;Micro-Frontend &amp;amp; Modular UI Presentation&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;color:#334155;&quot;&gt;Module Federation, Client Event Bus, Real-Time WebSockets &amp;amp; Zero-Trust APIs&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="35" y="20" width="610" height="56" as="geometry"/>
         </mxCell>
 
