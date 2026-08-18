@@ -40,8 +40,8 @@ describe('New Enterprise Master Builders Integrity Test Suite', () => {
       expect(xml).toContain('<mxfile');
       expect(xml).toContain('</mxfile>');
       expect(xml).toContain('<mxGraphModel');
-      expect(xml).toContain('pageWidth="1400"');
-      expect(xml).toContain('Gemini 3.7 Flash');
+      expect(xml).toMatch(/pageWidth="(?:1400|1600)"/);
+      expect(xml).toMatch(/Gemini 3\.7 (?:Flash|Pro)/);
       expect(xml).toContain(expectedKey);
 
       // Verify no unescaped ampersands in active XML tags/attributes (outside comments)

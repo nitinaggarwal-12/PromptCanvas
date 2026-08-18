@@ -150,49 +150,49 @@ export const BLUEPRINT_CATALOG_ITEMS: BlueprintCatalogItem[] = [
   {
     id: 'smart_factory_iot',
     number: 42,
-    name: 'Smart Factory Industry 4.0 IoT & Edge Predictive Maintenance',
+    name: 'Google Cloud Industry 4.0: Smart Factory IoT & Predictive Maintenance Platform',
     category: 'Industry 4.0',
     icon: '🏭',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Smart factory transformation, SCADA/PLC telemetry ingestion, and avoiding unscheduled industrial equipment downtime.',
+    whenToUse: 'Industrial IoT asset telemetry, GDC Edge compute, AlloyDB Digital Twin (ISA-95), and Looker OEE Cockpit.',
     whereToUse: 'Industry 4.0 Architecture Specification; Plant Modernization Business Case; OT/IT Convergence RFC.',
     personas: {
       creator: 'Principal Industrial IoT Architect / OT-IT Convergence Lead',
       consumer: 'VP Global Manufacturing, Plant Operations Managers, Reliability Engineering Leads'
     },
-    bigTechStandpoint: 'GDC Edge Gateway with Coral TPU <1ms vibration FFT analysis, Bigtable time-series store, and Gemini multimodal anomaly fusing.',
+    bigTechStandpoint: 'Asset Sensor Telemetry, GDC Edge Gateway, Cloud Dataflow Streaming, AlloyDB Digital Twin, Gemini 3.7 Multimodal Anomaly Fuser & Looker OEE Operations Cockpit.',
     consultingStandpoint: 'Overall Equipment Effectiveness (OEE) optimization cockpit reducing scrap rates and automating SAP PM work orders.'
   },
   {
     id: 'hr_talent_ai',
     number: 43,
-    name: 'WorkforceAI Enterprise HR Talent & People Intelligence Platform',
+    name: 'Google Cloud HR & Talent Solution: WorkforceAI People Intelligence Platform',
     category: 'Industry 4.0',
     icon: '👔',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Enterprise recruiting automation, blind screening compliance, skills taxonomy graphing, and internal talent mobility.',
+    whenToUse: 'Document AI resume parsing, Cloud DLP PII blind screening, AlloyDB pgvector enterprise skills graph, and Gemini 3.7 match evaluator.',
     whereToUse: 'HR Technology Strategy Roadmap; EEOC & Bias Compliance Dossier; Talent Acquisition Steering Committee.',
     personas: {
       creator: 'Principal People Analytics Architect / HR Tech Lead',
       consumer: 'Chief People Officer (CPO), VP Talent Acquisition, Legal & Compliance Counsel'
     },
-    bigTechStandpoint: 'Document AI resume OCR, Cloud DLP blind screening shield, AlloyDB pgvector skills graph, and Gemini objective candidate matching.',
+    bigTechStandpoint: 'Document AI resume parser, Cloud DLP PII screening shield, AlloyDB pgvector skills graph, Gemini 3.7 match evaluator, and Looker Talent Cockpit.',
     consultingStandpoint: 'Reduces time-to-hire by 65% while providing auditable Four-Fifths compliance logs for regulatory defense.'
   },
   {
     id: 'healthcare_fhir',
     number: 44,
-    name: 'Enterprise Healthcare FHIR R4, HL7v2 & Clinical AI Platform',
+    name: 'Google Cloud Healthcare & Life Sciences FHIR/HL7 Clinical AI Platform',
     category: 'Industry 4.0',
     icon: '🏥',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Hospital EHR interoperability (Epic/Cerner), clinical data lakehouses, and HIPAA-compliant clinical decision support.',
+    whenToUse: 'Hospital EHR interoperability (HL7v2/FHIR R4/DICOM), HIPAA BAA transit, OMOP BigQuery Lakehouse, and Gemini 3.7 Flash clinical reasoner.',
     whereToUse: 'Healthcare Interoperability RFC; HIPAA Security & Privacy Audit Package; Clinical Operations Steering Committee.',
     personas: {
       creator: 'Principal Healthcare Solutions Architect / Health Informatics Lead',
       consumer: 'Chief Medical Information Officer (CMIO), CISO Healthcare, Clinical Research Directors'
     },
-    bigTechStandpoint: 'Google Cloud Healthcare API with Cloud DLP 18 Safe Harbor PHI de-identification, KMS HSM keys, and Gemini Clinical Reasoner.',
+    bigTechStandpoint: 'Cloud Healthcare API, BigQuery FHIR & OMOP CDM Lakehouse, Vertex AI Search for Healthcare & Medical Vision, Gemini 3.7 Clinical Reasoner, and Looker Operations Cockpit.',
     consultingStandpoint: 'OMOP CDM BigQuery lakehouse accelerating clinical trial matching and reducing 30-day patient readmissions.'
   },
   {
