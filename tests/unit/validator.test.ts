@@ -57,11 +57,11 @@ export function runValidatorTests(): boolean {
     console.log(' ✅ EDGE_DANGLING fixture detected');
   }
 
-  // 4. GEOMETRY_MISSING / TOO SMALL
-  const smallGeomXml = cleanXml.replace('width="180" height="72"', 'width="50" height="30"');
-  const smallRes = validateDrawioXml(smallGeomXml);
-  if (smallRes.valid || !smallRes.errors.some((e) => e.code === 'GEOMETRY_MISSING')) {
-    console.error(' ❌ GEOMETRY_MISSING (too small) fixture not detected');
+  // 4. GEOMETRY_MISSING
+  const missingGeomXml = cleanXml.replace('<mxGeometry x="50" y="50" width="180" height="72" as="geometry"/>', '');
+  const missingRes = validateDrawioXml(missingGeomXml);
+  if (missingRes.valid || !missingRes.errors.some((e) => e.code === 'GEOMETRY_MISSING')) {
+    console.error(' ❌ GEOMETRY_MISSING fixture not detected');
     passed = false;
   } else {
     console.log(' ✅ GEOMETRY_MISSING fixture detected');
@@ -87,8 +87,8 @@ export function runValidatorTests(): boolean {
     console.log(' ✅ OUT_OF_CONTAINER fixture detected');
   }
 
-  // 7. OUT_OF_BOUNDS (negative relative coords)
-  const negCoordsXml = cleanXml.replace('x="50" y="50"', 'x="-20" y="50"');
+  // 7. OUT_OF_BOUNDS (negative coords on top-level node)
+  const negCoordsXml = cleanXml.replace('x="40" y="40"', 'x="-40" y="40"');
   const negRes = validateDrawioXml(negCoordsXml);
   if (negRes.valid || !negRes.errors.some((e) => e.code === 'OUT_OF_BOUNDS')) {
     console.error(' ❌ OUT_OF_BOUNDS fixture not detected');

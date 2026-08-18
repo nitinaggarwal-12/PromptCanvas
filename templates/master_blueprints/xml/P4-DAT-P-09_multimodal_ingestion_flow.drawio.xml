@@ -15,8 +15,8 @@
 
 
         <!-- ==================== LEFT VERTICAL GOVERNANCE STRIP ==================== -->
-        <mxCell id="box_vert_gov" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;letter-spacing:1px;&quot;&gt;PLATFORM GOVERNANCE &amp; MONITORING&lt;/b&gt;" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;rotation=-90;" vertex="1" parent="1">
-          <mxGeometry x="-160" y="300" width="460" height="30" as="geometry"/>
+        <mxCell id="box_vert_gov" value="&lt;b style=&quot;font-size:8.5px;color:#0F172A;letter-spacing:1px;&quot;&gt;PLATFORM GOVERNANCE &amp; MONITORING&lt;/b&gt;" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;writingMode=vertical-rl;" vertex="1" parent="1">
+          <mxGeometry x="15" y="65" width="30" height="470" as="geometry"/>
         </mxCell>
 
 

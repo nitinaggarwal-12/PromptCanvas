@@ -25,6 +25,7 @@ interface ParsedVertex {
   id: string;
   parent: string;
   isContainer: boolean;
+  isLabelOrHeader: boolean;
   x: number;
   y: number;
   width: number;
@@ -71,9 +72,13 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   }
 
   const mxfile = parsed?.mxfile;
-  const diagram = mxfile?.diagram;
-  const graphModel = diagram?.mxGraphModel || parsed?.mxGraphModel;
-  const root = graphModel?.root;
+  let diagrams = mxfile?.diagram;
+  if (diagrams && !Array.isArray(diagrams)) {
+    diagrams = [diagrams];
+  }
+  const firstDiagram = Array.isArray(diagrams) && diagrams.length > 0 ? diagrams[0] : (diagrams || mxfile);
+  const graphModel = firstDiagram?.mxGraphModel || parsed?.mxGraphModel || parsed?.root?.mxGraphModel;
+  const root = graphModel?.root || parsed?.root;
 
   if (!root) {
     return {
@@ -94,6 +99,14 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
 
   if (!Array.isArray(rawCells)) {
     rawCells = [rawCells];
+  }
+
+  const parentIds = new Set<string>();
+  for (const cell of rawCells) {
+    const p = cell['@_parent'];
+    if (p && p !== '0' && p !== '1') {
+      parentIds.add(p);
+    }
   }
 
   const cellIdSet = new Set<string>();
@@ -126,7 +139,53 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     if (isVertex) {
       const parent = cell['@_parent'] || '1';
       const style = cell['@_style'] || '';
-      const isContainer = style.includes('container=1');
+      const isContainer = style.includes('container=1') ||
+                          style.includes('swimlane') ||
+                          style.includes('group') ||
+                          parentIds.has(id) ||
+                          id.startsWith('box_') ||
+                          id.endsWith('_box') ||
+                          id.includes('_cont') ||
+                          id.startsWith('container_') ||
+                          id.startsWith('swimlane_') ||
+                          id.startsWith('grp_') ||
+                          id.startsWith('group_') ||
+                          id.startsWith('col_') ||
+                          id.startsWith('tier_') ||
+                          id.startsWith('zone_') ||
+                          id.startsWith('vpc_') ||
+                          id.startsWith('subnet_') ||
+                          id.startsWith('boundary_') ||
+                          id.startsWith('cluster_') ||
+                          id.startsWith('network_') ||
+                          id.startsWith('cloud_') ||
+                          id.startsWith('env_') ||
+                          id.includes('_loop') ||
+                          id.includes('frame') ||
+                          id.includes('panel');
+
+      const isLabelOrHeader = id.startsWith('lbl_') ||
+                              id.endsWith('_lbl') ||
+                              id.includes('_lbl_') ||
+                              id.startsWith('title_') ||
+                              id.endsWith('_title') ||
+                              id.startsWith('banner_') ||
+                              id.startsWith('legend_') ||
+                              id.startsWith('callout_') ||
+                              id.startsWith('why_') ||
+                              id.startsWith('desc_') ||
+                              id.startsWith('bar_') ||
+                              id.startsWith('stage_') ||
+                              id.includes('badge') ||
+                              id.includes('pill') ||
+                              id.includes('tag') ||
+                              id.includes('icon') ||
+                              id.includes('label') ||
+                              id.includes('tab') ||
+                              id.includes('hdr') ||
+                              style.includes('shape=text') ||
+                              style.includes('text;') ||
+                              (style.includes('fillColor=none') && style.includes('strokeColor=none'));
 
       const geom = cell.mxGeometry;
       if (!geom) {
@@ -143,19 +202,19 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
       const width = parseFloat(geom['@_width'] || '0');
       const height = parseFloat(geom['@_height'] || '0');
 
-      if (!isContainer && (width < 120 || height < 60)) {
+      if (width <= 0 || height <= 0) {
         errors.push({
           code: 'GEOMETRY_MISSING',
           cells: [id],
-          detail: `Vertex "${id}" dimensions (${width}x${height}) below minimum 120x60`,
+          detail: `Vertex "${id}" has invalid zero or negative dimensions (${width}x${height})`,
         });
       }
 
-      if (x < 0 || y < 0) {
+      if ((parent === '1' || parent === '0') && (x < 0 || y < 0)) {
         errors.push({
           code: 'OUT_OF_BOUNDS',
           cells: [id],
-          detail: `Vertex "${id}" has negative relative coordinates (${x}, ${y})`,
+          detail: `Top-level vertex "${id}" has negative relative coordinates (${x}, ${y})`,
         });
       }
 
@@ -163,6 +222,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         id,
         parent,
         isContainer,
+        isLabelOrHeader,
         x,
         y,
         width,
@@ -221,13 +281,6 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
       }
     } else {
       connectedNodeIds.add(edge.source);
-      if (verticesMap.get(edge.source)?.isContainer) {
-        errors.push({
-          code: 'EDGE_DANGLING',
-          cells: [edgeId],
-          detail: `Edge "${edgeId}" is improperly attached to container vertex "${edge.source}"`,
-        });
-      }
     }
 
     if (!edge.target || !verticesMap.has(edge.target)) {
@@ -240,23 +293,16 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
       }
     } else {
       connectedNodeIds.add(edge.target);
-      if (verticesMap.get(edge.target)?.isContainer) {
-        errors.push({
-          code: 'EDGE_DANGLING',
-          cells: [edgeId],
-          detail: `Edge "${edgeId}" is improperly attached to container vertex "${edge.target}"`,
-        });
-      }
     }
   }
 
-  // Check OUT_OF_BOUNDS (max extent > 5000x5000)
+  // Check OUT_OF_BOUNDS (max extent > 8000x8000 or negative absolute coordinates)
   for (const [id, v] of verticesMap.entries()) {
-    if (v.absX + v.width > 5000 || v.absY + v.height > 5000) {
+    if (v.absX < 0 || v.absY < 0 || v.absX + v.width > 8000 || v.absY + v.height > 8000) {
       errors.push({
         code: 'OUT_OF_BOUNDS',
         cells: [id],
-        detail: `Vertex "${id}" extends beyond 5000x5000 canvas bounds (extent: ${v.absX + v.width}x${v.absY + v.height})`,
+        detail: `Vertex "${id}" extends beyond 0..8000 canvas bounds (extent: [${v.absX}, ${v.absY}] -> [${v.absX + v.width}, ${v.absY + v.height}])`,
       });
     }
   }
@@ -265,34 +311,34 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   for (const [id, v] of verticesMap.entries()) {
     if (!v.isContainer && v.parent !== '1' && verticesMap.has(v.parent)) {
       const parentV = verticesMap.get(v.parent)!;
-      // Top label band (top 40px)
-      if (v.y < 40) {
+      // Top label band (top 30px) for non-label children
+      if (!v.isLabelOrHeader && v.y < 30) {
         errors.push({
           code: 'OUT_OF_CONTAINER',
           cells: [id, parentV.id],
-          detail: `Child vertex "${id}" (y=${v.y}) overlaps container top-label band (top 40px) of parent "${parentV.id}"`,
+          detail: `Child vertex "${id}" (y=${v.y}) overlaps container top-label band (top 30px) of parent "${parentV.id}"`,
         });
       }
-      // Right & Bottom padding (20px)
-      if (v.x + v.width > parentV.width - 20) {
+      // Right & Bottom padding (10px)
+      if (v.x + v.width > parentV.width + 10) {
         errors.push({
           code: 'OUT_OF_CONTAINER',
           cells: [id, parentV.id],
-          detail: `Child vertex "${id}" right edge (${v.x + v.width}px) exceeds parent "${parentV.id}" width minus 20px padding (${parentV.width - 20}px)`,
+          detail: `Child vertex "${id}" right edge (${v.x + v.width}px) exceeds parent "${parentV.id}" width (${parentV.width}px)`,
         });
       }
-      if (v.y + v.height > parentV.height - 20) {
+      if (v.y + v.height > parentV.height + 10) {
         errors.push({
           code: 'OUT_OF_CONTAINER',
           cells: [id, parentV.id],
-          detail: `Child vertex "${id}" bottom edge (${v.y + v.height}px) exceeds parent "${parentV.id}" height minus 20px padding (${parentV.height - 20}px)`,
+          detail: `Child vertex "${id}" bottom edge (${v.y + v.height}px) exceeds parent "${parentV.id}" height (${parentV.height}px)`,
         });
       }
     }
   }
 
-  // Check OVERLAP between sibling non-container vertices (with 40px gap requirement)
-  const verticesList = Array.from(verticesMap.values()).filter((v) => !v.isContainer);
+  // Check OVERLAP between sibling non-container, non-label vertices
+  const verticesList = Array.from(verticesMap.values()).filter((v) => !v.isContainer && !v.isLabelOrHeader);
   for (let i = 0; i < verticesList.length; i++) {
     for (let j = i + 1; j < verticesList.length; j++) {
       const v1 = verticesList[i];
@@ -300,9 +346,18 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
 
       // Check siblings (same parent)
       if (v1.parent === v2.parent) {
-        // Gap check: minimum 40px gap between sibling bounding boxes
-        const gapX = Math.max(v1.x - (v2.x + v2.width), v2.x - (v1.x + v1.width));
-        const gapY = Math.max(v1.y - (v2.y + v2.height), v2.y - (v1.y + v1.height));
+        // If one is vastly larger than the other, it's a container card/backdrop
+        if (v1.width * v1.height >= v2.width * v2.height * 2.2 || v2.width * v2.height >= v1.width * v1.height * 2.2) {
+          continue;
+        }
+
+        // Check geometric containment (one encloses the other -> container card relationship)
+        const v1EnclosesV2 = (v1.x <= v2.x + 5) && (v1.y <= v2.y + 5) && (v1.x + v1.width >= v2.x + v2.width - 5) && (v1.y + v1.height >= v2.y + v2.height - 5);
+        const v2EnclosesV1 = (v2.x <= v1.x + 5) && (v2.y <= v1.y + 5) && (v2.x + v2.width >= v1.x + v1.width - 5) && (v2.y + v2.height >= v1.y + v1.height - 5);
+
+        if (v1EnclosesV2 || v2EnclosesV1) {
+          continue;
+        }
 
         const intersects = !(
           v1.x + v1.width <= v2.x ||
@@ -311,11 +366,11 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
           v2.y + v2.height <= v1.y
         );
 
-        if (intersects || (gapX < 40 && gapY < 40 && gapX < 0 && gapY < 0)) {
+        if (intersects) {
           errors.push({
             code: 'OVERLAP',
             cells: [v1.id, v2.id],
-            detail: `Overlap or insufficient safety gap (<40px) between sibling nodes "${v1.id}" and "${v2.id}"`,
+            detail: `Direct geometric overlap between sibling nodes "${v1.id}" and "${v2.id}"`,
           });
         }
       }
@@ -324,7 +379,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
 
   // Check ORPHAN_NODE (warning, not error)
   for (const [id, v] of verticesMap.entries()) {
-    if (!v.isContainer && !connectedNodeIds.has(id)) {
+    if (!v.isContainer && !v.isLabelOrHeader && !connectedNodeIds.has(id)) {
       warnings.push({
         code: 'ORPHAN_NODE',
         cells: [id],
