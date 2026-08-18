@@ -1440,6 +1440,8 @@ function WorkspaceContent() {
       setZoom(1.0);
       setPan({ x: 0, y: 0 });
       setOutlineEdits({});
+      setUndoStack([]);
+      setRedoStack([]);
       
       // Set the active version matching active architecture_type
       if (urlBlueprint) {
@@ -2551,19 +2553,27 @@ function WorkspaceContent() {
             <div className="flex flex-wrap items-center gap-3">
               {/* Search Bar */}
               <div className="relative min-w-[220px] sm:min-w-[260px]">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none ${
+                  canvasTheme === 'light' ? 'text-slate-400' : 'text-slate-500'
+                }`} />
                 <input
                   type="text"
                   value={templateSearchQuery}
                   onChange={(e) => setTemplateSearchQuery(e.target.value)}
                   placeholder="Search 50 blueprints (e.g. RAG, Event, DR)..."
-                  className="w-full bg-slate-900 border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 text-xs rounded-xl pl-9 pr-8 py-2 outline-none transition-all font-medium"
+                  className={`w-full text-xs rounded-xl pl-9 pr-8 py-2 outline-none transition-all font-medium border ${
+                    canvasTheme === 'light'
+                      ? 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500 shadow-sm'
+                      : 'bg-slate-900 border-slate-700/80 text-white placeholder-slate-500 focus:border-teal-400'
+                  }`}
                 />
                 {templateSearchQuery && (
                   <button
                     type="button"
                     onClick={() => setTemplateSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs font-bold"
+                    className={`absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold ${
+                      canvasTheme === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-slate-400 hover:text-white'
+                    }`}
                   >
                     ✕
                   </button>
@@ -2572,18 +2582,22 @@ function WorkspaceContent() {
 
               {/* Persona Filter Dropdown */}
               <div className="relative inline-flex items-center">
-                <User className="w-3.5 h-3.5 text-teal-400 absolute left-3 pointer-events-none" />
+                <User className="w-3.5 h-3.5 text-teal-500 absolute left-3 pointer-events-none" />
                 <select
                   value={selectedPersonaFilter}
                   onChange={(e) => setSelectedPersonaFilter(e.target.value)}
-                  className="appearance-none bg-slate-900 border border-teal-500/40 hover:border-teal-400 text-teal-300 font-bold text-xs rounded-xl pl-8 pr-8 py-2 outline-none cursor-pointer shadow-sm max-w-[210px] truncate"
+                  className={`appearance-none font-bold text-xs rounded-xl pl-8 pr-8 py-2 outline-none cursor-pointer shadow-sm max-w-[210px] truncate border ${
+                    canvasTheme === 'light'
+                      ? 'bg-white border-slate-300 text-slate-800 hover:border-teal-500'
+                      : 'bg-slate-900 border-teal-500/40 text-teal-300 hover:border-teal-400'
+                  }`}
                 >
-                  <optgroup label="💼 BUSINESS & EXECUTIVE PERSONAS" className="bg-[#0b101d] text-teal-400 font-extrabold">
+                  <optgroup label="💼 BUSINESS & EXECUTIVE PERSONAS" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-extrabold' : 'bg-[#0b101d] text-teal-400 font-extrabold'}>
                     <option value="all">👤 All Roles ({allTemplates.length})</option>
                     <option value="executive">💼 Executive &amp; C-Suite ({personaRelevantIds.executive.length})</option>
                     <option value="industry">🏭 Industry Leads ({personaRelevantIds.industry.length})</option>
                   </optgroup>
-                  <optgroup label="⚙️ TECHNICAL ENGINEERING PERSONAS" className="bg-[#0b101d] text-indigo-400 font-extrabold">
+                  <optgroup label="⚙️ TECHNICAL ENGINEERING PERSONAS" className={canvasTheme === 'light' ? 'bg-white text-indigo-800 font-extrabold' : 'bg-[#0b101d] text-indigo-400 font-extrabold'}>
                     <option value="architect">🏛️ Cloud Architects ({personaRelevantIds.architect.length})</option>
                     <option value="ai">🤖 AI &amp; LLMOps ({personaRelevantIds.ai.length})</option>
                     <option value="data">📊 Data &amp; Lakehouse ({personaRelevantIds.data.length})</option>
@@ -2591,7 +2605,7 @@ function WorkspaceContent() {
                     <option value="devops">⚙️ DevOps &amp; SRE ({personaRelevantIds.devops.length})</option>
                   </optgroup>
                 </select>
-                <ChevronDown className="w-3.5 h-3.5 text-teal-400 absolute right-2.5 pointer-events-none" />
+                <ChevronDown className="w-3.5 h-3.5 text-teal-500 absolute right-2.5 pointer-events-none" />
               </div>
 
               {/* Master Template Carousel Preview Button */}
@@ -2611,8 +2625,10 @@ function WorkspaceContent() {
                 onClick={() => setIsPromptStudioExpanded(prev => !prev)}
                 className={`px-3.5 py-2 rounded-xl font-extrabold text-xs border flex items-center gap-1.5 transition-all cursor-pointer ${
                   isPromptStudioExpanded
-                    ? 'bg-teal-500 text-[#070A13] border-teal-400 shadow-md shadow-teal-500/20'
-                    : 'bg-slate-900 hover:bg-slate-800 text-teal-300 border-teal-500/40'
+                    ? 'bg-teal-500 text-white dark:text-[#070A13] border-teal-400 shadow-md shadow-teal-500/20'
+                    : canvasTheme === 'light'
+                      ? 'bg-white hover:bg-slate-100 text-teal-700 border-slate-300'
+                      : 'bg-slate-900 hover:bg-slate-800 text-teal-300 border-teal-500/40'
                 }`}
                 title={isPromptStudioExpanded ? 'Collapse AI Prompt Studio' : 'Open AI Architectural Prompt Studio'}
               >
@@ -2624,8 +2640,10 @@ function WorkspaceContent() {
 
           {/* Quick Filter Chips Strip for Blueprints */}
           <div className="flex flex-wrap items-center gap-1.5 -mt-2">
-            <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1 mr-1">
-              <Sparkles className="w-3 h-3 text-teal-400" />
+            <span className={`text-[11px] font-bold flex items-center gap-1 mr-1 ${
+              canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'
+            }`}>
+              <Sparkles className="w-3 h-3 text-teal-500" />
               <span>Popular Blueprints:</span>
             </span>
             {[
@@ -2644,10 +2662,14 @@ function WorkspaceContent() {
                   key={chip.label}
                   type="button"
                   onClick={() => setTemplateSearchQuery(chip.query)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer border ${
                     isSelected 
-                      ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 font-bold' 
-                      : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700'
+                      ? canvasTheme === 'light'
+                        ? 'bg-teal-100 text-teal-950 border-teal-400 font-bold shadow-sm'
+                        : 'bg-teal-500/20 text-teal-300 border-teal-500/40 font-bold' 
+                      : canvasTheme === 'light'
+                        ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300 shadow-xs'
+                        : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-800 hover:border-slate-700'
                   }`}
                 >
                   {chip.label}
@@ -2704,29 +2726,37 @@ function WorkspaceContent() {
               </button>
             </div>
           ) : (
-            <div className="bg-[#0B101D] border border-teal-500/40 rounded-3xl p-5 md:p-8 backdrop-blur-md space-y-5 shadow-2xl relative overflow-hidden animate-fade-in">
+            <div className={`border rounded-3xl p-5 md:p-8 backdrop-blur-md space-y-5 shadow-2xl relative overflow-hidden animate-fade-in ${
+              canvasTheme === 'light' ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#0B101D] border-teal-500/40 text-white'
+            }`}>
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-teal-500/10 blur-[100px] rounded-full pointer-events-none" />
               
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4 ${
+                canvasTheme === 'light' ? 'border-slate-200' : 'border-slate-800'
+              }`}>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-teal-400 uppercase tracking-widest px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-teal-600 dark:text-teal-400 uppercase tracking-widest px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>AI Architectural Prompt Studio</span>
                     </span>
-                    <span className="text-[10px] font-mono text-slate-400">Gemini 3.7 Flash</span>
+                    <span className={`text-[10px] font-mono ${canvasTheme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>Gemini 3.7 Flash</span>
                   </div>
-                  <h2 className="text-lg md:text-xl font-black text-white tracking-tight">
-                    Customize Blueprint <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-400">With Pure Intent.</span>
+                  <h2 className={`text-lg md:text-xl font-black tracking-tight ${canvasTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+                    Customize Blueprint <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-cyan-500 to-indigo-500">With Pure Intent.</span>
                   </h2>
-                  <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
+                  <p className={`text-xs max-w-2xl leading-relaxed ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
                     Write your custom architecture requirements or tweak any blueprint below to compile with Gemini AI.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsPromptStudioExpanded(false)}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs border border-slate-700 flex items-center gap-1.5 transition-all self-start md:self-auto cursor-pointer"
+                  className={`px-3.5 py-1.5 rounded-xl font-bold text-xs border flex items-center gap-1.5 transition-all self-start md:self-auto cursor-pointer ${
+                    canvasTheme === 'light'
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border-slate-700'
+                  }`}
                 >
                   <span>✕ Collapse Studio</span>
                 </button>
@@ -2734,40 +2764,52 @@ function WorkspaceContent() {
 
               {/* 3-Step Quick Start Onboarding Guide */}
               {showQuickStartGuide && (
-                <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-teal-500/30 text-xs space-y-2">
+                <div className={`p-3.5 rounded-2xl border text-xs space-y-2 ${
+                  canvasTheme === 'light' ? 'bg-teal-50/60 border-teal-200 text-slate-800' : 'bg-slate-900/80 border-teal-500/30 text-slate-200'
+                }`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-teal-300 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                    <span className={`text-[11px] font-bold flex items-center gap-1.5 ${
+                      canvasTheme === 'light' ? 'text-teal-900' : 'text-teal-300'
+                    }`}>
+                      <Sparkles className="w-3.5 h-3.5 text-teal-500" />
                       <span>3-Step Quick Start Guide for New Architects:</span>
                     </span>
                     <button
                       type="button"
                       onClick={() => setShowQuickStartGuide(false)}
-                      className="text-[10px] text-slate-400 hover:text-slate-200 cursor-pointer"
+                      className={`text-[10px] cursor-pointer ${
+                        canvasTheme === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-slate-400 hover:text-slate-200'
+                      }`}
                     >
                       Dismiss
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-                    <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-950/70 border border-slate-800">
-                      <span className="w-4 h-4 rounded-full bg-teal-500/20 text-teal-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">1</span>
+                    <div className={`flex items-start gap-2 p-2 rounded-xl border ${
+                      canvasTheme === 'light' ? 'bg-white border-teal-200 shadow-xs' : 'bg-slate-950/70 border-slate-800'
+                    }`}>
+                      <span className="w-4 h-4 rounded-full bg-teal-500/20 text-teal-700 dark:text-teal-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">1</span>
                       <div>
-                        <p className="font-bold text-slate-200 text-[11px]">1. Describe System Intent</p>
-                        <p className="text-[10px] text-slate-400 leading-tight">Write custom requirements or select a preset domain below.</p>
+                        <p className={`font-bold text-[11px] ${canvasTheme === 'light' ? 'text-slate-900' : 'text-slate-200'}`}>1. Describe System Intent</p>
+                        <p className={`text-[10px] leading-tight ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>Write custom requirements or select a preset domain below.</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-950/70 border border-slate-800">
-                      <span className="w-4 h-4 rounded-full bg-indigo-500/20 text-indigo-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">2</span>
+                    <div className={`flex items-start gap-2 p-2 rounded-xl border ${
+                      canvasTheme === 'light' ? 'bg-white border-indigo-200 shadow-xs' : 'bg-slate-950/70 border-slate-800'
+                    }`}>
+                      <span className="w-4 h-4 rounded-full bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">2</span>
                       <div>
-                        <p className="font-bold text-slate-200 text-[11px]">2. Target Blueprint</p>
-                        <p className="text-[10px] text-slate-400 leading-tight">Select target blueprint (GCP, AWS, RAG, ERD, Security).</p>
+                        <p className={`font-bold text-[11px] ${canvasTheme === 'light' ? 'text-slate-900' : 'text-slate-200'}`}>2. Target Blueprint</p>
+                        <p className={`text-[10px] leading-tight ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>Select target blueprint (GCP, AWS, RAG, ERD, Security).</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-950/70 border border-slate-800">
-                      <span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">3</span>
+                    <div className={`flex items-start gap-2 p-2 rounded-xl border ${
+                      canvasTheme === 'light' ? 'bg-white border-emerald-200 shadow-xs' : 'bg-slate-950/70 border-slate-800'
+                    }`}>
+                      <span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-extrabold flex items-center justify-center text-[10px] shrink-0">3</span>
                       <div>
-                        <p className="font-bold text-slate-200 text-[11px]">3. Compile &amp; Refine</p>
-                        <p className="text-[10px] text-slate-400 leading-tight">Gemini AI generates collision-free Draw.io XML with business cases.</p>
+                        <p className={`font-bold text-[11px] ${canvasTheme === 'light' ? 'text-slate-900' : 'text-slate-200'}`}>3. Compile &amp; Refine</p>
+                        <p className={`text-[10px] leading-tight ${canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>Gemini AI generates collision-free Draw.io XML with business cases.</p>
                       </div>
                     </div>
                   </div>
@@ -2777,9 +2819,11 @@ function WorkspaceContent() {
               {/* Direct Embedded Prompt Input Form */}
               <form onSubmit={handleCreateDiagram} className="space-y-4 pt-1">
                 <div className="space-y-1.5">
-                  <label className="flex items-center justify-between text-xs font-bold text-slate-300">
-                    <span className="flex items-center gap-1.5 text-teal-300">
-                      <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                  <label className={`flex items-center justify-between text-xs font-bold ${
+                    canvasTheme === 'light' ? 'text-slate-800' : 'text-slate-300'
+                  }`}>
+                    <span className="flex items-center gap-1.5 text-teal-600 dark:text-teal-300">
+                      <Sparkles className="w-3.5 h-3.5 text-teal-500" />
                       <span>Prompt Specification</span>
                     </span>
                   </label>
@@ -2794,7 +2838,11 @@ function WorkspaceContent() {
                     }}
                     placeholder="Describe the system architecture you want to build..."
                     rows={3}
-                    className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-2xl p-4 text-xs md:text-sm outline-none resize-none shadow-inner transition-all leading-relaxed font-sans"
+                    className={`w-full rounded-2xl p-4 text-xs md:text-sm outline-none resize-none shadow-inner transition-all leading-relaxed font-sans border ${
+                      canvasTheme === 'light'
+                        ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500'
+                        : 'bg-[#070A13] border-slate-700/80 text-white placeholder-slate-500 focus:border-teal-400'
+                    }`}
                   />
                 </div>
 
@@ -2803,10 +2851,12 @@ function WorkspaceContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
                     {/* Project Name */}
                     <div className="sm:col-span-4 space-y-1.5">
-                      <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                      <label className={`block text-xs font-bold flex items-center justify-between ${
+                        canvasTheme === 'light' ? 'text-slate-800' : 'text-slate-300'
+                      }`}>
                         <span>Project</span>
                         {earlierProjects.length > 0 && (
-                          <span className="text-[10px] text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
+                          <span className="text-[10px] text-teal-600 dark:text-teal-400 font-mono">({earlierProjects.length} earlier)</span>
                         )}
                       </label>
                       <div className="flex items-center gap-1.5">
@@ -2815,7 +2865,11 @@ function WorkspaceContent() {
                           value={newProjectName}
                           onChange={(e) => setNewProjectName(e.target.value)}
                           placeholder="e.g. Project-Alpha-101"
-                          className="flex-1 min-w-0 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2 text-xs md:text-sm outline-none transition-all font-medium truncate"
+                          className={`flex-1 min-w-0 rounded-xl px-3.5 py-2 text-xs md:text-sm outline-none transition-all font-medium truncate border ${
+                            canvasTheme === 'light'
+                              ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500'
+                              : 'bg-[#070A13] border-slate-700/80 text-white placeholder-slate-500 focus:border-teal-400'
+                          }`}
                         />
                         {earlierProjects.length > 0 && (
                           <select
@@ -2823,12 +2877,16 @@ function WorkspaceContent() {
                             onChange={(e) => {
                               if (e.target.value) setNewProjectName(e.target.value);
                             }}
-                            className="w-24 bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-400 rounded-xl px-2 py-2 text-xs outline-none cursor-pointer shrink-0"
+                            className={`w-24 rounded-xl px-2 py-2 text-xs outline-none cursor-pointer shrink-0 border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-300 text-teal-800'
+                                : 'bg-[#070A13] border-slate-700/80 text-teal-400'
+                            }`}
                             title="Choose from earlier projects"
                           >
                             <option value="" disabled>📂 Earlier</option>
                             {earlierProjects.map((p: string) => (
-                              <option key={p} value={p} className="bg-[#0B101D] text-slate-200">
+                              <option key={p} value={p} className={canvasTheme === 'light' ? 'bg-white text-slate-900' : 'bg-[#0B101D] text-slate-200'}>
                                 {p}
                               </option>
                             ))}
@@ -2839,7 +2897,9 @@ function WorkspaceContent() {
 
                     {/* Diagram Name */}
                     <div className="sm:col-span-4 space-y-1.5">
-                      <label className="block text-xs font-bold text-slate-300">
+                      <label className={`block text-xs font-bold ${
+                        canvasTheme === 'light' ? 'text-slate-800' : 'text-slate-300'
+                      }`}>
                         Diagram Name
                       </label>
                       <input
@@ -2847,15 +2907,21 @@ function WorkspaceContent() {
                         value={newDiagramName}
                         onChange={(e) => setNewDiagramName(e.target.value)}
                         placeholder="Diagram Name"
-                        className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-white placeholder-slate-500 rounded-xl px-3.5 py-2 text-xs md:text-sm outline-none transition-all font-medium"
+                        className={`w-full rounded-xl px-3.5 py-2 text-xs md:text-sm outline-none transition-all font-medium border ${
+                          canvasTheme === 'light'
+                            ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500'
+                            : 'bg-[#070A13] border-slate-700/80 text-white placeholder-slate-500 focus:border-teal-400'
+                        }`}
                       />
                     </div>
 
                     {/* Target Blueprint */}
                     <div className="sm:col-span-4 space-y-1.5">
-                      <label className="block text-xs font-bold text-slate-300 flex items-center justify-between">
+                      <label className={`block text-xs font-bold flex items-center justify-between ${
+                        canvasTheme === 'light' ? 'text-slate-800' : 'text-slate-300'
+                      }`}>
                         <span>Target Blueprint Reference</span>
-                        <span className="text-[10px] text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
+                        <span className="text-[10px] text-teal-600 dark:text-teal-400 font-mono">({facetedOptions.matchingCount} matching)</span>
                       </label>
                       <select
                         value={selectedArchType}
@@ -2882,19 +2948,23 @@ function WorkspaceContent() {
                             }
                           }
                         }}
-                        className="w-full bg-[#070A13] border border-slate-700/80 focus:border-teal-400 text-teal-300 font-bold rounded-xl px-3 py-2 text-xs md:text-sm outline-none transition-all cursor-pointer truncate"
+                        className={`w-full font-bold rounded-xl px-3 py-2 text-xs md:text-sm outline-none transition-all cursor-pointer truncate border ${
+                          canvasTheme === 'light'
+                            ? 'bg-white border-slate-300 text-teal-900 focus:border-teal-500'
+                            : 'bg-[#070A13] border-slate-700/80 text-teal-300 focus:border-teal-400'
+                        }`}
                       >
-                        <option value="unified_system_view" className="bg-[#0B101D] text-teal-300 font-extrabold">
+                        <option value="unified_system_view" className={canvasTheme === 'light' ? 'bg-white text-teal-900 font-extrabold' : 'bg-[#0B101D] text-teal-300 font-extrabold'}>
                           ✨ All Matching ({facetedOptions.matchingCount} Blueprints)
                         </option>
                         {facetedOptions.matchingBlueprints.length > 0 ? (
                           facetedOptions.matchingBlueprints.map((item) => (
-                            <option key={item.combinedId} value={item.combinedId} className="bg-[#0B101D] text-slate-200 font-medium">
+                            <option key={item.combinedId} value={item.combinedId} className={canvasTheme === 'light' ? 'bg-white text-slate-900 font-medium' : 'bg-[#0B101D] text-slate-200 font-medium'}>
                               {item.diagramName}
                             </option>
                           ))
                         ) : (
-                          <option disabled value="" className="bg-[#0B101D] text-amber-400 font-bold">
+                          <option disabled value="" className={canvasTheme === 'light' ? 'bg-white text-amber-700 font-bold' : 'bg-[#0B101D] text-amber-400 font-bold'}>
                             ⚠️ No blueprints match this combination
                           </option>
                         )}
@@ -2905,13 +2975,19 @@ function WorkspaceContent() {
                   {/* 2-Column Categorized Architectural Dimensions */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* Column 1: Core Architectural Classification */}
-                    <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-4 space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                        <span className="text-[11px] font-black uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                          <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                    <div className={`border rounded-2xl p-4 space-y-3 ${
+                      canvasTheme === 'light' ? 'bg-slate-50/80 border-slate-200' : 'bg-[#070A13]/90 border-slate-800/90'
+                    }`}>
+                      <div className={`flex items-center justify-between border-b pb-2 ${
+                        canvasTheme === 'light' ? 'border-slate-200' : 'border-slate-800'
+                      }`}>
+                        <span className="text-[11px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-teal-500" />
                           <span>1. Core Architectural Classification</span>
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 font-mono">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full border font-mono ${
+                          canvasTheme === 'light' ? 'bg-teal-50 border-teal-200 text-teal-800' : 'bg-teal-500/10 border-teal-500/30 text-teal-300'
+                        }`}>
                           3 Dimensions
                         </span>
                       </div>
@@ -2919,19 +2995,25 @@ function WorkspaceContent() {
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {/* 1. Phase Name */}
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Lifecycle Phase">
+                          <label className={`block text-[11px] font-bold truncate ${
+                            canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                          }`} title="Lifecycle Phase">
                             Lifecycle Phase
                           </label>
                           <select
                             value={selectedPhaseName}
                             onChange={(e) => setSelectedPhaseName(e.target.value)}
-                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                            className={`w-full text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-300 text-slate-800 focus:border-teal-500'
+                                : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                            }`}
                           >
-                            <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 7 Phases ({allTemplates.length})</option>
+                            <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All 7 Phases ({allTemplates.length})</option>
                             {PHASE_NAME_OPTIONS.map((opt) => {
                               const count = facetedOptions.phaseCounts[opt] || 0;
                               return (
-                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? `bg-white ${count > 0 ? 'text-slate-900' : 'text-slate-400'}` : `bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
                                   {opt.split(':')[0]} ({count})
                                 </option>
                               );
@@ -2941,19 +3023,25 @@ function WorkspaceContent() {
 
                         {/* 2. Architecture Domain */}
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architecture Domain">
+                          <label className={`block text-[11px] font-bold truncate ${
+                            canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                          }`} title="Architecture Domain">
                             Domain
                           </label>
                           <select
                             value={selectedDomain}
                             onChange={(e) => setSelectedDomain(e.target.value)}
-                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                            className={`w-full text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-300 text-slate-800 focus:border-teal-500'
+                                : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                            }`}
                           >
-                            <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 6 Domains</option>
+                            <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All 6 Domains</option>
                             {ARCHITECTURE_DOMAIN_OPTIONS.map((opt) => {
                               const count = facetedOptions.domainCounts[opt] || 0;
                               return (
-                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? `bg-white ${count > 0 ? 'text-slate-900' : 'text-slate-400'}` : `bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
                                   {opt} ({count})
                                 </option>
                               );
@@ -2963,19 +3051,25 @@ function WorkspaceContent() {
 
                         {/* 3. Abstraction Level */}
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Abstraction Level">
+                          <label className={`block text-[11px] font-bold truncate ${
+                            canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                          }`} title="Abstraction Level">
                             Abstraction
                           </label>
                           <select
                             value={selectedAbstractionLevel}
                             onChange={(e) => setSelectedAbstractionLevel(e.target.value)}
-                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-teal-400 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate"
+                            className={`w-full text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all truncate border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-300 text-slate-800 focus:border-teal-500'
+                                : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-teal-400'
+                            }`}
                           >
-                            <option value="ALL" className="bg-[#0B101D] text-teal-300 font-bold">✨ All 4 Levels</option>
+                            <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-teal-800 font-bold' : 'bg-[#0B101D] text-teal-300 font-bold'}>✨ All 4 Levels</option>
                             {ABSTRACTION_LEVEL_OPTIONS.map((opt) => {
                               const count = facetedOptions.abstractionCounts[opt] || 0;
                               return (
-                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? `bg-white ${count > 0 ? 'text-slate-900' : 'text-slate-400'}` : `bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
                                   {opt} ({count})
                                 </option>
                               );
@@ -2986,19 +3080,25 @@ function WorkspaceContent() {
                     </div>
 
                     {/* Column 2: Technical & Delivery Specifications */}
-                    <div className="bg-[#070A13]/90 border border-slate-800/90 rounded-2xl p-4 space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                        <span className="text-[11px] font-black uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
-                          <Settings2 className="w-3.5 h-3.5 text-indigo-400" />
+                    <div className={`border rounded-2xl p-4 space-y-3 ${
+                      canvasTheme === 'light' ? 'bg-slate-50/80 border-slate-200' : 'bg-[#070A13]/90 border-slate-800/90'
+                    }`}>
+                      <div className={`flex items-center justify-between border-b pb-2 ${
+                        canvasTheme === 'light' ? 'border-slate-200' : 'border-slate-800'
+                      }`}>
+                        <span className="text-[11px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                          <Settings2 className="w-3.5 h-3.5 text-indigo-500" />
                           <span>2. Technical &amp; Delivery Specifications</span>
                         </span>
                         <button
                           type="button"
                           onClick={handleResetFilters}
-                          className="text-[10px] font-bold text-slate-400 hover:text-teal-300 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                          className={`text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors ${
+                            canvasTheme === 'light' ? 'text-slate-500 hover:text-teal-700' : 'text-slate-400 hover:text-teal-300'
+                          }`}
                           title="Reset all dimension filters"
                         >
-                          <RotateCcw className="w-3 h-3 text-slate-400 hover:text-teal-300" />
+                          <RotateCcw className="w-3 h-3" />
                           <span>Reset Filters</span>
                         </button>
                       </div>
@@ -3006,19 +3106,25 @@ function WorkspaceContent() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                         {/* 4. Architectural Stack Layer */}
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Architectural Stack Layer">
+                          <label className={`block text-[11px] font-bold truncate ${
+                            canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                          }`} title="Architectural Stack Layer">
                             Stack Layer
                           </label>
                           <select
                             value={selectedStackLayer}
                             onChange={(e) => setSelectedStackLayer(e.target.value)}
-                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-indigo-400 text-slate-200 text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate"
+                            className={`w-full text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-300 text-slate-800 focus:border-indigo-500'
+                                : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-indigo-400'
+                            }`}
                           >
-                            <option value="ALL" className="bg-[#0B101D] text-indigo-300 font-bold">✨ All 5 Layers</option>
+                            <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-indigo-800 font-bold' : 'bg-[#0B101D] text-indigo-300 font-bold'}>✨ All 5 Layers</option>
                             {ARCHITECTURAL_STACK_LAYER_OPTIONS.map((opt) => {
                               const count = facetedOptions.stackLayerCounts[opt] || 0;
                               return (
-                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? `bg-white ${count > 0 ? 'text-slate-900' : 'text-slate-400'}` : `bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
                                   {opt} ({count})
                                 </option>
                               );
@@ -3028,19 +3134,25 @@ function WorkspaceContent() {
 
                         {/* 5. Default Layout Direction */}
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Default Layout Direction">
+                          <label className={`block text-[11px] font-bold truncate ${
+                            canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                          }`} title="Default Layout Direction">
                             Direction
                           </label>
                           <select
                             value={selectedLayoutDirection}
                             onChange={(e) => setSelectedLayoutDirection(e.target.value)}
-                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-indigo-400 text-slate-200 text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate"
+                            className={`w-full text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-300 text-slate-800 focus:border-indigo-500'
+                                : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-indigo-400'
+                            }`}
                           >
-                            <option value="ALL" className="bg-[#0B101D] text-indigo-300 font-bold">✨ All Directions</option>
+                            <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-indigo-800 font-bold' : 'bg-[#0B101D] text-indigo-300 font-bold'}>✨ All Directions</option>
                             {DEFAULT_LAYOUT_DIRECTION_OPTIONS.map((opt) => {
                               const count = facetedOptions.directionCounts[opt] || 0;
                               return (
-                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? `bg-white ${count > 0 ? 'text-slate-900' : 'text-slate-400'}` : `bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
                                   {opt === 'LR' ? 'LR (Horizontal)' : opt === 'TD' ? 'TD (Vertical)' : opt} ({count})
                                 </option>
                               );
@@ -3050,19 +3162,25 @@ function WorkspaceContent() {
 
                         {/* 6. Sales Cycle Stage */}
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Sales Cycle Stage">
+                          <label className={`block text-[11px] font-bold truncate ${
+                            canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                          }`} title="Sales Cycle Stage">
                             Sales Stage
                           </label>
                           <select
                             value={selectedSalesCycleStage}
                             onChange={(e) => setSelectedSalesCycleStage(e.target.value)}
-                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-indigo-400 text-slate-200 text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate"
+                            className={`w-full text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-300 text-slate-800 focus:border-indigo-500'
+                                : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-indigo-400'
+                            }`}
                           >
-                            <option value="ALL" className="bg-[#0B101D] text-indigo-300 font-bold">✨ All Stages</option>
+                            <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-indigo-800 font-bold' : 'bg-[#0B101D] text-indigo-300 font-bold'}>✨ All Stages</option>
                             {SALES_CYCLE_STAGE_OPTIONS.map((opt) => {
                               const count = facetedOptions.salesStageCounts[opt] || 0;
                               return (
-                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? `bg-white ${count > 0 ? 'text-slate-900' : 'text-slate-400'}` : `bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
                                   {opt} ({count})
                                 </option>
                               );
@@ -3072,19 +3190,25 @@ function WorkspaceContent() {
 
                         {/* 7. Lifecycle Phase */}
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-bold text-slate-300 truncate" title="Delivery Lifecycle">
+                          <label className={`block text-[11px] font-bold truncate ${
+                            canvasTheme === 'light' ? 'text-slate-700' : 'text-slate-300'
+                          }`} title="Delivery Lifecycle">
                             Delivery Lifecycle
                           </label>
                           <select
                             value={selectedLifecyclePhase}
                             onChange={(e) => setSelectedLifecyclePhase(e.target.value)}
-                            className="w-full bg-[#0B101D] border border-slate-700/80 focus:border-indigo-400 text-slate-200 text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate"
+                            className={`w-full text-xs rounded-xl px-2 py-2 outline-none cursor-pointer transition-all truncate border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-300 text-slate-800 focus:border-indigo-500'
+                                : 'bg-[#0B101D] border-slate-700/80 text-slate-200 focus:border-indigo-400'
+                            }`}
                           >
-                            <option value="ALL" className="bg-[#0B101D] text-indigo-300 font-bold">✨ All Lifecycles</option>
+                            <option value="ALL" className={canvasTheme === 'light' ? 'bg-white text-indigo-800 font-bold' : 'bg-[#0B101D] text-indigo-300 font-bold'}>✨ All Lifecycles</option>
                             {LIFECYCLE_PHASE_OPTIONS.map((opt) => {
                               const count = facetedOptions.lifecycleCounts[opt] || 0;
                               return (
-                                <option key={opt} value={opt} disabled={count === 0} className={`bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                <option key={opt} value={opt} disabled={count === 0} className={canvasTheme === 'light' ? `bg-white ${count > 0 ? 'text-slate-900' : 'text-slate-400'}` : `bg-[#0B101D] ${count > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
                                   {opt} ({count})
                                 </option>
                               );
@@ -3096,11 +3220,17 @@ function WorkspaceContent() {
                   </div>
 
                   {/* Action Button Row */}
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+                  <div className={`flex items-center justify-between pt-2 border-t ${
+                    canvasTheme === 'light' ? 'border-slate-200' : 'border-slate-800'
+                  }`}>
                     <button
                       type="button"
                       onClick={() => setIsPromptStudioExpanded(false)}
-                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs transition-all cursor-pointer"
+                      className={`px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer border ${
+                        canvasTheme === 'light'
+                          ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                          : 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border-slate-700'
+                      }`}
                     >
                       Close Prompt Studio
                     </button>
@@ -3120,11 +3250,39 @@ function WorkspaceContent() {
 
           {/* Top-Down Hierarchical Architecture Templates Explorer (Phase → Domain → Leaf Blueprints) */}
           <TopDownTemplatesExplorer
+            theme={canvasTheme}
             searchQuery={templateSearchQuery}
             activeBlueprintId={selectedArchType}
-            onSelectBlueprint={(blueprintId) => {
+            onSelectBlueprint={async (blueprintId) => {
               setCurrentTab('editor');
-              handleArchitectureSwitch(blueprintId);
+              if (!activeDiagram) {
+                const title = getTemplateTitle(blueprintId) || 'Enterprise Architecture';
+                const defaultXml = getDefaultXmlForArchitecture(blueprintId) || '';
+                try {
+                  const res = await fetch('/api/diagrams', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
+                    body: JSON.stringify({
+                      name: generateUniqueDiagramName(title),
+                      xml: defaultXml,
+                      comment: `Master Blueprint: ${title}`,
+                      architectureType: blueprintId,
+                      isPrivate: isPrivate
+                    })
+                  });
+                  if (res.ok) {
+                    const data = await res.json();
+                    await fetchDiagrams();
+                    await loadDiagramDetails(data.diagram.id);
+                  } else {
+                    handleArchitectureSwitch(blueprintId);
+                  }
+                } catch (e) {
+                  handleArchitectureSwitch(blueprintId);
+                }
+              } else {
+                handleArchitectureSwitch(blueprintId);
+              }
               if (typeof window !== 'undefined') {
                 const params = new URLSearchParams(window.location.search);
                 params.delete('tab');
@@ -4921,12 +5079,13 @@ function WorkspaceContent() {
   }, [displayedVersion?.architecture_type, activeVersion?.architecture_type, selectedArchType]);
 
   const costReport = React.useMemo(() => {
+    const activeXml = customXml || activeXmlRef.current || displayedVersion?.xml_content || activeVersion?.xml_content || '';
     return estimateCloudArchitectureCost(
-      displayedVersion?.xml_content || activeVersion?.xml_content || '',
+      activeXml,
       activeDiagram?.name || 'Cloud Architecture',
       selectedArchType
     );
-  }, [displayedVersion?.xml_content, activeVersion?.xml_content, activeDiagram?.name, selectedArchType]);
+  }, [customXml, displayedVersion?.xml_content, activeVersion?.xml_content, activeDiagram?.name, selectedArchType]);
 
 function transformXmlToExecutiveObsidianHud(xml: string): string {
   if (!xml) return xml;
@@ -5322,6 +5481,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       setPreviewVersion(null);
       activeXmlRef.current = targetVersion.xml_content;
       setCustomXml(targetVersion.xml_content);
+      setUndoStack([]);
+      setRedoStack([]);
 
       if (activeDiagram?.id) {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
@@ -5381,6 +5542,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       setPreviewVersion(null);
       activeXmlRef.current = newVer.xml_content;
       setCustomXml(newVer.xml_content);
+      setUndoStack([]);
+      setRedoStack([]);
 
       if (activeDiagram?.id) {
         fetch(`/api/diagrams/${activeDiagram.id}`, {
@@ -5458,7 +5621,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
   // Global Keyboard Navigation for Canvas Architecture Diagrams (ArrowLeft / ArrowRight)
   useEffect(() => {
     function handleCanvasKeyDown(e: KeyboardEvent) {
-      if (previewModalTemplateId) return;
+      if (currentTab !== 'editor' || !activeDiagram || previewModalTemplateId) return;
 
       const target = e.target as HTMLElement | null;
       const tagName = target?.tagName?.toLowerCase() || '';
@@ -5466,7 +5629,21 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         return;
       }
 
-      if (isCreateModalOpen || isSaveModalOpen || isInlineEditorOpen || isInspectModalOpen || isExecutiveSummaryOpen || isUseCaseModalOpen || isVersionDiffModalOpen || isPlaybookModalOpen || isSetMasterModalOpen) {
+      if (
+        isCreateModalOpen ||
+        isSaveModalOpen ||
+        isInlineEditorOpen ||
+        isInspectModalOpen ||
+        isExecutiveSummaryOpen ||
+        isUseCaseModalOpen ||
+        isVersionDiffModalOpen ||
+        isPlaybookModalOpen ||
+        isSetMasterModalOpen ||
+        isPromptDossierOpen ||
+        isExportModalOpen ||
+        isCostModalOpen ||
+        isByokModalOpen
+      ) {
         return;
       }
 
@@ -5489,6 +5666,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     window.addEventListener('keydown', handleCanvasKeyDown);
     return () => window.removeEventListener('keydown', handleCanvasKeyDown);
   }, [
+    currentTab,
+    activeDiagram,
     selectedArchType,
     previewModalTemplateId,
     isCreateModalOpen,
@@ -5499,7 +5678,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     isUseCaseModalOpen,
     isVersionDiffModalOpen,
     isPlaybookModalOpen,
-    isSetMasterModalOpen
+    isSetMasterModalOpen,
+    isPromptDossierOpen,
+    isExportModalOpen,
+    isCostModalOpen,
+    isByokModalOpen
   ]);
 
   // Multi-Tab Synchronization via BroadcastChannel
@@ -7098,6 +7281,57 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 </div>
               </div>
             )}
+            {/* Mobile / Tablet AI Assistant Drawer Modal */}
+            {mobileTab === 'assistant' && activeDiagram && (
+              <div className="lg:hidden absolute inset-0 z-40 bg-black/60 backdrop-blur-sm p-3 overflow-y-auto flex flex-col justify-end animate-fade-in">
+                <div className={`rounded-3xl border p-4 shadow-2xl max-h-[85vh] overflow-y-auto flex flex-col space-y-3 ${
+                  canvasTheme === 'light' ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#070A13] border-slate-800 text-slate-100'
+                }`}>
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-xs font-black uppercase tracking-wider flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Gemini Enterprise AI Studio</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setMobileTab('canvas')}
+                      className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <GeminiEnterpriseLeftStudio
+                    activeDiagram={activeDiagram}
+                    activeVersion={activeVersion}
+                    displayedVersion={displayedVersion}
+                    selectedArchType={selectedArchType}
+                    suggestions={suggestions}
+                    promptInput={promptInput}
+                    isGenerating={isGenerating}
+                    isAuditing={isAuditing}
+                    costEstimateMonthly={costReport.totalMonthlyCostUsd}
+                    dynamicPlaceholder={dynamicPlaceholder}
+                    theme={canvasTheme}
+                    onPromptChange={(val) => setPromptInput(val)}
+                    onSendPrompt={(e) => {
+                      handleSendPrompt(e);
+                      setMobileTab('canvas');
+                    }}
+                    onSelectSuggestion={(s) => setPromptInput(s)}
+                    onOpenExportModal={() => setIsExportModalOpen(true)}
+                    onOpenPlaybookModal={() => setIsPlaybookModalOpen(true)}
+                    onOpenSetMasterModal={() => setIsSetMasterModalOpen(true)}
+                    onOpenCostModal={() => setIsCostModalOpen(true)}
+                    onOpenComposeModal={() => setIsComposeOpen(true)}
+                    onAuditDiagram={() => {
+                      handleAuditDiagram();
+                      setMobileTab('canvas');
+                    }}
+                    onOpenPromptDossier={() => setIsPromptDossierOpen(true)}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
@@ -7922,17 +8156,25 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
           {/* Tour Step Cards */}
           {tourStep === 1 && (
-            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-4xl bg-slate-950/95 border border-teal-500/40 p-6 md:p-8 rounded-3xl shadow-[0_0_80px_rgba(20,184,166,0.2)] z-[70] space-y-6 animate-fade-in backdrop-blur-2xl">
+            <div className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-4xl p-6 md:p-8 rounded-3xl z-[70] space-y-6 animate-fade-in backdrop-blur-2xl border ${
+              canvasTheme === 'light'
+                ? 'bg-white/95 border-slate-200 text-slate-900 shadow-2xl'
+                : 'bg-slate-950/95 border-teal-500/40 text-white shadow-[0_0_80px_rgba(20,184,166,0.2)]'
+            }`}>
               {/* Header Banner */}
               <div className="text-center space-y-2">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500/15 via-emerald-500/15 to-cyan-500/15 border border-teal-500/30 px-3.5 py-1 rounded-full text-[11px] font-black uppercase tracking-widest text-teal-300">
-                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-teal-400" />
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500/15 via-emerald-500/15 to-cyan-500/15 border border-teal-500/30 px-3.5 py-1 rounded-full text-[11px] font-black uppercase tracking-widest text-teal-600 dark:text-teal-300">
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-teal-500 dark:text-teal-400" />
                   <span>DesignerUp Principle: Role Personalization</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+                <h3 className={`text-2xl md:text-3xl font-black tracking-tight ${
+                  canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                }`}>
                   Choose Your Architectural Persona
                 </h3>
-                <p className="text-xs md:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+                <p className={`text-xs md:text-sm max-w-xl mx-auto leading-relaxed ${
+                  canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-300'
+                }`}>
                   Select your role to instantly hydrate PromptCanvas with tailored starter blueprints, persona-focused AI prompts, and domain-specific audit rules.
                 </p>
               </div>
@@ -7944,31 +8186,41 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   onClick={() => setSelectedPersona('architect')}
                   className={`relative p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
                     selectedPersona === 'architect'
-                      ? 'bg-slate-900/90 border-teal-400 ring-2 ring-teal-400/40 shadow-xl shadow-teal-500/15 scale-[1.01]'
-                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                      ? canvasTheme === 'light'
+                        ? 'bg-teal-50/90 border-teal-500 ring-2 ring-teal-400/40 shadow-lg shadow-teal-500/10 scale-[1.01]'
+                        : 'bg-slate-900/90 border-teal-400 ring-2 ring-teal-400/40 shadow-xl shadow-teal-500/15 scale-[1.01]'
+                      : canvasTheme === 'light'
+                        ? 'bg-slate-50/80 border-slate-200 hover:border-teal-300 hover:bg-slate-100'
+                        : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <div className="w-11 h-11 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-300">
+                    <div className="w-11 h-11 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-600 dark:text-teal-300">
                       <Briefcase className="w-5 h-5" />
                     </div>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-teal-500/10 text-teal-300 border border-teal-500/30 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/30 uppercase tracking-wider">
                       🏢 System Strategy
                     </span>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                    <h4 className={`font-extrabold text-sm flex items-center gap-2 ${
+                      canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                    }`}>
                       <span>Enterprise Systems Architect</span>
                       {selectedPersona === 'architect' && (
-                        <CheckCircle2 className="w-4 h-4 text-teal-400" />
+                        <CheckCircle2 className="w-4 h-4 text-teal-500" />
                       )}
                     </h4>
-                    <p className="text-xs text-slate-300 leading-relaxed">
+                    <p className={`text-xs leading-relaxed ${
+                      canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-300'
+                    }`}>
                       Master multi-tier cloud topology, VPC perimeters, system boundaries &amp; enterprise AI platforms.
                     </p>
                   </div>
-                  <div className="pt-1 text-[10px] font-semibold text-slate-300 flex items-center gap-1.5 border-t border-slate-800/80">
-                    <span className="text-teal-400 font-bold">Default Blueprint:</span>
+                  <div className={`pt-1 text-[10px] font-semibold flex items-center gap-1.5 border-t ${
+                    canvasTheme === 'light' ? 'border-slate-200 text-slate-600' : 'border-slate-800/80 text-slate-300'
+                  }`}>
+                    <span className="text-teal-600 dark:text-teal-400 font-bold">Default Blueprint:</span>
                     <span>{currentLanguage === 'hi' ? '10. एकीकृत सिस्टम दृश्य' : '10. Unified System View'}</span>
                   </div>
                 </div>
@@ -7978,31 +8230,41 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   onClick={() => setSelectedPersona('data_engineer')}
                   className={`relative p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
                     selectedPersona === 'data_engineer'
-                      ? 'bg-slate-900/90 border-indigo-400 ring-2 ring-indigo-400/40 shadow-xl shadow-indigo-500/15 scale-[1.01]'
-                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                      ? canvasTheme === 'light'
+                        ? 'bg-indigo-50/90 border-indigo-500 ring-2 ring-indigo-400/40 shadow-lg shadow-indigo-500/10 scale-[1.01]'
+                        : 'bg-slate-900/90 border-indigo-400 ring-2 ring-indigo-400/40 shadow-xl shadow-indigo-500/15 scale-[1.01]'
+                      : canvasTheme === 'light'
+                        ? 'bg-slate-50/80 border-slate-200 hover:border-indigo-300 hover:bg-slate-100'
+                        : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <div className="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-300">
+                    <div className="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-600 dark:text-indigo-300">
                       <Database className="w-5 h-5" />
                     </div>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30 uppercase tracking-wider">
                       📊 Data &amp; Schemas
                     </span>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                    <h4 className={`font-extrabold text-sm flex items-center gap-2 ${
+                      canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                    }`}>
                       <span>Data Engineer &amp; Database Modeler</span>
                       {selectedPersona === 'data_engineer' && (
-                        <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+                        <CheckCircle2 className="w-4 h-4 text-indigo-500" />
                       )}
                     </h4>
-                    <p className="text-xs text-slate-300 leading-relaxed">
+                    <p className={`text-xs leading-relaxed ${
+                      canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-300'
+                    }`}>
                       Design ERDs, dimensional fact/dimension tables, Feature Stores, dbt pipelines &amp; ETL flows.
                     </p>
                   </div>
-                  <div className="pt-1 text-[10px] font-semibold text-slate-300 flex items-center gap-1.5 border-t border-slate-800/80">
-                    <span className="text-indigo-400 font-bold">Default Blueprint:</span>
+                  <div className={`pt-1 text-[10px] font-semibold flex items-center gap-1.5 border-t ${
+                    canvasTheme === 'light' ? 'border-slate-200 text-slate-600' : 'border-slate-800/80 text-slate-300'
+                  }`}>
+                    <span className="text-indigo-600 dark:text-indigo-400 font-bold">Default Blueprint:</span>
                     <span>2. Dimensional Data Model (ERD)</span>
                   </div>
                 </div>
@@ -8012,31 +8274,41 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   onClick={() => setSelectedPersona('ai_engineer')}
                   className={`relative p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
                     selectedPersona === 'ai_engineer'
-                      ? 'bg-slate-900/90 border-emerald-400 ring-2 ring-emerald-400/40 shadow-xl shadow-emerald-500/15 scale-[1.01]'
-                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                      ? canvasTheme === 'light'
+                        ? 'bg-emerald-50/90 border-emerald-500 ring-2 ring-emerald-400/40 shadow-lg shadow-emerald-500/10 scale-[1.01]'
+                        : 'bg-slate-900/90 border-emerald-400 ring-2 ring-emerald-400/40 shadow-xl shadow-emerald-500/15 scale-[1.01]'
+                      : canvasTheme === 'light'
+                        ? 'bg-slate-50/80 border-slate-200 hover:border-emerald-300 hover:bg-slate-100'
+                        : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <div className="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-300">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-300">
                       <Cpu className="w-5 h-5" />
                     </div>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">
                       🤖 GenAI &amp; Agents
                     </span>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                    <h4 className={`font-extrabold text-sm flex items-center gap-2 ${
+                      canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                    }`}>
                       <span>AI &amp; Cognitive Systems Engineer</span>
                       {selectedPersona === 'ai_engineer' && (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                       )}
                     </h4>
-                    <p className="text-xs text-slate-300 leading-relaxed">
+                    <p className={`text-xs leading-relaxed ${
+                      canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-300'
+                    }`}>
                       Build Agentic RAG systems, ReAct reasoning loops, Vertex AI training &amp; model registries.
                     </p>
                   </div>
-                  <div className="pt-1 text-[10px] font-semibold text-slate-300 flex items-center gap-1.5 border-t border-slate-800/80">
-                    <span className="text-emerald-400 font-bold">Default Blueprint:</span>
+                  <div className={`pt-1 text-[10px] font-semibold flex items-center gap-1.5 border-t ${
+                    canvasTheme === 'light' ? 'border-slate-200 text-slate-600' : 'border-slate-800/80 text-slate-300'
+                  }`}>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">Default Blueprint:</span>
                     <span>3. Cognitive Architecture (Agentic RAG)</span>
                   </div>
                 </div>
@@ -8046,42 +8318,58 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   onClick={() => setSelectedPersona('security_lead')}
                   className={`relative p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
                     selectedPersona === 'security_lead'
-                      ? 'bg-slate-900/90 border-amber-400 ring-2 ring-amber-400/40 shadow-xl shadow-amber-500/15 scale-[1.01]'
-                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                      ? canvasTheme === 'light'
+                        ? 'bg-amber-50/90 border-amber-500 ring-2 ring-amber-400/40 shadow-lg shadow-amber-500/10 scale-[1.01]'
+                        : 'bg-slate-900/90 border-amber-400 ring-2 ring-amber-400/40 shadow-xl shadow-amber-500/15 scale-[1.01]'
+                      : canvasTheme === 'light'
+                        ? 'bg-slate-50/80 border-slate-200 hover:border-amber-300 hover:bg-slate-100'
+                        : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300">
+                    <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-300">
                       <ShieldCheck className="w-5 h-5" />
                     </div>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30 uppercase tracking-wider">
                       🛡️ Security &amp; Governance
                     </span>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                    <h4 className={`font-extrabold text-sm flex items-center gap-2 ${
+                      canvasTheme === 'light' ? 'text-slate-900' : 'text-white'
+                    }`}>
                       <span>Cybersecurity &amp; Compliance Lead</span>
                       {selectedPersona === 'security_lead' && (
-                        <CheckCircle2 className="w-4 h-4 text-amber-400" />
+                        <CheckCircle2 className="w-4 h-4 text-amber-500" />
                       )}
                     </h4>
-                    <p className="text-xs text-slate-300 leading-relaxed">
+                    <p className={`text-xs leading-relaxed ${
+                      canvasTheme === 'light' ? 'text-slate-600' : 'text-slate-300'
+                    }`}>
                       Audit IAM policies, SOC2/HIPAA compliance, adversarial threat models &amp; governance state machines.
                     </p>
                   </div>
-                  <div className="pt-1 text-[10px] font-semibold text-slate-300 flex items-center gap-1.5 border-t border-slate-800/80">
-                    <span className="text-amber-400 font-bold">Default Blueprint:</span>
+                  <div className={`pt-1 text-[10px] font-semibold flex items-center gap-1.5 border-t ${
+                    canvasTheme === 'light' ? 'border-slate-200 text-slate-600' : 'border-slate-800/80 text-slate-300'
+                  }`}>
+                    <span className="text-amber-600 dark:text-amber-400 font-bold">Default Blueprint:</span>
                     <span>9. Governance &amp; State Machine</span>
                   </div>
                 </div>
               </div>
 
               {/* Action Bar */}
-              <div className="pt-4 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-slate-800/80">
+              <div className={`pt-4 flex flex-col md:flex-row items-center justify-between gap-4 border-t ${
+                canvasTheme === 'light' ? 'border-slate-200' : 'border-slate-800/80'
+              }`}>
                 <button
                   type="button"
                   onClick={() => setTourStep(null)}
-                  className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                  className={`w-full md:w-auto px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                    canvasTheme === 'light'
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                      : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white border-slate-700'
+                  }`}
                 >
                   Skip Persona Selection
                 </button>

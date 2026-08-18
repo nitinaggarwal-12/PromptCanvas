@@ -672,20 +672,18 @@ export default function Dashboard() {
             <Menu className="w-5 h-5" />
           </button>
 
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center">
-              <div className={`w-full h-full rounded-[10px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#070a13]'}`}>
-                <Network className="w-4 h-4 sm:w-5 sm:h-5 text-teal-accent" />
-              </div>
-            </div>
-            <span className={`font-extrabold tracking-wider text-xs sm:text-sm uppercase hidden min-[420px]:inline ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt Canvas</span>
-          </Link>
-          <span className="text-[10px] sm:text-[11px] font-extrabold text-teal-600 dark:text-teal-accent uppercase tracking-widest px-2 sm:px-3 py-1 rounded bg-teal-500/10 border border-teal-500/20">
-            Operations
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <h1 className={`font-black text-sm sm:text-base tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              Operations Dashboard
+            </h1>
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-extrabold text-teal-600 dark:text-teal-accent uppercase tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">
+            Telemetry &amp; Management
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
           <ThemeToggleBtn id="dashboard-theme-toggle-btn" />
           {user && (
             <>
@@ -693,7 +691,7 @@ export default function Dashboard() {
               <button
                 id="dashboard-user-profile-btn"
                 onClick={() => setIsProfileModalOpen(true)}
-                className={`px-3.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
                   isLight
                     ? 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
                     : 'bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200'
@@ -708,28 +706,28 @@ export default function Dashboard() {
           )}
 
           <Link
-            href="/templates"
-            className={`px-4 py-2.5 rounded-lg border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm ${
+            href="/workspace?tab=templates"
+            className={`px-3.5 py-2 rounded-xl border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm ${
               isLight
-                ? 'bg-slate-100 hover:bg-slate-200 text-teal-800 border-slate-300'
-                : 'bg-slate-800/90 hover:bg-slate-700 text-teal-300 border-teal-500/30 hover:border-teal-400'
+                ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
+                : 'bg-slate-900 hover:bg-slate-800 text-teal-300 border-slate-700'
             }`}
           >
-            <Compass className="w-4 h-4 text-teal-500" />
-            <span>Templates Matrix ({TEMPLATE_CATALOG_ITEMS.length})</span>
+            <LayoutGrid className="w-4 h-4 text-teal-500" />
+            <span>Blueprint Library (50)</span>
           </Link>
 
           <button
             type="button"
             onClick={() => setIsUseCaseModalOpen(true)}
-            className={`px-5 py-3 rounded-lg border font-bold text-sm tracking-wide transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 cursor-pointer ${
               isLight
-                ? 'bg-slate-100 hover:bg-slate-200 text-teal-800 border-slate-300'
-                : 'bg-slate-800 hover:bg-slate-700/90 text-teal-300 border-teal-500/40'
+                ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300 shadow-sm'
+                : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
             }`}
           >
-            <ClipboardList className="w-4.5 h-4.5 text-teal-500" />
-            <span>📋 Use Case Intake Form</span>
+            <ClipboardList className="w-4 h-4 text-teal-500" />
+            <span>Use Case Intake Form</span>
           </button>
 
           <button
@@ -740,10 +738,10 @@ export default function Dashboard() {
               setSelectedTemplate('0');
               setIsCreateModalOpen(true);
             }}
-            className="px-6 py-3 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-bold text-sm tracking-wide transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-extrabold text-xs tracking-wide transition-all shadow-md shadow-teal-500/15 hover:scale-[1.02] flex items-center gap-1.5 cursor-pointer"
           >
-            <Plus className="w-4.5 h-4.5" />
-            <span>Create New Workspace</span>
+            <Plus className="w-4 h-4" />
+            <span>New Architecture</span>
           </button>
         </div>
       </header>

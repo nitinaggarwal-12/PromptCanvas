@@ -175,7 +175,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     .replace(/Priocla call/gi, 'Private call');
 
   // 1e. Enforce clean 2-line Enterprise Governance Header across ALL diagram templates (content-based & ID-based matching)
-  const defaultHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;Enterprise Governed Agentic AI Platform&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;Unified Architecture System View &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; Unified Logical Flow, Technology Stack, Security Boundaries, &amp;amp; Operational Lifecycles&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; Enterprise Architect, AI Engineer&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; Governance Board, SRE&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;SLA: 99.99% Uptime&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
+  const defaultHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#0F172A;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#0F172A;padding-bottom:5px;border-bottom:1px solid #CBD5E1;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#0284C7;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;Enterprise Governed Agentic AI Platform&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#0F172A;padding-bottom:5px;border-bottom:1px solid #CBD5E1;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;Unified Architecture System View &lt;span style='color:#0284C7;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:#ECFDF5;border:1px solid #10B981;color:#047857;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:bold;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#475569;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#0F172A;'&gt;Definition:&lt;/b&gt; Unified Logical Flow, Technology Stack, Security Boundaries, &amp;amp; Operational Lifecycles&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#475569;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#0F172A;'&gt;Personas:&lt;/b&gt; Enterprise Architect, AI Engineer&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#0F172A;'&gt;Stakeholders:&lt;/b&gt; Governance Board, SRE&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#0284C7;font-weight:bold;'&gt;SLA: 99.99% Uptime&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
 
   if (!xml.includes('USE CASE:')) {
     const hasHeaderCell = /(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title|Enterprise Architecture Platform|UNIFIED SYSTEM VIEW)/i.test(xml);
@@ -192,14 +192,33 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       );
     } else if (archType === 'unified_system_view') {
       // 3) Inject clean 2-line Enterprise Governance Header for unified_system_view only
-      const injectedHeaderCell = `\n        <mxCell id="main_title_bar_uv" value="${defaultHeaderHtml}" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1;fontFamily=Helvetica;" vertex="1" parent="1">\n          <mxGeometry x="15" y="15" width="1570" height="60" as="geometry" />\n        </mxCell>`;
+      const injectedHeaderCell = `\n        <mxCell id="main_title_bar_uv" value="${defaultHeaderHtml}" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">\n          <mxGeometry x="15" y="15" width="1570" height="60" as="geometry" />\n        </mxCell>`;
       xml = xml.replace(/(<mxCell\s+id="1"\s+parent="0"\s*\/>)/i, `$1${injectedHeaderCell}`);
     }
   }
 
   xml = xml
     .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[\s\S]*?<mxGeometry\b[^>]*\bheight=")(?:45|50)(")/gi, `$160$2`)
-    .replace(/(<mxCell\s+[^>]*\bvalue=")[^"]*?(?:End-to-End Enterprise Architecture across major phases|सभी प्रमुख चरणों)[^"]*?("\s+style=")/gi, `$1$2`); // Blank colliding secondary subheaders
+    .replace(/(<mxCell\s+[^>]*\bvalue=")[^"]*?(?:End-to-End Enterprise Architecture across major phases|सभी प्रमुख चरणों)[^"]*?("\s+style=")/gi, `$1$2`) // Blank colliding secondary subheaders
+    .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[^>]*style=")[^"]*(")/gi, '$1rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;fontFamily=Helvetica;$2')
+    .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[^>]*value=")([\s\S]*?)(")/gi, (m, p1, p2, p3) => {
+      let lightVal = p2
+        .replace(/color:#FFFFFF/gi, 'color:#0F172A')
+        .replace(/color:\s*#FFFFFF/gi, 'color:#0F172A')
+        .replace(/color:#F8FAFC/gi, 'color:#0F172A')
+        .replace(/color:#F1F5F9/gi, 'color:#0F172A')
+        .replace(/color:#CBD5E1/gi, 'color:#475569')
+        .replace(/color:#E2E8F0/gi, 'color:#0F172A')
+        .replace(/color:#38BDF8/gi, 'color:#0284C7')
+        .replace(/color:#93C5FD/gi, 'color:#0284C7')
+        .replace(/rgba\(255,\s*255,\s*255,\s*0\.2\d*\)/gi, '#CBD5E1');
+      return `${p1}${lightVal}${p3}`;
+    })
+    .replace(/(<mxCell\s+id="sw[1-5]_tab"[^>]*style=")[^"]*(")/gi, '$1rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;fontColor=#0F172A;fontStyle=1;align=center;verticalAlign=middle;$2')
+    .replace(/(<mxCell\s+id="sw[1-5]_tab"[^>]*value=")([\s\S]*?)(")/gi, (m, p1, p2, p3) => {
+      const updatedVal = p2.replace(/color:#FFFFFF/gi, 'color:#0F172A').replace(/color:\s*#FFF/gi, 'color:#0F172A');
+      return `${p1}${updatedVal}${p3}`;
+    });
 
   // Remove stray edge waypoints that drop into y > 1100 margin (Gemini-authored XML only:
   // v2/ELK diagrams are legitimately taller than 1100px and their waypoints are routed)

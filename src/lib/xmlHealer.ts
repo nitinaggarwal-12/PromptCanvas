@@ -118,7 +118,7 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('PromptCanvas-LayoutEngineV2')
   );
 
-  let cleaned = isMasterOrStructured ? inputXml.trim() : preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
+  let cleaned = preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
 
   // 1. Strip Markdown Code Fences if present
   if (cleaned.includes('```')) {

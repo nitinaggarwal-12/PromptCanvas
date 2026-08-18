@@ -66,7 +66,7 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
   };
 
   return (
-    <div className={`w-full h-full overflow-y-auto p-6 sm:p-10 md:p-14 lg:p-16 relative flex flex-col justify-between select-none transition-colors duration-300 ${
+    <div className={`w-full h-full overflow-y-auto p-4 sm:p-6 md:p-8 lg:p-10 relative flex flex-col justify-between select-none transition-colors duration-300 ${
       isLight
         ? 'bg-[#F8FAFC] text-slate-900'
         : 'bg-gradient-to-b from-[#090d16] via-[#070a12] to-[#04060a] text-slate-100'
@@ -88,18 +88,19 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
       <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/5 blur-[140px] rounded-full pointer-events-none" />
 
       {/* Main Wide Container (reclaiming empty desktop width) */}
-      <div className="max-w-[1600px] w-full mx-auto z-10 space-y-10 lg:space-y-14 animate-fade-in my-auto py-4">
+      <div className="max-w-[1600px] w-full mx-auto z-10 space-y-6 md:space-y-8 animate-fade-in my-auto py-2">
         
         {/* Header Title & Subtitle */}
-        <div className="text-center space-y-3.5 max-w-5xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-black uppercase tracking-widest bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-400 shadow-sm">
-            <Sparkles className="w-4 h-4 text-teal-500 dark:text-teal-400" />
+        <div className="text-center space-y-2 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-400 shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
             <span>PromptCanvas AI Studio</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight">
-            How would you like to start your <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-cyan-500 to-indigo-500">architecture?</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+            How would you like to start your<br className="hidden sm:inline" />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-cyan-500 to-indigo-500"> architecture?</span>
           </h1>
-          <p className={`text-base sm:text-lg md:text-xl max-w-3xl mx-auto font-medium leading-relaxed ${
+          <p className={`text-xs sm:text-sm font-medium max-w-2xl mx-auto leading-normal ${
             isLight ? 'text-slate-600' : 'text-slate-400'
           }`}>
             Choose how to begin your cloud design. Describe your system in plain English, select a pre-verified enterprise blueprint, or start with a clean blank canvas.
