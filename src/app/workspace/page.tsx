@@ -6676,7 +6676,14 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     {activeDiagram.versions && activeDiagram.versions.length > 1 && (
                       <button
                         type="button"
-                        onClick={() => setIsVersionDiffModalOpen(true)}
+                        onClick={() => {
+                          if (activeDiagram.versions && activeDiagram.versions.length > 1) {
+                            const sorted = [...activeDiagram.versions].sort((a, b) => b.version_number - a.version_number);
+                            setLeftVersionSelection(sorted[sorted.length - 1]?.id || sorted[1]?.id || sorted[0]?.id || '');
+                            setRightVersionSelection(sorted[0]?.id || '');
+                          }
+                          setIsVersionDiffModalOpen(true);
+                        }}
                         className={`hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
                           canvasTheme === 'light'
                             ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
@@ -8805,154 +8812,135 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       )}
 
       {/* Interactive Edge-to-Edge Fullscreen Version History & Visual Diff Modal */}
-      {isVersionDiffModalOpen && (
-        <div className="fixed inset-0 z-[1000] bg-[#070a13] flex flex-col w-screen h-screen overflow-hidden p-2 gap-2">
-          {/* Header Bar - Reclaimed Space */}
-          <div className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-teal-500/30 bg-[#0b101d] shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400">
-                <FileCode className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-black text-slate-100 uppercase tracking-wide">🔍 FULL-SCREEN DIAGRAM VERSION DIFF &amp; GEOMETRIC INTEGRITY COMPARATOR</h3>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">Zero-Collision v2.0 Active</span>
-                </div>
-                <p className="text-[11px] text-slate-400">Side-by-Side Architectural Visual Comparison • Reclaimed Edge-to-Edge Desktop Layout</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsVersionDiffModalOpen(false)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 text-xs font-bold transition-all cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-              <span>Close Diff Workspace</span>
-            </button>
-          </div>
+      {/* Interactive Edge-to-Edge Fullscreen Version History & Visual Diff Modal */}
+      {isVersionDiffModalOpen && (() => {
+        const activeVersionsList = [...(activeDiagram?.versions || [])].sort((a, b) => (b.version_number || 0) - (a.version_number || 0));
+        const leftVerObj = activeVersionsList.find((v: DiagramVersion) => v.id === leftVersionSelection) 
+          || (activeVersionsList.length > 1 ? activeVersionsList[activeVersionsList.length - 1] : activeVersionsList[0]);
+        const rightVerObj = activeVersionsList.find((v: DiagramVersion) => v.id === rightVersionSelection) 
+          || activeVersionsList[0];
 
-          {/* Dual Edge-to-Edge Side-by-Side Viewport Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 flex-1 min-h-0">
-            {/* LEFT PANEL with Version Selection Dropdown & Highlighted Defects */}
-            <div className="bg-[#0b101d] border border-slate-700/80 rounded-xl p-2.5 flex flex-col min-h-0">
-              <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-800 shrink-0">
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[11px] font-black border border-rose-500/30">LEFT VIEWPORT</span>
-                  <span className="text-xs font-bold text-slate-300">Select Version:</span>
+        return (
+          <div className="fixed inset-0 z-[1000] bg-[#070a13] flex flex-col w-screen h-screen overflow-hidden p-2 gap-2">
+            {/* Header Bar - Reclaimed Space */}
+            <div className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-teal-500/30 bg-[#0b101d] shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400">
+                  <FileCode className="w-4 h-4" />
                 </div>
-                <select
-                  value={leftVersionSelection}
-                  onChange={(e) => setLeftVersionSelection(e.target.value)}
-                  className="bg-slate-950 border border-rose-500/40 focus:border-rose-400 text-rose-200 rounded-lg px-2.5 py-1 text-xs font-bold cursor-pointer"
-                >
-                  <option value="v1_initial">🔴 Version 1.0 Benchmark (Stretched Boxes &amp; Overlaps)</option>
-                  <option value="v2_current">🟢 Version 2.0 Benchmark (Pixel-Perfect Zero-Collision)</option>
-                  {(activeDiagram?.versions || []).map((v: DiagramVersion, idx: number) => (
-                    <option key={v.id} value={v.id}>
-                      📌 Workspace Version #{v.version_number || ((activeDiagram?.versions || []).length - idx)} ({new Date(v.created_at).toLocaleTimeString()})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Bold Visual Highlight Callout Banner for LEFT PANEL */}
-              <div className="grid grid-cols-3 gap-1.5 mb-2 shrink-0">
-                <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium">
-                  <strong>🔴 Overlap 1:</strong> Ingress vector sliced across <code>[2b] Public Subnet</code> title.
-                </div>
-                <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium">
-                  <strong>🔴 Overlap 2:</strong> <code>Outbound Access</code> label sat on <code>[3] NAT</code> border.
-                </div>
-                <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium">
-                  <strong>🔴 Proportions:</strong> Stretched <code>480px</code> boxes crowded subnets.
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-black text-slate-100 uppercase tracking-wide">🔍 DIAGRAM VERSION DIFF &amp; VISUAL DELTA COMPARATOR</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-bold border border-teal-500/30">
+                      {activeDiagram?.name || 'Architecture'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Comparing <span className="text-rose-400 font-bold">Version v{leftVerObj?.version_number || 1}</span> (Baseline) against <span className="text-teal-400 font-bold">Version v{rightVerObj?.version_number || activeVersionsList.length}</span> (Delta) • Edge-to-Edge Desktop Layout
+                  </p>
                 </div>
               </div>
-
-              {/* Full-Height Edge-to-Edge Left Visual Canvas Viewport */}
-              <div className="flex-1 rounded-lg border border-slate-700 bg-white overflow-hidden relative min-h-0">
-                <iframe
-                  key={`left-preview-${leftVersionSelection}`}
-                  src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json&chrome=0"
-                  className="w-full h-full border-none"
-                  onLoad={(e) => {
-                    const target = e.currentTarget;
-                    const xmlToLoad =
-                      leftVersionSelection === 'v1_initial'
-                        ? getExactAgenticMeshXml().replace('w="280"', 'w="480"')
-                        : leftVersionSelection === 'v2_current'
-                        ? getExactAgenticMeshXml()
-                        : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === leftVersionSelection)?.xml_content || getExactAgenticMeshXml();
-                    setTimeout(() => {
-                      try {
-                        target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: sanitizeDrawioXmlAttributes(xmlToLoad), fit: true }), '*');
-                      } catch(err) {}
-                    }, 500);
-                  }}
-                />
-              </div>
+              <button
+                type="button"
+                onClick={() => setIsVersionDiffModalOpen(false)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 text-xs font-bold transition-all cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+                <span>Close Diff Workspace</span>
+              </button>
             </div>
 
-            {/* RIGHT PANEL with Version Selection Dropdown & Highlighted Resolutions */}
-            <div className="bg-[#0b101d] border border-teal-500/50 rounded-xl p-2.5 flex flex-col min-h-0">
-              <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-800 shrink-0">
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[11px] font-black border border-emerald-500/30">RIGHT VIEWPORT</span>
-                  <span className="text-xs font-bold text-slate-300">Select Version:</span>
+            {/* Dual Edge-to-Edge Side-by-Side Viewport Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 flex-1 min-h-0">
+              {/* LEFT PANEL with Version Selection Dropdown & Dynamic Version Details */}
+              <div className="bg-[#0b101d] border border-slate-700/80 rounded-xl p-2.5 flex flex-col min-h-0">
+                <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-800 shrink-0">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[11px] font-black border border-rose-500/30">LEFT (BEFORE)</span>
+                    <span className="text-xs font-bold text-slate-300">Select Version:</span>
+                  </div>
+                  <select
+                    value={leftVersionSelection || leftVerObj?.id}
+                    onChange={(e) => setLeftVersionSelection(e.target.value)}
+                    className="bg-slate-950 border border-rose-500/40 focus:border-rose-400 text-rose-200 rounded-lg px-2.5 py-1 text-xs font-bold cursor-pointer max-w-[340px] truncate"
+                  >
+                    {activeVersionsList.map((v: DiagramVersion, idx: number) => (
+                      <option key={v.id} value={v.id}>
+                        📌 Version v{v.version_number || (activeVersionsList.length - idx)} — {v.comment || v.prompt?.slice(0, 30) || 'Snapshot'} ({new Date(v.created_at).toLocaleTimeString()})
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <select
-                  value={rightVersionSelection}
-                  onChange={(e) => setRightVersionSelection(e.target.value)}
-                  className="bg-slate-950 border border-teal-500/60 focus:border-teal-400 text-teal-300 rounded-lg px-2.5 py-1 text-xs font-bold cursor-pointer"
-                >
-                  <option value="v2_current">🟢 Version 2.0 Benchmark (Pixel-Perfect Zero-Collision)</option>
-                  <option value="v1_initial">🔴 Version 1.0 Benchmark (Stretched Boxes &amp; Overlaps)</option>
-                  {(activeDiagram?.versions || []).map((v: DiagramVersion, idx: number) => (
-                    <option key={v.id} value={v.id}>
-                      📌 Workspace Version #{v.version_number || ((activeDiagram?.versions || []).length - idx)} ({new Date(v.created_at).toLocaleTimeString()})
-                    </option>
-                  ))}
-                </select>
+
+                {/* Dynamic Visual Highlight Callout Banner for LEFT PANEL */}
+                <div className="grid grid-cols-3 gap-1.5 mb-2 shrink-0">
+                  <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium truncate" title={leftVerObj?.prompt || 'Initial prompt'}>
+                    <strong>Prompt:</strong> {leftVerObj?.prompt ? `"${leftVerObj.prompt.slice(0, 35)}..."` : 'Initial Baseline'}
+                  </div>
+                  <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium truncate" title={leftVerObj?.comment || 'Version Snapshot'}>
+                    <strong>Comment:</strong> {leftVerObj?.comment || 'Initial Architectural Creation'}
+                  </div>
+                  <div className="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-[10px] text-rose-200 font-medium truncate">
+                    <strong>Timestamp:</strong> {leftVerObj?.created_at ? new Date(leftVerObj.created_at).toLocaleString() : 'Baseline'}
+                  </div>
+                </div>
+
+                {/* Full-Height Edge-to-Edge Left Visual Canvas Viewport */}
+                <div className="flex-1 rounded-lg border border-slate-700 bg-white overflow-hidden relative min-h-0">
+                  <DiagramViewer
+                    xml={leftVerObj?.xml_content || ''}
+                    diagramId={activeDiagram?.id}
+                    useCaseName={`${activeDiagram?.name || 'Architecture'} (v${leftVerObj?.version_number || 1})`}
+                  />
+                </div>
               </div>
 
-              {/* Bold Visual Highlight Callout Banner for RIGHT PANEL */}
-              <div className="grid grid-cols-3 gap-1.5 mb-2 shrink-0">
-                <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium">
-                  <strong>🟢 Fix 1:</strong> Dedicated <code>40px</code> left entrance channel at <code>x=120</code>.
+              {/* RIGHT PANEL with Version Selection Dropdown & Dynamic Version Details */}
+              <div className="bg-[#0b101d] border border-teal-500/50 rounded-xl p-2.5 flex flex-col min-h-0">
+                <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-800 shrink-0">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[11px] font-black border border-emerald-500/30">RIGHT (AFTER)</span>
+                    <span className="text-xs font-bold text-slate-300">Select Version:</span>
+                  </div>
+                  <select
+                    value={rightVersionSelection || rightVerObj?.id}
+                    onChange={(e) => setRightVersionSelection(e.target.value)}
+                    className="bg-slate-950 border border-teal-500/60 focus:border-teal-400 text-teal-300 rounded-lg px-2.5 py-1 text-xs font-bold cursor-pointer max-w-[340px] truncate"
+                  >
+                    {activeVersionsList.map((v: DiagramVersion, idx: number) => (
+                      <option key={v.id} value={v.id}>
+                        📌 Version v{v.version_number || (activeVersionsList.length - idx)} — {v.comment || v.prompt?.slice(0, 30) || 'Snapshot'} ({new Date(v.created_at).toLocaleTimeString()})
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium">
-                  <strong>🟢 Fix 2:</strong> Wide <code>80px</code> gap with white mask pill on <code>Outbound Access</code>.
-                </div>
-                <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium">
-                  <strong>🟢 Proportions:</strong> Compact <code>280..320px</code> boxes with clear margins.
-                </div>
-              </div>
 
-              {/* Full-Height Edge-to-Edge Right Visual Canvas Viewport */}
-              <div className="flex-1 rounded-lg border border-teal-500/40 bg-white overflow-hidden relative min-h-0">
-                <iframe
-                  key={`right-preview-${rightVersionSelection}`}
-                  src="https://embed.diagrams.net/?embed=1&ui=light&spin=0&proto=json&chrome=0"
-                  className="w-full h-full border-none"
-                  onLoad={(e) => {
-                    const target = e.currentTarget;
-                    const xmlToLoad =
-                      rightVersionSelection === 'v1_initial'
-                        ? getExactAgenticMeshXml().replace('w="280"', 'w="480"')
-                        : rightVersionSelection === 'v2_current'
-                        ? getExactAgenticMeshXml()
-                        : (activeDiagram?.versions || []).find((v: DiagramVersion) => v.id === rightVersionSelection)?.xml_content || getExactAgenticMeshXml();
-                    setTimeout(() => {
-                      try {
-                        target.contentWindow?.postMessage(JSON.stringify({ action: 'load', xml: sanitizeDrawioXmlAttributes(xmlToLoad), fit: true }), '*');
-                      } catch(err) {}
-                    }, 500);
-                  }}
-                />
+                {/* Dynamic Visual Highlight Callout Banner for RIGHT PANEL */}
+                <div className="grid grid-cols-3 gap-1.5 mb-2 shrink-0">
+                  <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium truncate" title={rightVerObj?.prompt || 'Iteration prompt'}>
+                    <strong>Prompt:</strong> {rightVerObj?.prompt ? `"${rightVerObj.prompt.slice(0, 35)}..."` : 'Latest Refinement'}
+                  </div>
+                  <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium truncate" title={rightVerObj?.comment || 'Latest Snapshot'}>
+                    <strong>Comment:</strong> {rightVerObj?.comment || 'Latest Refinement'}
+                  </div>
+                  <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] text-emerald-200 font-medium truncate">
+                    <strong>Timestamp:</strong> {rightVerObj?.created_at ? new Date(rightVerObj.created_at).toLocaleString() : 'Latest'}
+                  </div>
+                </div>
+
+                {/* Full-Height Edge-to-Edge Right Visual Canvas Viewport */}
+                <div className="flex-1 rounded-lg border border-teal-500/40 bg-white overflow-hidden relative min-h-0">
+                  <DiagramViewer
+                    xml={rightVerObj?.xml_content || ''}
+                    diagramId={activeDiagram?.id}
+                    useCaseName={`${activeDiagram?.name || 'Architecture'} (v${rightVerObj?.version_number || 2})`}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       <AuthModal
         isOpen={isAuthOpen}
