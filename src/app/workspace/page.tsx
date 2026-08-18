@@ -128,6 +128,7 @@ import { ProjectHeaderNav } from '@/components/workspace/ProjectHeaderNav';
 import { GeminiEnterpriseBottomChat } from '@/components/workspace/GeminiEnterpriseBottomChat';
 import { GeminiEnterpriseLeftStudio } from '@/components/workspace/GeminiEnterpriseLeftStudio';
 import { ProjectPromptDossierModal } from '@/components/workspace/ProjectPromptDossierModal';
+import { BlueprintCatalogModal } from '@/components/workspace/BlueprintCatalogModal';
 import { WelcomeGetStartedSlate } from '@/components/workspace/WelcomeGetStartedSlate';
 import { useTheme } from '@/lib/themeContext';
 
@@ -6324,139 +6325,20 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
       {/* 2. MAIN WORKSPACE: Split Pane */}
 
-  {isPlaybookModalOpen && (
-    <div className="fixed inset-0 z-[1000] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-[#0b101d] border-2 border-amber-500/40 rounded-3xl max-w-7xl w-full max-h-[92vh] overflow-y-auto shadow-2xl p-6 md:p-8 space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
-              <span>📐 STRATEGIC BLUEPRINT MATRIX &amp; GOVERNANCE CATALOG</span>
-            </div>
-            <h2 className="text-2xl md:text-3xl font-black text-white">Enterprise Architecture Blueprint Matrix</h2>
-          </div>
-          <button
-            onClick={() => setIsPlaybookModalOpen(false)}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all font-bold cursor-pointer"
-          >
-            ✕ Close Table
-          </button>
-        </div>
-
-        <div className="overflow-x-auto rounded-2xl border border-slate-800">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-900 text-slate-300 text-xs uppercase tracking-wider border-b border-slate-800">
-                <th className="p-4 font-extrabold w-48">Architecture Blueprint</th>
-                <th className="p-4 font-extrabold w-36">Strategic Score</th>
-                <th className="p-4 font-extrabold w-56">When to Use (Product Journey)</th>
-                <th className="p-4 font-extrabold w-48">Where to Use (Target Document)</th>
-                <th className="p-4 font-extrabold w-64">Creator &amp; Consumer Personas</th>
-                <th className="p-4 font-extrabold">🚀 Big Tech Product Standpoint (Google / Stripe)</th>
-                <th className="p-4 font-extrabold">💼 Tier-1 Management Consulting Standpoint (McKinsey / BCG)</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/80 text-xs">
-              <tr className="hover:bg-slate-900/40 transition-colors">
-                <td className="p-4 font-black text-white">
-                  11. C4 Enterprise System Context &amp; Container Model (L1 &amp; L2)
-                </td>
-                <td className="p-4 font-black text-amber-400 text-sm">
-                  ★★★★★<br/>5.0 / 5.0
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  <strong className="text-teal-400">Phase 0–1 Greenfield RFC:</strong> Before writing backend service code.<br/><br/>
-                  <strong className="text-teal-400">Growth &amp; Scale:</strong> During Kubernetes/Istio service mesh adoption.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • Technical Design Document (TDD / RFC) Section 2.<br/>
-                  • SOC2 Type II / ISO 27001 Audit Dossier.<br/>
-                  • C-Suite Boardroom Review Deck Slide 3.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  <strong className="text-white">Creator:</strong> Principal Staff Cloud / Security Architect (Staff L7+ at Google).<br/><br/>
-                  <strong className="text-white">Consumer:</strong> CISO, VP of Engineering, External SOC2 Security Auditors.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • <strong className="text-blue-400">Internal RFC Enforcement:</strong> Mandatory inside every Architectural RFC before design freeze.<br/>
-                  • <strong className="text-blue-400">Zero-Trust Perimeter:</strong> BeyondCorp Identity-Aware Proxy (IAP) access policies and GCP Private Service Connect.<br/>
-                  • <strong className="text-blue-400">SRE Postmortems:</strong> Used by SRE teams to trace incident cascading.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • <strong className="text-amber-300">Billable Transformation Anchor:</strong> Boardroom Baseline comparing &quot;As-Is Monolith&quot; vs &quot;To-Be Cloud Native&quot;.<br/>
-                  • <strong className="text-amber-300">Application Portfolio Rationalization (APM):</strong> Identifies duplicate services in 60 minutes.<br/>
-                  • <strong className="text-amber-300">RFP &amp; PMI Integration:</strong> Regulatory compliance proof.
-                </td>
-              </tr>
-
-              <tr className="hover:bg-slate-900/40 transition-colors">
-                <td className="p-4 font-black text-white">
-                  12. Modern Data Stack Architecture Blueprint (CDC, Medallion &amp; Reverse ETL)
-                </td>
-                <td className="p-4 font-black text-amber-400 text-sm">
-                  ★★★★★<br/>5.0 / 5.0
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  <strong className="text-teal-400">Series B+ Data Modernization:</strong> When SQL analytics databases stall under batch ETL lag.<br/><br/>
-                  <strong className="text-teal-400">AI &amp; RAG Monetization:</strong> Building feature stores &amp; enterprise RAG pipelines.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • Enterprise Data Strategy &amp; Governance Charter.<br/>
-                  • Data Engineering Solution Architecture Blueprint (SAD).<br/>
-                  • AI Business Case Deck for Steering Committee.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  <strong className="text-white">Creator:</strong> Principal Staff Data Architect / Analytics Engineer.<br/><br/>
-                  <strong className="text-white">Consumer:</strong> Chief Data Officer (CDO), VP BI, VP Revenue Ops, AI Leads.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • <strong className="text-teal-400">Real-Time Telemetry:</strong> OLTP databases feed CDC WAL events directly into BigQuery &amp; Vertex AI Feature Store.<br/>
-                  • <strong className="text-teal-400">Data Contracts:</strong> Soda.io &amp; Great Expectations CI/CD guardrails.<br/>
-                  • <strong className="text-teal-400">Reverse ETL:</strong> Hightouch/Census sync Gold scores back to production SaaS apps.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • <strong className="text-purple-300">Data &amp; AI Billable Blueprint:</strong> Medallion Lakehouse Zones (Bronze Raw, Silver Cleansed, Gold Boardroom) for warehouse migration.<br/>
-                  • <strong className="text-purple-300">Immediate Top-Line ROI:</strong> Reverse ETL activation in Salesforce/Zendesk.<br/>
-                  • <strong className="text-purple-300">WORM Audit Logs:</strong> Immutable compliance for banking/healthcare.
-                </td>
-              </tr>
-
-              <tr className="hover:bg-slate-900/40 transition-colors">
-                <td className="p-4 font-black text-white">
-                  13. Enterprise Event-Driven Microservices Architecture (EDA Blueprint)
-                </td>
-                <td className="p-4 font-black text-amber-400 text-sm">
-                  ★★★★★<br/>4.9 / 5.0
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  <strong className="text-teal-400">High-Concurrency Scale-Out:</strong> When monolithic synchronous APIs cause cascading timeouts during Black Friday.<br/><br/>
-                  <strong className="text-teal-400">Multi-Region Resiliency:</strong> Asynchronous DLQ automated self-healing replay.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • High-Availability &amp; Reliability Architecture RFC.<br/>
-                  • Disaster Recovery (DR) &amp; Chaos Engineering Runbook.<br/>
-                  • Fintech Payment Processing Auditing Whitepaper.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  <strong className="text-white">Creator:</strong> Principal Distributed Systems Architect / Event-Driven Architect.<br/><br/>
-                  <strong className="text-white">Consumer:</strong> CTO, Head of SRE &amp; Reliability Engineering, Chief Risk Officer.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • <strong className="text-blue-400">Non-Blocking Concurrency:</strong> Decouples payment settlement from heavy downstream shipping/inventory consumers.<br/>
-                  • <strong className="text-blue-400">Transactional Outbox:</strong> At-Least-Once event emission without 2PC lock overhead.<br/>
-                  • <strong className="text-blue-400">Self-Healing DLQ:</strong> Isolates poison-pill events with exponential backoff.
-                </td>
-                <td className="p-4 text-slate-300 leading-relaxed">
-                  • <strong className="text-rose-300">Digital Core Banking:</strong> PCI-DSS regulatory compliance, cryptographic HMAC signatures, and audit traceability.<br/>
-                  • <strong className="text-rose-300">Sub-12ms CEP Fraud Engine:</strong> Automatically freezes compromised customer accounts in &lt;12ms SLA.<br/>
-                  • <strong className="text-rose-300">Regulatory Dossier:</strong> Technical proof exhibit for FED/ECB.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  )}
+      <BlueprintCatalogModal
+        isOpen={isPlaybookModalOpen}
+        onClose={() => setIsPlaybookModalOpen(false)}
+        onSelectBlueprint={(blueprintId, blueprintName) => {
+          setIsPlaybookModalOpen(false);
+          handleArchitectureSwitch(blueprintId);
+          setForceRefreshToast({
+            message: `Created & Loaded "${blueprintName}" Architecture View`,
+            type: 'success'
+          });
+          setTimeout(() => setForceRefreshToast(null), 4000);
+        }}
+        isLight={canvasTheme === 'light'}
+      />
 
       {currentTab === 'editor' && (
         <main className="flex-1 flex flex-col min-w-0 h-full">

@@ -140,130 +140,34 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ---
 
-# 📐 Universal 2D Sequence Diagram & Zero-Occlusion Guardrails (Mandatory)
+# 🔄 MANDATORY INTERACTIVE ACTION-LOOP & ZERO DEAD-END UX PROTOCOL
 
-* **Maximum 140px Label Width Rule (Mandatory Line Splitting)**:
-  - For ANY horizontal edge or line in a Sequence Diagram, Flowchart, or Architecture layout, an edge label MUST NEVER be written as a long single line of text.
-  - **The 140px Formula**: Every text string on a horizontal arrow MUST be split across 2 to 3 compact lines using `<br>` so that no single line exceeds ~25 characters (~135px–140px wide).
-  - **Why**: Since Draw.io automatically centers edge text at the exact midpoint between `sourcePoint` and `targetPoint`, enforcing a max width of 140px guarantees a **50px–70px safety buffer** on both sides, ensuring labels never horizontally collide with numbered circle badges (e.g., `c1`, `c9`, `c14`) or vertical lifeline columns.
-* **30px Minimum Vertical Clear-Zone Rule (Zero Text Occlusion)**:
-  - When placing floating note boxes, callout cards, or ReAct boxes above or below horizontal arrow lines, there must be a **minimum 30px vertical separation** (`gapY >= 30px`) between the outer bounding box of the shape and the centerline of the arrow.
-  - **Why**: Since a 2-line or 3-line centered text label extends 16px–24px above and below an arrow line, any gap `<30px` (such as an 11px gap) will cause the box to physically sit on top of and occlude the text label. Enforcing `gapY >= 30px` ensures complete vertical isolation and 100% text legibility.
-* **Active Channel Exclusion (No Note Boxes in Flight Paths)**:
-  - Static explanatory notes or callout boxes MUST NEVER be placed directly inside an active horizontal routing channel between two communicating lifelines.
-  - **Why**: Placing note boxes inside active communication channels creates unavoidable collision traps for arrow lines and centered labels. All note boxes must be placed in dedicated external margin columns (e.g., to the far right of the rightmost lifeline `x >= 1530`) or in dedicated, non-routing vertical tiers.
-* **Proportional Container & Lifeline Scaling**:
-  - Whenever steps are inserted or vertical spacing is expanded to eliminate overlaps, all outer container frames (`gov_network`), vertical dashed lifelines, and execution activation bars must be proportionally extended in height and width so that child elements never spill over or collide with bottom borders.
-* **Universal Theme Synchronization & Active-State UX Clarity**:
-  - All outer viewport wrappers, radial dot grids, and canvas backgrounds must dynamically synchronize with the active diagram theme (`#FFFFFF` / `#F1F5F9` for Light Theme, `#0F172A` for Dark Theme) to eliminate jarring background contrasts.
-  - UI theme toggle buttons must clearly display the **currently active theme** with an explicit label (e.g., `☀️ Light Theme`), rather than ambiguous target-switch wording, so users and visual test suites can instantly verify the running state.
-
----
-
-# 🛑 STRICT SINGLE-ITEM VISUAL ITERATION MANDATE (GENERATE → INSPECT → FIX → VERIFY → ADVANCE)
-
-* **Zero Batch-Blind Validation**: Never process multiple visual diagrams, pages, or components in a batch loop without physically opening and visually inspecting each item immediately after it is rendered.
-* **Strict Iterative Lifecycle (Item-by-Item)**:
-  1. **Generate**: Create or update the code/XML for ONE specific item (diagram, page, component).
-  2. **Inspect**: Open and visually evaluate the rendered screenshot or page (`view_file`).
-  3. **Fix**: If any overlap, improper template fallback, text collision, or defect exists, fix it immediately in code.
-  4. **Verify**: Re-render and visually inspect the image again to confirm 100% resolution.
-  5. **Advance**: ONLY AFTER the item passes 100% visual verification may you proceed to the next item.
-* **CLI Exit Codes != Visual Truth**: CLI success outputs (e.g., `Exit 0`, `Saved: 01.png`) do NOT prove visual correctness or absence of silent fallbacks. Visual image inspection is mandatory.
-
----
-
-# 🔬 MANDATORY DOMAIN & ENTITY RELEVANCE AUDIT PROTOCOL
-
-* **1-to-1 Prompt Requirement Mapping**: Before declaring any diagram (Conceptual, ERD, Sequence, Architecture, Data Pipeline) complete, perform an explicit 1-to-1 audit mapping every single node, table, and edge back to the user's prompt text.
-* **Zero Generic Placeholder Rule**: Absolutely NO generic placeholder entities (e.g. `Dim_Physician`, `Dim_Payer`, `Patient Encounters`, legacy brand names like `ITACS`) may remain in the final rendered diagram unless explicitly requested in the prompt.
-* **Automated Audit Pipeline Integration**: Every diagram generated must pass through:
-  1. `preflightVerifyAndHealXmlAcrossAll6Audits()` to catch XML AST invalidations and dark mode contrast issues.
-  2. `injectUseCaseFlavor()` to dynamically replace generic infrastructure/domain nodes with the user's specific prompt entities.
-  3. Visual Screenshot Inspection (`view_file`) under the Single-Item Visual Iteration Mandate to verify zero line collisions and 100% entity relevance.
-
----
-
-# 🔄 MANDATORY TANGENTIAL CIRCULAR LOOP GEOMETRY PROTOCOL
-
-* **Zero Straight Diamond Loops Rule**: Whenever rendering a ReAct loop, execution feedback loop, or multi-stage cyclical workflow (e.g. `Thought` -> `Action` -> `Observation` -> `Synthesis` -> `Thought`), NEVER use linear straight diamond arrows (`edgeStyle=none` or straight lines).
-* **100% Smooth Tangential Ring Arcs**: ALWAYS enforce curved circular arc geometry (`curved=1;`) with explicit 90° tangential exit/entry ports:
-  - Top -> Right: `exitX=1;exitY=0.5;entryX=0.5;entryY=0;` + Waypoint `(x + R, y)`
-  - Right -> Bottom: `exitX=0.5;exitY=1;entryX=1;entryY=0.5;` + Waypoint `(x + R, y + R)`
-  - Bottom -> Left: `exitX=0;exitY=0.5;entryX=0.5;entryY=1;` + Waypoint `(x - R, y + R)`
-  - Left -> Top: `exitX=0.5;exitY=0;entryX=0;entryY=0.5;` + Waypoint `(x - R, y)`
-* **Visual Audit Verification**: Every circular loop must be visually verified under `view_file` to confirm a 100% seamless, uniform circular ring with zero line kinks or overlaps.
-
----
-
-# 📐 Universal Reference Template & Dynamic Use-Case Customization Mandate (Mandatory)
-
-* **Zero Generic Domain Labels Rule**: Never render a reference template with hardcoded/legacy generic labels (e.g. `ITACS`, `Oncology Analyst`, `PDFs/PPTs`, `Silo Analysts`) when the user specifies a custom prompt (e.g. `E-Commerce`, `FinTech`, `Genomics`).
-* **Template Backbone + Domain Flavoring Pattern**:
-  1. **Layout Integrity**: Always load the pre-engineered, collision-free reference layout structure for the target diagram type via `getDefaultXmlForArchitecture(archId)`.
-  2. **Domain Flavoring (`injectUseCaseFlavor`)**: Pass the user's prompt text to `injectUseCaseFlavor(xml, prompt)` to dynamically replace all node titles, lifelines, step arrows, and audit log headers with the user's specific domain entities while preserving pristine 2D spatial coordinates.
-  3. **Validation & Healing**: Execute `preflightVerifyAndHealXmlAcrossAll6Audits()` and `validateAndHealDrawioXml()` to ensure 100% XML AST validity and ampersand entity escaping (`&amp;`).
-
----
-
-# 🛡️ Universal Text Buffer & Zero-Overflow Safety Margin Protocol (Mandatory for ALL Diagrams)
-
-* **Minimum 140px–160px Tab & Container Width**: All Phase tabs, swimlane vertical tab pills, and container title boxes MUST allocate at least `140px–160px` width (or `whiteSpace=wrap;overflow=hidden;`) so multi-word text never overflows past left/right shape borders.
-* **Internal Text Padding**: Every node rectangle, card, tab, or callout shape MUST enforce `whiteSpace=wrap;` and internal padding (`padding=8` or `spacingLeft=8;spacingRight=8;`) to guarantee at least a **20px internal safety margin** inside the shape.
-* **Text-to-Border Safety Clear-Zone**: Floating badges, callouts, and step labels MUST maintain at least a **30px vertical and 50px horizontal safety clear-zone** from outer container borders, swimlane edges, and adjacent shapes.
-* **Line & Arrow Clearance (White Background Pills)**: All edge labels crossing arrow vectors or connecting lines MUST enforce solid white background pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;`) with `spacingTop=4;spacingBottom=4;` so lines never cut through or obscure text.
-* **Mandatory Preflight Healing**: All generated XML MUST pass through `preflightVerifyAndHealXmlAcrossAll6Audits()` to programmatically auto-heal narrow tab widths, enforce `whiteSpace=wrap;`, and inject label background pills prior to rendering.
+* **Action Promise Rule**: Any button, menu item, or dropdown trigger that promises an action (`+ Add View`, `Generate`, `Import`, `Select`) MUST resolve directly to an actionable 1-click execution path. Never open a passive read-only table or informational dead-end under an action trigger without a direct execution button (`[ ➕ Add as New View ]`).
+* **Whole-Product User Journey Audit**: Audits must test the complete user journey: Trigger -> Dialog/Modal -> Action Button -> State & Database Commit -> Canvas Render. Never stop audit testing at modal visibility without testing the primary conversion action.
+* **1-Click View Creation from Blueprint Catalog**: Every blueprint in the `Enterprise Architecture Blueprint Matrix` must feature an active `[ ➕ Add as New View ]` button that immediately closes the modal, creates the new view tab, and renders the collision-free master blueprint on the canvas with domain flavor.
 
 ---
 
 # 🔒 Evidence Integrity & Anti-Fabrication Protocol (STRICT)
 
-These rules override convenience, speed, and completion pressure. A truthful "blocked" or "failing" report is ALWAYS the correct output; a completion claim that does not hold up to independent re-execution is the worst possible outcome and is treated as a critical failure of the task.
-
 ## 1. Claims require reproducible artifacts
-* Every claim of success MUST be accompanied by the EXACT command that proves it and its verbatim, untruncated output (or a file path to the full log under `scratch/evidence_<task_id>/`). Evidence without a reproduction command is invalid and must not be presented.
-* Never summarize test results in your own words as the primary evidence. Paste the runner's actual summary line (e.g. `Tests: 42 passed, 0 failed`) from real output. If output was too long, save it to a log file and link it.
-* Never claim a command was run if it was not. If a command fails, report the failure verbatim and stop; do not retry silently more than twice without reporting.
+* Every claim of success MUST be accompanied by the EXACT command that proves it and its verbatim, untruncated output.
+* Never summarize test results in your own words as the primary evidence. Paste the runner's actual summary line (e.g. `Tests: 42 passed, 0 failed`) from real output.
 
-## 2. Tests are load-bearing — weakening them is prohibited
-* NEVER make a failing test pass by: deleting the test, adding `.skip`/`.only`/`.todo`, loosening assertions (`toEqual` → `toBeTruthy`, exact values → ranges), widening try/catch, mocking the function under test, or editing golden fixtures/expected values to match broken output.
-* If a test appears genuinely wrong, do NOT change it in the same commit as production code. Stop, present the test, explain why you believe it is wrong, and wait for explicit approval. Test changes and production changes go in separate commits with separate justification.
-* Any diff touching `**/*.test.ts`, `**/fixtures/**`, `src/lib/technicalArchitectureXmls.ts`, or reference template generators MUST be called out explicitly in the phase report with a one-line justification per file. Silent edits to these paths are prohibited.
-* Routing/behavior contracts must be asserted with spies on the real functions (e.g. `expect(runV2Pipeline).not.toHaveBeenCalled()`), not by inspecting output shape alone.
-
-## 3. Done means independently verifiable
-* Before declaring any phase complete, run the FULL verification suite fresh — `npx tsc --noEmit` and `npm run test` at minimum — in a clean invocation (not from memory of an earlier run), and include both outputs in the evidence folder.
-* Screenshots prove a moment; commands prove a property. Wherever a check can be a command with an exit code (validators, linters, tests), the command is the evidence and the screenshot is supplementary.
-* End every phase report with a "Verify it yourself" section: 3-6 numbered commands the human can copy-paste to independently confirm the phase, including at least one functional check that exercises the actual feature (not just the test suite).
-* Never mark a checklist item complete based on intention. A checklist item is complete only after its verifying command has been run in this session and its output captured.
-
-## 4. Uncertainty must be surfaced, not smoothed over
-* If you could not verify something (environment limitation, missing credentials, flaky behavior), say so explicitly in a "NOT VERIFIED" list in the phase report. An empty NOT VERIFIED list is a positive claim that everything was verified — make it truthfully.
-* Never present inferred or assumed behavior as observed behavior. Use "I observed X (evidence: <cmd>)" vs "I expect X but could not verify because Y" — no third category.
-* If the task cannot be completed as specified, deliver a partial result with an honest gap list. Do not redefine the task to match what was achieved.
-
-## 5. Scope honesty
-* List EVERY file modified in the phase report, including config, lockfiles, and CI. A file changed but not listed is a protocol violation.
-* Never disable, bypass, or reconfigure CI, lint rules, type checking, or git hooks to achieve a green state. If a gate blocks you, report the block.
+## 2. Done means independently verifiable
+* Before declaring any phase complete, run the FULL verification suite fresh — `npx tsc --noEmit` and `npm run test` at minimum.
 
 ---
 
 # 🧠 SYSTEMIC REASONING & STRUCTURAL INVARIANT MANDATES (NEVER BRITTLE)
 
-Every modification to diagram compiler, layout engine, cleaner, or preflight code MUST follow these 4 non-negotiable architectural mandates to prevent fragile heuristics and cascade regressions:
+Every modification to diagram compiler, layout engine, cleaner, or preflight code MUST follow these 4 non-negotiable architectural mandates:
 
 1. **Systemic Blast-Radius & Invariant Analysis Before Code Changes**:
-   - Before editing any heuristic, regex, or layout function, trace EVERY downstream consumer (`restoreDetailedView`, `preflightVerifyAndHealXmlAcrossAll6Audits`, `page.tsx`, `diagram_versions` database records) to guarantee that changing string X or coordinate Y does not trigger a secondary layout distortion or break version restoration.
+   - Trace EVERY downstream consumer before editing heuristics or coordinates.
 2. **Container-Aware AST Contracts Over String Regexes**:
-   - Layout protection guards (`isPreservedCustomLayout`, preflight bypasses) MUST NEVER rely on ephemeral domain text strings (`'Oncology Data Portal'`). They MUST key off permanent XML/AST structural identifiers (`col_ingestion`, `col_processing`, `col_delivery`, `out_1`, `exec_dash`, `parent="col_processing"`).
-3. **Visual End-to-End Inspection (DOM / Visual Audit Verification)**:
-   - CLI unit test green status (`npm test`) is necessary but NOT sufficient. After modifying layout or visual cards, physically render and visually inspect the actual browser output across creation AND page refresh (`restoreDetailedView`) before declaring complete.
+   - Key off permanent XML structural identifiers (`col_ingestion`, `col_processing`), never ephemeral text strings.
+3. **Visual End-to-End Inspection**:
+   - Physically render and visually inspect the actual browser output across creation AND page refresh (`restoreDetailedView`).
 4. **Strict Separation of Domain Flavoring vs. Spatial Geometry**:
-   - Content flavoring (`injectUseCaseFlavor`) must ONLY mutate text titles, subtitles, and badges while preserving 100% of spatial coordinates (`<mxGeometry x="..." y="...">`). Geometric healers (`heal2DSameTierNodeCollisions`) must NEVER alter pre-engineered template backbones.
-
-
-
-
-
-
-
+   - Flavoring (`injectUseCaseFlavor`) mutates text titles and badges while preserving 100% of spatial coordinates (`<mxGeometry x="..." y="...">`).

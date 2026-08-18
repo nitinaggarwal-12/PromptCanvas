@@ -552,35 +552,35 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactUnifiedSystemViewReferenceXml();
   } else if (id === 'governance_state_machine' || id.includes('governance_state') || id.includes('state_machine')) {
     xml = getExactGovernanceStateMachineReferenceXml();
-  } else if (id === 'six_rs_migration_matrix') {
+  } else if (id === 'six_rs_migration_matrix' || id === 'six_rs_migration' || id.includes('6rs') || id.includes('six_rs')) {
     xml = getExactSixRsMigrationMatrixXml();
-  } else if (id === 'hybrid_strangler_transition') {
+  } else if (id === 'hybrid_strangler_transition' || id.includes('strangler')) {
     xml = getExactHybridStranglerTransitionXml();
-  } else if (id === 'legacy_data_dependency_map') {
+  } else if (id === 'legacy_data_dependency_map' || id.includes('legacy_data')) {
     xml = getExactLegacyDataDependencyMapXml();
-  } else if (id === 'gcp_landing_zone_vpc') {
+  } else if (id === 'gcp_landing_zone_vpc' || id.includes('landing_zone')) {
     xml = getExactGcpLandingZoneVpcXml();
-  } else if (id === 'enterprise_agent_runtime') {
+  } else if (id === 'enterprise_agent_runtime' || id.includes('agent_runtime')) {
     xml = getExactEnterpriseAgentRuntimeXml();
-  } else if (id === 'ai_agent_approval_workflow') {
+  } else if (id === 'ai_agent_approval_workflow' || id.includes('approval_workflow')) {
     xml = getExactAiAgentApprovalWorkflowXml();
-  } else if (id === 'incident_triage_swimlane') {
+  } else if (id === 'incident_triage_swimlane' || id.includes('incident_triage')) {
     xml = getExactIncidentTriageSwimlaneXml();
-  } else if (id === 'ecommerce_retail') {
+  } else if (id === 'ecommerce_retail' || id.includes('ecommerce')) {
     xml = getExactEcommerceRetailXml();
-  } else if (id === 'hr_talent_ai') {
+  } else if (id === 'hr_talent_ai' || id.includes('talent_ai') || id.includes('hr_talent')) {
     xml = getExactHrTalentAiXml();
-  } else if (id === 'smart_factory_iot') {
+  } else if (id === 'smart_factory_iot' || id.includes('smart_factory')) {
     xml = getExactSmartFactoryIotXml();
-  } else if (id === 'c4_component_lld') {
+  } else if (id === 'c4_component_lld' || id.includes('c4_component') || id.includes('c4_l3')) {
     xml = getExactC4ComponentLldXml();
-  } else if (id === 'bpmn_process_workflow') {
+  } else if (id === 'bpmn_process_workflow' || id.includes('bpmn')) {
     xml = getExactBpmnWorkflowXml();
-  } else if (id === 'threat_modeling_stride') {
+  } else if (id === 'threat_modeling_stride' || id.includes('threat_modeling') || id.includes('stride')) {
     xml = getExactThreatModelingStrideXml();
-  } else if (id === 'data_lineage_provenance') {
+  } else if (id === 'data_lineage_provenance' || id.includes('data_lineage')) {
     xml = getExactDataLineageXml();
-  } else if (id === 'healthcare_fhir_hl7') {
+  } else if (id === 'healthcare_fhir_hl7' || id === 'healthcare_fhir' || id.includes('healthcare') || id.includes('fhir')) {
     xml = getExactHealthcareFhirXml();
   } else if (id === 'cloud_finops_chargeback') {
     xml = getExactCloudFinopsChargebackXml();
