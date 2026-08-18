@@ -5,9 +5,8 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { cookies } from 'next/headers';
 
-const ai = new GoogleGenAI({});
-
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 
 const TERRAFORM_GCP_SYSTEM_PROMPT = `
 You are an expert Principal Google Cloud Infrastructure Engineer and HashiCorp Terraform Specialist.
@@ -40,6 +39,8 @@ export async function POST(request: Request) {
   }
 
   try {
+    const userApiKey = request.headers.get('x-gemini-api-key') || process.env.GEMINI_API_KEY || '';
+    const ai = new GoogleGenAI({ apiKey: userApiKey });
     const { diagramId, xmlContent: customXml, architectureType } = await request.json();
 
     let xmlContent = customXml;
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'xmlContent or valid diagramId is required' }, { status: 400 });
     }
 
-    const response = await ai.models.generateContent({
+    const response = await generateContentWithRetry(ai, {
       model: GEMINI_MODEL_ID,
       contents: [
         { text: `Here is the Draw.io XML of the GCP architecture to convert to Terraform HCL:\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },

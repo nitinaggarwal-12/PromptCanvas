@@ -6,9 +6,8 @@ import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/gemin
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { cookies } from 'next/headers';
-
-const ai = new GoogleGenAI({});
 
 export interface AuditGap {
   id: string;
@@ -507,7 +506,9 @@ Respond strictly in JSON matching the schema provided:
       });
 
       if (lockAcquired) {
-        const response = await ai.models.generateContent({
+        const userApiKey = request.headers.get('x-gemini-api-key') || process.env.GEMINI_API_KEY || '';
+        const ai = new GoogleGenAI({ apiKey: userApiKey });
+        const response = await generateContentWithRetry(ai, {
           model: GEMINI_MODEL_ID,
           contents: multimodalContents,
           config: {

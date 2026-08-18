@@ -4,9 +4,8 @@ import { getDiagramVersion, updateDiagramVersionUseCases } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { cookies } from 'next/headers';
-
-const ai = new GoogleGenAI({});
 
 export async function POST(request: Request) {
   const user = await getAuthenticatedUser();
@@ -24,6 +23,8 @@ export async function POST(request: Request) {
   }
 
   try {
+    const userApiKey = request.headers.get('x-gemini-api-key') || process.env.GEMINI_API_KEY || '';
+    const ai = new GoogleGenAI({ apiKey: userApiKey });
     const body = await request.json();
     const { versionId } = body;
 
@@ -131,7 +132,7 @@ ${version.xml_content}
 `.trim();
 
     console.log(`Generating in-place metadata for version ${versionId}...`);
-    const response = await ai.models.generateContent({
+    const response = await generateContentWithRetry(ai, {
       model: GEMINI_MODEL_ID,
       contents: contents,
     });

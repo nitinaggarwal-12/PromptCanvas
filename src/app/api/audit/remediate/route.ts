@@ -7,9 +7,8 @@ import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/gemin
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { cookies } from 'next/headers';
-
-const ai = new GoogleGenAI({});
 
 export async function POST(request: Request) {
   const user = await getAuthenticatedUser();
@@ -69,7 +68,9 @@ ${remediationInstructions}
 4. Return ONLY valid, well-formed Draw.io XML wrapped inside <mxfile>...</mxfile>. Do NOT wrap in markdown code blocks or text outside XML.
 `;
 
-      const response = await ai.models.generateContent({
+      const userApiKey = request.headers.get('x-gemini-api-key') || process.env.GEMINI_API_KEY || '';
+      const ai = new GoogleGenAI({ apiKey: userApiKey });
+      const response = await generateContentWithRetry(ai, {
         model: GEMINI_MODEL_ID,
         contents: [
           { text: `Here is the current Draw.io XML:\n\n${currentXml}` },
