@@ -482,29 +482,6 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
         )}
       </div>
 
-      {/* 📜 PILL 3: PROMPT & AUDIT DOSSIER TRIGGER */}
-      {onOpenPromptDossier && activeDiagram && (
-        <>
-          <span className={`font-mono text-xs hidden sm:inline ${isLight ? 'text-slate-300' : 'text-slate-600'}`}>/</span>
-          <button
-            type="button"
-            id="workspace-prompt-dossier-btn"
-            disabled={disabled}
-            onClick={onOpenPromptDossier}
-            className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-extrabold text-xs transition-all shadow-sm cursor-pointer border ${
-              isLight
-                ? 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-800'
-                : 'bg-teal-500/15 hover:bg-teal-500/25 border-teal-500/40 text-teal-300'
-            }`}
-            title="Inspect Real Use Case Prompt, Prompt History, and 1-to-1 Diagram Validation Matrix"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-teal-500" />
-            <span className="hidden md:inline">Prompt</span>
-            <span>Dossier</span>
-          </button>
-        </>
-      )}
-
     </div>
   );
 };

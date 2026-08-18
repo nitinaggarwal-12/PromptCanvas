@@ -6,10 +6,11 @@ import { Sparkles, Loader2, CheckCircle2, Cpu } from 'lucide-react';
 interface AIGenerationProgressModalProps {
   isOpen: boolean;
   promptTitle?: string;
+  onCancel?: () => void;
 }
 
-export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationProgressModalProps) {
-  const [progress, setProgress] = useState(10);
+export function AIGenerationProgressModal({ isOpen, promptTitle, onCancel }: AIGenerationProgressModalProps) {
+  const [progress, setProgress] = useState(15);
   const [stepIndex, setStepIndex] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
@@ -22,7 +23,7 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
 
   useEffect(() => {
     if (!isOpen) {
-      setProgress(10);
+      setProgress(15);
       setStepIndex(0);
       setElapsedSeconds(0);
       return;
@@ -38,27 +39,24 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
     };
   }, [isOpen]);
 
-  // Smoothly sync progress percentage and step index with real elapsed seconds
+  // Smoothly sync progress percentage and step index with real elapsed seconds (tuned for 12-25s fast synthesis)
   useEffect(() => {
     if (!isOpen) return;
 
-    if (elapsedSeconds < 8) {
+    if (elapsedSeconds < 4) {
       setStepIndex(0);
-      setProgress(Math.min(30, 10 + Math.floor(elapsedSeconds * 2.5)));
-    } else if (elapsedSeconds < 35) {
+      setProgress(Math.min(35, 15 + Math.floor(elapsedSeconds * 5)));
+    } else if (elapsedSeconds < 14) {
       setStepIndex(1);
-      // Smoothly advance from 30% to 70% over 27 seconds
-      const p = 30 + Math.floor(((elapsedSeconds - 8) / 27) * 40);
-      setProgress(Math.min(70, p));
-    } else if (elapsedSeconds < 75) {
+      const p = 35 + Math.floor(((elapsedSeconds - 4) / 10) * 40);
+      setProgress(Math.min(75, p));
+    } else if (elapsedSeconds < 24) {
       setStepIndex(2);
-      // Smoothly advance from 70% to 92% over 40 seconds
-      const p = 70 + Math.floor(((elapsedSeconds - 35) / 40) * 22);
-      setProgress(Math.min(92, p));
+      const p = 75 + Math.floor(((elapsedSeconds - 14) / 10) * 18);
+      setProgress(Math.min(93, p));
     } else {
       setStepIndex(3);
-      // Slowly advance past 92% up to 98% for extended 2-minute synthesis runs
-      const p = 92 + Math.floor(((elapsedSeconds - 75) / 45) * 6);
+      const p = 93 + Math.floor(((elapsedSeconds - 24) / 20) * 5);
       setProgress(Math.min(98, p));
     }
   }, [elapsedSeconds, isOpen]);
@@ -80,7 +78,7 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
         {/* Title */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs md:text-sm font-extrabold mb-3">
           <Sparkles className="w-4 h-4 text-teal-accent animate-spin" />
-          <span>Gemini 3.6 Flash Architecture Compiler</span>
+          <span>Gemini 3.7 Flash Architecture Engine</span>
         </div>
 
         <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight mb-2">
@@ -88,8 +86,8 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
         </h3>
 
         {promptTitle && (
-          <p className="text-sm text-slate-400 max-w-md truncate italic mb-6">
-            &quot;{promptTitle}&quot;
+          <p className="text-sm text-slate-300 max-w-md line-clamp-2 italic mb-6 px-4 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800">
+            &ldquo;{promptTitle}&rdquo;
           </p>
         )}
 
@@ -108,7 +106,7 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
           </div>
 
           <div className="flex items-center justify-between text-[11px] md:text-xs text-slate-400 font-mono">
-            <span>Est. Duration: ~45–90s (Elapsed: {elapsedSeconds}s)</span>
+            <span>Est. Duration: ~15–25s (Elapsed: {elapsedSeconds}s)</span>
             <span className="flex items-center gap-1.5 text-teal-300">
               <Loader2 className="w-3.5 h-3.5 animate-spin" /> Live Synthesis
             </span>
@@ -116,7 +114,7 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
         </div>
 
         {/* Step-by-Step Status Checklist */}
-        <div className="w-full space-y-2.5 text-left text-xs md:text-sm">
+        <div className="w-full space-y-2.5 text-left text-xs md:text-sm mb-6">
           {steps.map((stepText, idx) => {
             const isCompleted = idx < stepIndex;
             const isCurrent = idx === stepIndex;
@@ -144,6 +142,17 @@ export function AIGenerationProgressModal({ isOpen, promptTitle }: AIGenerationP
             );
           })}
         </div>
+
+        {/* Action Controls: Cancel Button */}
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-5 py-2 text-xs font-bold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all cursor-pointer"
+          >
+            Cancel Generation
+          </button>
+        )}
       </div>
     </div>
   );

@@ -447,6 +447,8 @@ function WorkspaceContent() {
   const [templateSearchQuery, setTemplateSearchQuery] = useState<string>('');
   const [expandedMsgIds, setExpandedMsgIds] = useState<Set<string>>(new Set());
   const [pendingProjectName, setPendingProjectName] = useState<string | null>(null);
+  const [isInsightsMenuOpen, setIsInsightsMenuOpen] = useState(false);
+  const [currentGeneratingPrompt, setCurrentGeneratingPrompt] = useState<string>('');
 
   // Global Keyboard Navigation for Master Template Preview Carousel
   useEffect(() => {
@@ -870,7 +872,7 @@ function WorkspaceContent() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      return params.get('modal') === 'create' || params.get('new') === 'true' || params.get('create') === 'true';
+      return params.get('modal') === 'create';
     }
     return false;
   });
@@ -1069,12 +1071,12 @@ function WorkspaceContent() {
     if (searchParams.get('tour') === 'true') {
       setTourStep(1);
     }
-    if (searchParams.get('new') === 'true' || searchParams.get('create') === 'true' || searchParams.get('modal') === 'create') {
+    if (searchParams.get('modal') === 'create') {
       setIsCreateModalOpen(true);
-      if (searchParams.get('new') === 'true' || searchParams.get('create') === 'true') {
-        setActiveDiagram(null);
-        setActiveVersion(null);
-      }
+    }
+    if (searchParams.get('new') === 'true' || searchParams.get('create') === 'true') {
+      setActiveDiagram(null);
+      setActiveVersion(null);
     }
     const archParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
     if (archParam) {
@@ -1661,14 +1663,13 @@ function WorkspaceContent() {
     const diagramId = searchParams.get('diagram') || searchParams.get('id');
     const blueprintParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
     const isWelcomeParam = searchParams.get('welcome') === 'true' || searchParams.get('slate') === 'true';
-    const isNewParam = searchParams.get('new') === 'true' || searchParams.get('create') === 'true' || searchParams.get('modal') === 'create';
+    const isCreateModalRequested = searchParams.get('modal') === 'create';
+    const isNewParam = searchParams.get('new') === 'true' || searchParams.get('create') === 'true' || isWelcomeParam;
     
-    if (isWelcomeParam || isNewParam) {
-      if (isWelcomeParam || searchParams.get('new') === 'true' || searchParams.get('create') === 'true') {
-        setActiveDiagram(null);
-        setActiveVersion(null);
-      }
-      if (isNewParam) {
+    if (isNewParam || isCreateModalRequested) {
+      setActiveDiagram(null);
+      setActiveVersion(null);
+      if (isCreateModalRequested) {
         setIsCreateModalOpen(true);
       }
       return;
@@ -6556,49 +6557,80 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 <AccessRequestsInbox user={currentUser} />
                 {activeDiagram && (
                   <>
-                    <button
-                      type="button"
-                      onClick={() => setIsExecutiveSummaryOpen(true)}
-                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
-                        canvasTheme === 'light'
-                          ? 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-900'
-                          : 'border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200'
-                      }`}
-                      title="Open C-Suite Executive Strategic Summary & Board Brief"
-                    >
-                      <Briefcase className="w-3.5 h-3.5 text-amber-500" />
-                      <span className="hidden xl:inline">Executive</span>
-                      <span>Suite</span>
-                    </button>
+                    {/* Insights Dropdown */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setIsInsightsMenuOpen(!isInsightsMenuOpen)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
+                          canvasTheme === 'light'
+                            ? 'bg-amber-50/90 hover:bg-amber-100 border-amber-300 text-amber-900'
+                            : 'border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 text-amber-200'
+                        }`}
+                        title="Open Architecture Insights, Executive Brief, Intake Form, or AI Dossier"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                        <span>Insights</span>
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isInsightsMenuOpen ? 'rotate-180' : ''}`} />
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => setIsUseCaseModalOpen(true)}
-                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
-                        canvasTheme === 'light'
-                          ? 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-900'
-                          : 'border-teal-400/60 bg-teal-400/15 hover:bg-teal-400/25 text-teal-200'
-                      }`}
-                      title="Open New Use Case Architectural Intake Form"
-                    >
-                      <ClipboardList className="w-3.5 h-3.5 text-teal-500" />
-                      <span className="hidden xl:inline">Intake</span>
-                      <span>Form</span>
-                    </button>
+                      {isInsightsMenuOpen && (
+                        <div className={`absolute right-0 top-full mt-2 w-64 rounded-2xl shadow-2xl z-[99999] overflow-hidden flex flex-col p-1.5 border animate-in fade-in zoom-in-95 duration-150 ${
+                          canvasTheme === 'light' ? 'bg-white border-slate-200 text-slate-800' : 'bg-[#070A13] border-amber-500/40 text-slate-100'
+                        }`}>
+                          <button
+                            type="button"
+                            onClick={() => { setIsExecutiveSummaryOpen(true); setIsInsightsMenuOpen(false); }}
+                            className="flex items-start gap-2.5 p-2.5 rounded-xl text-left hover:bg-amber-500/10 transition-colors cursor-pointer"
+                          >
+                            <Briefcase className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-bold text-xs">Executive Strategic Brief</div>
+                              <div className="text-[10px] text-slate-400">Board summary & business value</div>
+                            </div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setIsUseCaseModalOpen(true); setIsInsightsMenuOpen(false); }}
+                            className="flex items-start gap-2.5 p-2.5 rounded-xl text-left hover:bg-teal-500/10 transition-colors cursor-pointer"
+                          >
+                            <ClipboardList className="w-4 h-4 text-teal-500 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-bold text-xs">Architectural Intake Form</div>
+                              <div className="text-[10px] text-slate-400">Scoping requirements questionnaire</div>
+                            </div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setIsPromptDossierOpen(true); setIsInsightsMenuOpen(false); }}
+                            className="flex items-start gap-2.5 p-2.5 rounded-xl text-left hover:bg-indigo-500/10 transition-colors cursor-pointer"
+                          >
+                            <FileCode className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-bold text-xs">AI Prompt Dossier</div>
+                              <div className="text-[10px] text-slate-400">Underlying LLM prompt & metadata</div>
+                            </div>
+                          </button>
+                        </div>
+                      )}
+                    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setIsVersionDiffModalOpen(true)}
-                      className={`hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
-                        canvasTheme === 'light'
-                          ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
-                          : 'border-teal-500/50 hover:border-teal-400 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300'
-                      }`}
-                      title="Compare diagram versions & inspect visual geometric diffs"
-                    >
-                      <FileCode className="w-3.5 h-3.5 text-teal-500" />
-                      <span>Diff</span>
-                    </button>
+                    {/* Version Diff (Only shown when diagram has multiple versions) */}
+                    {activeDiagram.versions && activeDiagram.versions.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setIsVersionDiffModalOpen(true)}
+                        className={`hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
+                          canvasTheme === 'light'
+                            ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                            : 'border-teal-500/50 hover:border-teal-400 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300'
+                        }`}
+                        title="Compare diagram versions & inspect visual geometric diffs"
+                      >
+                        <FileCode className="w-3.5 h-3.5 text-teal-500" />
+                        <span>Diff (v{activeDiagram.versions.length})</span>
+                      </button>
+                    )}
 
                     {/* Edit Options Dropdown */}
                     <div className="relative inline-flex items-center shrink-0 w-[105px]">
@@ -6804,6 +6836,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   isGenerating={isGenerating}
                   onGenerateFromPrompt={async (promptText, explicitProjectName) => {
                     const finalName = explicitProjectName || pendingProjectName || generateUniqueDiagramName();
+                    setCurrentGeneratingPrompt(promptText);
                     setIsGenerating(true);
                     try {
                       const res = await fetch('/api/generate', {
@@ -6849,6 +6882,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       if (res.ok) {
                         const data = await res.json();
                         setPendingProjectName(null);
+                        setSelectedArchType('blank_canvas');
+                        setIsInlineEditorOpen(true);
                         await fetchDiagrams();
                         if (data.diagram?.id) {
                           await loadDiagramDetails(data.diagram.id);
@@ -7737,7 +7772,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       )}
 
       {/* AI GENERATION REAL-TIME PROGRESS MODAL */}
-      <AIGenerationProgressModal isOpen={isGenerating} promptTitle={newDiagramPrompt || activeDiagram?.name} />
+      <AIGenerationProgressModal
+        isOpen={isGenerating}
+        promptTitle={currentGeneratingPrompt || newDiagramPrompt || activeDiagram?.name}
+        onCancel={() => setIsGenerating(false)}
+      />
 
       {/* INTENT ROUTER DISAMBIGUATION CHIPS MODAL */}
       {disambiguationData && (

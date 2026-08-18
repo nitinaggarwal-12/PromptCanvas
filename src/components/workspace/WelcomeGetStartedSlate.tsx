@@ -269,6 +269,7 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
               </div>
               <button
                 type="button"
+                id="welcome-browse-blueprints-btn"
                 onClick={onOpenBlueprintCatalog}
                 className={`w-full py-2.5 px-4 rounded-xl border font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer hover:scale-[1.01] active:scale-[0.99] mt-1 ${
                   isLight
@@ -358,6 +359,7 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
               </div>
               <button
                 type="button"
+                id="welcome-start-blank-canvas-btn"
                 onClick={() => onStartBlankCanvas(projectName)}
                 className={`w-full py-2.5 px-4 rounded-xl border font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer hover:scale-[1.01] active:scale-[0.99] mt-1 ${
                   isLight

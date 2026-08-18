@@ -200,24 +200,12 @@ export default function LandingPage() {
             ) : (
               <>
                 <button
-                  id="header-explore-guest-btn"
-                  onClick={handleExploreAsGuest}
-                  className={`hidden md:flex px-3.5 py-1.5 rounded-lg border text-xs font-bold transition-all items-center gap-1.5 cursor-pointer shadow-sm ${
-                    isLight
-                      ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-teal-800'
-                      : 'bg-slate-800/80 hover:bg-slate-800 border-slate-700 hover:border-teal-400 text-teal-300'
-                  }`}
-                >
-                  <User className="w-3.5 h-3.5 text-teal-500" />
-                  <span>Explore as a Guest</span>
-                </button>
-                <button
                   id="header-signin-btn"
                   onClick={() => {
                     setAuthMode('signin');
                     setIsAuthOpen(true);
                   }}
-                  className={`hidden sm:flex px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors ${
+                  className={`hidden sm:flex px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
                     isLight ? 'text-slate-700 hover:text-slate-900' : 'text-slate-300 hover:text-white'
                   }`}
                 >
@@ -226,7 +214,6 @@ export default function LandingPage() {
                 <Link
                   id="header-launch-app-btn"
                   href="/workspace"
-                  onClick={handleLaunchAppClick}
                   className="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
                 >
                   Launch Workspace
@@ -328,23 +315,9 @@ export default function LandingPage() {
               href="/workspace?new=true"
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
             >
-              <span>Build First Diagram</span>
+              <span>Start Building Free</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
-            {(!user || user.email === 'dev@promptcanvas.local' || user.is_guest) && (
-              <button
-                id="hero-explore-guest-btn"
-                onClick={handleExploreAsGuest}
-                className={`px-7 py-4 rounded-xl border font-bold text-center transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer ${
-                  isLight
-                    ? 'bg-white hover:bg-slate-50 border-slate-300 text-teal-800'
-                    : 'bg-slate-900 border-slate-700/80 hover:border-teal-400 text-teal-300 hover:bg-slate-800'
-                }`}
-              >
-                <User className="w-4 h-4 text-teal-500" />
-                <span>Explore as a Guest</span>
-              </button>
-            )}
             <Link
               href="/workspace?tour=true"
               className={`px-8 py-4 rounded-xl border font-semibold text-center transition-all flex items-center justify-center gap-2 ${
@@ -354,7 +327,7 @@ export default function LandingPage() {
               }`}
             >
               <Play className="w-4 h-4 text-teal-500" />
-              <span>Watch Tour</span>
+              <span>Watch Interactive Tour</span>
             </Link>
           </div>
 

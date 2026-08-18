@@ -104,6 +104,7 @@ export default function CanvasHistoryPage() {
 
   // State
   const [diagrams, setDiagrams] = useState<CanvasDiagramItem[]>([]);
+  const [scopeTab, setScopeTab] = useState<'my_canvases' | 'community'>('my_canvases');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedPhase, setSelectedPhase] = useState<string>('all');
@@ -303,9 +304,20 @@ export default function CanvasHistoryPage() {
     }
   };
 
+  // User's own diagrams
+  const myCanvasesList = useMemo(() => {
+    return diagrams.filter(d => {
+      if (user?.id && (d as any).user_id === user.id) return true;
+      if (user?.email && (d as any).created_by === user.email) return true;
+      if (starredIds.has(d.id)) return true;
+      return false;
+    });
+  }, [diagrams, user, starredIds]);
+
   // Filtered and Sorted Canvases
   const filteredDiagrams = useMemo(() => {
-    let list = [...diagrams];
+    const baseSource = scopeTab === 'my_canvases' ? myCanvasesList : diagrams;
+    let list = [...baseSource];
 
     // Search filter
     if (searchQuery.trim()) {
@@ -375,7 +387,7 @@ export default function CanvasHistoryPage() {
     });
 
     return list;
-  }, [diagrams, searchQuery, selectedPhase, selectedArchFilter, sortBy, starredIds]);
+  }, [diagrams, myCanvasesList, scopeTab, searchQuery, selectedPhase, selectedArchFilter, sortBy, starredIds]);
 
   // Summary Metrics
   const totalCanvases = diagrams.length;
@@ -836,6 +848,45 @@ export default function CanvasHistoryPage() {
               </div>
             </div>
 
+            {/* PRIMARY SCOPE TAB SWITCHER */}
+            <div className="flex flex-wrap items-center gap-3 border-b pb-4 border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                id="scope-my-canvases-btn"
+                onClick={() => setScopeTab('my_canvases')}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer border ${
+                  scopeTab === 'my_canvases'
+                    ? isLight
+                      ? 'bg-teal-600 text-white border-teal-600 shadow-md'
+                      : 'bg-teal-500 text-[#070A13] border-teal-400 shadow-lg shadow-teal-500/20'
+                    : isLight
+                    ? 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'
+                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border-slate-700'
+                }`}
+              >
+                <User className="w-4 h-4" />
+                <span>My Workspace Canvases ({myCanvasesList.length})</span>
+              </button>
+
+              <button
+                type="button"
+                id="scope-community-btn"
+                onClick={() => setScopeTab('community')}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer border ${
+                  scopeTab === 'community'
+                    ? isLight
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
+                      : 'bg-indigo-500 text-white border-indigo-400 shadow-lg shadow-indigo-500/20'
+                    : isLight
+                    ? 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'
+                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border-slate-700'
+                }`}
+              >
+                <Globe className="w-4 h-4" />
+                <span>Community Showcase &amp; 50 Blueprints ({diagrams.length})</span>
+              </button>
+            </div>
+
             {/* Search & Filter Toolbar */}
             <div className={`space-y-3 p-4 rounded-2xl border backdrop-blur-sm ${
               isLight ? 'bg-white border-slate-200 shadow-md' : 'bg-slate-900/60 border-slate-800/80'
@@ -959,26 +1010,52 @@ export default function CanvasHistoryPage() {
             <span className="text-sm font-semibold">Loading historical canvases from database...</span>
           </div>
         ) : filteredDiagrams.length === 0 ? (
-          <div className={`border rounded-2xl p-12 text-center space-y-4 max-w-lg mx-auto my-12 ${
+          <div className={`border rounded-3xl p-12 text-center space-y-4 max-w-lg mx-auto my-12 ${
             isLight ? 'bg-white border-slate-200 shadow-md' : 'bg-slate-900/40 border-slate-800'
           }`}>
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto ${isLight ? 'bg-slate-100 text-slate-500' : 'bg-slate-800 text-slate-400'}`}>
-              <Search className="w-6 h-6" />
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto ${isLight ? 'bg-teal-50 text-teal-600' : 'bg-teal-500/15 text-teal-400'}`}>
+              <Layers className="w-7 h-7" />
             </div>
-            <h3 className={`text-lg font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>No historical canvases found</h3>
+            <h3 className={`text-xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              {scopeTab === 'my_canvases' ? 'No Canvases in Your Workspace Yet' : 'No matching canvases found'}
+            </h3>
             <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-              No diagrams matched your search filter &quot;{searchQuery}&quot;. Try resetting your filters.
+              {scopeTab === 'my_canvases'
+                ? "You haven't generated or saved any custom diagrams in this workspace yet. Start with an AI prompt or explore the 50 enterprise reference blueprints."
+                : `No diagrams matched your search filter "${searchQuery}". Try resetting your filters.`}
             </p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedPhase('all');
-                setSelectedArchFilter('all');
-              }}
-              className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-lg transition"
-            >
-              Reset Filters
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <Link
+                href="/workspace?new=true"
+                className="px-5 py-2.5 bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-xs rounded-xl transition shadow-md flex items-center gap-1.5"
+              >
+                <Plus className="w-4 h-4 stroke-[3]" />
+                <span>Create First Architecture</span>
+              </Link>
+              {scopeTab === 'my_canvases' ? (
+                <button
+                  type="button"
+                  onClick={() => setScopeTab('community')}
+                  className={`px-5 py-2.5 rounded-xl border font-bold text-xs transition cursor-pointer ${
+                    isLight ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
+                  }`}
+                >
+                  Browse 50 Blueprints ({diagrams.length})
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedPhase('all');
+                    setSelectedArchFilter('all');
+                  }}
+                  className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-lg transition cursor-pointer"
+                >
+                  Reset Filters
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

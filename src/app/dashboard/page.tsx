@@ -135,6 +135,7 @@ import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE
 export default function Dashboard() {
   const router = useRouter();
   const [diagrams, setDiagrams] = useState<Diagram[]>([]);
+  const [scopeTab, setScopeTab] = useState<'my_workspaces' | 'community'>('my_workspaces');
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -402,15 +403,25 @@ export default function Dashboard() {
   const { theme } = useTheme();
   const isLight = theme === 'light';
   const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>('editor');
-  const filteredDiagrams = React.useMemo(() => {
-    const seen = new Set<string>();
+
+  const myCanvasesList = React.useMemo(() => {
     return diagrams.filter(d => {
+      if (user?.id && (d as any).user_id === user.id) return true;
+      if (user?.email && (d as any).created_by === user.email) return true;
+      return false;
+    });
+  }, [diagrams, user]);
+
+  const filteredDiagrams = React.useMemo(() => {
+    const baseSource = scopeTab === 'my_workspaces' ? myCanvasesList : diagrams;
+    const seen = new Set<string>();
+    return baseSource.filter(d => {
       if (!d.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       if (seen.has(d.id)) return false;
       seen.add(d.id);
       return true;
     });
-  }, [diagrams, searchQuery]);
+  }, [diagrams, myCanvasesList, scopeTab, searchQuery]);
 
   return (
     <div className={`flex h-screen w-screen overflow-hidden font-sans relative selection:bg-teal-500/30 selection:text-teal-200 transition-colors duration-300 ${
@@ -838,8 +849,8 @@ export default function Dashboard() {
           {[
             {
               name: "Active Workspaces",
-              value: diagrams.length,
-              sub: "Diagram architectures stored",
+              value: scopeTab === 'my_workspaces' ? myCanvasesList.length : diagrams.length,
+              sub: scopeTab === 'my_workspaces' ? "In your active workspace" : "Total enterprise blueprints & canvases",
               icon: Layers,
               color: "text-teal-600 dark:text-teal-400 bg-teal-500/10",
               border: "hover:border-teal-500/35 hover:shadow-teal-500/5"
@@ -1000,6 +1011,45 @@ export default function Dashboard() {
               <p className="text-xs text-slate-500 mt-0.5">Review, audit, or delete active enterprise canvas files.</p>
             </div>
 
+            {/* Scope Tab Switcher */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                id="dashboard-scope-my-workspaces-btn"
+                onClick={() => setScopeTab('my_workspaces')}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer border ${
+                  scopeTab === 'my_workspaces'
+                    ? isLight
+                      ? 'bg-teal-600 text-white border-teal-600 shadow-sm'
+                      : 'bg-teal-500 text-[#070A13] border-teal-400 shadow-md shadow-teal-500/20'
+                    : isLight
+                    ? 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'
+                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border-slate-700'
+                }`}
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>My Workspaces ({myCanvasesList.length})</span>
+              </button>
+
+              <button
+                type="button"
+                id="dashboard-scope-community-btn"
+                onClick={() => setScopeTab('community')}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer border ${
+                  scopeTab === 'community'
+                    ? isLight
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                      : 'bg-indigo-500 text-white border-indigo-400 shadow-md shadow-indigo-500/20'
+                    : isLight
+                    ? 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'
+                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border-slate-700'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>Community ({diagrams.length})</span>
+              </button>
+            </div>
+
             {/* Search Bar */}
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
@@ -1031,22 +1081,40 @@ export default function Dashboard() {
             }`}>
               <FileText className="w-12 h-12 text-slate-400" />
               <div>
-                <h4 className={`font-bold text-sm ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>No workspaces found</h4>
-                <p className="text-xs text-slate-500 mt-1 max-w-sm">Create a new cloud architecture workspace from scratch or launch one of our quick presets.</p>
+                <h4 className={`font-bold text-sm ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+                  {scopeTab === 'my_workspaces' ? 'No Workspaces Created Yet' : 'No workspaces found'}
+                </h4>
+                <p className="text-xs text-slate-500 mt-1 max-w-sm">
+                  {scopeTab === 'my_workspaces'
+                    ? "You haven't created any custom diagrams in this workspace yet. Create one or explore the community blueprints."
+                    : "Try adjusting your search query to find relevant diagrams."}
+                </p>
               </div>
-              <button
-                id="new-diagram-btn"
-                onClick={() => {
-                  setNewDiagramName('');
-                  setNewDiagramPrompt('');
-                  setSelectedTemplate('0');
-                  setIsCreateModalOpen(true);
-                }}
-                className="px-5 py-2.5 rounded-lg bg-teal-accent/15 hover:bg-teal-accent text-teal-700 dark:text-teal-300 hover:text-bg-dark font-bold text-sm transition-all border border-teal-500/20 hover:border-transparent flex items-center gap-2 cursor-pointer"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Create Diagram</span>
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  id="new-diagram-btn"
+                  onClick={() => {
+                    setNewDiagramName('');
+                    setNewDiagramPrompt('');
+                    setSelectedTemplate('0');
+                    setIsCreateModalOpen(true);
+                  }}
+                  className="px-5 py-2.5 rounded-lg bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Create Diagram</span>
+                </button>
+                {scopeTab === 'my_workspaces' && (
+                  <button
+                    onClick={() => setScopeTab('community')}
+                    className={`px-4 py-2.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                      isLight ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
+                    }`}
+                  >
+                    Browse Community ({diagrams.length})
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
             <div className={`rounded-xl overflow-hidden shadow-lg border ${
