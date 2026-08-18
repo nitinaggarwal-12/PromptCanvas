@@ -1319,7 +1319,7 @@ export async function deleteDiagram(id: string, userId?: string): Promise<void> 
 
 export async function migrateGuestContent(guestUserId: string, newUserId: string): Promise<number> {
   await ensureTablesExist();
-  if (!guestUserId || !guestUserId.startsWith('guest-') || !newUserId) return 0;
+  if (!guestUserId || !newUserId || guestUserId === newUserId) return 0;
   if (isPostgres()) {
     const pool = getPgPool();
     const res = await pool.query('UPDATE diagrams SET user_id = $1 WHERE user_id = $2', [newUserId, guestUserId]);

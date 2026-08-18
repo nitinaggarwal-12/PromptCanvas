@@ -8,7 +8,8 @@ const EMBED_ORIGIN = 'https://embed.diagrams.net';
 const TIMEOUT_MS = 20000;
 
 let singletonIframe: HTMLIFrameElement | null = null;
-let iframeReadyPromise: Promise<HTMLIFrameElement> | null = null;
+let isIframeInitialized = false;
+let exportQueuePromise: Promise<any> = Promise.resolve();
 
 function getOrCreateIframe(): Promise<HTMLIFrameElement> {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
@@ -19,6 +20,7 @@ function getOrCreateIframe(): Promise<HTMLIFrameElement> {
     return Promise.resolve(singletonIframe);
   }
 
+  isIframeInitialized = false;
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.left = '-9999px';
@@ -39,14 +41,25 @@ export function exportDiagramPng(
   xml: string,
   opts?: RasterOptions
 ): Promise<string> {
-  return exportDiagramFormat(xml, 'png', {
-    scale: opts?.scale ?? 2,
-    transparent: opts?.transparent ?? false,
-  });
+  return queueExport(() =>
+    exportDiagramFormat(xml, 'png', {
+      scale: opts?.scale ?? 2,
+      transparent: opts?.transparent ?? false,
+    })
+  );
 }
 
 export function exportDiagramSvg(xml: string): Promise<string> {
-  return exportDiagramFormat(xml, 'xmlsvg', {});
+  return queueExport(() => exportDiagramFormat(xml, 'xmlsvg', {}));
+}
+
+function queueExport(fn: () => Promise<string>): Promise<string> {
+  const run = exportQueuePromise.then(
+    () => fn(),
+    () => fn()
+  );
+  exportQueuePromise = run.catch(() => {});
+  return run;
 }
 
 function exportDiagramFormat(
@@ -61,7 +74,9 @@ function exportDiagramFormat(
 
     let timeoutTimer: ReturnType<typeof setTimeout> | null = null;
     let messageListener: ((event: MessageEvent) => void) | null = null;
-    let step: 'awaiting_init' | 'awaiting_load' | 'awaiting_export' = 'awaiting_init';
+    let step: 'awaiting_init' | 'awaiting_load' | 'awaiting_export' = isIframeInitialized
+      ? 'awaiting_load'
+      : 'awaiting_init';
 
     const cleanup = () => {
       if (timeoutTimer) {
@@ -76,6 +91,8 @@ function exportDiagramFormat(
 
     timeoutTimer = setTimeout(() => {
       cleanup();
+      // If timeout occurs, reset iframe initialization state to allow fresh recovery
+      isIframeInitialized = false;
       reject(new Error('Export service unreachable'));
     }, TIMEOUT_MS);
 
@@ -87,6 +104,18 @@ function exportDiagramFormat(
         cleanup();
         return reject(new Error('Export iframe window is unavailable'));
       }
+
+      const sendLoadAction = () => {
+        step = 'awaiting_load';
+        contentWindow.postMessage(
+          JSON.stringify({
+            action: 'load',
+            xml: xml,
+            autosave: 0,
+          }),
+          EMBED_ORIGIN
+        );
+      };
 
       messageListener = (event: MessageEvent) => {
         // Strict origin check per security mandate
@@ -107,16 +136,11 @@ function exportDiagramFormat(
           return;
         }
 
-        if (step === 'awaiting_init' && msg.event === 'init') {
-          step = 'awaiting_load';
-          contentWindow.postMessage(
-            JSON.stringify({
-              action: 'load',
-              xml: xml,
-              autosave: 0,
-            }),
-            EMBED_ORIGIN
-          );
+        if (msg.event === 'init') {
+          isIframeInitialized = true;
+          if (step === 'awaiting_init') {
+            sendLoadAction();
+          }
         } else if (step === 'awaiting_load' && msg.event === 'load') {
           step = 'awaiting_export';
           // Mandate: wait 800ms for Draw.io fonts, multi-line text wrapping, and orthogonal edge waypoints to settle before rasterizing
@@ -148,8 +172,10 @@ function exportDiagramFormat(
 
       window.addEventListener('message', messageListener);
 
-      // In case the iframe init already fired before listener attached, trigger reload/re-init if iframe exists
-      // But usually newly created or posted message handles cleanly.
+      // If iframe was already initialized, dispatch load command immediately
+      if (isIframeInitialized) {
+        sendLoadAction();
+      }
     } catch (err: any) {
       cleanup();
       reject(err instanceof Error ? err : new Error(String(err)));

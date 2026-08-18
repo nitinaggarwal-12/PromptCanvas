@@ -1,18 +1,23 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
-import { getLatestDiagramVersion, saveDiagramVersion } from '@/lib/db';
+import { getDiagram, getLatestDiagramVersion, saveDiagramVersion } from '@/lib/db';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getAuthenticatedUser } from '@/lib/auth';
-import { acquireGeminiLock, releaseGeminiLock } from '@/lib/geminiLock';
+import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { cookies } from 'next/headers';
 
 const ai = new GoogleGenAI({});
 
 export async function POST(request: Request) {
   const user = await getAuthenticatedUser();
-  const lockKey = user?.id || 'anonymous_global';
+  const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+  const clientIp = rawIp.split(',')[0]?.trim() || '';
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get('promptcanvas_session')?.value;
+  const lockKey = deriveLockKey(user?.id, clientIp, sessionId);
 
   const lockAcquired = acquireGeminiLock(lockKey);
 
@@ -20,6 +25,15 @@ export async function POST(request: Request) {
     const { diagramId, selectedGaps, architectureType } = await request.json();
     if (!diagramId || !Array.isArray(selectedGaps) || selectedGaps.length === 0) {
       return NextResponse.json({ error: 'diagramId and selectedGaps array are required' }, { status: 400 });
+    }
+
+    const diagram = await getDiagram(diagramId, user?.id);
+    if (!diagram) {
+      return NextResponse.json({ error: `Diagram with ID ${diagramId} not found or access denied` }, { status: 404 });
+    }
+
+    if (diagram.access_level === 'Viewer') {
+      return NextResponse.json({ error: 'Forbidden: You have read-only access to this diagram.' }, { status: 403 });
     }
 
     const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);

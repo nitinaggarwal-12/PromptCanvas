@@ -23,13 +23,13 @@ export function executeArchitectureSimulation(
     // Inject dynamic high-throughput traffic throughput onto edges
     simulatedXml = simulatedXml
       .replace(
-        /main_title_bar_uv" value="([^"]+)"/g,
-        (match, innerValue) => {
+        /(main_title_bar(?:_uv)?)" value="([^"]+)"/g,
+        (match, idName, innerValue) => {
           const updated = innerValue.replace(
             /🟢 Production Approved/g,
             '⚡ Genie 3 Live Simulation: 125,000 req/s Load'
           );
-          return `main_title_bar_uv" value="${updated}"`;
+          return `${idName}" value="${updated}"`;
         }
       )
       // Highlight edge values with real-time throughput metrics
@@ -59,16 +59,17 @@ export function executeArchitectureSimulation(
   } else if (type === 'DISASTER_RECOVERY_FAILOVER') {
     simulatedXml = simulatedXml
       .replace(
-        /main_title_bar_uv" value="([^"]+)"/g,
-        (match, innerValue) => {
+        /(main_title_bar(?:_uv)?)" value="([^"]+)"/g,
+        (match, idName, innerValue) => {
           const updated = innerValue.replace(
             /🟢 Production Approved/g,
             '🔴 DR Failover Active — Primary Region Down'
           );
-          return `main_title_bar_uv" value="${updated}"`;
+          return `${idName}" value="${updated}"`;
         }
       )
-      .replace(/fillColor=#12385B/g, 'fillColor=#7F1D1D') // Dark Red Governance Header during DR
+      .replace(/fillColor=(?:#12385B|#F8FAFC|#FFFFFF)/gi, 'fillColor=#FEE2E2') // Alert Rose Header Fill
+      .replace(/strokeColor=(?:#0284C7|#38BDF8|#0284c7|#38bdf8)/gi, 'strokeColor=#DC2626') // Red Alert Border
       .replace(/value="Primary Governed VPC Network"/g, 'value="⚠️ PRIMARY REGION OFFLINE (Disaster Declared)"')
       .replace(/value="Failover DR VPC Network"/g, 'value="🟢 STANDBY DR REGION PROMOTED TO ACTIVE"');
 

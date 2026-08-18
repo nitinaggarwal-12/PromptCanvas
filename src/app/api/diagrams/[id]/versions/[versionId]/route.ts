@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getDiagramVersion } from '@/lib/db';
+import { getDiagram, getDiagramVersion } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 interface RouteParams {
   params: Promise<{
@@ -11,10 +12,19 @@ interface RouteParams {
 // GET /api/diagrams/[id]/versions/[versionId] - Retrieve a specific version's details and XML
 export async function GET(request: Request, { params }: RouteParams) {
   try {
-    const { versionId } = await params;
+    const user = await getAuthenticatedUser();
+    const { id, versionId } = await params;
+
+    const diagram = await getDiagram(id, user?.id);
+    if (!diagram) {
+      return NextResponse.json(
+        { error: `Diagram with ID ${id} not found or access denied` },
+        { status: 404 }
+      );
+    }
     
     const version = await getDiagramVersion(versionId);
-    if (!version) {
+    if (!version || version.diagram_id !== id) {
       return NextResponse.json(
         { error: `Diagram version with ID ${versionId} not found` },
         { status: 404 }

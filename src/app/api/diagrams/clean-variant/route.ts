@@ -1,13 +1,24 @@
 import { NextResponse } from 'next/server';
-import { getLatestDiagramVersion, saveDiagramVersion } from '@/lib/db';
+import { getDiagram, getLatestDiagramVersion, saveDiagramVersion } from '@/lib/db';
 import { createMinimalistCleanVariant } from '@/lib/diagramCleaner';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
+    const user = await getAuthenticatedUser();
     const { diagramId, architectureType } = await request.json();
     if (!diagramId) {
       return NextResponse.json({ error: 'diagramId is required' }, { status: 400 });
+    }
+
+    const diagram = await getDiagram(diagramId, user?.id);
+    if (!diagram) {
+      return NextResponse.json({ error: `Diagram with ID ${diagramId} not found or access denied` }, { status: 404 });
+    }
+
+    if (diagram.access_level === 'Viewer') {
+      return NextResponse.json({ error: 'Forbidden: You have read-only access to this diagram.' }, { status: 403 });
     }
 
     const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);

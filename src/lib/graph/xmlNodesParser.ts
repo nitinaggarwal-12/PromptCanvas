@@ -44,7 +44,44 @@ export function formatRelativeTime(dateStr: string): string {
 export function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
   if (!xml) return [];
   const items: DiagramNodeItem[] = [];
+  const processedIds = new Set<string>();
 
+  // 1. Match <UserObject ...>...</UserObject> and <object ...>...</object>
+  const objectBlockRegex = /<(?:UserObject|object)\s+([^>]+)>([\s\S]*?)<\/(?:UserObject|object)>/gi;
+  let objMatch;
+  while ((objMatch = objectBlockRegex.exec(xml)) !== null) {
+    const objAttrs = objMatch[1];
+    const innerContent = objMatch[2];
+
+    const objId = objAttrs.match(/id="([^"]*)"/)?.[1];
+    const objLabel = objAttrs.match(/label="([^"]*)"/)?.[1] || objAttrs.match(/tooltip="([^"]*)"/)?.[1] || objAttrs.match(/name="([^"]*)"/)?.[1] || objAttrs.match(/value="([^"]*)"/)?.[1];
+
+    const innerCellMatch = innerContent.match(/<mxCell\s+([^>]+)>/i);
+    const innerAttrs = innerCellMatch ? innerCellMatch[1] : '';
+    const isEdge = innerAttrs.includes('edge="1"') || objAttrs.includes('edge="1"');
+    const source = innerAttrs.match(/source="([^"]*)"/)?.[1] || objAttrs.match(/source="([^"]*)"/)?.[1];
+    const target = innerAttrs.match(/target="([^"]*)"/)?.[1] || objAttrs.match(/target="([^"]*)"/)?.[1];
+    const style = innerAttrs.match(/style="([^"]*)"/)?.[1] || objAttrs.match(/style="([^"]*)"/)?.[1];
+    const innerId = innerAttrs.match(/id="([^"]*)"/)?.[1];
+
+    const id = objId || innerId;
+    if (id && id !== '0' && id !== '1' && !processedIds.has(id)) {
+      processedIds.add(id);
+      if (innerId) processedIds.add(innerId);
+
+      const rawValue = objLabel || (isEdge ? 'Connection' : 'Unnamed Component');
+      items.push({
+        id,
+        label: isEdge ? rawValue : cleanHtmlLabel(rawValue),
+        isEdge,
+        source,
+        target,
+        style
+      });
+    }
+  }
+
+  // 2. Match standard <mxCell ...>
   const regex = /<mxCell\s+([^>]+)>/g;
   let match;
   while ((match = regex.exec(xml)) !== null) {
@@ -56,7 +93,8 @@ export function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
     const getTarget = attrsStr.match(/target="([^"]*)"/)?.[1];
     const getStyle = attrsStr.match(/style="([^"]*)"/)?.[1];
 
-    if (getId && getId !== '0' && getId !== '1') {
+    if (getId && getId !== '0' && getId !== '1' && !processedIds.has(getId)) {
+      processedIds.add(getId);
       const rawValue = getValue || (isEdge ? 'Connection' : 'Unnamed Component');
       items.push({
         id: getId,

@@ -10,7 +10,7 @@ const LOCK_TIMEOUT_MS = 120 * 1000; // 120 seconds auto-expiry safeguard (matche
 export function deriveLockKey(userId?: string | null, clientIp?: string | null, sessionId?: string | null): string {
   if (userId) return `user_${userId}`;
   if (sessionId) return `session_${sessionId}`;
-  if (clientIp && clientIp !== '127.0.0.1') return `ip_${clientIp}`;
+  if (clientIp && clientIp !== '127.0.0.1' && clientIp !== '::1') return `ip_${clientIp}`;
   return 'anonymous_default';
 }
 
