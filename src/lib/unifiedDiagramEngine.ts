@@ -45,7 +45,36 @@ export async function executeUnifiedDiagramPipeline(
   req: UnifiedDiagramRequest
 ): Promise<UnifiedDiagramResponse> {
   const { prompt, diagramId, name, isPrivate, userId } = req;
-  const effectiveArchType = req.architectureType || 'conceptual_diagram';
+  let effectiveArchType = req.architectureType || 'conceptual_diagram';
+
+  const cleanPrompt = (prompt || '').trim();
+  const isTrivialPrompt = !cleanPrompt || 
+    cleanPrompt.length < 5 || 
+    /^nitin\s*\d*$/i.test(cleanPrompt) || 
+    /^canvas\s*\d*$/i.test(cleanPrompt) || 
+    /^default$/i.test(cleanPrompt) ||
+    cleanPrompt === effectiveArchType ||
+    cleanPrompt.startsWith('WBS') ||
+    cleanPrompt.includes('Blueprint ID');
+
+  // If user started with a blank canvas or unseeded arch, but provided a real prompt, synthesize full architecture!
+  const isBlankCanvasType = effectiveArchType === 'blank_canvas' || effectiveArchType === 'arch_blank_canvas';
+  if (isBlankCanvasType && !isTrivialPrompt) {
+    const promptLower = cleanPrompt.toLowerCase();
+    if (/rag|vector|retriev|agent|llm|generative|prompt|model|embedding|grounding|sales intelligence/i.test(promptLower)) {
+      effectiveArchType = 'agentic_rag';
+    } else if (/event|kafka|pubsub|queue|microservice|async|eda/i.test(promptLower)) {
+      effectiveArchType = 'enterprise_event_driven';
+    } else if (/data|etl|lakehouse|warehouse|pipeline|bigquery|snowflake|analytics/i.test(promptLower)) {
+      effectiveArchType = 'modern_data_stack';
+    } else if (/security|zero trust|vpc|perimeter|firewall|waf|iam|identity/i.test(promptLower)) {
+      effectiveArchType = 'secure_deployment_map';
+    } else if (/cloud|aws|gcp|azure|landing zone|subnet/i.test(promptLower)) {
+      effectiveArchType = 'gcp_landing_zone_vpc';
+    } else {
+      effectiveArchType = 'conceptual_diagram';
+    }
+  }
 
   const classificationTag = [
     req.phaseName ? `Phase: ${req.phaseName}` : '',
@@ -61,7 +90,8 @@ export async function executeUnifiedDiagramPipeline(
 
   // 1. Resolve pristine 1400x800 base reference template
   let baseTemplateXml = getDefaultXmlForArchitecture(effectiveArchType, contextualPrompt, contextualPrompt);
-  if (!baseTemplateXml) {
+  const isBaseBlank = !baseTemplateXml || baseTemplateXml.includes('<root><mxCell id="0"/><mxCell id="1" parent="0"/></root>');
+  if (isBaseBlank && !isTrivialPrompt) {
     baseTemplateXml = getDefaultXmlForArchitecture('conceptual_diagram', contextualPrompt, contextualPrompt);
   }
 
@@ -71,23 +101,17 @@ export async function executeUnifiedDiagramPipeline(
 
   if (diagramId && !req.existingXml) {
     const latestVersion = await getLatestDiagramVersion(diagramId, effectiveArchType);
-    if (latestVersion && latestVersion.xml_content && (latestVersion.architecture_type || 'conceptual_diagram') === effectiveArchType) {
+    const isExistingXmlBlank = !latestVersion?.xml_content || 
+      latestVersion.xml_content.includes('<root><mxCell id="0"/><mxCell id="1" parent="0"/></root>') ||
+      !latestVersion.xml_content.includes('vertex="1"');
+
+    if (latestVersion && latestVersion.xml_content && !isExistingXmlBlank) {
       targetXml = latestVersion.xml_content;
       existingPrompt = latestVersion.prompt || prompt;
     } else {
       targetXml = baseTemplateXml;
     }
   }
-
-  const cleanPrompt = (prompt || '').trim();
-  const isTrivialPrompt = !cleanPrompt || 
-    cleanPrompt.length < 5 || 
-    /^nitin\s*\d*$/i.test(cleanPrompt) || 
-    /^canvas\s*\d*$/i.test(cleanPrompt) || 
-    /^default$/i.test(cleanPrompt) ||
-    cleanPrompt === effectiveArchType ||
-    cleanPrompt.startsWith('WBS') ||
-    cleanPrompt.includes('Blueprint ID');
 
   let customResult: CustomizationResult;
   if (isTrivialPrompt) {

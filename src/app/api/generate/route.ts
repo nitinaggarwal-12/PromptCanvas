@@ -95,7 +95,7 @@ export async function POST(request: Request) {
             console.warn('[V2 Edit Pipeline Fallback] Error editing freeform graph, falling back to unified engine:', editErr);
           }
         }
-      } else if (!architectureType) {
+      } else if (!architectureType || architectureType === 'blank_canvas' || architectureType === 'arch_blank_canvas') {
         const promptLower = prompt.toLowerCase();
         const hasExplicitTemplateKeyword =
           /entity relationship diagram|\berd\b|sequence diagram|system context|c4 context|c4 container|data pipeline|zero trust/i.test(promptLower);

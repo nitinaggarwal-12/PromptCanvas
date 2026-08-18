@@ -167,27 +167,27 @@ export function buildAiTrismGuardrailsXml(): string {
 
         <!-- ==================== LOOKER STUDIO (TRISM OBSERVABILITY DASHBOARD) ==================== -->
         <mxCell id="looker_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=4;" vertex="1" parent="1">
-          <mxGeometry x="810" y="355" width="265" height="205" as="geometry"/>
+          <mxGeometry x="810" y="355" width="340" height="205" as="geometry"/>
         </mxCell>
         <mxCell id="looker_title" value="&lt;b style=&quot;font-size:12px;color:#1D4ED8;&quot;&gt;📊 Looker Studio TRiSM Dashboard&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Real-Time Security &amp;amp; Compliance Telemetry&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="815" y="360" width="255" height="30" as="geometry"/>
+          <mxGeometry x="815" y="360" width="330" height="30" as="geometry"/>
         </mxCell>
 
         <!-- 3 Dashboard Metric Widgets -->
         <mxCell id="w1_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#1E40AF;&quot;&gt;PII Scrubbed&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;font-weight:bold;color:#2563EB;padding-top:2px;&quot;&gt;99.98%&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#64748B;&quot;&gt;14.2M Tokens/day&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="820" y="400" width="75" height="75" as="geometry"/>
+          <mxGeometry x="825" y="400" width="95" height="75" as="geometry"/>
         </mxCell>
 
         <mxCell id="w2_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#991B1B;&quot;&gt;Threats Deflected&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;font-weight:bold;color:#DC2626;padding-top:2px;&quot;&gt;1,420&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#64748B;&quot;&gt;Zero Injections&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FECACA;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="905" y="400" width="75" height="75" as="geometry"/>
+          <mxGeometry x="930" y="400" width="95" height="75" as="geometry"/>
         </mxCell>
 
         <mxCell id="w3_box" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;font-weight:bold;color:#15803D;&quot;&gt;EU AI Act Status&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;font-weight:bold;color:#16A34A;padding-top:2px;&quot;&gt;100%&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#64748B;&quot;&gt;Audit Ready&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="990" y="400" width="75" height="75" as="geometry"/>
+          <mxGeometry x="1035" y="400" width="105" height="75" as="geometry"/>
         </mxCell>
 
         <mxCell id="lbl_looker_note" value="&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Automated SIEM aggregation via BigQuery BI Engine&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="820" y="490" width="245" height="20" as="geometry"/>
+          <mxGeometry x="820" y="490" width="320" height="20" as="geometry"/>
         </mxCell>
 
         <!-- Connectors between TRiSM engine and Looker -->
@@ -199,12 +199,12 @@ export function buildAiTrismGuardrailsXml(): string {
         <!-- ==================== BOTTOM CONFIGURATION & INFRASTRUCTURE CONTROLS ==================== -->
         <!-- Cloud IAM & VPC-SC Box -->
         <mxCell id="cloud_iam_box" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🔐 Cloud IAM, VPC-SC &amp;amp; Secret Manager&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#334155;line-height:1.25;padding-top:2px;&quot;&gt;• Least Privilege Service Accounts&lt;br&gt;• CMEK Automated Key Rotation (Cloud KMS)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="810" y="580" width="265" height="85" as="geometry"/>
+          <mxGeometry x="810" y="580" width="340" height="85" as="geometry"/>
         </mxCell>
 
         <!-- Config Repository GitOps Box -->
         <mxCell id="config_repo_box" value="&lt;table style=&quot;width:100%;text-align:left;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;⚙️ GitOps Policy Repository&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#334155;line-height:1.25;padding-top:2px;&quot;&gt;• Declarative OPA Guardrail Policies&lt;br&gt;• Automated CI/CD Regression Evaluation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="810" y="685" width="265" height="85" as="geometry"/>
+          <mxGeometry x="810" y="685" width="340" height="85" as="geometry"/>
         </mxCell>
 
         <mxCell id="e_sec_config" value="Policy Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontColor=#7C3AED;labelBackgroundColor=#FFFFFF;padding=2;" edge="1" parent="1" source="config_repo_box" target="output_filter_card">
@@ -218,12 +218,12 @@ export function buildAiTrismGuardrailsXml(): string {
         <!-- ==================== PERSONAS (RIGHT COLUMN) ==================== -->
         <!-- CISO & AI Sec Persona Card -->
         <mxCell id="persona_ciso" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;🛡️👥&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;CISO &amp;amp; AI Sec Teams&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Executive Security Oversight&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1130" y="385" width="200" height="90" as="geometry"/>
+          <mxGeometry x="1220" y="385" width="220" height="90" as="geometry"/>
         </mxCell>
 
         <!-- DevSecOps Persona Card -->
         <mxCell id="persona_devsecops" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;👨‍💻🐙&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;DevSecOps Engineer&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Pipeline &amp;amp; Guardrail Maintainer&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1130" y="680" width="200" height="90" as="geometry"/>
+          <mxGeometry x="1220" y="680" width="220" height="90" as="geometry"/>
         </mxCell>
 
         <!-- Persona Connectors -->

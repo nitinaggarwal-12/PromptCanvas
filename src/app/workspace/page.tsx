@@ -7015,7 +7015,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         body: JSON.stringify({
                           name: finalName,
                           prompt: promptText,
-                          architectureType: selectedArchType && selectedArchType !== 'total_unified_system_view' ? selectedArchType : undefined,
+                          architectureType: selectedArchType && selectedArchType !== 'total_unified_system_view' && selectedArchType !== 'blank_canvas' && selectedArchType !== 'arch_blank_canvas' ? selectedArchType : undefined,
                           isPrivate: false
                         })
                       });
