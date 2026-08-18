@@ -425,10 +425,21 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       }
     }
 
-    // 6d. Universal Edge Label Offset & Background Shielding (fixes Secure Ingress, PSC Tunnel, AUC > 0.998)
+    // 6d. Universal Edge Orthogonalization, Label Offset & Background Shielding
     if (cell['@_edge'] === '1' || cell['@_edge'] === true) {
       let style = String(cell['@_style'] || '');
       const rawVal = String(cell['@_value'] || '');
+
+      // Enforce clean orthogonal routing with rounded corners on all edges to eliminate slanted/diagonal lines
+      if (!style.includes('edgeStyle=orthogonalEdgeStyle')) {
+        if (style.includes('edgeStyle=none')) {
+          style = style.replace(/edgeStyle=none;?/g, 'edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;orthogonalLoop=1;jettySize=auto;');
+        } else if (!style.includes('edgeStyle=')) {
+          style = `edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;orthogonalLoop=1;jettySize=auto;${style}`;
+        }
+        cell['@_style'] = style;
+        isHealed = true;
+      }
 
       if (rawVal && rawVal.trim().length > 0) {
         // Enforce solid high-contrast label pill so lines/arrows never cut through the text

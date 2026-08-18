@@ -5216,11 +5216,19 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     }
 
     if (isLiveFlowEnabled) {
-      formattedXml = formattedXml.replace(/style="edgeStyle=orthogonalEdgeStyle;([^""]*)"/g, (m, p1) => {
-        if (!p1.includes("dashed=1")) {
-          return `style="edgeStyle=orthogonalEdgeStyle;dashed=1;dashPattern=6 6;${p1}"`;
+      formattedXml = formattedXml.replace(/(<mxCell[^>]*?edge="1"[^>]*?style=")([^"]*)(")/gi, (match, prefix, style, suffix) => {
+        let newStyle = style;
+        if (!newStyle.includes('dashed=1')) {
+          newStyle = `dashed=1;dashPattern=6 6;strokeWidth=2;${newStyle}`;
         }
-        return m;
+        return `${prefix}${newStyle}${suffix}`;
+      });
+      formattedXml = formattedXml.replace(/(<mxCell[^>]*?style=")([^"]*)("[^>]*?edge="1"[^>]*?>)/gi, (match, prefix, style, suffix) => {
+        let newStyle = style;
+        if (!newStyle.includes('dashed=1')) {
+          newStyle = `dashed=1;dashPattern=6 6;strokeWidth=2;${newStyle}`;
+        }
+        return `${prefix}${newStyle}${suffix}`;
       });
     }
 

@@ -252,12 +252,11 @@ export default function DiagramViewer({
           border-radius: 9999px;
         }${isLiveFlow ? `
         @keyframes flowPulse {
-          0% { stroke-dashoffset: 40; }
+          0% { stroke-dashoffset: 48; }
           100% { stroke-dashoffset: 0; }
         }
-        svg path[stroke-dasharray] {
+        svg path[stroke-dasharray], svg g[data-cell-id] path[stroke], svg .geEdge path {
           animation: flowPulse 1.1s linear infinite !important;
-          stroke-width: 2.5px !important;
         }
 ` : ''}
       </style>
