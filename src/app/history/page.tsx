@@ -741,11 +741,18 @@ export default function CanvasHistoryPage() {
         {/* DISMISSIBLE GUEST MODE WARNING DISCLAIMER BANNER WITH X BUTTON */}
         {/* ========================================================================= */}
         {user?.is_guest && !isGuestDisclaimerDismissed && (
-          <div className="w-full bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-b border-amber-500/30 py-2.5 px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-200 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in">
+          <div className={`w-full border-b py-2.5 px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in ${
+            isLight
+              ? 'bg-amber-50/95 border-amber-300 text-amber-950 shadow-sm'
+              : 'bg-gradient-to-r from-amber-500/15 via-teal-500/15 to-indigo-500/15 border-amber-500/30 text-amber-200'
+          }`}>
             <div className="flex items-center gap-2 font-medium min-w-0">
-              <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+              <ShieldAlert className={`w-4 h-4 shrink-0 ${isLight ? 'text-amber-700' : 'text-amber-400'}`} />
               <span className="truncate sm:whitespace-normal">
-                <strong className="text-amber-300 font-bold">Guest Mode Disclaimer:</strong> Content created as a Guest is visible to all users unless deleted.
+                <strong className={`font-bold ${isLight ? 'text-amber-950 font-black' : 'text-amber-300'}`}>Guest Mode Disclaimer:</strong>{' '}
+                <span className={isLight ? 'text-amber-900 font-medium' : 'text-amber-200'}>
+                  Content created as a Guest is visible to all users unless deleted.
+                </span>
               </span>
             </div>
             <div className="flex items-center gap-2.5 shrink-0">
@@ -767,7 +774,11 @@ export default function CanvasHistoryPage() {
                     } catch (e) {}
                   }
                 }}
-                className="p-1 rounded-lg hover:bg-amber-500/20 text-amber-300 hover:text-white transition-colors cursor-pointer"
+                className={`p-1 rounded-lg transition-colors cursor-pointer ${
+                  isLight
+                    ? 'hover:bg-amber-200/60 text-amber-800 hover:text-amber-950'
+                    : 'hover:bg-amber-500/20 text-amber-300 hover:text-white'
+                }`}
                 title="Dismiss warning"
               >
                 <X className="w-4 h-4" />

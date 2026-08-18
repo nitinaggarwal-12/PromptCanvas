@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Download, X, FileCode, Image, FileText, Presentation, Check, Loader2, Sparkles } from 'lucide-react';
 import PptxGenJS from 'pptxgenjs';
 import { exportDiagramPng } from '../lib/export/diagramRaster';
+import { useTheme } from '../lib/themeContext';
 
 interface ExportDiagramModalProps {
   isOpen: boolean;
@@ -24,6 +25,9 @@ export function ExportDiagramModal({
   technicalUsecase,
   auditScore = 85,
 }: ExportDiagramModalProps) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
   const [loadingType, setLoadingType] = useState<string | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -460,31 +464,41 @@ echo "✅ Provisioned Zero-Trust GCP Network Enclave for ${diagramName}!"
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 font-sans">
-      <div className="relative w-full max-w-3xl bg-[#0b101d] border border-panel-border/60 rounded-3xl p-6 md:p-8 shadow-2xl text-white max-h-[92vh] overflow-y-auto">
+      <div className={`relative w-full max-w-3xl rounded-3xl p-6 md:p-8 shadow-2xl max-h-[92vh] overflow-y-auto transition-all border ${
+        isLight
+          ? 'bg-white border-slate-300 text-slate-900 shadow-slate-300/60'
+          : 'bg-[#0b101d] border-panel-border/60 text-white'
+      }`}>
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-panel-border/40 pb-4 mb-6">
+        <div className={`flex items-center justify-between border-b pb-4 mb-6 ${
+          isLight ? 'border-slate-200' : 'border-panel-border/40'
+        }`}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-accent flex items-center justify-center font-black">
-              <Download className="w-5 h-5 text-teal-accent" />
+            <div className="w-10 h-10 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-accent flex items-center justify-center font-black">
+              <Download className="w-5 h-5 text-teal-600 dark:text-teal-accent" />
             </div>
             <div>
-              <h3 className="text-xl font-extrabold text-white">Export Diagram & Architecture-as-Code</h3>
-              <p className="text-xs text-slate-400">Download interactive Draw.io XML, images, Python diagrams script, D2 Lang, or PPTX presentation</p>
+              <h3 className={`text-xl font-extrabold ${isLight ? 'text-slate-900' : 'text-white'}`}>Export Diagram & Architecture-as-Code</h3>
+              <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Download interactive Draw.io XML, images, Python diagrams script, D2 Lang, or PPTX presentation</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
+            className={`p-2 rounded-xl transition-all cursor-pointer ${
+              isLight
+                ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-900'
+                : 'hover:bg-slate-800 text-slate-400 hover:text-white'
+            }`}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3.5 bg-red-950/70 border border-red-800/80 rounded-2xl text-red-200 text-xs font-medium flex items-center justify-between">
+          <div className="mb-4 p-3.5 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-700 dark:text-red-200 text-xs font-medium flex items-center justify-between">
             <span>❌ {errorMessage}</span>
-            <button onClick={() => setErrorMessage(null)} className="text-red-300 hover:text-white font-bold ml-2">✕</button>
+            <button onClick={() => setErrorMessage(null)} className="text-red-700 dark:text-red-300 hover:text-red-900 font-bold ml-2">✕</button>
           </div>
         )}
 
@@ -494,192 +508,248 @@ echo "✅ Provisioned Zero-Trust GCP Network Enclave for ${diagramName}!"
           {/* Option 1: Draw.io XML */}
           <div
             onClick={handleExportXml}
-            className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+            className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 ${
+              isLight
+                ? 'bg-slate-50 border-slate-200 hover:border-teal-500 hover:bg-white hover:shadow-md'
+                : 'bg-slate-900/60 border-slate-800 hover:border-teal-500/50 hover:bg-slate-900'
+            }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-accent flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-accent flex items-center justify-center">
                 <FileCode className="w-5 h-5" />
               </div>
               {downloadSuccess === 'xml' ? (
-                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <Check className="w-4 h-4" /> Downloaded
                 </span>
               ) : loadingType === 'xml' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-teal-accent" />
+                <Loader2 className="w-4 h-4 animate-spin text-teal-600 dark:text-teal-accent" />
               ) : (
-                <Download className="w-4 h-4 text-slate-500 group-hover:text-teal-accent transition-colors" />
+                <Download className="w-4 h-4 text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-accent transition-colors" />
               )}
             </div>
             <div>
-              <h4 className="font-extrabold text-sm text-white group-hover:text-teal-300 transition-colors">Draw.io Vector XML (.drawio)</h4>
-              <p className="text-xs text-slate-400 mt-1">Raw XML diagram vector format for editing in Draw.io or PromptCanvas.</p>
+              <h4 className={`font-extrabold text-sm transition-colors ${
+                isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-300'
+              }`}>Draw.io Vector XML (.drawio)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Raw XML diagram vector format for editing in Draw.io or PromptCanvas.</p>
             </div>
           </div>
 
           {/* Option 2: High-Res PNG */}
           <div
             onClick={handleExportPng}
-            className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+            className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 ${
+              isLight
+                ? 'bg-slate-50 border-slate-200 hover:border-sky-500 hover:bg-white hover:shadow-md'
+                : 'bg-slate-900/60 border-slate-800 hover:border-teal-500/50 hover:bg-slate-900'
+            }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                 <Image className="w-5 h-5" />
               </div>
               {downloadSuccess === 'png' ? (
-                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <Check className="w-4 h-4" /> Downloaded
                 </span>
               ) : loadingType === 'png' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-sky-400" />
+                <Loader2 className="w-4 h-4 animate-spin text-sky-600 dark:text-sky-400" />
               ) : (
-                <Download className="w-4 h-4 text-slate-500 group-hover:text-sky-400 transition-colors" />
+                <Download className="w-4 h-4 text-slate-400 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors" />
               )}
             </div>
             <div>
-              <h4 className="font-extrabold text-sm text-white group-hover:text-sky-300 transition-colors">PNG Image Document (.png)</h4>
-              <p className="text-xs text-slate-400 mt-1">High-resolution vector raster image of the actual diagram canvas.</p>
+              <h4 className={`font-extrabold text-sm transition-colors ${
+                isLight ? 'text-slate-900 group-hover:text-sky-700' : 'text-white group-hover:text-sky-300'
+              }`}>PNG Image Document (.png)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>High-resolution vector raster image of the actual diagram canvas.</p>
             </div>
           </div>
 
           {/* Option 3: Python diagrams Script (.py) */}
           <div
             onClick={handleExportPython}
-            className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+            className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 ${
+              isLight
+                ? 'bg-slate-50 border-slate-200 hover:border-purple-500 hover:bg-white hover:shadow-md'
+                : 'bg-slate-900/60 border-slate-800 hover:border-teal-500/50 hover:bg-slate-900'
+            }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm">
                 🐍
               </div>
               {downloadSuccess === 'python' ? (
-                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <Check className="w-4 h-4" /> Exported .py
                 </span>
               ) : loadingType === 'python' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-purple-400" />
+                <Loader2 className="w-4 h-4 animate-spin text-purple-600 dark:text-purple-400" />
               ) : (
-                <Download className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors" />
+                <Download className="w-4 h-4 text-slate-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" />
               )}
             </div>
             <div>
-              <h4 className="font-extrabold text-sm text-white group-hover:text-purple-300 transition-colors">Python diagrams Script (.py)</h4>
-              <p className="text-xs text-slate-400 mt-1">Mingrammer pure Python Diagram-as-Code with official GCP/AWS clusters.</p>
+              <h4 className={`font-extrabold text-sm transition-colors ${
+                isLight ? 'text-slate-900 group-hover:text-purple-700' : 'text-white group-hover:text-purple-300'
+              }`}>Python diagrams Script (.py)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Mingrammer pure Python Diagram-as-Code with official GCP/AWS clusters.</p>
             </div>
           </div>
 
           {/* Option 4: D2 Lang Declarative Script (.d2) */}
           <div
             onClick={handleExportD2}
-            className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+            className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 ${
+              isLight
+                ? 'bg-slate-50 border-slate-200 hover:border-cyan-500 hover:bg-white hover:shadow-md'
+                : 'bg-slate-900/60 border-slate-800 hover:border-teal-500/50 hover:bg-slate-900'
+            }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold text-sm">
                 🔤
               </div>
               {downloadSuccess === 'd2' ? (
-                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <Check className="w-4 h-4" /> Exported .d2
                 </span>
               ) : loadingType === 'd2' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+                <Loader2 className="w-4 h-4 animate-spin text-cyan-600 dark:text-cyan-400" />
               ) : (
-                <Download className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+                <Download className="w-4 h-4 text-slate-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors" />
               )}
             </div>
             <div>
-              <h4 className="font-extrabold text-sm text-white group-hover:text-cyan-300 transition-colors">D2 Lang Architecture (.d2)</h4>
-              <p className="text-xs text-slate-400 mt-1">Declarative modern text-to-diagram code with directional routing.</p>
+              <h4 className={`font-extrabold text-sm transition-colors ${
+                isLight ? 'text-slate-900 group-hover:text-cyan-700' : 'text-white group-hover:text-cyan-300'
+              }`}>D2 Lang Architecture (.d2)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Declarative modern text-to-diagram code with directional routing.</p>
             </div>
           </div>
 
           {/* Option 5: PDF Document */}
           <div
             onClick={handleExportPdf}
-            className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+            className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 ${
+              isLight
+                ? 'bg-slate-50 border-slate-200 hover:border-rose-500 hover:bg-white hover:shadow-md'
+                : 'bg-slate-900/60 border-slate-800 hover:border-teal-500/50 hover:bg-slate-900'
+            }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center">
                 <FileText className="w-5 h-5" />
               </div>
               {downloadSuccess === 'pdf' ? (
-                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <Check className="w-4 h-4" /> Exported
                 </span>
               ) : loadingType === 'pdf' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
+                <Loader2 className="w-4 h-4 animate-spin text-rose-600 dark:text-rose-400" />
               ) : (
-                <Download className="w-4 h-4 text-slate-500 group-hover:text-rose-400 transition-colors" />
+                <Download className="w-4 h-4 text-slate-400 group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors" />
               )}
             </div>
             <div>
-              <h4 className="font-extrabold text-sm text-white group-hover:text-rose-300 transition-colors">PDF Architecture Document (.pdf)</h4>
-              <p className="text-xs text-slate-400 mt-1">Print-ready document containing diagram view, executive summary, and security grade.</p>
+              <h4 className={`font-extrabold text-sm transition-colors ${
+                isLight ? 'text-slate-900 group-hover:text-rose-700' : 'text-white group-hover:text-rose-300'
+              }`}>PDF Architecture Document (.pdf)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Print-ready document containing diagram view, executive summary, and security grade.</p>
             </div>
           </div>
 
           {/* Option 6: Google Slides 16:9 Executive Board Deck (.pptx) */}
           <div
             onClick={handleExportPptx}
-            className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 to-purple-500/10 border border-amber-500/30 hover:border-amber-400 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg shadow-amber-500/5"
+            className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg ${
+              isLight
+                ? 'bg-amber-50/70 border-amber-300 hover:border-amber-500 hover:bg-amber-50 hover:shadow-amber-100 shadow-amber-500/5'
+                : 'bg-gradient-to-br from-amber-500/10 to-purple-500/10 border-amber-500/30 hover:border-amber-400 hover:bg-slate-900 shadow-amber-500/5'
+            }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 flex items-center justify-center">
+              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${
+                isLight ? 'bg-amber-100 border-amber-300 text-amber-800' : 'bg-amber-500/15 border-amber-500/30 text-amber-300'
+              }`}>
                 <Presentation className="w-5 h-5" />
               </div>
               {downloadSuccess === 'pptx' ? (
-                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <Check className="w-4 h-4" /> Downloaded Deck
                 </span>
               ) : loadingType === 'pptx' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+                <Loader2 className="w-4 h-4 animate-spin text-amber-600 dark:text-amber-400" />
               ) : (
-                <Sparkles className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                <Sparkles className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
               )}
             </div>
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9px] font-black text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider border border-amber-500/30">Google Slides 16:9 Deck</span>
+                <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
+                  isLight ? 'bg-amber-100 text-amber-950 border-amber-300' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                }`}>Google Slides 16:9 Deck</span>
               </div>
-              <h4 className="font-extrabold text-sm text-white group-hover:text-amber-200 transition-colors">📊 Google Slides 16:9 Executive Board Deck (.pptx)</h4>
-              <p className="text-xs text-slate-400 mt-1">Presentation deck featuring full-width diagram slide, business value, and technical breakdown.</p>
+              <h4 className={`font-extrabold text-sm transition-colors ${
+                isLight ? 'text-slate-900 group-hover:text-amber-800' : 'text-white group-hover:text-amber-200'
+              }`}>📊 Google Slides 16:9 Executive Board Deck (.pptx)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Presentation deck featuring full-width diagram slide, business value, and technical breakdown.</p>
             </div>
           </div>
 
           {/* Option 7: GCP Cloud Shell Infrastructure Script (.sh) */}
           <div
             onClick={handleExportGcpShell}
-            className="p-5 rounded-2xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-500/30 hover:border-teal-400 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg shadow-teal-500/5"
+            className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg ${
+              isLight
+                ? 'bg-teal-50/70 border-teal-300 hover:border-teal-500 hover:bg-teal-50 hover:shadow-teal-100 shadow-teal-500/5'
+                : 'bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border-teal-500/30 hover:border-teal-400 hover:bg-slate-900 shadow-teal-500/5'
+            }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/30 text-teal-300 flex items-center justify-center font-bold text-sm">
+              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center font-bold text-sm ${
+                isLight ? 'bg-teal-100 border-teal-300 text-teal-800' : 'bg-teal-500/15 border-teal-500/30 text-teal-300'
+              }`}>
                 ☁️
               </div>
               {downloadSuccess === 'gcpshell' ? (
-                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <Check className="w-4 h-4" /> Exported Script
                 </span>
               ) : loadingType === 'gcpshell' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-teal-400" />
+                <Loader2 className="w-4 h-4 animate-spin text-teal-600 dark:text-teal-400" />
               ) : (
-                <Sparkles className="w-4 h-4 text-teal-400 group-hover:scale-110 transition-transform" />
+                <Sparkles className="w-4 h-4 text-teal-500 group-hover:scale-110 transition-transform" />
               )}
             </div>
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9px] font-black text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider border border-teal-500/30">GCP Cloud Shell Infrastructure</span>
+                <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
+                  isLight ? 'bg-teal-100 text-teal-950 border-teal-300' : 'bg-teal-500/20 text-teal-300 border-teal-500/30'
+                }`}>GCP Cloud Shell Infrastructure</span>
               </div>
-              <h4 className="font-extrabold text-sm text-white group-hover:text-teal-200 transition-colors">☁️ GCP Cloud Shell Deployment Script (.sh)</h4>
-              <p className="text-xs text-slate-400 mt-1">One-click gcloud & VPC-SC shell deployment script ready for Google Cloud Shell.</p>
+              <h4 className={`font-extrabold text-sm transition-colors ${
+                isLight ? 'text-slate-900 group-hover:text-teal-800' : 'text-white group-hover:text-teal-200'
+              }`}>☁️ GCP Cloud Shell Deployment Script (.sh)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>One-click gcloud & VPC-SC shell deployment script ready for Google Cloud Shell.</p>
             </div>
           </div>
 
         </div>
 
         {/* Footer */}
-        <div className="mt-6 border-t border-panel-border/30 pt-4 flex items-center justify-between text-xs text-slate-400">
-          <span>Target Architecture: <strong className="text-white">{diagramName}</strong></span>
+        <div className={`mt-6 border-t pt-4 flex items-center justify-between text-xs ${
+          isLight ? 'border-slate-200 text-slate-600' : 'border-panel-border/30 text-slate-400'
+        }`}>
+          <span>Target Architecture: <strong className={isLight ? 'text-slate-900' : 'text-white'}>{diagramName}</strong></span>
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition-all cursor-pointer"
+            className={`px-5 py-2.5 rounded-xl font-bold transition-all cursor-pointer border ${
+              isLight
+                ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+            }`}
           >
             Close
           </button>
