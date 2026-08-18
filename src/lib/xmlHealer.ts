@@ -383,6 +383,75 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       isHealed = true;
       healingLog.push(`Fixed orphaned parent="${cell['@_parent']}" for cell id="${id}", reassigned parent="1".`);
     }
+
+    // 6c. Universal Vertex Text Padding & Dynamic Shape Resizing
+    if (cell['@_vertex'] === '1' || cell['@_vertex'] === true) {
+      let style = String(cell['@_style'] || '');
+      const rawVal = String(cell['@_value'] || '');
+
+      // Inject internal text padding so incoming arrowheads never overlap text characters (fixes Fact_Transaction_Ledger)
+      if (!style.includes('spacingLeft=')) {
+        if (style.includes('align=left')) {
+          style += ';spacingLeft=12;spacingRight=10;spacingTop=4;spacingBottom=4;';
+        } else {
+          style += ';spacingLeft=8;spacingRight=8;spacingTop=4;spacingBottom=4;';
+        }
+        cell['@_style'] = style;
+        isHealed = true;
+      }
+
+      // Auto-expand box width and height if text is long or multi-line (fixes Apigee / HTTPS Load Balancer)
+      if (rawVal && cell.mxGeometry) {
+        const lines = rawVal.split(/<br\s*\/?>|\\n|&lt;br\s*\/?&gt;/gi);
+        const maxLineLen = Math.max(...lines.map(l => l.replace(/<[^>]*>/g, '').replace(/&lt;[^&]*&gt;/g, '').trim().length), 0);
+        const lineCount = lines.length;
+
+        const currentW = Number(cell.mxGeometry['@_width']) || 120;
+        const currentH = Number(cell.mxGeometry['@_height']) || 60;
+
+        // Apply only to component cards and boxes, not large outer containers
+        if (currentW < 380 && currentH < 280 && !id.startsWith('frame_') && !id.startsWith('col_') && !id.startsWith('box_')) {
+          if (maxLineLen > 22 && currentW < 140) {
+            const targetW = Math.min(220, Math.max(currentW, maxLineLen * 7.5 + 24));
+            cell.mxGeometry['@_width'] = String(Math.round(targetW));
+            isHealed = true;
+          }
+          if (lineCount >= 3 && currentH < 65) {
+            const targetH = Math.max(currentH, lineCount * 18 + 16);
+            cell.mxGeometry['@_height'] = String(Math.round(targetH));
+            isHealed = true;
+          }
+        }
+      }
+    }
+
+    // 6d. Universal Edge Label Offset & Background Shielding (fixes Secure Ingress, PSC Tunnel, AUC > 0.998)
+    if (cell['@_edge'] === '1' || cell['@_edge'] === true) {
+      let style = String(cell['@_style'] || '');
+      const rawVal = String(cell['@_value'] || '');
+
+      if (rawVal && rawVal.trim().length > 0) {
+        // Enforce solid high-contrast label pill so lines/arrows never cut through the text
+        if (!style.includes('labelBackgroundColor=')) {
+          style += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontColor=#0F172A;fontStyle=1;fontSize=10;';
+          cell['@_style'] = style;
+          isHealed = true;
+        }
+
+        // Float label safely above the connector line in open channel space
+        if (cell.mxGeometry) {
+          const geo = cell.mxGeometry;
+          if (!geo.mxPoint || !geo.mxPoint['@_as'] || geo.mxPoint['@_as'] !== 'offset') {
+            geo.mxPoint = {
+              '@_as': 'offset',
+              '@_x': '0',
+              '@_y': '-16'
+            };
+            isHealed = true;
+          }
+        }
+      }
+    }
   }
 
   // Preserve pristine hand-tuned layout coordinates without shifting nodes off-screen

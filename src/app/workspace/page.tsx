@@ -47,6 +47,7 @@ import {
   X,
   Loader2,
   CheckCircle2,
+  Check,
   FileText,
   Briefcase,
   Cpu,
@@ -117,6 +118,7 @@ import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture, normalizeArchitectureId } from '@/lib/architectureTypes';
 import { getExactAgenticMeshXml } from '@/lib/newEnterpriseReferenceXmls';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
+import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getPromptCanvasEnterpriseStencilsXml } from '@/lib/stencilLibrary';
 import { DiagramTypeSelector } from '@/components/workspace/DiagramTypeSelector';
 import { AssumptionBanner } from '@/components/workspace/AssumptionBanner';
@@ -1004,6 +1006,7 @@ function WorkspaceContent() {
   const [hoveredArchId, setHoveredArchId] = useState<string | null>(null);
   const [versionSearchQuery, setVersionSearchQuery] = useState('');
   const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState(false);
+  const [isCanvasToolbarVersionDropdownOpen, setIsCanvasToolbarVersionDropdownOpen] = useState(false);
   const [isSettingsHoverOpen, setIsSettingsHoverOpen] = useState(false);
   const [isViewStyleDropdownOpen, setIsViewStyleDropdownOpen] = useState(false);
   const [isGuestDisclaimerDismissed, setIsGuestDisclaimerDismissed] = useState<boolean>(() => {
@@ -1489,24 +1492,27 @@ function WorkspaceContent() {
         
         setSelectedArchType(targetArch);
         if (matchingVer) {
-          setActiveVersion(matchingVer);
-          activeXmlRef.current = matchingVer.xml_content || '';
-          setCustomXml(matchingVer.xml_content || '');
+          const healedXml = validateAndHealDrawioXml(matchingVer.xml_content || '', targetArch).xml;
+          const healedVer = { ...matchingVer, xml_content: healedXml };
+          setActiveVersion(healedVer);
+          activeXmlRef.current = healedXml;
+          setCustomXml(healedXml);
         } else {
-          const refXml = getDefaultXmlForArchitecture(targetArch, data.name, data.name);
+          const rawRefXml = getDefaultXmlForArchitecture(targetArch, data.name, data.name);
+          const healedRefXml = validateAndHealDrawioXml(rawRefXml || sortedVersions[0].xml_content || '', targetArch).xml;
           const dynamicVer: DiagramVersion = {
             id: `arch_sync_${targetArch}_${Date.now()}`,
             diagram_id: data.id,
             version_number: sortedVersions[0].version_number + 1,
-            xml_content: refXml || sortedVersions[0].xml_content,
+            xml_content: healedRefXml,
             comment: `Architecture Backbone Sync: ${getArchitectureTypeById(targetArch)?.name || targetArch}`,
             created_by: 'System',
             created_at: new Date().toISOString(),
             architecture_type: targetArch
           };
           setActiveVersion(dynamicVer);
-          activeXmlRef.current = refXml || sortedVersions[0].xml_content || '';
-          setCustomXml(refXml || sortedVersions[0].xml_content || '');
+          activeXmlRef.current = healedRefXml;
+          setCustomXml(healedRefXml);
         }
         
         // Restore previewVersion if specified in URL query
@@ -6717,22 +6723,128 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       TECHNICAL INTEGRATION WALKTHROUGH
                     </span>
                   ) : (
-                    <button
-                      type="button"
-                      onClick={() => setIsLiveFlowEnabled(!isLiveFlowEnabled)}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-sm ${
-                        isLiveFlowEnabled
-                          ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.3)] font-extrabold'
-                          : 'bg-slate-950/80 border-slate-700/80 text-slate-400 hover:text-slate-200 hover:border-slate-600'
-                      }`}
-                      title="Toggle real-time animated packet telemetry flow streams across diagram connections"
-                    >
-                      <Zap className={`w-3.5 h-3.5 ${isLiveFlowEnabled ? 'text-emerald-400 fill-current animate-pulse' : 'text-slate-400'}`} />
-                      <span>Live Flow</span>
-                      {isLiveFlowEnabled && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsLiveFlowEnabled(!isLiveFlowEnabled)}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-sm ${
+                          isLiveFlowEnabled
+                            ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.3)] font-extrabold'
+                            : canvasTheme === 'light'
+                              ? 'bg-white hover:bg-slate-50 border-slate-300 text-slate-700'
+                              : 'bg-slate-950/80 border-slate-700/80 text-slate-400 hover:text-slate-200 hover:border-slate-600'
+                        }`}
+                        title="Toggle real-time animated packet telemetry flow streams across diagram connections"
+                      >
+                        <Zap className={`w-3.5 h-3.5 ${isLiveFlowEnabled ? 'text-emerald-400 fill-current animate-pulse' : 'text-slate-400'}`} />
+                        <span>Live Flow</span>
+                        {isLiveFlowEnabled && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                        )}
+                      </button>
+
+                      {/* Version & Last Saved Timestamp Dropdown */}
+                      {activeDiagram && (
+                        <div className="relative">
+                          <button
+                            type="button"
+                            id="canvas-version-history-dropdown-btn"
+                            onClick={() => setIsCanvasToolbarVersionDropdownOpen(!isCanvasToolbarVersionDropdownOpen)}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-sm ${
+                              canvasTheme === 'light'
+                                ? 'bg-white hover:bg-slate-50 border-slate-300 text-slate-800'
+                                : 'bg-slate-950/80 hover:bg-slate-900 border-slate-700/80 text-slate-200'
+                            }`}
+                            title="Switch between saved architecture versions and prompts"
+                          >
+                            <History className="w-3.5 h-3.5 text-teal-500 shrink-0" />
+                            <span className="font-mono font-black text-teal-600 dark:text-teal-400">
+                              v{displayedVersion?.version_number || activeVersion?.version_number || 1}
+                            </span>
+                            <span className="text-[11px] text-slate-400 font-normal hidden sm:inline">
+                              • {displayedVersion?.created_at ? new Date(displayedVersion.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Saved'}
+                            </span>
+                            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isCanvasToolbarVersionDropdownOpen ? 'rotate-180' : ''}`} />
+                          </button>
+
+                          {/* Dropdown Menu */}
+                          {isCanvasToolbarVersionDropdownOpen && (
+                            <div className={`absolute left-0 top-full mt-2 w-80 rounded-2xl shadow-2xl z-[99999] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 border ${
+                              canvasTheme === 'light'
+                                ? 'bg-white border-slate-200 text-slate-800 shadow-xl'
+                                : 'bg-[#070A13] border-slate-700/80 text-slate-100 shadow-2xl shadow-black/80'
+                            }`}>
+                              <div className={`p-3 border-b flex items-center justify-between ${
+                                canvasTheme === 'light' ? 'bg-slate-50 border-slate-200' : 'bg-[#090D18] border-slate-800'
+                              }`}>
+                                <span className="text-[11px] font-black uppercase tracking-wider flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
+                                  <History className="w-3.5 h-3.5" />
+                                  <span>Version History &amp; Prompts</span>
+                                </span>
+                                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-teal-500/10 text-teal-600 dark:text-teal-300 border border-teal-500/30">
+                                  {activeDiagram.versions?.length || 1} Saved
+                                </span>
+                              </div>
+
+                              <div className="p-2 space-y-1 max-h-64 overflow-y-auto custom-scrollbar">
+                                {(activeDiagram.versions || []).slice().sort((a, b) => b.version_number - a.version_number).map((v) => {
+                                  const isCurrent = v.id === (displayedVersion?.id || activeVersion?.id);
+                                  return (
+                                    <button
+                                      key={v.id}
+                                      type="button"
+                                      onClick={() => {
+                                        setActiveVersion(v);
+                                        setCustomXml(v.xml_content);
+                                        activeXmlRef.current = v.xml_content;
+                                        if (v.architecture_type) {
+                                          setSelectedArchType(v.architecture_type);
+                                        }
+                                        setIsCanvasToolbarVersionDropdownOpen(false);
+                                      }}
+                                      className={`w-full text-left p-2.5 rounded-xl border transition-all flex flex-col gap-1 cursor-pointer ${
+                                        isCurrent
+                                          ? canvasTheme === 'light'
+                                            ? 'bg-teal-50 border-teal-400 text-teal-950 shadow-sm'
+                                            : 'bg-teal-950/70 border-teal-400 text-white shadow-md'
+                                          : canvasTheme === 'light'
+                                            ? 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+                                            : 'bg-slate-900/40 hover:bg-slate-900 border-transparent hover:border-slate-700 text-slate-300'
+                                      }`}
+                                    >
+                                      <div className="flex items-center justify-between w-full">
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="text-[10px] font-mono font-black px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/40">
+                                            v{v.version_number}
+                                          </span>
+                                          <span className="text-[11px] font-bold truncate max-w-[170px]">
+                                            {v.comment || `Version ${v.version_number}`}
+                                          </span>
+                                        </div>
+                                        {isCurrent && (
+                                          <span className="text-[10px] font-black text-teal-500 flex items-center gap-0.5">
+                                            <Check className="w-3 h-3" /> ACTIVE
+                                          </span>
+                                        )}
+                                      </div>
+                                      {v.prompt && (
+                                        <p className="text-[10px] italic line-clamp-1 text-slate-400">
+                                          💡 &ldquo;{v.prompt}&rdquo;
+                                        </p>
+                                      )}
+                                      <div className="flex items-center justify-between text-[9px] text-slate-500 pt-0.5">
+                                        <span>{new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                                        <span>{new Date(v.created_at).toLocaleDateString()}</span>
+                                      </div>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       )}
-                    </button>
+                    </div>
                   )}
                 </div>
 
