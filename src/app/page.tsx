@@ -16,9 +16,10 @@ import {
   Network,
   X,
   User,
-  LogOut,
   Mail,
-  Menu
+  Menu,
+  LayoutGrid,
+  BarChart3
 } from 'lucide-react';
 import { AuthModal } from '@/components/AuthModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
@@ -143,62 +144,56 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <nav className={`hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium shrink-0 ${
-            isLight ? 'text-slate-600' : 'text-slate-400'
+          <nav className={`hidden lg:flex items-center gap-5 xl:gap-6 text-xs font-bold shrink-0 ${
+            isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
-            <a href="#features" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">How It Works</a>
-            <Link href="/guide" className="text-teal-600 dark:text-teal-400 hover:underline transition-colors font-bold flex items-center gap-1.5">
+            <Link href="/workspace?tab=templates" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+              isLight ? 'hover:bg-slate-100 hover:text-slate-900' : 'hover:bg-slate-800/80 hover:text-white'
+            }`}>
+              <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
+              <span>50-Blueprint Matrix</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-teal-500/20 text-teal-600 dark:text-teal-300 font-mono font-bold">50</span>
+            </Link>
+
+            <Link href="/guide" className="px-3 py-1.5 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 hover:bg-teal-500/20 transition-all flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-teal-400" />
               <span>User Guide &amp; GIFs</span>
             </Link>
-            <Link href="/workspace?tab=templates" className="hover:text-teal-600 dark:hover:text-teal-300 transition-colors text-teal-600 dark:text-teal-400 font-semibold flex items-center gap-1">
-              <span>Templates Matrix</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-700 dark:text-teal-300 font-black">50</span>
+
+            <Link href="/dashboard" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+              isLight ? 'hover:bg-slate-100 hover:text-slate-900' : 'hover:bg-slate-800/80 hover:text-white'
+            }`}>
+              <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Operations Dashboard</span>
             </Link>
-            <a href="#value" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Why PromptCanvas</a>
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <ThemeToggleBtn id="landing-theme-toggle-btn" />
-            <VisitorCounter />
-            <button
-              id="header-contact-us-btn"
-              onClick={() => setIsContactOpen(true)}
-              className={`hidden lg:flex px-3.5 py-1.5 rounded-lg border text-xs font-semibold items-center gap-1.5 transition-all cursor-pointer ${
-                isLight
-                  ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 hover:text-slate-900'
-                  : 'bg-slate-900/80 border-slate-800 hover:border-teal-500/40 text-slate-300 hover:text-white'
-              }`}
-            >
-              <Mail className="w-3.5 h-3.5 text-teal-500" />
-              <span>Contact Us</span>
-            </button>
+
             {user ? (
               <>
-                <div className="hidden sm:flex">
-                  <AccessRequestsInbox user={user} />
-                </div>
                 <button
                   id="header-user-profile-btn"
                   onClick={() => setIsProfileOpen(true)}
-                  className={`hidden sm:flex px-2.5 md:px-3.5 py-1.5 rounded-lg border text-xs font-semibold items-center gap-2 transition-all ${
+                  className={`hidden sm:flex px-2.5 py-1.5 rounded-lg border text-xs font-semibold items-center gap-2 transition-all ${
                     isLight
                       ? 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
                       : 'bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200'
                   }`}
                 >
-                  <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold flex items-center justify-center text-xs">
+                  <div className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold flex items-center justify-center text-[10px]">
                     {(user.name || user.email)[0].toUpperCase()}
                   </div>
-                  <span className="hidden xl:inline max-w-[120px] truncate">{user.name || user.email}</span>
+                  <span className="hidden xl:inline max-w-[100px] truncate text-xs">{user.name || user.email}</span>
                 </button>
                 <Link
                   id="header-launch-app-btn"
                   href="/workspace"
-                  className="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5"
                 >
-                  Launch Workspace
+                  <span>Launch Workspace</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </>
             ) : (
@@ -209,7 +204,7 @@ export default function LandingPage() {
                     setAuthMode('signin');
                     setIsAuthOpen(true);
                   }}
-                  className={`hidden sm:flex px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
+                  className={`hidden sm:flex px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer ${
                     isLight ? 'text-slate-700 hover:text-slate-900' : 'text-slate-300 hover:text-white'
                   }`}
                 >
@@ -218,9 +213,10 @@ export default function LandingPage() {
                 <Link
                   id="header-launch-app-btn"
                   href="/workspace"
-                  className="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-teal-500/20 hover:scale-[1.03]"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5"
                 >
-                  Launch Workspace
+                  <span>Launch Workspace</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </>
             )}
