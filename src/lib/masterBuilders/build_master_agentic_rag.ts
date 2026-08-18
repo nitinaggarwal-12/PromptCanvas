@@ -116,45 +116,49 @@ export function buildAgenticRagWidescreenXml(): string {
           <mxGeometry x="280" y="204" width="496" height="16" as="geometry"/>
         </mxCell>
 
-        <!-- Tangential Curved Circular ReAct Loop -->
-        <mxCell id="react_center" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;color:#2563EB;&quot;&gt;🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;ReAct Loop&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Autonomous Planning)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="468" y="280" width="120" height="45" as="geometry"/>
+        <!-- Central Circular ReAct Loop Hub -->
+        <mxCell id="react_center" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;color:#2563EB;padding-bottom:1px;&quot;&gt;🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#1E3A8A;&quot;&gt;ReAct Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Autonomous Planning&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="483" y="260" width="90" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- 4 Nodes of Circular ReAct Loop -->
-        <mxCell id="react_thought" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;1. Thought&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Deconstruct Query &amp;amp; Plan&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="468" y="228" width="120" height="34" as="geometry"/>
+        <!-- 4 Orbital Step Nodes arranged in a Perfect Circle (12 o'clock, 3 o'clock, 6 o'clock, 9 o'clock) -->
+        <!-- 1. Thought (12 o'clock) -->
+        <mxCell id="react_thought" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;🧠 1. Thought&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Deconstruct Query &amp;amp; Plan&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="458" y="222" width="140" height="32" as="geometry"/>
         </mxCell>
 
-        <mxCell id="react_action" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;2. Action&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Select &amp;amp; Call Tool API&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="635" y="285" width="125" height="34" as="geometry"/>
+        <!-- 2. Action (3 o'clock) -->
+        <mxCell id="react_action" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;⚡ 2. Action&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Select &amp;amp; Call Tool API&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="638" y="289" width="136" height="32" as="geometry"/>
         </mxCell>
 
-        <mxCell id="react_obs" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;3. Observation&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Parse Tool Output &amp;amp; Validate&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="468" y="342" width="120" height="34" as="geometry"/>
+        <!-- 3. Observation (6 o'clock) -->
+        <mxCell id="react_obs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;👁️ 3. Observation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Parse Tool Output &amp;amp; Validate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="458" y="356" width="140" height="32" as="geometry"/>
         </mxCell>
 
-        <mxCell id="react_syn" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;4. Synthesis&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Reason &amp;amp; Iterate if Needed&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="295" y="285" width="125" height="34" as="geometry"/>
+        <!-- 4. Synthesis (9 o'clock) -->
+        <mxCell id="react_syn" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;✨ 4. Synthesis&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Reason &amp;amp; Iterate if Needed&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="282" y="289" width="136" height="32" as="geometry"/>
         </mxCell>
 
-        <!-- Tangential Circular ReAct Loop Edges (Mandatory Tangential Circular Loop Geometry) -->
-        <mxCell id="e_r1" value="" style="curved=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=classic;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="react_thought" target="react_action">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="697" y="245"/></Array></mxGeometry>
+        <!-- Circular Arc Connectors (1 -> 2 -> 3 -> 4 -> 1) -->
+        <mxCell id="e_r1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="react_thought" target="react_action">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="706" y="238"/></Array></mxGeometry>
         </mxCell>
-        <mxCell id="e_r2" value="" style="curved=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=classic;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="react_action" target="react_obs">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="697" y="359"/></Array></mxGeometry>
+        <mxCell id="e_r2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="react_action" target="react_obs">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="706" y="372"/></Array></mxGeometry>
         </mxCell>
-        <mxCell id="e_r3" value="" style="curved=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=classic;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="react_obs" target="react_syn">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="357" y="359"/></Array></mxGeometry>
+        <mxCell id="e_r3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="react_obs" target="react_syn">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="372"/></Array></mxGeometry>
         </mxCell>
-        <mxCell id="e_r4" value="" style="curved=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=classic;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="react_syn" target="react_thought">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="357" y="245"/></Array></mxGeometry>
+        <mxCell id="e_r4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="react_syn" target="react_thought">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="238"/></Array></mxGeometry>
         </mxCell>
 
         <!-- Sub-Agent Dynamic Mesh Bar below ReAct -->
         <mxCell id="card_subagent_mesh" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;🤖 🤝 🤖 🤝 🤖&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Hierarchical Multi-Agent Sub-Swarm Dispatcher&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Specialized Workers: Web Search Agent • SQL Data Agent • Python Code Agent • Document Summarizer&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="278" y="388" width="500" height="42" as="geometry"/>
+          <mxGeometry x="278" y="394" width="500" height="40" as="geometry"/>
         </mxCell>
 
         <!-- Bottom Tier: Guardrails, Faithfulness Verifier, and Function Calling Router -->
@@ -275,11 +279,11 @@ export function buildAgenticRagWidescreenXml(): string {
           <mxGeometry x="835" y="522" width="480" height="45" as="geometry"/>
         </mxCell>
 
-        <!-- Routing Connector from Agent Core to Tools -->
-        <mxCell id="e_agent_to_tools" value="&lt;b style=&quot;font-size:6px;color:#7C3AED;&quot;&gt;Semantic Retrieval &amp;amp; Tool Calls&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+        <!-- Routing Connector from Function Calling / MCP to Tools -->
+        <mxCell id="e_agent_to_tools" value="&lt;b style=&quot;font-size:6px;color:#7C3AED;&quot;&gt;Tool Execution &amp;amp; MCP Protocol&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#DDD6FE;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="794" y="325" as="sourcePoint"/>
-            <mxPoint x="825" y="325" as="targetPoint"/>
+            <mxPoint x="794" y="472" as="sourcePoint"/>
+            <mxPoint x="825" y="472" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
@@ -442,45 +446,49 @@ export function buildCognitiveRagXml(): string {
           <mxGeometry x="280" y="204" width="496" height="16" as="geometry"/>
         </mxCell>
 
-        <!-- Tangential Curved Circular ReAct Loop -->
-        <mxCell id="react_center" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;color:#2563EB;&quot;&gt;🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#0F172A;&quot;&gt;ReAct Loop&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#475569;font-weight:normal;&quot;&gt;(Autonomous Planning)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="468" y="280" width="120" height="45" as="geometry"/>
+        <!-- Central Circular ReAct Loop Hub -->
+        <mxCell id="react_center" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;color:#2563EB;padding-bottom:1px;&quot;&gt;🔄&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;font-weight:bold;color:#1E3A8A;&quot;&gt;ReAct Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5.5px;color:#475569;&quot;&gt;Autonomous Planning&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="483" y="260" width="90" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- 4 Nodes of Circular ReAct Loop -->
-        <mxCell id="react_thought" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;1. Thought&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Deconstruct Query &amp;amp; Plan&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="468" y="228" width="120" height="34" as="geometry"/>
+        <!-- 4 Orbital Step Nodes arranged in a Perfect Circle (12 o'clock, 3 o'clock, 6 o'clock, 9 o'clock) -->
+        <!-- 1. Thought (12 o'clock) -->
+        <mxCell id="react_thought" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;🧠 1. Thought&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Deconstruct Query &amp;amp; Plan&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="458" y="222" width="140" height="32" as="geometry"/>
         </mxCell>
 
-        <mxCell id="react_action" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;2. Action&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Select &amp;amp; Call Tool API&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="635" y="285" width="125" height="34" as="geometry"/>
+        <!-- 2. Action (3 o'clock) -->
+        <mxCell id="react_action" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;⚡ 2. Action&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Select &amp;amp; Call Tool API&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="638" y="289" width="136" height="32" as="geometry"/>
         </mxCell>
 
-        <mxCell id="react_obs" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;3. Observation&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Parse Tool Output &amp;amp; Validate&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="468" y="342" width="120" height="34" as="geometry"/>
+        <!-- 3. Observation (6 o'clock) -->
+        <mxCell id="react_obs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;👁️ 3. Observation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Parse Tool Output &amp;amp; Validate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="458" y="356" width="140" height="32" as="geometry"/>
         </mxCell>
 
-        <mxCell id="react_syn" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;4. Synthesis&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;font-weight:normal;&quot;&gt;Reason &amp;amp; Iterate if Needed&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="295" y="285" width="125" height="34" as="geometry"/>
+        <!-- 4. Synthesis (9 o'clock) -->
+        <mxCell id="react_syn" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;font-weight:bold;color:#1E3A8A;&quot;&gt;✨ 4. Synthesis&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:5px;color:#475569;&quot;&gt;Reason &amp;amp; Iterate if Needed&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="282" y="289" width="136" height="32" as="geometry"/>
         </mxCell>
 
-        <!-- Tangential Circular ReAct Loop Edges (Mandatory Tangential Circular Loop Geometry) -->
-        <mxCell id="e_r1" value="" style="curved=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=classic;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="react_thought" target="react_action">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="697" y="245"/></Array></mxGeometry>
+        <!-- Circular Arc Connectors (1 -> 2 -> 3 -> 4 -> 1) -->
+        <mxCell id="e_r1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="react_thought" target="react_action">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="706" y="238"/></Array></mxGeometry>
         </mxCell>
-        <mxCell id="e_r2" value="" style="curved=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=classic;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="react_action" target="react_obs">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="697" y="359"/></Array></mxGeometry>
+        <mxCell id="e_r2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="react_action" target="react_obs">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="706" y="372"/></Array></mxGeometry>
         </mxCell>
-        <mxCell id="e_r3" value="" style="curved=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=classic;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="react_obs" target="react_syn">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="357" y="359"/></Array></mxGeometry>
+        <mxCell id="e_r3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="react_obs" target="react_syn">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="372"/></Array></mxGeometry>
         </mxCell>
-        <mxCell id="e_r4" value="" style="curved=1;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=classic;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="react_syn" target="react_thought">
-          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="357" y="245"/></Array></mxGeometry>
+        <mxCell id="e_r4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=25;html=1;strokeWidth=1.5;strokeColor=#2563EB;endArrow=block;endFill=1;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="react_syn" target="react_thought">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="238"/></Array></mxGeometry>
         </mxCell>
 
         <!-- Sub-Agent Dynamic Mesh Bar below ReAct -->
         <mxCell id="card_subagent_mesh" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;&quot;&gt;🤖 🤝 🤖 🤝 🤖&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Hierarchical Multi-Agent Sub-Swarm Dispatcher&lt;br&gt;&lt;span style=&quot;font-size:5px;color:#475569;&quot;&gt;Specialized Workers: Web Search Agent • SQL Data Agent • Python Code Agent • Document Summarizer&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="278" y="388" width="500" height="42" as="geometry"/>
+          <mxGeometry x="278" y="394" width="500" height="40" as="geometry"/>
         </mxCell>
 
         <!-- Bottom Tier: Guardrails, Faithfulness Verifier, and Function Calling Router -->
@@ -601,11 +609,11 @@ export function buildCognitiveRagXml(): string {
           <mxGeometry x="835" y="522" width="480" height="45" as="geometry"/>
         </mxCell>
 
-        <!-- Routing Connector from Agent Core to Tools -->
-        <mxCell id="e_agent_to_tools" value="&lt;b style=&quot;font-size:6px;color:#7C3AED;&quot;&gt;Semantic Retrieval &amp;amp; Tool Calls&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+        <!-- Routing Connector from Function Calling / MCP to Tools -->
+        <mxCell id="e_agent_to_tools" value="&lt;b style=&quot;font-size:6px;color:#7C3AED;&quot;&gt;Tool Execution &amp;amp; MCP Protocol&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=#DDD6FE;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="794" y="325" as="sourcePoint"/>
-            <mxPoint x="825" y="325" as="targetPoint"/>
+            <mxPoint x="794" y="472" as="sourcePoint"/>
+            <mxPoint x="825" y="472" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
 
