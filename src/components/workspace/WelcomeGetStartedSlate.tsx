@@ -11,14 +11,16 @@ import {
 } from 'lucide-react';
 
 interface WelcomeGetStartedSlateProps {
+  projectName?: string;
   theme?: 'light' | 'dark';
   isGenerating?: boolean;
   onGenerateFromPrompt: (prompt: string, projectName?: string) => void;
   onOpenBlueprintCatalog: () => void;
-  onStartBlankCanvas: () => void;
+  onStartBlankCanvas: (projectName?: string) => void;
 }
 
 export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
+  projectName,
   theme = 'dark',
   isGenerating = false,
   onGenerateFromPrompt,
@@ -54,7 +56,7 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
   const handleSubmitPrompt = (e: React.FormEvent) => {
     e.preventDefault();
     if (!promptText.trim() || isGenerating) return;
-    onGenerateFromPrompt(promptText.trim());
+    onGenerateFromPrompt(promptText.trim(), projectName);
   };
 
   return (
@@ -86,16 +88,32 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
         <div className="text-center space-y-1.5 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-400 shadow-sm">
             <Sparkles className="w-3 h-3 text-teal-500 dark:text-teal-400" />
-            <span>PromptCanvas AI Studio</span>
+            <span>{projectName ? `Project: ${projectName}` : 'PromptCanvas AI Studio'}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-snug">
-            How would you like to start your{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-cyan-500 to-indigo-500">architecture?</span>
+            {projectName ? (
+              <>
+                How would you like to build{' '}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-cyan-500 to-indigo-500">
+                  {projectName}
+                </span>
+                ?
+              </>
+            ) : (
+              <>
+                How would you like to start your{' '}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-cyan-500 to-indigo-500">
+                  architecture?
+                </span>
+              </>
+            )}
           </h1>
           <p className={`text-xs sm:text-sm font-medium max-w-xl mx-auto leading-relaxed ${
             isLight ? 'text-slate-600' : 'text-slate-400'
           }`}>
-            Describe your system in natural language, select a pre-verified enterprise blueprint, or start with a blank canvas.
+            {projectName
+              ? `Describe your system requirements for ${projectName}, select a pre-verified enterprise blueprint, or start with a blank canvas.`
+              : 'Describe your system in natural language, select a pre-verified enterprise blueprint, or start with a blank canvas.'}
           </p>
         </div>
 
@@ -340,7 +358,7 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
               </div>
               <button
                 type="button"
-                onClick={onStartBlankCanvas}
+                onClick={() => onStartBlankCanvas(projectName)}
                 className={`w-full py-2.5 px-4 rounded-xl border font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer hover:scale-[1.01] active:scale-[0.99] mt-1 ${
                   isLight
                     ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-900 shadow-slate-200'

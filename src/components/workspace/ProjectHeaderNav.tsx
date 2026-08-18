@@ -21,6 +21,7 @@ import { getArchitectureTypeById } from '@/lib/architectureTypes';
 
 interface ProjectHeaderNavProps {
   activeDiagram: Diagram | null;
+  pendingProjectName?: string | null;
   diagrams: Diagram[];
   selectedArchType: string;
   activeVersionNumber?: number;
@@ -35,6 +36,7 @@ interface ProjectHeaderNavProps {
 
 export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
   activeDiagram,
+  pendingProjectName,
   diagrams,
   selectedArchType,
   activeVersionNumber = 1,
@@ -70,7 +72,11 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
   // Current active blueprint metadata
   const currentCrumbs = getBlueprintBreadcrumbs(selectedArchType);
   const archMeta = getArchitectureTypeById(selectedArchType);
-  const currentViewTitle = currentCrumbs?.blueprint?.diagramName || archMeta?.name || 'Primary Architecture View';
+  const currentViewTitle = activeDiagram
+    ? (currentCrumbs?.blueprint?.diagramName || archMeta?.name || 'Primary Architecture View')
+    : pendingProjectName
+    ? 'Get Started'
+    : 'Select View';
 
   // Find all distinct architecture views in the active diagram
   const activeDiagramViews = useMemo(() => {
@@ -175,7 +181,7 @@ export const ProjectHeaderNav: React.FC<ProjectHeaderNavProps> = ({
           <span className={`truncate max-w-[140px] sm:max-w-[190px] md:max-w-[240px] font-bold ${
             isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-200'
           }`}>
-            {activeDiagram?.name || 'Select Project'}
+            {activeDiagram?.name || pendingProjectName || 'Select Project'}
           </span>
           <ChevronDown className={`w-3.5 h-3.5 transition-transform ${
             isProjectDropdownOpen ? 'rotate-180' : ''

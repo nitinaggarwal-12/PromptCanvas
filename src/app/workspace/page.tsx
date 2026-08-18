@@ -446,6 +446,7 @@ function WorkspaceContent() {
   const [showQuickStartGuide, setShowQuickStartGuide] = useState<boolean>(true);
   const [templateSearchQuery, setTemplateSearchQuery] = useState<string>('');
   const [expandedMsgIds, setExpandedMsgIds] = useState<Set<string>>(new Set());
+  const [pendingProjectName, setPendingProjectName] = useState<string | null>(null);
 
   // Global Keyboard Navigation for Master Template Preview Carousel
   useEffect(() => {
@@ -5470,6 +5471,32 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
     const archMeta = getArchitectureTypeById(newArchId);
     const archName = archMeta?.name || newArchId;
 
+    if (!activeDiagram) {
+      const projName = pendingProjectName || generateUniqueDiagramName();
+      const baseRefXml = getDefaultXmlForArchitecture(newArchId, projName, projName);
+      fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
+        body: JSON.stringify({
+          name: projName,
+          xml: baseRefXml,
+          comment: `Initialized blueprint: ${archName}`,
+          architectureType: newArchId,
+          isPrivate: false
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          setPendingProjectName(null);
+          fetchDiagrams();
+          if (data.diagram?.id) {
+            loadDiagramDetails(data.diagram.id);
+          }
+        })
+        .catch(console.error);
+      return;
+    }
+
     const existingVersionsForArch = activeDiagram?.versions?.filter(
       v => normalizeArchitectureId(v.architecture_type || 'conceptual_diagram') === normalizeArchitectureId(newArchId)
     ) || [];
@@ -6452,37 +6479,24 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   {/* Two Clean Controls: Project Selector & Architecture View Selector */}
                   <ProjectHeaderNav
                     activeDiagram={activeDiagram}
+                    pendingProjectName={pendingProjectName}
                     diagrams={diagrams}
                     selectedArchType={selectedArchType}
                     activeVersionNumber={displayedVersion?.version_number || activeVersion?.version_number || 1}
                     disabled={isAnyAIBusy}
                     theme={canvasTheme}
-                    onSelectDiagram={(diagramId) => loadDiagramDetails(diagramId)}
-                    onCreateNewProject={async (name) => {
+                    onSelectDiagram={(diagramId) => {
+                      setPendingProjectName(null);
+                      loadDiagramDetails(diagramId);
+                    }}
+                    onCreateNewProject={(name) => {
                       const finalName = name.trim() || generateUniqueDiagramName();
-                      const defaultXml = getDefaultXmlForArchitecture('conceptual_diagram', finalName, finalName);
-                      try {
-                        const res = await fetch('/api/diagrams', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
-                          body: JSON.stringify({
-                            name: finalName,
-                            xml: defaultXml,
-                            comment: `Created project: ${finalName}`,
-                            architectureType: 'conceptual_diagram',
-                            isPrivate: false
-                          })
-                        });
-                        if (res.ok) {
-                          const data = await res.json();
-                          await fetchDiagrams();
-                          if (data.diagram?.id) {
-                            await loadDiagramDetails(data.diagram.id);
-                          }
-                        }
-                      } catch (err) {
-                        console.error('Failed to create new project:', err);
-                      }
+                      setPendingProjectName(finalName);
+                      setActiveDiagram(null);
+                      setActiveVersion(null);
+                      setPreviewVersion(null);
+                      setCustomXml('');
+                      activeXmlRef.current = '';
                     }}
                     onSelectBlueprint={(newArchId) => handleArchitectureSwitch(newArchId)}
                     onOpenBlueprintCatalog={() => setIsPlaybookModalOpen(true)}
@@ -6785,10 +6799,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             >
               {!activeDiagram ? (
                 <WelcomeGetStartedSlate
+                  projectName={pendingProjectName || undefined}
                   theme={canvasTheme}
                   isGenerating={isGenerating}
-                  onGenerateFromPrompt={async (promptText) => {
-                    const finalName = generateUniqueDiagramName();
+                  onGenerateFromPrompt={async (promptText, explicitProjectName) => {
+                    const finalName = explicitProjectName || pendingProjectName || generateUniqueDiagramName();
                     setIsGenerating(true);
                     try {
                       const res = await fetch('/api/generate', {
@@ -6803,6 +6818,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       });
                       if (res.ok) {
                         const data = await res.json();
+                        setPendingProjectName(null);
                         await fetchDiagrams();
                         if (data.diagram?.id) {
                           await loadDiagramDetails(data.diagram.id);
@@ -6815,8 +6831,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     }
                   }}
                   onOpenBlueprintCatalog={() => setIsPlaybookModalOpen(true)}
-                  onStartBlankCanvas={async () => {
-                    const blankName = `Custom Diagram #${Math.floor(100 + Math.random() * 900)}`;
+                  onStartBlankCanvas={async (explicitProjectName) => {
+                    const blankName = explicitProjectName || pendingProjectName || `Custom Diagram #${Math.floor(100 + Math.random() * 900)}`;
                     const blankXml = getDefaultXmlForArchitecture('blank_canvas', blankName, blankName);
                     try {
                       const res = await fetch('/api/diagrams', {
@@ -6832,6 +6848,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       });
                       if (res.ok) {
                         const data = await res.json();
+                        setPendingProjectName(null);
                         await fetchDiagrams();
                         if (data.diagram?.id) {
                           await loadDiagramDetails(data.diagram.id);
