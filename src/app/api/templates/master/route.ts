@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
+    const user = await getAuthenticatedUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication is required to publish master blueprints.' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { id, name, category, description, badge, xml } = body;
 

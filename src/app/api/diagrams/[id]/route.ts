@@ -120,6 +120,13 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       );
     }
 
+    if (diagram.access_level && diagram.access_level !== 'Owner' && diagram.user_id && diagram.user_id !== user?.id) {
+      return NextResponse.json(
+        { error: 'Forbidden: Only the diagram owner can delete this diagram.' },
+        { status: 403 }
+      );
+    }
+
     await deleteDiagram(id, user?.id);
 
     return NextResponse.json({ message: `Diagram ${id} deleted successfully` });

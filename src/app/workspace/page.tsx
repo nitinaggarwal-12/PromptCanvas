@@ -1312,6 +1312,18 @@ function WorkspaceContent() {
   // State for editor integration
   const [pendingXml, setPendingXml] = useState<string | null>(null);
 
+  // 🛡️ Data Loss Prevention: Warn user before leaving or refreshing if there are unsaved XML edits
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (pendingXml !== null) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [pendingXml]);
+
   // Listen for messages from Draw.io editors (both iframe and popup tab)
   useEffect(() => {
     function handleWindowMessage(evt: MessageEvent) {

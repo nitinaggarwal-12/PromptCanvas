@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DatabaseSync } from 'node:sqlite';
-import path from 'path';
 import { getArchetype, ArchetypeId } from '../../../lib/compose/archetypes';
 import { extractSystemModel } from '../../../lib/compose/extract';
 import { MAPPER_REGISTRY } from '../../../lib/compose/mappers';
 import { fillInferredSections } from '../../../lib/compose/infer';
 import { renderMarkdown } from '../../../lib/compose/renderMd';
 import { renderDocx } from '../../../lib/compose/renderDocx';
+import { getDiagramVersion, listDiagrams } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,60 +33,39 @@ export async function POST(req: NextRequest) {
 
     if (Array.isArray(diagramVersionIds) && diagramVersionIds.length > 0) {
       try {
-        const dbPath = path.join(process.cwd(), 'dev.db');
-        const db = new DatabaseSync(dbPath);
-        const placeholders = diagramVersionIds.map(() => '?').join(',');
-        const rows = db
-          .prepare(
-            `SELECT id, diagram_id, version_number, graph_json, mxgraph_xml FROM diagram_versions WHERE id IN (${placeholders})`
-          )
-          .all(...diagramVersionIds) as any[];
-
-        if (rows.length > 0) {
-          const first = rows[0];
-          titleToUse = titleToUse || `Diagram ${first.diagram_id} v${first.version_number}`;
-          if (first.graph_json) {
-            try {
-              graphJsonToUse = JSON.parse(first.graph_json);
-            } catch {
-              // ignore parse error
+        for (const vid of diagramVersionIds) {
+          const version = await getDiagramVersion(vid);
+          if (version) {
+            titleToUse = titleToUse || `Diagram ${version.diagram_id} v${version.version_number}`;
+            if (version.graph_json) {
+              try {
+                graphJsonToUse = typeof version.graph_json === 'string' ? JSON.parse(version.graph_json) : version.graph_json;
+              } catch {
+                // ignore parse error
+              }
             }
+            xmlToUse = xmlToUse || version.xml_content;
+            break;
           }
-          xmlToUse = xmlToUse || first.mxgraph_xml;
         }
       } catch (dbErr) {
         console.warn('[Compose API] DB lookup warning:', dbErr);
       }
     }
 
-    // Load all diagrams present for this workspace / usecase from dev.db
+    // Load all diagrams present for this workspace / usecase from db
     const diagramRepository: Record<string, { id: string; architecture_type: string; graph_json?: any; xml?: string; prompt?: string }> = {};
     try {
-      const dbPath = path.join(process.cwd(), 'dev.db');
-      const db = new DatabaseSync(dbPath);
-      const rows = db
-        .prepare(
-          `SELECT id, diagram_id, version_number, graph_json, mxgraph_xml, architecture_type, prompt FROM diagram_versions ORDER BY version_number DESC`
-        )
-        .all() as any[];
-
-      for (const row of rows) {
-        const archType = row.architecture_type || 'conceptual_diagram';
+      const allDiagrams = await listDiagrams();
+      for (const diag of allDiagrams) {
+        const archType = diag.architecture_type || 'conceptual_diagram';
         if (!diagramRepository[archType]) {
-          let parsedGraph: any = null;
-          if (row.graph_json) {
-            try {
-              parsedGraph = JSON.parse(row.graph_json);
-            } catch {
-              // ignore
-            }
-          }
           diagramRepository[archType] = {
-            id: row.id,
+            id: diag.id,
             architecture_type: archType,
-            graph_json: parsedGraph,
-            xml: row.mxgraph_xml,
-            prompt: row.prompt,
+            graph_json: null,
+            xml: diag.xml_content,
+            prompt: diag.prompt || undefined,
           };
         }
       }
