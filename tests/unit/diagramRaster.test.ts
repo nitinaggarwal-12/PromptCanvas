@@ -19,6 +19,8 @@ class MockIframe {
   };
 }
 
+import { resetRasterizerSingletonForTesting, exportDiagramPng } from '../../src/lib/export/diagramRaster';
+
 describe('Phase 1 & 2: Diagram Rasterizer & Export Protocols', () => {
   let originalWindow: any;
   let originalDocument: any;
@@ -26,6 +28,7 @@ describe('Phase 1 & 2: Diagram Rasterizer & Export Protocols', () => {
   let createdIframes: MockIframe[];
 
   beforeEach(() => {
+    resetRasterizerSingletonForTesting();
     listeners = new Set();
     createdIframes = [];
 
@@ -58,24 +61,24 @@ describe('Phase 1 & 2: Diagram Rasterizer & Export Protocols', () => {
   });
 
   afterEach(() => {
+    resetRasterizerSingletonForTesting();
     (global as any).window = originalWindow;
     (global as any).document = originalDocument;
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('exportDiagramPng resolves on valid embed.diagrams.net export message', async () => {
-    // Import fresh module
-    const { exportDiagramPng } = await import('../../src/lib/export/diagramRaster');
     const xml = '<mxfile><diagram><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>';
 
     const exportPromise = exportDiagramPng(xml, { scale: 2 });
 
+    // Wait microtask for iframe initialization and listener setup
+    await new Promise(r => setTimeout(r, 20));
+
     expect(createdIframes.length).toBe(1);
     const iframe = createdIframes[0];
     expect(iframe.src).toBe('https://embed.diagrams.net/?embed=1&proto=json&spin=0&ui=min&configure=0');
-
-    // Wait microtask for iframe initialization and listener setup
-    await new Promise(r => setTimeout(r, 10));
 
     // Simulate init event from embed.diagrams.net
     const initEvent = {
@@ -122,10 +125,12 @@ describe('Phase 1 & 2: Diagram Rasterizer & Export Protocols', () => {
   });
 
   it('ignores messages from wrong origin (security origin check)', async () => {
-    const { exportDiagramPng } = await import('../../src/lib/export/diagramRaster');
     const xml = '<mxfile><diagram><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>';
 
     const exportPromise = exportDiagramPng(xml);
+    await new Promise(r => setTimeout(r, 20));
+
+    expect(createdIframes.length).toBe(1);
     const iframe = createdIframes[0];
 
     // Malicious or third-party origin message should be ignored
@@ -139,16 +144,14 @@ describe('Phase 1 & 2: Diagram Rasterizer & Export Protocols', () => {
   });
 
   it('rejects on hard timeout if export service never responds', async () => {
-    vi.useFakeTimers();
-    const { exportDiagramPng } = await import('../../src/lib/export/diagramRaster');
     const xml = '<mxfile><diagram><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>';
 
+    vi.useFakeTimers();
     const exportPromise = exportDiagramPng(xml);
 
-    vi.advanceTimersByTime(21000);
+    await vi.advanceTimersByTimeAsync(21000);
 
     await expect(exportPromise).rejects.toThrow('Export service unreachable');
-    vi.useRealTimers();
   });
 
   it('Static Guard Test: ExportDiagramModal contains zero placeholder fingerprints', () => {

@@ -202,109 +202,145 @@ export function build6RsMigrationMatrixXml(): string {
         <!-- ================= THE 6Rs PILLARS (COLUMNS 1 TO 6) ================= -->
 
         <!-- COLUMN 1: REHOST (LIFT & SHIFT) -->
-        <mxCell id="col_rehost" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+        <mxCell id="col_rehost" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="705" y="60" width="135" height="586" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_rehost_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#0369A1;&quot;&gt;Rehost&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;(Lift &amp;amp; Shift)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8px;color:#475569;&quot;&gt;Minimal change.&lt;br&gt;High speed, lower risk.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="705" y="66" width="135" height="56" as="geometry"/>
+        <mxCell id="lbl_rehost_hdr" value="&lt;b style=&quot;font-size:12px;color:#0369A1;&quot;&gt;Rehost&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;(Lift &amp;amp; Shift)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Minimal change.&lt;br&gt;Fastest Time-to-Value.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="705" y="66" width="135" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_rehost_vm" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#0284C7;align=center;verticalAlign=top;shape=mxgraph.gcp2.compute_engine;" vertex="1" parent="1">
-          <mxGeometry x="755" y="190" width="36" height="42" as="geometry"/>
+        <mxCell id="card_rehost_target" value="&lt;b style=&quot;font-size:9.5px;color:#0369A1;&quot;&gt;GCP Target:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Compute Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#64748B;&quot;&gt;Migrate for GCE / Anthos&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="713" y="125" width="119" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="edge_rehost_down" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="773" y="240" as="sourcePoint"/><mxPoint x="773" y="275" as="targetPoint"/></mxGeometry>
+        <mxCell id="card_rehost_w1" value="&lt;div style=&quot;font-size:7.5px;background:#E0F2FE;color:#0369A1;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Wave 1 • Quick Win&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Legacy Web Tier&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Apache / IIS on RHEL&lt;br&gt;MIG Autohealing&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="713" y="185" width="119" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_rehost_cloud" value="" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="740" y="280" width="66" height="44" as="geometry"/>
+        <mxCell id="card_rehost_w2" value="&lt;div style=&quot;font-size:7.5px;background:#E0F2FE;color:#0369A1;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Wave 1 • Batch&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Scheduled Jobs&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Cron &amp;amp; Backend Scripts&lt;br&gt;Cloud Scheduler + GCE&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="713" y="252" width="119" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="card_rehost_examples" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Examples:&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Compute Engine (GCE),&lt;br&gt;Migrate for Anthos.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="715" y="380" width="115" height="60" as="geometry"/>
+        <mxCell id="card_rehost_w3" value="&lt;div style=&quot;font-size:7.5px;background:#F1F5F9;color:#475569;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Storage Target&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;NFS File Shares&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Filestore Enterprise&lt;br&gt;HA Multi-Zone Sync&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="713" y="320" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_rehost_roi" value="&lt;b style=&quot;font-size:8.5px;color:#0369A1;&quot;&gt;Expected ROI:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#16A34A;&quot;&gt;-28% OpEx&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;30-Day Lift Timeline&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="713" y="560" width="119" height="72" as="geometry"/>
         </mxCell>
 
         <!-- COLUMN 2: REPLATFORM (LIFT & RESHAPE) -->
-        <mxCell id="col_replatform" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+        <mxCell id="col_replatform" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="850" y="60" width="135" height="586" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_replatform_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#1D4ED8;&quot;&gt;Replatform&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;(Lift &amp;amp; Reshape)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8px;color:#475569;&quot;&gt;Managed services.&lt;br&gt;Balance effort/value.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="850" y="66" width="135" height="56" as="geometry"/>
+        <mxCell id="lbl_replatform_hdr" value="&lt;b style=&quot;font-size:12px;color:#1D4ED8;&quot;&gt;Replatform&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;(Lift &amp;amp; Reshape)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Managed Services.&lt;br&gt;High availability boost.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="850" y="66" width="135" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_repl_vm" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#2563EB;align=center;verticalAlign=top;shape=mxgraph.gcp2.compute_engine;" vertex="1" parent="1">
-          <mxGeometry x="865" y="215" width="26" height="34" as="geometry"/>
+        <mxCell id="card_repl_target" value="&lt;b style=&quot;font-size:9.5px;color:#1D4ED8;&quot;&gt;GCP Target:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;GKE &amp;amp; Cloud SQL&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#64748B;&quot;&gt;Autopilot + DMS Tooling&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="858" y="125" width="119" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_repl_gke" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#2563EB;align=center;verticalAlign=top;shape=mxgraph.gcp2.container_engine;" vertex="1" parent="1">
-          <mxGeometry x="925" y="185" width="30" height="30" as="geometry"/>
+        <mxCell id="card_repl_w1" value="&lt;div style=&quot;font-size:7.5px;background:#DBEAFE;color:#1D4ED8;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Wave 2 • Database&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Oracle / SQL Server&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;DMS to Cloud SQL PG16&lt;br&gt;Automated HA &amp;amp; Backups&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="858" y="185" width="119" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="cyl_repl_db" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=4;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="926" y="255" width="28" height="34" as="geometry"/>
+        <mxCell id="card_repl_w2" value="&lt;div style=&quot;font-size:7.5px;background:#DBEAFE;color:#1D4ED8;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Wave 2 • Apps&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Java Spring Monolith&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Containerized to GKE&lt;br&gt;Istio mTLS Service Mesh&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="858" y="252" width="119" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="edge_vm_to_gke" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="891" y="225" as="sourcePoint"/><mxPoint x="920" y="200" as="targetPoint"/></mxGeometry>
+        <mxCell id="card_repl_w3" value="&lt;div style=&quot;font-size:7.5px;background:#F1F5F9;color:#475569;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Caching Target&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Session State&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Memorystore for Redis&lt;br&gt;Zero-Downtime Patching&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="858" y="320" width="119" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="edge_vm_to_db" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="891" y="240" as="sourcePoint"/><mxPoint x="924" y="272" as="targetPoint"/></mxGeometry>
-        </mxCell>
-        <mxCell id="card_repl_examples" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Examples:&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Google Kubernetes Engine (GKE), Cloud SQL.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="860" y="380" width="115" height="60" as="geometry"/>
+        <mxCell id="card_repl_roi" value="&lt;b style=&quot;font-size:8.5px;color:#1D4ED8;&quot;&gt;Expected ROI:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#16A34A;&quot;&gt;-44% Licenses&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Zero DB Admin Burden&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="858" y="560" width="119" height="72" as="geometry"/>
         </mxCell>
 
         <!-- COLUMN 3: REFACTOR (RE-ARCHITECT) -->
-        <mxCell id="col_refactor" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+        <mxCell id="col_refactor" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="995" y="60" width="135" height="586" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_refactor_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#1E40AF;&quot;&gt;Refactor&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;(Re-architect)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud native.&lt;br&gt;High agility, high ROI.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="995" y="66" width="135" height="56" as="geometry"/>
+        <mxCell id="lbl_refactor_hdr" value="&lt;b style=&quot;font-size:12px;color:#6D28D9;&quot;&gt;Refactor&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;(Re-architect)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Cloud-Native AI.&lt;br&gt;Maximum Agility &amp;amp; ROI.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="995" y="66" width="135" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_ref_cloud" value="" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1030" y="210" width="66" height="44" as="geometry"/>
+        <mxCell id="card_ref_target" value="&lt;b style=&quot;font-size:9.5px;color:#6D28D9;&quot;&gt;GCP Target:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Cloud Run + Vertex AI&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#64748B;&quot;&gt;Serverless &amp;amp; Gemini 3.7&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1003" y="125" width="119" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="card_ref_examples" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Examples:&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud Run, Cloud Functions, BigQuery.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1005" y="380" width="115" height="60" as="geometry"/>
+        <mxCell id="card_ref_w1" value="&lt;div style=&quot;font-size:7.5px;background:#F3E8FF;color:#6D28D9;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Wave 3 • Analytics&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Nightly ETL Batch&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud Dataflow (Beam)&lt;br&gt;BigQuery BigLake Marts&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1003" y="185" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_ref_w2" value="&lt;div style=&quot;font-size:7.5px;background:#F3E8FF;color:#6D28D9;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Wave 3 • Core Micro&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Order &amp;amp; Payment API&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud Run + Pub/Sub&lt;br&gt;AlloyDB pgvector SAGA&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1003" y="252" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_ref_w3" value="&lt;div style=&quot;font-size:7.5px;background:#F1F5F9;color:#475569;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;AI Innovation&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Agentic RAG Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Gemini 3.7 Flash + MCP&lt;br&gt;Real-Time Copilot Hub&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1003" y="320" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_ref_roi" value="&lt;b style=&quot;font-size:8.5px;color:#6D28D9;&quot;&gt;Expected ROI:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#16A34A;&quot;&gt;-62% OpEx&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Instant Auto-Scaling&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1003" y="560" width="119" height="72" as="geometry"/>
         </mxCell>
 
-        <!-- COLUMN 4: RETAIN (REVISIT) -->
-        <mxCell id="col_retain" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+        <!-- COLUMN 4: RETAIN (REVISIT / HYBRID) -->
+        <mxCell id="col_retain" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="1140" y="60" width="135" height="586" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_retain_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#334155;&quot;&gt;Retain&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;(Revisit)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8px;color:#475569;&quot;&gt;Keep as-is for now.&lt;br&gt;Re-evaluate later.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="66" width="135" height="56" as="geometry"/>
+        <mxCell id="lbl_retain_hdr" value="&lt;b style=&quot;font-size:12px;color:#334155;&quot;&gt;Retain&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;(Revisit / Hybrid)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Keep On-Prem for now.&lt;br&gt;Expose via Hybrid Mesh.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="66" width="135" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_retain_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="215" width="55" height="40" as="geometry"/>
+        <mxCell id="card_retain_target" value="&lt;b style=&quot;font-size:9.5px;color:#334155;&quot;&gt;Integration:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Cloud Interconnect&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#64748B;&quot;&gt;100G BGP + Apigee Hub&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1148" y="125" width="119" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="card_retain_examples" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Examples:&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Mainframes, Regulatory locked data.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="380" width="115" height="60" as="geometry"/>
+        <mxCell id="card_retain_w1" value="&lt;div style=&quot;font-size:7.5px;background:#F1F5F9;color:#334155;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Retained Core&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Mainframe Banking&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;z/OS CICS Transactions&lt;br&gt;Apigee REST Facade&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1148" y="185" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_retain_w2" value="&lt;div style=&quot;font-size:7.5px;background:#F1F5F9;color:#334155;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Compliance Lock&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Hardware HSM Keys&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Physical Air-Gapped HSM&lt;br&gt;Cloud KMS Integration&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1148" y="252" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_retain_w3" value="&lt;div style=&quot;font-size:7.5px;background:#F1F5F9;color:#475569;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Scheduled Review&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Phase 2 Modernize&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Re-evaluating in Q4&lt;br&gt;Target GDC Edge / GKE&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1148" y="320" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_retain_roi" value="&lt;b style=&quot;font-size:8.5px;color:#334155;&quot;&gt;Risk Posture:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0284C7;&quot;&gt;0% Disruption&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Zero Critical Path Risk&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1148" y="560" width="119" height="72" as="geometry"/>
         </mxCell>
 
         <!-- COLUMN 5: RETIRE (DECOMMISSION) -->
-        <mxCell id="col_retire" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+        <mxCell id="col_retire" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="1285" y="60" width="135" height="586" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_retire_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#B91C1C;&quot;&gt;Retire&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;(Decommission)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8px;color:#475569;&quot;&gt;Phase out redundant&lt;br&gt;or obsolete apps.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="1285" y="66" width="135" height="56" as="geometry"/>
+        <mxCell id="lbl_retire_hdr" value="&lt;b style=&quot;font-size:12px;color:#B91C1C;&quot;&gt;Retire&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;(Decommission)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Purge redundant apps.&lt;br&gt;Instant OpEx elimination.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="66" width="135" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_retire_x" value="&lt;span style=&quot;font-size:26px;color:#EF4444;&quot;&gt;🗑️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1335" y="215" width="35" height="35" as="geometry"/>
+        <mxCell id="card_retire_target" value="&lt;b style=&quot;font-size:9.5px;color:#B91C1C;&quot;&gt;Decom Action:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Archive &amp;amp; Teardown&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#64748B;&quot;&gt;Coldline + License Cuts&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1293" y="125" width="119" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="card_retire_examples" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Examples:&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Legacy reporting, duplicate CRMs.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1295" y="380" width="115" height="60" as="geometry"/>
+        <mxCell id="card_retire_w1" value="&lt;div style=&quot;font-size:7.5px;background:#FEE2E2;color:#B91C1C;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Sunset Workload&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Legacy Cognos BI&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Replaced by Looker&lt;br&gt;Data to GCS Coldline&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1293" y="185" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_retire_w2" value="&lt;div style=&quot;font-size:7.5px;background:#FEE2E2;color:#B91C1C;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Sunset Workload&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Shadow IT Silos&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Duplicate Sales DBs&lt;br&gt;Server Rack Recycling&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1293" y="252" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_retire_w3" value="&lt;div style=&quot;font-size:7.5px;background:#F1F5F9;color:#475569;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Compliance Retain&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;7-Yr Audit Records&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;GCS Bucket Lock (WORM)&lt;br&gt;Zero Compute Cost&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1293" y="320" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_retire_roi" value="&lt;b style=&quot;font-size:8.5px;color:#B91C1C;&quot;&gt;Immediate Saving:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#16A34A;&quot;&gt;+$480k/yr&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Direct License Cuts&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1293" y="560" width="119" height="72" as="geometry"/>
         </mxCell>
 
         <!-- COLUMN 6: REPURCHASE (DROP & SHOP) -->
-        <mxCell id="col_repurchase" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
+        <mxCell id="col_repurchase" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1.5;arcSize=3;" vertex="1" parent="1">
           <mxGeometry x="1430" y="60" width="135" height="586" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_repurchase_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#7E22CE;&quot;&gt;Repurchase&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;(Drop &amp;amp; Shop)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8px;color:#475569;&quot;&gt;Move to SaaS.&lt;br&gt;Offload maintenance.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="1430" y="66" width="135" height="56" as="geometry"/>
+        <mxCell id="lbl_repurchase_hdr" value="&lt;b style=&quot;font-size:12px;color:#7E22CE;&quot;&gt;Repurchase&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;(Drop &amp;amp; Shop)&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Adopt SaaS solutions.&lt;br&gt;Zero Infra Overhead.&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="66" width="135" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="icon_rep_saas" value="&lt;span style=&quot;font-size:26px;color:#7E22CE;&quot;&gt;🛍️ ☁️&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1465" y="215" width="65" height="35" as="geometry"/>
+        <mxCell id="card_rep_target" value="&lt;b style=&quot;font-size:9.5px;color:#7E22CE;&quot;&gt;SaaS Target:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Workspace / Workday&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#64748B;&quot;&gt;Evergreen Managed Cloud&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9333EA;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="125" width="119" height="52" as="geometry"/>
         </mxCell>
-        <mxCell id="card_rep_examples" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Examples:&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8px;color:#475569;&quot;&gt;Google Workspace, Salesforce, Workday.&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1440" y="380" width="115" height="60" as="geometry"/>
+        <mxCell id="card_rep_w1" value="&lt;div style=&quot;font-size:7.5px;background:#F3E8FF;color:#7E22CE;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;Collaboration&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;On-Prem Exchange&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Google Workspace&lt;br&gt;Gemini AI Sidekick&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="185" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_rep_w2" value="&lt;div style=&quot;font-size:7.5px;background:#F3E8FF;color:#7E22CE;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;HR &amp;amp; Payroll&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Custom HR Database&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Workday Cloud SaaS&lt;br&gt;Zero Patching Effort&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="252" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_rep_w3" value="&lt;div style=&quot;font-size:7.5px;background:#F1F5F9;color:#475569;font-weight:bold;padding:1px 4px;border-radius:3px;margin-bottom:2px;&quot;&gt;CRM SaaS&lt;/div&gt;&lt;b style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;Salesforce Cloud&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;BigQuery Data Sync&lt;br&gt;Real-Time Webhooks&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="320" width="119" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_rep_roi" value="&lt;b style=&quot;font-size:8.5px;color:#7E22CE;&quot;&gt;Strategic Value:&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#16A34A;&quot;&gt;100% Up-to-Date&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Zero Infra Maintenance&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1438" y="560" width="119" height="72" as="geometry"/>
         </mxCell>
 
         <!-- ================= COMPACT HORIZONTAL FOOTER LEGEND ================= -->
-        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;&lt;b&gt;Legend:&lt;/b&gt; 🔵 On-Prem VM &amp;nbsp;|&amp;nbsp; 🗄️ Legacy DB &amp;nbsp;|&amp;nbsp; 🖥️ Mainframe &amp;nbsp;|&amp;nbsp; ☸️ Managed K8s (GKE) &amp;nbsp;|&amp;nbsp; ☁️ Cloud SQL / Spanner &amp;nbsp;|&amp;nbsp; ── Dependencies &amp;nbsp;|&amp;nbsp; - - Feedback Validation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9.5px;color:#334155;&quot;&gt;&lt;b&gt;6Rs Legend:&lt;/b&gt; 🔵 Rehost (GCE Lift) &amp;nbsp;|&amp;nbsp; 🟦 Replatform (GKE &amp;amp; Cloud SQL) &amp;nbsp;|&amp;nbsp; 🟪 Refactor (Serverless AI &amp;amp; BigQuery) &amp;nbsp;|&amp;nbsp; ⬛ Retain (Hybrid Interconnect) &amp;nbsp;|&amp;nbsp; 🟥 Retire (Decom &amp;amp; Coldline) &amp;nbsp;|&amp;nbsp; 🟪 Repurchase (SaaS)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="30" y="658" width="1535" height="32" as="geometry"/>
         </mxCell>
 

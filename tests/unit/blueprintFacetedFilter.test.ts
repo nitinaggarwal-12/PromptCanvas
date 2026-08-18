@@ -84,7 +84,7 @@ describe('Blueprint Knowledge Matrix & Bi-Directional Cascading Filters', () => 
     // Legacy short ID alias
     const bp2 = getBlueprintMetadataById('p1_bp01');
     expect(bp2).toBeDefined();
-    expect(bp2?.diagramName).toBe('Legacy Data Dependency Map');
+    expect(bp2?.diagramName).toBe('Google Cloud Discovery & Assessment: Legacy Silos to Modern Migration Waves');
 
     // Sequence diagram alias
     const bp3 = getBlueprintMetadataById('sequence_diagram');

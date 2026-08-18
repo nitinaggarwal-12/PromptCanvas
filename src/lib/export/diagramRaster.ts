@@ -182,3 +182,14 @@ function exportDiagramFormat(
     }
   });
 }
+
+export function resetRasterizerSingletonForTesting() {
+  if (singletonIframe && typeof document !== 'undefined' && document.body?.contains(singletonIframe)) {
+    try {
+      singletonIframe.remove();
+    } catch {}
+  }
+  singletonIframe = null;
+  isIframeInitialized = false;
+  exportQueuePromise = Promise.resolve();
+}

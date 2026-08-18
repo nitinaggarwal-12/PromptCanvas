@@ -5,6 +5,13 @@ import * as dbModule from '@/lib/db';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 
 // Mock dependencies
+vi.mock('next/headers', () => ({
+  cookies: vi.fn().mockResolvedValue({
+    get: vi.fn().mockReturnValue({ value: 'test_session_id' }),
+  }),
+  headers: vi.fn().mockResolvedValue(new Headers()),
+}));
+
 vi.mock('@/lib/auth', () => ({
   getAuthenticatedUser: vi.fn().mockResolvedValue({ id: 'test_user_id' }),
 }));
@@ -12,6 +19,7 @@ vi.mock('@/lib/auth', () => ({
 vi.mock('@/lib/geminiLock', () => ({
   acquireGeminiLock: vi.fn().mockReturnValue(true),
   releaseGeminiLock: vi.fn(),
+  deriveLockKey: vi.fn().mockReturnValue('test_lock_key'),
 }));
 
 vi.mock('@google/genai', () => {
