@@ -423,6 +423,15 @@ export default function GuidePage() {
     return () => clearInterval(timer);
   }, [isPlaying, currentWorkflow.steps.length, activePersona]);
 
+  const [visualMode, setVisualMode] = useState<'gif' | 'simulation'>('gif');
+
+  const PERSONA_GIFS: Record<PersonaKey, string> = {
+    architect: '/workflows/workflow_enterprise_architect.gif',
+    data_ai: '/workflows/workflow_data_ai_engineer.gif',
+    consultant: '/workflows/workflow_cloud_migration.gif',
+    secops: '/workflows/workflow_ciso_secops.gif',
+  };
+
   const handleCopyPrompt = (promptText: string) => {
     navigator.clipboard.writeText(promptText);
     setCopiedPrompt(promptText);
@@ -785,17 +794,63 @@ export default function GuidePage() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                      LIVE SIMULATION
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-400">1600 × 840 px</span>
+                    <div className="flex items-center p-0.5 rounded-lg bg-slate-900 border border-slate-800">
+                      <button
+                        onClick={() => setVisualMode('gif')}
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${
+                          visualMode === 'gif'
+                            ? 'bg-teal-500 text-slate-950 shadow-sm'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        🎬 Workflow GIF
+                      </button>
+                      <button
+                        onClick={() => setVisualMode('simulation')}
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${
+                          visualMode === 'simulation'
+                            ? 'bg-teal-500 text-slate-950 shadow-sm'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        ⚡ Step Simulator
+                      </button>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">1600 × 900 px</span>
                   </div>
                 </div>
 
                 {/* VISUAL SIMULATOR BODY */}
-                <div className="h-[460px] rounded-xl bg-[#0F172A] border border-slate-800 relative overflow-hidden flex flex-col justify-between p-6">
+                <div className="h-[460px] rounded-xl bg-[#0F172A] border border-slate-800 relative overflow-hidden flex flex-col justify-between p-4">
                   
-                  {/* SIMULATION 1: BLUEPRINT MATRIX DISCOVERY */}
+                  {visualMode === 'gif' ? (
+                    <div className="w-full h-full flex flex-col items-center justify-between animate-fadeIn space-y-2">
+                      <div className="relative w-full flex-1 rounded-lg overflow-hidden border border-slate-800 bg-black flex items-center justify-center">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={PERSONA_GIFS[activePersona]}
+                          alt={`${currentWorkflow.title} End-to-End Workflow`}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="w-full flex items-center justify-between text-[11px] text-slate-400 font-mono px-1">
+                        <span className="flex items-center gap-1.5 text-teal-400 font-bold">
+                          <Sparkles className="w-3.5 h-3.5" /> End-to-End Persona Workflow Recording
+                        </span>
+                        <a
+                          href={PERSONA_GIFS[activePersona]}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-slate-300 hover:text-teal-400 flex items-center gap-1 font-bold underline"
+                        >
+                          <span>Open Full GIF</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* SIMULATION 1: BLUEPRINT MATRIX DISCOVERY */}
                   {currentStep.outputVisualType === 'matrix' && (
                     <div className="space-y-4 animate-fadeIn">
                       <div className="flex items-center justify-between bg-slate-800/80 p-3 rounded-xl border border-slate-700">
@@ -1051,6 +1106,8 @@ export default function GuidePage() {
                     </span>
                     <span>PromptCanvas Enterprise Architecture Suite</span>
                   </div>
+                    </>
+                  )}
 
                 </div>
 
@@ -1059,6 +1116,257 @@ export default function GuidePage() {
 
           </div>
 
+        </div>
+      </section>
+
+      {/* ==================== PERSONA WORKFLOW GIF GALLERY ==================== */}
+      <section className={`py-16 px-6 md:px-12 border-t ${
+        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/30 border-slate-800'
+      }`}>
+        <div className="max-w-[1600px] mx-auto space-y-10">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-bold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" /> Direct Video / GIF Links
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black">
+              Watch End-to-End Workflow Recordings
+            </h2>
+            <p className={`text-sm md:text-base ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              Click on any animated workflow GIF below to watch the full screen recording, see where to click, how to input prompts, validate canvas outputs, and export boardroom deliverables.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            {/* GIF 1: Enterprise Cloud Architect */}
+            <div className={`rounded-2xl border p-5 flex flex-col justify-between space-y-4 transition-all hover:scale-[1.02] shadow-xl ${
+              isLight ? 'bg-white border-slate-200 hover:border-blue-500' : 'bg-slate-900 border-slate-800 hover:border-blue-500'
+            }`}>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl">🏢</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    Blueprint #17
+                  </span>
+                </div>
+                <h3 className="font-extrabold text-sm text-blue-400">
+                  Principal Enterprise Architect
+                </h3>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  Landing Zone discovery, CIDR prompting, Hub-and-Spoke Shared VPC validation, version v1 → v2 increment, and PDF/PPTX export.
+                </p>
+                <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-800 bg-black flex items-center justify-center relative group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/workflows/workflow_enterprise_architect.gif"
+                    alt="Enterprise Architect Workflow"
+                    className="w-full h-full object-cover"
+                  />
+                  <a
+                    href="/workflows/workflow_enterprise_architect.gif"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 text-xs font-bold text-white transition-opacity backdrop-blur-xs"
+                  >
+                    <Play className="w-4 h-4 fill-white" />
+                    <span>Watch Full GIF</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-slate-700/30 flex items-center justify-between">
+                <a
+                  href="/workflows/workflow_enterprise_architect.gif"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-bold text-blue-400 hover:underline flex items-center gap-1"
+                >
+                  <span>Open Full GIF</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+                <a
+                  href="/workflows/workflow_enterprise_architect.gif"
+                  download="workflow_enterprise_architect.gif"
+                  className="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>Download</span>
+                </a>
+              </div>
+            </div>
+
+            {/* GIF 2: Data Platform & AI Engineer */}
+            <div className={`rounded-2xl border p-5 flex flex-col justify-between space-y-4 transition-all hover:scale-[1.02] shadow-xl ${
+              isLight ? 'bg-white border-slate-200 hover:border-purple-500' : 'bg-slate-900 border-slate-800 hover:border-purple-500'
+            }`}>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl">🤖</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                    Blueprint #41
+                  </span>
+                </div>
+                <h3 className="font-extrabold text-sm text-purple-400">
+                  Data Platform &amp; AI Engineer
+                </h3>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  Retail AI Core with AlloyDB pgvector, BigQuery Lakehouse, Star Schema validation, Looker BI, and Draw.io XML export.
+                </p>
+                <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-800 bg-black flex items-center justify-center relative group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/workflows/workflow_data_ai_engineer.gif"
+                    alt="Data & AI Engineer Workflow"
+                    className="w-full h-full object-cover"
+                  />
+                  <a
+                    href="/workflows/workflow_data_ai_engineer.gif"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 text-xs font-bold text-white transition-opacity backdrop-blur-xs"
+                  >
+                    <Play className="w-4 h-4 fill-white" />
+                    <span>Watch Full GIF</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-slate-700/30 flex items-center justify-between">
+                <a
+                  href="/workflows/workflow_data_ai_engineer.gif"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-bold text-purple-400 hover:underline flex items-center gap-1"
+                >
+                  <span>Open Full GIF</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+                <a
+                  href="/workflows/workflow_data_ai_engineer.gif"
+                  download="workflow_data_ai_engineer.gif"
+                  className="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>Download</span>
+                </a>
+              </div>
+            </div>
+
+            {/* GIF 3: Cloud Migration Consultant */}
+            <div className={`rounded-2xl border p-5 flex flex-col justify-between space-y-4 transition-all hover:scale-[1.02] shadow-xl ${
+              isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-slate-900 border-slate-800 hover:border-emerald-500'
+            }`}>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl">💼</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    Blueprint #1
+                  </span>
+                </div>
+                <h3 className="font-extrabold text-sm text-emerald-400">
+                  Cloud Migration Consultant
+                </h3>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  Legacy on-prem silos, spaghetti integration matrix, StratoZone profiling, 6Rs 4-wave roadmap, TCO $/mo analysis, and PPTX pitch pack.
+                </p>
+                <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-800 bg-black flex items-center justify-center relative group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/workflows/workflow_cloud_migration.gif"
+                    alt="Cloud Migration Consultant Workflow"
+                    className="w-full h-full object-cover"
+                  />
+                  <a
+                    href="/workflows/workflow_cloud_migration.gif"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 text-xs font-bold text-white transition-opacity backdrop-blur-xs"
+                  >
+                    <Play className="w-4 h-4 fill-white" />
+                    <span>Watch Full GIF</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-slate-700/30 flex items-center justify-between">
+                <a
+                  href="/workflows/workflow_cloud_migration.gif"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-bold text-emerald-400 hover:underline flex items-center gap-1"
+                >
+                  <span>Open Full GIF</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+                <a
+                  href="/workflows/workflow_cloud_migration.gif"
+                  download="workflow_cloud_migration.gif"
+                  className="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>Download</span>
+                </a>
+              </div>
+            </div>
+
+            {/* GIF 4: CISO & DevSecOps Lead */}
+            <div className={`rounded-2xl border p-5 flex flex-col justify-between space-y-4 transition-all hover:scale-[1.02] shadow-xl ${
+              isLight ? 'bg-white border-slate-200 hover:border-rose-500' : 'bg-slate-900 border-slate-800 hover:border-rose-500'
+            }`}>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl">🔒</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                    Blueprint #14
+                  </span>
+                </div>
+                <h3 className="font-extrabold text-sm text-rose-400">
+                  CISO &amp; DevSecOps Lead
+                </h3>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  VPC-SC perimeter audit, automated static security scanner, 1-click remediation to hardened v2, and SOC2 / CIS compliance PDF export.
+                </p>
+                <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-800 bg-black flex items-center justify-center relative group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/workflows/workflow_ciso_secops.gif"
+                    alt="CISO & DevSecOps Workflow"
+                    className="w-full h-full object-cover"
+                  />
+                  <a
+                    href="/workflows/workflow_ciso_secops.gif"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 text-xs font-bold text-white transition-opacity backdrop-blur-xs"
+                  >
+                    <Play className="w-4 h-4 fill-white" />
+                    <span>Watch Full GIF</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-slate-700/30 flex items-center justify-between">
+                <a
+                  href="/workflows/workflow_ciso_secops.gif"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-bold text-rose-400 hover:underline flex items-center gap-1"
+                >
+                  <span>Open Full GIF</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+                <a
+                  href="/workflows/workflow_ciso_secops.gif"
+                  download="workflow_ciso_secops.gif"
+                  className="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>Download</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
