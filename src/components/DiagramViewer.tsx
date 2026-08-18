@@ -222,7 +222,7 @@ export default function DiagramViewer({
           bottom: 0;
           left: 0;
           right: 0;
-          padding: 16px;
+          padding: 4px;
           box-sizing: border-box;
           overflow: auto;
         }
@@ -230,11 +230,13 @@ export default function DiagramViewer({
           width: 100%;
           min-height: 100%;
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           justify-content: center;
         }
         .mxgraph > svg, .mxgraph > div {
+          width: 100% !important;
           max-width: 100% !important;
+          height: auto !important;
           margin: 0 auto !important;
         }
         .geEditor {
@@ -349,10 +351,10 @@ export default function DiagramViewer({
           resize: true,
           toolbar: 'zoom layers tags',
           edit: '_blank',
-          border: 12,
+          border: 0,
           transparent: true,
           fit: true,
-          'max-scale': 2.0
+          'max-scale': 4.0
         })};
         configObj.xml = getCleanGraphXml(configObj.xml);
 

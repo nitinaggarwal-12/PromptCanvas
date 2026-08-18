@@ -7385,7 +7385,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                       transformOrigin: 'center center'
                     }}
                   >
-                    <div className="pointer-events-auto w-full h-full flex items-center justify-center p-4">
+                    <div className="pointer-events-auto w-full h-full flex items-center justify-center p-1 md:p-2">
                       <DiagramViewer
                         currentLanguage={currentLanguage}
                         key={`${activeDiagram?.id || 'diag'}_${displayedVersion?.version_number || 1}_${layoutPreset}_${canvasTheme}`}
