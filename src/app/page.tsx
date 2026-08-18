@@ -148,8 +148,9 @@ export default function LandingPage() {
           }`}>
             <a href="#features" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">How It Works</a>
-            <Link href="/guide" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-semibold">
-              User Guide &amp; Workflows
+            <Link href="/guide" className="text-teal-600 dark:text-teal-400 hover:underline transition-colors font-bold flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+              <span>User Guide &amp; GIFs</span>
             </Link>
             <Link href="/workspace?tab=templates" className="hover:text-teal-600 dark:hover:text-teal-300 transition-colors text-teal-600 dark:text-teal-400 font-semibold flex items-center gap-1">
               <span>Templates Matrix</span>
@@ -256,6 +257,14 @@ export default function LandingPage() {
               >
                 How It Works
               </a>
+              <Link 
+                href="/guide" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-teal-400 font-bold flex items-center justify-between"
+              >
+                <span>User Guide &amp; GIFs</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">Playbooks</span>
+              </Link>
               <Link 
                 href="/workspace?tab=templates" 
                 onClick={() => setIsMobileNavOpen(false)}

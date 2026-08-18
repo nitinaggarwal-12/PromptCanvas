@@ -483,7 +483,8 @@ export default function Dashboard() {
             { id: "history", name: "Historical Canvases", icon: History, href: "/history" },
             { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },
             { id: "audit", name: "Security Audit", icon: ShieldCheck, href: "/workspace?tab=audit" },
-            { id: "walkthrough", name: "Interactive Tour", icon: BookOpen, href: "/workspace?tour=true" },
+            { id: "guide", name: "User Guide & Playbooks", icon: BookOpen, href: "/guide", badge: "NEW" },
+            { id: "walkthrough", name: "Interactive Tour", icon: Compass, href: "/workspace?tour=true" },
             { id: "settings", name: "Settings & AI Tier Config", icon: Settings, href: "/workspace?tab=settings" }
           ].map((item) => {
             const Icon = item.icon;
@@ -502,6 +503,11 @@ export default function Dashboard() {
                     <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-bg-dark" : "text-slate-400"}`} />
                     {isSidebarOpen && <span className="truncate">{item.name}</span>}
                   </div>
+                  {isSidebarOpen && (item as any).badge && (
+                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-400 border border-teal-500/30">
+                      {(item as any).badge}
+                    </span>
+                  )}
                 </div>
               </Link>
             );
@@ -597,7 +603,8 @@ export default function Dashboard() {
                   { id: "history", name: "Historical Canvases", icon: History, href: "/history" },
                   { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },
                   { id: "audit", name: "Security Audit", icon: ShieldCheck, href: "/workspace?tab=audit" },
-                  { id: "walkthrough", name: "Interactive Tour", icon: BookOpen, href: "/workspace?tour=true" },
+                  { id: "guide", name: "User Guide & Playbooks", icon: BookOpen, href: "/guide", badge: "NEW" },
+                  { id: "walkthrough", name: "Interactive Tour", icon: Compass, href: "/workspace?tour=true" },
                   { id: "settings", name: "Settings & AI Tier Config", icon: Settings, href: "/workspace?tab=settings" }
                 ].map((item) => {
                   const Icon = item.icon;
@@ -715,6 +722,18 @@ export default function Dashboard() {
               </button>
             </>
           )}
+
+          <Link
+            href="/guide"
+            className={`px-3.5 py-2 rounded-xl border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm ${
+              isLight
+                ? 'bg-teal-50 hover:bg-teal-100 text-teal-900 border-teal-300'
+                : 'bg-teal-500/15 hover:bg-teal-500/25 text-teal-200 border-teal-500/30'
+            }`}
+          >
+            <Sparkles className="w-4 h-4 text-teal-400" />
+            <span>User Guide &amp; GIFs</span>
+          </Link>
 
           <Link
             href="/workspace?tab=templates"

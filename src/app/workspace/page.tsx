@@ -70,6 +70,7 @@ import {
   ChevronUp,
   Hand,
   BookOpen,
+  Compass,
   Mail,
   Box,
   Upload,
@@ -5925,7 +5926,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
             { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
             { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
             { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
-            { id: 'walkthrough', name: t.interactiveTour, icon: BookOpen },
+            { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+            { id: 'walkthrough', name: t.interactiveTour, icon: Compass },
             { id: 'settings', name: t.settingsTier, icon: Settings }
           ].map((item) => {
             const Icon = item.icon;
@@ -6311,7 +6313,8 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
                   { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
                   { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
-                  { id: 'walkthrough', name: t.interactiveTour, icon: BookOpen },
+                  { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+                  { id: 'walkthrough', name: t.interactiveTour, icon: Compass },
                   { id: 'settings', name: t.settingsTier, icon: Settings }
                 ].map((item) => {
                   const Icon = item.icon;
@@ -6593,6 +6596,20 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     </>
                   )}
                 </button>
+
+                {/* 🎬 Interactive Guide & GIFs Link */}
+                <Link
+                  href="/guide"
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
+                    canvasTheme === 'light'
+                      ? 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-950'
+                      : 'border-teal-400/50 bg-teal-500/15 hover:bg-teal-500/25 text-teal-200'
+                  }`}
+                  title="Watch Interactive Persona Workflows & Video Guide"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                  <span>Guide &amp; GIFs</span>
+                </Link>
 
                 <AccessRequestsInbox user={currentUser} />
                 {activeDiagram && (

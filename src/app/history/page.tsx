@@ -41,6 +41,7 @@ import {
   Settings,
   BookOpen,
   ClipboardList,
+  Compass,
   Menu
 } from 'lucide-react';
 import { getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
@@ -471,7 +472,8 @@ export default function CanvasHistoryPage() {
               { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
               { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
               { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },
-              { id: 'walkthrough', name: 'Interactive Tour', icon: BookOpen, href: '/workspace?tour=true' },
+              { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+              { id: 'walkthrough', name: 'Interactive Tour', icon: Compass, href: '/workspace?tour=true' },
               { id: 'settings', name: 'Settings & AI Tier Config', icon: Settings, href: '/workspace?tab=settings' }
             ].map((item) => {
               const Icon = item.icon;
@@ -490,6 +492,11 @@ export default function CanvasHistoryPage() {
                       <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-bg-dark' : 'text-slate-400'}`} />
                       {isSidebarOpen && <span className="truncate">{item.name}</span>}
                     </div>
+                    {isSidebarOpen && (item as any).badge && (
+                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-400 border border-teal-500/30">
+                        {(item as any).badge}
+                      </span>
+                    )}
                   </div>
                 </Link>
               );
@@ -586,7 +593,8 @@ export default function CanvasHistoryPage() {
                   { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
                   { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
                   { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },
-                  { id: 'walkthrough', name: 'Interactive Tour', icon: BookOpen, href: '/workspace?tour=true' },
+                  { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+                  { id: 'walkthrough', name: 'Interactive Tour', icon: Compass, href: '/workspace?tour=true' },
                   { id: 'settings', name: 'Settings & AI Tier Config', icon: Settings, href: '/workspace?tab=settings' }
                 ].map((item) => {
                   const Icon = item.icon;
@@ -699,6 +707,16 @@ export default function CanvasHistoryPage() {
           {/* Right: Quick Action Controls */}
           <div className="flex items-center gap-2.5">
             <ThemeToggleBtn id="history-theme-toggle-btn" />
+
+            {/* User Guide & GIFs Button */}
+            <Link
+              href="/guide"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/40 text-teal-600 dark:text-teal-300 font-bold text-xs transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
+              title="Watch Interactive Persona Workflows & Video Guide"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
+              <span>User Guide &amp; GIFs</span>
+            </Link>
 
             {/* Blueprint Matrix Button */}
             <button
