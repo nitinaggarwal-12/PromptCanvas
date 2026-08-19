@@ -64,6 +64,16 @@ function normalizeStringFields(item: BlueprintKnowledgeItem): BlueprintKnowledge
 type MetadataPatch = Partial<BlueprintKnowledgeItem>;
 
 const METADATA_PATCHES: Record<string, MetadataPatch> = {
+  // Blueprint 6 is the high-level orientation/reference view for the whole architecture library.
+  'P3-APP-C-01_total_unified_system_view': {
+    diagramName: 'Enterprise Reference Architecture',
+    domain: 'Architecture Standards',
+    abstractionLevel: 'Conceptual',
+    notationStandard: 'Enterprise Reference Architecture',
+    uiCardDesc: 'High-level enterprise reference architecture spanning experience, applications, integration, data, AI, cloud platform, and cross-cutting security, governance, observability, reliability, DevSecOps, and FinOps.',
+    phaseGoal: 'Establish a clear enterprise orientation map and layer boundaries, with specialized blueprints used for implementation-level detail.',
+  },
+
   // Data governance is fundamentally a governance/control-plane blueprint.
   'P3-DAT-C-06_unified_data_governance': {
     domain: 'Strategy & Governance',
@@ -106,8 +116,8 @@ const METADATA_PATCHES: Record<string, MetadataPatch> = {
   'P5-GOV-P-09_bcdr_multi_region_failover': {
     diagramName: 'Multi-Region Active-Passive Disaster Recovery',
     notationStandard: 'Active-Passive Multi-Region Failover',
-    uiCardDesc: 'Active-passive multi-region DR with global health-based routing, cross-region data replication, automated failover, and explicit RTO/RPO targets.',
-    phaseGoal: 'Active-passive multi-region DR with global health-based routing, cross-region data replication, automated failover, and explicit RTO/RPO targets.',
+    uiCardDesc: 'Active-passive multi-region DR with global health-based routing, cross-region data replication, governed failover, and explicit workload-defined RTO/RPO targets.',
+    phaseGoal: 'Active-passive multi-region DR with global health-based routing, cross-region data replication, governed failover, and explicit workload-defined RTO/RPO targets.',
   },
 
   // Separate the two manufacturing blueprints: predictive maintenance vs full smart-factory platform.
