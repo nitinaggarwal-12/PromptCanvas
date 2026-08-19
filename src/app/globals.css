@@ -100,3 +100,16 @@ body {
 .mxGraphModel {
   background-color: transparent !important;
 }
+
+/*
+ * Compact touch workspace mode.
+ * Phones in landscape can report >1024 CSS px and therefore trip Tailwind's
+ * desktop `lg:` breakpoint. When a live Draw.io diagram is mounted, reclaim
+ * that width by hiding the desktop sidebar on touch/coarse-pointer devices.
+ * The mobile menu remains available from the header.
+ */
+@media (max-width: 1366px) and (pointer: coarse) {
+  body.pc-diagram-viewer-active aside.hidden.lg\:flex {
+    display: none !important;
+  }
+}
