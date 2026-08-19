@@ -31,8 +31,27 @@ describe('blueprint visual system v2', () => {
     const generic = applyBlueprintVisualSystem(xml, 'tech_serverless_gcp');
     const bpmn = applyBlueprintVisualSystem(xml, 'bpmn_process_workflow');
     expect(generic).toContain('edgeStyle=orthogonalEdgeStyle');
+    expect(generic).toContain('strokeColor=#64748B');
     expect(generic).toContain('labelBackgroundColor=#FFFFFF');
     expect(bpmn).not.toContain('edgeStyle=orthogonalEdgeStyle');
     expect(bpmn).toContain('labelBackgroundColor=#FFFFFF');
+  });
+
+  it('standardizes generic architecture cards without flattening their semantic colors', () => {
+    const xml = '<mxGraphModel><root><mxCell id="card" value="Cloud Run service" style="rounded=1;fillColor=#E8F0FE;strokeColor=#4285F4;fontSize=11;" vertex="1"><mxGeometry/></mxCell></root></mxGraphModel>';
+    const polished = applyBlueprintVisualSystem(xml, 'tech_serverless_gcp');
+    expect(polished).toContain('fillColor=#E8F0FE');
+    expect(polished).toContain('strokeColor=#4285F4');
+    expect(polished).toContain('spacing=6');
+    expect(polished).toContain('arcSize=8');
+    expect(polished).toContain('shadow=0');
+    expect(auditBlueprintVisualSystem(polished).polishedCardCount).toBeGreaterThan(0);
+  });
+
+  it('preserves notation-sensitive vertex geometry and shape styles', () => {
+    const xml = '<mxGraphModel><root><mxCell id="entity" value="Customer" style="rounded=0;fillColor=#FFFFFF;strokeColor=#000000;fontSize=9;" vertex="1"><mxGeometry/></mxCell></root></mxGraphModel>';
+    const erd = applyBlueprintVisualSystem(xml, 'erd');
+    expect(erd).not.toContain('spacing=6');
+    expect(erd).toContain('rounded=0');
   });
 });
