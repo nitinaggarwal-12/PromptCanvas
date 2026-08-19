@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@/lib/blueprintKnowledgeMatrix": ["./src/lib/blueprintKnowledgeMatrixNormalized.ts"],
       "@/*": ["./src/*"]
     },
     "types": ["vitest/globals"]
