@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@/lib/architectureTypes": ["./src/lib/architectureTypesVisual.ts"],
       "@/lib/blueprintKnowledgeMatrix": ["./src/lib/blueprintKnowledgeMatrixNormalized.ts"],
       "@/*": ["./src/*"]
     },
