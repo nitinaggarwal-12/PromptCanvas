@@ -54,4 +54,23 @@ describe('blueprint visual system v2', () => {
     expect(erd).not.toContain('spacing=6');
     expect(erd).toContain('rounded=0');
   });
+
+  it('removes the duplicate in-canvas blueprint banner and pulls the architecture body up', () => {
+    const xml = '<mxGraphModel pageHeight="900"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="bp26" value="26" style="fontSize=30;" vertex="1" parent="1"><mxGeometry x="20" y="18" width="64" height="64" as="geometry"/></mxCell><mxCell id="title" value="GCP SERVERLESS EDA ARCHITECTURE" style="fontSize=27;" vertex="1" parent="1"><mxGeometry x="100" y="12" width="720" height="76" as="geometry"/></mxCell><mxCell id="traits" value="Serverless • Real-time • Google Cloud" style="fontSize=14;" vertex="1" parent="1"><mxGeometry x="845" y="22" width="900" height="54" as="geometry"/></mxCell><mxCell id="sources_bg" value="EVENT SOURCES" style="swimlane;fontSize=14;" vertex="1" parent="1"><mxGeometry x="20" y="105" width="190" height="520" as="geometry"/></mxCell><mxCell id="edge" style="strokeWidth=2;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/><mxPoint x="200" y="200" as="targetPoint"/></mxCell></root></mxGraphModel>';
+    const polished = applyBlueprintVisualSystem(xml, 'tech_serverless_gcp');
+    expect(polished).not.toContain('id="bp26"');
+    expect(polished).not.toContain('id="title"');
+    expect(polished).not.toContain('id="traits"');
+    expect(polished).toContain('id="sources_bg"');
+    expect(polished).toContain('y="12" width="190" height="520"');
+    expect(polished).toContain('pc-canvas-header-stripped');
+    expect(auditBlueprintVisualSystem(polished).duplicateCanvasHeaderRemoved).toBe(true);
+  });
+
+  it('does not remove top content when no duplicate blueprint banner is detected', () => {
+    const xml = '<mxGraphModel pageHeight="500"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="content" value="Start" style="fontSize=12;" vertex="1" parent="1"><mxGeometry x="20" y="20" width="160" height="60" as="geometry"/></mxCell></root></mxGraphModel>';
+    const polished = applyBlueprintVisualSystem(xml, 'tech_serverless_gcp');
+    expect(polished).toContain('id="content"');
+    expect(polished).not.toContain('pc-canvas-header-stripped');
+  });
 });
