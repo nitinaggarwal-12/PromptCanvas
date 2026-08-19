@@ -38,9 +38,24 @@ export default function DiagramViewer({
   description,
   isLiveFlow = false,
 }: DiagramViewerProps) {
+  const [isCompactViewport, setIsCompactViewport] = React.useState(false);
+
   React.useEffect(() => {
     document.body.classList.add('pc-diagram-viewer-active');
-    return () => document.body.classList.remove('pc-diagram-viewer-active');
+
+    const widthQuery = window.matchMedia('(max-width: 1280px)');
+    const pointerQuery = window.matchMedia('(pointer: coarse)');
+    const syncCompactViewport = () => setIsCompactViewport(widthQuery.matches || pointerQuery.matches);
+
+    syncCompactViewport();
+    widthQuery.addEventListener?.('change', syncCompactViewport);
+    pointerQuery.addEventListener?.('change', syncCompactViewport);
+
+    return () => {
+      document.body.classList.remove('pc-diagram-viewer-active');
+      widthQuery.removeEventListener?.('change', syncCompactViewport);
+      pointerQuery.removeEventListener?.('change', syncCompactViewport);
+    };
   }, []);
 
   const sanitizedXml = React.useMemo(() => {
@@ -100,13 +115,22 @@ export default function DiagramViewer({
   } else if (aspectRatioId === '21:9') {
     containerDimensions = 'w-full h-full max-w-full';
   }
-  
+
   let customHeightStyle: React.CSSProperties | undefined = undefined;
   if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
     const calcH = Math.min(1300, Math.max(600, Math.round(1000 * (customH / customW))));
     containerDimensions = 'w-full max-w-full';
     customHeightStyle = { height: `${calcH}px` };
   }
+
+  const responsiveFrameStyle: React.CSSProperties = {
+    ...customHeightStyle,
+    ...(isCompactViewport && aspectRatioId !== '9:16' ? {
+      height: 'clamp(440px, 56vw, 720px)',
+      minHeight: 0,
+      alignSelf: 'flex-start',
+    } : {}),
+  };
 
   const bgColor = bgTheme === 'light' ? '#FFFFFF' : '#0F172A';
   const cardBg = bgTheme === 'light' ? '#F8FAFC' : '#1E293B';
@@ -247,18 +271,18 @@ export default function DiagramViewer({
         }
         @media (max-width: 1280px), (pointer: coarse) {
           .canvas-container {
-            padding: 8px 8px 24px 8px;
+            padding: 8px 24px 18px 8px;
           }
           .mxgraph {
-            width: 1320px;
-            min-width: 1320px;
+            width: max(1120px, calc(100vw - 40px));
+            min-width: max(1120px, calc(100vw - 40px));
             min-height: 0;
             align-items: flex-start;
             justify-content: flex-start;
           }
           .mxgraph > svg, .mxgraph > div {
-            width: 1320px !important;
-            min-width: 1320px !important;
+            width: max(1120px, calc(100vw - 40px)) !important;
+            min-width: max(1120px, calc(100vw - 40px)) !important;
             max-width: none !important;
             height: auto !important;
             margin: 0 !important;
@@ -289,7 +313,7 @@ export default function DiagramViewer({
       <div class="canvas-container">
         <div class="mxgraph" id="diagram-container"></div>
       </div>
-      
+
       <script type="text/javascript">
         if (typeof window.btoa === 'function') {
           const _origBtoa = window.btoa.bind(window);
@@ -324,7 +348,7 @@ export default function DiagramViewer({
           };
         }
 
-        console.log('[Iframe Diagnostic] 🚀 Iframe document parsed with responsive canvas rules.');
+        console.log('[Iframe Diagnostic] 🚀 Iframe document parsed with final compact canvas rules.');
         window.onerror = function(message, source, lineno, colno, error) {
           console.error('[Iframe JS Error] ❌', message, 'at', source, ':', lineno);
           return false;
@@ -339,7 +363,7 @@ export default function DiagramViewer({
             const savedPos = sessionStorage.getItem(storageKey);
             if (savedPos) {
               const { left, top } = JSON.parse(savedPos);
-              canvasContainer.scrollLeft = left || 0;
+              canvasContainer.scrollLeft = compactViewport ? 0 : (left || 0);
               canvasContainer.scrollTop = compactViewport ? 0 : (top || 0);
             } else if (compactViewport) {
               canvasContainer.scrollLeft = 0;
@@ -389,34 +413,60 @@ export default function DiagramViewer({
           container.setAttribute('data-mxgraph', JSON.stringify(configObj));
         }
 
+        const gcpIconCellIds = [
+          'eventarc_icon',
+          'pubsub_icon',
+          'run_ingest_icon',
+          'run_business_icon',
+          'run_enrich_icon',
+          'tasks_retry_icon',
+          'bigtable_icon',
+          'gcs_icon',
+          'bigquery_icon',
+          'vertex_icon',
+          'looker_icon'
+        ];
+
+        function promoteGcpStencilIcons() {
+          const svg = document.querySelector('#diagram-container svg');
+          if (!svg) return false;
+
+          let promoted = 0;
+          gcpIconCellIds.forEach(function(cellId) {
+            const selector = '[data-cell-id="' + cellId + '"], [data-id="' + cellId + '"], #' + cellId;
+            const iconNode = svg.querySelector(selector);
+            if (iconNode && iconNode.parentNode) {
+              iconNode.parentNode.appendChild(iconNode);
+              iconNode.style.pointerEvents = 'none';
+              promoted += 1;
+            }
+          });
+          return promoted > 0;
+        }
+
+        function finishCompactPresentation() {
+          if (canvasContainer && compactViewport) {
+            canvasContainer.scrollTop = 0;
+            canvasContainer.scrollLeft = 0;
+          }
+          promoteGcpStencilIcons();
+        }
+
         function loadViewerScript() {
           if (document.getElementById('mxgraph-script-element')) return;
           const script = document.createElement('script');
           script.id = 'mxgraph-script-element';
           script.type = 'text/javascript';
           script.src = '${scriptUrl}';
-          
+
           script.onload = function() {
             console.log('[Iframe Diagnostic] ✅ Draw.io viewer script loaded successfully.');
-            if (canvasContainer) {
-              requestAnimationFrame(function() {
-                if (compactViewport) {
-                  canvasContainer.scrollTop = 0;
-                  canvasContainer.scrollLeft = 0;
-                } else {
-                  try {
-                    const savedPos = sessionStorage.getItem(storageKey);
-                    if (savedPos) {
-                      const { left, top } = JSON.parse(savedPos);
-                      canvasContainer.scrollLeft = left || 0;
-                      canvasContainer.scrollTop = top || 0;
-                    }
-                  } catch(e) {}
-                }
-              });
-            }
+            requestAnimationFrame(finishCompactPresentation);
+            setTimeout(finishCompactPresentation, 120);
+            setTimeout(finishCompactPresentation, 350);
+            setTimeout(finishCompactPresentation, 900);
           };
-          
+
           document.body.appendChild(script);
         }
 
@@ -434,8 +484,8 @@ export default function DiagramViewer({
 
   return (
     <DiagramErrorBoundary fallbackXml={sanitizedXml}>
-      <div 
-        style={customHeightStyle}
+      <div
+        style={responsiveFrameStyle}
         className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}
       >
         <iframe
