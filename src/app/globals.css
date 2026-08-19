@@ -8,11 +8,11 @@
   --color-teal-hover: #0d9488;
   --color-teal-glow: rgba(20, 184, 166, 0.15);
   --color-slate-hover: rgba(30, 41, 59, 0.8);
-  
+
   --animate-shimmer: shimmer 2s infinite linear;
   --animate-fade-in: fadeIn 0.3s ease-out forwards;
   --animate-slide-in: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  
+
   @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
@@ -38,7 +38,6 @@ body {
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* Custom Scrollbar for Premium Feel */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -57,7 +56,6 @@ body {
   background: rgba(20, 184, 166, 0.5);
 }
 
-/* Glassmorphism Panels */
 .glass-panel {
   background: rgba(13, 20, 38, 0.65);
   backdrop-filter: blur(12px);
@@ -72,7 +70,6 @@ body {
   border: 1px solid rgba(20, 184, 166, 0.15);
 }
 
-/* Neon Glows */
 .glow-teal {
   box-shadow: 0 0 15px rgba(20, 184, 166, 0.25);
 }
@@ -82,7 +79,6 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Shimmer Loading Effect */
 .shimmer-bg {
   background: linear-gradient(
     90deg,
@@ -93,7 +89,6 @@ body {
   background-size: 200% 100%;
 }
 
-/* Draw.io viewer container adjustments */
 .geEditor {
   background-color: transparent !important;
 }
@@ -101,15 +96,23 @@ body {
   background-color: transparent !important;
 }
 
-/*
- * Compact touch workspace mode.
- * Phones in landscape can report >1024 CSS px and therefore trip Tailwind's
- * desktop `lg:` breakpoint. When a live Draw.io diagram is mounted, reclaim
- * that width by hiding the desktop sidebar on touch/coarse-pointer devices.
- * The mobile menu remains available from the header.
- */
+/* Compact touch workspace mode. */
 @media (max-width: 1366px) and (pointer: coarse) {
+  body.pc-diagram-viewer-active {
+    background: #ffffff !important;
+  }
+
   body.pc-diagram-viewer-active aside.hidden.lg\:flex {
     display: none !important;
+  }
+
+  /* The workspace root is intentionally h-screen on desktop. On touch/compact
+     screens that leaves a large dark remainder under a short architecture.
+     Let the active workspace size to its actual content instead. */
+  body.pc-diagram-viewer-active .flex.h-screen.w-screen:not(.fixed) {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
   }
 }
