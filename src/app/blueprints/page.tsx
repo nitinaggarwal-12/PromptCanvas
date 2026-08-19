@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Sparkles, Loader2 } from "lucide-react";
 import { getBlueprintMetadataById } from "@/lib/blueprintKnowledgeMatrix";
 
-function TemplatesRedirectInner() {
+function BlueprintsRedirectInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -27,22 +27,22 @@ function TemplatesRedirectInner() {
           <Sparkles className="w-6 h-6 animate-pulse" />
         </div>
         <div className="space-y-1">
-          <h2 className="text-lg font-extrabold text-white">Opening Architectural Blueprint Library</h2>
-          <p className="text-xs text-slate-400">Redirecting to the unified interactive studio with all 50 enterprise blueprints...</p>
+          <h2 className="text-lg font-extrabold text-white">Opening Architecture Blueprints</h2>
+          <p className="text-xs text-slate-400">Redirecting to the master blueprint catalog with all 50 enterprise designs...</p>
         </div>
         <div className="flex items-center gap-2 text-xs text-teal-400 font-mono mt-2">
           <Loader2 className="w-4 h-4 animate-spin" />
-          <span>Loading canvas studio...</span>
+          <span>Loading studio...</span>
         </div>
       </div>
     </div>
   );
 }
 
-export default function TemplatesRedirectPage() {
+export default function BlueprintsPage() {
   return (
     <Suspense fallback={null}>
-      <TemplatesRedirectInner />
+      <BlueprintsRedirectInner />
     </Suspense>
   );
 }

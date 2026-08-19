@@ -454,6 +454,7 @@ function WorkspaceContent() {
   const [templateCategoryFilter, setTemplateCategoryFilter] = useState<string>('all');
   const [selectedPersonaFilter, setSelectedPersonaFilter] = useState<string>('all');
   const [previewModalTemplateId, setPreviewModalTemplateId] = useState<string | null>(null);
+  const [copiedShareLink, setCopiedShareLink] = useState<boolean>(false);
   const [previewModalPhaseFilter, setPreviewModalPhaseFilter] = useState<string>('ALL');
   const [previewModalAbstractionFilter, setPreviewModalAbstractionFilter] = useState<string>('ALL');
   const [previewModalLayerFilter, setPreviewModalLayerFilter] = useState<string>('ALL');
@@ -506,30 +507,37 @@ function WorkspaceContent() {
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
       const bp = params.get('blueprint') || params.get('arch') || params.get('template');
       if (bp) {
-        const title = getTemplateTitle(bp);
-        const xml = getDefaultXmlForArchitecture(bp);
-        const tempDiagram: Diagram = {
-          id: 'bp_' + bp,
-          name: title,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          architecture_type: bp,
-        };
-        const tempVersion: DiagramVersion = {
-          id: 'bp_ver_' + bp,
-          diagram_id: 'bp_' + bp,
-          version_number: 1,
-          xml_content: xml || '',
-          comment: 'Loaded flagship architecture blueprint',
-          created_by: 'system',
-          created_at: new Date().toISOString(),
-          architecture_type: bp,
-        };
-        setSelectedArchType(bp);
-        setActiveDiagram(tempDiagram);
-        setActiveVersion(tempVersion);
+        const meta = getBlueprintMetadataById(bp);
+        const resolvedId = meta ? meta.combinedId : bp;
+        if (tab === 'templates') {
+          setPreviewModalTemplateId(resolvedId);
+        } else {
+          const title = getTemplateTitle(resolvedId);
+          const xml = getDefaultXmlForArchitecture(resolvedId);
+          const tempDiagram: Diagram = {
+            id: 'bp_' + resolvedId,
+            name: title,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            architecture_type: resolvedId,
+          };
+          const tempVersion: DiagramVersion = {
+            id: 'bp_ver_' + resolvedId,
+            diagram_id: 'bp_' + resolvedId,
+            version_number: 1,
+            xml_content: xml || '',
+            comment: 'Loaded flagship architecture blueprint',
+            created_by: 'system',
+            created_at: new Date().toISOString(),
+            architecture_type: resolvedId,
+          };
+          setSelectedArchType(resolvedId);
+          setActiveDiagram(tempDiagram);
+          setActiveVersion(tempVersion);
+        }
       }
     }
   }, []);
@@ -1086,6 +1094,7 @@ function WorkspaceContent() {
   const [currentTab, setCurrentTab] = useState<'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough'>('editor');
   const searchParams = useSearchParams();
   const isInitialTabLoadedRef = useRef(false);
+  const isInitialBlueprintSyncDone = useRef(false);
 
   const [isPasswordSetupOpen, setIsPasswordSetupOpen] = useState(false);
 
@@ -1109,15 +1118,21 @@ function WorkspaceContent() {
     }
     const archParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
     if (archParam) {
-      setSelectedArchType(archParam);
-      const defaultXml = getDefaultXmlForArchitecture(archParam);
-      if (defaultXml) {
-        activeXmlRef.current = defaultXml;
-        setCustomXml(defaultXml);
-      }
-      if (activeDiagram && activeDiagram.architecture_type !== archParam) {
-        setActiveDiagram(null);
-        setActiveVersion(null);
+      const meta = getBlueprintMetadataById(archParam);
+      const targetCombinedId = meta ? meta.combinedId : archParam;
+      if (tabParam === 'templates') {
+        setPreviewModalTemplateId(targetCombinedId);
+      } else {
+        setSelectedArchType(targetCombinedId);
+        const defaultXml = getDefaultXmlForArchitecture(targetCombinedId);
+        if (defaultXml) {
+          activeXmlRef.current = defaultXml;
+          setCustomXml(defaultXml);
+        }
+        if (activeDiagram && activeDiagram.architecture_type !== targetCombinedId) {
+          setActiveDiagram(null);
+          setActiveVersion(null);
+        }
       }
     }
     const promptParam = searchParams.get('prompt');
@@ -1126,6 +1141,32 @@ function WorkspaceContent() {
       setNewDiagramPrompt(promptParam);
     }
   }, [searchParams, activeDiagram, promptInput]);
+
+
+
+  // Browser back/forward button navigation (popstate)
+  useEffect(() => {
+    function handlePopState() {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam && ['editor', 'templates', 'audit', 'settings', 'walkthrough'].includes(tabParam)) {
+        setCurrentTab(tabParam as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough');
+      }
+      const bpParam = params.get('blueprint') || params.get('arch') || params.get('template');
+      if (bpParam) {
+        const meta = getBlueprintMetadataById(bpParam);
+        if (meta) {
+          if (tabParam === 'templates' || !tabParam) {
+            setPreviewModalTemplateId(meta.combinedId);
+          }
+        }
+      } else {
+        setPreviewModalTemplateId(null);
+      }
+    }
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   async function handleConversationalRefactor(promptText: string) {
     setIsConversationalRefactoring(true);
@@ -1751,6 +1792,16 @@ function WorkspaceContent() {
       params.set('diagram', activeDiagram.id);
     }
 
+    // Blueprint Preview / Deep-link synchronization
+    if (previewModalTemplateId) {
+      params.set('blueprint', previewModalTemplateId);
+    } else {
+      const initialBp = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
+      if (initialBp && currentTab === 'templates' && !isInitialBlueprintSyncDone.current) {
+        params.set('blueprint', initialBp);
+      }
+    }
+
     // View Mode
     if (viewMode !== 'canvas') {
       params.set('view', viewMode);
@@ -1796,6 +1847,7 @@ function WorkspaceContent() {
     }
   }, [
     currentTab,
+    previewModalTemplateId,
     activeDiagram,
     viewMode,
     isInlineEditorOpen,
@@ -1803,7 +1855,8 @@ function WorkspaceContent() {
     isCreateModalOpen,
     isInspectModalOpen,
     inspectVersion,
-    tourStep
+    tourStep,
+    searchParams
   ]);
 
   // Fetch all diagrams on mount
@@ -9280,7 +9333,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
         const activeList = filteredTemplates.length > 0 ? filteredTemplates : allTemplates;
         const currentIdx = activeList.findIndex(t => t.combinedId === previewModalTemplateId);
-        const currentTemplate = activeList[currentIdx !== -1 ? currentIdx : 0] || allTemplates[0];
+        const currentTemplate = allTemplates.find(t => t.combinedId === previewModalTemplateId) || activeList[currentIdx !== -1 ? currentIdx : 0] || allTemplates[0];
         const masterXml = getDefaultXmlForArchitecture(currentTemplate.combinedId) || '';
 
         const handlePrev = () => {
@@ -9335,20 +9388,63 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         🌐 {currentTemplate.domain}
                       </span>
                       <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px] font-bold border border-slate-700 shadow-sm">
-                        Blueprint {currentIdx + 1} of {activeList.length} {hasActiveFilters ? `(Filtered of ${allTemplates.length})` : ''}
+                        Blueprint {currentIdx !== -1 ? currentIdx + 1 : 1} of {activeList.length} {hasActiveFilters ? `(Filtered of ${allTemplates.length})` : ''}
                       </span>
                     </div>
                     <h2 className="text-sm md:text-base font-extrabold text-white truncate flex items-center gap-2">
                       <span>{currentTemplate.diagramName}</span>
-                      <span className="text-xs text-teal-400 font-mono font-bold bg-slate-900/80 px-2 py-0.5 rounded border border-teal-500/30">
-                        {currentTemplate.combinedId.split('_')[0]}
-                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (typeof window !== 'undefined') {
+                            const shareUrl = `${window.location.origin}/workspace?tab=templates&blueprint=${encodeURIComponent(currentTemplate.combinedId)}`;
+                            navigator.clipboard.writeText(shareUrl);
+                            setCopiedShareLink(true);
+                            setTimeout(() => setCopiedShareLink(false), 2200);
+                          }
+                        }}
+                        className="text-xs text-teal-400 hover:text-teal-300 font-mono font-bold bg-slate-900/80 hover:bg-slate-800 px-2 py-0.5 rounded border border-teal-500/30 hover:border-teal-400/60 transition-colors cursor-pointer flex items-center gap-1"
+                        title="Click to copy unique blueprint permalink"
+                      >
+                        <span>{currentTemplate.combinedId.split('_')[0]}</span>
+                        <Copy className="w-2.5 h-2.5 opacity-60" />
+                      </button>
                     </h2>
                   </div>
                 </div>
 
-                {/* Right: Theme Toggle, Load Blueprint & Close */}
+                {/* Right: Theme Toggle, Share Link, Load Blueprint & Close */}
                 <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        const shareUrl = `${window.location.origin}/workspace?tab=templates&blueprint=${encodeURIComponent(currentTemplate.combinedId)}`;
+                        navigator.clipboard.writeText(shareUrl);
+                        setCopiedShareLink(true);
+                        setTimeout(() => setCopiedShareLink(false), 2200);
+                      }
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                      copiedShareLink
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                        : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border-slate-700'
+                    }`}
+                    title="Copy direct shareable link for this blueprint"
+                  >
+                    {copiedShareLink ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Link Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-teal-400" />
+                        <span>Share</span>
+                      </>
+                    )}
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => setPreviewModalTheme(t => t === 'light' ? 'dark' : 'light')}
