@@ -26,6 +26,166 @@ const PRODUCT_NAME_REPLACEMENTS: Array<[RegExp, string]> = [
   [/AlphaFold Pro/g, 'AlphaFold workload']
 ];
 
+type TopLevelCell = {
+  full: string;
+  attrs: string;
+  body: string;
+  id: string;
+  value: string;
+  style: string;
+  y: number;
+  height: number;
+  width: number;
+  vertex: boolean;
+  edge: boolean;
+  parent: string;
+  isHeaderCandidate: boolean;
+};
+
+function attr(source: string, name: string): string {
+  const match = source.match(new RegExp(`\\b${name}="([^"]*)"`, 'i'));
+  return match?.[1] || '';
+}
+
+function numericAttr(source: string, name: string): number | null {
+  const raw = attr(source, name);
+  if (raw === '') return null;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function isCanvasHeaderCandidate(cell: Omit<TopLevelCell, 'isHeaderCandidate'>): boolean {
+  if (!cell.vertex || cell.parent !== '1' || cell.y > 100) return false;
+
+  const id = cell.id.toLowerCase();
+  const knownHeaderId = /^(?:bp\d*|bp_badge|blueprint_badge|title|main_title|main_subtitle|subtitle|gcp_logo|google_cloud_logo|top_logo|top_gemini_badge|traits|pill\d+|header_logo|header_title|header_subtitle)$/.test(id);
+  if (knownHeaderId) return true;
+
+  const text = cell.value
+    .replace(/&lt;[^&]*?&gt;/g, ' ')
+    .replace(/&[a-z]+;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const headerTextSignal = cell.y <= 80 && /(\bof\s*50\b|\bmaster blueprint\b|\bgoogle cloud\b)/i.test(text);
+  if (headerTextSignal) return true;
+
+  const fontSizes = [
+    ...Array.from(cell.style.matchAll(/fontSize=(\d+(?:\.\d+)?)/gi), m => Number(m[1])),
+    ...Array.from(cell.value.matchAll(/font-size:\s*(\d+(?:\.\d+)?)px/gi), m => Number(m[1]))
+  ].filter(Number.isFinite);
+  const largestFont = fontSizes.length ? Math.max(...fontSizes) : 0;
+  return cell.y <= 70 && cell.width >= 360 && largestFont >= 17;
+}
+
+/**
+ * Catalog masters historically carried their own title/logo/blueprint-number banner.
+ * Batch 2 now provides that information in the outer catalog chrome, so keeping the
+ * inner banner creates a duplicate heading. Detect the compact top banner, remove it,
+ * and shift the real architecture body upward while preserving notation and geometry.
+ */
+function stripDuplicateCanvasHeader(xml: string): string {
+  if (!xml || xml.includes('pc-canvas-header-stripped')) return xml;
+
+  const cellRegex = /<mxCell\b([^>]*)>([\s\S]*?)<\/mxCell>/gi;
+  const cells: TopLevelCell[] = [];
+
+  for (const match of xml.matchAll(cellRegex)) {
+    const attrs = match[1] || '';
+    const body = match[2] || '';
+    const geometryMatch = body.match(/<mxGeometry\b([^>]*)\/?\s*>/i);
+    if (!geometryMatch) continue;
+
+    const geometryAttrs = geometryMatch[1] || '';
+    const y = numericAttr(geometryAttrs, 'y') ?? 0;
+    const height = numericAttr(geometryAttrs, 'height') ?? 0;
+    const width = numericAttr(geometryAttrs, 'width') ?? 0;
+    const baseCell = {
+      full: match[0],
+      attrs,
+      body,
+      id: attr(attrs, 'id'),
+      value: attr(attrs, 'value'),
+      style: attr(attrs, 'style'),
+      y,
+      height,
+      width,
+      vertex: /\bvertex="1"/i.test(attrs),
+      edge: /\bedge="1"/i.test(attrs),
+      parent: attr(attrs, 'parent')
+    };
+
+    cells.push({
+      ...baseCell,
+      isHeaderCandidate: isCanvasHeaderCandidate(baseCell)
+    });
+  }
+
+  const candidates = cells.filter(cell => cell.isHeaderCandidate);
+  if (candidates.length === 0) return xml;
+
+  const maxHeaderBottom = Math.max(...candidates.map(cell => cell.y + cell.height));
+  const bodyStartCandidates = cells
+    .filter(cell => cell.vertex && cell.parent === '1' && !cell.isHeaderCandidate && cell.y > maxHeaderBottom + 3)
+    .map(cell => cell.y);
+
+  if (bodyStartCandidates.length === 0) return xml;
+
+  const bodyStart = Math.min(...bodyStartCandidates);
+  if (bodyStart > 150 || bodyStart <= maxHeaderBottom) return xml;
+
+  const topMargin = 12;
+  const shift = Math.max(0, bodyStart - topMargin);
+  if (shift < 20) return xml;
+
+  let stripped = xml.replace(cellRegex, (full, attrs: string, body: string) => {
+    const geometryMatch = body.match(/<mxGeometry\b([^>]*)\/?\s*>/i);
+    if (!geometryMatch) return full;
+
+    const geometryAttrs = geometryMatch[1] || '';
+    const y = numericAttr(geometryAttrs, 'y') ?? 0;
+    const height = numericAttr(geometryAttrs, 'height') ?? 0;
+    const vertex = /\bvertex="1"/i.test(attrs);
+    const edge = /\bedge="1"/i.test(attrs);
+    const parent = attr(attrs, 'parent');
+
+    if (vertex && parent === '1' && y < bodyStart && y + height <= bodyStart + 1) {
+      return '';
+    }
+
+    let nextBody = body;
+    if (parent === '1' && vertex && y >= bodyStart) {
+      const newY = Math.max(topMargin, y - shift);
+      nextBody = nextBody.replace(
+        /(<mxGeometry\b[^>]*\by=")([^"]+)(")/i,
+        `$1${newY}$3`
+      );
+    }
+
+    if (parent === '1' && edge) {
+      nextBody = nextBody.replace(/(<mxPoint\b[^>]*\by=")([^"]+)(")/gi, (pointFull, prefix, rawY, suffix) => {
+        const pointY = Number(rawY);
+        if (!Number.isFinite(pointY) || pointY < bodyStart) return pointFull;
+        return `${prefix}${Math.max(topMargin, pointY - shift)}${suffix}`;
+      });
+    }
+
+    return `<mxCell${attrs}>${nextBody}</mxCell>`;
+  });
+
+  stripped = stripped.replace(/(<mxGraphModel\b[^>]*\bpageHeight=")([^"]+)(")/i, (full, prefix, rawHeight, suffix) => {
+    const pageHeight = Number(rawHeight);
+    if (!Number.isFinite(pageHeight)) return full;
+    return `${prefix}${Math.max(320, pageHeight - shift)}${suffix}`;
+  });
+
+  stripped = stripped.replace(
+    /(<mxGraphModel\b)/,
+    '<!-- pc-canvas-header-stripped -->\n$1'
+  );
+
+  return stripped;
+}
+
 function replaceLegacyProductNames(xml: string): string {
   return PRODUCT_NAME_REPLACEMENTS.reduce(
     (current, [pattern, replacement]) => current.replace(pattern, replacement),
@@ -154,7 +314,8 @@ export function applyBlueprintVisualSystem(xml: string, architectureId?: string 
   const fontFloor = notationSensitive ? 9 : 10;
   const strokeFloor = notationSensitive ? 1 : 1.2;
 
-  let polished = replaceLegacyProductNames(xml);
+  let polished = stripDuplicateCanvasHeader(xml);
+  polished = replaceLegacyProductNames(polished);
   polished = applyFontFloor(polished, fontFloor);
   polished = applyStrokeFloor(polished, strokeFloor);
   polished = polishVertices(polished, notationSensitive);
@@ -178,6 +339,7 @@ export type BlueprintVisualAudit = {
   legacyProductNameCount: number;
   edgeCount: number;
   polishedCardCount: number;
+  duplicateCanvasHeaderRemoved: boolean;
 };
 
 export function auditBlueprintVisualSystem(xml: string): BlueprintVisualAudit {
@@ -197,6 +359,7 @@ export function auditBlueprintVisualSystem(xml: string): BlueprintVisualAudit {
     unresolvedGcpStencilCount: Array.from(xml.matchAll(/shape=mxgraph\.gcp2\./gi)).length,
     legacyProductNameCount,
     edgeCount: Array.from(xml.matchAll(/\bedge="1"/gi)).length,
-    polishedCardCount: Array.from(xml.matchAll(/\bspacing=6;/gi)).length
+    polishedCardCount: Array.from(xml.matchAll(/\bspacing=6;/gi)).length,
+    duplicateCanvasHeaderRemoved: xml.includes('pc-canvas-header-stripped')
   };
 }
