@@ -10,6 +10,7 @@ import {
   getTechnicalArchitectureXml as rawGetTechnicalArchitectureXml
 } from './architectureTypes';
 import { applyBlueprintVisualSystem } from './blueprintVisualSystem';
+import { applyBlueprintTextContainment } from './blueprintTextContainment';
 import { buildEnterpriseReferenceArchitectureXml } from './masterBuilders/build_master_enterprise_reference';
 
 export type ArchitectureTypeOption = RawArchitectureTypeOption;
@@ -20,6 +21,13 @@ function isEnterpriseReferenceId(archId?: string | null): boolean {
   const raw = String(archId || '').toLowerCase();
   const normalized = rawNormalizeArchitectureId(archId);
   return normalized === ENTERPRISE_REFERENCE_ID || raw.includes('total_unified_system_view') || raw.includes('unified_system_view');
+}
+
+function polish(xml: string, architectureId?: string | null): string {
+  return applyBlueprintTextContainment(
+    applyBlueprintVisualSystem(xml, architectureId),
+    architectureId,
+  );
 }
 
 function normalizeCustomerFacingOption(option: RawArchitectureTypeOption): RawArchitectureTypeOption {
@@ -57,7 +65,7 @@ export function getDefaultXmlForArchitecture(
   const normalizedId = rawNormalizeArchitectureId(archId);
 
   if (isEnterpriseReferenceId(archId)) {
-    return applyBlueprintVisualSystem(buildEnterpriseReferenceArchitectureXml(), ENTERPRISE_REFERENCE_ID);
+    return polish(buildEnterpriseReferenceArchitectureXml(), ENTERPRISE_REFERENCE_ID);
   }
 
   const xml = rawGetDefaultXmlForArchitecture(archId, useCaseContext, userPrompt);
@@ -67,5 +75,5 @@ export function getDefaultXmlForArchitecture(
     return xml;
   }
 
-  return applyBlueprintVisualSystem(xml, normalizedId);
+  return polish(xml, normalizedId);
 }
