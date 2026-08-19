@@ -26,3 +26,5 @@ jobs:
         run: npx tsx scripts/check-corpus-duplicates.ts diagrams/latest
       - name: Geometry validation on golden outputs
         run: npm run validate:xml scratch/golden/*.xml
+      - name: Geometry quality gate (visual-quality tenet)
+        run: npx tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml

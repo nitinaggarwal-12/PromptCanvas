@@ -9,7 +9,9 @@
     "lint": "eslint",
     "validate": "npx tsx bin/validate-cli.ts",
     "validate:xml": "npx tsx bin/validate-cli.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "eval:geometry": "tsx evals/score_geometry.ts",
+    "eval:geometry:gate": "tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
