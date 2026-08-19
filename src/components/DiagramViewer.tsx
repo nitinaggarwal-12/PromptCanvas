@@ -38,6 +38,11 @@ export default function DiagramViewer({
   description,
   isLiveFlow = false,
 }: DiagramViewerProps) {
+  React.useEffect(() => {
+    document.body.classList.add('pc-diagram-viewer-active');
+    return () => document.body.classList.remove('pc-diagram-viewer-active');
+  }, []);
+
   const sanitizedXml = React.useMemo(() => {
     if (!xml) {
       return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
@@ -62,12 +67,10 @@ export default function DiagramViewer({
     }
   }, [xml, diagramType]);
 
-  // Derive template title (e.g., Serverless Web Application (GCP), DevOps CI/CD Pipeline, etc.)
   const templateName = React.useMemo(() => {
     return getTemplateTitle(diagramType || diagramId);
   }, [diagramType, diagramId]);
 
-  // Derive comprehensive architecture metadata with User Dynamic Overrides First
   const meta = React.useMemo(() => {
     const defaultMeta = getArchitectureMeta(diagramId || diagramType);
     const userTitle = (useCaseName && !/^\d+\.\s/.test(useCaseName)) ? useCaseName : (defaultMeta.title || templateName);
@@ -86,7 +89,6 @@ export default function DiagramViewer({
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
-  // Dynamically size container frame based on aspect ratio
   let containerDimensions = 'w-full h-full max-w-full';
 
   if (aspectRatioId === '1:1') {
@@ -111,7 +113,6 @@ export default function DiagramViewer({
   const textColor = bgTheme === 'light' ? '#0F172A' : '#F8FAFC';
   const borderColor = bgTheme === 'light' ? 'rgba(226, 232, 240, 0.9)' : 'rgba(51, 65, 85, 0.6)';
 
-  // Construct isolated HTML document for iframe with full Business Use Case Panel & Training Summary
   const iframeHtml = `
     <!DOCTYPE html>
     <html>
@@ -225,6 +226,8 @@ export default function DiagramViewer({
           padding: 4px;
           box-sizing: border-box;
           overflow: auto;
+          overscroll-behavior: contain;
+          -webkit-overflow-scrolling: touch;
         }
         .mxgraph {
           width: 100%;
@@ -241,6 +244,25 @@ export default function DiagramViewer({
         }
         .geEditor {
           background-color: transparent !important;
+        }
+        @media (max-width: 1280px), (pointer: coarse) {
+          .canvas-container {
+            padding: 8px 8px 24px 8px;
+          }
+          .mxgraph {
+            width: 1320px;
+            min-width: 1320px;
+            min-height: 0;
+            align-items: flex-start;
+            justify-content: flex-start;
+          }
+          .mxgraph > svg, .mxgraph > div {
+            width: 1320px !important;
+            min-width: 1320px !important;
+            max-width: none !important;
+            height: auto !important;
+            margin: 0 !important;
+          }
         }
         ::-webkit-scrollbar {
           width: 4px;
@@ -269,7 +291,6 @@ export default function DiagramViewer({
       </div>
       
       <script type="text/javascript">
-        // Safe Latin1 & UTF-8 btoa / atob wrappers to prevent "Failed to execute 'btoa' on 'Window'"
         if (typeof window.btoa === 'function') {
           const _origBtoa = window.btoa.bind(window);
           window.btoa = function(str) {
@@ -303,7 +324,7 @@ export default function DiagramViewer({
           };
         }
 
-        console.log('[Iframe Diagnostic] 🚀 Iframe document parsed with Business Use Case context.');
+        console.log('[Iframe Diagnostic] 🚀 Iframe document parsed with responsive canvas rules.');
         window.onerror = function(message, source, lineno, colno, error) {
           console.error('[Iframe JS Error] ❌', message, 'at', source, ':', lineno);
           return false;
@@ -311,19 +332,21 @@ export default function DiagramViewer({
 
         const storageKey = 'pc_canvas_scroll_' + '${diagramId || 'default'}';
         const canvasContainer = document.querySelector('.canvas-container');
+        const compactViewport = window.matchMedia('(max-width: 1280px)').matches || window.matchMedia('(pointer: coarse)').matches;
 
         if (canvasContainer) {
-          // Restore saved scroll position
           try {
             const savedPos = sessionStorage.getItem(storageKey);
             if (savedPos) {
               const { left, top } = JSON.parse(savedPos);
               canvasContainer.scrollLeft = left || 0;
-              canvasContainer.scrollTop = top || 0;
+              canvasContainer.scrollTop = compactViewport ? 0 : (top || 0);
+            } else if (compactViewport) {
+              canvasContainer.scrollLeft = 0;
+              canvasContainer.scrollTop = 0;
             }
           } catch(e) {}
 
-          // Save scroll position on scroll
           canvasContainer.addEventListener('scroll', function() {
             try {
               sessionStorage.setItem(storageKey, JSON.stringify({
@@ -356,6 +379,9 @@ export default function DiagramViewer({
           fit: true,
           'max-scale': 4.0
         })};
+        if (compactViewport) {
+          configObj.fit = false;
+        }
         configObj.xml = getCleanGraphXml(configObj.xml);
 
         const container = document.getElementById('diagram-container');
@@ -373,14 +399,21 @@ export default function DiagramViewer({
           script.onload = function() {
             console.log('[Iframe Diagnostic] ✅ Draw.io viewer script loaded successfully.');
             if (canvasContainer) {
-              try {
-                const savedPos = sessionStorage.getItem(storageKey);
-                if (savedPos) {
-                  const { left, top } = JSON.parse(savedPos);
-                  canvasContainer.scrollLeft = left || 0;
-                  canvasContainer.scrollTop = top || 0;
+              requestAnimationFrame(function() {
+                if (compactViewport) {
+                  canvasContainer.scrollTop = 0;
+                  canvasContainer.scrollLeft = 0;
+                } else {
+                  try {
+                    const savedPos = sessionStorage.getItem(storageKey);
+                    if (savedPos) {
+                      const { left, top } = JSON.parse(savedPos);
+                      canvasContainer.scrollLeft = left || 0;
+                      canvasContainer.scrollTop = top || 0;
+                    }
+                  } catch(e) {}
                 }
-              } catch(e) {}
+              });
             }
           };
           
