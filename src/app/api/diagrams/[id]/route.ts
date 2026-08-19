@@ -15,9 +15,43 @@ export async function GET(request: Request, { params }: RouteParams) {
   try {
     const user = await getAuthenticatedUser();
     const { id } = await params;
-    
+
+    const isCatalogBlueprint = id.startsWith('bp_');
+    const blueprintArchitectureId = isCatalogBlueprint ? id.slice(3) : null;
+    const liveMasterXml = blueprintArchitectureId
+      ? getDefaultXmlForArchitecture(blueprintArchitectureId)
+      : null;
+
     const diagram = await getDiagram(id, user?.id);
+
+    // Catalog blueprint deep links must not depend on a persisted/cached DB row.
+    // If the bp_* cache entry is missing, synthesize a read-only runtime diagram from
+    // the current code-owned master so refresh/deep-link navigation still works.
     if (!diagram) {
+      if (isCatalogBlueprint && liveMasterXml) {
+        const now = new Date().toISOString();
+        return NextResponse.json({
+          id,
+          name: blueprintArchitectureId || 'Catalog Blueprint',
+          architecture_type: blueprintArchitectureId,
+          is_private: false,
+          created_at: now,
+          updated_at: now,
+          access_level: 'Viewer',
+          xml_content: liveMasterXml,
+          versions: [{
+            id: `${id}__live_master`,
+            diagram_id: id,
+            version_number: 1,
+            xml_content: liveMasterXml,
+            comment: 'Current catalog master',
+            created_by: 'System',
+            created_at: now,
+            architecture_type: blueprintArchitectureId
+          }]
+        });
+      }
+
       return NextResponse.json(
         { error: `Diagram with ID ${id} not found` },
         { status: 404 }
@@ -29,16 +63,12 @@ export async function GET(request: Request, { params }: RouteParams) {
     // Catalog blueprint records (bp_*) are cached DB representations of code-owned masters.
     // Always render the current code master as the latest version so deep links never show
     // a stale/corrupted DB snapshot after a master is repaired. Historical versions remain intact.
-    const isCatalogBlueprint = id.startsWith('bp_');
-    const liveMasterXml = isCatalogBlueprint
-      ? getDefaultXmlForArchitecture(id.slice(3))
-      : null;
-
     let versions = rawVersions.map((v: any, index: number) => {
       if (index === 0 && liveMasterXml) {
         return {
           ...v,
           xml_content: liveMasterXml,
+          architecture_type: blueprintArchitectureId || v.architecture_type,
           comment: v.comment || 'Current catalog master'
         };
       }
@@ -68,12 +98,14 @@ export async function GET(request: Request, { params }: RouteParams) {
         xml_content: liveMasterXml,
         comment: 'Current catalog master',
         created_by: 'System',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        architecture_type: blueprintArchitectureId
       }];
     }
 
     return NextResponse.json({
       ...diagram,
+      architecture_type: blueprintArchitectureId || diagram.architecture_type,
       xml_content: liveMasterXml || diagram.xml_content,
       versions
     });
