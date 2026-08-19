@@ -1,132 +1,306 @@
+/**
+ * 🏛️ MASTER BUILDER: ENTERPRISE MULTI-FLOW ZERO-TRUST & COGNITIVE PLATFORM ARCHITECTURE
+ * Full-Bleed 1360x720 Widescreen Architecture with 5 Decision Diamonds and Multi-Flow Legend
+ */
+
 export function buildMultiFlowZeroTrustPlatformXml(): string {
   return `<mxfile host="embed.diagrams.net">
   <diagram id="multiflow_zerotrust_platform" name="Enterprise Multi-Flow Zero-Trust &amp; Cognitive Platform Architecture">
-    <mxGraphModel dx="1760" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="1050" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1400" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="720" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ==================== HEADER BANNER ==================== -->
-        <mxCell id="top_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;🛡️ 🔒&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="14" width="40" height="40" as="geometry"/>
+        <!-- ==================== TOP TITLE BANNER & MULTI-FLOW LEGEND ==================== -->
+        <mxCell id="main_title_box" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="25" y="8" width="1315" height="44" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;ENTERPRISE MULTI-FLOW ZERO-TRUST &amp;amp; COGNITIVE PLATFORM ARCHITECTURE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="85" y="12" width="1350" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:600;&quot;&gt;Multi-Layer Network Flow: BeyondCorp Device Attestation, Cloud Armor WAF, Private GKE Istio Mesh, Model Armor &amp;amp; Confidential BigQuery Lakehouse&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="85" y="36" width="1350" height="20" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.7 Pro&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Cognitive Engine&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1540" y="14" width="190" height="44" as="geometry"/>
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:14px;color:#0F172A;&quot;&gt;Enterprise Multi-Flow Zero-Trust &amp;amp; Cognitive Platform Architecture&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Deep Technical Blueprint: Multi-Layer Network Flow, Process Control, Agentic Dataflow &amp;amp; 5 Decision Diamonds&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="10" width="700" height="40" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 1: INGRESS & EDGE PERIMETER ==================== -->
+        <!-- Top Right Multi-Flow Legend -->
+        <mxCell id="legend_box" value="&lt;table style=&quot;font-size:8px;color:#334155;line-height:1.2;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;color:#0284C7;&quot;&gt;&lt;b&gt;━━ Dataflow&lt;/b&gt; (Payloads)&lt;/td&gt;&lt;td style=&quot;padding-left:10px;color:#7C3AED;&quot;&gt;&lt;b&gt;━━ Network Flow&lt;/b&gt; (mTLS/PSC)&lt;/td&gt;&lt;td style=&quot;padding-left:10px;color:#D97706;&quot;&gt;&lt;b&gt;┅┅ Control Flow&lt;/b&gt; (Orchestration)&lt;/td&gt;&lt;td style=&quot;padding-left:10px;color:#10B981;&quot;&gt;&lt;b&gt;···· Telemetry Flow&lt;/b&gt; (Audit)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="12" width="550" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== TIER 1: INGRESS & EDGE PERIMETER (x=25, w=310, h=650) ==================== -->
         <mxCell id="box_tier1" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#FCA5A5;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="75" width="380" height="910" as="geometry"/>
+          <mxGeometry x="25" y="58" width="310" height="650" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_tier1_hdr" value="&lt;b style=&quot;font-size:12px;color:#991B1B;&quot;&gt;🛡️ TIER 1: ZERO-TRUST INGRESS &amp;amp; EDGE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="40" y="82" width="370" height="25" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_clients" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;[1.1] Client &amp;amp; Partner Ingress&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Managed Workstations (FIDO2 Keys)&lt;br&gt;• Partner B2B API Clients (TLS 1.3)&lt;br&gt;• Mobile Enterprise SDKs (mTLS :443)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="55" y="125" width="340" height="110" as="geometry"/>
+        <mxCell id="lbl_tier1_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#991B1B;&quot;&gt;TIER 1: ZERO-TRUST INGRESS &amp;amp; EDGE PERIMETER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="62" width="300" height="20" as="geometry"/>
         </mxCell>
 
-        <mxCell id="diamond_posture" value="&lt;b style=&quot;font-size:13px;color:#991B1B;&quot;&gt;BeyondCorp Attested?&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Endpoint Verification Check&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="115" y="255" width="220" height="90" as="geometry"/>
+        <!-- 1.1 Ingress Clients Card -->
+        <mxCell id="node_clients" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[1.1] Client &amp;amp; Partner Ingress&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Web / Mobile Clients (HTTPS :443)&lt;br&gt;• Managed Workstations (FIDO2 Keys)&lt;br&gt;• Partner B2B API Clients (TLS 1.3)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="35" y="90" width="290" height="65" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_cloud_armor" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;[1.2] Cloud Armor WAF &amp;amp; Global LB&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Layer 7 DDoS Mitigation &amp;amp; Geo-Fencing&lt;br&gt;• OWASP Top 10 Pre-configured Rules&lt;br&gt;• Global Anycast Ingress VIP&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="55" y="365" width="340" height="110" as="geometry"/>
+        <!-- 1.2 DECISION DIAMOND 1: BeyondCorp Device Posture -->
+        <mxCell id="diamond_posture" value="&lt;b style=&quot;font-size:9px;color:#991B1B;&quot;&gt;[◆ D1] BeyondCorp&lt;br&gt;Device Posture&lt;br&gt;Attested?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="185" width="190" height="70" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 2: PRIVATE GKE & SERVICE MESH ==================== -->
-        <mxCell id="box_tier2" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#60A5FA;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="455" y="75" width="400" height="910" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_tier2_hdr" value="&lt;b style=&quot;font-size:12px;color:#1D4ED8;&quot;&gt;🔒 TIER 2: PRIVATE GKE &amp;amp; ISTIO MESH&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="460" y="82" width="390" height="25" as="geometry"/>
+        <!-- 1.3 Cloud Armor WAF & Global LB -->
+        <mxCell id="node_cloud_armor" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[1.2] Cloud Armor &amp;amp; Global LB&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Layer 7 DDoS Mitigation &amp;amp; Geo-Fencing&lt;br&gt;• OWASP Top 10 Pre-configured Rules&lt;br&gt;• Global Anycast IP Ingress (:443)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="35" y="285" width="290" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_envoy" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#1D4ED8;&quot;&gt;[2.1] Istio Envoy Ingress Gateway&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;line-height:1.4;padding-top:4px;&quot;&gt;• Strict mTLS 1.3 Termination (Port 8443)&lt;br&gt;• SPIFFE Workload ID Verification&lt;br&gt;• Default Deny-All AuthorizationPolicy&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;strokeWidth=1.8;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="475" y="125" width="360" height="120" as="geometry"/>
+        <!-- 1.4 DECISION DIAMOND 2: WAF Threat Gate -->
+        <mxCell id="diamond_waf" value="&lt;b style=&quot;font-size:9px;color:#92400E;&quot;&gt;[◆ D2] Threat / SQLi&lt;br&gt;Rate Limit&lt;br&gt;Violated?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="385" width="190" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="diamond_model_armor" value="&lt;b style=&quot;font-size:13px;color:#4C1D95;&quot;&gt;Model Armor Safe?&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Injection &amp;amp; PII Leak Screening&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="545" y="265" width="220" height="90" as="geometry"/>
+        <!-- 1.5 Identity-Aware Proxy (IAP) -->
+        <mxCell id="node_iap_jwt" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[1.3] Identity-Aware Proxy (IAP)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Context-Aware Access Policy Enforcement&lt;br&gt;• Generates 15-Minute Signed OIDC JWT&lt;br&gt;• Zero Public IP Exposure to Backend&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="35" y="485" width="290" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_gke_pods" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;[2.2] GKE Shielded Workload Pods&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Binary Authorization Signed Containers&lt;br&gt;• Read-Only Root Filesystems &amp;amp; Seccomp Profiles&lt;br&gt;• Workload Identity Federation (Zero Secret Keys)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="475" y="375" width="360" height="115" as="geometry"/>
+        <!-- 1.6 Threat Quarantine Sink -->
+        <mxCell id="node_quarantine" value="&lt;b style=&quot;font-size:9.5px;color:#991B1B;&quot;&gt;🚨 Threat Quarantine / SIEM Sink&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;HTTP 403 Forbidden &amp;amp; Chronicle SIEM Event&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
+          <mxGeometry x="35" y="590" width="290" height="50" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 3: VERTEX AI & GEMINI REASONING ==================== -->
-        <mxCell id="box_tier3" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FDE047;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="895" y="75" width="410" height="910" as="geometry"/>
+        <!-- ==================== TIER 2: PRIVATE GKE & ISTIO MESH (x=350, w=315, h=650) ==================== -->
+        <mxCell id="box_tier2" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="350" y="58" width="315" height="650" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_tier3_hdr" value="&lt;b style=&quot;font-size:12px;color:#A16207;&quot;&gt;✨ TIER 3: VERTEX AI &amp;amp; GEMINI REASONING&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="900" y="82" width="400" height="25" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_gemini_pro" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#854D0E;&quot;&gt;✨ Gemini 3.7 Pro Reasoning Cluster&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#713F12;line-height:1.4;padding-top:4px;&quot;&gt;• Multi-Turn Complex Cognitive Synthesis&lt;br&gt;• Strict JSON Schema Validation &amp;amp; Function Calling&lt;br&gt;• ReAct Multi-Step Tool Invocation Loop&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF08A;strokeColor=#EAB308;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="915" y="125" width="370" height="120" as="geometry"/>
+        <mxCell id="lbl_tier2_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#1E3A8A;&quot;&gt;TIER 2: PRIVATE GKE &amp;amp; ISTIO MESH (10.100.1.0/24)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="355" y="62" width="305" height="20" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_rag_pgvector" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#854D0E;&quot;&gt;AlloyDB pgvector Enterprise Knowledge RAG&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#713F12;line-height:1.4;padding-top:4px;&quot;&gt;• 768-dim Vector Embeddings with ScaNN Index&lt;br&gt;• Real-time Context Retrieval &amp;amp; Hybrid Search&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=6;fillColor=#FFFFFF;strokeColor=#EAB308;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="915" y="270" width="370" height="115" as="geometry"/>
+        <!-- 2.1 Istio Envoy Ingress Gateway -->
+        <mxCell id="node_envoy" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[2.1] Istio Envoy Ingress Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Strict mTLS 1.3 Termination (Port 8443)&lt;br&gt;• SPIFFE Workload ID Verification&lt;br&gt;• Default Deny All AuthorizationPolicy&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="360" y="90" width="295" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 4: SECURE DATA LAKEHOUSE & AUDIT ==================== -->
-        <mxCell id="box_tier4" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1345" y="75" width="375" height="910" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_tier4_hdr" value="&lt;b style=&quot;font-size:12px;color:#6B21A8;&quot;&gt;🗄️ TIER 4: CONFIDENTIAL DATA &amp;amp; SIEM&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="1350" y="82" width="365" height="25" as="geometry"/>
+        <!-- 2.2 DECISION DIAMOND 3: Model Armor AI Safety Gate -->
+        <mxCell id="diamond_model_armor" value="&lt;b style=&quot;font-size:9px;color:#4C1D95;&quot;&gt;[◆ D3] Model Armor&lt;br&gt;Prompt Injection /&lt;br&gt;PII Leak Flagged?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="412" y="185" width="190" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_bigquery_confidential" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#6B21A8;&quot;&gt;BigQuery Confidential Lakehouse (CMEK)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Hardware HSM Key Encryption (Cloud KMS)&lt;br&gt;• Row-Level &amp;amp; Column-Level Security Policies&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C084FC;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1360" y="125" width="345" height="110" as="geometry"/>
+        <!-- 2.3 GKE Workload Pods -->
+        <mxCell id="node_gke_pods" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[2.2] GKE Hardened Workload Pods&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Shielded Nodes &amp;amp; Binary Authorization&lt;br&gt;• Read-Only Root Filesystems &amp;amp; Seccomp&lt;br&gt;• Workload Identity (Zero Long-Lived Keys)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="360" y="285" width="295" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_chronicle_siem" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#6B21A8;&quot;&gt;Chronicle SIEM &amp;amp; Security Command Center&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Real-time Anomaly Detection &amp;amp; Threat Graph&lt;br&gt;• Automated Incident Response Playbooks&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1360" y="260" width="345" height="115" as="geometry"/>
+        <!-- 2.4 Cloud KMS CMEK Hardware HSM -->
+        <mxCell id="node_hsm_kms" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[2.3] Cloud KMS Hardware HSM (FIPS 140-2)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Customer-Managed Encryption Keys (CMEK)&lt;br&gt;• Envelope Encryption for Pod Secrets &amp;amp; DBs&lt;br&gt;• Automated 90-Day Key Rotation&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="360" y="385" width="295" height="70" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors -->
-        <mxCell id="e1" value="1. TLS Ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_clients" target="diamond_posture">
+        <!-- 2.5 OpenTelemetry Collector Sidecars -->
+        <mxCell id="node_otel" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[2.4] OpenTelemetry Mesh Collector&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Distributed Tracing (W3C TraceContext)&lt;br&gt;• SLI / SLO Error Budget Engine&lt;br&gt;• Streams Telemetry to Cloud Monitoring (:4317)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="360" y="485" width="295" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 2.6 DLP Redaction & Prompt Rewriter -->
+        <mxCell id="node_sanitizer" value="&lt;b style=&quot;font-size:9.5px;color:#D97706;&quot;&gt;🛡️ DLP Redaction &amp;amp; Prompt Rewriter&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Cloud DLP masks PII tokens before model inference&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
+          <mxGeometry x="360" y="590" width="295" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== TIER 3: COGNITIVE AI & AGENTS (x=680, w=320, h=650) ==================== -->
+        <mxCell id="box_tier3" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="680" y="58" width="320" height="650" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_tier3_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#6B21A8;&quot;&gt;TIER 3: COGNITIVE AI REASONING &amp;amp; MULTI-AGENT MESH&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="685" y="62" width="310" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.1 Gemini 3.7 Flash Super-Orchestrator -->
+        <mxCell id="node_gemini_brain" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.1] Gemini 3.7 Flash Super-Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• LangGraph DAG State Machine &amp;amp; Checkpoints&lt;br&gt;• Dynamic Multi-Modal Synthesis (Text, Vision)&lt;br&gt;• Model Context Protocol (MCP) Tool Calling&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="690" y="90" width="300" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.2 Vertex AI Vector Search -->
+        <mxCell id="node_vector_search" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.2] Vertex AI Vector Search &amp;amp; BigLake&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• 1536-dim text-embedding-004 ScaNN Index&lt;br&gt;• Sub-10ms Approximate Nearest Neighbor&lt;br&gt;• VPC-SC Air-Gapped Private Service Connect&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#EFF6FF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="690" y="185" width="300" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.3 DECISION DIAMOND 4: Confidence & Quality Gate -->
+        <mxCell id="diamond_confidence" value="&lt;b style=&quot;font-size:9px;color:#065F46;&quot;&gt;[◆ D4] AI Confidence&lt;br&gt;Score ≥ 90% &amp;amp;&lt;br&gt;Zero Hallucination?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="745" y="285" width="190" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.4 Autonomous Tool Execution Pool -->
+        <mxCell id="node_mcp_tools" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.3] Cloud Run MCP Micro-Agents Pool&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• SQL Query Agent, Code Agent, Doc Agent&lt;br&gt;• Ephemeral Containers with mTLS Mutual Auth&lt;br&gt;• Granular IAM Role Least-Privilege Scope&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="690" y="385" width="300" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.5 Human-in-the-Loop Review Gate -->
+        <mxCell id="node_hitl" value="&lt;b style=&quot;font-size:9.5px;color:#92400E;&quot;&gt;👨‍💼 [3.4] Human-in-the-Loop (HITL) Review Gate&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Manual SME approval required before financial dispatch&lt;br&gt;21 CFR Part 11 Electronic Signature Audit Trail&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="690" y="485" width="300" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.6 MemoryStore Redis Session Cache -->
+        <mxCell id="node_redis_state" value="&lt;b style=&quot;font-size:9px;color:#475569;&quot;&gt;⚡ Memorystore for Redis Session Cache&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Sub-millisecond multi-agent state checkpointing&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="690" y="590" width="300" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== TIER 4: DATA FABRIC & RESILIENCE (x=1015, w=325, h=650) ==================== -->
+        <mxCell id="box_tier4" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="58" width="325" height="650" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_tier4_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#166534;&quot;&gt;TIER 4: SECURE DATA FABRIC &amp;amp; RESILIENCE (10.200.2.0/24)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="62" width="315" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.1 Cloud SQL PSA & AlloyDB AI -->
+        <mxCell id="node_cloud_sql" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.1] Cloud SQL PSA (Private Service Access)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Highly Available PostgreSQL (Port 5432)&lt;br&gt;• Row-Level Security (RLS) Multi-Tenant Policies&lt;br&gt;• Automatic Point-in-Time Recovery (PITR)&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="90" width="305" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.2 BigQuery BigLake & Dataplex -->
+        <mxCell id="node_bigquery_lake" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.2] BigQuery BigLake &amp;amp; Dataplex&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Medallion Tiering (Bronze, Silver, Gold)&lt;br&gt;• Column-Level Crypto Masking &amp;amp; ABAC Tags&lt;br&gt;• WORM Immutable 7-Year Compliance Vault&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="185" width="305" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.3 DECISION DIAMOND 5: DataOps Circuit Breaker -->
+        <mxCell id="diamond_circuit_breaker" value="&lt;b style=&quot;font-size:9px;color:#92400E;&quot;&gt;[◆ D5] Data Anomaly&lt;br&gt;Drift &gt; 5% or Schema&lt;br&gt;Violation Detected?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1082" y="285" width="190" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.4 Real-Time Pub/Sub & Dataflow -->
+        <mxCell id="node_streaming_bus" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.3] Cloud Pub/Sub &amp;amp; Dataflow Beam&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Exactly-Once Processing (100k msg/sec)&lt;br&gt;• Avro Schema Registry &amp;amp; DLQ Error Topics&lt;br&gt;• Real-Time Sliding Window Aggregations&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="385" width="305" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.5 Rollback & SRE Alert -->
+        <mxCell id="node_rollback_alert" value="&lt;b style=&quot;font-size:9.5px;color:#991B1B;&quot;&gt;🛑 Circuit Breaker Trip / ETL Halt&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#64748B;&quot;&gt;Halts ingestion, routes to DLQ &amp;amp; pages On-Call SRE&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;strokeDasharray=3 3;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="485" width="305" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.6 Multi-Region DR Standby -->
+        <mxCell id="node_dr_standby" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;[4.4] Multi-Region DR Standby (us-west1)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Cross-Region Asynchronous DB Replica (RPO &lt; 1m, RTO &lt; 15m)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#059669;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="590" width="305" height="50" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== CONNECTOR WIRES WITH HIGH-CONTRAST PILLS ==================== -->
+
+        <!-- E1: Client to Posture Diamond (Network Wire) -->
+        <mxCell id="edge_c_posture" value="1. HTTPS :443" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_clients" target="diamond_posture">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e2" value="2. [Valid Posture]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="diamond_posture" target="node_cloud_armor">
+        <!-- E2: Posture PASS -> Cloud Armor -->
+        <mxCell id="edge_posture_armor" value="Pass: Trusted" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="diamond_posture" target="node_cloud_armor">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e3" value="3. mTLS Gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_cloud_armor" target="node_envoy">
+        <!-- E3: Posture FAIL -> Quarantine -->
+        <mxCell id="edge_posture_fail" value="Fail: Untrusted" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;dashPattern=5 3;strokeWidth=1.5;strokeColor=#DC2626;labelBackgroundColor=#FFFFFF;labelBorderColor=#DC2626;fontColor=#DC2626;fontStyle=1;fontSize=8.5;" edge="1" parent="1" source="diamond_posture" target="node_quarantine">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="305" y="220"/>
+              <mxPoint x="305" y="615"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- E4: Cloud Armor to WAF Diamond -->
+        <mxCell id="edge_armor_waf" value="2. L7 Threat Scan" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_cloud_armor" target="diamond_waf">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e4" value="4. Screen Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_envoy" target="diamond_model_armor">
+        <!-- E5: WAF PASS -> IAP -->
+        <mxCell id="edge_waf_iap" value="Pass: Clean" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="diamond_waf" target="node_iap_jwt">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e5" value="5. [Passed Safety]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="diamond_model_armor" target="node_gke_pods">
+        <!-- E6: WAF FAIL -> Quarantine -->
+        <mxCell id="edge_waf_fail" value="Drop: Attack" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;dashPattern=5 3;strokeWidth=1.5;strokeColor=#DC2626;labelBackgroundColor=#FFFFFF;labelBorderColor=#DC2626;fontColor=#DC2626;fontStyle=1;fontSize=8.5;" edge="1" parent="1" source="diamond_waf" target="node_quarantine">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e6" value="6. Invoke Reasoner" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FDE68A;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_gke_pods" target="node_gemini_pro">
+        <!-- E7: IAP to Istio Envoy (Cross-Tier Wire) -->
+        <mxCell id="edge_iap_envoy" value="3. Signed OIDC JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#7C3AED;labelBackgroundColor=#FFFFFF;labelBorderColor=#7C3AED;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_iap_jwt" target="node_envoy">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="520"/>
+              <mxPoint x="340" y="122"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- E8: Envoy to Model Armor Diamond -->
+        <mxCell id="edge_envoy_armor" value="4. Prompt Intercept" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.8;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_envoy" target="diamond_model_armor">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e7" value="7. Vector Context" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FDE68A;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_gemini_pro" target="node_rag_pgvector">
+        <!-- E9: Model Armor PASS -> Gemini Brain -->
+        <mxCell id="edge_armor_gemini" value="Pass: Safe Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.8;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="diamond_model_armor" target="node_gemini_brain">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="220"/>
+              <mxPoint x="670" y="122"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- E10: Model Armor FLAG -> Sanitizer -->
+        <mxCell id="edge_armor_sanitize" value="Flagged: Redact PII" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;dashPattern=5 3;strokeWidth=1.5;strokeColor=#D97706;labelBackgroundColor=#FFFFFF;labelBorderColor=#D97706;fontColor=#D97706;fontStyle=1;fontSize=8.5;" edge="1" parent="1" source="diamond_model_armor" target="node_sanitizer">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="625" y="220"/>
+              <mxPoint x="625" y="615"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- E11: Gemini Brain to Vector Search -->
+        <mxCell id="edge_gemini_vector" value="5. ANN Retrieval" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.8;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_gemini_brain" target="node_vector_search">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e8" value="8. Query Data" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7E22CE;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_gemini_pro" target="node_bigquery_confidential">
+        <!-- E12: Vector Search to Confidence Diamond -->
+        <mxCell id="edge_vector_conf" value="6. Synthesized Output" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.8;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_vector_search" target="diamond_confidence">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e9" value="9. Audit Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7E22CE;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_gke_pods" target="node_chronicle_siem">
+        <!-- E13: Confidence PASS -> Autonomous MCP Tools -->
+        <mxCell id="edge_conf_mcp" value="High Conf (≥90%): Auto-Execute" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;dashPattern=5 3;strokeWidth=1.5;strokeColor=#D97706;labelBackgroundColor=#FFFFFF;labelBorderColor=#D97706;fontColor=#0F172A;fontStyle=1;fontSize=8.5;" edge="1" parent="1" source="diamond_confidence" target="node_mcp_tools">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- E14: Confidence LOW -> HITL Review Gate -->
+        <mxCell id="edge_conf_hitl" value="Low Conf (&lt;90%): Escalate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;dashPattern=5 3;strokeWidth=1.5;strokeColor=#D97706;labelBackgroundColor=#FFFFFF;labelBorderColor=#D97706;fontColor=#D97706;fontStyle=1;fontSize=8.5;" edge="1" parent="1" source="diamond_confidence" target="node_hitl">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="975" y="320"/>
+              <mxPoint x="975" y="520"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- E15: MCP Tools to Cloud SQL PSA -->
+        <mxCell id="edge_mcp_sql" value="7. PSA :5432" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.8;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_mcp_tools" target="node_cloud_sql">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1005" y="420"/>
+              <mxPoint x="1005" y="122"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- E16: Cloud SQL to BigLake -->
+        <mxCell id="edge_sql_lake" value="8. CDC Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.8;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_cloud_sql" target="node_bigquery_lake">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- E17: BigLake to Circuit Breaker Diamond -->
+        <mxCell id="edge_lake_breaker" value="9. DataOps Audit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.8;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="node_bigquery_lake" target="diamond_circuit_breaker">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- E18: Circuit Breaker PASS -> Streaming Bus -->
+        <mxCell id="edge_breaker_stream" value="Clean: Commit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=1.8;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=9;" edge="1" parent="1" source="diamond_circuit_breaker" target="node_streaming_bus">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- E19: Circuit Breaker ANOMALY -> Rollback Halt -->
+        <mxCell id="edge_breaker_halt" value="Anomaly: Trip Breaker" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;dashPattern=5 3;strokeWidth=1.5;strokeColor=#DC2626;labelBackgroundColor=#FFFFFF;labelBorderColor=#DC2626;fontColor=#DC2626;fontStyle=1;fontSize=8.5;" edge="1" parent="1" source="diamond_circuit_breaker" target="node_rollback_alert">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 

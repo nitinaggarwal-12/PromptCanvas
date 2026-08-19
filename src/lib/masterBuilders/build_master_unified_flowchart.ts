@@ -37,7 +37,7 @@ const SVG_PAGERDUTY = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w
 export function buildMasterUnifiedFlowchartXml(): string {
   return `<mxfile host="embed.diagrams.net">
   <diagram id="unified_flowchart" name="Unified Enterprise Flowchart">
-    <mxGraphModel dx="1780" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="1500" background="#FFFFFF">
+    <mxGraphModel dx="1460" dy="1420" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1460" pageHeight="1420" background="#FFFFFF">
   <root>
     <mxCell id="0" />
     <mxCell id="1" parent="0" />
@@ -46,11 +46,11 @@ export function buildMasterUnifiedFlowchartXml(): string {
     <!-- CANVAS FRAME & HEADER BANNER (PERFECT EDGE-TO-EDGE SYMMETRY)              -->
     <!-- ========================================================================= -->
     <mxCell id="canvas_outer_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=2;" vertex="1" parent="1">
-      <mxGeometry x="20" y="15" width="1740" height="1460" as="geometry" />
+      <mxGeometry x="20" y="15" width="1420" height="1380" as="geometry" />
     </mxCell>
 
     <mxCell id="header_banner" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1">
-      <mxGeometry x="40" y="25" width="1700" height="60" as="geometry" />
+      <mxGeometry x="40" y="25" width="1380" height="60" as="geometry" />
     </mxCell>
 
     <mxCell id="header_logo" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=none;imageAspect=1;aspect=fixed;image=${SVG_GCP_LOGO};" vertex="1" parent="1">

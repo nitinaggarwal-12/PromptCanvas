@@ -1,120 +1,246 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 export function buildZeroTrustMeshXml(): string {
   return `<mxfile host="embed.diagrams.net">
   <diagram id="zero_trust_mesh" name="Zero-Trust Network Mesh Architecture">
-    <mxGraphModel dx="1760" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="1050" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ==================== TOP TITLE BANNER ==================== -->
-        <mxCell id="top_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;🛡️ 🔒&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="14" width="40" height="40" as="geometry"/>
+        <!-- TOP TITLE BANNER -->
+        <mxCell id="main_title_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="600" height="64" as="geometry"/>
         </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;ZERO-TRUST NETWORK MESH &amp;amp; BEYONDCORP ENCLAVE ARCHITECTURE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="85" y="12" width="1350" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:600;&quot;&gt;Context-Aware Ingress, BeyondCorp Enterprise Device Attestation, Istio Strict mTLS 1.3 Mesh &amp;amp; VPC Service Controls Enclave&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="85" y="36" width="1350" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;BeyondCorp Enterprise&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Zero-Trust Core&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1540" y="14" width="190" height="44" as="geometry"/>
+        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;Zero-Trust Network Mesh &amp;amp; BeyondCorp&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13.5px;color:#334155;&quot;&gt;(Context-Aware Ingress, Istio mTLS Mesh &amp;amp; VPC Service Controls)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="20" width="570" height="56" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 1: CONTEXT-AWARE INGRESS & IDENTITY ==================== -->
-        <mxCell id="box_ingress" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#F87171;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="75" width="380" height="910" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_ingress_hdr" value="&lt;b style=&quot;font-size:12px;color:#991B1B;&quot;&gt;📱 1. CONTEXT-AWARE INGRESS &amp;amp; IDENTITY&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="40" y="82" width="370" height="25" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_identity" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;Workforce &amp;amp; Partner Endpoints&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Managed Workstations &amp;amp; FIDO2 Hardware Keys&lt;br&gt;• Chrome Enterprise Device Posture Attestation&lt;br&gt;• Real-time OS Patch &amp;amp; Disk Encryption Verification&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="55" y="125" width="340" height="115" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_beyondcorp" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#92400E;&quot;&gt;BeyondCorp Context-Aware Engine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#78350F;line-height:1.4;padding-top:4px;&quot;&gt;• Continuous Device Health &amp;amp; Posture Evaluation&lt;br&gt;• Geo-Fencing &amp;amp; IP Reputation Threat Intelligence&lt;br&gt;• Instant Session Revocation on Anomaly (CAEP)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="55" y="260" width="340" height="125" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== COLUMN 2: PERIMETER SECURITY & IAP ==================== -->
-        <mxCell id="box_perimeter" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="455" y="75" width="400" height="910" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_perimeter_hdr" value="&lt;b style=&quot;font-size:12px;color:#B45309;&quot;&gt;🚪 2. IAP PROXY &amp;amp; CLOUD ARMOR WAF&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="460" y="82" width="390" height="25" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_cloud_armor_waf" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Armor Global WAF &amp;amp; DDoS Defense&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Layer 7 Volumetric HTTP Flood Mitigation&lt;br&gt;• OWASP Top 10 Pre-configured WAF Rules&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="475" y="125" width="360" height="105" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_iap_jwt" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#92400E;&quot;&gt;Identity-Aware Proxy (IAP) Gateway&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#78350F;line-height:1.4;padding-top:4px;&quot;&gt;• Zero Public IP Exposure to Backend Workloads&lt;br&gt;• Generates Cryptographically Signed 15-Min JWTs&lt;br&gt;• Enforces Granular Path-Based Access Controls&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="475" y="250" width="360" height="120" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== COLUMN 3: PRIVATE GKE & ISTIO MESH ==================== -->
-        <mxCell id="box_mesh" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#60A5FA;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="895" y="75" width="410" height="910" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_mesh_hdr" value="&lt;b style=&quot;font-size:12px;color:#1D4ED8;&quot;&gt;🔒 3. ISTIO STRICT mTLS SERVICE MESH&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="900" y="82" width="400" height="25" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_envoy_gateway" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#1D4ED8;&quot;&gt;Istio Envoy Ingress Gateway (Port 8443)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;line-height:1.4;padding-top:4px;&quot;&gt;• Strict mTLS 1.3 Cryptographic Handshake&lt;br&gt;• SPIFFE Workload ID Verification (spiffe://gcp/ns/...)&lt;br&gt;• Automatic 24-Hour Certificate Rotation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="915" y="125" width="370" height="125" as="geometry"/>
+        <!-- TOP RIGHT METADATA TABLE -->
+        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;width:34%;&quot;&gt;Diagram Name:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;width:66%;&quot;&gt;Zero-Trust Network Mesh&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;GCAF Pillar:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Security &amp;amp; Cloud Governance&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Architecture State:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;To-Be&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Persona (Creator):&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;3. Cloud Security Architect&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Target Audience:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;SecOps, CISO, Network Engs&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Effort:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;High&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Tech Stack:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;BeyondCorp, Istio, IAP, Cloud KMS, VPC-SC&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Classification:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;&quot;&gt;Zero-Trust Security&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;font-weight:bold;padding:3px 6px;&quot;&gt;Blueprint ID:&lt;/td&gt;
+    &lt;td style=&quot;padding:3px 6px;font-family:monospace;color:#DC2626;font-weight:bold;&quot;&gt;zero_trust_mesh&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="16" width="410" height="230" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_gke_shielded" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#1D4ED8;&quot;&gt;Shielded GKE Enterprise Workload Pods&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;line-height:1.4;padding-top:4px;&quot;&gt;• Binary Authorization Signed Container Enforcement&lt;br&gt;• Workload Identity (Zero Long-Lived Service Account Keys)&lt;br&gt;• Default-Deny Calico Microsegmentation Policies&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="915" y="270" width="370" height="125" as="geometry"/>
+        <!-- LEFT TIER: CONTEXT-AWARE INGRESS & IDENTITY (x = 30 .. 330) -->
+        <mxCell id="box_ingress" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="120" width="300" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_ingress_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#DC2626;&quot;&gt;CONTEXT-AWARE INGRESS &amp;amp; IDENTITY TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="280" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 4: VPC SERVICE CONTROLS & CONFIDENTIAL STORAGE ==================== -->
-        <mxCell id="box_vpc_sc" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1345" y="75" width="375" height="910" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_vpc_sc_hdr" value="&lt;b style=&quot;font-size:12px;color:#166534;&quot;&gt;🗄️ 4. VPC SERVICE CONTROLS ENCLAVE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="1350" y="82" width="365" height="25" as="geometry"/>
+        <!-- Node 1: Workforce & Endpoint Identity -->
+        <mxCell id="node_identity" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Workforce &amp;amp; Partner Endpoints&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Managed Laptops, Mobile, FIDO2 Security Keys&lt;br&gt;Chrome Enterprise Device State Attestation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="175" width="260" height="85" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_vpc_sc_perimeter" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;VPC Service Controls (VPC-SC) Perimeter&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;line-height:1.4;padding-top:4px;&quot;&gt;• Eliminates Data Exfiltration to External Projects&lt;br&gt;• Context-Aware Ingress/Egress Rules Enforced&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1360" y="125" width="345" height="110" as="geometry"/>
+        <!-- Node 2: BeyondCorp Context-Aware Policy Engine -->
+        <mxCell id="node_beyondcorp" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;BeyondCorp Context-Aware Access&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Real-time device posture evaluation&lt;br&gt;Geo-fencing, IP threat intelligence, &amp;amp; MFA check&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="310" width="260" height="85" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_confidential_storage" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;Cloud Spanner &amp;amp; BigQuery (CMEK Enclave)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Cloud KMS Hardware HSM Key Envelope Encryption&lt;br&gt;• Granular Column-Level Dynamic Data Masking&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1360" y="255" width="345" height="120" as="geometry"/>
+        <!-- Node 3: Cloud Armor WAF & Identity-Aware Proxy (IAP) -->
+        <mxCell id="node_iap" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Identity-Aware Proxy (IAP) &amp;amp; Cloud Armor&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Zero public IP exposure, DDoS mitigation&lt;br&gt;Issues 15-minute cryptographically signed JWTs&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="450" width="260" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors -->
-        <mxCell id="e1" value="1. Device Attestation" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_identity" target="node_beyondcorp">
+        <!-- Node 4: Continuous Access Evaluation (CAEP) -->
+        <mxCell id="node_caep" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Continuous Access Evaluation (CAEP)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;Instant session revocation on risk anomaly&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="590" width="260" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Security Architect Bottom Left -->
+        <mxCell id="persona_sec_arch" value="🛡️&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Security Architect&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Zero-Trust Policy Lead)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="95" y="715" width="170" height="65" as="geometry"/>
+        </mxCell>
+
+
+        <!-- CENTER TIER: ENCLAVE SERVICE MESH & VPC CONTROLS (x = 370 .. 790) -->
+        <mxCell id="box_mesh" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="370" y="120" width="410" height="740" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_mesh_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#2563EB;&quot;&gt;ISTIO SERVICE MESH &amp;amp; VPC-SC CRYPTOGRAPHIC ENCLAVE&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="390" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Istio Ingress Gateway -->
+        <mxCell id="node_istio_ingress" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Istio Envoy Ingress Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Strict TLS 1.3 Termination &amp;amp; JWT Claims Validation&lt;br&gt;• SPIFFE/SPIRE cryptographically verifiable workload ID issuance&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="175" width="360" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Mutual TLS Service Mesh Core -->
+        <mxCell id="node_mtls_mesh" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Mutual TLS (mTLS) Service-to-Service Mesh&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• 100% encrypted in-transit wire communications&lt;br&gt;• Automated short-lived x509 certificate rotation (every 24h)&lt;br&gt;• Strict Istio AuthorizationPolicy (Default Deny All)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="320" width="360" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- VPC Service Controls Perimeter -->
+        <mxCell id="node_vpc_sc" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;VPC Service Controls Perimeter (VPC-SC)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Air-gapped boundary preventing unauthorized data exfiltration&lt;br&gt;• Restricts Cloud Storage, BigQuery &amp;amp; Spanner access to VPC only&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="475" width="360" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud KMS & HSM Envelope Encryption -->
+        <mxCell id="node_kms" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Cloud KMS &amp;amp; Hardware HSM Enclave&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• FIPS 140-2 Level 3 Customer-Managed Encryption Keys (CMEK)&lt;br&gt;• Envelope encryption across all data-at-rest volumes&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="395" y="625" width="360" height="100" as="geometry"/>
+        </mxCell>
+
+
+        <!-- RIGHT TIER: SECURE WORKLOADS & SECOPS (x = 830 .. 1560) -->
+        <mxCell id="box_workloads" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="825" y="270" width="740" height="590" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_workloads_hdr" value="&lt;b style=&quot;font-size:12.5px;color:#7C3AED;&quot;&gt;GOVERNED MICROSERVICES &amp;amp; SECOPS OBSERVABILITY TIER&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="835" y="280" width="720" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- GKE Autopilot Hardened Microservices -->
+        <mxCell id="node_gke" value="&lt;b style=&quot;font-size:12.5px;color:#0F172A;&quot;&gt;GKE Autopilot Hardened Cluster &amp;amp; Workload Identity&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;• Shielded GKE Nodes, Container-Optimized OS, seccomp profiles&lt;br&gt;• Workload Identity Federation (Zero long-lived service keys)&lt;br&gt;• Immutable Read-Only Root Filesystems&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="850" y="325" width="440" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- Security Command Center & Audit Vault -->
+        <mxCell id="node_scc" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Security Command Center (SCC Premium)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;Real-time threat detection, container vulnerability scans,&lt;br&gt;&amp;amp; automated Chronicle SIEM alerting&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="480" width="280" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Spanner & BigQuery CMEK Storage -->
+        <mxCell id="node_cmek_db" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Cloud Spanner &amp;amp; BigQuery&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#475569;&quot;&gt;CMEK hardware encryption,&lt;br&gt;column masking &amp;amp; WORM audit logs&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="480" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona SecOps Lead -->
+        <mxCell id="persona_secops" value="🕵️‍♂️&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;SecOps Incident Lead&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(Threat Detection &amp;amp; IR)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="890" y="615" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Persona Compliance Lead -->
+        <mxCell id="persona_compliance" value="📋&lt;br&gt;&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Compliance &amp;amp; CISO&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;color:#64748B;&quot;&gt;(SOC2 &amp;amp; FedRAMP Audit)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="615" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+
+        <!-- CONNECTORS & FLOW ARROWS WITH WHITE BACKGROUND PILLS -->
+
+        <!-- 1. Identity -> BeyondCorp -->
+        <mxCell id="e_id_beyondcorp" value="TLS 1.3 + FIDO2 Claims" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_identity" target="node_beyondcorp">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e2" value="2. [Valid Posture]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_beyondcorp" target="node_cloud_armor_waf">
+        <!-- 2. BeyondCorp -> IAP -->
+        <mxCell id="e_beyondcorp_iap" value="Verified Device Context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_beyondcorp" target="node_iap">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e3" value="3. Issue Signed JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FDE68A;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_cloud_armor_waf" target="node_iap_jwt">
+        <!-- 3. IAP -> Istio Ingress -->
+        <mxCell id="e_iap_istio" value="Signed JWT Ingress Token" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="495" as="sourcePoint"/>
+            <mxPoint x="395" y="225" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="345" y="495"/>
+              <mxPoint x="345" y="225"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Istio Ingress -> mTLS Mesh -->
+        <mxCell id="e_istio_mesh" value="SPIFFE Identity Attestation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_istio_ingress" target="node_mtls_mesh">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e4" value="4. Strict mTLS 1.3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_iap_jwt" target="node_envoy_gateway">
+        <!-- 5. mTLS Mesh -> VPC-SC -->
+        <mxCell id="e_mesh_vpcsc" value="Air-Gapped Ingress Policy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_mtls_mesh" target="node_vpc_sc">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e5" value="5. Forward Pod" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_envoy_gateway" target="node_gke_shielded">
+        <!-- 6. VPC-SC -> KMS -->
+        <mxCell id="e_vpcsc_kms" value="CMEK Key Unwrap Handshake" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="node_vpc_sc" target="node_kms">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e6" value="6. Enclave Guard" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_gke_shielded" target="node_vpc_sc_perimeter">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- 7. Istio Mesh -> GKE Hardened Cluster -->
+        <mxCell id="e_mesh_gke" value="Strict mTLS gRPC / HTTP Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="755" y="375" as="sourcePoint"/>
+            <mxPoint x="850" y="375" as="targetPoint"/>
+          </mxGeometry>
         </mxCell>
 
-        <mxCell id="e7" value="7. Encrypted Query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="node_vpc_sc_perimeter" target="node_confidential_storage">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- 8. GKE -> Security Command Center -->
+        <mxCell id="e_gke_scc" value="Audit Log Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="990" y="440" as="sourcePoint"/>
+            <mxPoint x="990" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. GKE -> CMEK DB -->
+        <mxCell id="e_gke_db" value="Hardware Encrypted SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;fontSize=9;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1280" y="440" as="sourcePoint"/>
+            <mxPoint x="1280" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM RIGHT LEGEND -->
+        <mxCell id="legend_box" value="&lt;div style=&quot;font-weight:bold;font-size:11px;margin-bottom:4px;color:#0F172A;text-align:left;&quot;&gt;Legend&lt;/div&gt;
+&lt;table style=&quot;width:100%;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
+  &lt;tr&gt;
+    &lt;td style=&quot;width:24px;&quot;&gt;▢&lt;/td&gt;&lt;td style=&quot;width:40%;&quot;&gt;Enclave Tier&lt;/td&gt;
+    &lt;td style=&quot;width:24px;&quot;&gt;➔&lt;/td&gt;&lt;td&gt;mTLS Flow&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;⬚&lt;/td&gt;&lt;td&gt;CMEK Storage&lt;/td&gt;
+    &lt;td&gt;⇢&lt;/td&gt;&lt;td&gt;Audit &amp;amp; Telemetry&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;👤&lt;/td&gt;&lt;td&gt;Persona&lt;/td&gt;
+    &lt;td&gt;🔒&lt;/td&gt;&lt;td&gt;VPC-SC Guard&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="720" width="280" height="130" as="geometry"/>
         </mxCell>
 
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>`;
+</mxfile>
+`.trim();
 }

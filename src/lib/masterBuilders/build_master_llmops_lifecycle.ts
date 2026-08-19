@@ -1,116 +1,240 @@
 export function buildLlmopsLifecycleXml(): string {
   return `<mxfile host="embed.diagrams.net">
   <diagram id="llmops_prompt_config_lifecycle" name="LLMOps Prompt Configuration Lifecycle (P5-AI-P-07)">
-    <mxGraphModel dx="1760" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="1050" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1180" pageHeight="600" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- ==================== TOP TITLE BANNER ==================== -->
-        <mxCell id="top_logo" value="&lt;span style=&quot;font-size:26px;&quot;&gt;🔄 ✨&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="14" width="40" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;ENTERPRISE LLMOps PROMPT CONFIGURATION &amp;amp; EVALUATION LIFECYCLE (P5-AI-P-07)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="85" y="12" width="1350" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11.5px;color:#475569;font-weight:600;&quot;&gt;End-to-End GitOps Pipeline: Vertex AI Studio Prompt Iteration $\rightarrow$ Git Polyrepo $\rightarrow$ Cloud Build CI AutoSxS $\rightarrow$ Canary Rollout &amp;amp; Drift Guard&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="85" y="36" width="1350" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.7 Pro&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;LLMOps Evaluator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1540" y="14" width="190" height="44" as="geometry"/>
+        <mxCell id="main_title" value="&lt;b style=&quot;font-size:24px;color:#0F172A;&quot;&gt;LLMOps Prompt Configuration Lifecycle&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="12" width="1120" height="38" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 1: PROMPT DESIGN & ITERATION ==================== -->
-        <mxCell id="zone1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#60A5FA;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="75" width="380" height="910" as="geometry"/>
+        <!-- ==================== 6 VERTICAL EXECUTION ZONES ==================== -->
+
+        <!-- Zone 1: Prompt Design & Iteration (Blue #E0F2FE) -->
+        <mxCell id="zone1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#BAE6FD;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="55" width="175" height="490" as="geometry"/>
         </mxCell>
-        <mxCell id="zone1_hdr" value="&lt;b style=&quot;font-size:12px;color:#1D4ED8;&quot;&gt;📝 1. Prompt Design &amp;amp; Studio Iteration&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="40" y="82" width="370" height="25" as="geometry"/>
+        <mxCell id="zone1_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;1. Prompt Design&lt;br&gt;&amp;amp; Iteration&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="60" width="165" height="28" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_studio_ui" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI Studio (Prompt Editor IDE)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• System Prompt Engineering &amp;amp; Few-Shot Examples&lt;br&gt;• Dynamic Parameter Tuning (Temp: 0.2, Top-P: 0.95)&lt;br&gt;• Multi-Model Comparison (Gemini Pro vs Flash)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="55" y="125" width="340" height="115" as="geometry"/>
+        <!-- Vertex AI Studio UI Mockup Card -->
+        <mxCell id="card_studio_ui" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:7px;color:#0F172A;&quot;&gt;&lt;tr style=&quot;background:#F1F5F9;&quot;&gt;&lt;td style=&quot;padding:3px 4px;font-weight:bold;border-bottom:1px solid #CBD5E1;&quot;&gt;Vertex AI Studio&lt;/td&gt;&lt;td style=&quot;text-align:right;padding:2px;&quot;&gt;⚙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;padding:4px;font-family:monospace;font-size:6.5px;color:#334155;line-height:1.3;&quot;&gt;Prompt: &quot;You are an expert...&quot;&lt;br&gt;Temp: 0.2 | Top-P: 0.95&lt;br&gt;Model: Gemini 3.7 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;text-align:center;padding:3px;&quot;&gt;&lt;span style=&quot;background:#2563EB;color:white;padding:2px 8px;border-radius:2px;font-size:7px;font-weight:bold;&quot;&gt;▶ Test Run&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="38" y="160" width="158" height="125" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_gitops_commit" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;GitOps Polyrepo Prompt-as-Code&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• YAML / JSON Prompt Specification Manifests&lt;br&gt;• Semantic Versioning &amp;amp; Branch Protection Rules&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="55" y="265" width="340" height="100" as="geometry"/>
+        <!-- Studio Description -->
+        <mxCell id="desc_studio" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Vertex AI Studio&lt;br&gt;(Prompt Editor)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div style=&quot;font-size:8px;color:#475569;line-height:1.3;&quot;&gt;Data scientists edit prompt templates and test them against sample data.&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="35" y="300" width="165" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 2: CI/CD PIPELINE & VALIDATION ==================== -->
-        <mxCell id="zone2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="455" y="75" width="400" height="910" as="geometry"/>
+
+        <!-- Zone 2: Version Control (GitOps) (Yellow #FEF3C7) -->
+        <mxCell id="zone2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#FDE68A;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="210" y="55" width="160" height="490" as="geometry"/>
         </mxCell>
-        <mxCell id="zone2_hdr" value="&lt;b style=&quot;font-size:12px;color:#B45309;&quot;&gt;⚡ 2. Cloud Build CI &amp;amp; AutoSxS Evaluation&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="460" y="82" width="390" height="25" as="geometry"/>
+        <mxCell id="zone2_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;2. Version Control&lt;br&gt;(GitOps)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="215" y="60" width="150" height="28" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_prompt_val" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;&quot;&gt;Prompt Schema Lint &amp;amp; AST Check&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Validates JSON Schema &amp;amp; Placeholder Variables&lt;br&gt;• Secret Scan (Zero Hardcoded Keys)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="475" y="125" width="360" height="100" as="geometry"/>
+        <!-- Git Repository Card -->
+        <mxCell id="card_git" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:26px;&quot;&gt;🔀&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="248" y="180" width="85" height="85" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_autosxs_eval" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#92400E;&quot;&gt;Vertex AI AutoSxS Automated Evaluation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#78350F;line-height:1.4;padding-top:4px;&quot;&gt;• Side-by-Side Model-as-a-Judge Scoring&lt;br&gt;• Win Rate, Groundedness &amp;amp; Safety Thresholds (&gt; 95%)&lt;br&gt;• Golden Dataset Automated Regression Suite&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="475" y="250" width="360" height="120" as="geometry"/>
+        <!-- Git Description -->
+        <mxCell id="desc_git" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Git Repository&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;(e.g., GitLab, GitHub)&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;div style=&quot;font-size:8px;color:#475569;line-height:1.3;&quot;&gt;Committed prompt configuration, saved as YAML or JSON files.&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="215" y="280" width="150" height="105" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 3: DEPLOYMENT & CANARY PROMOTION ==================== -->
-        <mxCell id="zone3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="895" y="75" width="410" height="910" as="geometry"/>
-        </mxCell>
-        <mxCell id="zone3_hdr" value="&lt;b style=&quot;font-size:12px;color:#166534;&quot;&gt;🚀 3. Cloud Deploy &amp;amp; Canary Rollout&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="900" y="82" width="400" height="25" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="card_cloud_deploy_pipeline" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;Google Cloud Deploy Delivery Pipeline&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Multi-Target Promotion (Dev -&gt; Staging -&gt; Prod)&lt;br&gt;• Progressive Canary Traffic Shifting (10% -&gt; 50% -&gt; 100%)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="915" y="125" width="370" height="110" as="geometry"/>
+        <!-- Zone 1 -> Zone 2 Arrow with explicit endpoints -->
+        <mxCell id="e_studio_git" value="Save &amp;amp;&lt;br&gt;Commit" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="196" y="222" as="sourcePoint"/>
+            <mxPoint x="248" y="222" as="targetPoint"/>
+          </mxGeometry>
         </mxCell>
 
-        <mxCell id="card_prod_serving_mesh" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#15803D;&quot;&gt;GKE / Cloud Run Production Serving Mesh&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#334155;line-height:1.4;padding-top:4px;&quot;&gt;• Dynamic Configuration Injection via Secret Manager&lt;br&gt;• Binary Authorization Signed Attestations Enforced&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="915" y="260" width="370" height="115" as="geometry"/>
+
+        <!-- Zone 3: Automated CI/CD Pipeline (Google Cloud Build) (Blue #EFF6FF) -->
+        <mxCell id="zone3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="375" y="55" width="255" height="490" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone3_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;3. Automated CI/CD Pipeline&lt;br&gt;(Google Cloud Build)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="60" width="245" height="28" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== COLUMN 4: MONITORING, FEEDBACK & DRIFT GUARD ==================== -->
-        <mxCell id="zone4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1345" y="75" width="375" height="910" as="geometry"/>
-        </mxCell>
-        <mxCell id="zone4_hdr" value="&lt;b style=&quot;font-size:12px;color:#6B21A8;&quot;&gt;🔄 4. Continuous Drift Guard &amp;amp; RLHF&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="1350" y="82" width="365" height="25" as="geometry"/>
+        <!-- Cloud Build Logo & Label -->
+        <mxCell id="card_cloud_build" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;📦&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud Build&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="465" y="95" width="75" height="46" as="geometry"/>
         </mxCell>
 
-        <mxCell id="card_drift_monitor" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#6B21A8;&quot;&gt;Vertex AI Model Monitoring &amp;amp; Drift Guard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Real-time Output Embedding Drift Detection&lt;br&gt;• Toxicity &amp;amp; Hallucination Telemetry Alarms&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C084FC;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1360" y="125" width="345" height="110" as="geometry"/>
+        <!-- Git -> Cloud Build Webhook Trigger (Dashed Line) -->
+        <mxCell id="e_git_cb" value="Webhook&lt;br&gt;Trigger&lt;br&gt;CI/CD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;fontSize=7.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_git" target="card_cloud_build">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="290" y="118"/>
+            </Array>
+          </mxGeometry>
         </mxCell>
 
-        <mxCell id="card_rlhf_loop" value="&lt;table style=&quot;width:100%;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#6B21A8;&quot;&gt;RLHF Human-in-the-Loop Feedback Sink&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;line-height:1.4;padding-top:4px;&quot;&gt;• Production Discrepancy Auto-Annotation&lt;br&gt;• Continuous Fine-Tuning Dataset Ingestion&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="1360" y="260" width="345" height="115" as="geometry"/>
+        <!-- Inner Pipeline Outer Container Box -->
+        <mxCell id="box_pipeline" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="385" y="145" width="235" height="385" as="geometry"/>
         </mxCell>
 
-        <!-- Connectors -->
-        <mxCell id="e1" value="1. Git Commit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_studio_ui" target="card_gitops_commit">
+        <!-- Step 1: Prompt Validation -->
+        <mxCell id="card_prompt_val" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Prompt Validation&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Check YAML/JSON structure&lt;br&gt;of the prompt template&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="395" y="155" width="215" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 2: Automated Evaluation (Vertex AI AutoSxS) -->
+        <mxCell id="card_autosxs" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="395" y="215" width="215" height="195" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_autosxs_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Automated Evaluation&lt;br&gt;(Vertex AI AutoSxS)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="400" y="220" width="205" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Evaluation Dataset & Baseline Prompt Cards inside Step 2 -->
+        <mxCell id="card_eval_dataset" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;▦&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Evaluation&lt;br&gt;Dataset&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="405" y="255" width="85" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_baseline_prompt" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;&quot;&gt;🔷&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Baseline&lt;br&gt;Prompt&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="515" y="255" width="85" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="desc_autosxs_metrics" value="&lt;div style=&quot;font-size:7.5px;color:#475569;line-height:1.3;&quot;&gt;Compare the new prompt performance against model-based metrics&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="325" width="205" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Build -> Validation Arrow -->
+        <mxCell id="e_cb_val" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_cloud_build" target="card_prompt_val"/>
+        <mxCell id="e_val_sxs" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_prompt_val" target="card_autosxs"/>
+
+        <!-- Step 3: Gatekeep (Approval) Rhombus Shape -->
+        <mxCell id="gate_approval" value="&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Gatekeep&lt;br&gt;(Approval)&lt;/b&gt;" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="445" y="440" width="115" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sxs_gate" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_autosxs" target="gate_approval"/>
+
+
+        <!-- Zone 4: Prompt Registry & Versioning (Yellow #FEF9C3) -->
+        <mxCell id="zone4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#FEF08A;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="635" y="55" width="160" height="490" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone4_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;4. Prompt Registry&lt;br&gt;&amp;amp; Versioning&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="640" y="60" width="150" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Vertex AI Model Registry Card -->
+        <mxCell id="card_registry" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:26px;&quot;&gt;🌐&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EAB308;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="670" y="180" width="90" height="85" as="geometry"/>
+        </mxCell>
+
+        <!-- Registry Description -->
+        <mxCell id="desc_registry" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;Vertex AI&lt;br&gt;Model Registry&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div style=&quot;font-size:8px;color:#475569;line-height:1.3;&quot;&gt;Explicitly manages versions (e.g., v2) of approved prompt templates.&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="640" y="280" width="150" height="105" as="geometry"/>
+        </mxCell>
+
+        <!-- Pipeline Approval -> Registry Connector -->
+        <mxCell id="e_gate_registry" value="Approved" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=7.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="gate_approval" target="card_registry">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="615" y="470"/>
+              <mxPoint x="615" y="222"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- Zone 5: Application Serving & Inference (Green #DCFCE7) -->
+        <mxCell id="zone5_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#BBF7D0;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="800" y="55" width="175" height="490" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone5_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;5. Application Serving&lt;br&gt;&amp;amp; Inference&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="805" y="60" width="165" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Application Server Card -->
+        <mxCell id="card_app_server" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🖥️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;font-weight:bold;color:#0F172A;&quot;&gt;Application&lt;br&gt;Server&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="840" y="105" width="95" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Registry -> Application Server Connector -->
+        <mxCell id="e_reg_server" value="Deploy /&lt;br&gt;Load" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=7.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_registry" target="card_app_server">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e2" value="2. CI Webhook" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_gitops_commit" target="card_prompt_val">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- Ingress User Request Arrow into Application Server -->
+        <mxCell id="e_user_ingress" value="Collected&lt;br&gt;user request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;fontSize=7.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;entryX=1;entryY=0.3;" edge="1" parent="1" target="card_app_server">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="965" y="127" as="sourcePoint"/>
+          </mxGeometry>
         </mxCell>
 
-        <mxCell id="e3" value="3. AutoSxS Judge" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#FDE68A;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_prompt_val" target="card_autosxs_eval">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- Server Runtime Dynamic Fetch Callout -->
+        <mxCell id="desc_server_runtime" value="&lt;div style=&quot;font-size:7.5px;color:#166534;font-style:italic;line-height:1.3;&quot;&gt;When the application receives user request fetches the appropriate approved prompt template version&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="805" y="195" width="165" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e4" value="4. Pass &amp; Promote" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_autosxs_eval" target="card_cloud_deploy_pipeline">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- Vertex AI Prediction Endpoint Card -->
+        <mxCell id="card_endpoint" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;☁️🧠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI&lt;br&gt;Prediction&lt;br&gt;Endpoint&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="840" y="285" width="95" height="85" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e5" value="5. Canary Mesh" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_cloud_deploy_pipeline" target="card_prod_serving_mesh">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- App Server -> Endpoint Connector -->
+        <mxCell id="e_server_endpoint" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_app_server" target="card_endpoint"/>
+
+
+        <!-- Zone 6: Monitoring & Feedback Loop (Pink #FEE2E2) -->
+        <mxCell id="zone6_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#FECACA;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="980" y="55" width="170" height="490" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone6_hdr" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;6. Monitoring &amp;amp;&lt;br&gt;Feedback Loop&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="985" y="60" width="160" height="28" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e6" value="6. Telemetry" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7E22CE;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_prod_serving_mesh" target="card_drift_monitor">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- Inference Logs Box -->
+        <mxCell id="card_inference_logs" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="990" y="95" width="150" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_logs_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;Inference Logs&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="995" y="99" width="140" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_log_cloud" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;📑&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud&lt;br&gt;Logging&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="998" y="120" width="60" height="52" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_log_bq" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;BigQuery&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="120" width="60" height="52" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e7" value="7. RLHF Loop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7E22CE;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;fontStyle=1;fontSize=9.5;" edge="1" parent="1" source="card_drift_monitor" target="card_rlhf_loop">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- Monitoring Dashboards UI Card -->
+        <mxCell id="card_dash_ui" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:6.5px;color:#0F172A;&quot;&gt;&lt;tr style=&quot;background:#F8FAFC;&quot;&gt;&lt;td colspan=&quot;3&quot; style=&quot;padding:2px;font-weight:bold;border-bottom:1px solid #E2E8F0;&quot;&gt;Live Monitoring Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📊&lt;br&gt;&lt;span style=&quot;font-size:6px;&quot;&gt;Drift: 0.02&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;🟢&lt;br&gt;&lt;span style=&quot;font-size:6px;&quot;&gt;p99: 42ms&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:3px;text-align:center;&quot;&gt;📈&lt;br&gt;&lt;span style=&quot;font-size:6px;&quot;&gt;1.4k req/s&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
+          <mxGeometry x="990" y="215" width="150" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Dashboards Description -->
+        <mxCell id="desc_dash" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Monitoring Dashboards&lt;br&gt;(Cloud Monitoring/Looker)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div style=&quot;font-size:7.5px;color:#475569;line-height:1.3;&quot;&gt;Visualize real-time dashboards for key LLMOps metrics, including prompt performance drift, latency, and throughput.&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="985" y="315" width="160" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- App Server -> Inference Logs Connector -->
+        <mxCell id="e_server_logs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_app_server" target="card_inference_logs"/>
+
+        <!-- Endpoint -> Monitoring Dashboards Connector -->
+        <mxCell id="e_endpoint_dash" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_endpoint" target="card_dash_ui"/>
+
+        <!-- Long Feedback Return Arrow (Zone 6 -> Zone 1) -->
+        <mxCell id="e_feedback_loop" value="Performance Feedback" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;fontSize=8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="desc_dash" target="desc_studio">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1065" y="565"/>
+              <mxPoint x="117" y="565"/>
+            </Array>
+          </mxGeometry>
         </mxCell>
 
       </root>
