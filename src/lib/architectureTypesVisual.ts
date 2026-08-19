@@ -9,6 +9,7 @@ import {
   getDefaultXmlForArchitecture as rawGetDefaultXmlForArchitecture,
   getTechnicalArchitectureXml as rawGetTechnicalArchitectureXml
 } from './architectureTypes';
+import { applyBlueprintTechnicalAccuracy } from './blueprintTechnicalAccuracy';
 import { applyBlueprintVisualSystem } from './blueprintVisualSystem';
 import { applyBlueprintTextContainment } from './blueprintTextContainment';
 import { buildEnterpriseReferenceArchitectureXml } from './masterBuilders/build_master_enterprise_reference';
@@ -25,7 +26,10 @@ function isEnterpriseReferenceId(archId?: string | null): boolean {
 
 function polish(xml: string, architectureId?: string | null): string {
   return applyBlueprintTextContainment(
-    applyBlueprintVisualSystem(xml, architectureId),
+    applyBlueprintVisualSystem(
+      applyBlueprintTechnicalAccuracy(xml),
+      architectureId,
+    ),
     architectureId,
   );
 }
