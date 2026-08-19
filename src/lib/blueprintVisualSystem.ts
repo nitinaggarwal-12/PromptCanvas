@@ -52,6 +52,11 @@ function applyStrokeFloor(xml: string, floor: number): string {
   });
 }
 
+function appendStyle(style: string, key: string, value: string): string {
+  const matcher = new RegExp(`(?:^|;)${key}=`, 'i');
+  return matcher.test(style) ? style : `${style}${style.endsWith(';') || style.length === 0 ? '' : ';'}${key}=${value};`;
+}
+
 function makeGcpStencilsViewerSafe(xml: string): string {
   return xml.replace(
     /(<mxCell\b[^>]*\bstyle=")([^"]*?)(shape=mxgraph\.gcp2\.[^;"\s]+;?)([^"]*)(")/gi,
@@ -62,20 +67,73 @@ function makeGcpStencilsViewerSafe(xml: string): string {
   );
 }
 
+function polishVertices(xml: string, notationSensitive: boolean): string {
+  if (notationSensitive) return xml;
+
+  return xml.replace(/<mxCell\b([^>]*\bvertex="1"[^>]*)>/gi, (full, attrs) => {
+    const styleMatch = attrs.match(/style="([^"]*)"/i);
+    if (!styleMatch) return full;
+
+    let style = styleMatch[1];
+    const textCell = /(^|;)text;/i.test(style) || (/fillColor=none/i.test(style) && /strokeColor=none/i.test(style));
+    const protectedShape = /(shape=image|shape=mxgraph\.|ellipse|rhombus|hexagon|swimlane|cylinder|actor|uml|bpmn|shape=line|shape=group)/i.test(style);
+
+    if (textCell) {
+      style = appendStyle(style, 'spacing', '4');
+      const fontMatch = style.match(/fontSize=(\d+(?:\.\d+)?)/i);
+      const fontSize = fontMatch ? Number(fontMatch[1]) : null;
+      if (fontSize !== null && fontSize >= 14) {
+        style = appendStyle(style, 'fontStyle', '1');
+      }
+      return full.replace(styleMatch[0], `style="${style}"`);
+    }
+
+    if (protectedShape) return full;
+
+    style = appendStyle(style, 'whiteSpace', 'wrap');
+    style = appendStyle(style, 'html', '1');
+    style = appendStyle(style, 'shadow', '0');
+    style = appendStyle(style, 'spacing', '6');
+    style = appendStyle(style, 'verticalAlign', 'middle');
+    style = appendStyle(style, 'strokeWidth', '1.2');
+    if (/rounded=1/i.test(style)) {
+      style = appendStyle(style, 'arcSize', '8');
+    }
+
+    return full.replace(styleMatch[0], `style="${style}"`);
+  });
+}
+
 function polishEdges(xml: string, notationSensitive: boolean): string {
   return xml.replace(/<mxCell\b([^>]*\bedge="1"[^>]*)>/gi, (full, attrs) => {
     const styleMatch = attrs.match(/style="([^"]*)"/i);
     if (!styleMatch) return full;
 
     let style = styleMatch[1];
-    if (!/labelBackgroundColor=/i.test(style)) {
-      style += 'labelBackgroundColor=#FFFFFF;';
-    }
+    const isDashed = /dashed=1/i.test(style);
+    const isDotted = /dashPattern=(?:1\s+3|1\s+4|2\s+4)/i.test(style);
+
+    style = appendStyle(style, 'labelBackgroundColor', '#FFFFFF');
+    style = appendStyle(style, 'labelBorderColor', 'none');
+    style = appendStyle(style, 'fontColor', '#334155');
+
     if (!/strokeWidth=/i.test(style)) {
-      style += notationSensitive ? 'strokeWidth=1.2;' : 'strokeWidth=1.5;';
+      style += notationSensitive ? 'strokeWidth=1.2;' : isDashed ? 'strokeWidth=1.3;' : 'strokeWidth=1.6;';
     }
-    if (!notationSensitive && !/edgeStyle=/i.test(style)) {
-      style += 'edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;';
+
+    if (!notationSensitive) {
+      if (!/strokeColor=/i.test(style)) {
+        style += isDotted
+          ? 'strokeColor=#0F9D58;'
+          : isDashed
+            ? 'strokeColor=#64748B;'
+            : 'strokeColor=#2563EB;';
+      }
+      style = appendStyle(style, 'endArrow', 'block');
+      style = appendStyle(style, 'endFill', '1');
+      if (!/edgeStyle=/i.test(style)) {
+        style += 'edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;';
+      }
     }
 
     return full.replace(styleMatch[0], `style="${style}"`);
@@ -99,6 +157,7 @@ export function applyBlueprintVisualSystem(xml: string, architectureId?: string 
   let polished = replaceLegacyProductNames(xml);
   polished = applyFontFloor(polished, fontFloor);
   polished = applyStrokeFloor(polished, strokeFloor);
+  polished = polishVertices(polished, notationSensitive);
   polished = polishEdges(polished, notationSensitive);
   polished = makeGcpStencilsViewerSafe(polished);
   polished = normalizeCanvasDefaults(polished);
@@ -118,6 +177,7 @@ export type BlueprintVisualAudit = {
   unresolvedGcpStencilCount: number;
   legacyProductNameCount: number;
   edgeCount: number;
+  polishedCardCount: number;
 };
 
 export function auditBlueprintVisualSystem(xml: string): BlueprintVisualAudit {
@@ -136,6 +196,7 @@ export function auditBlueprintVisualSystem(xml: string): BlueprintVisualAudit {
     minFontSize: fontSizes.length > 0 ? Math.min(...fontSizes) : null,
     unresolvedGcpStencilCount: Array.from(xml.matchAll(/shape=mxgraph\.gcp2\./gi)).length,
     legacyProductNameCount,
-    edgeCount: Array.from(xml.matchAll(/\bedge="1"/gi)).length
+    edgeCount: Array.from(xml.matchAll(/\bedge="1"/gi)).length,
+    polishedCardCount: Array.from(xml.matchAll(/\bspacing=6;/gi)).length
   };
 }
