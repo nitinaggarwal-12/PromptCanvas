@@ -28,3 +28,5 @@ jobs:
         run: npm run validate:xml scratch/golden/*.xml
       - name: Geometry quality gate (visual-quality tenet)
         run: npx tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml
+      - name: Template integrity (no new empty / duplicate / misnamed blueprints)
+        run: npx tsx evals/check_template_integrity.ts --allow evals/template-integrity-allowlist.json templates/master_blueprints/xml/*.xml

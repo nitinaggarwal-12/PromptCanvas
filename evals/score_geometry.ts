@@ -158,7 +158,9 @@ export function scoreXml(xml: string, file = '<inline>'): GeometryScore {
     labelOverflow,
     outOfContainer,
     crossingsPerEdge: segments.length ? +(crossings / segments.length).toFixed(2) : 0,
-    clean: overlaps === 0 && crossings === 0 && outOfContainer === 0,
+    // An empty diagram has no defects, but it is not "clean" — scoring it so
+    // would let 0-node templates inflate the corpus quality number.
+    clean: verts.length > 0 && overlaps === 0 && crossings === 0 && outOfContainer === 0,
   };
 }
 

@@ -11,7 +11,9 @@
     "validate:xml": "npx tsx bin/validate-cli.ts",
     "test": "vitest run",
     "eval:geometry": "tsx evals/score_geometry.ts",
-    "eval:geometry:gate": "tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml"
+    "eval:geometry:gate": "tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml",
+    "eval:templates": "tsx evals/check_template_integrity.ts templates/master_blueprints/xml/*.xml",
+    "eval:templates:gate": "tsx evals/check_template_integrity.ts --allow evals/template-integrity-allowlist.json templates/master_blueprints/xml/*.xml"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
