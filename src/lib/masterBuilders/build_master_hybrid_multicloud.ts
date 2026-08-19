@@ -1,362 +1,394 @@
+/**
+ * Blueprint 20 — Hybrid Multi-Cloud Networking & Gemini Enterprise
+ *
+ * Phase 3.1A rebuild.
+ * Design principles:
+ * - Google Cloud network architecture first; Gemini Enterprise is an application/experience consumer.
+ * - Explicit primary, resilient/alternate, and governance/control paths.
+ * - Editable semantic mxGraph cells; no external icon dependencies or emoji.
+ * - Current Google Cloud terminology: Network Connectivity Center, Cloud Interconnect,
+ *   HA VPN, Cloud Router, Cross-Cloud Interconnect, Private Service Connect,
+ *   Cloud NGFW, Workforce/Workload Identity Federation, Network Intelligence Center.
+ */
+
+const GCP_LOGO =
+  'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E';
+
+const GEMINI_MARK =
+  'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%234285F4%22%2F%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22%237B61FF%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23D965C5%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20fill%3D%22url(%23g)%22%20d%3D%22M32%204C35%2022%2042%2029%2060%2032C42%2035%2035%2042%2032%2060C29%2042%2022%2035%204%2032C22%2029%2029%2022%2032%204Z%22%2F%3E%3C%2Fsvg%3E';
+
+const esc = (value: string): string =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+const vertex = (
+  id: string,
+  value: string,
+  style: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+): string =>
+  `<mxCell id="${id}" value="${esc(value)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${width}" height="${height}" as="geometry"/></mxCell>`;
+
+const imageVertex = (
+  id: string,
+  image: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+): string =>
+  `<mxCell id="${id}" value="" style="shape=image;image=${image};aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${width}" height="${height}" as="geometry"/></mxCell>`;
+
+const zone = (
+  id: string,
+  title: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  stroke: string,
+  fill: string,
+): string =>
+  [
+    vertex(
+      `${id}_bg`,
+      '',
+      `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${stroke};strokeWidth=1.5;shadow=0;`,
+      x,
+      y,
+      width,
+      height,
+    ),
+    vertex(
+      `${id}_title`,
+      title,
+      `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=none;fontColor=${stroke};fontStyle=1;fontSize=15;align=center;verticalAlign=middle;spacing=4;`,
+      x + 8,
+      y + 8,
+      width - 16,
+      38,
+    ),
+  ].join('\n');
+
+const card = (
+  id: string,
+  code: string,
+  title: string,
+  subtitle: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  accent = '#1A73E8',
+  fill = '#FFFFFF',
+): string => {
+  const badgeW = 42;
+  return [
+    vertex(
+      `${id}_bg`,
+      '',
+      `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.2;shadow=0;`,
+      x,
+      y,
+      width,
+      height,
+    ),
+    vertex(
+      `${id}_badge`,
+      code,
+      `ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=${code.length > 4 ? 8 : 10};align=center;verticalAlign=middle;`,
+      x + 10,
+      y + Math.max(8, (height - 32) / 2),
+      32,
+      32,
+    ),
+    vertex(
+      `${id}_label`,
+      `<b>${title}</b><br><span style="font-size:10px;color:#475569">${subtitle}</span>`,
+      `text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=12;spacingLeft=4;`,
+      x + badgeW + 8,
+      y + 4,
+      width - badgeW - 16,
+      height - 8,
+    ),
+  ].join('\n');
+};
+
+const compact = (
+  id: string,
+  code: string,
+  title: string,
+  x: number,
+  y: number,
+  width: number,
+  accent = '#1A73E8',
+  fill = '#FFFFFF',
+): string =>
+  [
+    vertex(
+      `${id}_bg`,
+      '',
+      `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.2;shadow=0;`,
+      x,
+      y,
+      width,
+      52,
+    ),
+    vertex(
+      `${id}_badge`,
+      code,
+      `ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=${code.length > 4 ? 8 : 10};align=center;verticalAlign=middle;`,
+      x + 8,
+      y + 10,
+      32,
+      32,
+    ),
+    vertex(
+      `${id}_label`,
+      `<b>${title}</b>`,
+      'text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=11;spacingLeft=3;',
+      x + 46,
+      y + 4,
+      width - 52,
+      44,
+    ),
+  ].join('\n');
+
+const edge = (
+  id: string,
+  source: string,
+  target: string,
+  label: string,
+  kind: 'primary' | 'backup' | 'control' = 'primary',
+  exitX = 1,
+  exitY = 0.5,
+  entryX = 0,
+  entryY = 0.5,
+): string => {
+  const spec =
+    kind === 'primary'
+      ? { stroke: '#2563EB', width: 2, dashed: 0, arrow: 'block' }
+      : kind === 'backup'
+        ? { stroke: '#2563EB', width: 1.8, dashed: 1, arrow: 'block' }
+        : { stroke: '#188038', width: 1.6, dashed: 1, arrow: 'open' };
+  return `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${spec.stroke};strokeWidth=${spec.width};dashed=${spec.dashed};dashPattern=${kind === 'control' ? '2 4' : '6 4'};endArrow=${spec.arrow};endFill=${spec.arrow === 'block' ? 1 : 0};fontColor=#334155;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=none;exitX=${exitX};exitY=${exitY};exitDx=0;exitDy=0;entryX=${entryX};entryY=${entryY};entryDx=0;entryDy=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
+};
+
+const routedEdge = (
+  id: string,
+  source: string,
+  target: string,
+  label: string,
+  points: Array<[number, number]>,
+  kind: 'primary' | 'backup' | 'control' = 'primary',
+  exitX = 1,
+  exitY = 0.5,
+  entryX = 0,
+  entryY = 0.5,
+): string => {
+  const spec =
+    kind === 'primary'
+      ? { stroke: '#2563EB', width: 2, dashed: 0, arrow: 'block' }
+      : kind === 'backup'
+        ? { stroke: '#2563EB', width: 1.8, dashed: 1, arrow: 'block' }
+        : { stroke: '#188038', width: 1.6, dashed: 1, arrow: 'open' };
+  const pointXml = points.map(([x, y]) => `<mxPoint x="${x}" y="${y}"/>`).join('');
+  return `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${spec.stroke};strokeWidth=${spec.width};dashed=${spec.dashed};dashPattern=${kind === 'control' ? '2 4' : '6 4'};endArrow=${spec.arrow};endFill=${spec.arrow === 'block' ? 1 : 0};fontColor=#334155;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=none;exitX=${exitX};exitY=${exitY};exitDx=0;exitDy=0;entryX=${entryX};entryY=${entryY};entryDx=0;entryDy=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry"><Array as="points">${pointXml}</Array></mxGeometry></mxCell>`;
+};
+
+const band = (
+  id: string,
+  title: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  accent: string,
+): string =>
+  [
+    vertex(
+      `${id}_bg`,
+      '',
+      `rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=${accent};strokeWidth=1.4;`,
+      x,
+      y,
+      width,
+      height,
+    ),
+    vertex(
+      `${id}_title`,
+      title,
+      `text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontColor=${accent};fontStyle=1;fontSize=15;`,
+      x + 12,
+      y + 5,
+      width - 24,
+      28,
+    ),
+  ].join('\n');
+
 export function buildHybridMultiCloudXml(): string {
-  return `
-<mxfile host="app.diagrams.net" modified="2026-08-10T18:45:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
+  const cells: string[] = [];
+
+  cells.push(zone('zone_onprem', '1. ON-PREMISES / ENTERPRISE', 25, 20, 250, 600, '#188038', '#F7FCF8'));
+  cells.push(zone('zone_hybrid', '2. HYBRID CONNECTIVITY', 290, 20, 235, 600, '#188038', '#F7FCF8'));
+  cells.push(zone('zone_gcp', '3. GOOGLE CLOUD NETWORK FOUNDATION', 540, 20, 620, 600, '#1A73E8', '#F7FAFF'));
+  cells.push(zone('zone_multi', '4. MULTI-CLOUD CONNECTIVITY', 1175, 20, 260, 600, '#7E57C2', '#FBF8FF'));
+  cells.push(zone('zone_sources', '5. ENTERPRISE / SAAS & DATA SOURCES', 1450, 20, 305, 600, '#188038', '#F7FCF8'));
+
+  cells.push(card('onprem_users', 'USR', 'Corporate & Remote Users', 'Managed devices and enterprise access paths', 38, 78, 224, 78, '#334155'));
+  cells.push(card('onprem_idp', 'IDP', 'Enterprise IdP', 'Microsoft Entra ID / Okta / AD-backed identity', 38, 168, 224, 78, '#188038'));
+  cells.push(card('onprem_apps', 'APP', 'Data Center Applications', 'Private line-of-business and shared services', 38, 258, 224, 78, '#1A73E8'));
+  cells.push(card('onprem_data', 'DB', 'Private Apps & Data', 'Databases, file services, internal APIs', 38, 348, 224, 78, '#475569'));
+  cells.push(card('onprem_dns', 'DNS', 'Enterprise DNS', 'Conditional forwarding / private resolution', 38, 438, 224, 78, '#1A73E8'));
+  cells.push(card('onprem_edge', 'CE', 'Customer Edge / SD-WAN', 'Redundant routers; BGP-capable enterprise edge', 38, 528, 224, 74, '#188038'));
+
+  cells.push(card('hyb_interconnect', 'CI', 'Cloud Interconnect', 'Dedicated or Partner Interconnect for private hybrid transport', 303, 82, 209, 88, '#1A73E8'));
+  cells.push(card('hyb_vpn', 'VPN', 'HA VPN (Cloud VPN)', 'Encrypted resilient / alternate connectivity path', 303, 184, 209, 84, '#1A73E8'));
+  cells.push(card('hyb_router', 'CR', 'Cloud Router', 'Managed BGP route exchange for Interconnect and VPN', 303, 282, 209, 84, '#1A73E8'));
+  cells.push(card('hyb_ncc', 'NCC', 'Network Connectivity Center', 'Central logical hub for VPC and hybrid/multicloud spokes', 303, 380, 209, 96, '#188038'));
+  cells.push(card('hyb_dns', 'DNS', 'Hybrid DNS Integration', 'Cloud DNS forwarding / peering patterns as required', 303, 490, 209, 88, '#188038'));
+
+  cells.push(imageVertex('gcp_logo', GCP_LOGO, 554, 63, 34, 34));
+  cells.push(card('gcp_shared_vpc', 'VPC', 'Shared VPC / VPC Spoke Foundation', 'Host-project governance with workload VPCs and explicit trust boundaries', 596, 64, 548, 78, '#1A73E8'));
+
+  cells.push(vertex('gcp_vpc_segment_bg', '', 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#93B4F5;strokeWidth=1.2;', 554, 156, 286, 260));
+  cells.push(vertex('gcp_vpc_segment_title', 'SEGMENTED WORKLOAD NETWORKS', 'text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=12;fontColor=#1A73E8;', 566, 164, 262, 26));
+  cells.push(card('gcp_app_spoke', 'APP', 'Application Spoke', 'Private application subnets / service projects', 568, 198, 258, 64, '#1A73E8'));
+  cells.push(card('gcp_data_spoke', 'DATA', 'Data Spoke', 'Private data services and controlled service access', 568, 274, 258, 64, '#7E57C2'));
+  cells.push(card('gcp_mgmt_spoke', 'MGMT', 'Shared Services / Management', 'Central tooling, DNS, security and administration', 568, 350, 258, 54, '#188038'));
+
+  cells.push(vertex('gcp_network_services_bg', '', 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#93B4F5;strokeWidth=1.2;', 852, 156, 292, 260));
+  cells.push(vertex('gcp_network_services_title', 'NETWORK & SECURITY SERVICES', 'text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=12;fontColor=#1A73E8;', 864, 164, 268, 26));
+  cells.push(compact('gcp_dns', 'DNS', 'Cloud DNS', 866, 198, 128, '#1A73E8'));
+  cells.push(compact('gcp_nat', 'NAT', 'Cloud NAT', 1004, 198, 126, '#1A73E8'));
+  cells.push(compact('gcp_psc', 'PSC', 'Private Service Connect', 866, 260, 128, '#7E57C2'));
+  cells.push(compact('gcp_lb', 'LB', 'Cloud Load Balancing', 1004, 260, 126, '#1A73E8'));
+  cells.push(compact('gcp_ngfw', 'FW', 'Cloud NGFW / Firewall Policies', 866, 322, 128, '#188038'));
+  cells.push(compact('gcp_cci', 'CCI', 'Cross-Cloud Interconnect', 1004, 322, 126, '#7E57C2'));
+
+  cells.push(vertex('gcp_app_ai_bg', '', 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#93B4F5;strokeWidth=1.2;', 554, 430, 590, 172));
+  cells.push(vertex('gcp_app_ai_title', 'APPLICATION & AI PLATFORMS', 'text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=13;fontColor=#1A73E8;', 566, 438, 566, 26));
+  cells.push(compact('gcp_cloud_run', 'RUN', 'Cloud Run', 568, 474, 132, '#1A73E8'));
+  cells.push(compact('gcp_gke', 'GKE', 'Google Kubernetes Engine', 710, 474, 150, '#1A73E8'));
+  cells.push(compact('gcp_vertex', 'VAI', 'Vertex AI', 870, 474, 126, '#7E57C2'));
+  cells.push(compact('gcp_gemini', 'GE', 'Gemini Enterprise', 1006, 474, 124, '#7E57C2', '#FCF9FF'));
+  cells.push(card('gcp_api', 'API', 'Enterprise APIs & Connectors', 'Approved application/API access to enterprise systems', 568, 536, 276, 54, '#188038'));
+  cells.push(card('gcp_private_access', 'PGA', 'Private Google Access / Private Endpoints', 'Use the access pattern supported by the target service', 856, 536, 274, 54, '#188038'));
+
+  cells.push(vertex('aws_bg', '', 'rounded=1;arcSize=6;fillColor=#FFF9F1;strokeColor=#F59E0B;strokeWidth=1.2;', 1188, 72, 234, 242));
+  cells.push(vertex('aws_title', 'AWS', 'text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=18;fontColor=#D97706;', 1200, 80, 210, 28));
+  cells.push(card('aws_vpc', 'VPC', 'AWS VPC', 'Private workload networks', 1200, 116, 210, 58, '#D97706'));
+  cells.push(card('aws_tgw', 'TGW', 'AWS Transit Gateway', 'AWS-side hub and route domains', 1200, 184, 210, 58, '#7E57C2'));
+  cells.push(card('aws_dx_vpn', 'DX', 'Direct Connect / VPN Edge', 'CSP-side attachment or encrypted alternative', 1200, 252, 210, 50, '#7E57C2'));
+
+  cells.push(vertex('azure_bg', '', 'rounded=1;arcSize=6;fillColor=#F4F9FF;strokeColor=#2563EB;strokeWidth=1.2;', 1188, 330, 234, 258));
+  cells.push(vertex('azure_title', 'MICROSOFT AZURE', 'text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;fontColor=#0078D4;', 1200, 338, 210, 28));
+  cells.push(card('azure_vnet', 'VNET', 'Azure VNet', 'Private workload networks', 1200, 374, 210, 58, '#0078D4'));
+  cells.push(card('azure_wan', 'vWAN', 'Virtual WAN / Routing Hub', 'Azure-side routing and segmentation', 1200, 442, 210, 58, '#7E57C2'));
+  cells.push(card('azure_er_vpn', 'ER', 'ExpressRoute / VPN Edge', 'CSP-side attachment or encrypted alternative', 1200, 510, 210, 62, '#7E57C2'));
+
+  cells.push(card('src_saas', 'SaaS', 'Enterprise SaaS & Connectors', 'Workday, Salesforce, ServiceNow and approved SaaS', 1464, 88, 277, 96, '#188038'));
+  cells.push(card('src_private_services', 'PRV', 'Private Producer / Partner Services', 'PSC or private partner connectivity where supported', 1464, 202, 277, 92, '#7E57C2'));
+  cells.push(card('src_db_api', 'DB', 'Remote Databases & APIs', 'Oracle, SQL Server and managed/private APIs as applicable', 1464, 312, 277, 96, '#1A73E8'));
+  cells.push(card('src_partners', 'B2B', 'Partners & Extranets', 'Approved B2B private or controlled external access', 1464, 426, 277, 78, '#188038'));
+  cells.push(card('src_internet', 'NET', 'Public Internet / External APIs', 'Only through explicit ingress/egress security controls', 1464, 522, 277, 72, '#334155'));
+
+  cells.push(edge('e_onprem_ci', 'onprem_edge_bg', 'hyb_interconnect_bg', 'Private hybrid transport', 'primary'));
+  cells.push(edge('e_onprem_vpn', 'onprem_edge_bg', 'hyb_vpn_bg', 'Encrypted resilience', 'backup', 1, 0.7, 0, 0.5));
+  cells.push(edge('e_ci_router', 'hyb_interconnect_bg', 'hyb_router_bg', 'VLAN attachment / BGP', 'primary', 0.5, 1, 0.5, 0));
+  cells.push(edge('e_vpn_router', 'hyb_vpn_bg', 'hyb_router_bg', 'BGP over HA VPN', 'backup', 0.5, 1, 0.5, 0));
+  cells.push(edge('e_router_ncc', 'hyb_router_bg', 'hyb_ncc_bg', 'Dynamic routes', 'primary', 0.5, 1, 0.5, 0));
+  cells.push(edge('e_ncc_vpc', 'hyb_ncc_bg', 'gcp_shared_vpc_bg', 'NCC hub / VPC spokes', 'primary'));
+  cells.push(edge('e_dns_hybrid', 'onprem_dns_bg', 'hyb_dns_bg', 'Private DNS forwarding', 'control'));
+  cells.push(edge('e_hybdns_clouddns', 'hyb_dns_bg', 'gcp_dns_bg', 'Cloud DNS resolution', 'control'));
+
+  cells.push(edge('e_shared_app', 'gcp_shared_vpc_bg', 'gcp_app_spoke_bg', 'Segmented workload routing', 'primary', 0.28, 1, 0.5, 0));
+  cells.push(edge('e_shared_data', 'gcp_shared_vpc_bg', 'gcp_data_spoke_bg', 'Segmented workload routing', 'primary', 0.5, 1, 0.5, 0));
+  cells.push(edge('e_shared_mgmt', 'gcp_shared_vpc_bg', 'gcp_mgmt_spoke_bg', 'Shared services', 'primary', 0.72, 1, 0.5, 0));
+  cells.push(edge('e_vpc_platform', 'gcp_app_spoke_bg', 'gcp_cloud_run_bg', 'Private application traffic', 'primary', 0.5, 1, 0.5, 0));
+  cells.push(edge('e_data_platform', 'gcp_data_spoke_bg', 'gcp_api_bg', 'Governed service/data access', 'primary', 0.6, 1, 0.3, 0));
+  cells.push(edge('e_platform_gemini', 'gcp_api_bg', 'gcp_gemini_bg', 'Governed connectors / APIs', 'primary', 1, 0.45, 0, 0.65));
+
+  cells.push(routedEdge('e_cci_aws', 'gcp_cci_bg', 'aws_dx_vpn_bg', 'Cross-Cloud Interconnect', [[1167, 348], [1167, 277]], 'primary'));
+  cells.push(routedEdge('e_cci_azure', 'gcp_cci_bg', 'azure_er_vpn_bg', 'Cross-Cloud Interconnect', [[1167, 348], [1167, 541]], 'primary'));
+
+  cells.push(routedEdge('e_psc_private', 'gcp_psc_bg', 'src_private_services_bg', 'Private service access where supported', [[1148, 612], [1440, 612], [1440, 248]], 'primary'));
+  cells.push(routedEdge('e_nat_saas', 'gcp_nat_bg', 'src_saas_bg', 'Approved egress / SaaS access', [[1144, 606], [1444, 606], [1444, 136]], 'primary'));
+  cells.push(routedEdge('e_api_db', 'gcp_api_bg', 'src_db_api_bg', 'Application / API access', [[1138, 616], [1436, 616], [1436, 360]], 'primary'));
+  cells.push(routedEdge('e_lb_partners', 'gcp_lb_bg', 'src_partners_bg', 'Approved B2B ingress', [[1132, 602], [1432, 602], [1432, 465]], 'primary'));
+  cells.push(routedEdge('e_nat_internet', 'gcp_nat_bg', 'src_internet_bg', 'Controlled outbound access', [[1126, 598], [1428, 598], [1428, 558]], 'primary'));
+
+  cells.push(band('security', 'SECURITY & IDENTITY — CROSS-CUTTING', 25, 640, 1730, 122, '#1A73E8'));
+  const sx = 42;
+  const sw = 198;
+  const sg = 12;
+  const securityItems = [
+    ['sec_iam', 'IAM', 'Cloud IAM', 'Least-privilege authorization'],
+    ['sec_wif_user', 'WIF', 'Workforce Identity Federation', 'External workforce SSO / authorization'],
+    ['sec_wif_workload', 'WLD', 'Workload Identity Federation', 'Short-lived external workload credentials'],
+    ['sec_ngfw', 'FW', 'Cloud NGFW', 'Hierarchical / network firewall policies'],
+    ['sec_kms', 'KMS', 'Cloud KMS & Secret Manager', 'Encryption keys and application secrets'],
+    ['sec_vpcsc', 'VPC-SC', 'VPC Service Controls', 'Service perimeters for supported services'],
+    ['sec_audit', 'AUD', 'Cloud Audit Logs', 'Administrative and data-access evidence'],
+    ['sec_scc', 'SCC', 'Security Command Center', 'Security posture and findings'],
+  ];
+  securityItems.forEach(([id, code, title, subtitle], index) => {
+    cells.push(card(id, code, title, subtitle, sx + index * (sw + sg), 679, sw, 66, index < 3 ? '#1A73E8' : '#188038', '#FFFFFF'));
+  });
+
+  cells.push(band('observability', 'OBSERVABILITY & NETWORK OPERATIONS — CROSS-CUTTING', 25, 776, 1730, 122, '#7E57C2'));
+  const ox = 42;
+  const ow = 222;
+  const og = 17;
+  const obsItems = [
+    ['obs_nic', 'NIC', 'Network Intelligence Center', 'Topology, analysis and troubleshooting'],
+    ['obs_cni', 'CNI', 'Cloud Network Insights', 'Hybrid / multicloud synthetic path health'],
+    ['obs_mon', 'MON', 'Cloud Monitoring', 'Metrics, dashboards and alerting'],
+    ['obs_log', 'LOG', 'Cloud Logging', 'Centralized operational logs'],
+    ['obs_flow', 'FLOW', 'VPC Flow Logs / Flow Analyzer', 'Traffic visibility and investigation'],
+    ['obs_test', 'TEST', 'Connectivity Tests', 'Configuration-aware path validation'],
+    ['obs_route', 'RT', 'Routing & BGP Telemetry', 'Route state, advertisements and change review'],
+  ];
+  obsItems.forEach(([id, code, title, subtitle], index) => {
+    cells.push(card(id, code, title, subtitle, ox + index * (ow + og), 815, ow, 66, '#7E57C2', '#FFFFFF'));
+  });
+
+  cells.push(vertex('control_spine', '', 'shape=line;strokeColor=#188038;strokeWidth=1.6;dashed=1;dashPattern=2 4;', 70, 628, 1640, 1));
+  [150, 405, 850, 1305, 1600].forEach((x, index) => {
+    cells.push(vertex(`control_up_${index}`, '', 'shape=line;direction=north;strokeColor=#188038;strokeWidth=1.6;dashed=1;dashPattern=2 4;endArrow=open;endFill=0;', x, 616, 1, 14));
+  });
+
+  cells.push(vertex('legend_bg', '', 'rounded=1;arcSize=5;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;', 80, 916, 1090, 50));
+  cells.push(vertex('legend_title', 'LEGEND', 'text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=12;fontColor=#0F172A;', 96, 927, 80, 26));
+  cells.push(vertex('legend_primary_line', '', 'shape=line;strokeColor=#2563EB;strokeWidth=2;endArrow=block;endFill=1;', 186, 937, 78, 1));
+  cells.push(vertex('legend_primary_text', 'Primary private / application data path', 'text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#334155;', 272, 926, 256, 26));
+  cells.push(vertex('legend_backup_line', '', 'shape=line;strokeColor=#2563EB;strokeWidth=1.8;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;', 536, 937, 78, 1));
+  cells.push(vertex('legend_backup_text', 'Resilient / alternate encrypted path', 'text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#334155;', 622, 926, 238, 26));
+  cells.push(vertex('legend_control_line', '', 'shape=line;strokeColor=#188038;strokeWidth=1.6;dashed=1;dashPattern=2 4;endArrow=open;endFill=0;', 870, 937, 78, 1));
+  cells.push(vertex('legend_control_text', 'Identity / policy / observability control plane', 'text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#334155;', 956, 926, 200, 30));
+
+  cells.push(vertex('gemini_note1_bg', '', 'rounded=1;arcSize=6;fillColor=#FCF9FF;strokeColor=#7E57C2;strokeWidth=1.2;dashed=1;', 1190, 916, 565, 58));
+  cells.push(imageVertex('gemini_note1_icon', GEMINI_MARK, 1206, 928, 32, 32));
+  cells.push(vertex('gemini_note1_text', '<b>Gemini Enterprise:</b> application / experience layer that reaches governed enterprise data and APIs through approved connectors, identity controls, and source-specific connectivity.', 'text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=11;fontColor=#334155;', 1248, 922, 490, 46));
+
+  cells.push(vertex('gemini_note2_bg', '', 'rounded=1;arcSize=6;fillColor=#F7FAFF;strokeColor=#1A73E8;strokeWidth=1.2;dashed=1;', 80, 980, 1675, 46));
+  cells.push(vertex('gemini_note2_text', '<b>Gemini-assisted operations:</b> advisory use of telemetry, topology, incidents and runbooks for troubleshooting, summarization and recommendations. It does <b>not</b> become the routing, BGP, firewall, or packet-forwarding data plane.', 'text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fontColor=#334155;', 100, 986, 1635, 34));
+
+  return `<mxfile host="app.diagrams.net" agent="PromptCanvas" version="24.7.17" type="device">
   <diagram id="hybrid_multicloud_networking" name="Hybrid Multi-Cloud Networking &amp; Gemini Enterprise">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
+    <mxGraphModel dx="1780" dy="1030" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="1030" math="0" shadow="0" background="#FFFFFF">
       <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-
-        <!-- ========================================================================= -->
-        <!-- OUTER CANVAS FRAME WITH 4-COLOR GOOGLE BRAND TOP STRIPE -->
-        <!-- ========================================================================= -->
-        <mxCell id="canvas_card" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CFD8DC;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="15" y="8" width="1530" height="900" as="geometry" />
-        </mxCell>
-
-        <!-- Google 4-Color Rainbow Stripe -->
-        <mxCell id="stripe_red" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EA4335;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="18" y="10" width="375" height="4" as="geometry" />
-        </mxCell>
-        <mxCell id="stripe_yellow" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBBC04;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="393" y="10" width="375" height="4" as="geometry" />
-        </mxCell>
-        <mxCell id="stripe_green" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#34A853;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="768" y="10" width="375" height="4" as="geometry" />
-        </mxCell>
-        <mxCell id="stripe_blue" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#4285F4;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="1143" y="10" width="398" height="4" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- TOP HEADER: Google Cloud | Hybrid Multi-Cloud Networking & Gemini Enterprise -->
-        <!-- ========================================================================= -->
-        <mxCell id="hdr_logo" value="&lt;table style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:10px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;32&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;font-size:22px;font-weight:500;color:#3C4043;font-family:Google Sans,Roboto,sans-serif;&quot;&gt;Google Cloud&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="35" y="20" width="195" height="35" as="geometry" />
-        </mxCell>
-
-        <mxCell id="hdr_sep" value="" style="shape=line;strokeColor=#B0BEC5;strokeWidth=1.5;direction=south;" vertex="1" parent="1">
-          <mxGeometry x="235" y="20" width="10" height="34" as="geometry" />
-        </mxCell>
-
-        <mxCell id="hdr_title" value="&lt;b style=&quot;font-size:20px;color:#202124;font-family:Google Sans,Roboto,sans-serif;&quot;&gt;Hybrid Multi-Cloud Networking &amp;amp; Gemini Enterprise&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="255" y="20" width="850" height="35" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- ZONE 1: ON-PREMISES / PRIVATE CLOUD (LEFT: X: 35, Width: 290, Height: 755) -->
-        <!-- ========================================================================= -->
-        <mxCell id="zone_onprem_bg" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#CFD8DC;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="35" y="68" width="290" height="760" as="geometry" />
-        </mxCell>
-        <mxCell id="zone_onprem_title" value="&lt;b style=&quot;font-size:13.5px;color:#202124;font-family:Google Sans,Roboto,sans-serif;&quot;&gt;On-Premises / Private Cloud&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#546E7A;&quot;&gt;CIDR: 10.200.0.0/16 • Dual 100G Demarc • Equinix MMR&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="40" y="73" width="280" height="32" as="geometry" />
-        </mxCell>
-
-        <!-- On-Premises Data Center Building Shape -->
-        <mxCell id="dc_roof" value="" style="triangle;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#78909C;strokeWidth=1.5;direction=north;" vertex="1" parent="1">
-          <mxGeometry x="50" y="110" width="260" height="55" as="geometry" />
-        </mxCell>
-        <mxCell id="dc_body" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#78909C;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="50" y="165" width="260" height="650" as="geometry" />
-        </mxCell>
-
-        <!-- Building Graphic & Title -->
-        <mxCell id="node_dc_icon" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:building-2.svg&quot; width=&quot;40&quot; height=&quot;40&quot; style=&quot;color:#4285F4;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;On-Premises Data Center&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#546E7A;&quot;&gt;Tier IV Enterprise Facility • BGP ASN 65001&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="70" y="175" width="220" height="88" as="geometry" />
-        </mxCell>
-
-        <!-- Customer Edge Router Box -->
-        <mxCell id="node_cpe_card" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:move.svg&quot; width=&quot;20&quot; height=&quot;20&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1A73E8;text-align:left;&quot;&gt;Customer Edge Router&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#546E7A;font-weight:normal;&quot;&gt;BGP ASN 65001 • BFD 300ms&lt;br&gt;Router ID: 10.200.0.1/32&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8AB4F8;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="60" y="300" width="180" height="66" as="geometry" />
-        </mxCell>
-
-        <!-- Customer Edge Router Port -->
-        <mxCell id="port_cpe_circle" value="" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=#FFFFFF;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="250" y="312" width="42" height="42" as="geometry" />
-        </mxCell>
-        <mxCell id="port_cpe_icon" value="&lt;img src=&quot;https://api.iconify.design/lucide:move.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;color:#FFFFFF;&quot;/&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="254" y="316" width="34" height="34" as="geometry" />
-        </mxCell>
-
-        <!-- Servers (VMs / Physical) -->
-        <mxCell id="node_servers_stack" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:server.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;color:#37474F;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Servers (VMs / Bare Metal)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#546E7A;&quot;&gt;VMware ESXi • Subnet 10.200.10.0/24&lt;br&gt;LACP 802.3ad LAG (2x 100GbE)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="70" y="395" width="220" height="75" as="geometry" />
-        </mxCell>
-
-        <!-- Gemini on Distributed Cloud Hosted Card -->
-        <mxCell id="node_gdc_card" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:cloud.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#1A73E8;text-align:left;&quot;&gt;Gemini on Distributed Cloud&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#546E7A;font-weight:normal;&quot;&gt;Air-Gapped TPU Rack • 10.200.50.0/24&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8AB4F8;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="58" y="515" width="244" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_gdc_caption" value="&lt;span style=&quot;font-size:9px;color:#546E7A;&quot;&gt;Specialized On-Premise Air-Gapped Deployment&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="58" y="600" width="244" height="28" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- ZONE 2: GOOGLE CLOUD (GCP) (CENTER: X: 345, Width: 810, Height: 760) -->
-        <!-- ========================================================================= -->
-        <mxCell id="zone_gcp_bg" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=#BCC1C6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="345" y="68" width="810" height="760" as="geometry" />
-        </mxCell>
-        <mxCell id="zone_gcp_title" value="&lt;table style=&quot;display:inline-table;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:google-cloud.svg&quot; width=&quot;22&quot; height=&quot;20&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;font-size:14.5px;font-weight:bold;color:#202124;font-family:Google Sans,Roboto,sans-serif;&quot;&gt;Google Cloud (GCP)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="360" y="73" width="780" height="25" as="geometry" />
-        </mxCell>
-
-        <!-- SUB-BOX A: GLOBAL NETWORK -->
-        <mxCell id="box_global_net" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BDC1C6;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="360" y="105" width="780" height="175" as="geometry" />
-        </mxCell>
-        <mxCell id="box_global_net_title" value="&lt;b style=&quot;font-size:13px;color:#202124;&quot;&gt;Global Network&lt;/b&gt;&lt;span style=&quot;font-size:9px;color:#5F6368;font-weight:normal;&quot;&gt; (187+ Anycast Edge PoPs • Terabit Andromeda SDN Backbone)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="370" y="110" width="760" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- 1. Points of Presence (PoPs) -->
-        <mxCell id="node_pops" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:globe.svg&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Points of&lt;br&gt;Presence (PoPs)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;color:#5F6368;&quot;&gt;Anycast BGP VIPs&lt;br&gt;Cloud Armor DDoS Shield&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="385" y="138" width="180" height="105" as="geometry" />
-        </mxCell>
-
-        <!-- 2. Content Delivery Network (CDN) -->
-        <mxCell id="node_cdn" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:share-2.svg&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Content Delivery&lt;br&gt;Network (CDN)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;color:#5F6368;&quot;&gt;Dynamic Edge Cache&lt;br&gt;TLS 1.3 Termination&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="660" y="138" width="180" height="105" as="geometry" />
-        </mxCell>
-
-        <!-- 3. Cloud Load Balancing -->
-        <mxCell id="node_clb" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:network.svg&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Cloud Load&lt;br&gt;Balancing&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;color:#5F6368;&quot;&gt;Global L7 HTTPS / Envoy&lt;br&gt;QUIC &amp;amp; HTTP/3 Support&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="930" y="138" width="180" height="105" as="geometry" />
-        </mxCell>
-
-        <!-- SUB-BOX B: REGION: US-CENTRAL1 -->
-        <mxCell id="box_region" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#81C995;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="360" y="315" width="780" height="505" as="geometry" />
-        </mxCell>
-        <mxCell id="box_region_title" value="&lt;b style=&quot;font-size:13.5px;color:#137333;&quot;&gt;Region: us-central1 (Iowa)&lt;/b&gt;&lt;span style=&quot;font-size:8.5px;color:#2E7D32;font-weight:normal;&quot;&gt; • Dual-Zone HA (us-central1-a / us-central1-b)&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="370" y="320" width="450" height="22" as="geometry" />
-        </mxCell>
-
-        <!-- VPC Network Container -->
-        <mxCell id="box_gcp_vpc" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F8FBFF;strokeColor=#4285F4;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="372" y="348" width="470" height="462" as="geometry" />
-        </mxCell>
-        <mxCell id="box_gcp_vpc_title" value="&lt;table style=&quot;display:inline-table;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:boxes.svg&quot; width=&quot;16&quot; height=&quot;16&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;font-size:12px;font-weight:bold;color:#1A73E8;&quot;&gt;VPC Network: vpc-enterprise-prod (10.100.0.0/16)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
-          <mxGeometry x="380" y="354" width="450" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- Subnet 1 Container -->
-        <mxCell id="box_subnet1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E0E0E0;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="385" y="378" width="145" height="422" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_subnet1" value="&lt;b style=&quot;font-size:10px;color:#1A73E8;&quot;&gt;Subnet 1&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#5F6368;&quot;&gt;10.100.10.0/24&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="385" y="382" width="145" height="22" as="geometry" />
-        </mxCell>
-
-        <!-- Node GKE -->
-        <mxCell id="node_gke" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:kubernetes.svg&quot; width=&quot;28&quot; height=&quot;28&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Google Kubernetes&lt;br&gt;Engine (GKE)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;Autopilot Private Nodes&lt;br&gt;Pods: 10.104.0.0/14&lt;br&gt;Istio mTLS 1.3 Service Mesh&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="390" y="410" width="135" height="105" as="geometry" />
-        </mxCell>
-
-        <!-- Node Network Connectivity Center -->
-        <mxCell id="node_ncc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:split.svg&quot; width=&quot;24&quot; height=&quot;24&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Network&lt;br&gt;Connectivity&lt;br&gt;Center (NCC)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;BGP Router Hub (ASN 16550)&lt;br&gt;Dynamic Spoke Peering&lt;br&gt;Peering IP: 169.254.0.1/30&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="390" y="585" width="135" height="105" as="geometry" />
-        </mxCell>
-
-        <!-- Subnet 2 Container -->
-        <mxCell id="box_subnet2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E0E0E0;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="538" y="378" width="145" height="205" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_subnet2" value="&lt;b style=&quot;font-size:10px;color:#1A73E8;&quot;&gt;Subnet 2&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#5F6368;&quot;&gt;10.100.20.0/24&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="538" y="382" width="145" height="22" as="geometry" />
-        </mxCell>
-
-        <!-- Node Compute Engine (VMs) -->
-        <mxCell id="node_gce" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:cpu.svg&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Compute&lt;br&gt;Engine (VMs)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;C3/N2 High-Mem Nodes&lt;br&gt;gVNIC 100Gbps Egress&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="543" y="410" width="135" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Subnet 3 Container -->
-        <mxCell id="box_subnet3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E0E0E0;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="690" y="378" width="142" height="205" as="geometry" />
-        </mxCell>
-        <mxCell id="lbl_subnet3" value="&lt;b style=&quot;font-size:10px;color:#1A73E8;&quot;&gt;Subnet 3&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#5F6368;&quot;&gt;10.100.30.0/24 (PSA)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="690" y="382" width="142" height="22" as="geometry" />
-        </mxCell>
-
-        <!-- Node Cloud SQL -->
-        <mxCell id="node_cloudsql" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:database.svg&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Cloud SQL&lt;br&gt;(PostgreSQL 16)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;Enterprise Multi-AZ HA&lt;br&gt;Private IP 10.100.30.15&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="695" y="410" width="132" height="95" as="geometry" />
-        </mxCell>
-
-        <!-- Gemini Enterprise Box -->
-        <mxCell id="box_gemini_enterprise" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:sparkles.svg&quot; width=&quot;26&quot; height=&quot;26&quot; style=&quot;color:#E37400;&quot;/&gt; &lt;b style=&quot;font-size:14px;color:#202124;font-family:Google Sans,Roboto,sans-serif;&quot;&gt;Gemini Enterprise&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;color:#B06000;font-weight:bold;padding-top:2px;&quot;&gt;AI-Powered Assistant &amp;amp; Network Operations&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;color:#546E7A;padding-top:2px;&quot;&gt;Gemini Reasoning Core • Real-time BGP Flap &amp;amp; Route Anomaly Auto-Remediation&lt;br&gt;Multi-Cloud Failover Orchestration • Telemetry Graph Synthesis (Subnet 10.100.40.0/24)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9AB00;strokeWidth=2;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="538" y="598" width="294" height="190" as="geometry" />
-        </mxCell>
-
-        <!-- Google Services Container -->
-        <mxCell id="box_google_services" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#81C995;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="860" y="348" width="165" height="462" as="geometry" />
-        </mxCell>
-        <mxCell id="box_google_services_title" value="&lt;b style=&quot;font-size:13px;color:#202124;&quot;&gt;Google Services&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#5F6368;&quot;&gt;VPC-SC Perimeter&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="865" y="354" width="155" height="35" as="geometry" />
-        </mxCell>
-
-        <!-- BigQuery Node -->
-        <mxCell id="node_bigquery" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:search.svg&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;BigQuery&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;Petabyte Serverless DW&lt;br&gt;BI Engine In-Memory&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="870" y="415" width="145" height="85" as="geometry" />
-        </mxCell>
-
-        <!-- Vertex AI Node -->
-        <mxCell id="node_vertex_ai" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:cpu.svg&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Vertex AI&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;Vector Search Grounding&lt;br&gt;Model Armor Safety Gate&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="870" y="525" width="145" height="85" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- ZONE 3: OTHER CLOUD (E.G., AWS) (RIGHT: X: 1175, Width: 370, Height: 760) -->
-        <!-- ========================================================================= -->
-        <mxCell id="zone_aws_bg" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#CFD8DC;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1175" y="68" width="370" height="760" as="geometry" />
-        </mxCell>
-        <mxCell id="zone_aws_title" value="&lt;b style=&quot;font-size:13.5px;color:#202124;font-family:Google Sans,Roboto,sans-serif;&quot;&gt;Other Cloud (e.g., AWS)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#546E7A;&quot;&gt;Region: us-east-1 • Account: 123456789012 • BGP ASN 64512&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="73" width="360" height="30" as="geometry" />
-        </mxCell>
-
-        <!-- AWS Inner Container -->
-        <mxCell id="box_aws_main" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB74D;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1190" y="105" width="340" height="580" as="geometry" />
-        </mxCell>
-
-        <!-- AWS Header Logo + Text -->
-        <mxCell id="aws_hdr" value="&lt;table style=&quot;display:inline-table;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;b style=&quot;font-size:20px;color:#E65100;font-family:Amazon Ember,sans-serif;&quot;&gt;aws&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;font-size:13px;font-weight:bold;color:#202124;font-family:Google Sans,Roboto,sans-serif;&quot;&gt;(Amazon Web Services)&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#E65100;font-weight:normal;&quot;&gt;DX Gateway (ASN 64512) • Hosted VIF 100G&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="1200" y="112" width="320" height="38" as="geometry" />
-        </mxCell>
-
-        <!-- AWS VPC Network Container -->
-        <mxCell id="box_aws_vpc" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#B388FF;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1205" y="158" width="310" height="515" as="geometry" />
-        </mxCell>
-        <mxCell id="box_aws_vpc_title" value="&lt;table style=&quot;display:inline-table;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:middle;padding-right:6px;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:boxes.svg&quot; width=&quot;16&quot; height=&quot;16&quot; style=&quot;color:#6A1B9A;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;font-size:12px;font-weight:bold;color:#4A148C;&quot;&gt;VPC Network: vpc-aws-prod (172.31.0.0/16)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1">
-          <mxGeometry x="1215" y="164" width="290" height="22" as="geometry" />
-        </mxCell>
-
-        <!-- 4 AWS Services (2x2 Grid) -->
-        <mxCell id="node_aws_eks" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:aws-eks.svg&quot; width=&quot;32&quot; height=&quot;32&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Amazon EKS&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;K8s v1.30 Managed Nodes&lt;br&gt;Subnet 172.31.10.0/24&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFCC80;strokeWidth=1;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1220" y="200" width="125" height="100" as="geometry" />
-        </mxCell>
-
-        <mxCell id="node_aws_ec2" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:aws-ec2.svg&quot; width=&quot;32&quot; height=&quot;32&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Amazon EC2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;m6i.4xlarge Nitro Nodes&lt;br&gt;Subnet 172.31.20.0/24&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFCC80;strokeWidth=1;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1370" y="200" width="125" height="100" as="geometry" />
-        </mxCell>
-
-        <mxCell id="node_aws_ecs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:aws-ecs.svg&quot; width=&quot;32&quot; height=&quot;32&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Amazon ECS&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;AWS Fargate Microservices&lt;br&gt;Task Role IAM Identity&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFCC80;strokeWidth=1;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1220" y="325" width="125" height="100" as="geometry" />
-        </mxCell>
-
-        <mxCell id="node_aws_rds" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/logos:aws-rds.svg&quot; width=&quot;32&quot; height=&quot;32&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Amazon RDS&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;Aurora Multi-AZ Cluster&lt;br&gt;Subnet 172.31.30.0/24&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFCC80;strokeWidth=1;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1370" y="325" width="125" height="100" as="geometry" />
-        </mxCell>
-
-        <!-- AWS Direct Connect Location Box -->
-        <mxCell id="node_aws_dx" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:radio.svg&quot; width=&quot;20&quot; height=&quot;20&quot; style=&quot;color:#7C3AED;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#202124;&quot;&gt;AWS Direct&lt;br&gt;Connect Location&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;100G Hosted VIF&lt;br&gt;P2P: 169.254.100.1/30&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B388FF;strokeWidth=1.5;align=center;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="1220" y="480" width="125" height="85" as="geometry" />
-        </mxCell>
-
-
-        <!-- ========================================================================= -->
-        <!-- SYNCHRONIZED INTERCONNECT BADGES & CONNECTORS (LEFT: ON-PREM TO GCP) -->
-        <!-- ========================================================================= -->
-        <!-- 1. Partner Interconnect Badge -->
-        <mxCell id="badge_partner_interconnect" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg&quot; width=&quot;16&quot; height=&quot;16&quot; style=&quot;color:#EA4335;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Partner Interconnect&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;802.1Q VLAN 102 • MED 150&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=#EA4335;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="250" y="145" width="120" height="58" as="geometry" />
-        </mxCell>
-
-        <!-- Red Line: Partner Interconnect Connector -->
-        <mxCell id="edge_partner_interconnect" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EA4335;strokeWidth=3;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="badge_partner_interconnect" target="node_pops">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- 2. Cloud VPN Badge -->
-        <mxCell id="badge_cloud_vpn" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg&quot; width=&quot;16&quot; height=&quot;16&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Cloud VPN (HA)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;IPSec AES-256 GCM • MED 200&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#1A73E8;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="250" y="225" width="120" height="54" as="geometry" />
-        </mxCell>
-
-        <!-- Blue Line: Cloud VPN Connector -->
-        <mxCell id="edge_cloud_vpn" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=3;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="badge_cloud_vpn" target="node_pops">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- 3. Dedicated Interconnect Badge -->
-        <mxCell id="badge_interconnect_location" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:globe.svg&quot; width=&quot;18&quot; height=&quot;18&quot; style=&quot;color:#1A73E8;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#202124;&quot;&gt;Dedicated Interconnect&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#5F6368;&quot;&gt;100G Line-Rate • MED 100&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A237E;strokeWidth=2;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="250" y="610" width="120" height="60" as="geometry" />
-        </mxCell>
-
-        <!-- Dark Blue Line: Dedicated Interconnect Connector -->
-        <mxCell id="edge_dedicated_interconnect" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A237E;strokeWidth=4;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="badge_interconnect_location" target="node_ncc">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- On-Prem Edge to Interconnect Badges -->
-        <mxCell id="edge_cpe_to_badges" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="port_cpe_circle" target="badge_partner_interconnect">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_cpe_to_vpn" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A73E8;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="port_cpe_circle" target="badge_cloud_vpn">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_cpe_to_dx" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1A237E;strokeWidth=3;endArrow=classic;" edge="1" parent="1" source="port_cpe_circle" target="badge_interconnect_location">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-
-        <!-- ========================================================================= -->
-        <!-- CROSS-CLOUD INTERCONNECT (RIGHT: GCP REGION TO AWS) -->
-        <!-- ========================================================================= -->
-        <mxCell id="badge_cross_cloud" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg&quot; width=&quot;16&quot; height=&quot;16&quot; style=&quot;color:#34A853;&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#202124;padding-top:2px;&quot;&gt;Cross-Cloud Interconnect&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7px;color:#2E7D32;&quot;&gt;Google ↔ AWS 100G Direct Demarc&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#34A853;strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="1050" y="380" width="135" height="66" as="geometry" />
-        </mxCell>
-
-        <!-- Green Thick Line: GCP Region -> Cross-Cloud Interconnect -> AWS VPC -->
-        <mxCell id="edge_cross_cloud_gcp" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#34A853;strokeWidth=4;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="box_google_services" target="badge_cross_cloud">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_cross_cloud_aws" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#34A853;strokeWidth=4;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="badge_cross_cloud" target="box_aws_vpc">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-
-        <!-- ========================================================================= -->
-        <!-- BOTTOM-RIGHT LEGEND BOX -->
-        <!-- ========================================================================= -->
-        <mxCell id="box_legend" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="1175" y="718" width="370" height="110" as="geometry" />
-        </mxCell>
-
-        <!-- Legend Item 1: Public Internet (Encrypted/VPN) -->
-        <mxCell id="leg_item_1" value="&lt;table style=&quot;width:100%;font-size:9px;color:#202124;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;text-align:center;&quot;&gt;&lt;span style=&quot;display:inline-block;width:26px;height:2px;border-top:2.5px dashed #EA4335;&quot;&gt;&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;width:18px;text-align:center;&quot;&gt;&lt;img src=&quot;https://api.iconify.design/lucide:lock.svg&quot; width=&quot;12&quot; height=&quot;12&quot; style=&quot;color:#EA4335;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b&gt;Public Internet (Encrypted/VPN)&lt;/b&gt; &lt;span style=&quot;color:#5F6368;font-size:7.5px;&quot;&gt;IPSec AES-256 GCM&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="722" width="360" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- Legend Item 2: Private Interconnect (Dedicated/Partner) -->
-        <mxCell id="leg_item_2" value="&lt;table style=&quot;width:100%;font-size:9px;color:#202124;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;text-align:center;&quot;&gt;&lt;span style=&quot;display:inline-block;width:26px;height:3px;background:#1A237E;&quot;&gt;&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;width:18px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b&gt;Private Interconnect (Dedicated/Partner)&lt;/b&gt; &lt;span style=&quot;color:#5F6368;font-size:7.5px;&quot;&gt;100G BGP 802.1Q&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="746" width="360" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- Legend Item 3: Google Global Network Traffic -->
-        <mxCell id="leg_item_3" value="&lt;table style=&quot;width:100%;font-size:9px;color:#202124;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;text-align:center;&quot;&gt;&lt;span style=&quot;display:inline-block;width:26px;height:2px;border-top:2.5px dashed #4285F4;&quot;&gt;&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;width:18px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b&gt;Google Global Network Traffic&lt;/b&gt; &lt;span style=&quot;color:#5F6368;font-size:7.5px;&quot;&gt;Andromeda SDN Terabit Mesh&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="770" width="360" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- Legend Item 4: Multi-Cloud Interconnect for AWS -->
-        <mxCell id="leg_item_4" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;text-align:center;&quot;&gt;&lt;span style=&quot;display:inline-block;width:26px;height:2px;border-top:2.5px dashed #34A853;&quot;&gt;&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;width:18px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:4px;&quot;&gt;&lt;b&gt;Multi-Cloud Interconnect for AWS&lt;/b&gt; &lt;span style=&quot;color:#5F6368;font-size:7.5px;&quot;&gt;Direct Cloud-to-Cloud 100G&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1180" y="794" width="360" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- ========================================================================= -->
-        <!-- FULL-WIDTH BOTTOM TECHNICAL ENGINEERING & TELEMETRY STRIP -->
-        <!-- ========================================================================= -->
-        <mxCell id="strip_engineering_telemetry" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#202124;font-family:Roboto,sans-serif;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#1A73E8;&quot;&gt;⚡ Multi-Cloud Transit &amp;amp; Failover Matrix:&lt;/b&gt; &lt;span style=&quot;color:#1A237E;&quot;&gt;Primary Dedicated Interconnect (MED 100 • 100Gbps Line-Rate)&lt;/span&gt; &amp;nbsp;➔&amp;nbsp; &lt;span style=&quot;color:#C5221F;&quot;&gt;Secondary Partner Interconnect (MED 150 • 802.1Q VLAN 102)&lt;/span&gt; &amp;nbsp;➔&amp;nbsp; &lt;span style=&quot;color:#1A73E8;&quot;&gt;Fallback Cloud VPN (MED 200 • BFD 300ms Sub-Second Failover)&lt;/span&gt; &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#137333;&quot;&gt;Cross-Cloud AWS Transit:&lt;/b&gt; Direct 100G Demarc (SLA 99.99%, Sub-2ms Latency) &amp;nbsp;|&amp;nbsp; &lt;b style=&quot;color:#B06000;&quot;&gt;Gemini AIOps:&lt;/b&gt; Autonomous BGP Flap Damping &amp;amp; Self-Healing Failover.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CFD8DC;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="35" y="840" width="1510" height="42" as="geometry" />
-        </mxCell>
-
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${cells.join('\n        ')}
       </root>
     </mxGraphModel>
   </diagram>
-</mxfile>
-  `.trim();
+</mxfile>`;
 }
