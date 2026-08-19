@@ -1,314 +1,84 @@
-import fs from "fs";
-import path from "path";
+/**
+ * Blueprint 34 — Gemini Enterprise AI Center of Excellence Operating Model.
+ * Phase 3.2 rebuild: capability portfolio, agent engineering, connector governance,
+ * adoption/value flywheel, and explicit product-boundary/maturity controls.
+ */
 
-function escapeXmlAttr(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
+const GCP = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E';
+const ICON = {
+  microsoft: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/microsoft/default.svg',
+  salesforce: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/salesforce/default.svg',
+  servicenow: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/servicenow/default.svg',
+  atlassian: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/atlassian/default.svg',
+};
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const v = (id: string, value: string, style: string, x: number, y: number, w: number, h: number) => `<mxCell id="${id}" value="${esc(value)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
+const img = (id: string, url: string, x: number, y: number, w: number, h: number) => v(id, '', `shape=image;imageAspect=0;aspect=fixed;image=${url};align=center;verticalAlign=middle;`, x, y, w, h);
+const section = (id: string, n: number, title: string, sub: string, x: number, y: number, w: number, h: number, accent: string, fill: string) => [
+  v(id, '', `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;`, x, y, w, h),
+  v(`${id}_n`, String(n), `ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`, x + 14, y + 13, 30, 30),
+  v(`${id}_h`, `<b>${title}</b><br><span style="font-size:9.5px;color:#64748B">${sub}</span>`, 'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=3;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=12.5;', x + 54, y + 8, w - 68, 44),
+].join('\n');
+const card = (id: string, title: string, body: string, x: number, y: number, w: number, h: number, accent: string, fill = '#FFFFFF') => v(id, `<b>${title}</b><br><span style="font-size:9.2px;color:#64748B">${body}</span>`, `rounded=1;arcSize=7;whiteSpace=wrap;html=1;overflow=hidden;spacing=6;fillColor=${fill};strokeColor=${accent};strokeWidth=1.05;fontColor=#0F172A;fontSize=10.9;align=left;verticalAlign=middle;`, x, y, w, h);
+const edge = (id: string, s: string, t: string, label: string, color: string, dashed = false, exitX = 1, exitY = .5, entryX = 0, entryY = .5) => `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${color};strokeWidth=1.6;${dashed ? 'dashed=1;dashPattern=6 4;' : ''}endArrow=block;endFill=1;fontSize=9;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};" edge="1" parent="1" source="${s}" target="${t}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
 
 export function buildPristineAiCoeXml(): string {
-  const userOnboardingSvg = `
-<div style="position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center;text-align:center;">
-  <svg width="110" height="110" viewBox="0 0 110 110" style="position:absolute;top:0;left:0;">
-    <path d="M 28,30 A 38,38 0 0,1 80,26" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="80,20 89,27 80,33" fill="#2563EB"/>
-    <path d="M 85,30 A 38,38 0 0,1 83,80" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="90,80 83,89 78,81" fill="#2563EB"/>
-    <path d="M 80,85 A 38,38 0 0,1 30,84" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="31,90 22,83 31,78" fill="#2563EB"/>
-    <path d="M 26,80 A 38,38 0 0,1 27,30" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="21,31 28,22 33,31" fill="#2563EB"/>
-  </svg>
-  <div style="font-size:11.5px;font-weight:bold;color:#0F172A;line-height:1.2;z-index:2;">
-    User<br>Onboarding
-  </div>
-</div>
-`.trim();
+  const c: string[] = ['<mxCell id="0"/>', '<mxCell id="1" parent="0"/>'];
 
-  const promptCurationSvg = `
-<div style="position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center;text-align:center;">
-  <svg width="110" height="110" viewBox="0 0 110 110" style="position:absolute;top:0;left:0;">
-    <path d="M 28,30 A 38,38 0 0,1 80,26" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="80,20 89,27 80,33" fill="#2563EB"/>
-    <path d="M 85,30 A 38,38 0 0,1 83,80" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="90,80 83,89 78,81" fill="#2563EB"/>
-    <path d="M 80,85 A 38,38 0 0,1 30,84" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="31,90 22,83 31,78" fill="#2563EB"/>
-    <path d="M 26,80 A 38,38 0 0,1 27,30" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="21,31 28,22 33,31" fill="#2563EB"/>
-  </svg>
-  <div style="font-size:11.5px;font-weight:bold;color:#0F172A;line-height:1.2;z-index:2;">
-    Prompt<br>Curation
-  </div>
-</div>
-`.trim();
+  // Top outcome banner.
+  c.push(v('outcome', '<b>AI CoE MISSION</b>   Turn Gemini Enterprise capabilities into governed, adopted, measurable business outcomes—without confusing assistant features, employee-made agents, custom Agent Platform workloads, or connector control paths.', 'rounded=1;arcSize=7;whiteSpace=wrap;html=1;overflow=hidden;spacing=7;fillColor=#F8FBFF;strokeColor=#8AB4F8;strokeWidth=1.2;fontColor=#334155;fontSize=11;align=center;verticalAlign=middle;', 25, 20, 1710, 46));
 
-  const feedbackLoopsSvg = `
-<div style="position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center;text-align:center;">
-  <svg width="110" height="110" viewBox="0 0 110 110" style="position:absolute;top:0;left:0;">
-    <path d="M 28,30 A 38,38 0 0,1 80,26" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="80,20 89,27 80,33" fill="#2563EB"/>
-    <path d="M 85,30 A 38,38 0 0,1 83,80" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="90,80 83,89 78,81" fill="#2563EB"/>
-    <path d="M 80,85 A 38,38 0 0,1 30,84" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="31,90 22,83 31,78" fill="#2563EB"/>
-    <path d="M 26,80 A 38,38 0 0,1 27,30" fill="none" stroke="#2563EB" stroke-width="2.2"/>
-    <polygon points="21,31 28,22 33,31" fill="#2563EB"/>
-  </svg>
-  <div style="font-size:11.5px;font-weight:bold;color:#0F172A;line-height:1.2;z-index:2;">
-    Feedback<br>Loops
-  </div>
-</div>
-`.trim();
+  c.push(section('strategy', 1, 'STRATEGY & DEMAND', 'Choose outcomes before technology', 25, 90, 270, 610, '#1A73E8', '#EFF6FF'));
+  c.push(card('northstar', 'North-star outcomes', 'Business value • employee experience • risk posture • operational efficiency', 45, 155, 230, 78, '#1A73E8'));
+  c.push(card('intake', 'Use-case intake', 'Persona • job-to-be-done • frequency • data • action • expected outcome • owner', 45, 252, 230, 88, '#1A73E8'));
+  c.push(card('readiness', 'Readiness assessment', 'Data/connectors • security • governance • integration • change readiness • technical dependencies', 45, 359, 230, 96, '#1A73E8'));
+  c.push(card('prioritize', 'Portfolio prioritization', 'Value × feasibility × risk × time-to-learning; stop weak ideas early', 45, 474, 230, 80, '#1A73E8'));
+  c.push(card('owners', 'Outcome ownership', 'Business sponsor • product owner • technical owner • adoption owner • risk owner', 45, 573, 230, 92, '#1A73E8'));
 
-  return `
-<mxfile host="app.diagrams.net" modified="2026-08-08T17:52:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="ai_coe_operating_model" name="AI Center of Excellence (CoE) Operating Model">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
+  c.push(section('experience', 2, 'GEMINI ENTERPRISE EXPERIENCE PORTFOLIO', 'Select the right end-user capability', 320, 90, 405, 610, '#B83280', '#FDF2F8'));
+  c.push(card('assistant', 'Assistant & enterprise search', 'One-off/open-ended work grounded in connected enterprise/public data', 340, 155, 365, 72, '#B83280'));
+  c.push(card('notebook', 'Gemini Notebook Enterprise', 'Curated-source research, synthesis, Q&A and reusable project/topic knowledge', 340, 245, 365, 72, '#B83280'));
+  c.push(card('skills', 'Skills', 'Reusable assistant instructions for recurring domain tasks; separate from agent workflows', 340, 335, 365, 82, '#B83280', '#FFF7FC'));
+  c.push(card('agent_designer', 'Agent Gallery & Agent Designer', 'Discover agents; create no-code/low-code single- or multi-step employee agents', 340, 435, 365, 82, '#B83280'));
+  c.push(card('capability_rule', 'Selection rule', 'Assistant = one-off • Skill = repeatable instructions • Agent = autonomous/multistep process. Skills are not available for use with agents.', 340, 535, 365, 126, '#D93025', '#FFF7F7'));
 
-        <!-- TOP TITLE BANNER -->
-        <mxCell id="main_title_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="16" width="860" height="54" as="geometry"/>
-        </mxCell>
-        <mxCell id="hdr_box_left" value="&lt;b style=&quot;font-size:18px;color:#0F172A;font-family:sans-serif;&quot;&gt;Enterprise AI Center of Excellence (CoE) Operating Model (P5-GOV-M-01)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Governance &amp;amp; Strategy • Continuous Prompt Curation • GAMP 5 Compliance &amp;amp; Value Capture&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="18" width="830" height="50" as="geometry"/>
-        </mxCell>
+  c.push(section('engineering', 3, 'CUSTOM AGENT ENGINEERING', 'Production agent lifecycle on Agent Platform', 750, 90, 405, 610, '#7B61A8', '#F7F4FF'));
+  c.push(card('build', 'Build', 'Agent Studio • ADK • Agent Garden • Model Garden • approved frameworks', 770, 155, 365, 76, '#7B61A8'));
+  c.push(card('scale', 'Scale', 'Agent Runtime • Sessions • Memory Bank • Code Execution where needed', 770, 249, 365, 76, '#7B61A8'));
+  c.push(card('govern', 'Govern', 'Agent Registry • Agent Identity • Agent Gateway • Model Armor • policy/audit', 770, 343, 365, 84, '#7B61A8'));
+  c.push(card('interop', 'Interoperate', 'MCP for tools/context • A2A for remote agent collaboration • explicit registered endpoints', 770, 445, 365, 84, '#7B61A8'));
+  c.push(card('optimize', 'Optimize', 'Gen AI evaluation • Agent Observability • quality regression • SRE/capacity/cost', 770, 547, 365, 88, '#7B61A8'));
 
-        <mxCell id="hdr_box_right" value="&lt;div style=&quot;font-size:12px;color:#000000;font-family:sans-serif;&quot;&gt;&lt;b&gt;'To-Be'&lt;/b&gt; Operating State • &lt;b&gt;Cadence:&lt;/b&gt; Quarterly • &lt;b&gt;Classification:&lt;/b&gt; Confidential&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CBD5E1;strokeWidth=1;fillColor=#F8FAFC;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="910" y="16" width="650" height="54" as="geometry"/>
-        </mxCell>
+  c.push(section('connect', 4, 'DATA, CONNECTORS & TOOL ACCESS', 'Permissions and launch-stage aware integration', 1180, 90, 555, 610, '#0F8B82', '#ECFDF5'));
+  c.push(v('vendor_strip', '', 'rounded=1;arcSize=7;fillColor=#FFFFFF;strokeColor=#A7D8D2;strokeWidth=1.05;', 1200, 155, 515, 92));
+  c.push(img('ms', ICON.microsoft, 1220, 178, 40, 40));
+  c.push(img('sf', ICON.salesforce, 1285, 178, 44, 40));
+  c.push(img('sn', ICON.servicenow, 1355, 178, 42, 40));
+  c.push(img('atl', ICON.atlassian, 1425, 178, 42, 40));
+  c.push(img('gcp', GCP, 1495, 178, 42, 40));
+  c.push(v('vendor_text', '<b>Connector ecosystem</b><br><span style="font-size:9px;color:#64748B">Microsoft 365 • Salesforce • ServiceNow • Jira/Confluence • Google/Cloud data • others by edition and launch stage</span>', 'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=3;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=10.5;', 1550, 164, 150, 72));
+  c.push(card('connector_factory', 'Connector factory', 'Standard connector first • custom connector when needed • ACL/identity mapping • sync/federation choice • monitoring', 1200, 270, 515, 88, '#0F8B82'));
+  c.push(card('mcp_paths', 'Two MCP governance paths', 'Agent Platform: Agent Gateway can govern registered MCP egress. Gemini Enterprise custom-MCP data-store traffic follows the connector path—do not assume Gateway policies apply.', 1200, 378, 515, 112, '#D93025', '#FFF7F7'));
+  c.push(card('maturity', 'Feature maturity gate', 'Validate edition • region • preview/allowlist/GA status • connector mode • actions • quotas before committing to delivery dates.', 1200, 510, 515, 88, '#E87900', '#FFF7ED'));
+  c.push(card('access', 'Identity & data access', 'SSO • permissions-aware retrieval • least privilege • data ownership • retention/residency • audit evidence', 1200, 618, 515, 56, '#0F8B82'));
 
+  // Operating model + adoption/value flywheel.
+  c.push(section('operating', 5, 'OPERATING MODEL, GOVERNANCE & ADOPTION', 'Decision rights plus a path out of the CoE', 25, 730, 1710, 205, '#334155', '#F8FAFC'));
+  c.push(card('governance_board', 'Governance & architecture', 'Security • privacy • legal/regulatory • data • responsible AI • architecture review proportional to risk', 50, 795, 300, 88, '#334155'));
+  c.push(card('enablement', 'Enablement & champions', 'Role-based training • office hours • Community of Practice • champions • reusable patterns', 370, 795, 285, 88, '#334155'));
+  c.push(card('product_loop', 'Product / feature loop', 'Track blockers, connector maturity, preview features and enhancement requests with Product/AI specialists', 675, 795, 300, 88, '#334155'));
+  c.push(card('value', 'Value realization', 'Activation • active usage • task success • quality • cycle-time impact • user satisfaction • validated business value', 995, 795, 300, 88, '#334155'));
+  c.push(card('handoff', 'Exit & handoff', 'Graduate repeatable operations to product/platform owners, support, training or delivery teams; CoE retains standards and portfolio governance.', 1315, 795, 395, 88, '#334155'));
 
-        <!-- ==================== LEFT INPUT ZONE (x = 30 .. 250) ==================== -->
-        <mxCell id="node_exec_strategy" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;👔 Exec &amp;amp; Strategy&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Enterprise AI Vision &amp;amp; Priorities&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="30" y="95" width="220" height="65" as="geometry"/>
-        </mxCell>
+  // Lightweight flywheel connectors across the operating row.
+  c.push(edge('f1', 'northstar', 'assistant', 'select capability', '#2563EB'));
+  c.push(edge('f2', 'readiness', 'connector_factory', 'data / integration readiness', '#0F8B82', true));
+  c.push(edge('f3', 'agent_designer', 'governance_board', 'govern by risk', '#D93025', true, .5, 1, .5, 0));
+  c.push(edge('f4', 'optimize', 'value', 'quality + telemetry', '#7B61A8', true, .5, 1, .5, 0));
+  c.push(edge('f5', 'enablement', 'value', 'adoption', '#334155'));
+  c.push(edge('f6', 'value', 'handoff', 'scale / operationalize', '#334155'));
 
-        <mxCell id="node_business_plan" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;📑 Business AI Strategy&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;PowerPoint &amp;amp; Confluence Roadmaps&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="30" y="180" width="220" height="65" as="geometry"/>
-        </mxCell>
+  c.push(v('footer', '<b>COE DECISION PRINCIPLE:</b> Do not force every use case into an agent. Start with the lightest capability that achieves the outcome, preserve the product boundary, validate current feature maturity, and only introduce custom Agent Platform engineering when autonomy, integration or production requirements justify it.', 'rounded=1;arcSize=6;whiteSpace=wrap;html=1;overflow=hidden;spacing=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontColor=#475569;fontSize=10.3;align=center;verticalAlign=middle;', 25, 950, 1710, 42));
 
-        <mxCell id="node_cloud_plans" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;☁️ Cloud Infrastructure Plans&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;GCP Vertex AI Resource Quotas&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="30" y="265" width="220" height="65" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_gamp5" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1D4ED8;&quot;&gt;🛡️ GAMP 5 Compliance Framework&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Category 5 Validated Operational Guardrails&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="30" y="350" width="220" height="75" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== CENTER CONTAINER: AI CENTER OF EXCELLENCE (x = 280 .. 1060) ==================== -->
-        <mxCell id="cont_ai_coe" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E293B;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="280" y="95" width="780" height="475" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_ai_coe_header" value="&lt;b style=&quot;font-size:12px;color:#FFFFFF;&quot;&gt;🏛️ AI CENTER OF EXCELLENCE (CoE) OPERATIONAL CORE&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="280" y="95" width="780" height="34" as="geometry"/>
-        </mxCell>
-
-        <!-- TIER 1: GOVERNANCE & STRATEGY -->
-        <mxCell id="box_gov_strat" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;1. Governance &amp;amp; Strategy (Adoption Modeling)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Enterprise AI Policy &amp;amp; Model Tiering Guidelines&lt;br&gt;• Business Unit Value Quantification &amp;amp; Adoption Scoring&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="295" y="140" width="750" height="75" as="geometry"/>
-        </mxCell>
-
-        <!-- TIER 2: PROCESS & OPERATIONS (3 Circular Loops) -->
-        <mxCell id="box_proc_ops" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="295" y="225" width="750" height="180" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_proc_ops" value="&lt;b style=&quot;font-size:11px;color:#1E40AF;&quot;&gt;2. Continuous Process &amp;amp; Operations Engine (Jira &amp;amp; Confluence)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="310" y="230" width="500" height="20" as="geometry"/>
-        </mxCell>
-
-        <!-- Tangential Circular Loops -->
-        <mxCell id="loop_user_onboarding" value="&lt;div style=&quot;position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;
-  &lt;svg width=&quot;110&quot; height=&quot;110&quot; viewBox=&quot;0 0 110 110&quot; style=&quot;position:absolute;top:0;left:0;&quot;&gt;
-    &lt;path d=&quot;M 28,30 A 38,38 0 0,1 80,26&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;80,20 89,27 80,33&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 85,30 A 38,38 0 0,1 83,80&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;90,80 83,89 78,81&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 80,85 A 38,38 0 0,1 30,84&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;31,90 22,83 31,78&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 26,80 A 38,38 0 0,1 27,30&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;21,31 28,22 33,31&quot; fill=&quot;#2563EB&quot;/&gt;
-  &lt;/svg&gt;
-  &lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;line-height:1.2;z-index:2;&quot;&gt;
-    User&lt;br&gt;Onboarding
-  &lt;/div&gt;
-&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="340" y="260" width="130" height="130" as="geometry"/>
-        </mxCell>
-        <mxCell id="loop_prompt_curation" value="&lt;div style=&quot;position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;
-  &lt;svg width=&quot;110&quot; height=&quot;110&quot; viewBox=&quot;0 0 110 110&quot; style=&quot;position:absolute;top:0;left:0;&quot;&gt;
-    &lt;path d=&quot;M 28,30 A 38,38 0 0,1 80,26&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;80,20 89,27 80,33&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 85,30 A 38,38 0 0,1 83,80&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;90,80 83,89 78,81&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 80,85 A 38,38 0 0,1 30,84&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;31,90 22,83 31,78&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 26,80 A 38,38 0 0,1 27,30&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;21,31 28,22 33,31&quot; fill=&quot;#2563EB&quot;/&gt;
-  &lt;/svg&gt;
-  &lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;line-height:1.2;z-index:2;&quot;&gt;
-    Prompt&lt;br&gt;Curation
-  &lt;/div&gt;
-&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="605" y="260" width="130" height="130" as="geometry"/>
-        </mxCell>
-        <mxCell id="loop_feedback" value="&lt;div style=&quot;position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;
-  &lt;svg width=&quot;110&quot; height=&quot;110&quot; viewBox=&quot;0 0 110 110&quot; style=&quot;position:absolute;top:0;left:0;&quot;&gt;
-    &lt;path d=&quot;M 28,30 A 38,38 0 0,1 80,26&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;80,20 89,27 80,33&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 85,30 A 38,38 0 0,1 83,80&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;90,80 83,89 78,81&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 80,85 A 38,38 0 0,1 30,84&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;31,90 22,83 31,78&quot; fill=&quot;#2563EB&quot;/&gt;
-    &lt;path d=&quot;M 26,80 A 38,38 0 0,1 27,30&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2.2&quot;/&gt;
-    &lt;polygon points=&quot;21,31 28,22 33,31&quot; fill=&quot;#2563EB&quot;/&gt;
-  &lt;/svg&gt;
-  &lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;line-height:1.2;z-index:2;&quot;&gt;
-    Feedback&lt;br&gt;Loops
-  &lt;/div&gt;
-&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="870" y="260" width="130" height="130" as="geometry"/>
-        </mxCell>
-
-        <!-- TIER 3: ANALYTICS & MEASUREMENT -->
-        <mxCell id="box_analytics" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#166534;&quot;&gt;3. Analytics &amp;amp; Measurement (Looker BI Telemetry)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Performance Metrics: Token Latency (p99), Cost per Inference &amp;amp; Error Rates&lt;br&gt;• Utilization Insights: BU Adoption Heatmaps, CSAT Scores &amp;amp; Prompt Drift Alerts&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="295" y="415" width="750" height="75" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== RIGHT: UNIFIED SYSTEM & OUTPUT ARTIFACTS (x = 1090 .. 1560) ==================== -->
-        <mxCell id="cont_system_view" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="95" width="470" height="475" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_system_view_title" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;📊 ENTERPRISE INTEGRATION &amp;amp; SCALING&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="95" width="470" height="34" as="geometry"/>
-        </mxCell>
-
-        <!-- AI CoE Operating Model Green Pill -->
-        <mxCell id="node_coe_operating_model" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#166534;&quot;&gt;✨ Certified AI CoE Operating Model&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;Standardized enterprise architecture blueprint for scaling Generative AI&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1105" y="140" width="440" height="75" as="geometry"/>
-        </mxCell>
-
-        <!-- Enterprise Platform Context View -->
-        <mxCell id="node_wbs_platform" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🏢 Enterprise Platform Architecture Context&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Core ERP, CRM &amp;amp; Knowledge Base Connectors&lt;br&gt;• Centralized API Gateway &amp;amp; Identity Access Mesh&lt;br&gt;• Data Lakehouse Integration (BigQuery / Dataproc)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1105" y="225" width="440" height="95" as="geometry"/>
-        </mxCell>
-
-        <!-- PSO Operations Support -->
-        <mxCell id="node_pso_support" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🛠️ Professional Services &amp;amp; Operations (PSO)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;padding-top:2px;&quot;&gt;Enterprise implementation rollout, hypercare &amp;amp; SLA support&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1105" y="330" width="440" height="65" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== BOTTOM GOVERNANCE & FUNDING LOOP (x = 30 .. 1560) ==================== -->
-        <mxCell id="node_execs_leads" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;👥 Executive &amp;amp; Business Unit Leadership Board&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Reviews quarterly Looker ROI dashboards &amp;amp; adoption velocity&lt;br&gt;• Approves strategy updates &amp;amp; expands CoE scope across new divisions&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="30" y="590" width="500" height="125" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="node_funding" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;div style=&quot;width:34px;height:34px;background:#16A34A;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-size:18px;font-weight:bold;margin:0 auto;&quot;&gt;$&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#166534;padding-top:4px;&quot;&gt;Sequential Funding Tranches&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Unlocks budget upon verified adoption milestones&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="560" y="590" width="500" height="125" as="geometry"/>
-        </mxCell>
-
-        <!-- Bottom Right Legend -->
-        <mxCell id="box_legend" value="&lt;table style=&quot;width:100%;font-size:8.5px;color:#334155;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;font-size:10px;font-weight:bold;color:#0F172A;border-bottom:1px solid #CBD5E1;padding-bottom:2px;&quot;&gt;Legend &amp;amp; Symbol Standards&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding-top:4px;&quot;&gt;🔵 &lt;b&gt;Core Governance &amp;amp; Tooling&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding-top:4px;&quot;&gt;🟢 &lt;b&gt;Funding &amp;amp; Financial Data&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;🛡️ &lt;b&gt;GAMP 5 Validated Gate&lt;/b&gt;&lt;/td&gt;&lt;td&gt;⚡ &lt;b&gt;Operational Telemetry Feed&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="590" width="470" height="125" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== FLOW CONNECTORS ==================== -->
-        <mxCell id="e_inp_coe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="node_exec_strategy" target="cont_ai_coe"/>
-        <mxCell id="e_coe_sys" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="cont_ai_coe" target="cont_system_view"/>
-
-        <!-- Strategy to Governance Box -->
-        <mxCell id="e_strat_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="node_exec_strategy" target="box_gov_strat"/>
-        <mxCell id="e_biz_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="node_business_plan" target="box_gov_strat"/>
-        <mxCell id="e_cloud_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="node_cloud_plans" target="box_gov_strat"/>
-        <mxCell id="e_gamp_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="node_gamp5" target="box_gov_strat"/>
-
-        <!-- Governance to Circular Process Engine -->
-        <mxCell id="e_gov_loops" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_gov_strat" target="loop_user_onboarding"/>
-        <mxCell id="e_loop1_loop2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="loop_user_onboarding" target="loop_prompt_curation"/>
-        <mxCell id="e_loop2_loop3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="loop_prompt_curation" target="loop_feedback"/>
-        <mxCell id="e_loops_analytics" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="loop_feedback" target="box_analytics"/>
-
-        <!-- Analytics to System Output Views -->
-        <mxCell id="e_an_coe_out" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_analytics" target="node_coe_operating_model"/>
-        <mxCell id="e_an_platform" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_analytics" target="node_wbs_platform"/>
-        <mxCell id="e_an_pso" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_analytics" target="node_pso_support"/>
-
-        <!-- Closed Loop Funding Governance -->
-        <mxCell id="e_an_execs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_analytics" target="node_execs_leads"/>
-        <mxCell id="e_execs_funding" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="node_execs_leads" target="node_funding"/>
-        <mxCell id="e_funding_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;dashed=1;" edge="1" parent="1" source="node_funding" target="box_gov_strat"/>
-
-
-        <!-- ==================== FOOTER LEGEND ==================== -->
-        <mxCell id="legend_box" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;AI Center of Excellence Framework:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Strategy &amp;amp; Ideation&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔷 &lt;b&gt;Operational Prompt Loops&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Verified GAMP 5 Model&lt;/b&gt;&lt;/td&gt;&lt;td&gt;📈 &lt;b&gt;Looker BI Insights&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Operational Excellence Standard&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="735" width="1530" height="38" as="geometry"/>
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-
-  <diagram id="ai_coe_playbook" name="Page 2: Executive Playbook &amp; Governance Profile">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF">
-      <root>
-        <mxCell id="0_p2" />
-        <mxCell id="1_p2" parent="0_p2" />
-
-        <!-- PAGE 2 HEADER BANNER -->
-        <mxCell id="p2_hdr" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;EXECUTIVE AI CENTER OF EXCELLENCE (CoE) PLAYBOOK — GOVERNANCE PROFILE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1_p2">
-          <mxGeometry x="35" y="16" width="1530" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="p2_line" value="" style="line;strokeWidth=2;strokeColor=#0F172A;" vertex="1" parent="1_p2">
-          <mxGeometry x="35" y="48" width="1530" height="4" as="geometry" />
-        </mxCell>
-
-        <!-- KPI SUMMARY BAR (4 Cards across 1530px) -->
-        <mxCell id="kpi_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;ARCHITECTURE ID&lt;/font&gt;&lt;br/&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;AI CoE Operating Model&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0F172A;fillColor=#F8FAFC;align=center;" vertex="1" parent="1_p2">
-          <mxGeometry x="35" y="65" width="360" height="60" as="geometry" />
-        </mxCell>
-
-        <mxCell id="kpi_2" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;GAMP 5 COMPLIANCE LEVEL&lt;/font&gt;&lt;br/&gt;&lt;font color=&quot;#16A34A&quot; style=&quot;font-size:16px;&quot;&gt;&lt;b&gt;★★★★★ &amp;nbsp;Validated Category 5&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#16A34A;fillColor=#F0FDF4;align=center;" vertex="1" parent="1_p2">
-          <mxGeometry x="425" y="65" width="360" height="60" as="geometry" />
-        </mxCell>
-
-        <mxCell id="kpi_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;AI COE OPERATING MATURITY&lt;/font&gt;&lt;br/&gt;&lt;font color=&quot;#0284C7&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;Level 4 Managed &amp;amp; Continuous&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0284C7;fillColor=#F0F9FF;align=center;" vertex="1" parent="1_p2">
-          <mxGeometry x="815" y="65" width="360" height="60" as="geometry" />
-        </mxCell>
-
-        <mxCell id="kpi_4" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;BUSINESS VALUE TRACKING&lt;/font&gt;&lt;br/&gt;&lt;font color=&quot;#2563EB&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;Real-Time Looker Telemetry&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;align=center;" vertex="1" parent="1_p2">
-          <mxGeometry x="1205" y="65" width="360" height="60" as="geometry" />
-        </mxCell>
-
-        <!-- PERSONA MATRIX ROW (2 Cards across 1530px) -->
-        <mxCell id="per_card_1" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👤 PRIMARY CREATOR PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Head of AI Center of Excellence &amp;amp; Chief AI Architect&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Responsible for enterprise prompt curation standards, developer onboarding academies, GAMP 5 compliance frameworks, adoption modeling, and multi-agent governance.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
-          <mxGeometry x="35" y="145" width="750" height="125" as="geometry" />
-        </mxCell>
-
-        <mxCell id="per_card_2" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0284C7;padding:8px 12px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;👔 PRIMARY CONSUMER PERSONA&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:12px;background-color:#F0F9FF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Chief Digital Officer, VP of Engineering &amp;amp; BU GMs&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Reviews quarterly adoption progress, certifies GAMP 5 compliance sign-offs, tracks AI utilization insights, and approves sequential funding tranches for scaling AI use-cases.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0284C7;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
-          <mxGeometry x="815" y="145" width="750" height="125" as="geometry" />
-        </mxCell>
-
-        <!-- DUAL LENS COMPARISON (2 Cards across 1530px) -->
-        <mxCell id="lens_google" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#1D4ED8;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;🚀 BIG TECH &amp;amp; ENGINEERING PERSPECTIVE (Google / Meta / OpenAI)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#FFFFFF;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;1. Developer Velocity &amp;amp; Automated Sandboxes:&lt;/b&gt; Self-service developer onboarding with instant access to certified LLM gateways, playground environments, and automated evaluations.&lt;br/&gt;&lt;br/&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;2. Continuous GitOps Prompt Curation:&lt;/b&gt; Version-controlled prompt pipelines with automated regression testing, token efficiency benchmarks, and safety guardrails.&lt;br/&gt;&lt;br/&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;3. Real-Time Telemetry &amp;amp; User Feedback Loops:&lt;/b&gt; Live CSAT ratings and latency telemetry triaged directly into Jira for continuous prompt and model fine-tuning.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#1D4ED8;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
-          <mxGeometry x="35" y="290" width="750" height="440" as="geometry" />
-        </mxCell>
-
-        <mxCell id="lens_mckinsey" value="&lt;table style=&quot;width:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;background-color:#0F172A;padding:10px 14px;&quot;&gt;&lt;font color=&quot;#FFFFFF&quot; style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;💼 TIER-1 STRATEGY CONSULTING PERSPECTIVE (McKinsey / BCG / Bain)&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px;background-color:#F8FAFC;&quot;&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12px;line-height:1.6;&quot;&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;1. Enterprise Adoption Modeling &amp;amp; Value Capture:&lt;/b&gt; Rigorous quantification of AI adoption velocity across business units, unlocking sequential funding gates based on verified ROI.&lt;br/&gt;&lt;br/&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;2. GAMP 5 &amp;amp; Regulated Industry Assurance:&lt;/b&gt; Validated operational framework ensuring 21 CFR Part 11 compliance, algorithmic audit trails, and risk-managed AI rollout in enterprise environments.&lt;br/&gt;&lt;br/&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;3. Operating Model Scalability (PSO Integration):&lt;/b&gt; Seamless hand-off from CoE ideation to Professional Services &amp;amp; Operations (PSO) for enterprise-wide industrialization.&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;strokeWidth=2;strokeColor=#0F172A;verticalAlign=top;align=left;overflow=hidden;" vertex="1" parent="1_p2">
-          <mxGeometry x="815" y="290" width="750" height="440" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`.trim();
+  return `<mxfile host="app.diagrams.net" modified="2026-08-20T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device"><diagram id="ai_coe_operating_model" name="Gemini Enterprise AI Center of Excellence Operating Model"><mxGraphModel dx="1760" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1760" pageHeight="1010" background="#FFFFFF"><root>${c.join('\n')}</root></mxGraphModel></diagram></mxfile>`;
 }
