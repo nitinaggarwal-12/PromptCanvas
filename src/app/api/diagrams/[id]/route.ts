@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDiagram, deleteDiagram, getDiagramVersions, updateDiagramArchitectureType, updateDiagramPrivacy } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
-import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 
 interface RouteParams {
@@ -25,7 +25,24 @@ export async function GET(request: Request, { params }: RouteParams) {
     }
 
     const rawVersions = await getDiagramVersions(id);
-    const versions = rawVersions.map((v: any) => {
+
+    // Catalog blueprint records (bp_*) are cached DB representations of code-owned masters.
+    // Always render the current code master as the latest version so deep links never show
+    // a stale/corrupted DB snapshot after a master is repaired. Historical versions remain intact.
+    const isCatalogBlueprint = id.startsWith('bp_');
+    const liveMasterXml = isCatalogBlueprint
+      ? getDefaultXmlForArchitecture(id.slice(3))
+      : null;
+
+    let versions = rawVersions.map((v: any, index: number) => {
+      if (index === 0 && liveMasterXml) {
+        return {
+          ...v,
+          xml_content: liveMasterXml,
+          comment: v.comment || 'Current catalog master'
+        };
+      }
+
       let xmlStr = v.xml_content;
       if (typeof xmlStr !== 'string' && xmlStr !== null && xmlStr !== undefined) {
         if (Buffer.isBuffer(xmlStr)) {
@@ -36,12 +53,28 @@ export async function GET(request: Request, { params }: RouteParams) {
           xmlStr = String(xmlStr);
         }
       }
-      const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(xmlStr || '', diagram.architecture_type || 'unified_system_view');
+      const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
+        xmlStr || '',
+        diagram.architecture_type || 'unified_system_view'
+      );
       return { ...v, xml_content: healedXml };
     });
 
+    if (liveMasterXml && versions.length === 0) {
+      versions = [{
+        id: `${id}__live_master`,
+        diagram_id: id,
+        version_number: 1,
+        xml_content: liveMasterXml,
+        comment: 'Current catalog master',
+        created_by: 'System',
+        created_at: new Date().toISOString()
+      }];
+    }
+
     return NextResponse.json({
       ...diagram,
+      xml_content: liveMasterXml || diagram.xml_content,
       versions
     });
   } catch (error) {
