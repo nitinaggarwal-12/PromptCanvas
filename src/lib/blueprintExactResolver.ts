@@ -4,6 +4,7 @@ import {
 } from './diagramCompiler';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildMultiAgentSequenceXml } from './masterBuilders/build_master_multi_agent_sequence';
+import { buildSecureDeploymentPhase1Xml } from './masterBuilders/build_master_secure_deployment_phase1';
 import {
   getExactSixRsMigrationMatrixXml,
   getExactHybridStranglerTransitionXml,
@@ -19,7 +20,6 @@ import {
   getExactDataResidencySovereignMapXml,
   getExactFederatedIamSsoXml,
   getExactAiTrismGuardrailsXml,
-  getExactSecureDeploymentMapWidescreenXml,
   getExactAgenticRagWidescreenXml,
   getExactGcpDataLakehouseWbsXml,
   getExactMicroFrontendsXml,
@@ -68,7 +68,7 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   tech_micro_frontends: getExactMicroFrontendsXml,
   logical_ai_config_tenant: getExactLogicalAiConfigTenantXml,
   sequence_diagram: buildMultiAgentSequenceXml,
-  secure_deployment_map: getExactSecureDeploymentMapWidescreenXml,
+  secure_deployment_map: buildSecureDeploymentPhase1Xml,
   gcp_landing_zone_vpc: getExactGcpLandingZoneVpcXml,
   data_residency_sovereign_map: getExactDataResidencySovereignMapXml,
   enterprise_agent_runtime: getExactEnterpriseAgentRuntimeXml,
