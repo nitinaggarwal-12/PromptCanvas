@@ -9,9 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
       - run: npm ci
       - name: Type check
@@ -20,7 +22,7 @@ jobs:
         run: npm run test -- --run
       - name: Guard test integrity
         run: |
-          if git diff origin/main...HEAD -- '**/*.test.ts' '**/fixtures/**' src/lib/technicalArchitectureXmls.ts | grep -E '^\+.*\.(skip|only)\(' ; then
+          if git diff HEAD^1..HEAD -- '**/*.test.ts' '**/fixtures/**' src/lib/technicalArchitectureXmls.ts | grep -E '^\+.*\.(skip|only)\(' ; then
             echo "::error::Skipped/focused tests introduced in this change"; exit 1; fi
       - name: Blueprint catalog certification gate
         run: npm run validate:blueprints
@@ -35,8 +37,8 @@ jobs:
           if-no-files-found: warn
       - name: Corpus duplicate-content tripwire
         run: npx tsx scripts/check-corpus-duplicates.ts diagrams/latest
-      - name: Geometry validation on golden outputs
-        run: npm run validate:xml scratch/golden/*.xml
+      - name: Structural XML geometry validation
+        run: npm run validate:xml diagrams/latest/*.xml
       - name: Geometry quality gate (visual-quality tenet)
         run: npx tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml
       - name: Template integrity (no new empty / duplicate / misnamed blueprints)

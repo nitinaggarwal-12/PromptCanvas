@@ -22,11 +22,19 @@ const v = (id: string, value: string, style: string, x: number, y: number, w: nu
   `<mxCell id="${id}" value="${esc(value)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
 const img = (id: string, url: string, x: number, y: number, w: number, h: number) =>
   v(id, '', `shape=image;imageAspect=0;aspect=fixed;image=${url};align=center;verticalAlign=middle;`, x, y, w, h);
-const zone = (id: string, n: number, title: string, sub: string, x: number, w: number, accent: string, fill: string) => [
-  v(id, '', `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;`, x, 25, w, 625),
-  v(`${id}_n`, String(n), `ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`, x + 14, 40, 30, 30),
-  v(`${id}_h`, `<b>${title}</b><br><span style="font-size:9.5px;color:#64748B">${sub}</span>`, 'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=3;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=12.5;', x + 54, 35, w - 68, 45),
-].join('\n');
+const zone = (id: string, n: number, title: string, sub: string, x: number, a: number, b: string | number, c: string | number, d?: string, e?: string) => {
+  const customGeometry = typeof b === 'number' && typeof c === 'number' && typeof d === 'string' && typeof e === 'string';
+  const y = customGeometry ? a : 25;
+  const w = customGeometry ? b as number : a;
+  const h = customGeometry ? c as number : 625;
+  const accent = customGeometry ? d! : b as string;
+  const fill = customGeometry ? e! : c as string;
+  return [
+    v(id, '', `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;`, x, y, w, h),
+    v(`${id}_n`, String(n), `ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`, x + 14, y + 15, 30, 30),
+    v(`${id}_h`, `<b>${title}</b><br><span style="font-size:9.5px;color:#64748B">${sub}</span>`, 'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=3;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=12.5;', x + 54, y + 10, w - 68, 45),
+  ].join('\n');
+};
 const card = (id: string, title: string, body: string, x: number, y: number, w: number, h: number, accent: string, icon = GCP, fill = '#FFFFFF') => [
   v(id, '', `rounded=1;arcSize=8;whiteSpace=wrap;html=1;overflow=hidden;fillColor=${fill};strokeColor=${accent};strokeWidth=1.15;`, x, y, w, h),
   v(`${id}_bar`, '', `rounded=1;arcSize=4;fillColor=${accent};strokeColor=${accent};`, x, y, 5, h),
@@ -85,7 +93,6 @@ export function buildDataLakehouseXml(): string {
   c.push(mini('credential', 'Connections & credential vending', 'Use short-lived scoped access for supported Lakehouse runtime catalog patterns instead of broad storage credentials', 1385, 414, 330, 92, '#D93025'));
   c.push(mini('perimeter', 'Data security controls', 'Encryption/KMS • audit logs • VPC Service Controls only around supported services • network controls as architecture requires', 1385, 526, 330, 72, '#D93025'));
 
-  // Primary data flow.
   c.push(edge('e1', 'src_db', 'datastream', 'CDC', '#2563EB'));
   c.push(edge('e1b', 'src_files', 'transfer', 'bulk/object', '#2563EB'));
   c.push(edge('e1c', 'src_stream', 'pubsub', 'events', '#2563EB'));

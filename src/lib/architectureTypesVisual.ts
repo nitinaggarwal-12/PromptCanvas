@@ -158,15 +158,15 @@ export const TECHNICAL_ARCHITECTURE_TYPES = RAW_TECHNICAL_ARCHITECTURE_TYPES.map
 export const ARCHITECTURE_TYPES = RAW_ARCHITECTURE_TYPES.map(normalizeCustomerFacingOption);
 export const normalizeArchitectureId = rawNormalizeArchitectureId;
 
-export function getArchitectureTypeById(id?: string | null): RawArchitectureTypeOption | undefined {
-  const option = rawGetArchitectureTypeById(id || '');
-  return option ? normalizeCustomerFacingOption(option) : option;
+export function getArchitectureTypeById(id?: string | null): RawArchitectureTypeOption {
+  const option = rawGetArchitectureTypeById(id || '') || RAW_BUSINESS_ARCHITECTURE_TYPES[0];
+  if (!option) throw new Error('Architecture type catalog is empty');
+  return normalizeCustomerFacingOption(option);
 }
 
 export function getTemplateTitle(id?: string | null): string {
   const option = getArchitectureTypeById(id);
-  if (option) return option.name;
-  return id || 'Architecture Diagram';
+  return option.name;
 }
 
 export const getTechnicalArchitectureXml = rawGetTechnicalArchitectureXml;

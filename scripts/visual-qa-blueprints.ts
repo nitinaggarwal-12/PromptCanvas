@@ -9,6 +9,13 @@ const TARGETS = [
   { id: 'tech_supply_chain', label: '39-predictive-maintenance' },
 ];
 
+interface VisualInspection {
+  blackOverlays: Array<{ tag: string; width: number; height: number; areaRatio: number; source: string }>;
+  svgWidth: number;
+  svgHeight: number;
+  directChildren: number;
+}
+
 const outDir = path.resolve('artifacts/visual-qa');
 fs.mkdirSync(outDir, { recursive: true });
 
@@ -86,23 +93,25 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff}
         continue;
       }
 
-      const inspection = await page.evaluate(() => {
+      // Use a browser-native function string instead of a TS-transformed closure. tsx/esbuild
+      // can inject its __name helper into functions passed directly to page.evaluate(), but that
+      // helper does not exist in the browser execution context.
+      const inspection = (await page.evaluate(`(() => {
         const root = document.getElementById('diagram');
-        const svg = root?.querySelector('svg');
+        const svg = root && root.querySelector('svg');
         if (!root || !svg) return { blackOverlays: [], svgWidth: 0, svgHeight: 0, directChildren: 0 };
 
         const rootRect = root.getBoundingClientRect();
         const rootArea = Math.max(1, rootRect.width * rootRect.height);
-        const blackOverlays: Array<{ tag: string; width: number; height: number; areaRatio: number; source: string }> = [];
+        const blackOverlays = [];
 
-        const isOpaqueBlack = (value: string | null) => {
-          const compact = String(value || '').replace(/\s+/g, '').toLowerCase();
+        function isOpaqueBlack(value) {
+          const compact = String(value || '').replace(/\\s+/g, '').toLowerCase();
           return compact === '#000' || compact === '#000000' || compact === 'black' ||
             compact === 'rgb(0,0,0)' || compact === 'rgba(0,0,0,1)';
-        };
+        }
 
-        // Catch the actual regression class: direct viewer overlay DIV expanded over canvas.
-        Array.from(root.children).forEach((node) => {
+        Array.from(root.children).forEach(function(node) {
           if (!(node instanceof HTMLElement)) return;
           if (node.querySelector('svg')) return;
           const rect = node.getBoundingClientRect();
@@ -113,8 +122,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff}
           }
         });
 
-        // Also catch a giant black SVG primitive accidentally introduced by XML/styles.
-        svg.querySelectorAll('rect,path,polygon').forEach((node) => {
+        svg.querySelectorAll('rect,path,polygon').forEach(function(node) {
           if (!(node instanceof SVGGraphicsElement)) return;
           const rect = node.getBoundingClientRect();
           const style = getComputedStyle(node);
@@ -131,7 +139,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff}
           svgHeight: Math.round(svgRect.height),
           directChildren: root.children.length,
         };
-      });
+      })()`)) as VisualInspection;
 
       await page.screenshot({ path: path.join(outDir, `${target.label}.png`), fullPage: false });
       fs.writeFileSync(path.join(outDir, `${target.label}.json`), JSON.stringify(inspection, null, 2));
