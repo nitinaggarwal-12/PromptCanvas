@@ -8,6 +8,7 @@ import {
   getDefaultXmlForArchitecture as rawGetDefaultXmlForArchitecture,
   getTechnicalArchitectureXml as rawGetTechnicalArchitectureXml
 } from './architectureTypes';
+import { getExactCatalogBlueprintXml } from './blueprintExactResolver';
 import { applyBlueprintTechnicalAccuracy } from './blueprintTechnicalAccuracy';
 import { applyBlueprintVisualSystem } from './blueprintVisualSystem';
 import { applyBlueprintSemanticIcons } from './blueprintSemanticIcons';
@@ -181,7 +182,12 @@ export function getDefaultXmlForArchitecture(
     return polish(buildEnterpriseReferenceArchitectureXml(), ENTERPRISE_REFERENCE_ID);
   }
 
-  const xml = rawGetDefaultXmlForArchitecture(archId, useCaseContext, userPrompt);
+  // Catalog previews and canonical templates use exact dispatch first. Custom prompt
+  // re-flavoring intentionally falls back to the legacy generator so the existing
+  // prompt-injection/healing pipeline remains available for user-authored variants.
+  const hasCustomPrompt = Boolean(userPrompt && userPrompt.trim());
+  const exactXml = hasCustomPrompt ? null : getExactCatalogBlueprintXml(normalizedId);
+  const xml = exactXml || rawGetDefaultXmlForArchitecture(archId, useCaseContext, userPrompt);
   if (!xml) return xml;
 
   if (normalizedId === 'blank_canvas' || normalizedId === 'arch_blank_canvas' || archId === 'v2_freeform') {
