@@ -2,6 +2,9 @@
   "name": "maestro-sketch",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "npm run validate:blueprints && npm run validate:render-safety && NODE_OPTIONS=--max-old-space-size=4096 next build",
