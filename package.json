@@ -10,6 +10,7 @@
     "validate": "npx tsx bin/validate-cli.ts",
     "validate:xml": "npx tsx bin/validate-cli.ts",
     "validate:blueprints": "npx tsx scripts/check-blueprint-catalog-quality.ts",
+    "validate:visual": "npx tsx scripts/visual-qa-blueprints.ts",
     "test": "vitest run",
     "eval:geometry": "tsx evals/score_geometry.ts",
     "eval:geometry:gate": "tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml",
