@@ -17,7 +17,9 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
       - name: Unit and golden pipeline tests
-        run: npm run test -- --run
+        run: |
+          mkdir -p artifacts/test-results
+          npx vitest run --reporter=json --outputFile=artifacts/test-results/vitest.json
       - name: Guard test integrity
         run: |
           if git diff origin/main...HEAD -- '**/*.test.ts' '**/fixtures/**' src/lib/technicalArchitectureXmls.ts | grep -E '^\+.*\.(skip|only)\(' ; then
@@ -31,7 +33,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: blueprint-visual-qa
-          path: artifacts/visual-qa/
+          path: |
+            artifacts/visual-qa/
+            artifacts/test-results/
           if-no-files-found: warn
       - name: Corpus duplicate-content tripwire
         run: npx tsx scripts/check-corpus-duplicates.ts diagrams/latest
