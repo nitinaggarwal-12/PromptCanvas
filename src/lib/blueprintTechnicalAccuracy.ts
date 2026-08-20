@@ -34,13 +34,23 @@ type RenderPatch = {
 
 function setStyleValue(style: string, key: string, value: string): string {
   const re = new RegExp(`((?:^|;)${key}=)[^;]*`, 'i');
-  if (re.test(style)) return style.replace(re, `$1${value}`);
+  if (re.test(style)) {
+    return style.replace(re, (_full, prefix: string) => `${prefix}${value}`);
+  }
   return `${style}${style && !style.endsWith(';') ? ';' : ''}${key}=${value};`;
 }
 
+/**
+ * Use a replacement callback rather than a `$1${number}$2` replacement string.
+ * With values such as 1710, JavaScript can interpret `$11710` as a higher-numbered
+ * capture reference and corrupt the XML attribute. That was the cause of the
+ * "error parsing attribute name" regression seen after the first repair attempt.
+ */
 function setGeometryValue(attrs: string, key: string, value: number): string {
   const re = new RegExp(`(\\b${key}=")[^"]*(")`, 'i');
-  if (re.test(attrs)) return attrs.replace(re, `$1${value}$2`);
+  if (re.test(attrs)) {
+    return attrs.replace(re, (_full, prefix: string, suffix: string) => `${prefix}${value}${suffix}`);
+  }
   return `${attrs} ${key}="${value}"`;
 }
 
@@ -68,34 +78,50 @@ function patchVertex(xml: string, patch: RenderPatch): string {
     geometryAttrs = setGeometryValue(geometryAttrs, 'y', patch.y);
     geometryAttrs = setGeometryValue(geometryAttrs, 'width', patch.width);
     geometryAttrs = setGeometryValue(geometryAttrs, 'height', patch.height);
+    if (!/\bas="geometry"/i.test(geometryAttrs)) {
+      geometryAttrs += ' as="geometry"';
+    }
+
     const nextBody = body.replace(geometryMatch[0], `<mxGeometry${geometryAttrs}/>`);
     return `<mxCell${nextAttrs}>${nextBody}</mxCell>`;
   });
 }
 
 const KNOWN_RENDER_REPAIRS: Record<string, RenderPatch[]> = {
+  // #22 — AI TRiSM footer operating plane.
   tech_ai_trism_guardrails: [
     { id: 'ops', x: 25, y: 680, width: 1710, height: 255, fillColor: '#F8FAFC', strokeColor: '#334155' },
     { id: 'ops_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
     { id: 'ops_h', x: 79, y: 690, width: 1642, height: 45 },
   ],
+
+  // #33 — Gemini capacity resilience-patterns footer.
   tech_llm_capacity_quota: [
     { id: 'patterns', x: 25, y: 660, width: 1710, height: 260, fillColor: '#F5F3FF', strokeColor: '#6554C0' },
     { id: 'patterns_n', x: 39, y: 675, width: 30, height: 30, fillColor: '#6554C0', strokeColor: '#6554C0' },
     { id: 'patterns_h', x: 79, y: 670, width: 1642, height: 44 },
   ],
+
+  // #39 — Predictive-maintenance cross-cutting operations footer.
   tech_supply_chain: [
     { id: 'ops', x: 25, y: 675, width: 1700, height: 235, fillColor: '#F8FAFC', strokeColor: '#334155' },
     { id: 'ops_n', x: 39, y: 690, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
     { id: 'ops_h', x: 79, y: 685, width: 1632, height: 45 },
   ],
+
+  // #42 — Smart-factory cross-cutting platform/governance footer.
+  smart_factory_iot: [
+    { id: 'ops', x: 25, y: 690, width: 1700, height: 230, fillColor: '#F8FAFC', strokeColor: '#334155' },
+    { id: 'ops_n', x: 39, y: 705, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
+    { id: 'ops_h', x: 79, y: 700, width: 1632, height: 45 },
+  ],
 };
 
 /**
- * Repairs the exact source defect behind the large black rectangle reported on #22,
- * #33 and #39. The faulty footer-zone calls passed y/width/height into an older helper
- * whose signature only accepted x/width, producing numeric values such as
- * strokeColor=1710 and fillColor=255 plus a large top-left rectangle.
+ * Repairs the exact source defect behind the large opaque rectangle on #22/#33/#39/#42.
+ * Those footer-zone calls passed y/width/height to a helper whose historical signature
+ * accepted only x/width, causing geometry values to be emitted as numeric colors while
+ * leaving an oversized rectangle at the top-left of the architecture.
  */
 export function applyKnownBlueprintRenderRepairs(xml: string, architectureId?: string | null): string {
   if (!xml) return xml;
@@ -126,7 +152,7 @@ export function applyBlueprintTechnicalAccuracy(xml: string): string {
   );
 
   // Exact catalog resolver stamps pc-catalog-id before this stage. Use that canonical
-  // identity to apply the targeted source-level repair automatically in production.
+  // identity to apply the narrow geometry/style repair before any downstream styling.
   const canonicalId = next.match(/pc-catalog-id:([a-z0-9_]+)/i)?.[1] || null;
   next = applyKnownBlueprintRenderRepairs(next, canonicalId);
 
