@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import puppeteer from 'puppeteer';
-import { BLUEPRINT_KNOWLEDGE_MATRIX } from '../src/lib/blueprintKnowledgeMatrixNormalized';
+import { BLUEPRINT_KNOWLEDGE_MATRIX } from '../src/lib/blueprintKnowledgeMatrixCatalog';
 import { getDefaultXmlForArchitecture } from '../src/lib/architectureTypesCertified';
 
 const PUBLIC_BLUEPRINTS_DIR = path.resolve('public/blueprints');
