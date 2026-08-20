@@ -7,10 +7,10 @@ describe('Blueprint 29 and 34 refinements', () => {
     expect(xml).toContain('6Rs Migration Disposition Matrix');
     expect(xml).toContain('P5-APP-L-01');
     for (const term of ['Rehost','Replatform','Refactor','Retain','Retire','Repurchase']) expect(xml).toContain(term);
-    for (const term of ['Business 30%','Technical 40%','Cloud readiness 30%','Disposition rules','Hard constraints','Dependency &amp; wave logic','Decision confidence &amp; rationale']) expect(xml).toContain(term);
+    for (const term of ['Business 30%','Technical 40%','Cloud Readiness 30%','Disposition Engine','Hard Constraints','Dependency &amp; wave logic','Decision Confidence &amp; Rationale']) expect(xml).toContain(term);
     expect(xml).toContain('data migration + identity/integration re-pointing');
     expect(xml).toContain('illustrative planning ranges');
-    expect(xml).toContain('migration roadmap');
+    expect(xml).toContain('Migration Roadmap');
     expect(xml).toContain('vertex="1"');
     expect(xml).toContain('edge="1"');
   });
