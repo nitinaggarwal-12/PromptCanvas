@@ -1,9 +1,20 @@
+import { inflateRawSync } from 'node:zlib';
 import { BLUEPRINT_KNOWLEDGE_MATRIX, getBlueprintMetadataById } from '../src/lib/blueprintKnowledgeMatrixCatalog';
 import { getArchitectureHierarchy } from '../src/lib/architectureHierarchyCatalog';
 import { getDefaultXmlForArchitecture } from '../src/lib/architectureTypesCertified';
 
 const ID = 'enterprise_ai_document_assistant';
 const failures: string[] = [];
+
+function decodeRuntimeDiagram(xml: string): string {
+  const body = xml.match(/<diagram\b[^>]*>([\s\S]*?)<\/diagram>/i)?.[1] || '';
+  if (!body) return '';
+  try {
+    return decodeURIComponent(inflateRawSync(Buffer.from(body, 'base64')).toString('utf8'));
+  } catch {
+    return '';
+  }
+}
 
 if (BLUEPRINT_KNOWLEDGE_MATRIX.length !== 61) {
   failures.push(`visible catalog size: expected 61, got ${BLUEPRINT_KNOWLEDGE_MATRIX.length}`);
@@ -29,10 +40,13 @@ if (hierarchyCount !== 61) {
 }
 
 const xml = getDefaultXmlForArchitecture(ID) || '';
+const diagram = decodeRuntimeDiagram(xml);
+
 if (!xml.includes('PromptCanvas Blueprint 61')) failures.push('runtime XML missing Blueprint 61 agent identity');
 if (!xml.includes('Blueprint 61 - Enterprise AI Document Assistant')) failures.push('runtime XML missing Blueprint 61 diagram name');
 if (xml.includes('Blueprint 51') || xml.includes('enterprise_ai_doc_assistant_51')) failures.push('runtime XML leaked provisional Blueprint 51 identity');
 if (!xml.includes('catalog_enterprise_ai_document_assistant')) failures.push('runtime XML missing canonical catalog diagram ID');
+if (!diagram.includes('<mxGraphModel') || !diagram.includes('<root>')) failures.push('runtime diagram payload could not be decoded as editable Draw.io XML');
 
 const required = [
   'Workflow Orchestrator',
@@ -45,8 +59,15 @@ const required = [
   'Cloud Logging',
 ];
 for (const token of required) {
-  if (!xml.toLowerCase().includes(token.toLowerCase())) failures.push(`runtime XML missing ${token}`);
+  if (!diagram.toLowerCase().includes(token.toLowerCase())) failures.push(`runtime diagram missing ${token}`);
 }
+
+const vertices = (diagram.match(/<mxCell\b[^>]*\bvertex="1"/gi) || []).length;
+const edges = (diagram.match(/<mxCell\b[^>]*\bedge="1"/gi) || []).length;
+const decisions = (diagram.match(/rhombus/gi) || []).length;
+if (vertices < 25) failures.push(`runtime diagram too sparse: ${vertices} vertices`);
+if (edges < 18) failures.push(`runtime diagram too sparse: ${edges} edges`);
+if (decisions < 3) failures.push(`runtime diagram missing decision depth: ${decisions} diamonds`);
 
 const liveLink = bp61?.liveRailwayLink || '';
 if (!liveLink.includes('promptcanvas-production-235c.up.railway.app') || !liveLink.includes(`blueprint=${ID}`)) {
@@ -63,6 +84,9 @@ console.log(JSON.stringify({
   status: 'PASSED',
   visibleCatalogCount: BLUEPRINT_KNOWLEDGE_MATRIX.length,
   hierarchyCount,
+  vertices,
+  edges,
+  decisions,
   combinedId: bp61.combinedId,
   liveRailwayLink: bp61.liveRailwayLink,
 }, null, 2));
