@@ -8,6 +8,7 @@ import {
   getTemplateTitle as visualGetTemplateTitle,
   getDefaultXmlForArchitecture as visualGetDefaultXmlForArchitecture,
 } from './architectureTypesVisual';
+import { CATALOG_CANONICAL_IDS } from './blueprintExactResolver';
 
 export type ArchitectureTypeOption = VisualArchitectureTypeOption;
 export const BUSINESS_ARCHITECTURE_TYPES = VISUAL_BUSINESS_ARCHITECTURE_TYPES;
@@ -27,7 +28,7 @@ const NOTATION_SENSITIVE_IDS = new Set([
   'data_lineage_provenance',
 ]);
 
-const KNOWN_ARCHITECTURE_IDS = new Set(VISUAL_ARCHITECTURE_TYPES.map((option) => option.id));
+const REGISTERED_BLUEPRINT_IDS = new Set<string>(CATALOG_CANONICAL_IDS);
 const BLUEPRINT_ID_PREFIX_RE = /^(?:p\d-|ind-|arch-)/i;
 const EMOJI_RE = /\p{Extended_Pictographic}/gu;
 const MIN_FONT = 9.5;
@@ -71,7 +72,7 @@ function assertRegisteredBlueprintId(archId?: string | null): void {
   if (!raw || !BLUEPRINT_ID_PREFIX_RE.test(raw)) return;
 
   const normalized = visualNormalizeArchitectureId(raw);
-  if (!KNOWN_ARCHITECTURE_IDS.has(normalized)) {
+  if (!REGISTERED_BLUEPRINT_IDS.has(normalized)) {
     throw new Error(`BLUEPRINT_NOT_REGISTERED: ${raw}`);
   }
 }
