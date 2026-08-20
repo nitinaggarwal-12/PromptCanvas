@@ -11,6 +11,12 @@ function esc(value) {
     .replace(/"/g, '&quot;');
 }
 
+function safeValue(value) {
+  const raw = String(value ?? '');
+  if (raw.includes('&lt;') || raw.includes('&#')) return raw;
+  return esc(raw).replace(/\n/g, '&lt;br&gt;');
+}
+
 function svgData(svg) {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
@@ -32,7 +38,7 @@ const BOX = 'rounded=1;arcSize=10;whiteSpace=wrap;html=1;verticalAlign=middle;fo
 const TEXT = 'text;html=1;strokeColor=none;fillColor=none;fontFamily=Inter;verticalAlign=middle;';
 
 function cell(id, value, style, x, y, w, h) {
-  return `<mxCell id="${id}" value="${value}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
+  return `<mxCell id="${id}" value="${safeValue(value)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
 }
 
 function imageCell(id, url, x, y, w, h) {
@@ -83,13 +89,13 @@ function message(parts, id, n, fromX, toX, y, label, kind, color, labelX, labelY
   const fillArrow = kind === 'sync';
   parts.edges.push(lineEdge(`${id}_edge`, sx, y, tx, y, color, 2, dashed, arrow, fillArrow));
   parts.nodes.push(step(`${id}_step`, n, Math.min(fromX, toX) + 15, y, color));
-  parts.nodes.push(cell(`${id}_label`, esc(label), `${TEXT}align=center;fontSize=10.1;fontColor=#344054;whiteSpace=wrap;overflow=hidden;fillColor=#FFFFFF;opacity=96;`, labelX, labelY, labelW, labelH));
+  parts.nodes.push(cell(`${id}_label`, label, `${TEXT}align=center;fontSize=10.1;fontColor=#344054;whiteSpace=wrap;overflow=hidden;fillColor=#FFFFFF;opacity=96;`, labelX, labelY, labelW, labelH));
 }
 
 function frame(id, tag, x, y, w, h, stroke, fill) {
   return [
     cell(id, '', `rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=${fill};opacity=18;strokeColor=${stroke};strokeWidth=1.3;dashed=1;dashPattern=6 4;`, x, y, w, h),
-    badge(`${id}_tag`, esc(tag), x + 8, y + 5, 152, 25, '#FFFFFF', stroke, stroke, 10.5),
+    badge(`${id}_tag`, tag, x + 8, y + 5, 152, 25, '#FFFFFF', stroke, stroke, 10.5),
   ];
 }
 
