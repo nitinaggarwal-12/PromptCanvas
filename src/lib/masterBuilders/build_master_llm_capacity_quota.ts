@@ -1,199 +1,78 @@
-export function buildLlmCapacityQuotaXml(): string {
-  return `<mxfile host="embed.diagrams.net">
-  <diagram id="llm_capacity_quota_management" name="Comprehensive Topology for (LLM) Capacity Quota Management (P5-AI-L-05)">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
+/**
+ * Blueprint 33 — Gemini Capacity, Consumption & Resilience Architecture.
+ * Phase 3.2 rebuild aligned to 2026 Gemini Enterprise Agent Platform consumption options.
+ */
 
-        <!-- ==================== TOP TITLE BANNER ==================== -->
-        <mxCell id="main_title_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="16" width="700" height="54" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;LLM Capacity &amp;amp; Quota Management Topology (P5-AI-L-05)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Multi-Region Inference Routing • Distributed Rate Limiting • SRE Observability&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="18" width="670" height="50" as="geometry"/>
-        </mxCell>
+const GCP='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E';
+const esc=(s:string)=>s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const v=(id:string,value:string,style:string,x:number,y:number,w:number,h:number)=>`<mxCell id="${id}" value="${esc(value)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
+const img=(id:string,url:string,x:number,y:number,w:number,h:number)=>v(id,'',`shape=image;imageAspect=0;aspect=fixed;image=${url};align=center;verticalAlign=middle;`,x,y,w,h);
+const zone=(id:string,n:number,title:string,sub:string,x:number,w:number,accent:string,fill:string)=>[
+ v(id,'',`rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;`,x,45,w,585),
+ v(`${id}_n`,String(n),`ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`,x+14,60,30,30),
+ v(`${id}_h`,`<b>${title}</b><br><span style="font-size:9.5px;color:#64748B">${sub}</span>`,'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=3;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=12.5;',x+54,55,w-68,44)
+].join('\n');
+const mini=(id:string,title:string,body:string,x:number,y:number,w:number,h:number,accent:string,fill='#FFFFFF')=>v(id,`<b>${title}</b><br><span style="font-size:9px;color:#64748B">${body}</span>`,`rounded=1;arcSize=7;whiteSpace=wrap;html=1;overflow=hidden;spacing=6;fillColor=${fill};strokeColor=${accent};strokeWidth=1.05;fontColor=#0F172A;fontSize=10.6;align=left;verticalAlign=middle;`,x,y,w,h);
+const card=(id:string,title:string,body:string,x:number,y:number,w:number,h:number,accent:string,fill='#FFFFFF')=>[
+ v(id,'',`rounded=1;arcSize=8;whiteSpace=wrap;html=1;overflow=hidden;fillColor=${fill};strokeColor=${accent};strokeWidth=1.1;`,x,y,w,h),
+ img(`${id}_i`,GCP,x+14,y+Math.max(10,(h-36)/2),36,36),
+ v(`${id}_t`,`<b>${title}</b><br><span style="font-size:9.2px;color:#64748B">${body}</span>`,'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=4;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=10.9;',x+60,y+6,w-70,h-12)
+].join('\n');
+const edge=(id:string,s:string,t:string,label:string,color:string,dashed=false,exitX=1,exitY=.5,entryX=0,entryY=.5)=>`<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${color};strokeWidth=1.8;${dashed?'dashed=1;dashPattern=6 4;':''}endArrow=block;endFill=1;fontSize=9.2;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};" edge="1" parent="1" source="${s}" target="${t}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
 
+export function buildLlmCapacityQuotaXml():string{
+ const c:string[]=['<mxCell id="0"/>','<mxCell id="1" parent="0"/>'];
+ c.push(v('purpose','<b>GEMINI CAPACITY, CONSUMPTION & RESILIENCE</b>   Match workload criticality and traffic shape to the right Agent Platform consumption option. Treat shared-capacity 429s as a resilience signal—not as proof that a fixed quota was exhausted.','rounded=1;arcSize=7;whiteSpace=wrap;html=1;overflow=hidden;spacing=7;fillColor=#F8FBFF;strokeColor=#8AB4F8;strokeWidth=1.2;fontColor=#334155;fontSize=11;align=center;verticalAlign=middle;',25,10,1710,30));
 
-        <!-- ==================== LEFT: CONSUMER APPS & CLOUD INFRASTRUCTURE ==================== -->
-        
-        <!-- Consumer Applications Card -->
-        <mxCell id="card_consumer_apps" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:28px;&quot;&gt;💻📱&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;Consumer Apps&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9px;color:#64748B;&quot;&gt;Web, Mobile &amp;amp; Internal APIs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
-          <mxGeometry x="30" y="270" width="120" height="110" as="geometry"/>
-        </mxCell>
+ c.push(zone('demand',1,'WORKLOAD DEMAND','Characterize traffic before choosing capacity',25,290,'#1A73E8','#EFF6FF'));
+ c.push(card('apps','Applications & agents','Interactive chat • APIs • batch tasks • multimodal agents • internal automation',45,115,250,82,'#1A73E8'));
+ c.push(mini('traffic','Traffic profile','Requests/sec • input/output tokens • concurrency • burstiness • modality • geographic demand',45,217,250,86,'#1A73E8'));
+ c.push(mini('slo','Service objective','Criticality • latency target • availability objective • peak-window tolerance • business impact',45,323,250,86,'#1A73E8'));
+ c.push(mini('modelmix','Model portfolio','Approved Gemini / third-party / open models; direct model calls can have different capacity options',45,429,250,82,'#1A73E8'));
+ c.push(mini('dependency','Separate dependencies','Grounding, Agent Search, tools and other services can have independent quotas/limits—capacity planning must include them.',45,531,250,74,'#D93025','#FFF7F7'));
 
-        <!-- Ingress API Calls Arrow -->
-        <mxCell id="e_apps_gateway" value="API Calls" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;fontSize=9;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;padding=2;" edge="1" parent="1" source="card_consumer_apps" target="card_edge_gateway">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
+ c.push(zone('choose',2,'CONSUMPTION OPTION','Choose predictability vs flexibility intentionally',340,370,'#7B61A8','#F7F4FF'));
+ c.push(card('standard','Standard PayGo','Shared capacity with usage tiers; suitable for elastic workloads that can tolerate variable contention',360,115,330,82,'#7B61A8'));
+ c.push(card('priority','Priority PayGo','Higher-priority consumption option for production workloads needing more predictable shared-capacity performance',360,217,330,82,'#7B61A8'));
+ c.push(card('pt','Provisioned Throughput','Reserved throughput for supported direct model calls; fixed-term capacity for predictable critical baseload',360,319,330,90,'#7B61A8'));
+ c.push(mini('pt_scope','PT scope boundary','Provisioned Throughput does not automatically cover Agent Search, Vertex AI Agents, grounding or unrelated service quotas.',360,429,330,92,'#D93025','#FFF7F7'));
+ c.push(mini('portfolio','Portfolio strategy','Layer capacity: reserve predictable baseload where justified; use PayGo options for burst/less-critical demand.',360,541,330,64,'#7B61A8'));
 
-        <!-- Main Cloud Infrastructure Container (Spans x = 180 .. 1120) -->
-        <mxCell id="box_cloud_infra" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="180" y="90" width="940" height="740" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_cloud_infra" value="🌐 &lt;b style=&quot;font-size:13px;color:#1E293B;&quot;&gt;Google Cloud Infrastructure — High Availability LLM Gateway Plane&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="195" y="98" width="500" height="24" as="geometry"/>
-        </mxCell>
+ c.push(zone('route',3,'REQUEST PATH & RESILIENCE','Design the client to survive capacity contention',735,350,'#0F8B82','#ECFDF5'));
+ c.push(card('global','Global endpoint — when supported','Dynamically routes requests across a larger multi-region capacity pool and can reduce shared-capacity 429 risk',755,115,310,86,'#0F8B82'));
+ c.push(mini('smooth','Traffic smoothing','Avoid sharp second-level spikes; queue/buffer non-interactive work and shape concurrency to protect user traffic',755,221,310,88,'#0F8B82'));
+ c.push(mini('retry','Truncated exponential backoff','Retry transient 429/5xx conditions with jitter, bounded attempts and end-to-end timeout budgets',755,329,310,88,'#0F8B82'));
+ c.push(mini('priority_class','Workload priority classes','Separate interactive/critical traffic from batch/background work; use application-level admission control',755,437,310,82,'#0F8B82'));
+ c.push(mini('degrade','Graceful degradation','Fallback model/feature, cached answer, asynchronous completion or clear retry UX only when product semantics allow it',755,539,310,66,'#0F8B82'));
 
-        <!-- Edge API Gateway -->
-        <mxCell id="card_edge_gateway" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;🚪&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Apigee / GKE&lt;br&gt;API Gateway&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;line-height:1.25;padding-top:4px;&quot;&gt;JWT Auth • TLS 1.3&lt;br&gt;WAF Cloud Armor&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="200" y="260" width="115" height="130" as="geometry"/>
-        </mxCell>
+ c.push(zone('serve',4,'GEMINI MODEL SERVING','Managed capacity—not a customer-operated GPU pod topology',1110,300,'#4285F4','#EFF6FF'));
+ c.push(v('serve_shell','', 'rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#4285F4;strokeWidth=1.6;',1130,118,260,270));
+ c.push(img('serve_logo',GCP,1148,139,45,45));
+ c.push(v('serve_title','<b>Gemini Enterprise Agent Platform</b><br><span style="font-size:9.5px;color:#64748B">Managed model serving and consumption controls</span>','text;html=1;whiteSpace=wrap;overflow=hidden;spacing=4;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=12.5;',1205,130,165,62));
+ c.push(mini('usage_tier','Usage tier / shared capacity','Standard PayGo baseline and shared-resource behavior are managed by the platform—not a custom Redis quota governor.',1150,217,220,72,'#4285F4'));
+ c.push(mini('pt_measure','PT measurement','Purchased throughput is measured for the selected model/location and direct supported requests.',1150,307,220,62,'#4285F4'));
+ c.push(mini('errors','Capacity outcomes','PayGo contention commonly surfaces as 429; PT behavior differs below/above purchased throughput and by configuration.',1130,416,260,84,'#D93025','#FFF7F7'));
+ c.push(mini('no_fake','Architecture rule','Do not invent a “Vertex AI Quota Governor” product or imply Cloud Load Balancing routes Gemini model capacity.',1130,520,260,76,'#D93025','#FFF7F7'));
 
-        <!-- Quota Management Service Container -->
-        <mxCell id="box_quota_section" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="345" y="140" width="165" height="660" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_rate_limit_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#1E40AF;&quot;&gt;⚡ Quota &amp;amp; Rate Limiter&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="350" y="146" width="155" height="22" as="geometry"/>
-        </mxCell>
+ c.push(zone('operate',5,'CAPACITY OPERATIONS','Measure, forecast and change consumption deliberately',1435,300,'#334155','#F8FAFC'));
+ c.push(mini('telemetry','Application telemetry','Requests • tokens • concurrency • latency • 429/5xx • retry rate • fallback rate • task success',1455,115,260,88,'#334155'));
+ c.push(mini('billing','Cloud Billing / usage','Spend trends • consumption-option cost • organization usage tier • project/workload attribution',1455,223,260,86,'#334155'));
+ c.push(mini('forecast','Capacity forecast','Baseline vs peak • growth • seasonal events • model changes • multimodal expansion • headroom',1455,329,260,86,'#334155'));
+ c.push(mini('alert','Operational alerts','Sustained contention • retry amplification • latency breach • PT saturation • dependency quota pressure',1455,435,260,82,'#D93025','#FFF7F7'));
+ c.push(mini('decision','Capacity decision','Tune traffic → change consumption option → purchase/increase PT → optimize model/request shape as evidence requires',1455,537,260,68,'#334155'));
 
-        <!-- Top Distributed Cache (Redis Tier 1) -->
-        <mxCell id="card_redis_top" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🛢️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#991B1B;&quot;&gt;Memorystore Redis&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;padding-top:2px;&quot;&gt;Token Bucket Rate Limiter&lt;br&gt;Requests / Min / App&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="360" y="180" width="135" height="85" as="geometry"/>
-        </mxCell>
+ c.push(edge('e12','apps','standard','demand profile','#2563EB'));
+ c.push(edge('e23','standard','global','Standard PayGo','#7B61A8')); c.push(edge('e23b','priority','global','Priority PayGo','#7B61A8')); c.push(edge('e23c','pt','global','PT request','#7B61A8'));
+ c.push(edge('e34','global','serve_shell','model request','#0F8B82'));
+ c.push(edge('e45','serve_shell','telemetry','usage / errors','#334155'));
+ c.push(edge('eback','alert','traffic','capacity feedback','#D93025',true,0,.5,0,.8));
 
-        <!-- Quota Management Service Core Box -->
-        <mxCell id="card_quota_service" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;⚙️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Quota Governor&lt;br&gt;Microservice&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;line-height:1.25;padding-top:4px;&quot;&gt;Dynamic Priority Queue&lt;br&gt;Pre-flight Token Estimation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="360" y="280" width="135" height="110" as="geometry"/>
-        </mxCell>
-
-        <!-- Bottom Distributed Cache (Redis Tier 2) -->
-        <mxCell id="card_redis_btm" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;&quot;&gt;🛢️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#991B1B;&quot;&gt;Quota Budget Store&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;padding-top:2px;&quot;&gt;Monthly Token Allocations&lt;br&gt;Burst Credit Throttle&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="360" y="410" width="135" height="85" as="geometry"/>
-        </mxCell>
-
-        <!-- Edge Gateway -> Quota Service Connector -->
-        <mxCell id="e_gw_quota" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="card_edge_gateway" target="card_quota_service"/>
-
-        <!-- Quota Service <-> Redis Connectors -->
-        <mxCell id="e_quota_redis_top" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1" source="card_quota_service" target="card_redis_top"/>
-        <mxCell id="e_quota_redis_btm" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;" edge="1" parent="1" source="card_quota_service" target="card_redis_btm"/>
-
-
-        <!-- Cross-Region Load Balancer -->
-        <mxCell id="card_cslb" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:24px;&quot;&gt;⚖️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;padding-top:2px;&quot;&gt;Cloud Global LB&lt;br&gt;(Cross-Region)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;line-height:1.25;padding-top:4px;&quot;&gt;Health Check Sensing&lt;br&gt;Capacity Aware Routing&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="535" y="270" width="125" height="110" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="e_quota_cslb" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="card_quota_service" target="card_cslb"/>
-
-
-        <!-- ==================== MULTI-REGION MANAGED GKE CLUSTERS ==================== -->
-
-        <!-- Region 1: us-central1 Container -->
-        <mxCell id="box_region1" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="690" y="140" width="220" height="235" as="geometry"/>
-        </mxCell>
-        <mxCell id="hdr_region1" value="&lt;b style=&quot;font-size:10px;color:#1E40AF;&quot;&gt;🌐 Region 1 (us-central1)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="700" y="145" width="200" height="20" as="geometry"/>
-        </mxCell>
-
-        <!-- LLM Serving Pod 1 -->
-        <mxCell id="card_pod1" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;&quot;&gt;🧊 LLM Serving Pods (vLLM)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Continuous Batching Engine&lt;br&gt;• KV-Cache PagedAttention&lt;br&gt;• Autoscaling HPA on P99 Latency&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="700" y="170" width="200" height="90" as="geometry"/>
-        </mxCell>
-
-        <!-- Vertex AI FinOps Agent 1 -->
-        <mxCell id="card_finops_agent1" value="&lt;b style=&quot;font-size:9px;color:#166534;&quot;&gt;🤖 Vertex AI FinOps Sidecar Agent&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#15803D;&quot;&gt;Real-time Prompt Token Telemetry&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="700" y="270" width="200" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="badge_hw1" value="&lt;span style=&quot;font-size:8px;font-weight:bold;color:#047857;&quot;&gt;🟩 NVIDIA H100 GPUs • TPU v5e&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="700" y="322" width="200" height="24" as="geometry"/>
-        </mxCell>
-
-
-        <!-- Region 2: europe-west1 Container -->
-        <mxCell id="box_region2" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="690" y="395" width="220" height="235" as="geometry"/>
-        </mxCell>
-        <mxCell id="hdr_region2" value="&lt;b style=&quot;font-size:10px;color:#1E40AF;&quot;&gt;🌐 Region 2 (europe-west1)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="700" y="400" width="200" height="20" as="geometry"/>
-        </mxCell>
-
-        <!-- LLM Serving Pod 2 -->
-        <mxCell id="card_pod2" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;&quot;&gt;🧊 LLM Serving Pods (TGI)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• FlashAttention 2 Inference&lt;br&gt;• Speculative Decoding Runtime&lt;br&gt;• Dynamic GPU Multi-Tenancy&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="700" y="425" width="200" height="90" as="geometry"/>
-        </mxCell>
-
-        <!-- Vertex AI FinOps Agent 2 -->
-        <mxCell id="card_finops_agent2" value="&lt;b style=&quot;font-size:9px;color:#166534;&quot;&gt;🤖 Vertex AI FinOps Sidecar Agent&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#15803D;&quot;&gt;Real-time Prompt Token Telemetry&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
-          <mxGeometry x="700" y="525" width="200" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="badge_hw2" value="&lt;span style=&quot;font-size:8px;font-weight:bold;color:#047857;&quot;&gt;🟩 NVIDIA L4 GPUs • TPU v5p&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="700" y="577" width="200" height="24" as="geometry"/>
-        </mxCell>
-
-        <!-- Routing Connectors from LB -->
-        <mxCell id="e_lb_reg1" value="Primary Route" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="card_cslb" target="box_region1"/>
-        <mxCell id="e_lb_reg2" value="Failover / Spillage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;fontSize=8.5;fontStyle=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="card_cslb" target="box_region2"/>
-
-
-        <!-- ==================== FINOPS COST & USAGE HUB ==================== -->
-        <!-- FinOps API Gateway & BigQuery -->
-        <mxCell id="card_finops_gateway" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;📊&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI FinOps&lt;br&gt;Telemetry Ingestion&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud Pub/Sub Streaming Bus&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="935" y="170" width="165" height="90" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="card_finops_db" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:22px;&quot;&gt;🔍&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10.5px;font-weight:bold;color:#0F172A;&quot;&gt;BigQuery FinOps Store&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Partitioned by Tenant/Prompt&lt;br&gt;Token Cost Attribution&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="935" y="280" width="165" height="90" as="geometry"/>
-        </mxCell>
-
-        <!-- Looker FinOps Card (LIGHT THEME - NO BLACK BACKGROUND) -->
-        <mxCell id="card_looker_finops" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #BFDBFE;padding-bottom:2px;&quot;&gt;📈 Looker FinOps Cost Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Token Usage&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;font-weight:bold;color:#2563EB;&quot;&gt;42.8M&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Cost / Team&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;font-weight:bold;color:#16A34A;&quot;&gt;$1.42/k&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8px;color:#0F172A;&quot;&gt;Budget Alert&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;font-weight:bold;color:#0284C7;&quot;&gt;Optimal&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="935" y="395" width="165" height="100" as="geometry"/>
-        </mxCell>
-
-        <!-- FinOps Telemetry Connectors -->
-        <mxCell id="e_pod1_finops" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1" source="card_finops_agent1" target="card_finops_gateway"/>
-        <mxCell id="e_pod2_finops" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;" edge="1" parent="1" source="card_finops_agent2" target="card_finops_gateway"/>
-        <mxCell id="e_finops_gw_db" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_finops_gateway" target="card_finops_db"/>
-        <mxCell id="e_finops_db_dash" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_finops_db" target="card_looker_finops"/>
-
-
-        <!-- ==================== RIGHT: SRE OBSERVABILITY DASHBOARDS (LIGHT CLEAN THEME) ==================== -->
-        <mxCell id="box_sre_dashboards" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="90" width="420" height="740" as="geometry"/>
-        </mxCell>
-        <mxCell id="hdr_sre" value="&lt;b style=&quot;font-size:13px;color:#0F172A;&quot;&gt;📊 SRE Observability &amp;amp; Capacity Governance&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Real-Time Telemetry powered by Cloud Monitoring &amp;amp; Cloud Logging&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1160" y="98" width="400" height="30" as="geometry"/>
-        </mxCell>
-
-        <!-- 4 SRE Clean Light Dashboard Cards Stacked -->
-
-        <!-- 1. Rate Limiting Dashboard -->
-        <mxCell id="sre_dash1" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #E2E8F0;padding-bottom:3px;&quot;&gt;🚦 Rate Limiting &amp;amp; Throttling Dashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Total RPS&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#2563EB;&quot;&gt;14,250&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Top Consumers&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#0F172A;&quot;&gt;BU-Finance&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Quota Drops&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;0.00%&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1165" y="140" width="390" height="105" as="geometry"/>
-        </mxCell>
-
-        <!-- 2. Cross-Region LB Dashboard -->
-        <mxCell id="sre_dash2" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #E2E8F0;padding-bottom:3px;&quot;&gt;🌐 Global Traffic &amp;amp; Failover Routing&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;us-central1&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#0284C7;&quot;&gt;68.4%&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;europe-west1&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#0284C7;&quot;&gt;31.6%&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;P95 Latency&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;42ms&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1165" y="260" width="390" height="105" as="geometry"/>
-        </mxCell>
-
-        <!-- 3. LLM Inference Health Dashboard -->
-        <mxCell id="sre_dash3" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #E2E8F0;padding-bottom:3px;&quot;&gt;⚡ GPU / TPU Cluster Health &amp;amp; P99 Latency&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;TTFT (First Token)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;180ms&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;GPU Utilization&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#2563EB;&quot;&gt;84.2%&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Error Rate&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;&amp;lt; 0.01%&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1165" y="380" width="390" height="105" as="geometry"/>
-        </mxCell>
-
-        <!-- 4. Capacity Planning Dashboard -->
-        <mxCell id="sre_dash4" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;font-size:10.5px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #E2E8F0;padding-bottom:3px;&quot;&gt;🗄️ Capacity Forecast &amp;amp; Quota Reservation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Reserved TPUs&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#0F172A;&quot;&gt;128 Nodes&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;Queue Wait&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#16A34A;&quot;&gt;0 ms&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:8.5px;color:#64748B;&quot;&gt;30-Day Forecast&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:14px;font-weight:bold;color:#2563EB;&quot;&gt;+18% Growth&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;align=center;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1165" y="500" width="390" height="105" as="geometry"/>
-        </mxCell>
-
-        <!-- SRE Telemetry Connector -->
-        <mxCell id="e_gw_sre" value="Real-time Metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;fontSize=8.5;fontColor=#2563EB;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="card_finops_gateway" target="box_sre_dashboards"/>
-
-
-        <!-- ==================== FOOTER LEGEND ==================== -->
-        <mxCell id="legend_box" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;LLM Quota Fabric:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;API Ingress &amp;amp; Rate Limits&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;Memorystore Redis Cache&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;FinOps Token Attribution&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟣 &lt;b&gt;Multi-Region GKE Clusters&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Google Cloud SRE&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="870" width="1540" height="38" as="geometry"/>
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+ c.push(zone('patterns',6,'RESILIENCE PATTERNS & DECISION GUIDANCE','Use architecture controls that match the actual failure mode',25,660,1710,260,'#6554C0','#F5F3FF'));
+ c.push(mini('p1','Shared-capacity contention','Global endpoint + smoothing + bounded exponential backoff; avoid unbounded retry storms.',50,725,300,88,'#6554C0'));
+ c.push(mini('p2','Predictable critical baseload','Evaluate Provisioned Throughput for supported direct models and size GSUs from measured demand.',370,725,300,88,'#6554C0'));
+ c.push(mini('p3','PT overage','Default behavior can spill eligible overage to PayGo; validate current request/header behavior for your workload.',690,725,300,88,'#6554C0'));
+ c.push(mini('p4','Dependency bottleneck','Track grounding/search/tool quotas separately; model PT capacity does not eliminate downstream bottlenecks.',1010,725,300,88,'#6554C0'));
+ c.push(mini('p5','Cost / abuse guardrail','Use application limits, budgets/alerts and supported quota controls where applicable—separate from platform capacity guarantees.',1330,725,370,88,'#6554C0'));
+ c.push(v('legend','<b>FLOW</b>  <span style="color:#2563EB">━━ workload demand</span>  <span style="color:#7B61A8">━━ consumption choice</span>  <span style="color:#0F8B82">━━ resilient request path</span>  <span style="color:#334155">━━ operational telemetry</span>  <span style="color:#D93025">┄┄ feedback / exception</span>','rounded=1;arcSize=6;whiteSpace=wrap;html=1;overflow=hidden;spacing=5;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontColor=#334155;fontSize=10;align=center;verticalAlign=middle;',50,838,1650,42));
+ return `<mxfile host="app.diagrams.net" modified="2026-08-20T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device"><diagram id="llm_capacity_quota_management" name="Gemini Capacity, Consumption & Resilience"><mxGraphModel dx="1760" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1760" pageHeight="950" background="#FFFFFF" math="0" shadow="0"><root>${c.join('\n')}</root></mxGraphModel></diagram></mxfile>`;
 }
