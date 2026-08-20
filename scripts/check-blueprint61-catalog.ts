@@ -2,6 +2,7 @@ import { inflateRawSync } from 'node:zlib';
 import { BLUEPRINT_KNOWLEDGE_MATRIX, getBlueprintMetadataById } from '../src/lib/blueprintKnowledgeMatrixCatalog';
 import { getArchitectureHierarchy } from '../src/lib/architectureHierarchyCatalog';
 import { getDefaultXmlForArchitecture } from '../src/lib/architectureTypesCertified';
+import { isCompressedDrawioXml, validateAndHealDrawioXml } from '../src/lib/xmlHealerCompressedSafe';
 
 const ID = 'enterprise_ai_document_assistant';
 const failures: string[] = [];
@@ -47,6 +48,15 @@ if (!xml.includes('Blueprint 61 - Enterprise AI Document Assistant')) failures.p
 if (xml.includes('Blueprint 51') || xml.includes('enterprise_ai_doc_assistant_51')) failures.push('runtime XML leaked provisional Blueprint 51 identity');
 if (!xml.includes('catalog_enterprise_ai_document_assistant')) failures.push('runtime XML missing canonical catalog diagram ID');
 if (!diagram.includes('<mxGraphModel') || !diagram.includes('<root>')) failures.push('runtime diagram payload could not be decoded as editable Draw.io XML');
+if (!isCompressedDrawioXml(xml)) failures.push('Blueprint 61 runtime payload is expected to be recognized as compressed Draw.io XML');
+
+const renderPathResult = validateAndHealDrawioXml(xml, ID);
+const renderPathDiagram = decodeRuntimeDiagram(renderPathResult.xml);
+if (renderPathResult.isHealed) failures.push('browser render healer unexpectedly replaced or mutated Blueprint 61 compressed XML');
+if (renderPathResult.xml !== xml.trim()) failures.push('browser render healer did not preserve Blueprint 61 payload byte-for-byte');
+if (!renderPathDiagram.includes('<mxGraphModel') || !renderPathDiagram.includes('<root>')) {
+  failures.push('browser render path no longer resolves Blueprint 61 as compressed editable Draw.io XML');
+}
 
 const required = [
   'Workflow Orchestrator',
@@ -60,6 +70,18 @@ const required = [
 ];
 for (const token of required) {
   if (!diagram.toLowerCase().includes(token.toLowerCase())) failures.push(`runtime diagram missing ${token}`);
+  if (!renderPathDiagram.toLowerCase().includes(token.toLowerCase())) failures.push(`browser render path missing ${token}`);
+}
+
+const forbiddenFallbackMarkers = [
+  'serverless_eda_architecture',
+  'Event-Driven Microservices',
+  'Serverless Web Application',
+];
+for (const token of forbiddenFallbackMarkers) {
+  if (renderPathDiagram.toLowerCase().includes(token.toLowerCase())) {
+    failures.push(`browser render path fell back to wrong legacy architecture: ${token}`);
+  }
 }
 
 const vertices = (diagram.match(/<mxCell\b[^>]*\bvertex="1"/gi) || []).length;
@@ -87,6 +109,7 @@ console.log(JSON.stringify({
   vertices,
   edges,
   decisions,
+  compressedRuntimePreserved: !renderPathResult.isHealed && renderPathResult.xml === xml.trim(),
   combinedId: bp61.combinedId,
   liveRailwayLink: bp61.liveRailwayLink,
 }, null, 2));
