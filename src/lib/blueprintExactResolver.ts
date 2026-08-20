@@ -4,6 +4,7 @@ import {
 import { getApprovedMultiAgentSequenceBlueprintXml } from './approvedBlueprint15Safe';
 import { getApprovedSecureDeploymentTopologyXml } from './approvedBlueprint16Safe';
 import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24Safe';
+import { getApprovedSixRsMigrationMatrixXml } from './approvedBlueprint29Safe';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
 import { buildDataOpsPhase1Xml } from './masterBuilders/build_master_dataops_phase1';
@@ -11,7 +12,6 @@ import { buildFinancialAdvisingPhase1Xml } from './masterBuilders/build_master_f
 import { buildPredictiveMaintenancePhase1Xml } from './masterBuilders/build_master_predictive_maintenance_phase1';
 import { buildPharmaGenomicsPhase1Xml } from './masterBuilders/build_master_pharma_genomics_phase1';
 import {
-  getExactSixRsMigrationMatrixXml,
   getExactHybridStranglerTransitionXml,
   getExactCloudFinopsChargebackXml,
   getExactAiCoeOperatingModelXml,
@@ -84,7 +84,8 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   tech_serverless_gcp: getExactServerlessGcpReferenceXml,
   tech_multimodal_ingestion: getExactMultimodalIngestionXml,
   tech_streaming_analytics: getExactStreamingAnalyticsXml,
-  six_rs_migration_matrix: getExactSixRsMigrationMatrixXml,
+  // Blueprint 29: approved high-fidelity 6Rs migration disposition master.
+  six_rs_migration_matrix: getApprovedSixRsMigrationMatrixXml,
   enterprise_sre_observability: getExactEnterpriseSreObservabilityXml,
   golive_warroom_runbook: getExactGoLiveWarRoomRunbookXml,
   incident_triage_swimlane: getExactIncidentTriageSwimlaneXml,
