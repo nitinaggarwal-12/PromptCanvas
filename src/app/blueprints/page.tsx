@@ -28,7 +28,7 @@ function BlueprintsRedirectInner() {
         </div>
         <div className="space-y-1">
           <h2 className="text-lg font-extrabold text-white">Opening Architecture Blueprints</h2>
-          <p className="text-xs text-slate-400">Redirecting to the master blueprint catalog with all 50 enterprise designs...</p>
+          <p className="text-xs text-slate-400">Redirecting to the master blueprint catalog with all 51 enterprise designs...</p>
         </div>
         <div className="flex items-center gap-2 text-xs text-teal-400 font-mono mt-2">
           <Loader2 className="w-4 h-4 animate-spin" />
