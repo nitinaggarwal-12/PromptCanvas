@@ -58,17 +58,17 @@ function resolveCatalog(): Resolution[] {
 }
 
 describe('Certified blueprint resolver contract', () => {
-  it('resolves all 50 advertised blueprints to distinct labelled canonical diagrams', () => {
-    expect(BLUEPRINT_KNOWLEDGE_MATRIX).toHaveLength(50);
+  it('resolves all 60 advertised blueprints to distinct labelled canonical diagrams', () => {
+    expect(BLUEPRINT_KNOWLEDGE_MATRIX).toHaveLength(60);
 
     const results = resolveCatalog();
-    expect(results).toHaveLength(50);
+    expect(results).toHaveLength(60);
 
     const canonicalIds = results.map((result) => result.canonicalId);
-    expect(new Set(canonicalIds).size).toBe(50);
+    expect(new Set(canonicalIds).size).toBe(60);
 
     const hashes = results.map((result) => result.hash);
-    expect(new Set(hashes).size).toBe(50);
+    expect(new Set(hashes).size).toBe(60);
 
     for (const result of results) {
       expect(result.labels, result.combinedId).toBeGreaterThan(0);

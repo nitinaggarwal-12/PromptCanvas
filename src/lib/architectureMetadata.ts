@@ -538,6 +538,106 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     primaryActors: "Frontend Engineers, UI Architects, SREs",
     targetOutcomes: "Modular UI Composition, Real-Time WebSocket Messaging, Cloud CDN Performance",
     desc: "Micro-Frontend architecture blueprint illustrating host app composition, browser runtime modules, WebSocket server, and backend API integration."
+  },
+  enterprise_api_management: {
+    id: "enterprise_api_management",
+    title: "Enterprise API Management & Integration Architecture (NEW-APP-01)",
+    category: "Software & Application Architecture",
+    useCase: "ENTERPRISE API MANAGEMENT & MEDIATION GATEWAY",
+    businessUseCase: "Google Cloud Apigee X Enterprise API Gateway featuring Cloud Armor WAF, OAuth2/OIDC token mediation, dynamic rate limiting, and secure mTLS backend connectivity.",
+    primaryActors: "Principal API Architects, Integration Engineers, SecOps, Enterprise Developers",
+    targetOutcomes: "Sub-10ms Gateway Mediation Latency, Zero Trust API Security, Unified Developer Self-Service, Complete API Monetization & Analytics",
+    desc: "Enterprise API Management and Integration Architecture featuring Google Cloud Apigee X Enterprise, Cloud Armor WAF, OAuth2/OIDC token mediation, Developer Portal, and GKE microservices."
+  },
+  gke_enterprise_platform: {
+    id: "gke_enterprise_platform",
+    title: "GKE / Kubernetes Enterprise Platform Architecture (NEW-PLAT-02)",
+    category: "Cloud Infrastructure & Networking",
+    useCase: "GKE ENTERPRISE MULTI-CLUSTER SERVICE MESH PLATFORM",
+    businessUseCase: "Production-grade Google Cloud GKE Enterprise platform with Anthos Service Mesh mTLS, Cilium eBPF network isolation, Config Sync GitOps governance, and Workload Identity Federation.",
+    primaryActors: "Platform Engineering Leads, DevOps/SREs, Kubernetes Operators, Cloud Security Leads",
+    targetOutcomes: "Sub-Second Ingress Failover, Zero Static K8s Secrets, Declarative GitOps Multi-Cluster Sync, Strict mTLS 1.3 Microsegmentation",
+    desc: "GKE Enterprise Platform & Multi-Cluster Service Mesh Architecture featuring Anthos Service Mesh, Cilium eBPF CNI, GitOps Config Sync, and Workload Identity."
+  },
+  ha_multi_region_application: {
+    id: "ha_multi_region_application",
+    title: "Highly Available Multi-Region Application Architecture (NEW-REL-03)",
+    category: "Cloud Infrastructure & Networking",
+    useCase: "ACTIVE-ACTIVE MULTI-REGION HIGH AVAILABILITY PLATFORM",
+    businessUseCase: "Highly Available Multi-Region Active-Active Application Architecture featuring Global External HTTPS Load Balancer with Anycast IP, dual-region GKE fleets, and Cloud Spanner multi-region TrueTime replication.",
+    primaryActors: "Principal Reliability Architects, Site Reliability Engineers, Enterprise Solution Architects, CISO",
+    targetOutcomes: "99.999% SLA Target, Zero RPO Multi-Region TrueTime Sync, Sub-Second Automated Edge Failover, Active-Active Traffic Distribution",
+    desc: "Highly Available Multi-Region Active-Active Application Architecture featuring Global Anycast LB, dual GKE fleets, Memorystore Redis, and Cloud Spanner nam3 replication."
+  },
+  etl_elt_cdc_pipeline: {
+    id: "etl_elt_cdc_pipeline",
+    title: "Enterprise ETL/ELT & CDC Data Pipeline Architecture (NEW-DAT-04)",
+    category: "Data & Lakehouse Architecture",
+    useCase: "ENTERPRISE CDC REPLICATION & ELT DATA LAKEHOUSE PIPELINE",
+    businessUseCase: "Enterprise ETL/ELT & CDC Data Pipeline Architecture featuring Google Cloud Datastream for real-time CDC, Cloud Composer Airflow orchestration, Dataflow streaming transformation, and BigQuery Medallion lakehouse.",
+    primaryActors: "Lead Data Engineers, Data Architects, Analytics Engineers, Chief Data Officer (CDO)",
+    targetOutcomes: "Sub-Second CDC Latency, Zero Data Loss Ingestion, Automated Medallion Schema Evolution, End-to-End Dataplex Column Lineage",
+    desc: "Enterprise ETL/ELT & CDC Data Pipeline Architecture featuring Google Cloud Datastream, Cloud Composer, Dataflow, BigQuery Medallion Lakehouse, and Dataplex Governance."
+  },
+  workload_identity_authorization: {
+    id: "workload_identity_authorization",
+    title: "Workload Identity & Service-to-Service Authorization (NEW-SEC-05)",
+    category: "Security, Governance & Risk",
+    useCase: "WORKLOAD IDENTITY FEDERATION & SERVICE-TO-SERVICE AUTHORIZATION",
+    businessUseCase: "Workload Identity & Service-to-Service Authorization Architecture featuring Google Cloud Workload Identity Federation (WIF), Security Token Service (STS) RFC 8693 token exchange, and zero static service account keys.",
+    primaryActors: "Principal Cloud Security Architects, DevOps Engineers, SecOps, Compliance Officers",
+    targetOutcomes: "100% Elimination of Long-Lived Service Account Keys, Short-Lived 15-Minute Scoped Tokens, Immutable Audit Trail, Multi-Cloud Identity Federation",
+    desc: "Workload Identity & Service-to-Service Authorization Architecture featuring Workload Identity Federation, STS OIDC token exchange, and short-lived IAM credentials."
+  },
+  private_ingress_egress_connectivity: {
+    id: "private_ingress_egress_connectivity",
+    title: "Private Ingress, Egress & Service Connectivity (NEW-NET-06)",
+    category: "Cloud Infrastructure & Networking",
+    useCase: "ZERO PUBLIC EXPOSURE PRIVATE NETWORKING & PSC TOPOLOGY",
+    businessUseCase: "Private Ingress, Egress & Service Connectivity Architecture featuring Cloud Armor WAF, Internal Application Load Balancers, Private Service Connect (PSC), Cloud NAT managed egress, and Secure Web Proxy.",
+    primaryActors: "Principal Network Architects, Network Security Engineers, SecOps, Platform Engineers",
+    targetOutcomes: "Zero Public IP Attack Surface, Secure Outbound Domain Whitelisting, Private Service Connect Transit, 100% Flow Log Inspection",
+    desc: "Private Ingress, Egress & Service Connectivity Architecture featuring Cloud Armor WAF, Internal Application Load Balancers, Cloud NAT, and Private Service Connect."
+  },
+  enterprise_mlops_lifecycle: {
+    id: "enterprise_mlops_lifecycle",
+    title: "Enterprise MLOps Lifecycle Architecture (NEW-AI-07)",
+    category: "AI & Cognitive Systems",
+    useCase: "ENTERPRISE MLOPS CI/CD/CT LIFECYCLE & DRIFT RETRAINING",
+    businessUseCase: "Enterprise MLOps Lifecycle Architecture featuring Vertex AI Feature Store, Vertex AI Pipelines (Kubeflow), Model Registry, Canary Serving, and automated Continuous Retraining (CT) on concept drift.",
+    primaryActors: "Principal MLOps Engineers, Lead AI Architects, Data Scientists, ML Engineers",
+    targetOutcomes: "Automated Continuous Retraining (CT), Zero Downtime Blue/Green Model Serving, Full Experiment Lineage Tracking, Feature Store Point-in-Time Correctness",
+    desc: "Enterprise MLOps Lifecycle Architecture featuring Vertex AI Feature Store, Kubeflow Pipelines, Model Registry, Canary Serving, and Eventarc Retraining Loop."
+  },
+  graphrag_knowledge_graph: {
+    id: "graphrag_knowledge_graph",
+    title: "GraphRAG & Enterprise Knowledge Graph Architecture (NEW-AI-08)",
+    category: "AI & Cognitive Systems",
+    useCase: "HYBRID GRAPHRAG & ENTERPRISE KNOWLEDGE GRAPH REASONING",
+    businessUseCase: "GraphRAG & Enterprise Knowledge Graph Architecture featuring Gemini 2.5 schema extraction, Cloud Spanner Graph ISO GQL queries, Vertex AI Vector Search, and Hybrid Graph+Vector grounded synthesis.",
+    primaryActors: "Principal AI Architects, Graph Database Specialists, GenAI Engineers, Chief AI Officer",
+    targetOutcomes: "Multi-Hop Graph Reasoning, Zero-Hallucination Grounded Synthesis, Verifiable Citation Graph Visualizations, Hybrid Lexical+Vector+Graph Search",
+    desc: "GraphRAG & Enterprise Knowledge Graph Architecture featuring Gemini 2.5 Entity Extractor, Spanner Graph, Vertex AI Vector Search, and Grounded Synthesis Engine."
+  },
+  saas_multi_tenant: {
+    id: "saas_multi_tenant",
+    title: "SaaS Multi-Tenant Application Architecture (NEW-APP-09)",
+    category: "Software & Application Architecture",
+    useCase: "SAAS MULTI-TENANT APPLICATION & ISOLATION TOPOLOGY",
+    businessUseCase: "SaaS Multi-Tenant Application Architecture featuring tenant context routing, hybrid Silo vs Pool compute tiers, Cloud SQL Postgres Row-Level Security (RLS), and per-tenant Cloud KMS CMEK encryption.",
+    primaryActors: "Principal SaaS Architects, Backend Engineers, Security Leads, VP Product",
+    targetOutcomes: "Strict Tenant Data Isolation, Noisy-Neighbor Mitigation, Per-Tenant CMEK Encryption Keys, Dynamic Cost Allocation & Metering",
+    desc: "SaaS Multi-Tenant Application Architecture featuring Tenant Ingress Routing, Silo/Pool Hybrid Compute, Postgres RLS, and per-tenant Cloud KMS encryption."
+  },
+  intelligent_document_processing: {
+    id: "intelligent_document_processing",
+    title: "Intelligent Document Processing (IDP) Platform (NEW-AI-10)",
+    category: "AI & Cognitive Systems",
+    useCase: "INTELLIGENT DOCUMENT PROCESSING & CONFIDENCE GATED HITL",
+    businessUseCase: "Intelligent Document Processing (IDP) Platform featuring Document AI custom extraction, Gemini 2.5 Flash cross-validation, confidence-gated Human-in-the-Loop (HITL) review cockpit, and BigQuery lakehouse export.",
+    primaryActors: "Principal AI & Automation Architects, ML Engineers, Business Operations Leads, Chief Data Officer",
+    targetOutcomes: "90%+ Straight-Through Processing (STP), Sub-Second OCR & Extraction, Confidence-Gated Human Exception Review, Active Learning Continuous Feedback",
+    desc: "Intelligent Document Processing (IDP) Platform featuring Document AI, Gemini 2.5 Flash Validation, Confidence-Gated HITL Review Cockpit, and BigQuery Lakehouse."
   }
 };
 

@@ -81,11 +81,11 @@ function countGenericGeneratedCardIcons(xml: string): number {
 const failures: string[] = [];
 const advisories: string[] = [];
 
-if (BLUEPRINT_KNOWLEDGE_MATRIX.length !== 50) failures.push(`catalog size: expected 50, got ${BLUEPRINT_KNOWLEDGE_MATRIX.length}`);
-if (CATALOG_CANONICAL_IDS.length !== 50 || new Set(CATALOG_CANONICAL_IDS).size !== 50) failures.push('canonical resolver: expected 50 unique IDs');
+if (BLUEPRINT_KNOWLEDGE_MATRIX.length !== 60) failures.push(`catalog size: expected 60, got ${BLUEPRINT_KNOWLEDGE_MATRIX.length}`);
+if (CATALOG_CANONICAL_IDS.length !== 60 || new Set(CATALOG_CANONICAL_IDS).size !== 60) failures.push('canonical resolver: expected 60 unique IDs');
 
 const canonicalIds = BLUEPRINT_KNOWLEDGE_MATRIX.map(item => normalizeArchitectureId(item.combinedId));
-if (new Set(canonicalIds).size !== 50) failures.push(`canonical normalization collision: got ${new Set(canonicalIds).size} unique IDs`);
+if (new Set(canonicalIds).size !== 60) failures.push(`canonical normalization collision: got ${new Set(canonicalIds).size} unique IDs`);
 
 const diagramIds = new Map<string, number[]>();
 const hashes = new Map<string, number[]>();

@@ -8,15 +8,15 @@ import {
 } from '@/lib/blueprintKnowledgeMatrix';
 
 describe('Blueprint Knowledge Matrix & Bi-Directional Cascading Filters', () => {
-  it('should have all 50 enterprise blueprints populated with full dimension metadata and 0 duplicates', () => {
-    expect(BLUEPRINT_KNOWLEDGE_MATRIX.length).toBe(50);
+  it('should have all 60 enterprise blueprints populated with full dimension metadata and 0 duplicates', () => {
+    expect(BLUEPRINT_KNOWLEDGE_MATRIX.length).toBe(60);
 
     const ids = BLUEPRINT_KNOWLEDGE_MATRIX.map(b => b.combinedId);
     const names = BLUEPRINT_KNOWLEDGE_MATRIX.map(b => b.diagramName);
 
     // Verify 0 duplicate IDs and 0 duplicate names
-    expect(new Set(ids).size).toBe(50);
-    expect(new Set(names).size).toBe(50);
+    expect(new Set(ids).size).toBe(60);
+    expect(new Set(names).size).toBe(60);
 
     BLUEPRINT_KNOWLEDGE_MATRIX.forEach((bp) => {
       expect(bp.combinedId).toBeTruthy();
@@ -31,14 +31,14 @@ describe('Blueprint Knowledge Matrix & Bi-Directional Cascading Filters', () => 
     });
   });
 
-  it('should return all 50 items when no filter is applied', () => {
+  it('should return all 60 items when no filter is applied', () => {
     const res = getFacetedBlueprintFilters({});
-    expect(res.matchingCount).toBe(50);
-    expect(res.matchingBlueprints.length).toBe(50);
+    expect(res.matchingCount).toBe(60);
+    expect(res.matchingBlueprints.length).toBe(60);
     
-    // Sum of phase counts should equal 50
+    // Sum of phase counts should equal 60
     const totalPhaseCount = Object.values(res.phaseCounts).reduce((a, b) => a + b, 0);
-    expect(totalPhaseCount).toBe(50);
+    expect(totalPhaseCount).toBe(60);
   });
 
   it('should dynamically narrow down blueprint options and cascading dimension counts when a phase is selected', () => {

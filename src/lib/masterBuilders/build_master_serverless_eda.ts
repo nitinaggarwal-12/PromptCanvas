@@ -57,7 +57,7 @@ export function buildServerlessEdaXml(): string {
         ${card('action_tasks', brandedLabel('Cloud Tasks', 'Workflow trigger'), 1410, 164, 310, 72, '#E3B46E', '#9A5A00')}
         ${card('action_fn', brandedLabel('Cloud Run functions', 'Event-driven actions'), 1410, 258, 310, 72, '#E3B46E', '#9A5A00')}
         ${card('action_api', brandedLabel('Cloud Run', 'Webhooks / APIs'), 1410, 352, 310, 72, '#E3B46E', '#9A5A00')}
-        ${card('alerts', brandedLabel('Notifications & Alerts', 'Cloud Monitoring • Email / SMS / Slack', 'PagerDuty / Opsgenie'), 1410, 465, 310, 92, '#E6C794', '#82541B')}
+        ${card('alerts', brandedLabel('Notifications &amp; Alerts', 'Cloud Monitoring • Email / SMS / Slack', 'PagerDuty / Opsgenie'), 1410, 465, 310, 92, '#E6C794', '#82541B')}
 
         ${edge('e_src_eventarc', 'src_apps', 'eventarc', '1', '#1F2937')}
         ${edge('e_event_pub', 'eventarc', 'pubsub', '2', '#1F2937', false, 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')}

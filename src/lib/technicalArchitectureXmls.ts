@@ -32,7 +32,36 @@ import {
   getExactSupplyChainXml,
   getExactEvalSafetyXml,
   getExactAgenticMeshXml,
-  getExactAgenticRagWidescreenXml
+  getExactAgenticRagWidescreenXml,
+  getExactLegacyDataDependencyMapXml,
+  getExactGcpLandingZoneVpcXml,
+  getExactEnterpriseAgentRuntimeXml,
+  getExactAiAgentApprovalWorkflowXml,
+  getExactIncidentTriageSwimlaneXml,
+  getExactEcommerceRetailXml,
+  getExactHrTalentAiXml,
+  getExactSmartFactoryIotXml,
+  getExactC4ComponentLldXml,
+  getExactBpmnWorkflowXml,
+  getExactThreatModelingStrideXml,
+  getExactDataLineageXml,
+  getExactHealthcareFhirXml,
+  getExactValueStreamMapXml,
+  getExactAsIsToBeProcessFlowXml,
+  getExactLlmopsLifecycleXml,
+  getExactLlmCapacityQuotaXml,
+  getExactIncidentTriageSreXml,
+  getExactMultiFlowZeroTrustPlatformXml,
+  getExactEnterpriseApiManagementXml,
+  getExactGkeEnterprisePlatformXml,
+  getExactHaMultiRegionAppXml,
+  getExactEtlEltCdcPipelineXml,
+  getExactWorkloadIdentityAuthXml,
+  getExactPrivateIngressEgressXml,
+  getExactEnterpriseMlopsLifecycleXml,
+  getExactGraphragKnowledgeGraphXml,
+  getExactSaasMultiTenantXml,
+  getExactIntelligentDocProcessingXml
 } from './newEnterpriseReferenceXmls';
 
 // 1. GCP Serverless Web Application Architecture
@@ -1013,110 +1042,73 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
   </diagram>
 </mxfile>`;
 
-export function getTechnicalArchitectureXml(archId: string): string {
-  const id = (archId || '').toLowerCase();
-  if (id.includes('multi_region_dr') || id.includes('active_passive') || id.includes('disaster_recovery') || id === 'dr' || id.includes('multi_region')) {
-    return getExactMultiRegionDrReferenceXml();
-  }
-  if (id.includes('serverless') || id.includes('cloud_run') || id === 'tech_serverless_gcp' || id === 'serverless_gcp') {
-    return getExactServerlessGcpReferenceXml();
-  }
-  if (id.includes('c4') || id.includes('context_model')) {
-    return TECH_XML_C4_SYSTEM_CONTEXT;
-  }
-  if (id.includes('modern_data_stack') || id.includes('cdc') || id.includes('reverse_etl') || id.includes('fivetran')) {
-    const { getExactGcpDataLakehouseWbsXml } = require('./newEnterpriseReferenceXmls');
-    return getExactGcpDataLakehouseWbsXml();
-  }
-  if (id.includes('event_driven') || id.includes('eda') || id.includes('kafka_mesh')) {
-    return TECH_XML_EVENT_DRIVEN_EDA;
-  }
-  if (id.includes('multi_agent') || id.includes('langgraph')) {
-    return getExactAgenticMeshXml();
-  }
-  if (id.includes('streaming') || id.includes('telemetry') || id.includes('iot')) {
-    return getExactStreamingAnalyticsXml();
-  }
-  if (id.includes('zero_trust') || id.includes('mesh') || id === 'zero_trust_mesh' || id.includes('microservices') || id.includes('kubernetes')) {
-    return getExactZeroTrustMeshXml();
-  }
-  if (id.includes('lakehouse') || id.includes('data_lakehouse') || id === 'tech_data_lakehouse_gcp') {
-    const { getExactGcpDataLakehouseWbsXml } = require('./newEnterpriseReferenceXmls');
-    return getExactGcpDataLakehouseWbsXml();
-  }
-  if (id.includes('rag') || id.includes('vector_search')) {
-    return getExactAgenticRagWidescreenXml();
-  }
-  if (id.includes('devsecops') || id.includes('cicd')) {
-    return TECH_XML_DEVSECOPS_GCP;
-  }
-  if (id.includes('fintech') || id.includes('payments')) {
-    return getExactFintechPaymentsXml();
-  }
-  if (id.includes('genomics') || id.includes('clinical')) {
-    return getExactGenomicsClinicalXml();
-  }
-  if (id.includes('supply_chain') || id.includes('logistics')) {
-    return getExactSupplyChainXml();
-  }
-  if (id.includes('eval_safety') || id.includes('benchmarking')) {
-    return getExactEvalSafetyXml();
-  }
-  if (id.includes('agentic_mesh') || id.includes('mesh')) {
-    return getExactAgenticMeshXml();
-  }
-  if (id.includes('6rs') || id.includes('six_rs') || id.includes('disposition') || id === 'six_rs_migration_matrix') {
-    return getExactSixRsMigrationMatrixXml();
-  }
-  if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id === 'hybrid_strangler_transition') {
-    return getExactHybridStranglerTransitionXml();
-  }
-  if (id.includes('finops') || id.includes('chargeback') || id === 'cloud_finops_chargeback') {
-    return getExactCloudFinopsChargebackXml();
-  }
-  if (id.includes('ai_coe') || id.includes('operating_model') || id === 'ai_coe_operating_model') {
-    return getExactAiCoeOperatingModelXml();
-  }
-  if (id.includes('mcp') || id.includes('context_gateway') || id === 'mcp_context_gateway') {
-    return getExactMcpContextGatewayXml();
-  }
-  if (id.includes('logical_ai_config') || id.includes('tenant_architecture') || id === 'logical_ai_config_tenant') {
-    return getExactLogicalAiConfigTenantXml();
-  }
-  if (id.includes('hub_and_spoke') || id.includes('hub_spoke') || id === 'hub_and_spoke_agent_config') {
-    return getExactHubAndSpokeAgentConfigXml();
-  }
-  if (id.includes('unified_data_governance') || id.includes('data_governance') || id === 'unified_data_governance') {
-    return getExactUnifiedDataGovernanceXml();
-  }
-  if (id.includes('dataops_anomaly') || id.includes('dataops') || id === 'dataops_anomaly_detection') {
-    return getExactDataOpsAnomalyDetectionXml();
-  }
-  if (id.includes('golive') || id.includes('war_room') || id.includes('cutover') || id === 'golive_warroom_runbook') {
-    return getExactGoLiveWarRoomRunbookXml();
-  }
-  if (id.includes('sre') || id.includes('observability') || id === 'enterprise_sre_observability') {
-    return getExactEnterpriseSreObservabilityXml();
-  }
-  if (id.includes('data_residency') || id.includes('sovereign_map') || id.includes('sovereign') || id === 'data_residency_sovereign_map' || id === 'tech_data_residency') {
-    return getExactDataResidencySovereignMapXml();
-  }
-  if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('federated') || id === 'federated_iam_sso' || id === 'tech_federated_iam') {
-    return getExactFederatedIamSsoXml();
-  }
-  if (id.includes('trism') || id.includes('guardrail') || id === 'tech_ai_trism_guardrails' || id === 'ai_trism_guardrails') {
-    return getExactAiTrismGuardrailsXml();
-  }
-  if (id.includes('micro_frontend') || id.includes('mfe') || id === 'tech_micro_frontends' || id === 'micro_frontends_ui') {
-    return getExactMicroFrontendsXml();
-  }
-  if (id.includes('strangler') || id.includes('hybrid_strangler') || id === 'hybrid_strangler_transition') {
-    return getExactHybridStranglerTransitionXml();
-  }
-  if (id.includes('harness') || id.includes('agent_runtime') || id.includes('agent_harness')) {
-    const { getExactAgentHarnessRuntimeReferenceXml } = require('./newEnterpriseReferenceXmls');
-    return getExactAgentHarnessRuntimeReferenceXml();
-  }
+export function getTechnicalArchitectureXml(archType?: string): string {
+  const id = (archType || '').toLowerCase().trim();
+
+  // 60 Master Blueprint canonical matching
+  if (id.includes('legacy_data_dependency') || id.includes('p1-app-l-01')) return getExactLegacyDataDependencyMapXml();
+  if (id.includes('hybrid_strangler') || id.includes('strangler_fig') || id.includes('p1-app-l-02')) return getExactHybridStranglerTransitionXml();
+  if (id.includes('value_stream') || id.includes('vsm') || id.includes('p1-gov-c-03')) return getExactValueStreamMapXml();
+  if (id.includes('as_is') || id.includes('asis') || id.includes('tobe') || id.includes('to_be') || id.includes('p1-gov-c-04')) return getExactAsIsToBeProcessFlowXml();
+  if (id.includes('finops') || id.includes('chargeback') || id.includes('p2-gov-c-01')) return getExactCloudFinopsChargebackXml();
+  if (id.includes('total_unified_system_view') || id.includes('unified_system_view') || id.includes('p3-app-c-01')) return TECH_XML_DEVSECOPS_GCP;
+  if (id.includes('cognitive_architecture') || id.includes('agentic_rag') || id.includes('p3-ai-l-02')) return getExactAgenticRagWidescreenXml();
+  if (id.includes('hub_and_spoke') || id.includes('hub_spoke') || id.includes('p3-ai-l-03')) return getExactHubAndSpokeAgentConfigXml();
+  if (id.includes('lakehouse') || id.includes('p3-dat-l-04')) return getExactGcpDataLakehouseWbsXml();
+  if (id.includes('dimensional_data') || id.includes('erd') || id.includes('p3-dat-l-05')) return TECH_XML_MODERN_DATA_STACK;
+  if (id.includes('unified_data_governance') || id.includes('p3-dat-c-06')) return getExactUnifiedDataGovernanceXml();
+  if (id.includes('federated_iam') || id.includes('iam_sso') || id.includes('p3-sec-l-07')) return getExactFederatedIamSsoXml();
+  if (id.includes('micro_frontend') || id.includes('mfe') || id.includes('p3-app-l-08')) return getExactMicroFrontendsXml();
+  if (id.includes('logical_ai_config') || id.includes('p3-gov-l-09')) return getExactLogicalAiConfigTenantXml();
+  if (id.includes('multi_agent_sequence') || id.includes('sequence') || id.includes('p3-app-l-10')) return TECH_XML_MULTI_AGENT_LANGGRAPH;
+  if (id.includes('secure_deployment') || id.includes('p4-sec-p-01')) return TECH_XML_DEVSECOPS_GCP;
+  if (id.includes('landing_zone') || id.includes('shared_vpc') || id.includes('p4-sec-p-02')) return getExactGcpLandingZoneVpcXml();
+  if (id.includes('data_residency') || id.includes('sovereign') || id.includes('p4-sec-p-03')) return getExactDataResidencySovereignMapXml();
+  if (id.includes('agent_runtime') || id.includes('p4-ai-p-04')) return getExactEnterpriseAgentRuntimeXml();
+  if (id.includes('tech_agentic_mesh') || id.includes('mesh_swarm') || id.includes('p4-sec-p-05')) return getExactAgenticMeshXml();
+  if (id.includes('eval_safety') || id.includes('p4-gov-l-06')) return getExactEvalSafetyXml();
+  if (id.includes('ai_trism') || id.includes('trism') || id.includes('p4-gov-l-07')) return getExactAiTrismGuardrailsXml();
+  if (id.includes('approval_workflow') || id.includes('p4-gov-l-08')) return getExactAiAgentApprovalWorkflowXml();
+  if (id.includes('devsecops') || id.includes('cicd') || id.includes('p4-gov-p-09')) return TECH_XML_DEVSECOPS_GCP;
+  if (id.includes('event_driven_eda') || id.includes('p4-app-l-10')) return TECH_XML_EVENT_DRIVEN_EDA;
+  if (id.includes('serverless_eda') || id.includes('serverless') || id.includes('p4-app-l-11')) return getExactServerlessGcpReferenceXml();
+  if (id.includes('multimodal_ingestion') || id.includes('p4-dat-p-12')) return TECH_XML_MODERN_DATA_STACK;
+  if (id.includes('streaming_analytics') || id.includes('streaming') || id.includes('p4-dat-p-13')) return getExactStreamingAnalyticsXml();
+  if (id.includes('six_rs') || id.includes('6rs') || id.includes('p5-app-l-01')) return getExactSixRsMigrationMatrixXml();
+  if (id.includes('enterprise_sre') || id.includes('sre_observability') || id.includes('p5-sec-p-02')) return getExactEnterpriseSreObservabilityXml();
+  if (id.includes('golive_warroom') || id.includes('warroom_runbook') || id.includes('p5-gov-p-03')) return getExactGoLiveWarRoomRunbookXml();
+  if (id.includes('incident_triage_swimlane') || id.includes('p5-gov-l-04')) return getExactIncidentTriageSwimlaneXml();
+  if (id.includes('capacity_quota') || id.includes('quota_management') || id.includes('p5-ai-l-05')) return getExactLlmCapacityQuotaXml();
+  if (id.includes('ai_coe') || id.includes('operating_model') || id.includes('p5-ai-l-06')) return getExactAiCoeOperatingModelXml();
+  if (id.includes('llmops_lifecycle') || id.includes('llmops') || id.includes('p5-ai-p-07')) return getExactLlmopsLifecycleXml();
+  if (id.includes('dataops_anomaly') || id.includes('p5-dat-p-08')) return getExactDataOpsAnomalyDetectionXml();
+  if (id.includes('bcdr_multi_region') || id.includes('multi_region_dr') || id.includes('p5-gov-p-09')) return TECH_XML_MULTI_REGION_DR;
+  if (id.includes('fintech') || id.includes('ind-fintech-01')) return getExactFintechPaymentsXml();
+  if (id.includes('equipment_optimization') || id.includes('supply_chain') || id.includes('ind-mfg-02')) return getExactSupplyChainXml();
+  if (id.includes('genomics') || id.includes('clinical') || id.includes('ind-pharma-03')) return getExactGenomicsClinicalXml();
+  if (id.includes('ecommerce') || id.includes('retail') || id.includes('ind-retail-04')) return getExactEcommerceRetailXml();
+  if (id.includes('smart_factory') || id.includes('smart_manufacturing') || id.includes('ind-mfg-05')) return getExactSmartFactoryIotXml();
+  if (id.includes('workforce_talent') || id.includes('talent_ai') || id.includes('ind-hr-06')) return getExactHrTalentAiXml();
+  if (id.includes('healthcare_fhir') || id.includes('fhir') || id.includes('ind-health-07')) return getExactHealthcareFhirXml();
+  if (id.includes('c4_system_context') || id.includes('arch-c4-01')) return TECH_XML_C4_SYSTEM_CONTEXT;
+  if (id.includes('c4_component') || id.includes('c4_lld') || id.includes('arch-c4-02')) return getExactC4ComponentLldXml();
+  if (id.includes('bpmn') || id.includes('arch-bpmn-03')) return getExactBpmnWorkflowXml();
+  if (id.includes('stride') || id.includes('threat_modeling') || id.includes('arch-sec-04')) return getExactThreatModelingStrideXml();
+  if (id.includes('data_lineage') || id.includes('provenance') || id.includes('arch-dat-05')) return getExactDataLineageXml();
+  if (id.includes('mcp') || id.includes('arch-mcp-06')) return getExactMcpContextGatewayXml();
+
+  // 51 - 60 New Additions
+  if (id.includes('new-app-01') || id.includes('enterprise_api_management')) return getExactEnterpriseApiManagementXml();
+  if (id.includes('new-plat-02') || id.includes('gke_enterprise_platform')) return getExactGkeEnterprisePlatformXml();
+  if (id.includes('new-rel-03') || id.includes('ha_multi_region')) return getExactHaMultiRegionAppXml();
+  if (id.includes('new-dat-04') || id.includes('etl_elt_cdc_pipeline')) return getExactEtlEltCdcPipelineXml();
+  if (id.includes('new-sec-05') || id.includes('workload_identity_authorization')) return getExactWorkloadIdentityAuthXml();
+  if (id.includes('new-net-06') || id.includes('private_ingress_egress')) return getExactPrivateIngressEgressXml();
+  if (id.includes('new-ai-07') || id.includes('enterprise_mlops_lifecycle')) return getExactEnterpriseMlopsLifecycleXml();
+  if (id.includes('new-ai-08') || id.includes('graphrag_knowledge_graph')) return getExactGraphragKnowledgeGraphXml();
+  if (id.includes('new-app-09') || id.includes('saas_multi_tenant')) return getExactSaasMultiTenantXml();
+  if (id.includes('new-ai-10') || id.includes('intelligent_document_processing')) return getExactIntelligentDocProcessingXml();
+
   return getExactServerlessGcpReferenceXml();
 }
 

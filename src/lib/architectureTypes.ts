@@ -68,7 +68,17 @@ import {
   getExactBpmnWorkflowXml,
   getExactThreatModelingStrideXml,
   getExactDataLineageXml,
-  getExactHealthcareFhirXml
+  getExactHealthcareFhirXml,
+  getExactEnterpriseApiManagementXml,
+  getExactGkeEnterprisePlatformXml,
+  getExactHaMultiRegionAppXml,
+  getExactEtlEltCdcPipelineXml,
+  getExactWorkloadIdentityAuthXml,
+  getExactPrivateIngressEgressXml,
+  getExactEnterpriseMlopsLifecycleXml,
+  getExactGraphragKnowledgeGraphXml,
+  getExactSaasMultiTenantXml,
+  getExactIntelligentDocProcessingXml
 } from './newEnterpriseReferenceXmls';
 
 export interface ArchitectureTypeOption {
@@ -442,6 +452,76 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     prompt: "Act as a Principal Google Cloud Data Governance & Lineage Architect. Design a production-grade Column-Level Data Lineage & Provenance Graph blueprint featuring Raw Bronze Tables, Dataform Silver Cleaning, Curated Gold Marts, and Looker Metrics powered by Gemini 3.7 Flash."
   },
   {
+    id: "enterprise_api_management",
+    name: "Enterprise API Management & Integration Architecture (NEW-APP-01)",
+    category: "Software & Application Architecture",
+    whenToUse: "Apigee X Enterprise API gateway with Cloud Armor WAF, OAuth2/OIDC token mediation, dynamic rate limiting, and secure mTLS backend connectivity.",
+    prompt: "Act as a Principal Google Cloud API Architect. Design a production-grade Enterprise API Management and Integration Architecture blueprint featuring Apigee X, Cloud Armor WAF, OAuth2/OIDC token mediation, Developer Portal, and GKE microservices."
+  },
+  {
+    id: "gke_enterprise_platform",
+    name: "GKE / Kubernetes Enterprise Platform Architecture (NEW-PLAT-02)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "GKE Enterprise multi-cluster platform with Anthos Service Mesh, Cilium eBPF CNI, GitOps Config Sync, and Workload Identity security.",
+    prompt: "Act as a Principal Kubernetes & Cloud Platform Architect. Design a production-grade GKE Enterprise Platform Architecture blueprint featuring Anthos Service Mesh, Cilium eBPF, Config Sync GitOps, and Workload Identity Federation."
+  },
+  {
+    id: "ha_multi_region_application",
+    name: "Highly Available Multi-Region Application Architecture (NEW-REL-03)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "Active-Active multi-region architecture across dual GKE fleets with Global Anycast Load Balancer and Cloud Spanner TrueTime synchronous replication.",
+    prompt: "Act as a Principal Cloud Reliability & Resiliency Architect. Design a production-grade Highly Available Multi-Region Active-Active Application Architecture blueprint featuring Global Anycast LB, dual GKE fleets, and Cloud Spanner TrueTime replication."
+  },
+  {
+    id: "etl_elt_cdc_pipeline",
+    name: "Enterprise ETL/ELT & CDC Data Pipeline Architecture (NEW-DAT-04)",
+    category: "Data & Lakehouse Architecture",
+    whenToUse: "End-to-end CDC & batch ELT pipeline with Datastream, Cloud Composer DAGs, Dataflow stream processing, BigQuery Medallion layers, and Dataplex lineage.",
+    prompt: "Act as a Principal Google Cloud Data Engineer & Architect. Design a production-grade Enterprise ETL/ELT & CDC Data Pipeline Architecture blueprint featuring Datastream CDC, Cloud Composer Airflow, Dataflow Beam, BigQuery Medallion, and Dataplex Governance."
+  },
+  {
+    id: "workload_identity_authorization",
+    name: "Workload Identity & Service-to-Service Authorization (NEW-SEC-05)",
+    category: "Security, Governance & Risk",
+    whenToUse: "Zero-static-key service-to-service authorization using Workload Identity Federation, STS OIDC token exchange, and short-lived IAM credentials.",
+    prompt: "Act as a Principal Cloud Security Architect. Design a production-grade Workload Identity & Service-to-Service Authorization Architecture blueprint featuring Workload Identity Federation, STS RFC 8693 token exchange, and short-lived IAM credentials."
+  },
+  {
+    id: "private_ingress_egress_connectivity",
+    name: "Private Ingress, Egress & Service Connectivity (NEW-NET-06)",
+    category: "Cloud Infrastructure & Networking",
+    whenToUse: "Zero-public-exposure private network topology featuring Private Service Connect (PSC), Cloud NAT managed egress, and Internal Application Load Balancing.",
+    prompt: "Act as a Principal Cloud Network & Security Architect. Design a production-grade Private Ingress, Egress & Service Connectivity Architecture blueprint featuring Cloud Armor, Internal Load Balancer, PSC, and Cloud NAT."
+  },
+  {
+    id: "enterprise_mlops_lifecycle",
+    name: "Enterprise MLOps Lifecycle Architecture (NEW-AI-07)",
+    category: "AI & Cognitive Systems",
+    whenToUse: "End-to-end MLOps CI/CD/CT lifecycle with Vertex AI Feature Store, Kubeflow training pipelines, Model Registry gating, and automated drift retraining.",
+    prompt: "Act as a Principal MLOps & Machine Learning Architect. Design a production-grade Enterprise MLOps Lifecycle Architecture blueprint featuring Vertex AI Feature Store, Kubeflow Pipelines, Model Registry, and Eventarc automated drift retraining."
+  },
+  {
+    id: "graphrag_knowledge_graph",
+    name: "GraphRAG & Enterprise Knowledge Graph Architecture (NEW-AI-08)",
+    category: "AI & Cognitive Systems",
+    whenToUse: "Hybrid GraphRAG architecture combining Cloud Spanner Graph ISO GQL traversals with Vertex AI Vector Search and Gemini 2.5 grounded reasoning.",
+    prompt: "Act as a Principal AI & Knowledge Graph Architect. Design a production-grade GraphRAG & Enterprise Knowledge Graph Architecture blueprint featuring Spanner Graph, Vertex Vector Search, and Gemini 2.5 Grounded Synthesis."
+  },
+  {
+    id: "saas_multi_tenant",
+    name: "SaaS Multi-Tenant Application Architecture (NEW-APP-09)",
+    category: "Software & Application Architecture",
+    whenToUse: "Enterprise SaaS multi-tenant architecture with hybrid Silo/Pool compute, Postgres RLS data partitioning, and per-tenant CMEK key isolation.",
+    prompt: "Act as a Principal SaaS Enterprise Architect. Design a production-grade SaaS Multi-Tenant Application Architecture blueprint featuring Tenant Ingress Routing, Silo/Pool Hybrid Compute, Postgres RLS, and per-tenant CMEK encryption."
+  },
+  {
+    id: "intelligent_document_processing",
+    name: "Intelligent Document Processing (IDP) Platform (NEW-AI-10)",
+    category: "AI & Cognitive Systems",
+    whenToUse: "Automated document processing with Document AI extraction, Gemini 2.5 multimodal validation, confidence-gated HITL review cockpit, and BigQuery export.",
+    prompt: "Act as a Principal AI & Automation Architect. Design a production-grade Intelligent Document Processing (IDP) Platform blueprint featuring Document AI, Gemini 2.5 Flash Validation, Confidence-Gated HITL Cockpit, and BigQuery Lakehouse."
+  },
+  {
     id: "healthcare_fhir_hl7",
     name: "Google Cloud Healthcare & Life Sciences FHIR / HL7 Pipeline (IND-HEALTH-01)",
     category: "Industry Specialized Solutions",
@@ -509,6 +589,16 @@ export function normalizeArchitectureId(archId?: string | null): string {
   if (id.includes('arch-sec-04') || id.includes('arch-sec-01') || id.includes('stride') || id.includes('threat_modeling')) return 'threat_modeling_stride';
   if (id.includes('arch-dat-05') || id.includes('arch-dat-01') || id.includes('data_lineage') || id.includes('provenance')) return 'data_lineage_provenance';
   if (id.includes('arch-mcp-06') || id.includes('arch-mcp-02') || id.includes('mcp_gateway') || id.includes('mcp') || id.includes('context_gateway')) return 'mcp_context_gateway';
+  if (id.includes('new-app-01') || id.includes('enterprise_api_management') || id === 'p51') return 'enterprise_api_management';
+  if (id.includes('new-plat-02') || id.includes('gke_enterprise_platform') || id === 'p52') return 'gke_enterprise_platform';
+  if (id.includes('new-rel-03') || id.includes('ha_multi_region') || id === 'p53') return 'ha_multi_region_application';
+  if (id.includes('new-dat-04') || id.includes('etl_elt_cdc_pipeline') || id === 'p54') return 'etl_elt_cdc_pipeline';
+  if (id.includes('new-sec-05') || id.includes('workload_identity_authorization') || id.includes('workload_identity_auth') || id === 'p55') return 'workload_identity_authorization';
+  if (id.includes('new-net-06') || id.includes('private_ingress_egress') || id === 'p56') return 'private_ingress_egress_connectivity';
+  if (id.includes('new-ai-07') || id.includes('enterprise_mlops_lifecycle') || id === 'p57') return 'enterprise_mlops_lifecycle';
+  if (id.includes('new-ai-08') || id.includes('graphrag_knowledge_graph') || id === 'p58') return 'graphrag_knowledge_graph';
+  if (id.includes('new-app-09') || id.includes('saas_multi_tenant') || id === 'p59') return 'saas_multi_tenant';
+  if (id.includes('new-ai-10') || id.includes('intelligent_doc') || id.includes('intelligent_document_processing') || id === 'p60') return 'intelligent_document_processing';
   if (id.includes('multiflow') || id.includes('decision_diamond')) return 'multiflow_zerotrust_platform';
   return id;
 }
@@ -582,6 +672,26 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactDataLineageXml();
   } else if (id === 'healthcare_fhir_hl7' || id === 'healthcare_fhir' || id.includes('healthcare') || id.includes('fhir')) {
     xml = getExactHealthcareFhirXml();
+  } else if (id === 'enterprise_api_management' || id.includes('api_management') || id === 'new-app-01') {
+    xml = getExactEnterpriseApiManagementXml();
+  } else if (id === 'gke_enterprise_platform' || id.includes('gke_enterprise') || id === 'new-plat-02') {
+    xml = getExactGkeEnterprisePlatformXml();
+  } else if (id === 'ha_multi_region_application' || id.includes('ha_multi_region') || id === 'new-rel-03') {
+    xml = getExactHaMultiRegionAppXml();
+  } else if (id === 'etl_elt_cdc_pipeline' || id.includes('etl_elt') || id.includes('cdc_pipeline') || id === 'new-dat-04') {
+    xml = getExactEtlEltCdcPipelineXml();
+  } else if (id === 'workload_identity_authorization' || id.includes('workload_identity') || id === 'new-sec-05') {
+    xml = getExactWorkloadIdentityAuthXml();
+  } else if (id === 'private_ingress_egress_connectivity' || id.includes('private_ingress') || id === 'new-net-06') {
+    xml = getExactPrivateIngressEgressXml();
+  } else if (id === 'enterprise_mlops_lifecycle' || id.includes('mlops_lifecycle') || id === 'new-ai-07') {
+    xml = getExactEnterpriseMlopsLifecycleXml();
+  } else if (id === 'graphrag_knowledge_graph' || id.includes('graphrag') || id === 'new-ai-08') {
+    xml = getExactGraphragKnowledgeGraphXml();
+  } else if (id === 'saas_multi_tenant' || id.includes('multi_tenant') || id === 'new-app-09') {
+    xml = getExactSaasMultiTenantXml();
+  } else if (id === 'intelligent_document_processing' || id.includes('intelligent_doc') || id === 'new-ai-10') {
+    xml = getExactIntelligentDocProcessingXml();
   } else if (id === 'cloud_finops_chargeback') {
     xml = getExactCloudFinopsChargebackXml();
   } else if (id === 'ai_coe_operating_model') {
