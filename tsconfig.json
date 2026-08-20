@@ -21,7 +21,8 @@
     "paths": {
       "@/components/DiagramViewer": ["./src/components/DiagramViewerVisual.tsx"],
       "@/lib/architectureTypes": ["./src/lib/architectureTypesCertified.ts"],
-      "@/lib/blueprintKnowledgeMatrix": ["./src/lib/blueprintKnowledgeMatrixNormalized.ts"],
+      "@/lib/blueprintKnowledgeMatrix": ["./src/lib/blueprintKnowledgeMatrixCatalog.ts"],
+      "@/lib/architectureHierarchy": ["./src/lib/architectureHierarchyCatalog.ts"],
       "@/*": ["./src/*"]
     },
     "types": ["vitest/globals"]
