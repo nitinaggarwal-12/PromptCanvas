@@ -6,9 +6,9 @@ import {
   normalizeArchitectureId as visualNormalizeArchitectureId,
   getArchitectureTypeById as visualGetArchitectureTypeById,
   getTemplateTitle as visualGetTemplateTitle,
-  getTechnicalArchitectureXml as visualGetTechnicalArchitectureXml,
   getDefaultXmlForArchitecture as visualGetDefaultXmlForArchitecture,
 } from './architectureTypesVisual';
+import { CATALOG_CANONICAL_IDS } from './blueprintExactResolver';
 
 export type ArchitectureTypeOption = VisualArchitectureTypeOption;
 export const BUSINESS_ARCHITECTURE_TYPES = VISUAL_BUSINESS_ARCHITECTURE_TYPES;
@@ -17,7 +17,6 @@ export const ARCHITECTURE_TYPES = VISUAL_ARCHITECTURE_TYPES;
 export const normalizeArchitectureId = visualNormalizeArchitectureId;
 export const getArchitectureTypeById = visualGetArchitectureTypeById;
 export const getTemplateTitle = visualGetTemplateTitle;
-export const getTechnicalArchitectureXml = visualGetTechnicalArchitectureXml;
 
 const NOTATION_SENSITIVE_IDS = new Set([
   'erd',
@@ -29,6 +28,8 @@ const NOTATION_SENSITIVE_IDS = new Set([
   'data_lineage_provenance',
 ]);
 
+const REGISTERED_BLUEPRINT_IDS = new Set<string>(CATALOG_CANONICAL_IDS);
+const BLUEPRINT_ID_PREFIX_RE = /^(?:p\d-|ind-|arch-)/i;
 const EMOJI_RE = /\p{Extended_Pictographic}/gu;
 const MIN_FONT = 9.5;
 
@@ -66,18 +67,41 @@ function finalNonNotationSanitize(xml: string, architectureId?: string | null): 
   return ensureValidXmlEntities(next);
 }
 
+function assertRegisteredBlueprintId(archId?: string | null): void {
+  const raw = String(archId || '').trim();
+  if (!raw || !BLUEPRINT_ID_PREFIX_RE.test(raw)) return;
+
+  const normalized = visualNormalizeArchitectureId(raw);
+  if (!REGISTERED_BLUEPRINT_IDS.has(normalized)) {
+    throw new Error(`BLUEPRINT_NOT_REGISTERED: ${raw}`);
+  }
+}
+
 /**
- * Certified production resolver.
+ * Certified production resolver — the single runtime entry point for blueprint XML.
  *
- * All catalog rendering first goes through the technical, visual, semantic-icon and
- * containment pipeline, then this final non-notation sanitizer prevents late-stage
- * enrichment from reintroducing emoji placeholders, sub-9.5px text, or bare XML entities.
+ * Catalog rendering first goes through exact canonical dispatch, then the technical,
+ * visual, semantic-icon and containment pipeline, and finally this sanitizer prevents
+ * late-stage enrichment from reintroducing emoji placeholders, sub-9.5px text, or
+ * malformed XML entities. Blueprint-looking IDs that are not registered fail loudly
+ * instead of silently falling through to an unrelated generic template.
  */
 export function getDefaultXmlForArchitecture(
   archId?: string | null,
   useCaseContext?: string,
   userPrompt?: string,
 ): string | null {
+  assertRegisteredBlueprintId(archId);
   const xml = visualGetDefaultXmlForArchitecture(archId, useCaseContext, userPrompt);
   return xml ? finalNonNotationSanitize(xml, archId) : xml;
+}
+
+/**
+ * Backward-compatible technical resolver name. It intentionally delegates to the
+ * certified resolver so consumers cannot bypass canonical catalog dispatch.
+ */
+export function getTechnicalArchitectureXml(archId: string): string {
+  const xml = getDefaultXmlForArchitecture(archId);
+  if (!xml) throw new Error(`BLUEPRINT_XML_UNAVAILABLE: ${archId}`);
+  return xml;
 }
