@@ -31,7 +31,8 @@ export interface DiagramViewerRenderSafeProps {
  * to width:100%/height:auto. Draw.io can emit transient overlay/toolbar DIVs next to the
  * actual SVG; stretching those nodes can turn a small opaque control surface into a
  * canvas-sized rectangle. Only the rendered SVG is now resized. A defensive runtime
- * guard also suppresses an oversized opaque-black direct overlay that contains no SVG.
+ * guard also suppresses oversized opaque-black viewer artifacts while preserving real
+ * diagram content.
  */
 export default function DiagramViewerRenderSafe({
   currentLanguage = 'en',
@@ -107,6 +108,9 @@ export default function DiagramViewerRenderSafe({
       currentLanguage || 'en',
     ),
   );
+  const aggressiveOverlayGuard = /ai_trism|llm_capacity|equipment_optimization|predictive_maintenance/i.test(
+    `${diagramType || ''} ${diagramId || ''}`,
+  );
 
   const iframeHtml = `<!DOCTYPE html>
 <html>
@@ -152,6 +156,7 @@ export default function DiagramViewerRenderSafe({
   const compactViewport = window.matchMedia('(max-width:1280px)').matches || window.matchMedia('(pointer:coarse)').matches;
   const canvasContainer = document.querySelector('.canvas-container');
   const storageKey = 'pc_canvas_scroll_' + ${JSON.stringify(diagramId || 'default')};
+  const aggressiveOverlayGuard = ${aggressiveOverlayGuard ? 'true' : 'false'};
 
   if (canvasContainer) {
     try {
@@ -195,24 +200,47 @@ export default function DiagramViewerRenderSafe({
   const root = document.getElementById('diagram-container');
   if (root) root.setAttribute('data-mxgraph', JSON.stringify(configObj));
 
+  function isOpaqueBlack(value) {
+    const compact = String(value || '').replace(/\s/g, '').toLowerCase();
+    return compact === 'rgb(0,0,0)' || compact === 'rgba(0,0,0,1)' || compact === '#000' || compact === '#000000' || compact === 'black';
+  }
+
   function suppressOversizedBlackOverlay() {
     if (!root) return;
-    const rw = Math.max(root.clientWidth, 1);
-    const rh = Math.max(root.clientHeight, 1);
-    Array.from(root.children).forEach(function(node) {
+    const rootRect = root.getBoundingClientRect();
+    const rootArea = Math.max(1, rootRect.width * rootRect.height);
+
+    // Root-cause class: Draw.io UI/overlay DIV expanded by host CSS.
+    root.querySelectorAll('div').forEach(function(node) {
       if (!(node instanceof HTMLElement)) return;
       if (node.querySelector('svg')) return;
       const rect = node.getBoundingClientRect();
       const style = getComputedStyle(node);
-      const bg = style.backgroundColor.replace(/\s/g, '');
-      const opaqueBlack = bg === 'rgb(0,0,0)' || bg === 'rgba(0,0,0,1)' || bg === '#000' || bg === '#000000';
-      const oversized = rect.width >= rw * 0.22 && rect.height >= rh * 0.22;
-      if (opaqueBlack && oversized) {
+      const ratio = (rect.width * rect.height) / rootArea;
+      if (isOpaqueBlack(style.backgroundColor) && ratio >= 0.08) {
         node.style.setProperty('display', 'none', 'important');
         node.setAttribute('data-pc-suppressed-oversized-overlay', 'true');
-        console.warn('[PromptCanvas] Suppressed oversized opaque Draw.io overlay', rect.width, rect.height);
+        console.warn('[PromptCanvas] Suppressed oversized opaque Draw.io DIV overlay', rect.width, rect.height);
       }
     });
+
+    // Targeted safety net for the three reported templates. Legitimate vendor/logo black
+    // marks are far below this area threshold, while a canvas-obscuring primitive is not.
+    if (aggressiveOverlayGuard) {
+      const svg = root.querySelector('svg');
+      if (!svg) return;
+      svg.querySelectorAll('rect,path,polygon').forEach(function(node) {
+        if (!(node instanceof SVGGraphicsElement)) return;
+        const rect = node.getBoundingClientRect();
+        const style = getComputedStyle(node);
+        const ratio = (rect.width * rect.height) / rootArea;
+        if (isOpaqueBlack(style.fill) && ratio >= 0.12) {
+          node.style.setProperty('display', 'none', 'important');
+          node.setAttribute('data-pc-suppressed-oversized-overlay', 'true');
+          console.warn('[PromptCanvas] Suppressed oversized opaque Draw.io SVG artifact', node.tagName, rect.width, rect.height);
+        }
+      });
+    }
   }
 
   function finishPresentation() {
