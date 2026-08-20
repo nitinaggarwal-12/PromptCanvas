@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { inflateRawSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
+import { getDefaultXmlForArchitecture } from '../architectureTypesCertified';
 import {
   CATALOG_BLUEPRINT_NUMBERS,
   CATALOG_CANONICAL_IDS,
@@ -38,7 +39,7 @@ function decodeRuntimeDiagram(xml: string): string {
 }
 
 describe('Blueprint 61 — Enterprise AI Document Assistant', () => {
-  it('is explicitly reserved as #61 without disturbing the certified 1-60 catalog', () => {
+  it('is explicitly reserved as #61 without disturbing the certified 1-60 advertised catalog', () => {
     expect(CATALOG_CANONICAL_IDS).toHaveLength(60);
     expect(CATALOG_CANONICAL_IDS).not.toContain(ID);
     expect(CATALOG_BLUEPRINT_NUMBERS[ID]).toBe(61);
@@ -61,7 +62,15 @@ describe('Blueprint 61 — Enterprise AI Document Assistant', () => {
     assertArchitectureSemantics(xml);
   });
 
-  it('emits canonical Blueprint 61 runtime identity and never leaks provisional #51 markers', () => {
+  it('resolves #61 through the same certified runtime entry point used by the application', () => {
+    const xml = getDefaultXmlForArchitecture(ID) || '';
+    expect(xml.length).toBeGreaterThan(1000);
+    expect(xml).toContain('id="catalog_enterprise_ai_document_assistant"');
+    expect(xml).toContain('PromptCanvas Blueprint 61');
+    expect(xml).not.toContain('Blueprint 51');
+  });
+
+  it('emits canonical Blueprint 61 exact-resolver identity and never leaks provisional #51 markers', () => {
     const xml = getExactCatalogBlueprintXml(ID);
     expect(xml).toBeTruthy();
     expect(xml).toContain('id="catalog_enterprise_ai_document_assistant"');
