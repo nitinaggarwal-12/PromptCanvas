@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import RawDiagramViewer from './DiagramViewerRenderSafe';
+import RawDiagramViewer from './DiagramViewer';
 import {
   BLUEPRINT_KNOWLEDGE_MATRIX,
   getBlueprintMetadataById,
