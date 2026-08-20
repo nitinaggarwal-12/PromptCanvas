@@ -3,10 +3,10 @@ import {
   ARCHITECTURE_TYPES,
   getDefaultXmlForArchitecture,
   normalizeArchitectureId
-} from "../../src/lib/architectureTypes";
+} from "../../src/lib/architectureTypesCertified";
 
 describe("Complete 52 Master Enterprise Blueprint Catalog Integrity Suite", () => {
-  it("should have exactly 40 registered enterprise architectures", () => {
+  it("should have exactly 52 registered enterprise architectures", () => {
     expect(ARCHITECTURE_TYPES.length).toBe(52);
   });
 
@@ -25,7 +25,7 @@ describe("Complete 52 Master Enterprise Blueprint Catalog Integrity Suite", () =
         expect(xml).toContain("</mxfile>");
         expect(xml).toContain("<mxGraphModel");
 
-        // Verify no unescaped ampersands in active XML tags/attributes (outside comments)
+        // Validate the same certified XML path used by the production app.
         const xmlWithoutComments = xml.replace(/<!--[\s\S]*?-->/g, "");
         const regex = /&(?!([a-zA-Z0-9]+|#\d+|#x[0-9a-fA-F]+);)/g;
         let m;
