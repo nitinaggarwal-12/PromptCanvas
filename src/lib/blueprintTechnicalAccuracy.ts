@@ -1,9 +1,6 @@
 /**
- * Phase 3.2+ — high-confidence technical terminology corrections.
- *
- * Keep this intentionally conservative. Architecture-specific modernization belongs in
- * the relevant master builder; this layer only changes product names whose customer-
- * facing naming is unambiguous across the blueprint catalog.
+ * Phase 3.2+ — high-confidence technical terminology corrections and narrowly-scoped
+ * render repairs for known malformed blueprint geometry.
  */
 const HIGH_CONFIDENCE_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Cloud Source Repositories/gi, 'Secure Source Manager'],
@@ -36,5 +33,105 @@ export function applyBlueprintTechnicalAccuracy(xml: string): string {
   return next.replace(
     /(<mxGraphModel\b)/,
     '<!-- pc-technical-accuracy-3-2 -->\n$1',
+  );
+}
+
+type RenderPatch = {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fillColor?: string;
+  strokeColor?: string;
+};
+
+function setStyleValue(style: string, key: string, value: string): string {
+  const re = new RegExp(`((?:^|;)${key}=)[^;]*`, 'i');
+  if (re.test(style)) return style.replace(re, `$1${value}`);
+  return `${style}${style && !style.endsWith(';') ? ';' : ''}${key}=${value};`;
+}
+
+function setGeometryValue(attrs: string, key: string, value: number): string {
+  const re = new RegExp(`(\\b${key}=")[^"]*(")`, 'i');
+  if (re.test(attrs)) return attrs.replace(re, `$1${value}$2`);
+  return `${attrs} ${key}="${value}"`;
+}
+
+function patchVertex(xml: string, patch: RenderPatch): string {
+  const re = new RegExp(
+    `<mxCell\\b([^>]*\\bid="${patch.id}"[^>]*\\bvertex="1"[^>]*)>([\\s\\S]*?)<\\/mxCell>`,
+    'i',
+  );
+
+  return xml.replace(re, (_full, attrs: string, body: string) => {
+    let nextAttrs = attrs;
+    const styleMatch = nextAttrs.match(/style="([^"]*)"/i);
+    if (styleMatch) {
+      let style = styleMatch[1];
+      if (patch.fillColor) style = setStyleValue(style, 'fillColor', patch.fillColor);
+      if (patch.strokeColor) style = setStyleValue(style, 'strokeColor', patch.strokeColor);
+      nextAttrs = nextAttrs.replace(styleMatch[0], `style="${style}"`);
+    }
+
+    const geometryMatch = body.match(/<mxGeometry\b([^>]*)\/?\s*>/i);
+    if (!geometryMatch) return `<mxCell${nextAttrs}>${body}</mxCell>`;
+
+    let geometryAttrs = geometryMatch[1] || '';
+    geometryAttrs = setGeometryValue(geometryAttrs, 'x', patch.x);
+    geometryAttrs = setGeometryValue(geometryAttrs, 'y', patch.y);
+    geometryAttrs = setGeometryValue(geometryAttrs, 'width', patch.width);
+    geometryAttrs = setGeometryValue(geometryAttrs, 'height', patch.height);
+    const nextBody = body.replace(geometryMatch[0], `<mxGeometry${geometryAttrs}/>`);
+    return `<mxCell${nextAttrs}>${nextBody}</mxCell>`;
+  });
+}
+
+const KNOWN_RENDER_REPAIRS: Record<string, RenderPatch[]> = {
+  // #22: a footer-zone helper arity bug converted intended width/height values into
+  // invalid numeric stroke/fill colors and left a 680x625 opaque block at the top-left.
+  tech_ai_trism_guardrails: [
+    { id: 'ops', x: 25, y: 680, width: 1710, height: 255, fillColor: '#F8FAFC', strokeColor: '#334155' },
+    { id: 'ops_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
+    { id: 'ops_h', x: 79, y: 690, width: 1642, height: 45 },
+  ],
+
+  // #33: the same bug affected the bottom resilience-patterns zone.
+  tech_llm_capacity_quota: [
+    { id: 'patterns', x: 25, y: 660, width: 1710, height: 260, fillColor: '#F5F3FF', strokeColor: '#6554C0' },
+    { id: 'patterns_n', x: 39, y: 675, width: 30, height: 30, fillColor: '#6554C0', strokeColor: '#6554C0' },
+    { id: 'patterns_h', x: 79, y: 670, width: 1642, height: 44 },
+  ],
+
+  // #39: the same bug affected the cross-cutting reliability/operations zone.
+  tech_supply_chain: [
+    { id: 'ops', x: 25, y: 675, width: 1700, height: 235, fillColor: '#F8FAFC', strokeColor: '#334155' },
+    { id: 'ops_n', x: 39, y: 690, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
+    { id: 'ops_h', x: 79, y: 685, width: 1632, height: 45 },
+  ],
+};
+
+/**
+ * Repairs the exact source defect behind the large black rectangle reported on #22,
+ * #33 and #39. This deliberately fixes geometry/style at XML source instead of hiding
+ * an arbitrary rendered object in the viewer.
+ */
+export function applyKnownBlueprintRenderRepairs(xml: string, architectureId?: string | null): string {
+  if (!xml) return xml;
+  const id = String(architectureId || '').toLowerCase();
+  const patches = KNOWN_RENDER_REPAIRS[id];
+  if (!patches?.length) return xml;
+
+  let next = patches.reduce((current, patch) => patchVertex(current, patch), xml);
+  if (!next.includes(`pc-known-render-repair:${id}`)) {
+    next = next.replace(/(<mxGraphModel\b)/, `<!-- pc-known-render-repair:${id} -->\n$1`);
+  }
+  return next;
+}
+
+export function findInvalidNumericDrawioColors(xml: string): string[] {
+  return Array.from(
+    xml.matchAll(/(?:fillColor|strokeColor)=([0-9]{2,6})(?=;|\")/gi),
+    (match) => match[0],
   );
 }
