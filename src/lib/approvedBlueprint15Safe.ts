@@ -3,7 +3,10 @@
 // Self-contained mxGraph XML: editable nodes/edges, inline SVG icons, UML lifelines,
 // activation bars, ref/alt fragments, HITL outcomes, governance notes and legend.
 
-function esc(value) {
+type DiagramParts = { nodes: string[]; edges: string[] };
+type MessageKind = 'sync' | 'async' | 'return' | 'policyReturn';
+
+function esc(value: unknown): string {
   return String(value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -11,13 +14,13 @@ function esc(value) {
     .replace(/"/g, '&quot;');
 }
 
-function safeValue(value) {
+function safeValue(value: unknown): string {
   const raw = String(value ?? '');
   if (raw.includes('&lt;') || raw.includes('&#')) return raw;
   return esc(raw).replace(/\n/g, '&lt;br&gt;');
 }
 
-function svgData(svg) {
+function svgData(svg: string): string {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
@@ -32,35 +35,35 @@ const ICON = {
   eye: svgData('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M5 32s9-17 27-17 27 17 27 17-9 17-27 17S5 32 5 32z" fill="none" stroke="#175CD3" stroke-width="4"/><circle cx="32" cy="32" r="8" fill="none" stroke="#175CD3" stroke-width="4"/></svg>'),
   a2a: svgData('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="#ECFDF3" stroke="#0E9384" stroke-width="3"><circle cx="12" cy="34" r="7"/><circle cx="32" cy="12" r="7"/><circle cx="52" cy="34" r="7"/><circle cx="32" cy="52" r="7"/></g><g stroke="#0E9384" stroke-width="3"><path d="m17 29 10-12M37 17l10 12M45 39 37 48M27 48l-8-9"/></g></svg>'),
   gear: svgData('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="m32 6 5 4 6-2 4 6 6 1v8l5 4-3 6 3 6-5 4v8l-6 1-4 6-6-2-5 4-5-4-6 2-4-6-6-1v-8l-5-4 3-6-3-6 5-4v-8l6-1 4-6 6 2z" fill="#F2F4F7" stroke="#344054" stroke-width="3"/><circle cx="32" cy="32" r="10" fill="none" stroke="#344054" stroke-width="3"/></svg>'),
-};
+} as const;
 
 const BOX = 'rounded=1;arcSize=10;whiteSpace=wrap;html=1;verticalAlign=middle;fontFamily=Inter;';
 const TEXT = 'text;html=1;strokeColor=none;fillColor=none;fontFamily=Inter;verticalAlign=middle;';
 
-function cell(id, value, style, x, y, w, h) {
+function cell(id: string, value: unknown, style: string, x: number, y: number, w: number, h: number): string {
   return `<mxCell id="${id}" value="${safeValue(value)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
 }
 
-function imageCell(id, url, x, y, w, h) {
+function imageCell(id: string, url: string, x: number, y: number, w: number, h: number): string {
   return cell(id, '', `shape=image;imageAspect=0;aspect=fixed;image=${url};strokeColor=none;fillColor=none;`, x, y, w, h);
 }
 
-function lineEdge(id, x1, y1, x2, y2, color, width, dashed, arrow, arrowFill) {
+function lineEdge(id: string, x1: number, y1: number, x2: number, y2: number, color: string, width: number, dashed: boolean, arrow: string, arrowFill: boolean): string {
   return `<mxCell id="${id}" value="" style="edgeStyle=none;html=1;strokeColor=${color};strokeWidth=${width};${dashed ? 'dashed=1;dashPattern=7 5;' : ''}endArrow=${arrow};endFill=${arrowFill ? '1' : '0'};" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x1}" y="${y1}" as="sourcePoint"/><mxPoint x="${x2}" y="${y2}" as="targetPoint"/></mxGeometry></mxCell>`;
 }
 
-function rich(title, body, titleColor = '#101828', bodyColor = '#475467', titleSize = 12.5, bodySize = 10.2) {
+function rich(title: string, body: string, titleColor = '#101828', bodyColor = '#475467', titleSize = 12.5, bodySize = 10.2): string {
   return `&lt;div style=&quot;font-family:Inter,Arial,sans-serif;&quot;&gt;` +
     `&lt;div style=&quot;font-weight:800;font-size:${titleSize}px;color:${titleColor};line-height:1.15;&quot;&gt;${esc(title)}&lt;/div&gt;` +
     (body ? `&lt;div style=&quot;margin-top:4px;font-size:${bodySize}px;color:${bodyColor};line-height:1.25;&quot;&gt;${esc(body)}&lt;/div&gt;` : '') +
     `&lt;/div&gt;`;
 }
 
-function badge(id, value, x, y, w, h, fill, stroke, color, fontSize = 11.5) {
+function badge(id: string, value: string, x: number, y: number, w: number, h: number, fill: string, stroke: string, color: string, fontSize = 11.5): string {
   return cell(id, value, `${BOX}fillColor=${fill};strokeColor=${stroke};strokeWidth=1.3;fontColor=${color};fontStyle=1;fontSize=${fontSize};align=center;spacing=4;`, x, y, w, h);
 }
 
-function participant(id, x, w, title, subtitle, color, icon) {
+function participant(id: string, x: number, w: number, title: string, subtitle: string, color: string, icon: string): string[] {
   return [
     cell(`${id}_card`, '', `${BOX}fillColor=#FFFFFF;strokeColor=${color};strokeWidth=1.5;shadow=0;`, x, 140, w, 70),
     imageCell(`${id}_icon`, icon, x + 13, 154, 38, 38),
@@ -68,19 +71,19 @@ function participant(id, x, w, title, subtitle, color, icon) {
   ];
 }
 
-function lifeline(id, x, color) {
+function lifeline(id: string, x: number, color: string): string {
   return cell(id, '', `shape=line;html=1;strokeColor=${color};strokeWidth=1.2;dashed=1;dashPattern=5 5;opacity=70;`, x, 210, 1, 620);
 }
 
-function activation(id, x, y, h, fill, stroke) {
+function activation(id: string, x: number, y: number, h: number, fill: string, stroke: string): string {
   return cell(id, '', `rounded=0;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${stroke};strokeWidth=1.2;`, x - 5, y, 10, h);
 }
 
-function step(id, n, x, y, fill) {
+function step(id: string, n: number, x: number, y: number, fill: string): string {
   return cell(id, String(n), `ellipse;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${fill};fontColor=#FFFFFF;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;`, x, y - 11, 22, 22);
 }
 
-function message(parts, id, n, fromX, toX, y, label, kind, color, labelX, labelY, labelW, labelH) {
+function message(parts: DiagramParts, id: string, n: number, fromX: number, toX: number, y: number, label: string, kind: MessageKind, color: string, labelX: number, labelY: number, labelW: number, labelH: number): void {
   const forward = toX >= fromX;
   const sx = fromX + (forward ? 7 : -7);
   const tx = toX + (forward ? -7 : 7);
@@ -92,14 +95,14 @@ function message(parts, id, n, fromX, toX, y, label, kind, color, labelX, labelY
   parts.nodes.push(cell(`${id}_label`, label, `${TEXT}align=center;fontSize=10.1;fontColor=#344054;whiteSpace=wrap;overflow=hidden;fillColor=#FFFFFF;opacity=96;`, labelX, labelY, labelW, labelH));
 }
 
-function frame(id, tag, x, y, w, h, stroke, fill) {
+function frame(id: string, tag: string, x: number, y: number, w: number, h: number, stroke: string, fill: string): string[] {
   return [
     cell(id, '', `rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=${fill};opacity=18;strokeColor=${stroke};strokeWidth=1.3;dashed=1;dashPattern=6 4;`, x, y, w, h),
     badge(`${id}_tag`, tag, x + 8, y + 5, 152, 25, '#FFFFFF', stroke, stroke, 10.5),
   ];
 }
 
-function note(id, icon, title, body, x, y, w, stroke, fill, titleColor) {
+function note(id: string, icon: string, title: string, body: string, x: number, y: number, w: number, stroke: string, fill: string, titleColor: string): string[] {
   return [
     cell(`${id}_box`, '', `${BOX}fillColor=${fill};strokeColor=${stroke};strokeWidth=1.25;`, x, y, w, 104),
     imageCell(`${id}_icon`, icon, x + 16, y + 18, 42, 42),
@@ -107,8 +110,8 @@ function note(id, icon, title, body, x, y, w, stroke, fill, titleColor) {
   ];
 }
 
-export function getApprovedMultiAgentSequenceBlueprintXml() {
-  const p = { nodes: ['<mxCell id="0"/>', '<mxCell id="1" parent="0"/>'], edges: [] };
+export function getApprovedMultiAgentSequenceBlueprintXml(): string {
+  const p: DiagramParts = { nodes: ['<mxCell id="0"/>', '<mxCell id="1" parent="0"/>'], edges: [] };
 
   // ===== PAGE HEADER — exact approved composition =====
   p.nodes.push(cell('bp_badge', '&lt;div style=&quot;font-size:22px;font-weight:900;line-height:1.05;&quot;&gt;15 OF 50&lt;/div&gt;&lt;div style=&quot;margin-top:6px;font-size:9px;font-weight:800;letter-spacing:2px;&quot;&gt;BLUEPRINT&lt;/div&gt;', `${BOX}fillColor=#175CD3;strokeColor=#175CD3;fontColor=#FFFFFF;align=center;spacing=4;`, 18, 22, 132, 60));
@@ -131,7 +134,7 @@ export function getApprovedMultiAgentSequenceBlueprintXml() {
     teal: '#0E9384',
     orange: '#E98317',
     gray: '#344054',
-  };
+  } as const;
   const X = {
     user: 82,
     gemini: 277,
@@ -140,7 +143,7 @@ export function getApprovedMultiAgentSequenceBlueprintXml() {
     retrieval: 975,
     analytics: 1167,
     data: 1396,
-  };
+  } as const;
 
   p.nodes.push(...participant('user', 18, 180, 'User / Requestor', 'Human or calling application', C.blue, ICON.user));
   p.nodes.push(...participant('gemini', 225, 188, 'Gemini Enterprise', 'Assistant / agent experience', C.blue, ICON.gemini));
