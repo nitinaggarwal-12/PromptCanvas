@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { inflateRawSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 import {
@@ -8,12 +10,31 @@ import {
 } from '../blueprintExactResolver';
 
 const ID = 'enterprise_ai_document_assistant';
+const MASTER_PATH = resolve(process.cwd(), 'templates/master_blueprints/xml/61_enterprise_ai_document_assistant.drawio');
 
-function decodeDiagramBody(xml: string): string {
+function countTopology(xml: string) {
+  return {
+    vertices: (xml.match(/<mxCell\b[^>]*\bvertex="1"/gi) || []).length,
+    edges: (xml.match(/<mxCell\b[^>]*\bedge="1"/gi) || []).length,
+    decisions: (xml.match(/rhombus/gi) || []).length,
+  };
+}
+
+function assertArchitectureSemantics(xml: string) {
+  expect(xml).toMatch(/Workflow Orchestrator/i);
+  expect(xml).toMatch(/Document AI/i);
+  expect(xml).toMatch(/Vertex AI|Gemini/i);
+  expect(xml).toMatch(/Human Review/i);
+  expect(xml).toMatch(/Pub\/Sub/i);
+  expect(xml).toMatch(/Cloud Logging/i);
+  expect(xml).toMatch(/Cloud Armor/i);
+  expect(xml).toMatch(/BigQuery/i);
+}
+
+function decodeRuntimeDiagram(xml: string): string {
   const body = xml.match(/<diagram\b[^>]*>([\s\S]*?)<\/diagram>/i)?.[1] || '';
   expect(body.length).toBeGreaterThan(1000);
-  const inflated = inflateRawSync(Buffer.from(body, 'base64')).toString('utf8');
-  return decodeURIComponent(inflated);
+  return decodeURIComponent(inflateRawSync(Buffer.from(body, 'base64')).toString('utf8'));
 }
 
 describe('Blueprint 61 — Enterprise AI Document Assistant', () => {
@@ -24,7 +45,23 @@ describe('Blueprint 61 — Enterprise AI Document Assistant', () => {
     expect(CATALOG_EXACT_FACTORIES[ID]).toBeTypeOf('function');
   });
 
-  it('emits Blueprint 61 identity and never leaks provisional #51 markers', () => {
+  it('ships a native editable Draw.io master with zero provisional #51 leakage', () => {
+    const xml = readFileSync(MASTER_PATH, 'utf8');
+    const topology = countTopology(xml);
+
+    expect(xml).toContain('compressed="false"');
+    expect(xml).toContain('PromptCanvas Blueprint 61');
+    expect(xml).toContain('id="enterprise_ai_doc_assistant_61"');
+    expect(xml).toContain('Blueprint 61 - Enterprise AI Document Assistant');
+    expect(xml).not.toContain('Blueprint 51');
+    expect(xml).not.toContain('enterprise_ai_doc_assistant_51');
+    expect(topology.vertices).toBeGreaterThanOrEqual(45);
+    expect(topology.edges).toBeGreaterThanOrEqual(30);
+    expect(topology.decisions).toBeGreaterThanOrEqual(4);
+    assertArchitectureSemantics(xml);
+  });
+
+  it('emits canonical Blueprint 61 runtime identity and never leaks provisional #51 markers', () => {
     const xml = getExactCatalogBlueprintXml(ID);
     expect(xml).toBeTruthy();
     expect(xml).toContain('id="catalog_enterprise_ai_document_assistant"');
@@ -34,24 +71,17 @@ describe('Blueprint 61 — Enterprise AI Document Assistant', () => {
     expect(xml).not.toContain('enterprise_ai_doc_assistant_51');
   });
 
-  it('decompresses into a substantial editable architecture with decisions and routed flows', () => {
+  it('runtime payload remains a substantial editable architecture with decisions and routed flows', () => {
     const xml = getExactCatalogBlueprintXml(ID) || '';
-    const diagram = decodeDiagramBody(xml);
-    const vertices = (diagram.match(/<mxCell\b[^>]*\bvertex="1"/gi) || []).length;
-    const edges = (diagram.match(/<mxCell\b[^>]*\bedge="1"/gi) || []).length;
-    const decisions = (diagram.match(/rhombus/gi) || []).length;
+    const diagram = decodeRuntimeDiagram(xml);
+    const topology = countTopology(diagram);
 
     expect(diagram).toContain('<mxGraphModel');
     expect(diagram).toContain('<root>');
-    expect(vertices).toBeGreaterThanOrEqual(25);
-    expect(edges).toBeGreaterThanOrEqual(18);
-    expect(decisions).toBeGreaterThanOrEqual(3);
-    expect(diagram).toMatch(/Workflow Orchestrator/i);
-    expect(diagram).toMatch(/Document AI/i);
-    expect(diagram).toMatch(/Vertex AI|Gemini/i);
-    expect(diagram).toMatch(/Human Review/i);
-    expect(diagram).toMatch(/Pub\/Sub/i);
-    expect(diagram).toMatch(/Cloud Logging/i);
+    expect(topology.vertices).toBeGreaterThanOrEqual(25);
+    expect(topology.edges).toBeGreaterThanOrEqual(18);
+    expect(topology.decisions).toBeGreaterThanOrEqual(3);
+    assertArchitectureSemantics(diagram);
     expect(diagram).not.toMatch(/Blueprint 51/i);
   });
 });
