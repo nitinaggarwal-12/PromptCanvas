@@ -1,9 +1,9 @@
 import {
   getExactErdReferenceXml,
-  getExactDevopsCicdPipelineReferenceXml,
 } from './diagramCompiler';
+import { getApprovedMultiAgentSequenceBlueprintXml } from './approvedBlueprint15Safe';
+import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24Safe';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
-import { buildMultiAgentSequenceXml } from './masterBuilders/build_master_multi_agent_sequence';
 import { buildSecureDeploymentPhase1Xml } from './masterBuilders/build_master_secure_deployment_phase1';
 import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
 import { buildDataOpsPhase1Xml } from './masterBuilders/build_master_dataops_phase1';
@@ -67,7 +67,9 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   federated_iam_sso: getExactFederatedIamSsoXml,
   tech_micro_frontends: getExactMicroFrontendsXml,
   logical_ai_config_tenant: getExactLogicalAiConfigTenantXml,
-  sequence_diagram: buildMultiAgentSequenceXml,
+  // Blueprint 15: user-approved UML-style multi-agent sequence master.
+  sequence_diagram: getApprovedMultiAgentSequenceBlueprintXml,
+  // Blueprint 16 remains on the redesign queue; keep the previous canonical master active.
   secure_deployment_map: buildSecureDeploymentPhase1Xml,
   gcp_landing_zone_vpc: getExactGcpLandingZoneVpcXml,
   data_residency_sovereign_map: buildDataResidencyPhase1Xml,
@@ -76,7 +78,8 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   tech_eval_safety: getExactEvalSafetyXml,
   tech_ai_trism_guardrails: getExactAiTrismGuardrailsXml,
   ai_agent_approval_workflow: getExactAiAgentApprovalWorkflowXml,
-  devops_cicd_pipeline: getExactDevopsCicdPipelineReferenceXml,
+  // Blueprint 24: approved master supersedes the former diagramCompiler implementation.
+  devops_cicd_pipeline: getApprovedDevopsCicdBlueprintXml,
   tech_event_driven_eda: () => getTechnicalArchitectureXml('tech_event_driven_eda'),
   tech_serverless_gcp: getExactServerlessGcpReferenceXml,
   tech_multimodal_ingestion: getExactMultimodalIngestionXml,
