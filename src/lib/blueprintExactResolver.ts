@@ -5,6 +5,11 @@ import {
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildMultiAgentSequenceXml } from './masterBuilders/build_master_multi_agent_sequence';
 import { buildSecureDeploymentPhase1Xml } from './masterBuilders/build_master_secure_deployment_phase1';
+import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
+import { buildDataOpsPhase1Xml } from './masterBuilders/build_master_dataops_phase1';
+import { buildFinancialAdvisingPhase1Xml } from './masterBuilders/build_master_financial_advising_phase1';
+import { buildPredictiveMaintenancePhase1Xml } from './masterBuilders/build_master_predictive_maintenance_phase1';
+import { buildPharmaGenomicsPhase1Xml } from './masterBuilders/build_master_pharma_genomics_phase1';
 import {
   getExactSixRsMigrationMatrixXml,
   getExactHybridStranglerTransitionXml,
@@ -14,19 +19,14 @@ import {
   getExactLogicalAiConfigTenantXml,
   getExactHubAndSpokeAgentConfigXml,
   getExactUnifiedDataGovernanceXml,
-  getExactDataOpsAnomalyDetectionXml,
   getExactGoLiveWarRoomRunbookXml,
   getExactEnterpriseSreObservabilityXml,
-  getExactDataResidencySovereignMapXml,
   getExactFederatedIamSsoXml,
   getExactAiTrismGuardrailsXml,
   getExactAgenticRagWidescreenXml,
   getExactGcpDataLakehouseWbsXml,
   getExactMicroFrontendsXml,
-  getExactFintechPaymentsXml,
-  getExactGenomicsClinicalXml,
   getExactMultimodalIngestionXml,
-  getExactSupplyChainXml,
   getExactEvalSafetyXml,
   getExactAgenticMeshXml,
   getExactValueStreamMapXml,
@@ -70,7 +70,7 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   sequence_diagram: buildMultiAgentSequenceXml,
   secure_deployment_map: buildSecureDeploymentPhase1Xml,
   gcp_landing_zone_vpc: getExactGcpLandingZoneVpcXml,
-  data_residency_sovereign_map: getExactDataResidencySovereignMapXml,
+  data_residency_sovereign_map: buildDataResidencyPhase1Xml,
   enterprise_agent_runtime: getExactEnterpriseAgentRuntimeXml,
   tech_agentic_mesh: getExactAgenticMeshXml,
   tech_eval_safety: getExactEvalSafetyXml,
@@ -88,11 +88,11 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   tech_llm_capacity_quota: getExactLlmCapacityQuotaXml,
   ai_coe_operating_model: getExactAiCoeOperatingModelXml,
   tech_llmops_lifecycle: getExactLlmopsLifecycleXml,
-  dataops_anomaly_detection: getExactDataOpsAnomalyDetectionXml,
+  dataops_anomaly_detection: buildDataOpsPhase1Xml,
   tech_multi_region_dr: () => getTechnicalArchitectureXml('tech_multi_region_dr'),
-  tech_fintech_payments: getExactFintechPaymentsXml,
-  tech_supply_chain: getExactSupplyChainXml,
-  tech_genomics_clinical: getExactGenomicsClinicalXml,
+  tech_fintech_payments: buildFinancialAdvisingPhase1Xml,
+  tech_supply_chain: buildPredictiveMaintenancePhase1Xml,
+  tech_genomics_clinical: buildPharmaGenomicsPhase1Xml,
   ecommerce_retail: getExactEcommerceRetailXml,
   smart_factory_iot: getExactSmartFactoryIotXml,
   hr_talent_ai: getExactHrTalentAiXml,
