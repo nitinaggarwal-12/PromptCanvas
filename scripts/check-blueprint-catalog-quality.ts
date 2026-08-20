@@ -1,10 +1,12 @@
 import { createHash } from 'crypto';
+import { XMLParser } from 'fast-xml-parser';
 import { BLUEPRINT_KNOWLEDGE_MATRIX } from '../src/lib/blueprintKnowledgeMatrixNormalized';
 import {
   getDefaultXmlForArchitecture,
   normalizeArchitectureId,
 } from '../src/lib/architectureTypesCertified';
 import { CATALOG_CANONICAL_IDS } from '../src/lib/blueprintExactResolver';
+import { findInvalidNumericDrawioColors } from '../src/lib/blueprintTechnicalAccuracy';
 
 const NOTATION_SENSITIVE = new Set([
   'erd',
@@ -25,6 +27,11 @@ const STALE_PATTERNS: Array<[string, RegExp]> = [
   ['Global HTTPS Load Balancer', /Global HTTPS Load Balancer/i],
 ];
 const EMOJI_RE = /\p{Extended_Pictographic}/gu;
+const XML_PARSER = new XMLParser({
+  ignoreAttributes: false,
+  processEntities: false,
+  allowBooleanAttributes: true,
+});
 
 const hash = (xml: string) => createHash('sha256').update(xml).digest('hex');
 const diagramId = (xml: string) => xml.match(/<diagram\b[^>]*\bid="([^"]+)"/i)?.[1] || '';
@@ -37,6 +44,28 @@ function assertContains(xml: string, tokens: string[], label: string, failures: 
   const lower = xml.toLowerCase();
   const missing = tokens.filter(token => !lower.includes(token.toLowerCase()));
   if (missing.length) failures.push(`${label}: missing ${missing.join(', ')}`);
+}
+
+function assertGeometry(
+  xml: string,
+  id: string,
+  expected: { x: number; y: number; width: number; height: number },
+  label: string,
+  failures: string[],
+) {
+  const cell = xml.match(new RegExp(`<mxCell\\b[^>]*\\bid="${id}"[^>]*>[\\s\\S]*?<mxGeometry\\b([^>]*)`, 'i'));
+  if (!cell) {
+    failures.push(`${label}: missing vertex ${id}`);
+    return;
+  }
+  const attrs = cell[1] || '';
+  const num = (name: string) => Number(attrs.match(new RegExp(`\\b${name}="([^"]+)"`, 'i'))?.[1]);
+  const actual = { x: num('x'), y: num('y'), width: num('width'), height: num('height') };
+  for (const key of ['x', 'y', 'width', 'height'] as const) {
+    if (actual[key] !== expected[key]) {
+      failures.push(`${label}: ${id}.${key} expected ${expected[key]}, got ${actual[key]}`);
+    }
+  }
 }
 
 const failures: string[] = [];
@@ -62,6 +91,20 @@ BLUEPRINT_KNOWLEDGE_MATRIX.forEach((item, index) => {
   if (!xml || !/<mxGraphModel\b/i.test(xml) || !/<root>/i.test(xml) || !/<\/root>/i.test(xml)) {
     failures.push(`#${number} ${canonicalId}: unresolved/invalid XML`);
     return;
+  }
+
+  // Release-blocking parser gate. This catches malformed attributes before Railway can
+  // deploy a blueprint that Draw.io reports as "Not a diagram file".
+  try {
+    XML_PARSER.parse(xml);
+  } catch (error) {
+    failures.push(`#${number} ${canonicalId}: XML parser failure: ${error instanceof Error ? error.message : String(error)}`);
+    return;
+  }
+
+  const invalidColors = findInvalidNumericDrawioColors(xml);
+  if (invalidColors.length) {
+    failures.push(`#${number} ${canonicalId}: invalid numeric Draw.io colors: ${invalidColors.join(', ')}`);
   }
 
   const id = diagramId(xml);
@@ -104,10 +147,16 @@ const bp6 = outputs.get(6) || '';
 assertContains(bp6, ['Connectors', 'Gemini Notebook', 'Skills', 'Agent Gallery', 'Agent Platform'], '#6 capability portfolio', failures);
 const bp20 = outputs.get(20) || '';
 assertContains(bp20, ['Network Connectivity Center', 'Cloud Interconnect', 'HA VPN', 'Cross-Cloud Interconnect', 'Workforce Identity Federation', 'Workload Identity Federation'], '#20 hybrid multi-cloud', failures);
+const bp22 = outputs.get(22) || '';
+assertGeometry(bp22, 'ops', { x: 25, y: 680, width: 1710, height: 255 }, '#22 TRiSM operations plane', failures);
+const bp33 = outputs.get(33) || '';
+assertGeometry(bp33, 'patterns', { x: 25, y: 660, width: 1710, height: 260 }, '#33 capacity resilience plane', failures);
 const bp34 = outputs.get(34) || '';
 assertContains(bp34, ['Assistant', 'Connectors', 'Gemini Notebook', 'Skills', 'Agent Gallery', 'Agent Designer', 'Agent Runtime'], '#34 capability portfolio', failures);
 const bp39 = outputs.get(39) || '';
+assertGeometry(bp39, 'ops', { x: 25, y: 675, width: 1700, height: 235 }, '#39 predictive maintenance operations plane', failures);
 const bp42 = outputs.get(42) || '';
+assertGeometry(bp42, 'ops', { x: 25, y: 690, width: 1700, height: 230 }, '#42 smart factory operations plane', failures);
 if (hash(bp39) === hash(bp42)) failures.push('#39/#42 resolved identically');
 assertContains(bp39, ['Predictive Maintenance', 'Manufacturing Connect', 'Maintenance'], '#39 predictive maintenance', failures);
 assertContains(bp42, ['Digital Twin', 'ISA-95', 'OEE'], '#42 smart factory', failures);
