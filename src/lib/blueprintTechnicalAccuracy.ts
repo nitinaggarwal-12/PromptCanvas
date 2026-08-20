@@ -1,6 +1,6 @@
 /**
  * Phase 1 / Phase 3.2+ — high-confidence terminology/claim corrections plus narrowly
- * scoped render repairs for known malformed blueprint geometry.
+ * scoped render repairs for legacy builders that still need them.
  */
 const HIGH_CONFIDENCE_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Cloud Source Repositories/gi, 'Secure Source Manager'],
@@ -20,8 +20,6 @@ const HIGH_CONFIDENCE_REPLACEMENTS: Array<[RegExp, string]> = [
   [/SIEM\s*&\s*Chronicle/gi, 'Google Security Operations'],
   [/Google Chronicle/gi, 'Google Security Operations'],
   [/\bChronicle\b/gi, 'Google Security Operations'],
-
-  // Gemini/model naming: keep evergreen architecture templates configurable.
   [/Gemini 3\.7 Pro Vision/gi, 'Gemini multimodal model'],
   [/Gemini 3\.7 Flash\s*\/\s*Pro/gi, 'Gemini (approved model)'],
   [/Gemini 3\.7 Pro/gi, 'Gemini (approved model)'],
@@ -29,8 +27,6 @@ const HIGH_CONFIDENCE_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Gemini 3\.7/gi, 'Gemini'],
   [/Gemini 2\.5 Pro Multimodal Synthesizer/gi, 'Gemini (approved multimodal model)'],
   [/Gemini Bio Foundation Models/gi, 'Approved biopharma foundation models'],
-
-  // Explicit architecture corrections discovered during rendered Phase-1 review.
   [/GCS Secure Bucket/gi, 'Cloud Storage corpus'],
   [/Vertex AI Search\s*&\s*RAG/gi, 'Agent Search / RAG Engine'],
   [/\bTHOUGHT\s*:/gi, 'Planner decision:'],
@@ -40,8 +36,6 @@ const HIGH_CONFIDENCE_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Transitively Routing Mesh/gi, 'Private service endpoints (non-transitive)'],
   [/GKE Spot\s*&\s*TPU Compute Cluster\s*\(GATK Variant Calling\)/gi, 'GKE / Batch variant-calling compute (GATK)'],
   [/Automated Tax-Loss Harvester/gi, 'Tax-Loss Harvesting Recommendation'],
-
-  // Remove universal guarantees. These are architecture templates, not contracts.
   [/100%\s+Compliant/gi, 'Compliance status: validate'],
   [/100%\s+Validated/gi, 'Validation target: workload-defined'],
   [/100%\s+Traceable(?:\s+Embeddings)?/gi, 'Traceability target: workload-defined'],
@@ -56,103 +50,42 @@ const HIGH_CONFIDENCE_REPLACEMENTS: Array<[RegExp, string]> = [
   [/<\s*100\s*ms/gi, 'workload-defined latency target'],
 ];
 
-type RenderPatch = {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fillColor?: string;
-  strokeColor?: string;
-};
+type RenderPatch = { id: string; x: number; y: number; width: number; height: number; fillColor?: string; strokeColor?: string };
+function setStyleValue(style:string,key:string,value:string):string{const re=new RegExp(`((?:^|;)${key}=)[^;]*`,'i');if(re.test(style))return style.replace(re,(_f,p:string)=>`${p}${value}`);return`${style}${style&&!style.endsWith(';')?';':''}${key}=${value};`;}
+function setGeometryValue(attrs:string,key:string,value:number):string{const re=new RegExp(`(\\b${key}=")[^"]*(")`,'i');if(re.test(attrs))return attrs.replace(re,(_f,p:string,s:string)=>`${p}${value}${s}`);return`${attrs} ${key}="${value}"`;}
+function patchVertex(xml:string,patch:RenderPatch):string{const re=new RegExp(`<mxCell\\b([^>]*\\bid="${patch.id}"[^>]*\\bvertex="1"[^>]*)>([\\s\\S]*?)<\\/mxCell>`,'i');return xml.replace(re,(_f,attrs:string,body:string)=>{let a=attrs;const sm=a.match(/style="([^"]*)"/i);if(sm){let st=sm[1];if(patch.fillColor)st=setStyleValue(st,'fillColor',patch.fillColor);if(patch.strokeColor)st=setStyleValue(st,'strokeColor',patch.strokeColor);a=a.replace(sm[0],`style="${st}"`);}const gm=body.match(/<mxGeometry\b([^>]*?)(?:\/)?\s*>/i);if(!gm)return`<mxCell${a}>${body}</mxCell>`;let ga=(gm[1]||'').trimEnd();ga=setGeometryValue(ga,'x',patch.x);ga=setGeometryValue(ga,'y',patch.y);ga=setGeometryValue(ga,'width',patch.width);ga=setGeometryValue(ga,'height',patch.height);if(!/\bas="geometry"/i.test(ga))ga+=' as="geometry"';return`<mxCell${a}>${body.replace(gm[0],`<mxGeometry ${ga.trim()}/>` )}</mxCell>`;});}
 
-function setStyleValue(style: string, key: string, value: string): string {
-  const re = new RegExp(`((?:^|;)${key}=)[^;]*`, 'i');
-  if (re.test(style)) return style.replace(re, (_full, prefix: string) => `${prefix}${value}`);
-  return `${style}${style && !style.endsWith(';') ? ';' : ''}${key}=${value};`;
-}
-
-function setGeometryValue(attrs: string, key: string, value: number): string {
-  const re = new RegExp(`(\\b${key}=")[^"]*(")`, 'i');
-  if (re.test(attrs)) return attrs.replace(re, (_full, prefix: string, suffix: string) => `${prefix}${value}${suffix}`);
-  return `${attrs} ${key}="${value}"`;
-}
-
-function patchVertex(xml: string, patch: RenderPatch): string {
-  const re = new RegExp(`<mxCell\\b([^>]*\\bid="${patch.id}"[^>]*\\bvertex="1"[^>]*)>([\\s\\S]*?)<\\/mxCell>`, 'i');
-  return xml.replace(re, (_full, attrs: string, body: string) => {
-    let nextAttrs = attrs;
-    const styleMatch = nextAttrs.match(/style="([^"]*)"/i);
-    if (styleMatch) {
-      let style = styleMatch[1];
-      if (patch.fillColor) style = setStyleValue(style, 'fillColor', patch.fillColor);
-      if (patch.strokeColor) style = setStyleValue(style, 'strokeColor', patch.strokeColor);
-      nextAttrs = nextAttrs.replace(styleMatch[0], `style="${style}"`);
-    }
-    const geometryMatch = body.match(/<mxGeometry\b([^>]*?)(?:\/)?\s*>/i);
-    if (!geometryMatch) return `<mxCell${nextAttrs}>${body}</mxCell>`;
-    let geometryAttrs = (geometryMatch[1] || '').trimEnd();
-    geometryAttrs = setGeometryValue(geometryAttrs, 'x', patch.x);
-    geometryAttrs = setGeometryValue(geometryAttrs, 'y', patch.y);
-    geometryAttrs = setGeometryValue(geometryAttrs, 'width', patch.width);
-    geometryAttrs = setGeometryValue(geometryAttrs, 'height', patch.height);
-    if (!/\bas="geometry"/i.test(geometryAttrs)) geometryAttrs += ' as="geometry"';
-    const nextBody = body.replace(geometryMatch[0], `<mxGeometry ${geometryAttrs.trim()}/>`);
-    return `<mxCell${nextAttrs}>${nextBody}</mxCell>`;
-  });
-}
-
+/** These are only for still-legacy builders. New Phase-1 builders must fix geometry at source.
+ * In particular #39 is intentionally absent: its Phase-1 `ops` is a right-side column, and
+ * applying the old footer repair would create the giant empty panel seen in rendered QA. */
 const KNOWN_RENDER_REPAIRS: Record<string, RenderPatch[]> = {
-  tech_data_lakehouse_gcp: [
-    { id: 'consume', x: 25, y: 680, width: 1710, height: 245, fillColor: '#F8FAFC', strokeColor: '#334155' },
-    { id: 'consume_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
-    { id: 'consume_h', x: 79, y: 690, width: 1642, height: 45 },
+  tech_data_lakehouse_gcp:[
+    {id:'consume',x:25,y:680,width:1710,height:245,fillColor:'#F8FAFC',strokeColor:'#334155'},
+    {id:'consume_n',x:39,y:695,width:30,height:30,fillColor:'#334155',strokeColor:'#334155'},
+    {id:'consume_h',x:79,y:690,width:1642,height:45},
   ],
-  tech_ai_trism_guardrails: [
-    { id: 'ops', x: 25, y: 680, width: 1710, height: 255, fillColor: '#F8FAFC', strokeColor: '#334155' },
-    { id: 'ops_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
-    { id: 'ops_h', x: 79, y: 690, width: 1642, height: 45 },
+  tech_ai_trism_guardrails:[
+    {id:'ops',x:25,y:680,width:1710,height:255,fillColor:'#F8FAFC',strokeColor:'#334155'},
+    {id:'ops_n',x:39,y:695,width:30,height:30,fillColor:'#334155',strokeColor:'#334155'},
+    {id:'ops_h',x:79,y:690,width:1642,height:45},
   ],
-  tech_multimodal_ingestion: [
-    { id: 'controls', x: 25, y: 680, width: 1710, height: 245, fillColor: '#F8FAFC', strokeColor: '#334155' },
-    { id: 'controls_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
-    { id: 'controls_h', x: 79, y: 690, width: 1642, height: 44 },
+  tech_multimodal_ingestion:[
+    {id:'controls',x:25,y:680,width:1710,height:245,fillColor:'#F8FAFC',strokeColor:'#334155'},
+    {id:'controls_n',x:39,y:695,width:30,height:30,fillColor:'#334155',strokeColor:'#334155'},
+    {id:'controls_h',x:79,y:690,width:1642,height:44},
   ],
-  tech_llm_capacity_quota: [
-    { id: 'patterns', x: 25, y: 660, width: 1710, height: 260, fillColor: '#F5F3FF', strokeColor: '#6554C0' },
-    { id: 'patterns_n', x: 39, y: 675, width: 30, height: 30, fillColor: '#6554C0', strokeColor: '#6554C0' },
-    { id: 'patterns_h', x: 79, y: 670, width: 1642, height: 44 },
+  tech_llm_capacity_quota:[
+    {id:'patterns',x:25,y:660,width:1710,height:260,fillColor:'#F5F3FF',strokeColor:'#6554C0'},
+    {id:'patterns_n',x:39,y:675,width:30,height:30,fillColor:'#6554C0',strokeColor:'#6554C0'},
+    {id:'patterns_h',x:79,y:670,width:1642,height:44},
   ],
-  tech_supply_chain: [
-    { id: 'ops', x: 25, y: 675, width: 1700, height: 235, fillColor: '#F8FAFC', strokeColor: '#334155' },
-    { id: 'ops_n', x: 39, y: 690, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
-    { id: 'ops_h', x: 79, y: 685, width: 1632, height: 45 },
-  ],
-  smart_factory_iot: [
-    { id: 'ops', x: 25, y: 690, width: 1700, height: 230, fillColor: '#F8FAFC', strokeColor: '#334155' },
-    { id: 'ops_n', x: 39, y: 705, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
-    { id: 'ops_h', x: 79, y: 700, width: 1632, height: 45 },
+  smart_factory_iot:[
+    {id:'ops',x:25,y:690,width:1700,height:230,fillColor:'#F8FAFC',strokeColor:'#334155'},
+    {id:'ops_n',x:39,y:705,width:30,height:30,fillColor:'#334155',strokeColor:'#334155'},
+    {id:'ops_h',x:79,y:700,width:1632,height:45},
   ],
 };
 
-export function applyKnownBlueprintRenderRepairs(xml: string, architectureId?: string | null): string {
-  if (!xml) return xml;
-  const id = String(architectureId || '').toLowerCase();
-  const patches = KNOWN_RENDER_REPAIRS[id];
-  if (!patches?.length) return xml;
-  let next = patches.reduce((current, patch) => patchVertex(current, patch), xml);
-  if (!next.includes(`pc-known-render-repair:${id}`)) next = next.replace(/(<mxGraphModel\b)/, `<!-- pc-known-render-repair:${id} -->\n$1`);
-  return next;
-}
-
-export function findInvalidNumericDrawioColors(xml: string): string[] {
-  return Array.from(xml.matchAll(/(?:fillColor|strokeColor)=([0-9]{2,6})(?=;|\")/gi), match => match[0]);
-}
-
-export function applyBlueprintTechnicalAccuracy(xml: string): string {
-  if (!xml || xml.includes('pc-technical-accuracy-3-2')) return xml;
-  let next = HIGH_CONFIDENCE_REPLACEMENTS.reduce((current, [pattern, replacement]) => current.replace(pattern, replacement), xml);
-  const canonicalId = next.match(/pc-catalog-id:([a-z0-9_]+)/i)?.[1] || null;
-  next = applyKnownBlueprintRenderRepairs(next, canonicalId);
-  return next.replace(/(<mxGraphModel\b)/, '<!-- pc-technical-accuracy-3-2 -->\n$1');
-}
+export function applyKnownBlueprintRenderRepairs(xml:string,architectureId?:string|null):string{if(!xml)return xml;const id=String(architectureId||'').toLowerCase();const patches=KNOWN_RENDER_REPAIRS[id];if(!patches?.length)return xml;let next=patches.reduce((current,patch)=>patchVertex(current,patch),xml);if(!next.includes(`pc-known-render-repair:${id}`))next=next.replace(/(<mxGraphModel\b)/,`<!-- pc-known-render-repair:${id} -->\n$1`);return next;}
+export function findInvalidNumericDrawioColors(xml:string):string[]{return Array.from(xml.matchAll(/(?:fillColor|strokeColor)=([0-9]{2,6})(?=;|\")/gi),m=>m[0]);}
+export function applyBlueprintTechnicalAccuracy(xml:string):string{if(!xml||xml.includes('pc-technical-accuracy-3-2'))return xml;let next=HIGH_CONFIDENCE_REPLACEMENTS.reduce((current,[pattern,replacement])=>current.replace(pattern,replacement),xml);const canonicalId=next.match(/pc-catalog-id:([a-z0-9_]+)/i)?.[1]||null;next=applyKnownBlueprintRenderRepairs(next,canonicalId);return next.replace(/(<mxGraphModel\b)/,'<!-- pc-technical-accuracy-3-2 -->\n$1');}
