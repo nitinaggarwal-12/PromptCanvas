@@ -40,7 +40,7 @@ function assertContains(xml: string, tokens: string[], label: string, failures: 
 }
 
 const failures: string[] = [];
-const visualFindings: string[] = [];
+const residualFindings: string[] = [];
 
 if (BLUEPRINT_KNOWLEDGE_MATRIX.length !== 50) failures.push(`catalog size: expected 50, got ${BLUEPRINT_KNOWLEDGE_MATRIX.length}`);
 if (CATALOG_CANONICAL_IDS.length !== 50 || new Set(CATALOG_CANONICAL_IDS).size !== 50) failures.push('canonical resolver: expected 50 unique IDs');
@@ -73,15 +73,15 @@ BLUEPRINT_KNOWLEDGE_MATRIX.forEach((item, index) => {
     failures.push(`#${number} ${canonicalId}: canonical identity marker missing`);
   }
 
-  // Keep the full visual/terminology findings visible while isolating the base gate.
   const stale = STALE_PATTERNS.filter(([, p]) => p.test(xml)).map(([name]) => name);
-  if (stale.length) visualFindings.push(`#${number} ${canonicalId}: stale ${stale.join(', ')}`);
+  if (stale.length) failures.push(`#${number} ${canonicalId}: stale ${stale.join(', ')}`);
+
   if (!notationSensitive) {
-    if (!xml.includes('pc-text-containment-v1')) visualFindings.push(`#${number} ${canonicalId}: containment missing`);
-    if (!xml.includes('pc-semantic-icons-v1')) visualFindings.push(`#${number} ${canonicalId}: semantic-icons missing`);
-    if ((xml.match(EMOJI_RE) || []).length) visualFindings.push(`#${number} ${canonicalId}: emoji remains`);
+    if (!xml.includes('pc-text-containment-v1')) failures.push(`#${number} ${canonicalId}: containment missing`);
+    if (!xml.includes('pc-semantic-icons-v1')) failures.push(`#${number} ${canonicalId}: semantic-icons missing`);
+    if ((xml.match(EMOJI_RE) || []).length) residualFindings.push(`#${number} ${canonicalId}: emoji remains`);
     const tiny = fontSizes(xml).filter(size => size < 9.5);
-    if (tiny.length) visualFindings.push(`#${number} ${canonicalId}: ${tiny.length} tiny fonts`);
+    if (tiny.length) residualFindings.push(`#${number} ${canonicalId}: ${tiny.length} tiny fonts`);
   } else {
     if (xml.includes('pc-semantic-icons-v1')) failures.push(`#${number} ${canonicalId}: notation was icon-card transformed`);
     if (xml.includes('pc-text-containment-v1')) failures.push(`#${number} ${canonicalId}: notation was containment transformed`);
@@ -112,11 +112,11 @@ console.log(JSON.stringify({
   uniqueDiagramIds: diagramIds.size,
   uniqueFingerprints: hashes.size,
   failures,
-  visualFindings,
+  residualFindings,
 }, null, 2));
 
 if (failures.length) {
-  console.error(`\nBlueprint base certification FAILED with ${failures.length} issue(s).`);
+  console.error(`\nBlueprint terminology/transform certification FAILED with ${failures.length} issue(s).`);
   process.exit(1);
 }
-console.log(`\nBlueprint base certification PASSED. Visual finding count: ${visualFindings.length}.`);
+console.log(`\nBlueprint terminology/transform certification PASSED. Emoji/font residual count: ${residualFindings.length}.`);
