@@ -32,8 +32,8 @@ export {
  */
 export const BLUEPRINT_61_ENTERPRISE_AI_DOCUMENT_ASSISTANT: BlueprintKnowledgeItem = {
   combinedId: 'enterprise_ai_document_assistant',
-  diagramName: 'Enterprise AI Document Assistant Platform — Detailed Architecture & Flowchart',
-  intentKeywords: 'enterprise document assistant, document q&a, rag, multimodal document ingestion, document ai, ocr, embeddings, vector search, reranking, vertex ai gemini, model armor, grounding, confidence gate, human in the loop, hitl, sharepoint, salesforce, servicenow, google drive, api gateway, cloud armor, sso, pubsub, eventarc, observability, audit',
+  diagramName: 'Blueprint 61 — Enterprise AI Document Assistant Platform — Detailed Architecture & Flowchart',
+  intentKeywords: 'blueprint 61, enterprise document assistant, document q&a, rag, multimodal document ingestion, document ai, ocr, embeddings, vector search, reranking, vertex ai gemini, model armor, grounding, confidence gate, human in the loop, hitl, sharepoint, salesforce, servicenow, google drive, api gateway, cloud armor, sso, pubsub, eventarc, observability, audit',
   goldenExamplePayload: 'Design a production-grade Enterprise AI Document Assistant on Google Cloud. Show multi-channel users and clients, Global Load Balancer, Cloud Armor, API Gateway, SSO/AuthN/AuthZ, workflow orchestration, document upload and Document AI/OCR, embeddings and vector retrieval, reranking, grounded Gemini generation, safety and grounding gates, confidence/HITL approval, enterprise connectors such as SharePoint/Salesforce/ServiceNow/Google Drive, Pub/Sub/Eventarc integration, persisted state, final response delivery, CI/CD, observability, audit, IAM, DLP and KMS controls.',
   uiCardDesc: 'Seven-layer enterprise document assistant with secure multi-channel ingress, Document AI + RAG, Gemini reasoning, enterprise connectors, safety/grounding gates, HITL approval, eventing, and operational governance.',
   phase: 'Phase 3',
