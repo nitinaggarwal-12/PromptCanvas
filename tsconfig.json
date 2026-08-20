@@ -20,6 +20,7 @@
     ],
     "paths": {
       "@/components/DiagramViewer": ["./src/components/DiagramViewerVisual.tsx"],
+      "@/components/workspace/BlueprintCatalogModal": ["./src/components/workspace/BlueprintCatalogModalCatalog.tsx"],
       "@/lib/architectureTypes": ["./src/lib/architectureTypesCertified.ts"],
       "@/lib/blueprintKnowledgeMatrix": ["./src/lib/blueprintKnowledgeMatrixCatalog.ts"],
       "@/lib/architectureHierarchy": ["./src/lib/architectureHierarchyCatalog.ts"],
