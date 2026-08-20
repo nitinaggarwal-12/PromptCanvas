@@ -61,33 +61,19 @@ import {
   getExactIntelligentDocProcessingXml,
 } from './newEnterpriseReferenceXmls';
 
-import {
-  buildLightLegacyDataDependencyMapXml,
-  buildLightHybridStranglerTransitionXml,
-  buildLightValueStreamMapXml,
-  buildLightAsIsToBeProcessFlowXml,
-  buildLightCloudFinopsChargebackXml,
-  buildLightEnterpriseReferenceArchitectureXml,
-  buildLightAgenticRagWidescreenXml,
-  buildLightHubAndSpokeAgentConfigXml,
-  buildLightGcpDataLakehouseWbsXml,
-  buildLightErdReferenceXml,
-} from './masterBuilders/build_master_templates_1_to_10_light';
-
 export type CatalogXmlFactory = () => string;
 
 /** Exact canonical dispatch for the certified 1-60 catalog plus isolated review extensions. */
 export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>> = {
-  legacy_data_dependency_map: buildLightLegacyDataDependencyMapXml,
-  hybrid_strangler_transition: buildLightHybridStranglerTransitionXml,
-  value_stream_map: buildLightValueStreamMapXml,
-  asis_vs_tobe_process_flow: buildLightAsIsToBeProcessFlowXml,
-  cloud_finops_chargeback: buildLightCloudFinopsChargebackXml,
-  unified_system_view: buildLightEnterpriseReferenceArchitectureXml,
-  agentic_rag: buildLightAgenticRagWidescreenXml,
-  hub_and_spoke_agent_config: buildLightHubAndSpokeAgentConfigXml,
-  tech_data_lakehouse_gcp: buildLightGcpDataLakehouseWbsXml,
-  erd: buildLightErdReferenceXml,
+  legacy_data_dependency_map: getExactLegacyDataDependencyMapXml,
+  hybrid_strangler_transition: getExactHybridStranglerTransitionXml,
+  value_stream_map: getExactValueStreamMapXml,
+  asis_vs_tobe_process_flow: getExactAsIsToBeProcessFlowXml,
+  cloud_finops_chargeback: getExactCloudFinopsChargebackXml,
+  agentic_rag: getExactAgenticRagWidescreenXml,
+  hub_and_spoke_agent_config: getExactHubAndSpokeAgentConfigXml,
+  tech_data_lakehouse_gcp: getExactGcpDataLakehouseWbsXml,
+  erd: getExactErdReferenceXml,
   unified_data_governance: getExactUnifiedDataGovernanceXml,
   federated_iam_sso: getExactFederatedIamSsoXml,
   tech_micro_frontends: getExactMicroFrontendsXml,
@@ -165,6 +151,7 @@ function stampCanonicalIdentity(xml: string, canonicalId: string): string {
 }
 
 export function getExactCatalogBlueprintXml(canonicalId: string): string | null {
+  if (canonicalId === 'unified_system_view') return null;
   const factory = CATALOG_EXACT_FACTORIES[canonicalId];
   return factory ? stampCanonicalIdentity(factory(), canonicalId) : null;
 }
