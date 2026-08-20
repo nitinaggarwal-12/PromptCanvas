@@ -2,9 +2,9 @@ import {
   getExactErdReferenceXml,
 } from './diagramCompiler';
 import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24Safe';
+import { getApprovedSecureDeploymentBlueprintXml } from './approvedBlueprint16';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildMultiAgentSequenceXml } from './masterBuilders/build_master_multi_agent_sequence';
-import { buildSecureDeploymentPhase1Xml } from './masterBuilders/build_master_secure_deployment_phase1';
 import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
 import { buildDataOpsPhase1Xml } from './masterBuilders/build_master_dataops_phase1';
 import { buildFinancialAdvisingPhase1Xml } from './masterBuilders/build_master_financial_advising_phase1';
@@ -68,7 +68,8 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   tech_micro_frontends: getExactMicroFrontendsXml,
   logical_ai_config_tenant: getExactLogicalAiConfigTenantXml,
   sequence_diagram: buildMultiAgentSequenceXml,
-  secure_deployment_map: buildSecureDeploymentPhase1Xml,
+  // Blueprint 16: approved master supersedes the former secure-deployment builder.
+  secure_deployment_map: getApprovedSecureDeploymentBlueprintXml,
   gcp_landing_zone_vpc: getExactGcpLandingZoneVpcXml,
   data_residency_sovereign_map: buildDataResidencyPhase1Xml,
   enterprise_agent_runtime: getExactEnterpriseAgentRuntimeXml,
