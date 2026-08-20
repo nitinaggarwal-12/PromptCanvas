@@ -4,7 +4,8 @@ import {
 import { getApprovedMultiAgentSequenceBlueprintXml } from './approvedBlueprint15Safe';
 import { getApprovedSecureDeploymentTopologyXml } from './approvedBlueprint16Safe';
 import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24Safe';
-import { getApprovedSixRsMigrationMatrixXml } from './approvedBlueprint29Safe';
+import { getApprovedSixRsMigrationMatrixV2Xml } from './approvedBlueprint29V2Safe';
+import { getApprovedAiCoeOperatingModelV2Xml } from './approvedBlueprint34V2Safe';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
 import { buildDataOpsPhase1Xml } from './masterBuilders/build_master_dataops_phase1';
@@ -14,7 +15,6 @@ import { buildPharmaGenomicsPhase1Xml } from './masterBuilders/build_master_phar
 import {
   getExactHybridStranglerTransitionXml,
   getExactCloudFinopsChargebackXml,
-  getExactAiCoeOperatingModelXml,
   getExactMcpContextGatewayXml,
   getExactLogicalAiConfigTenantXml,
   getExactHubAndSpokeAgentConfigXml,
@@ -84,13 +84,14 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   tech_serverless_gcp: getExactServerlessGcpReferenceXml,
   tech_multimodal_ingestion: getExactMultimodalIngestionXml,
   tech_streaming_analytics: getExactStreamingAnalyticsXml,
-  // Blueprint 29: approved high-fidelity 6Rs migration disposition master.
-  six_rs_migration_matrix: getApprovedSixRsMigrationMatrixXml,
+  // Blueprint 29 v2: readability, consistent 6R semantics and explicit decision/wave logic.
+  six_rs_migration_matrix: getApprovedSixRsMigrationMatrixV2Xml,
   enterprise_sre_observability: getExactEnterpriseSreObservabilityXml,
   golive_warroom_runbook: getExactGoLiveWarRoomRunbookXml,
   incident_triage_swimlane: getExactIncidentTriageSwimlaneXml,
   tech_llm_capacity_quota: getExactLlmCapacityQuotaXml,
-  ai_coe_operating_model: getExactAiCoeOperatingModelXml,
+  // Blueprint 34 v2: explicit capability boundaries, decision rights, maturity/risk gates, feedback and handoff.
+  ai_coe_operating_model: getApprovedAiCoeOperatingModelV2Xml,
   tech_llmops_lifecycle: getExactLlmopsLifecycleXml,
   dataops_anomaly_detection: buildDataOpsPhase1Xml,
   tech_multi_region_dr: () => getTechnicalArchitectureXml('tech_multi_region_dr'),
