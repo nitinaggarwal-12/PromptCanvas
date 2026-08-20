@@ -49,6 +49,16 @@ import {
   getExactThreatModelingStrideXml,
   getExactDataLineageXml,
   getExactHealthcareFhirXml,
+  getExactEnterpriseApiManagementXml,
+  getExactGkeEnterprisePlatformXml,
+  getExactHaMultiRegionAppXml,
+  getExactEtlEltCdcPipelineXml,
+  getExactWorkloadIdentityAuthXml,
+  getExactPrivateIngressEgressXml,
+  getExactEnterpriseMlopsLifecycleXml,
+  getExactGraphragKnowledgeGraphXml,
+  getExactSaasMultiTenantXml,
+  getExactIntelligentDocProcessingXml,
 } from './newEnterpriseReferenceXmls';
 
 export type CatalogXmlFactory = () => string;
@@ -109,12 +119,20 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   threat_modeling_stride: getExactThreatModelingStrideXml,
   data_lineage_provenance: getExactDataLineageXml,
   mcp_context_gateway: getExactMcpContextGatewayXml,
-  // Blueprint 51: enterprise document assistant / RAG / HITL reference architecture.
-  enterprise_ai_document_assistant: getApprovedEnterpriseAiDocumentAssistantBlueprintXml,
+  enterprise_api_management: getExactEnterpriseApiManagementXml,
+  gke_enterprise_platform: getExactGkeEnterprisePlatformXml,
+  ha_multi_region_application: getExactHaMultiRegionAppXml,
+  etl_elt_cdc_pipeline: getExactEtlEltCdcPipelineXml,
+  workload_identity_authorization: getExactWorkloadIdentityAuthXml,
+  private_ingress_egress_connectivity: getExactPrivateIngressEgressXml,
+  enterprise_mlops_lifecycle: getExactEnterpriseMlopsLifecycleXml,
+  graphrag_knowledge_graph: getExactGraphragKnowledgeGraphXml,
+  saas_multi_tenant: getExactSaasMultiTenantXml,
+  intelligent_document_processing: getExactIntelligentDocProcessingXml,
 };
 
 export const CATALOG_CANONICAL_IDS = Object.freeze([
-  'legacy_data_dependency_map','hybrid_strangler_transition','value_stream_map','asis_vs_tobe_process_flow','cloud_finops_chargeback','unified_system_view','agentic_rag','hub_and_spoke_agent_config','tech_data_lakehouse_gcp','erd','unified_data_governance','federated_iam_sso','tech_micro_frontends','logical_ai_config_tenant','sequence_diagram','secure_deployment_map','gcp_landing_zone_vpc','data_residency_sovereign_map','enterprise_agent_runtime','tech_agentic_mesh','tech_eval_safety','tech_ai_trism_guardrails','ai_agent_approval_workflow','devops_cicd_pipeline','tech_event_driven_eda','tech_serverless_gcp','tech_multimodal_ingestion','tech_streaming_analytics','six_rs_migration_matrix','enterprise_sre_observability','golive_warroom_runbook','incident_triage_swimlane','tech_llm_capacity_quota','ai_coe_operating_model','tech_llmops_lifecycle','dataops_anomaly_detection','tech_multi_region_dr','tech_fintech_payments','tech_supply_chain','tech_genomics_clinical','ecommerce_retail','smart_factory_iot','hr_talent_ai','healthcare_fhir_hl7','tech_c4_system_context','c4_component_lld','bpmn_process_workflow','threat_modeling_stride','data_lineage_provenance','mcp_context_gateway','enterprise_ai_document_assistant',
+  'legacy_data_dependency_map','hybrid_strangler_transition','value_stream_map','asis_vs_tobe_process_flow','cloud_finops_chargeback','unified_system_view','agentic_rag','hub_and_spoke_agent_config','tech_data_lakehouse_gcp','erd','unified_data_governance','federated_iam_sso','tech_micro_frontends','logical_ai_config_tenant','sequence_diagram','secure_deployment_map','gcp_landing_zone_vpc','data_residency_sovereign_map','enterprise_agent_runtime','tech_agentic_mesh','tech_eval_safety','tech_ai_trism_guardrails','ai_agent_approval_workflow','devops_cicd_pipeline','tech_event_driven_eda','tech_serverless_gcp','tech_multimodal_ingestion','tech_streaming_analytics','six_rs_migration_matrix','enterprise_sre_observability','golive_warroom_runbook','incident_triage_swimlane','tech_llm_capacity_quota','ai_coe_operating_model','tech_llmops_lifecycle','dataops_anomaly_detection','tech_multi_region_dr','tech_fintech_payments','tech_supply_chain','tech_genomics_clinical','ecommerce_retail','smart_factory_iot','hr_talent_ai','healthcare_fhir_hl7','tech_c4_system_context','c4_component_lld','bpmn_process_workflow','threat_modeling_stride','data_lineage_provenance','mcp_context_gateway','enterprise_api_management','gke_enterprise_platform','ha_multi_region_application','etl_elt_cdc_pipeline','workload_identity_authorization','private_ingress_egress_connectivity','enterprise_mlops_lifecycle','graphrag_knowledge_graph','saas_multi_tenant','intelligent_document_processing',
 ] as const);
 
 function ensureValidXmlEntities(xml: string): string {

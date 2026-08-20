@@ -12,6 +12,16 @@ import { buildBpmnWorkflowXml } from './masterBuilders/build_master_bpmn_workflo
 import { buildThreatModelingStrideXml } from './masterBuilders/build_master_threat_modeling_stride';
 import { buildDataLineageXml } from './masterBuilders/build_master_data_lineage';
 import { buildHealthcareFhirXml } from './masterBuilders/build_master_healthcare_fhir';
+import { buildEnterpriseApiManagementXml } from './masterBuilders/build_master_enterprise_api_management';
+import { buildGkeEnterprisePlatformXml } from './masterBuilders/build_master_gke_enterprise_platform';
+import { buildHaMultiRegionApplicationXml } from './masterBuilders/build_master_ha_multi_region_application';
+import { buildEtlEltCdcPipelineXml } from './masterBuilders/build_master_etl_elt_cdc_pipeline';
+import { buildWorkloadIdentityAuthorizationXml } from './masterBuilders/build_master_workload_identity_authorization';
+import { buildPrivateIngressEgressConnectivityXml } from './masterBuilders/build_master_private_ingress_egress_connectivity';
+import { buildEnterpriseMlopsLifecycleXml } from './masterBuilders/build_master_enterprise_mlops_lifecycle';
+import { buildGraphragKnowledgeGraphXml } from './masterBuilders/build_master_graphrag_knowledge_graph';
+import { buildSaasMultiTenantXml } from './masterBuilders/build_master_saas_multi_tenant';
+import { buildIntelligentDocumentProcessingXml } from './masterBuilders/build_master_intelligent_document_processing';
 /**
  * 🏛️ Master Widescreen Reference Layouts for New Enterprise Blueprints
  * JOURNAL-PUBLICATION GRADE SCIENTIFIC REFERENCE ARCHITECTURES
@@ -259,4 +269,44 @@ export function getExactDataLineageXml(): string {
 
 export function getExactHealthcareFhirXml(): string {
   return buildHealthcareFhirXml();
+}
+
+export function getExactEnterpriseApiManagementXml(): string {
+  return buildEnterpriseApiManagementXml();
+}
+
+export function getExactGkeEnterprisePlatformXml(): string {
+  return buildGkeEnterprisePlatformXml();
+}
+
+export function getExactHaMultiRegionAppXml(): string {
+  return buildHaMultiRegionApplicationXml();
+}
+
+export function getExactEtlEltCdcPipelineXml(): string {
+  return buildEtlEltCdcPipelineXml();
+}
+
+export function getExactWorkloadIdentityAuthXml(): string {
+  return buildWorkloadIdentityAuthorizationXml();
+}
+
+export function getExactPrivateIngressEgressXml(): string {
+  return buildPrivateIngressEgressConnectivityXml();
+}
+
+export function getExactEnterpriseMlopsLifecycleXml(): string {
+  return buildEnterpriseMlopsLifecycleXml();
+}
+
+export function getExactGraphragKnowledgeGraphXml(): string {
+  return buildGraphragKnowledgeGraphXml();
+}
+
+export function getExactSaasMultiTenantXml(): string {
+  return buildSaasMultiTenantXml();
+}
+
+export function getExactIntelligentDocProcessingXml(): string {
+  return buildIntelligentDocumentProcessingXml();
 }
