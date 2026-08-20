@@ -64,7 +64,6 @@ function patchVertex(xml: string, patch: RenderPatch): string {
       nextAttrs = nextAttrs.replace(styleMatch[0], `style="${style}"`);
     }
 
-    // Non-greedy attribute capture deliberately excludes the self-closing slash.
     const geometryMatch = body.match(/<mxGeometry\b([^>]*?)(?:\/)?\s*>/i);
     if (!geometryMatch) return `<mxCell${nextAttrs}>${body}</mxCell>`;
 
@@ -83,21 +82,42 @@ function patchVertex(xml: string, patch: RenderPatch): string {
 }
 
 const KNOWN_RENDER_REPAIRS: Record<string, RenderPatch[]> = {
+  // #9 — Lakehouse analytics/AI/data-products footer.
+  tech_data_lakehouse_gcp: [
+    { id: 'consume', x: 25, y: 680, width: 1710, height: 245, fillColor: '#F8FAFC', strokeColor: '#334155' },
+    { id: 'consume_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
+    { id: 'consume_h', x: 79, y: 690, width: 1642, height: 45 },
+  ],
+
+  // #22 — AI TRiSM operating plane.
   tech_ai_trism_guardrails: [
     { id: 'ops', x: 25, y: 680, width: 1710, height: 255, fillColor: '#F8FAFC', strokeColor: '#334155' },
     { id: 'ops_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
     { id: 'ops_h', x: 79, y: 690, width: 1642, height: 45 },
   ],
+
+  // #27 — Multimodal governance/observability/quality footer.
+  tech_multimodal_ingestion: [
+    { id: 'controls', x: 25, y: 680, width: 1710, height: 245, fillColor: '#F8FAFC', strokeColor: '#334155' },
+    { id: 'controls_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
+    { id: 'controls_h', x: 79, y: 690, width: 1642, height: 44 },
+  ],
+
+  // #33 — Gemini capacity resilience-patterns footer.
   tech_llm_capacity_quota: [
     { id: 'patterns', x: 25, y: 660, width: 1710, height: 260, fillColor: '#F5F3FF', strokeColor: '#6554C0' },
     { id: 'patterns_n', x: 39, y: 675, width: 30, height: 30, fillColor: '#6554C0', strokeColor: '#6554C0' },
     { id: 'patterns_h', x: 79, y: 670, width: 1642, height: 44 },
   ],
+
+  // #39 — Predictive-maintenance cross-cutting operations footer.
   tech_supply_chain: [
     { id: 'ops', x: 25, y: 675, width: 1700, height: 235, fillColor: '#F8FAFC', strokeColor: '#334155' },
     { id: 'ops_n', x: 39, y: 690, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
     { id: 'ops_h', x: 79, y: 685, width: 1632, height: 45 },
   ],
+
+  // #42 — Smart-factory cross-cutting platform/governance footer.
   smart_factory_iot: [
     { id: 'ops', x: 25, y: 690, width: 1700, height: 230, fillColor: '#F8FAFC', strokeColor: '#334155' },
     { id: 'ops_n', x: 39, y: 705, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
