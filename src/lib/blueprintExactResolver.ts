@@ -6,6 +6,7 @@ import { getApprovedSecureDeploymentTopologyXml } from './approvedBlueprint16Saf
 import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24Safe';
 import { getApprovedSixRsMigrationMatrixV2Xml } from './approvedBlueprint29V2Safe';
 import { getApprovedAiCoeOperatingModelV2Xml } from './approvedBlueprint34V2Safe';
+import { getApprovedEnterpriseAiDocumentAssistantBlueprintXml } from './approvedBlueprint51Safe';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
 import { buildDataOpsPhase1Xml } from './masterBuilders/build_master_dataops_phase1';
@@ -52,7 +53,7 @@ import {
 
 export type CatalogXmlFactory = () => string;
 
-/** Exact canonical dispatch for the 50-blueprint catalog. */
+/** Exact canonical dispatch for the 51-blueprint catalog. */
 export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>> = {
   legacy_data_dependency_map: getExactLegacyDataDependencyMapXml,
   hybrid_strangler_transition: getExactHybridStranglerTransitionXml,
@@ -108,10 +109,12 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   threat_modeling_stride: getExactThreatModelingStrideXml,
   data_lineage_provenance: getExactDataLineageXml,
   mcp_context_gateway: getExactMcpContextGatewayXml,
+  // Blueprint 51: enterprise document assistant / RAG / HITL reference architecture.
+  enterprise_ai_document_assistant: getApprovedEnterpriseAiDocumentAssistantBlueprintXml,
 };
 
 export const CATALOG_CANONICAL_IDS = Object.freeze([
-  'legacy_data_dependency_map','hybrid_strangler_transition','value_stream_map','asis_vs_tobe_process_flow','cloud_finops_chargeback','unified_system_view','agentic_rag','hub_and_spoke_agent_config','tech_data_lakehouse_gcp','erd','unified_data_governance','federated_iam_sso','tech_micro_frontends','logical_ai_config_tenant','sequence_diagram','secure_deployment_map','gcp_landing_zone_vpc','data_residency_sovereign_map','enterprise_agent_runtime','tech_agentic_mesh','tech_eval_safety','tech_ai_trism_guardrails','ai_agent_approval_workflow','devops_cicd_pipeline','tech_event_driven_eda','tech_serverless_gcp','tech_multimodal_ingestion','tech_streaming_analytics','six_rs_migration_matrix','enterprise_sre_observability','golive_warroom_runbook','incident_triage_swimlane','tech_llm_capacity_quota','ai_coe_operating_model','tech_llmops_lifecycle','dataops_anomaly_detection','tech_multi_region_dr','tech_fintech_payments','tech_supply_chain','tech_genomics_clinical','ecommerce_retail','smart_factory_iot','hr_talent_ai','healthcare_fhir_hl7','tech_c4_system_context','c4_component_lld','bpmn_process_workflow','threat_modeling_stride','data_lineage_provenance','mcp_context_gateway',
+  'legacy_data_dependency_map','hybrid_strangler_transition','value_stream_map','asis_vs_tobe_process_flow','cloud_finops_chargeback','unified_system_view','agentic_rag','hub_and_spoke_agent_config','tech_data_lakehouse_gcp','erd','unified_data_governance','federated_iam_sso','tech_micro_frontends','logical_ai_config_tenant','sequence_diagram','secure_deployment_map','gcp_landing_zone_vpc','data_residency_sovereign_map','enterprise_agent_runtime','tech_agentic_mesh','tech_eval_safety','tech_ai_trism_guardrails','ai_agent_approval_workflow','devops_cicd_pipeline','tech_event_driven_eda','tech_serverless_gcp','tech_multimodal_ingestion','tech_streaming_analytics','six_rs_migration_matrix','enterprise_sre_observability','golive_warroom_runbook','incident_triage_swimlane','tech_llm_capacity_quota','ai_coe_operating_model','tech_llmops_lifecycle','dataops_anomaly_detection','tech_multi_region_dr','tech_fintech_payments','tech_supply_chain','tech_genomics_clinical','ecommerce_retail','smart_factory_iot','hr_talent_ai','healthcare_fhir_hl7','tech_c4_system_context','c4_component_lld','bpmn_process_workflow','threat_modeling_stride','data_lineage_provenance','mcp_context_gateway','enterprise_ai_document_assistant',
 ] as const);
 
 function ensureValidXmlEntities(xml: string): string {
