@@ -1,13 +1,6 @@
 /**
  * 🎨 Blueprint #58 (NEW-AI-08): GraphRAG & Enterprise Knowledge Graph Architecture
- * High-Craft Master Blueprint (Benchmark Pattern following Blueprint 50)
- * 
- * Featuring:
- * - Unstructured Document & Enterprise Corpus Intake (PDFs, Confluence, GDrive, Document AI OCR)
- * - Semantic Extraction & Graph Construction (Gemini 2.5 Pro Entity Extractor, text-embedding-005)
- * - Dual Storage & Indexing Engine (Cloud Spanner Graph ISO GQL, Vertex AI Vector Search ScaNN)
- * - Hybrid Query Planner & Re-Ranking Engine (Entity resolution, Subgraph pruning, Cross-Encoder)
- * - Grounded Synthesis & Citation Interface (Gemini 2.5 Pro Grounding, Interactive Citation Graph)
+ * Executive Light Theme Master Blueprint
  */
 
 const esc = (value: string): string =>
@@ -23,14 +16,14 @@ const svg = (body: string): string =>
 const ICON = {
   gemini: svg('<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285F4"/><stop offset=".55" stop-color="#7B61FF"/><stop offset="1" stop-color="#D965C5"/></linearGradient></defs><path fill="url(#g)" d="M24 4c2.2 10.2 9.6 17.6 20 20-10.4 2.4-17.8 9.8-20 20-2.2-10.2-9.6-17.6-20-20C14.4 21.6 21.8 14.2 24 4z"/>'),
   spanner: svg('<path d="M24 6 40 15v18L24 42 8 33V15z" fill="#1D4ED8"/><path d="M16 20h16v8H16z" fill="#fff"/>'),
-  graph: svg('<circle cx="16" cy="16" r="6" fill="#7E57C2"/><circle cx="32" cy="16" r="6" fill="#7E57C2"/><circle cx="24" cy="32" r="6" fill="#7E57C2"/><path d="M16 16l16 0M16 16l8 16M32 16l-8 16" stroke="#7E57C2" stroke-width="2.5"/>'),
-  vector: svg('<rect x="6" y="6" width="36" height="36" rx="8" fill="#0284C7"/><circle cx="18" cy="18" r="3" fill="#fff"/><circle cx="30" cy="18" r="3" fill="#fff"/><circle cx="24" cy="30" r="3" fill="#fff"/><path d="M18 18l12 0M18 18l6 12M30 18l-6 12" stroke="#fff" stroke-width="1.5"/>'),
+  graph: svg('<circle cx="16" cy="16" r="6" fill="#7C3AED"/><circle cx="32" cy="16" r="6" fill="#7C3AED"/><circle cx="24" cy="32" r="6" fill="#7C3AED"/><path d="M16 16l16 0M16 16l8 16M32 16l-8 16" stroke="#7C3AED" stroke-width="2.5"/>'),
+  vector: svg('<rect x="6" y="6" width="36" height="36" rx="8" fill="#2563EB"/><circle cx="18" cy="18" r="3" fill="#fff"/><circle cx="30" cy="18" r="3" fill="#fff"/><circle cx="24" cy="30" r="3" fill="#fff"/><path d="M18 18l12 0M18 18l6 12M30 18l-6 12" stroke="#fff" stroke-width="1.5"/>'),
   docai: svg('<rect x="10" y="6" width="28" height="36" rx="4" fill="#0284C7"/><path d="M16 16h16M16 24h16M16 32h10" stroke="#fff" stroke-width="2.5"/>'),
   embed: svg('<circle cx="24" cy="24" r="16" fill="#1D4ED8"/><path d="M16 24h16M24 16v16" stroke="#fff" stroke-width="2.5"/>'),
   copilot: svg('<rect x="7" y="8" width="34" height="32" rx="4" fill="#334155"/><path d="M13 15h22M13 21h22M13 27h15" stroke="#fff" stroke-width="2"/><circle cx="34" cy="32" r="4" fill="#60A5FA"/>'),
-  shield: svg('<path d="M24 4 40 10v12c0 11-6.5 18-16 22C14.5 40 8 33 8 22V10z" fill="#16A34A"/><path d="m16 24 5 5 11-13" fill="none" stroke="#fff" stroke-width="3"/>'),
-  log: svg('<rect x="10" y="6" width="28" height="36" rx="3" fill="#16A34A"/><path d="M16 15h16M16 23h16M16 31h10" stroke="#fff" stroke-width="2.5"/>'),
-  search: svg('<circle cx="20" cy="20" r="11" fill="none" stroke="#1669C1" stroke-width="4"/><path d="m28 28 11 11" stroke="#1669C1" stroke-width="4" stroke-linecap="round"/>')
+  shield: svg('<path d="M24 4 40 10v12c0 11-6.5 18-16 22C14.5 40 8 33 8 22V10z" fill="#059669"/><path d="m16 24 5 5 11-13" fill="none" stroke="#fff" stroke-width="3"/>'),
+  log: svg('<rect x="10" y="6" width="28" height="36" rx="3" fill="#059669"/><path d="M16 15h16M16 23h16M16 31h10" stroke="#fff" stroke-width="2.5"/>'),
+  search: svg('<circle cx="20" cy="20" r="11" fill="none" stroke="#2563EB" stroke-width="4"/><path d="m28 28 11 11" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>')
 };
 
 const cell = (id: string, value: string, style: string, x: number, y: number, width: number, height: number): string =>
@@ -38,24 +31,24 @@ const cell = (id: string, value: string, style: string, x: number, y: number, wi
 
 const lane = (id: string, number: number, title: string, subtitle: string, x: number, y: number, width: number, height: number, accent: string, fill: string): string =>
   [
-    cell(id, '', `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;shadow=0;`, x, y, width, height),
+    cell(id, '', `rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=#CBD5E1;strokeWidth=1.5;shadow=1;`, x, y, width, height),
     cell(`${id}_number`, String(number), `ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`, x + 12, y + 12, 32, 32),
-    cell(`${id}_title`, `<b>${title}</b><br><span style="font-size:10px;color:#64748B">${subtitle}</span>`, `text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=${accent};fontSize=15;`, x + 54, y + 7, width - 64, 44),
+    cell(`${id}_title`, `<b>${title}</b><br><span style="font-size:10px;color:#64748B">${subtitle}</span>`, `text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=${accent};fontSize=14;fontStyle=1;`, x + 54, y + 7, width - 64, 44),
   ].join('\n');
 
 const card = (id: string, title: string, subtitle: string, icon: string, x: number, y: number, width: number, height: number, accent: string, fill = '#FFFFFF'): string => {
-  const html = `<table style="width:100%;height:100%;border-collapse:collapse"><tr><td style="width:42px;text-align:center;vertical-align:middle"><img src="${icon}" width="30" height="30"/></td><td style="text-align:left;vertical-align:middle"><b style="font-size:12px;color:#0F172A">${title}</b><br/><span style="font-size:10px;color:#475569">${subtitle}</span></td></tr></table>`;
-  return cell(id, html, `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.1;align=center;verticalAlign=middle;spacing=4;`, x, y, width, height);
+  const html = `<table style="width:100%;height:100%;border-collapse:collapse"><tr><td style="width:42px;text-align:center;vertical-align:middle"><img src="${icon}" width="30" height="30"/></td><td style="text-align:left;vertical-align:middle"><b style="font-size:11.5px;color:#0F172A">${title}</b><br/><span style="font-size:9.5px;color:#475569">${subtitle}</span></td></tr></table>`;
+  return cell(id, html, `rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.3;align=center;verticalAlign=middle;spacing=4;`, x, y, width, height);
 };
 
 const edge = (id: string, source: string, target: string, label: string, kind: 'request' | 'response' | 'governance', exitX = 1, exitY = 0.5, entryX = 0, entryY = 0.5, points: Array<[number, number]> = []): string => {
   const cfg = kind === 'request'
-    ? { stroke: '#0284C7', dashed: 0, pattern: '6 4', arrow: 'block', width: 2 }
+    ? { stroke: '#2563EB', dashed: 0, pattern: '6 4', arrow: 'block', width: 2 }
     : kind === 'response'
       ? { stroke: '#64748B', dashed: 1, pattern: '6 4', arrow: 'block', width: 1.7 }
-      : { stroke: '#16A34A', dashed: 1, pattern: '2 4', arrow: 'open', width: 1.6 };
+      : { stroke: '#059669', dashed: 1, pattern: '2 4', arrow: 'open', width: 1.6 };
   const pts = points.length ? `<Array as="points">${points.map(([x, y]) => `<mxPoint x="${x}" y="${y}"/>`).join('')}</Array>` : '';
-  return `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${cfg.stroke};strokeWidth=${cfg.width};dashed=${cfg.dashed};dashPattern=${cfg.pattern};endArrow=${cfg.arrow};endFill=${cfg.arrow === 'block' ? 1 : 0};fontColor=#0F172A;fontSize=10;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=none;exitX=${exitX};exitY=${exitY};exitDx=0;exitDy=0;entryX=${entryX};entryY=${entryY};entryDx=0;entryDy=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry">${pts}</mxGeometry></mxCell>`;
+  return `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${cfg.stroke};strokeWidth=${cfg.width};dashed=${cfg.dashed};dashPattern=${cfg.pattern};endArrow=${cfg.arrow};endFill=${cfg.arrow === 'block' ? 1 : 0};fontColor=#0F172A;fontSize=10;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=${exitX};exitY=${exitY};exitDx=0;exitDy=0;entryX=${entryX};entryY=${entryY};entryDx=0;entryDy=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry">${pts}</mxGeometry></mxCell>`;
 };
 
 export function buildMasterGraphragKnowledgeGraphXml(): string {
@@ -63,62 +56,55 @@ export function buildMasterGraphragKnowledgeGraphXml(): string {
     '<mxCell id="0"/>',
     '<mxCell id="1" parent="0"/>',
 
-    // Lane 1: Corpus Intake & Chunking
-    lane('intake', 1, 'CORPUS INTAKE & CHUNKING', 'Enterprise multi-modal documents, PDF reports, GDrive & Confluence', 20, 20, 260, 680, '#0284C7', '#F0F9FF'),
-    card('in_docs', 'Enterprise Corpus Intake', 'PDFs, Word, Confluence, GDrive & regulatory filings', ICON.docai, 38, 85, 224, 85, '#0284C7'),
-    card('in_docai', 'Document AI OCR', 'Layout parser & structural table extraction', ICON.docai, 38, 195, 224, 85, '#0284C7'),
-    card('in_chunk', 'Semantic Chunking Engine', 'Hierarchical context-aware chunk boundaries', ICON.embed, 38, 305, 224, 85, '#0284C7'),
+    // Lane 1: Unstructured Document & Enterprise Corpus Intake
+    lane('intake', 1, 'UNSTRUCTURED DOCUMENT & CORPUS INTAKE', 'Multi-source document parsing, layout extraction & chunking', 20, 20, 1540, 140, '#1E3A8A', '#FFFFFF'),
+    card('in_docai', 'Document AI Layout Parser', 'Hierarchical table, header & section OCR extraction', ICON.docai, 45, 75, 450, 70, '#0284C7'),
+    card('in_gdrive', 'Enterprise Connectors (GDrive/SharePoint)', 'Continuous webhook sync for updated enterprise SOPs', ICON.copilot, 525, 75, 520, 70, '#2563EB'),
+    card('in_chunk', 'Semantic Markdown Chunking', 'Header-preserving sliding window chunker (512 tokens)', ICON.docai, 1075, 75, 460, 70, '#0284C7'),
 
-    // Lane 2: Semantic Extraction & Graph Construction
-    lane('extract', 2, 'SEMANTIC EXTRACTION & GRAPH', 'Gemini 2.5 Pro Schema/Entity Extractor & text-embedding-005', 300, 20, 310, 680, '#7E57C2', '#FAF5FF'),
-    card('ex_gemini', 'Gemini 2.5 Pro Extractor', 'Ontology mapping, entity resolution & relation mining', ICON.gemini, 318, 85, 274, 90, '#7E57C2'),
-    card('ex_embed', 'text-embedding-005', '768-dim dense semantic vector embeddings', ICON.embed, 318, 205, 274, 90, '#1D4ED8'),
-    card('ex_co_ref', 'Co-Reference Resolver', 'Disambiguate acronyms & resolve entity aliases', ICON.graph, 318, 325, 274, 90, '#7E57C2'),
+    // Lane 2: Semantic Extraction & Graph Construction Tier
+    lane('extract', 2, 'SEMANTIC EXTRACTION & KNOWLEDGE GRAPH BUILDER', 'LLM-driven entity/relationship extraction & embedding generation', 20, 180, 1540, 150, '#4C1D95', '#FFFFFF'),
+    card('ext_gemini', 'Vertex AI Gemini 2.5 (Entity Extractor)', 'Zero-shot entity (Subject-Predicate-Object) triple extraction', ICON.gemini, 45, 235, 450, 75, '#7C3AED'),
+    card('ext_embed', 'Vertex AI Text Embeddings (768-dim)', 'Dense semantic vector embeddings for chunk & entity nodes', ICON.embed, 525, 235, 450, 75, '#2563EB'),
+    card('ext_schema', 'Ontology & Graph Schema Validator', 'Enforces strict enterprise ontology & domain taxonomy', ICON.shield, 1005, 235, 530, 75, '#059669'),
 
-    // Lane 3: Dual Storage & Indexing Engine
-    lane('storage', 3, 'DUAL STORAGE & INDEXING ENGINE', 'Cloud Spanner Graph (ISO GQL) + Vertex Vector Search (ScaNN)', 630, 20, 320, 680, '#1D4ED8', '#EFF6FF'),
-    card('st_spanner', 'Cloud Spanner Graph (ISO GQL)', 'Multi-hop property graph traversals & cyclic queries', ICON.spanner, 648, 85, 284, 95, '#1D4ED8'),
-    card('st_vector', 'Vertex AI Vector Search', 'ScaNN millisecond ANN semantic similarity index', ICON.vector, 648, 210, 284, 95, '#0284C7'),
-    card('st_hybrid_idx', 'Hybrid Graph-Vector Index', 'Synchronized entity IDs linking nodes to embeddings', ICON.graph, 648, 335, 284, 95, '#7E57C2'),
+    // Lane 3: Dual Storage & Indexing Engine (Graph + Vector)
+    lane('storage', 3, 'DUAL STORAGE & INDEXING ENGINE (GRAPH + VECTOR)', 'Synchronous hybrid index across property graphs and vector spaces', 20, 350, 1540, 150, '#1D4ED8', '#FFFFFF'),
+    card('sto_spanner', 'Cloud Spanner Graph (ISO GQL)', 'ACID property graph with Cypher/GQL multi-hop graph traversal', ICON.spanner, 45, 405, 450, 75, '#1D4ED8'),
+    card('sto_vector', 'Vertex AI Vector Search (ScaNN)', 'Sub-millisecond approximate nearest neighbor vector indexing', ICON.vector, 525, 405, 450, 75, '#2563EB'),
+    card('sto_sync', 'Dual Index Sync Pipeline', 'Maintains 1:1 parity between graph node IDs & vector embeddings', ICON.graph, 1005, 405, 530, 75, '#7C3AED'),
 
-    // Lane 4: Hybrid Query Planner & Re-Ranking
-    lane('planner', 4, 'HYBRID QUERY PLANNER & RERANK', 'Cross-Encoder contextual reranker & subgraph extraction', 970, 20, 300, 680, '#EA580C', '#FFFBEB'),
-    card('pl_query', 'Query Entity Extractor', 'Parse user query intent & extract target graph nodes', ICON.search, 988, 85, 264, 90, '#EA580C'),
-    card('pl_subgraph', 'Subgraph Extraction & Pruning', '2-hop neighborhood expansion with edge weighting', ICON.graph, 988, 205, 264, 90, '#7E57C2'),
-    card('pl_rerank', 'Cross-Encoder Context Reranker', 'Joint lexical + vector + graph relevance scoring', ICON.shield, 988, 325, 264, 90, '#EA580C'),
+    // Lane 4: Hybrid Query Planner & Re-Ranking Engine
+    lane('retrieval', 4, 'HYBRID QUERY PLANNER & GRAPH RERANKING ENGINE', 'Multi-hop graph traversal combined with vector similarity search', 20, 520, 1540, 150, '#047857', '#FFFFFF'),
+    card('ret_planner', 'Hybrid Retrieval Planner', 'Decomposes query into 2-hop graph query + semantic vector search', ICON.gemini, 45, 575, 450, 75, '#7C3AED'),
+    card('ret_subgraph', 'Dynamic Subgraph Pruning', 'Extracts connected entity subgraphs with community summary context', ICON.graph, 525, 575, 450, 75, '#7C3AED'),
+    card('ret_rerank', 'Vertex AI Cross-Encoder Reranker', 'Cross-scores combined vector chunks & graph entities for precision', ICON.search, 1005, 575, 530, 75, '#2563EB'),
 
-    // Lane 5: Grounded Synthesis & Citations
-    lane('synthesis', 5, 'GROUNDED SYNTHESIS & CITATIONS', 'Gemini 2.5 grounded reasoning with verifiable graph citations', 1290, 20, 270, 680, '#16A34A', '#F0FDF4'),
-    card('syn_gemini', 'Gemini 2.5 Grounded Synthesis', 'Multi-hop reasoning with zero hallucination guarantee', ICON.gemini, 1308, 85, 234, 95, '#16A34A'),
-    card('syn_citation', 'Interactive Citation Graph', 'Clickable evidence provenance back to source text', ICON.graph, 1308, 210, 234, 95, '#7E57C2'),
-    card('syn_copilot', 'Enterprise Copilot UI', 'Chat interface with verifiable subgraph overlays', ICON.copilot, 1308, 335, 234, 95, '#1D4ED8'),
-
-    // Governance & Security Band
-    lane('gov', 0, 'GOVERNANCE, FACTUALITY EVALUATION & DATA RESIDENCY PLANE', 'Continuous hallucination scoring with RAG Triad & Cloud IAM', 20, 720, 1540, 190, '#16A34A', '#F0FDF4'),
-    card('gov_eval', 'Factual Consistency Evaluator', 'Automated faithfulness & answer relevance grading', ICON.shield, 45, 785, 470, 95, '#16A34A'),
-    card('gov_iam', 'Cloud IAM & Data Access Tags', 'Entity-level security filtering based on user permissions', ICON.shield, 545, 785, 470, 95, '#16A34A'),
-    card('gov_audit', 'Cloud Logging & Trace Provenance', 'Complete audit log of every retrieved node and prompt', ICON.log, 1045, 785, 490, 95, '#16A34A'),
+    // Lane 5: Grounded Synthesis & Interactive Citation Interface
+    lane('synthesis', 5, 'GROUNDED REASONING & INTERACTIVE CITATIONS', 'Hallucination-free generative responses with clickable entity provenance', 20, 690, 1540, 140, '#D97706', '#FFFFFF'),
+    card('syn_gemini', 'Vertex AI Gemini 2.5 Pro Reasoner', 'Synthesizes answer grounded strictly in verified subgraph facts', ICON.gemini, 45, 745, 460, 70, '#7C3AED'),
+    card('syn_guard', 'Model Armor & Grounding Gate', 'Validates citation grounding & masks sensitive PII entities', ICON.shield, 545, 745, 450, 70, '#059669'),
+    card('syn_ui', 'Enterprise Knowledge Assistant UI', 'Streaming response with interactive knowledge graph visualizer', ICON.copilot, 1035, 745, 500, 70, '#2563EB'),
 
     // Edges
-    edge('e_doc_ocr', 'in_docs', 'in_docai', 'Raw Content', 'request', 0.5, 1, 0.5, 0),
-    edge('e_ocr_chunk', 'in_docai', 'in_chunk', 'Parsed Text', 'request', 0.5, 1, 0.5, 0),
-    edge('e_chunk_gem', 'in_chunk', 'ex_gemini', 'Extract Entities', 'request'),
-    edge('e_chunk_emb', 'in_chunk', 'ex_embed', 'Generate Vector', 'request', 1, 0.5, 0, 0.5),
-    edge('e_gem_span', 'ex_gemini', 'st_spanner', 'Write Nodes & Edges', 'request'),
-    edge('e_emb_vec', 'ex_embed', 'st_vector', 'Upsert Embeddings', 'request'),
-    edge('e_user_pl', 'pl_query', 'st_spanner', 'ISO GQL Multi-Hop', 'request', 0, 0.25, 1, 0.25),
-    edge('e_user_vec', 'pl_query', 'st_vector', 'Vector KNN Search', 'request', 0, 0.75, 1, 0.75),
-    edge('e_span_sub', 'st_spanner', 'pl_subgraph', 'Neighborhood Nodes', 'response'),
-    edge('e_sub_rerank', 'pl_subgraph', 'pl_rerank', 'Rerank Context', 'request', 0.5, 1, 0.5, 0),
-    edge('e_rerank_syn', 'pl_rerank', 'syn_gemini', 'Grounded Context', 'request'),
-    edge('e_syn_cite', 'syn_gemini', 'syn_citation', 'Link Citations', 'request', 0.5, 1, 0.5, 0),
-    edge('e_cite_ui', 'syn_citation', 'syn_copilot', 'Display Response', 'request', 0.5, 1, 0.5, 0),
-    edge('e_gov_gem', 'gov_eval', 'syn_gemini', 'Score Faithfulness', 'governance', 0.5, 0, 0.5, 1, [[280, 710], [1425, 710]]),
+    edge('e_doc_chunk', 'in_docai', 'in_chunk', 'Structured Text', 'request'),
+    edge('e_chunk_gem', 'in_chunk', 'ext_gemini', 'Extract Triples', 'request'),
+    edge('e_chunk_emb', 'in_chunk', 'ext_embed', 'Generate Vectors', 'request'),
+    edge('e_gem_span', 'ext_gemini', 'sto_spanner', 'Write Nodes & Edges', 'request'),
+    edge('e_emb_vec', 'ext_embed', 'sto_vector', 'Write ScaNN Index', 'request'),
+    edge('e_plan_span', 'ret_planner', 'sto_spanner', 'GQL 2-Hop Query', 'request'),
+    edge('e_plan_vec', 'ret_planner', 'sto_vector', 'KNN Vector Search', 'request'),
+    edge('e_span_sub', 'sto_spanner', 'ret_subgraph', 'Return Subgraph', 'response'),
+    edge('e_vec_sub', 'sto_vector', 'ret_subgraph', 'Return Chunks', 'response'),
+    edge('e_sub_rerank', 'ret_subgraph', 'ret_rerank', 'Candidate Pool', 'request'),
+    edge('e_rerank_syn', 'ret_rerank', 'syn_gemini', 'Top-K Facts', 'request'),
+    edge('e_syn_guard', 'syn_gemini', 'syn_guard', 'Inspect Grounding', 'governance'),
+    edge('e_guard_ui', 'syn_guard', 'syn_ui', 'Stream Response', 'response'),
   ];
 
-  return `<mxfile host="embed.diagrams.net" modified="2026-08-20T22:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="embed">
+  return `<mxfile host="app.diagrams.net" modified="2026-08-21T00:35:00.000Z" agent="PromptCanvas Blueprint 58" version="24.7.17" type="device">
   <diagram id="catalog_graphrag_knowledge_graph" name="GraphRAG &amp; Enterprise Knowledge Graph Architecture">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF">
+    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#F8FAFC">
       <root>
         ${cells.join('\n        ')}
       </root>
