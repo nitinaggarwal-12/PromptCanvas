@@ -1,276 +1,48 @@
-const GOOGLE_CLOUD_MARK = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22%200%200%2078%2052%22%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M30%2045h31a13%2013%200%200%200%201.8-25.9A20%2020%200%200%200%2025%2016.4%2014%2014%200%200%200%2030%2045z%22%2F%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M25%2016.4A20%2020%200%200%201%2042%206l5.7%2010H30z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M25%2016.4A14%2014%200%200%200%2015%2030l11%202%208-13z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M30%2045h13l-3-11-14-2z%22%2F%3E%3C%2Fsvg%3E';
+const GOOGLE_CLOUD_MARK = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2078%2052%22%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M30%2045h31a13%2013%200%200%200%201.8-25.9A20%2020%200%200%200%2025%2016.4%2014%2014%200%200%200%2030%2045z%22%2F%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M25%2016.4A20%2020%200%200%201%2042%206l5.7%2010H30z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M25%2016.4A14%2014%200%200%200%2015%2030l11%202%208-13z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M30%2045h13l-3-11-14-2z%22%2F%3E%3C%2Fsvg%3E';
 
-const NOTATION_SENSITIVE_IDS = new Set([
-  'erd',
-  'sequence_diagram',
-  'tech_c4_system_context',
-  'c4_component_lld',
-  'bpmn_process_workflow',
-  'threat_modeling_stride',
-  'data_lineage_provenance',
-]);
-
-// Exact product icons from the official, unmodified Google Cloud icon library packaged
-// by gcp-icons. If a product is not verified here, the diagram stays text-first rather
-// than substituting a generic Google/GCP logo.
-const GCP_ICON_BASE = 'https://cdn.jsdelivr.net/npm/gcp-icons@1.0.6/dist/icons/';
-const ICONS = {
-  agents: `${GCP_ICON_BASE}agents-512-color.svg`,
-  alloydb: `${GCP_ICON_BASE}alloydb-512-color.svg`,
-  apigee: `${GCP_ICON_BASE}apigee-512-color-rgb.svg`,
-  bigquery: `${GCP_ICON_BASE}bigquery-512-color.svg`,
-  cloudStorage: `${GCP_ICON_BASE}cloud-storage-512-color.svg`,
-  cloudRun: `${GCP_ICON_BASE}cloudrun-512-color-rgb.svg`,
-  spanner: `${GCP_ICON_BASE}cloudspanner-512-color.svg`,
-  cloudSql: `${GCP_ICON_BASE}cloudsql-512-color.svg`,
-  distributedCloud: `${GCP_ICON_BASE}distributedcloud-512-color.svg`,
-  gke: `${GCP_ICON_BASE}gke-512-color.svg`,
-  looker: `${GCP_ICON_BASE}looker-512-color.svg`,
-  securityCommandCenter: `${GCP_ICON_BASE}securitycommandcenter-512-color.svg`,
-  vertexAi: `${GCP_ICON_BASE}vertexai-512-color.svg`,
-  microsoft: 'https://cdn.simpleicons.org/microsoft',
-  salesforce: 'https://cdn.simpleicons.org/salesforce',
-  sap: 'https://cdn.simpleicons.org/sap',
-  servicenow: 'https://cdn.simpleicons.org/servicenow',
-  github: 'https://cdn.simpleicons.org/github',
-  gitlab: 'https://cdn.simpleicons.org/gitlab',
-  atlassian: 'https://cdn.simpleicons.org/atlassian',
-  jira: 'https://cdn.simpleicons.org/jira',
-  confluence: 'https://cdn.simpleicons.org/confluence',
-  slack: 'https://cdn.simpleicons.org/slack',
-  aws: 'https://cdn.simpleicons.org/amazonwebservices',
-  azure: 'https://cdn.simpleicons.org/microsoftazure',
-  terraform: 'https://cdn.simpleicons.org/terraform',
-  kubernetes: 'https://cdn.simpleicons.org/kubernetes',
-  docker: 'https://cdn.simpleicons.org/docker',
-  kafka: 'https://cdn.simpleicons.org/apachekafka',
-  postgres: 'https://cdn.simpleicons.org/postgresql',
-  redis: 'https://cdn.simpleicons.org/redis',
-  snowflake: 'https://cdn.simpleicons.org/snowflake',
-  databricks: 'https://cdn.simpleicons.org/databricks',
-  react: 'https://cdn.simpleicons.org/react',
-  nextjs: 'https://cdn.simpleicons.org/nextdotjs',
+const NOTATION_SENSITIVE_IDS = new Set(['erd','sequence_diagram','tech_c4_system_context','c4_component_lld','bpmn_process_workflow','threat_modeling_stride','data_lineage_provenance']);
+const GCP_ICON_BASE='https://cdn.jsdelivr.net/npm/gcp-icons@1.0.6/dist/icons/';
+const ICONS={
+ agents:`${GCP_ICON_BASE}agents-512-color.svg`,alloydb:`${GCP_ICON_BASE}alloydb-512-color.svg`,apigee:`${GCP_ICON_BASE}apigee-512-color-rgb.svg`,bigquery:`${GCP_ICON_BASE}bigquery-512-color.svg`,cloudStorage:`${GCP_ICON_BASE}cloud-storage-512-color.svg`,cloudRun:`${GCP_ICON_BASE}cloudrun-512-color-rgb.svg`,spanner:`${GCP_ICON_BASE}cloudspanner-512-color.svg`,cloudSql:`${GCP_ICON_BASE}cloudsql-512-color.svg`,distributedCloud:`${GCP_ICON_BASE}distributedcloud-512-color.svg`,gke:`${GCP_ICON_BASE}gke-512-color.svg`,looker:`${GCP_ICON_BASE}looker-512-color.svg`,securityCommandCenter:`${GCP_ICON_BASE}securitycommandcenter-512-color.svg`,vertexAi:`${GCP_ICON_BASE}vertexai-512-color.svg`,
+ microsoft:'https://cdn.simpleicons.org/microsoft',salesforce:'https://cdn.simpleicons.org/salesforce',sap:'https://cdn.simpleicons.org/sap',servicenow:'https://cdn.simpleicons.org/servicenow',github:'https://cdn.simpleicons.org/github',gitlab:'https://cdn.simpleicons.org/gitlab',atlassian:'https://cdn.simpleicons.org/atlassian',jira:'https://cdn.simpleicons.org/jira',confluence:'https://cdn.simpleicons.org/confluence',slack:'https://cdn.simpleicons.org/slack',aws:'https://cdn.simpleicons.org/amazonwebservices',azure:'https://cdn.simpleicons.org/microsoftazure',terraform:'https://cdn.simpleicons.org/terraform',kubernetes:'https://cdn.simpleicons.org/kubernetes',docker:'https://cdn.simpleicons.org/docker',kafka:'https://cdn.simpleicons.org/apachekafka',postgres:'https://cdn.simpleicons.org/postgresql',redis:'https://cdn.simpleicons.org/redis',snowflake:'https://cdn.simpleicons.org/snowflake',databricks:'https://cdn.simpleicons.org/databricks',react:'https://cdn.simpleicons.org/react',nextjs:'https://cdn.simpleicons.org/nextdotjs'
 };
-
-type IconRule = { pattern: RegExp; icon: string; family: 'vendor' | 'gcp-product' };
-
-const ICON_RULES: IconRule[] = [
-  { pattern: /\bMicrosoft(?:\s+365)?\b|\bSharePoint\b|\bOneDrive\b|\bOutlook\b|\bTeams\b/i, icon: ICONS.microsoft, family: 'vendor' },
-  { pattern: /\bSalesforce\b/i, icon: ICONS.salesforce, family: 'vendor' },
-  { pattern: /\bSAP\b/i, icon: ICONS.sap, family: 'vendor' },
-  { pattern: /\bServiceNow\b/i, icon: ICONS.servicenow, family: 'vendor' },
-  { pattern: /\bGitHub\b/i, icon: ICONS.github, family: 'vendor' },
-  { pattern: /\bGitLab\b/i, icon: ICONS.gitlab, family: 'vendor' },
-  { pattern: /\bJira\b/i, icon: ICONS.jira, family: 'vendor' },
-  { pattern: /\bConfluence\b/i, icon: ICONS.confluence, family: 'vendor' },
-  { pattern: /\bAtlassian\b/i, icon: ICONS.atlassian, family: 'vendor' },
-  { pattern: /\bSlack\b/i, icon: ICONS.slack, family: 'vendor' },
-  { pattern: /\bAWS\b|Amazon Web Services/i, icon: ICONS.aws, family: 'vendor' },
-  { pattern: /\bAzure\b/i, icon: ICONS.azure, family: 'vendor' },
-  { pattern: /\bTerraform\b/i, icon: ICONS.terraform, family: 'vendor' },
-  { pattern: /\bKubernetes\b/i, icon: ICONS.kubernetes, family: 'vendor' },
-  { pattern: /\bDocker\b/i, icon: ICONS.docker, family: 'vendor' },
-  { pattern: /\bKafka\b/i, icon: ICONS.kafka, family: 'vendor' },
-  { pattern: /\bPostgreSQL\b|\bPostgres\b/i, icon: ICONS.postgres, family: 'vendor' },
-  { pattern: /\bRedis\b/i, icon: ICONS.redis, family: 'vendor' },
-  { pattern: /\bSnowflake\b/i, icon: ICONS.snowflake, family: 'vendor' },
-  { pattern: /\bDatabricks\b/i, icon: ICONS.databricks, family: 'vendor' },
-  { pattern: /\bReact\b/i, icon: ICONS.react, family: 'vendor' },
-  { pattern: /\bNext\.?(?:js)?\b/i, icon: ICONS.nextjs, family: 'vendor' },
-
-  { pattern: /\bGemini Enterprise Agent Platform\b|\bAgent Runtime\b|\bAgent Gateway\b|\bAgent Registry\b|\bAgent Identity\b/i, icon: ICONS.agents, family: 'gcp-product' },
-  { pattern: /\bVertex AI\b/i, icon: ICONS.vertexAi, family: 'gcp-product' },
-  { pattern: /\bBigQuery\b/i, icon: ICONS.bigquery, family: 'gcp-product' },
-  { pattern: /\bCloud Storage\b/i, icon: ICONS.cloudStorage, family: 'gcp-product' },
-  { pattern: /\bCloud Run\b/i, icon: ICONS.cloudRun, family: 'gcp-product' },
-  { pattern: /\bAlloyDB\b/i, icon: ICONS.alloydb, family: 'gcp-product' },
-  { pattern: /\bCloud SQL\b/i, icon: ICONS.cloudSql, family: 'gcp-product' },
-  { pattern: /\bSpanner\b/i, icon: ICONS.spanner, family: 'gcp-product' },
-  { pattern: /\bApigee\b/i, icon: ICONS.apigee, family: 'gcp-product' },
-  { pattern: /\bGoogle Kubernetes Engine\b|\bGKE\b/i, icon: ICONS.gke, family: 'gcp-product' },
-  { pattern: /\bGoogle Distributed Cloud\b/i, icon: ICONS.distributedCloud, family: 'gcp-product' },
-  { pattern: /\bLooker\b/i, icon: ICONS.looker, family: 'gcp-product' },
-  { pattern: /\bSecurity Command Center\b/i, icon: ICONS.securityCommandCenter, family: 'gcp-product' },
+type IconRule={pattern:RegExp;icon:string;family:'vendor'|'gcp-product'};
+const ICON_RULES:IconRule[]=[
+ {pattern:/\bMicrosoft(?:\s+365)?\b|\bSharePoint\b|\bOneDrive\b|\bOutlook\b|\bTeams\b/i,icon:ICONS.microsoft,family:'vendor'},
+ {pattern:/\bSalesforce\b/i,icon:ICONS.salesforce,family:'vendor'},{pattern:/\bSAP\b/i,icon:ICONS.sap,family:'vendor'},{pattern:/\bServiceNow\b/i,icon:ICONS.servicenow,family:'vendor'},{pattern:/\bGitHub\b/i,icon:ICONS.github,family:'vendor'},{pattern:/\bGitLab\b/i,icon:ICONS.gitlab,family:'vendor'},{pattern:/\bJira\b/i,icon:ICONS.jira,family:'vendor'},{pattern:/\bConfluence\b/i,icon:ICONS.confluence,family:'vendor'},{pattern:/\bAtlassian\b/i,icon:ICONS.atlassian,family:'vendor'},{pattern:/\bSlack\b/i,icon:ICONS.slack,family:'vendor'},{pattern:/\bAWS\b|Amazon Web Services/i,icon:ICONS.aws,family:'vendor'},{pattern:/\bAzure\b/i,icon:ICONS.azure,family:'vendor'},{pattern:/\bTerraform\b/i,icon:ICONS.terraform,family:'vendor'},{pattern:/\bKubernetes\b/i,icon:ICONS.kubernetes,family:'vendor'},{pattern:/\bDocker\b/i,icon:ICONS.docker,family:'vendor'},{pattern:/\bKafka\b/i,icon:ICONS.kafka,family:'vendor'},{pattern:/\bPostgreSQL\b|\bPostgres\b/i,icon:ICONS.postgres,family:'vendor'},{pattern:/\bRedis\b/i,icon:ICONS.redis,family:'vendor'},{pattern:/\bSnowflake\b/i,icon:ICONS.snowflake,family:'vendor'},{pattern:/\bDatabricks\b/i,icon:ICONS.databricks,family:'vendor'},{pattern:/\bReact\b/i,icon:ICONS.react,family:'vendor'},{pattern:/\bNext\.?(?:js)?\b/i,icon:ICONS.nextjs,family:'vendor'},
+ {pattern:/\bGemini Enterprise Agent Platform\b|\bAgent Runtime\b|\bAgent Gateway\b|\bAgent Registry\b|\bAgent Identity\b/i,icon:ICONS.agents,family:'gcp-product'},{pattern:/\bVertex AI\b/i,icon:ICONS.vertexAi,family:'gcp-product'},{pattern:/\bBigQuery\b/i,icon:ICONS.bigquery,family:'gcp-product'},{pattern:/\bCloud Storage\b/i,icon:ICONS.cloudStorage,family:'gcp-product'},{pattern:/\bCloud Run\b/i,icon:ICONS.cloudRun,family:'gcp-product'},{pattern:/\bAlloyDB\b/i,icon:ICONS.alloydb,family:'gcp-product'},{pattern:/\bCloud SQL\b/i,icon:ICONS.cloudSql,family:'gcp-product'},{pattern:/\bSpanner\b/i,icon:ICONS.spanner,family:'gcp-product'},{pattern:/\bApigee\b/i,icon:ICONS.apigee,family:'gcp-product'},{pattern:/\bGoogle Kubernetes Engine\b|\bGKE\b/i,icon:ICONS.gke,family:'gcp-product'},{pattern:/\bGoogle Distributed Cloud\b/i,icon:ICONS.distributedCloud,family:'gcp-product'},{pattern:/\bLooker\b/i,icon:ICONS.looker,family:'gcp-product'},{pattern:/\bSecurity Command Center\b/i,icon:ICONS.securityCommandCenter,family:'gcp-product'}
 ];
+const EMOJI_RE=/(?:\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]|\uD83D[\uDE80-\uDEFF]|\uD83E[\uDD00-\uDDFF]|[\u2600-\u27BF])\uFE0F?/g;
+const GENERIC_ICON_SUFFIX_RE=/_(?:i|icon|logo|mark)$/i;
+const BRAND_ALLOWLIST=new Set(['footer_gcp_logo','google_cloud_brand_logo']);
+function attr(s:string,n:string){return s.match(new RegExp(`\\b${n}="([^"]*)"`,'i'))?.[1]||'';}
+function numAttr(s:string,n:string){const v=Number(attr(s,n));return Number.isFinite(v)?v:0;}
+function stripEmoji(v:string){return v.replace(EMOJI_RE,'').replace(/\uFE0F/g,'').replace(/\u200D/g,'');}
+function plainText(v:string){return stripEmoji(v).replace(/&lt;br\s*\/?&gt;/gi,' ').replace(/&lt;[^&]*?&gt;/g,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;/gi,"'").replace(/\s+/g,' ').trim();}
+function selectIcon(t:string){return ICON_RULES.find(r=>r.pattern.test(t))||null;}
+function iconHtml(url:string,body:string,compact:boolean){const sz=compact?22:28,col=compact?30:38;return `&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:${col}px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;${url}&quot; width=&quot;${sz}&quot; height=&quot;${sz}&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;${body}&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;}
+function geom(xml:string,id:string){const m=xml.match(new RegExp(`<mxCell\\b[^>]*\\bid="${id}"[^>]*>[\\s\\S]*?<mxGeometry\\b([^>]*)`,'i'));if(!m)return null;const g=m[1]||'';return{x:numAttr(g,'x'),y:numAttr(g,'y'),width:numAttr(g,'width'),height:numAttr(g,'height')};}
+function setG(a:string,k:string,v:number){const r=new RegExp(`(\\b${k}=")[^"]*(")`,'i');return r.test(a)?a.replace(r,(_m,p1:string,p2:string)=>`${p1}${v}${p2}`):`${a} ${k}="${v}"`;}
+function associatedText(xml:string,base:string):{id:string;value:string}|null{for(const id of [base,`${base}_t`,`${base}_txt`,`${base}_label`,`${base}_title`,`${base}_hdr`,`${base}_h`]){const m=xml.match(new RegExp(`<mxCell\\b[^>]*\\bid="${id}"[^>]*\\bvalue="([^"]+)"`,'i'));if(m?.[1])return{id,value:m[1]};}const p=xml.match(new RegExp(`<mxCell\\b[^>]*\\bid="${base}_[^"]+"[^>]*\\bvalue="([^"]+)"`,'i'));return p?.[1]?{id:'',value:p[1]}:null;}
+function expandText(xml:string,base:string){const card=geom(xml,base),text=associatedText(xml,base);if(!card||!text?.id||text.id===base)return xml;const re=new RegExp(`(<mxCell\\b[^>]*\\bid="${text.id}"[^>]*>)([\\s\\S]*?)(<\\/mxCell>)`,'i');return xml.replace(re,(_f,o:string,b:string,c:string)=>{const gm=b.match(/<mxGeometry\b([^>]*?)(?:\/)?\s*>/i);if(!gm)return`${o}${b}${c}`;let a=(gm[1]||'').trimEnd();a=setG(a,'x',card.x+14);a=setG(a,'width',Math.max(40,card.width-28));return`${o}${b.replace(gm[0],`<mxGeometry ${a.trim()}/>`)}${c}`;});}
+function replaceImgStyle(style:string,url:string){return style.replace(/image=[^;]+;/i,`image=${url};`);}
+function neutralStyle(style:string){let n=style.replace(/shape=image;?/gi,'').replace(/image=[^;]+;?/gi,'').replace(/imageAspect=[^;]+;?/gi,'').replace(/aspect=[^;]+;?/gi,'');if(!/whiteSpace=/i.test(n))n+='whiteSpace=wrap;';if(!/html=/i.test(n))n+='html=1;';if(!/rounded=/i.test(n))n+='rounded=1;arcSize=8;';if(!/fillColor=/i.test(n))n+='fillColor=#FFFFFF;';if(!/strokeColor=/i.test(n))n+='strokeColor=#AECBFA;';if(!/spacing=/i.test(n))n+='spacing=6;';return n;}
 
-const EMOJI_RE = /(?:\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]|\uD83D[\uDE80-\uDEFF]|\uD83E[\uDD00-\uDDFF]|[\u2600-\u27BF])\uFE0F?/g;
-const GENERIC_ICON_SUFFIX_RE = /_(?:i|icon|logo|mark)$/i;
-const GENERIC_BRAND_ALLOWLIST = new Set(['footer_gcp_logo', 'google_cloud_brand_logo']);
-
-function attr(source: string, name: string): string {
-  return source.match(new RegExp(`\\b${name}="([^"]*)"`, 'i'))?.[1] || '';
-}
-function numericAttr(source: string, name: string): number {
-  const value = Number(attr(source, name));
-  return Number.isFinite(value) ? value : 0;
-}
-function stripEmoji(value: string): string {
-  return value.replace(EMOJI_RE, '').replace(/\uFE0F/g, '').replace(/\u200D/g, '').replace(/(?:&nbsp;\s*){2,}/gi, '&nbsp;');
-}
-function plainText(value: string): string {
-  return stripEmoji(value)
-    .replace(/&lt;br\s*\/?&gt;/gi, ' ')
-    .replace(/&lt;[^&]*?&gt;/g, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&amp;/gi, '&')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-function selectIcon(text: string): IconRule | null {
-  return ICON_RULES.find(rule => rule.pattern.test(text)) || null;
-}
-function iconHtml(iconUrl: string, body: string, compact: boolean): string {
-  const iconSize = compact ? 22 : 28;
-  const iconColumn = compact ? 30 : 38;
-  return `&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;` +
-    `&lt;tr&gt;&lt;td style=&quot;width:${iconColumn}px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;` +
-    `&lt;img src=&quot;${iconUrl}&quot; width=&quot;${iconSize}&quot; height=&quot;${iconSize}&quot; style=&quot;object-fit:contain;&quot;/&gt;` +
-    `&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;${body}&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
-}
-function getCellGeometry(xml: string, id: string): { x: number; y: number; width: number; height: number } | null {
-  const match = xml.match(new RegExp(`<mxCell\\b[^>]*\\bid="${id}"[^>]*>[\\s\\S]*?<mxGeometry\\b([^>]*)`, 'i'));
-  if (!match) return null;
-  const g = match[1] || '';
-  return { x: numericAttr(g, 'x'), y: numericAttr(g, 'y'), width: numericAttr(g, 'width'), height: numericAttr(g, 'height') };
-}
-function setGeometryAttr(attrs: string, key: string, value: number): string {
-  const re = new RegExp(`(\\b${key}=")[^"]*(")`, 'i');
-  return re.test(attrs) ? attrs.replace(re, (_m, p1: string, p2: string) => `${p1}${value}${p2}`) : `${attrs} ${key}="${value}"`;
-}
-function associatedText(xml: string, baseId: string): { id: string; value: string } | null {
-  const candidates = [baseId, `${baseId}_t`, `${baseId}_txt`, `${baseId}_label`, `${baseId}_title`, `${baseId}_hdr`, `${baseId}_h`];
-  for (const id of candidates) {
-    const match = xml.match(new RegExp(`<mxCell\\b[^>]*\\bid="${id}"[^>]*\\bvalue="([^"]+)"`, 'i'));
-    if (match?.[1]) return { id, value: match[1] };
-  }
-  const prefix = xml.match(new RegExp(`<mxCell\\b[^>]*\\bid="${baseId}_[^"]+"[^>]*\\bvalue="([^"]+)"`, 'i'));
-  return prefix?.[1] ? { id: '', value: prefix[1] } : null;
-}
-function expandSiblingText(xml: string, baseId: string): string {
-  const card = getCellGeometry(xml, baseId);
-  if (!card) return xml;
-  const text = associatedText(xml, baseId);
-  if (!text?.id || text.id === baseId) return xml;
-  const re = new RegExp(`(<mxCell\\b[^>]*\\bid="${text.id}"[^>]*>)([\\s\\S]*?)(<\\/mxCell>)`, 'i');
-  return xml.replace(re, (_full, open: string, body: string, close: string) => {
-    const gm = body.match(/<mxGeometry\b([^>]*?)(?:\/)?\s*>/i);
-    if (!gm) return `${open}${body}${close}`;
-    let ga = (gm[1] || '').trimEnd();
-    ga = setGeometryAttr(ga, 'x', card.x + 14);
-    ga = setGeometryAttr(ga, 'width', Math.max(40, card.width - 28));
-    return `${open}${body.replace(gm[0], `<mxGeometry ${ga.trim()}/>`)}${close}`;
-  });
-}
-function replaceImageStyle(style: string, iconUrl: string): string {
-  return style.replace(/image=[^;]+;/i, `image=${iconUrl};`);
-}
-function neutralizeImageStyle(style: string): string {
-  let next = style
-    .replace(/shape=image;?/gi, '')
-    .replace(/image=[^;]+;?/gi, '')
-    .replace(/imageAspect=[^;]+;?/gi, '')
-    .replace(/aspect=[^;]+;?/gi, '');
-  if (!/whiteSpace=/i.test(next)) next += 'whiteSpace=wrap;';
-  if (!/html=/i.test(next)) next += 'html=1;';
-  if (!/rounded=/i.test(next)) next += 'rounded=1;arcSize=8;';
-  if (!/fillColor=/i.test(next)) next += 'fillColor=#FFFFFF;';
-  if (!/strokeColor=/i.test(next)) next += 'strokeColor=#AECBFA;';
-  if (!/spacing=/i.test(next)) next += 'spacing=6;';
-  return next;
+/** Any inline SVG image inside a component/service cell is treated as an unsafe generic
+ * placeholder unless the cell is explicitly brand-level. Exact product/vendor identity
+ * is then resolved from the semantic label; unresolved images become text-first. */
+function normalizeInlineServiceSvg(xml:string){
+ const cellRe=/<mxCell\b([^>]*\bvertex="1"[^>]*)>([\s\S]*?)<\/mxCell>/gi;let next=xml;
+ for(const match of Array.from(xml.matchAll(cellRe))){const full=match[0],attrs=match[1]||'',body=match[2]||'',id=attr(attrs,'id'),sm=attrs.match(/style="([^"]*)"/i);if(!sm)continue;const style=sm[1];if(!/shape=image/i.test(style)||!/image=data:image\/svg\+xml/i.test(style)||BRAND_ALLOWLIST.has(id))continue;const own=attr(attrs,'value'),base=GENERIC_ICON_SUFFIX_RE.test(id)?id.replace(GENERIC_ICON_SUFFIX_RE,''):id,sib=associatedText(next,base),text=plainText(own||sib?.value||''),rule=selectIcon(text);if(rule){next=next.replace(full,full.replace(sm[0],`style="${replaceImgStyle(style,rule.icon)}"`));continue;}if(!own&&GENERIC_ICON_SUFFIX_RE.test(id)){next=next.replace(full,'');next=expandText(next,base);}else{next=next.replace(full,`<mxCell${attrs.replace(sm[0],`style="${neutralStyle(style)}"`)}>${body}</mxCell>`);}}
+ return next;
 }
 
-/**
- * Remove every generic embedded Google/GCP mark from component/service cells, regardless
- * of builder naming convention. Exact product/vendor icons are substituted when the
- * associated semantic label identifies one. Otherwise the component becomes text-first.
- */
-function normalizeGenericGoogleMarks(xml: string): string {
-  const cellRe = /<mxCell\b([^>]*\bvertex="1"[^>]*)>([\s\S]*?)<\/mxCell>/gi;
-  let next = xml;
-  const matches = Array.from(xml.matchAll(cellRe));
-
-  for (const match of matches) {
-    const full = match[0];
-    const attrs = match[1] || '';
-    const body = match[2] || '';
-    const id = attr(attrs, 'id');
-    const styleMatch = attrs.match(/style="([^"]*)"/i);
-    if (!styleMatch) continue;
-    const style = styleMatch[1];
-    if (!/shape=image/i.test(style) || !style.includes(GOOGLE_CLOUD_MARK)) continue;
-    if (GENERIC_BRAND_ALLOWLIST.has(id)) continue;
-
-    const ownValue = attr(attrs, 'value');
-    const baseId = GENERIC_ICON_SUFFIX_RE.test(id) ? id.replace(GENERIC_ICON_SUFFIX_RE, '') : id;
-    const sibling = associatedText(next, baseId);
-    const semanticText = plainText(ownValue || sibling?.value || '');
-    const rule = selectIcon(semanticText);
-
-    if (rule) {
-      const replacement = full.replace(styleMatch[0], `style="${replaceImageStyle(style, rule.icon)}"`);
-      next = next.replace(full, replacement);
-      continue;
-    }
-
-    // Separate icon cell: remove it. A direct stencil/icon-with-label becomes a neutral
-    // text card so we never lose the component label.
-    if (!ownValue && GENERIC_ICON_SUFFIX_RE.test(id)) {
-      next = next.replace(full, '');
-      next = expandSiblingText(next, baseId);
-    } else {
-      const replacement = `<mxCell${attrs.replace(styleMatch[0], `style="${neutralizeImageStyle(style)}"`)}>${body}</mxCell>`;
-      next = next.replace(full, replacement);
-    }
-  }
-  return next;
+export function applyBlueprintSemanticIcons(xml:string,architectureId?:string|null):string{
+ if(!xml||xml.includes('pc-semantic-icons-v2'))return xml;const id=String(architectureId||'').toLowerCase();if(NOTATION_SENSITIVE_IDS.has(id))return xml;
+ let next=normalizeInlineServiceSvg(xml);const cellRe=/<mxCell\b([^>]*\bvertex="1"[^>]*)>([\s\S]*?)<\/mxCell>/gi;
+ next=next.replace(cellRe,(full,attrs:string,body:string)=>{const vm=attrs.match(/\bvalue="([^"]*)"/i);if(!vm)return full;const original=vm[1],clean=stripEmoji(original),style=attr(attrs,'style'),g=body.match(/<mxGeometry\b([^>]*)\/?\s*>/i)?.[1]||'',w=numAttr(g,'width'),h=numAttr(g,'height'),cellId=attr(attrs,'id'),text=plainText(clean),rule=selectIcon(text),already=/&lt;img\b/i.test(clean)||/shape=image/i.test(style),split=/(?:_t|_txt|_label|_title|_hdr)$/i.test(cellId),protectedShape=/shape=(?:image|line|group)|ellipse|rhombus|hexagon|swimlane/i.test(style),header=h<=42||(w>=500&&h<=70)||/fontSize=(?:1[5-9]|[2-9]\d)/i.test(style),useful=w>=135&&h>=52&&text.length>=3&&text.length<=520;let replacement=clean;if(rule&&!already&&!split&&!protectedShape&&!header&&useful)replacement=iconHtml(rule.icon,clean,h<70||w<190);return replacement===original?full:`<mxCell${attrs.replace(vm[0],`value="${replacement}"`)}>${body}</mxCell>`;});
+ next=normalizeInlineServiceSvg(next).replace(EMOJI_RE,'').replace(/\uFE0F/g,'').replace(/\u200D/g,'');
+ next=next.replace(/(<mxGraphModel\b)/,'<!-- pc-semantic-icons-v1 -->\n<!-- pc-semantic-icons-v2 -->\n$1');return next;
 }
 
-/**
- * Semantic icon pass:
- * - removes emoji placeholders
- * - authentic vendor + verified Google Cloud product icons only
- * - generic Google/GCP service marks are forbidden
- * - no verified icon => text-first card
- * - notation-sensitive diagrams remain structurally untouched
- */
-export function applyBlueprintSemanticIcons(xml: string, architectureId?: string | null): string {
-  if (!xml || xml.includes('pc-semantic-icons-v2')) return xml;
-  const id = String(architectureId || '').toLowerCase();
-  if (NOTATION_SENSITIVE_IDS.has(id)) return xml;
-
-  let next = normalizeGenericGoogleMarks(xml);
-  const cellRe = /<mxCell\b([^>]*\bvertex="1"[^>]*)>([\s\S]*?)<\/mxCell>/gi;
-  next = next.replace(cellRe, (full, attrs: string, body: string) => {
-    const valueMatch = attrs.match(/\bvalue="([^"]*)"/i);
-    if (!valueMatch) return full;
-    const originalValue = valueMatch[1];
-    const cleanedValue = stripEmoji(originalValue);
-    const style = attr(attrs, 'style');
-    const geometry = body.match(/<mxGeometry\b([^>]*)\/?\s*>/i)?.[1] || '';
-    const width = numericAttr(geometry, 'width');
-    const height = numericAttr(geometry, 'height');
-    const cellId = attr(attrs, 'id');
-    let replacementValue = cleanedValue;
-    const text = plainText(cleanedValue);
-    const rule = selectIcon(text);
-    const alreadyHasImage = /&lt;img\b/i.test(cleanedValue) || /shape=image/i.test(style);
-    const isSplitCardText = /_(?:t|txt|label|title|hdr)$/i.test(cellId);
-    const protectedShape = /shape=(?:image|line|group)|ellipse|rhombus|hexagon|swimlane/i.test(style);
-    const isHeaderLike = height <= 42 || (width >= 500 && height <= 70) || /fontSize=(?:1[5-9]|[2-9]\d)/i.test(style);
-    const isUsefulCard = width >= 135 && height >= 52 && text.length >= 3 && text.length <= 520;
-
-    if (rule && !alreadyHasImage && !isSplitCardText && !protectedShape && !isHeaderLike && isUsefulCard) {
-      replacementValue = iconHtml(rule.icon, cleanedValue, height < 70 || width < 190);
-    }
-    if (replacementValue === originalValue) return full;
-    return `<mxCell${attrs.replace(valueMatch[0], `value="${replacementValue}"`)}>${body}</mxCell>`;
-  });
-
-  next = normalizeGenericGoogleMarks(next);
-  next = next.replace(EMOJI_RE, '').replace(/\uFE0F/g, '').replace(/\u200D/g, '');
-  next = next.replace(/(<mxGraphModel\b)/, '<!-- pc-semantic-icons-v1 -->\n<!-- pc-semantic-icons-v2 -->\n$1');
-  return next;
-}
+export const GENERIC_GOOGLE_BRAND_MARK=GOOGLE_CLOUD_MARK;
