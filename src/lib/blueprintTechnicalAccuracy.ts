@@ -22,20 +22,6 @@ const HIGH_CONFIDENCE_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Gemini 3\.7/gi, 'Gemini'],
 ];
 
-export function applyBlueprintTechnicalAccuracy(xml: string): string {
-  if (!xml || xml.includes('pc-technical-accuracy-3-2')) return xml;
-
-  const next = HIGH_CONFIDENCE_REPLACEMENTS.reduce(
-    (current, [pattern, replacement]) => current.replace(pattern, replacement),
-    xml,
-  );
-
-  return next.replace(
-    /(<mxGraphModel\b)/,
-    '<!-- pc-technical-accuracy-3-2 -->\n$1',
-  );
-}
-
 type RenderPatch = {
   id: string;
   x: number;
@@ -88,22 +74,16 @@ function patchVertex(xml: string, patch: RenderPatch): string {
 }
 
 const KNOWN_RENDER_REPAIRS: Record<string, RenderPatch[]> = {
-  // #22: a footer-zone helper arity bug converted intended width/height values into
-  // invalid numeric stroke/fill colors and left a 680x625 opaque block at the top-left.
   tech_ai_trism_guardrails: [
     { id: 'ops', x: 25, y: 680, width: 1710, height: 255, fillColor: '#F8FAFC', strokeColor: '#334155' },
     { id: 'ops_n', x: 39, y: 695, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
     { id: 'ops_h', x: 79, y: 690, width: 1642, height: 45 },
   ],
-
-  // #33: the same bug affected the bottom resilience-patterns zone.
   tech_llm_capacity_quota: [
     { id: 'patterns', x: 25, y: 660, width: 1710, height: 260, fillColor: '#F5F3FF', strokeColor: '#6554C0' },
     { id: 'patterns_n', x: 39, y: 675, width: 30, height: 30, fillColor: '#6554C0', strokeColor: '#6554C0' },
     { id: 'patterns_h', x: 79, y: 670, width: 1642, height: 44 },
   ],
-
-  // #39: the same bug affected the cross-cutting reliability/operations zone.
   tech_supply_chain: [
     { id: 'ops', x: 25, y: 675, width: 1700, height: 235, fillColor: '#F8FAFC', strokeColor: '#334155' },
     { id: 'ops_n', x: 39, y: 690, width: 30, height: 30, fillColor: '#334155', strokeColor: '#334155' },
@@ -113,8 +93,9 @@ const KNOWN_RENDER_REPAIRS: Record<string, RenderPatch[]> = {
 
 /**
  * Repairs the exact source defect behind the large black rectangle reported on #22,
- * #33 and #39. This deliberately fixes geometry/style at XML source instead of hiding
- * an arbitrary rendered object in the viewer.
+ * #33 and #39. The faulty footer-zone calls passed y/width/height into an older helper
+ * whose signature only accepted x/width, producing numeric values such as
+ * strokeColor=1710 and fillColor=255 plus a large top-left rectangle.
  */
 export function applyKnownBlueprintRenderRepairs(xml: string, architectureId?: string | null): string {
   if (!xml) return xml;
@@ -133,5 +114,24 @@ export function findInvalidNumericDrawioColors(xml: string): string[] {
   return Array.from(
     xml.matchAll(/(?:fillColor|strokeColor)=([0-9]{2,6})(?=;|\")/gi),
     (match) => match[0],
+  );
+}
+
+export function applyBlueprintTechnicalAccuracy(xml: string): string {
+  if (!xml || xml.includes('pc-technical-accuracy-3-2')) return xml;
+
+  let next = HIGH_CONFIDENCE_REPLACEMENTS.reduce(
+    (current, [pattern, replacement]) => current.replace(pattern, replacement),
+    xml,
+  );
+
+  // Exact catalog resolver stamps pc-catalog-id before this stage. Use that canonical
+  // identity to apply the targeted source-level repair automatically in production.
+  const canonicalId = next.match(/pc-catalog-id:([a-z0-9_]+)/i)?.[1] || null;
+  next = applyKnownBlueprintRenderRepairs(next, canonicalId);
+
+  return next.replace(
+    /(<mxGraphModel\b)/,
+    '<!-- pc-technical-accuracy-3-2 -->\n$1',
   );
 }
