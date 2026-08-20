@@ -24,6 +24,15 @@ jobs:
             echo "::error::Skipped/focused tests introduced in this change"; exit 1; fi
       - name: Blueprint catalog certification gate
         run: npm run validate:blueprints
+      - name: Rendered visual regression gate
+        run: npm run validate:visual
+      - name: Upload visual QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blueprint-visual-qa
+          path: artifacts/visual-qa/
+          if-no-files-found: warn
       - name: Corpus duplicate-content tripwire
         run: npx tsx scripts/check-corpus-duplicates.ts diagrams/latest
       - name: Geometry validation on golden outputs
