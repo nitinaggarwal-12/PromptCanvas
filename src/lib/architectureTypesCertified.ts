@@ -44,17 +44,26 @@ function finalReadableFontFloor(xml: string): string {
   });
 }
 
-function finalNonNotationSanitize(xml: string, architectureId?: string | null): string {
-  if (!xml || xml.includes('pc-final-catalog-sanitize-v1')) return xml;
-  const id = visualNormalizeArchitectureId(architectureId);
-  if (NOTATION_SENSITIVE_IDS.has(id)) return xml;
+function ensureValidXmlEntities(xml: string): string {
+  return xml.replace(/&(?!([a-zA-Z0-9]+|#\d+|#x[0-9a-fA-F]+);)/g, '&amp;');
+}
 
-  let next = xml
-    .replace(EMOJI_RE, '')
-    .replace(/\uFE0F/g, '')
-    .replace(/\u200D/g, '');
-  next = finalReadableFontFloor(next);
-  return next.replace(/(<mxGraphModel\b)/, '<!-- pc-final-catalog-sanitize-v1 -->\n$1');
+function finalNonNotationSanitize(xml: string, architectureId?: string | null): string {
+  if (!xml) return xml;
+  const id = visualNormalizeArchitectureId(architectureId);
+  let next = xml;
+
+  if (!next.includes('pc-final-catalog-sanitize-v1') && !NOTATION_SENSITIVE_IDS.has(id)) {
+    next = next
+      .replace(EMOJI_RE, '')
+      .replace(/\uFE0F/g, '')
+      .replace(/\u200D/g, '');
+    next = finalReadableFontFloor(next);
+    next = next.replace(/(<mxGraphModel\b)/, '<!-- pc-final-catalog-sanitize-v1 -->\n$1');
+  }
+
+  // Final boundary guarantee: post-processing must never return malformed XML entities.
+  return ensureValidXmlEntities(next);
 }
 
 /**
@@ -62,7 +71,7 @@ function finalNonNotationSanitize(xml: string, architectureId?: string | null): 
  *
  * All catalog rendering first goes through the technical, visual, semantic-icon and
  * containment pipeline, then this final non-notation sanitizer prevents late-stage
- * enrichment from reintroducing emoji placeholders or sub-9.5px text.
+ * enrichment from reintroducing emoji placeholders, sub-9.5px text, or bare XML entities.
  */
 export function getDefaultXmlForArchitecture(
   archId?: string | null,
