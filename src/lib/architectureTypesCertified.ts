@@ -8,7 +8,11 @@ import {
   getTemplateTitle as visualGetTemplateTitle,
   getDefaultXmlForArchitecture as visualGetDefaultXmlForArchitecture,
 } from './architectureTypesVisual';
-import { CATALOG_CANONICAL_IDS } from './blueprintExactResolver';
+import {
+  CATALOG_BLUEPRINT_NUMBERS,
+  CATALOG_CANONICAL_IDS,
+  getExactCatalogBlueprintXml,
+} from './blueprintExactResolver';
 
 export type ArchitectureTypeOption = VisualArchitectureTypeOption;
 export const BUSINESS_ARCHITECTURE_TYPES = VISUAL_BUSINESS_ARCHITECTURE_TYPES;
@@ -28,7 +32,11 @@ const NOTATION_SENSITIVE_IDS = new Set([
   'data_lineage_provenance',
 ]);
 
-const REGISTERED_BLUEPRINT_IDS = new Set<string>(CATALOG_CANONICAL_IDS);
+const REVIEW_EXTENSION_IDS = new Set<string>(Object.keys(CATALOG_BLUEPRINT_NUMBERS));
+const REGISTERED_BLUEPRINT_IDS = new Set<string>([
+  ...CATALOG_CANONICAL_IDS,
+  ...REVIEW_EXTENSION_IDS,
+]);
 const BLUEPRINT_ID_PREFIX_RE = /^(?:p\d-|ind-|arch-)/i;
 const EMOJI_RE = /\p{Extended_Pictographic}/gu;
 const MIN_FONT = 9.5;
@@ -63,7 +71,6 @@ function finalNonNotationSanitize(xml: string, architectureId?: string | null): 
     next = next.replace(/(<mxGraphModel\b)/, '<!-- pc-final-catalog-sanitize-v1 -->\n$1');
   }
 
-  // Final boundary guarantee: post-processing must never return malformed XML entities.
   return ensureValidXmlEntities(next);
 }
 
@@ -80,11 +87,10 @@ function assertRegisteredBlueprintId(archId?: string | null): void {
 /**
  * Certified production resolver — the single runtime entry point for blueprint XML.
  *
- * Catalog rendering first goes through exact canonical dispatch, then the technical,
- * visual, semantic-icon and containment pipeline, and finally this sanitizer prevents
- * late-stage enrichment from reintroducing emoji placeholders, sub-9.5px text, or
- * malformed XML entities. Blueprint-looking IDs that are not registered fail loudly
- * instead of silently falling through to an unrelated generic template.
+ * The advertised catalog stays governed by CATALOG_CANONICAL_IDS. Explicitly numbered
+ * review extensions can be resolved by their canonical ID without being advertised in
+ * the catalog until approval. This keeps review isolated while exercising the same
+ * sanitizer and runtime boundary as certified templates.
  */
 export function getDefaultXmlForArchitecture(
   archId?: string | null,
@@ -92,6 +98,13 @@ export function getDefaultXmlForArchitecture(
   userPrompt?: string,
 ): string | null {
   assertRegisteredBlueprintId(archId);
+  const normalized = visualNormalizeArchitectureId(archId);
+
+  if (REVIEW_EXTENSION_IDS.has(normalized)) {
+    const exact = getExactCatalogBlueprintXml(normalized);
+    return exact ? finalNonNotationSanitize(exact, normalized) : exact;
+  }
+
   const xml = visualGetDefaultXmlForArchitecture(archId, useCaseContext, userPrompt);
   return xml ? finalNonNotationSanitize(xml, archId) : xml;
 }
