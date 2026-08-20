@@ -20,7 +20,7 @@
     "eval:geometry": "tsx evals/score_geometry.ts",
     "eval:geometry:gate": "tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml",
     "eval:templates": "tsx evals/check_template_integrity.ts templates/master_blueprints/xml/*.xml",
-    "eval:templates:gate": "tsx evals/check_template_integrity.ts --allow evals/template-integrity-allowlist.json templates/master_blueprints/xml/*.xml"
+    "eval:templates:gate": "tsx evals/check_template_integrity.ts --allow evals/template-integrity-allowlist.json diagrams/latest/*.xml"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
@@ -46,7 +46,7 @@
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
-    "@types/react-dom": "^19.2.4",
+    "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
     "canvas": "^3.2.3",
     "eslint": "^9",
