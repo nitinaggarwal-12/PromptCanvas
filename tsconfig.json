@@ -24,6 +24,7 @@
       "@/lib/architectureTypes": ["./src/lib/architectureTypesCertified.ts"],
       "@/lib/blueprintKnowledgeMatrix": ["./src/lib/blueprintKnowledgeMatrixCatalog.ts"],
       "@/lib/architectureHierarchy": ["./src/lib/architectureHierarchyCatalog.ts"],
+      "@/lib/xmlHealer": ["./src/lib/xmlHealerCompressedSafe.ts"],
       "@/*": ["./src/*"]
     },
     "types": ["vitest/globals"]
