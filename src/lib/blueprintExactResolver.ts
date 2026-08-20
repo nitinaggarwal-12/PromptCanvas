@@ -2,9 +2,9 @@ import {
   getExactErdReferenceXml,
 } from './diagramCompiler';
 import { getApprovedMultiAgentSequenceBlueprintXml } from './approvedBlueprint15Safe';
+import { getApprovedSecureDeploymentTopologyXml } from './approvedBlueprint16Safe';
 import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24Safe';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
-import { buildSecureDeploymentPhase1Xml } from './masterBuilders/build_master_secure_deployment_phase1';
 import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
 import { buildDataOpsPhase1Xml } from './masterBuilders/build_master_dataops_phase1';
 import { buildFinancialAdvisingPhase1Xml } from './masterBuilders/build_master_financial_advising_phase1';
@@ -67,10 +67,10 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   federated_iam_sso: getExactFederatedIamSsoXml,
   tech_micro_frontends: getExactMicroFrontendsXml,
   logical_ai_config_tenant: getExactLogicalAiConfigTenantXml,
-  // Blueprint 15: user-approved UML-style multi-agent sequence master.
+  // Blueprint 15: user-approved exact native multi-agent sequence master.
   sequence_diagram: getApprovedMultiAgentSequenceBlueprintXml,
-  // Blueprint 16 remains on the redesign queue; keep the previous canonical master active.
-  secure_deployment_map: buildSecureDeploymentPhase1Xml,
+  // Blueprint 16: user-approved secure deployment topology master.
+  secure_deployment_map: getApprovedSecureDeploymentTopologyXml,
   gcp_landing_zone_vpc: getExactGcpLandingZoneVpcXml,
   data_residency_sovereign_map: buildDataResidencyPhase1Xml,
   enterprise_agent_runtime: getExactEnterpriseAgentRuntimeXml,
