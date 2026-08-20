@@ -17,7 +17,9 @@ const NOTATION_SENSITIVE = new Set([
   'data_lineage_provenance',
 ]);
 const RENDER_REPAIR_IDS = new Set([
+  'tech_data_lakehouse_gcp',
   'tech_ai_trism_guardrails',
+  'tech_multimodal_ingestion',
   'tech_llm_capacity_quota',
   'tech_supply_chain',
   'smart_factory_iot',
@@ -64,13 +66,16 @@ function assertFooterZone(xml: string, id: string, label: string, failures: stri
     failures.push(`${label}: non-numeric footer geometry`);
     return;
   }
-  // Header normalization can shift y upward; these invariants are what actually prevent
-  // the production defect: footer stays low, wide and shallow rather than becoming a
-  // giant opaque rectangle at the upper-left.
   if (g.x < 0 || g.x > 80) failures.push(`${label}: footer x out of range (${g.x})`);
   if (g.y < 500) failures.push(`${label}: footer is too high on canvas (${g.y})`);
   if (g.width < 1500) failures.push(`${label}: footer is too narrow (${g.width})`);
   if (g.height < 160 || g.height > 340) failures.push(`${label}: footer height out of range (${g.height})`);
+}
+
+function countGenericGeneratedCardIcons(xml: string): number {
+  return Array.from(
+    xml.matchAll(/<mxCell\b[^>]*\bid="[^"]+_i"[^>]*\bstyle="[^"]*shape=image;[^"]*image=data:image\/svg\+xml/gi),
+  ).length;
 }
 
 const failures: string[] = [];
@@ -131,6 +136,11 @@ BLUEPRINT_KNOWLEDGE_MATRIX.forEach((item, index) => {
     const tiny = fontSizes(xml).filter(size => size < 9.5);
     if (tiny.length) failures.push(`#${number} ${canonicalId}: ${tiny.length} font declarations below 9.5px`);
 
+    const genericCardIcons = countGenericGeneratedCardIcons(xml);
+    if (genericCardIcons) {
+      failures.push(`#${number} ${canonicalId}: ${genericCardIcons} generated card(s) still use the generic GCP mark`);
+    }
+
     const vertices = Array.from(xml.matchAll(/<mxCell\b[^>]*\bvertex="1"/gi)).length;
     const edges = Array.from(xml.matchAll(/<mxCell\b[^>]*\bedge="1"/gi)).length;
     if (vertices < 6) advisories.push(`#${number} ${canonicalId}: visually sparse (${vertices} vertices); inspect intentionally`);
@@ -149,10 +159,14 @@ for (const [fp, nums] of hashes) if (nums.length > 1) failures.push(`duplicate X
 
 const bp6 = outputs.get(6) || '';
 assertContains(bp6, ['Connectors', 'Gemini Notebook', 'Skills', 'Agent Gallery', 'Agent Platform'], '#6 capability portfolio', failures);
+const bp9 = outputs.get(9) || '';
+assertFooterZone(bp9, 'consume', '#9 lakehouse analytics/AI/data-products plane', failures);
 const bp20 = outputs.get(20) || '';
 assertContains(bp20, ['Network Connectivity Center', 'Cloud Interconnect', 'HA VPN', 'Cross-Cloud Interconnect', 'Workforce Identity Federation', 'Workload Identity Federation'], '#20 hybrid multi-cloud', failures);
 const bp22 = outputs.get(22) || '';
 assertFooterZone(bp22, 'ops', '#22 TRiSM operations plane', failures);
+const bp27 = outputs.get(27) || '';
+assertFooterZone(bp27, 'controls', '#27 multimodal controls plane', failures);
 const bp33 = outputs.get(33) || '';
 assertFooterZone(bp33, 'patterns', '#33 capacity resilience plane', failures);
 const bp34 = outputs.get(34) || '';
