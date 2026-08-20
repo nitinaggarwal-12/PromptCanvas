@@ -2,7 +2,7 @@ import {
   getExactErdReferenceXml,
 } from './diagramCompiler';
 import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24Safe';
-import { getApprovedSecureDeploymentBlueprintXml } from './approvedBlueprint16';
+import { getApprovedSecureDeploymentBlueprintXml } from './approvedBlueprint16Safe';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildMultiAgentSequenceXml } from './masterBuilders/build_master_multi_agent_sequence';
 import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
