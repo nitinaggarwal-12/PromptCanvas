@@ -1,243 +1,76 @@
-export function buildSupplyChainXml(): string {
-  return buildManufacturingOptimizationXml();
-}
+/**
+ * Blueprint 39 — Equipment Predictive Maintenance & Reliability Intelligence.
+ * Phase 3.2 rebuild: equipment-centric condition monitoring and maintenance workflow.
+ * Safety rule: AI recommends and prioritizes; deterministic PLC/SIS controls remain authoritative.
+ */
 
-export function buildManufacturingOptimizationXml(): string {
-  return `<mxfile host="embed.diagrams.net">
-  <diagram id="ge_equipment_optimization_gemini" name="GE Equipment Optimization &amp; Gemini AI Agents (Manufacturing)">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
+const GCP='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E';
+const ICON={bq:'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/google-bigquery/default.svg',gcs:'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/google-cloud-storage/default.svg',sap:'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/sap/default.svg',servicenow:'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/servicenow/default.svg'};
+const esc=(s:string)=>s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const v=(id:string,value:string,style:string,x:number,y:number,w:number,h:number)=>`<mxCell id="${id}" value="${esc(value)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
+const img=(id:string,url:string,x:number,y:number,w:number,h:number)=>v(id,'',`shape=image;imageAspect=0;aspect=fixed;image=${url};align=center;verticalAlign=middle;`,x,y,w,h);
+const zone=(id:string,n:number,title:string,sub:string,x:number,w:number,accent:string,fill:string)=>[
+ v(id,'',`rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;`,x,25,w,620),
+ v(`${id}_n`,String(n),`ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`,x+14,40,30,30),
+ v(`${id}_h`,`<b>${title}</b><br><span style="font-size:9.5px;color:#64748B">${sub}</span>`,'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=3;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=12.5;',x+54,35,w-68,45)
+].join('\n');
+const card=(id:string,title:string,body:string,x:number,y:number,w:number,h:number,accent:string,icon=GCP,fill='#FFFFFF')=>[
+ v(id,'',`rounded=1;arcSize=8;whiteSpace=wrap;html=1;overflow=hidden;fillColor=${fill};strokeColor=${accent};strokeWidth=1.1;`,x,y,w,h),
+ v(`${id}_bar`,'',`rounded=1;arcSize=4;fillColor=${accent};strokeColor=${accent};`,x,y,5,h),
+ img(`${id}_i`,icon,x+14,y+Math.max(10,(h-36)/2),36,36),
+ v(`${id}_t`,`<b>${title}</b><br><span style="font-size:9.2px;color:#64748B">${body}</span>`,'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=4;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=10.9;',x+60,y+6,w-70,h-12)
+].join('\n');
+const mini=(id:string,title:string,body:string,x:number,y:number,w:number,h:number,accent:string,fill='#FFFFFF')=>v(id,`<b>${title}</b><br><span style="font-size:9px;color:#64748B">${body}</span>`,`rounded=1;arcSize=7;whiteSpace=wrap;html=1;overflow=hidden;spacing=6;fillColor=${fill};strokeColor=${accent};strokeWidth=1.05;fontColor=#0F172A;fontSize=10.6;align=left;verticalAlign=middle;`,x,y,w,h);
+const edge=(id:string,s:string,t:string,label:string,color:string,dashed=false,exitX=1,exitY=.5,entryX=0,entryY=.5)=>`<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${color};strokeWidth=1.8;${dashed?'dashed=1;dashPattern=6 4;':''}endArrow=block;endFill=1;fontSize=9.2;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};" edge="1" parent="1" source="${s}" target="${t}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
 
-        <!-- ==================== TOP TITLE BANNER & HEADER ==================== -->
-        <mxCell id="main_title_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="16" width="860" height="54" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;Enterprise Industrial AI &amp;amp; Predictive Maintenance Architecture (P4-MFG-L-01)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#475569;font-weight:600;&quot;&gt;Manufacturing Data Engine (MDE) • Gemini Multimodal Anomaly Detection • Closed-Loop PLC Control&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="45" y="18" width="830" height="50" as="geometry"/>
-        </mxCell>
+export function buildSupplyChainXml():string{return buildManufacturingOptimizationXml();}
+export function buildManufacturingOptimizationXml():string{
+ const c:string[]=['<mxCell id="0"/>','<mxCell id="1" parent="0"/>'];
+ c.push(zone('assets',1,'EQUIPMENT & CONDITION SIGNALS','Asset-centric telemetry and inspection evidence',25,285,'#1A73E8','#EFF6FF'));
+ c.push(mini('equipment','Critical equipment','Rotating assets • pumps • compressors • motors • CNC/robotics • production equipment',45,95,245,82,'#1A73E8'));
+ c.push(mini('telemetry','Condition telemetry','Vibration • temperature • pressure • current • acoustic • runtime counters',45,197,245,82,'#1A73E8'));
+ c.push(mini('vision','Inspection evidence','Images/video • thermal inspection • technician observations • maintenance history',45,299,245,82,'#1A73E8'));
+ c.push(mini('ot','OT systems','PLC / SCADA / historian / MES remain systems of operational control and source context',45,401,245,82,'#1A73E8'));
+ c.push(mini('safety_boundary','Safety boundary','SIS/PLC interlocks and deterministic control loops remain authoritative; GenAI does not directly override setpoints.',45,503,245,112,'#D93025','#FFF7F7'));
 
+ c.push(zone('connect',2,'FACTORY-TO-CLOUD DATA','Industrial connectivity and contextualization',335,300,'#0F8B82','#ECFDF5'));
+ c.push(card('mc','Manufacturing Connect','Factory-edge connectivity across industrial protocols and automation sources',355,95,260,86,'#0F8B82'));
+ c.push(card('mde','Manufacturing Data Engine','Ingest, contextualize and store factory data using the configured common model',355,201,260,86,'#0F8B82'));
+ c.push(mini('stream','Pub/Sub + Dataflow','Event distribution and streaming transformation when the selected MDE/downstream design requires it',355,307,260,82,'#0F8B82'));
+ c.push(mini('quality','Data quality & asset context','Asset identity • timestamps • units • operating mode • sensor quality • maintenance context',355,409,260,88,'#0F8B82'));
+ c.push(mini('edge_ai','Optional edge AI','Google Distributed Cloud connected for latency-sensitive local inference/processing where justified',355,517,260,78,'#0F8B82'));
 
-        <!-- ==================== LEFT SIDEBAR: SECURITY & GOVERNANCE ==================== -->
-        <!-- x = 30 .. 160 (width = 130) -->
-        <mxCell id="sidebar_sec_bg" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="85" width="130" height="740" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_sidebar_sec_title" value="&lt;b style=&quot;font-size:8.5px;color:#1E3A8A;&quot;&gt;🔒 SECURITY &amp;amp;&lt;br&gt;COMPLIANCE&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;color:#FFFFFF;" vertex="1" parent="1">
-          <mxGeometry x="30" y="85" width="130" height="30" as="geometry"/>
-        </mxCell>
+ c.push(zone('data',3,'RELIABILITY DATA FOUNDATION','Time-series, history and governed analytical context',660,285,'#6554C0','#F5F3FF'));
+ c.push(card('bq','BigQuery','Fleet history • maintenance outcomes • reliability features • analytical marts',680,95,245,86,'#6554C0',ICON.bq));
+ c.push(card('gcs','Cloud Storage','Inspection media • raw files • model artifacts/evidence as appropriate',680,201,245,82,'#6554C0',ICON.gcs));
+ c.push(mini('timeseries','Bigtable / time-series serving','Optional low-latency high-volume condition signal serving when the workload needs it',680,303,245,82,'#6554C0'));
+ c.push(mini('history','CMMS / ERP history','Work orders • failure codes • parts • technician notes • asset hierarchy',680,405,245,82,'#6554C0'));
+ c.push(mini('governed','Governed features & provenance','Training/serving feature definition • source lineage • versioned labels • access controls',680,507,245,88,'#6554C0'));
 
-        <!-- Sidebar Security Cards -->
-        <mxCell id="side_card_iam" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;👤&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud IAM&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;OT/IT RBAC&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="38" y="125" width="114" height="65" as="geometry"/>
-        </mxCell>
+ c.push(zone('ai',4,'PREDICTIVE & DIAGNOSTIC AI','Detect, predict and explain with evidence',970,330,'#B83280','#FDF2F8'));
+ c.push(card('vertex','Vertex AI','Train/evaluate/deploy anomaly, classification or remaining-useful-life models as appropriate',990,95,290,86,'#B83280'));
+ c.push(mini('detect','Condition & anomaly scoring','Combine engineered telemetry features and optional visual signals; output confidence and evidence',990,201,290,84,'#B83280'));
+ c.push(mini('predict','Failure-risk / RUL estimate','Use only where labeled history and validation support predictive targets; preserve uncertainty',990,305,290,84,'#B83280'));
+ c.push(mini('gemini','Gemini maintenance assistant','Ground technician summaries and recommended next steps in asset evidence, manuals and approved maintenance history',990,409,290,96,'#B83280'));
+ c.push(mini('eval','Evaluation & drift','Backtest • false-positive/negative review • model monitoring • task-quality checks • threshold calibration',990,525,290,70,'#B83280'));
 
-        <mxCell id="side_card_vpc_sc" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;💠&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;VPC Service&lt;br&gt;Controls&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;Zero-Trust DMZ&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="38" y="200" width="114" height="70" as="geometry"/>
-        </mxCell>
+ c.push(zone('action',5,'MAINTENANCE DECISION & EXECUTION','Human-authorized action with measurable feedback',1325,410,'#E87900','#FFF7ED'));
+ c.push(mini('priority','Prioritize maintenance','Risk × criticality × confidence × operating window → inspect / plan / monitor',1345,95,370,78,'#E87900'));
+ c.push(mini('human','Reliability / technician review','Validate evidence, safety implications and action recommendation before consequential work',1345,193,370,86,'#D93025','#FFF7F7'));
+ c.push(v('systems_bg','', 'rounded=1;arcSize=7;fillColor=#FFFFFF;strokeColor=#E87900;strokeWidth=1.1;',1345,299,370,104));
+ c.push(img('sap',ICON.sap,1365,323,50,36)); c.push(img('sn',ICON.servicenow,1430,322,42,38));
+ c.push(v('systems_t','<b>CMMS / EAM / ITSM execution</b><br><span style="font-size:9.2px;color:#64748B">SAP PM/EAM • ServiceNow or approved enterprise work-management system • parts/planning APIs</span>','text;html=1;whiteSpace=wrap;overflow=hidden;spacing=4;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=10.8;',1490,312,210,76));
+ c.push(mini('workorder','Work order / inspection task','Create or enrich an authorized maintenance task; never treat an LLM recommendation as a safety command',1345,423,370,82,'#E87900'));
+ c.push(mini('feedback','Outcome feedback','Failure confirmed? action taken? downtime avoided? parts replaced? feed validated outcomes back to analytics/evaluation',1345,525,370,70,'#0F8B82','#ECFDF5'));
 
-        <mxCell id="side_card_mfg_std" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;📋 🔒&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Standards&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;IEC 62443&lt;br&gt;ISO 9001 / ISA-95&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="38" y="280" width="114" height="80" as="geometry"/>
-        </mxCell>
+ c.push(edge('f1','telemetry','mc','industrial data','#2563EB')); c.push(edge('f2','mc','mde','contextualize','#0F8B82')); c.push(edge('f3','mde','bq','curated history','#6554C0')); c.push(edge('f4','bq','vertex','train / score','#B83280')); c.push(edge('f5','vertex','priority','risk signal','#B83280')); c.push(edge('f6','priority','human','recommendation','#E87900')); c.push(edge('f7','human','workorder','approved action','#E87900')); c.push(edge('f8','feedback','bq','validated outcome','#0F8B82',true,0,.5,1,.75));
 
-        <mxCell id="side_card_kms_hsm" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;🔑&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Cloud KMS&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;Telemetry HSM Keys&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="38" y="370" width="114" height="65" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="side_card_audit_logs" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;color:#2563EB;&quot;&gt;📜 📡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;font-weight:bold;color:#0F172A;&quot;&gt;Audit Logs&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;font-weight:normal;&quot;&gt;Chronicle SIEM&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">
-          <mxGeometry x="38" y="445" width="114" height="65" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== COLUMN 1: SHOP FLOOR & IOT ASSETS ==================== -->
-        <!-- x = 180 .. 460 (width = 280) -->
-        <mxCell id="col1_bg" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="180" y="85" width="280" height="740" as="geometry"/>
-        </mxCell>
-        <mxCell id="col1_hdr" value="&lt;b style=&quot;font-size:10px;color:#1E3A8A;&quot;&gt;🏭 SHOP FLOOR &amp;amp; INDUSTRIAL ASSETS&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;align=center;verticalAlign=middle;color:#FFFFFF;" vertex="1" parent="1">
-          <mxGeometry x="180" y="85" width="280" height="30" as="geometry"/>
-        </mxCell>
-
-        <!-- Turbines -->
-        <mxCell id="card_ge_turbines" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;💨 GE Gas &amp;amp; Wind Turbines&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;10kHz High-Frequency Vibration &amp;amp; Thermal Telemetry&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="195" y="125" width="250" height="75" as="geometry"/>
-        </mxCell>
-
-        <!-- Visual Inspection Cameras -->
-        <mxCell id="card_cameras_badge" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;📷 4K High-Speed Optical Inspection&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Infrared thermography &amp;amp; laser surface profile scans&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="195" y="210" width="250" height="75" as="geometry"/>
-        </mxCell>
-
-        <!-- CNC & Robotics -->
-        <mxCell id="card_factory_machinery" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🦾 6-Axis CNC &amp;amp; Assembly Robotics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;PLC / SCADA automated lines with Modbus/OPC-UA&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="195" y="295" width="250" height="75" as="geometry"/>
-        </mxCell>
-
-        <!-- Edge TPU -->
-        <mxCell id="card_edge_tpu_rejector" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;⚡ Coral Edge TPU Micro-Controller&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;&amp;lt; 1ms line-speed real-time defect ejection actuator&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="195" y="380" width="250" height="75" as="geometry"/>
-        </mxCell>
-
-        <!-- Closed Loop PLC Actuator Receiver -->
-        <mxCell id="card_plc_actuator_target" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#166534;&quot;&gt;🔄 PLC / SCADA Automated Tuning Receiver&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Receives RPM &amp;amp; feed-rate setpoints from Gemini loop&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="195" y="465" width="250" height="75" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== COLUMN 2: DATA INGESTION & MANUFACTURING DATA ENGINE ==================== -->
-        <!-- x = 480 .. 740 (width = 260) -->
-        <mxCell id="col2_bg" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="480" y="85" width="260" height="740" as="geometry"/>
-        </mxCell>
-        <mxCell id="col2_hdr" value="&lt;b style=&quot;font-size:10px;color:#166534;&quot;&gt;⚙️ MANUFACTURING DATA ENGINE (MDE)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#16A34A;strokeColor=#15803D;strokeWidth=1;align=center;verticalAlign=middle;color:#FFFFFF;" vertex="1" parent="1">
-          <mxGeometry x="480" y="85" width="260" height="30" as="geometry"/>
-        </mxCell>
-
-        <!-- Pub/Sub & Dataflow -->
-        <mxCell id="card_pubsub_mfg" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;💠 Cloud Pub/Sub Telemetry Ingress&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Millions messages/sec buffered IoT ingress&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="495" y="125" width="230" height="65" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="card_dataflow_mfg" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;⚡ Dataflow Streaming Normalization&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Sliding-window noise filtration &amp;amp; calibration&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="495" y="200" width="230" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- MDE Core Box -->
-        <mxCell id="card_mde_engine" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#166534;&quot;&gt;🏭 Manufacturing Data Engine (MDE)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• ISA-95 Asset Hierarchy Mapping&lt;br&gt;• Real-Time Overall Equipment Effectiveness (OEE)&lt;br&gt;• Sensor Calibration &amp;amp; Normalization Graph&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1.5;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="495" y="275" width="230" height="115" as="geometry"/>
-        </mxCell>
-
-        <!-- BigQuery Lakehouse -->
-        <mxCell id="card_bq_mfg" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🔍 BigQuery Industrial Lakehouse&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Decade sensor history &amp;amp; digital twin telemetry&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="495" y="400" width="230" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- Feature Store -->
-        <mxCell id="card_vertex_feat_store" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;⚡ Vertex AI Feature Store&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Pre-computed vibration spectrum embeddings&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="495" y="475" width="230" height="65" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== COLUMN 3: VERTEX AI & GEMINI PLATFORM ==================== -->
-        <!-- x = 760 .. 1120 (width = 360) -->
-        <mxCell id="col3_bg" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#FDE68A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="760" y="85" width="360" height="740" as="geometry"/>
-        </mxCell>
-        <mxCell id="col3_hdr" value="&lt;b style=&quot;font-size:10px;color:#92400E;&quot;&gt;🧠 VERTEX AI &amp;amp; GEMINI REASONING CORE&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#D97706;strokeColor=#B45309;strokeWidth=1;align=center;verticalAlign=middle;color:#FFFFFF;" vertex="1" parent="1">
-          <mxGeometry x="760" y="85" width="360" height="30" as="geometry"/>
-        </mxCell>
-
-        <!-- Gemini Multimodal Anomaly Detection -->
-        <mxCell id="box_anomaly_gemini" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#1E40AF;border-bottom:1px solid #BFDBFE;padding-bottom:2px;&quot;&gt;✨ Gemini Multimodal Anomaly Detection&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:4px;&quot;&gt;• Cross-fuzes 4K vision frames with 10kHz vibration signals&lt;br&gt;• Identifies micro-fractures, bearing friction &amp;amp; thermal hotspots&lt;br&gt;• Automated FMEA root-cause hypothesis generation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="775" y="125" width="330" height="115" as="geometry"/>
-        </mxCell>
-
-        <!-- Predictive Maintenance Reasoning Agent -->
-        <mxCell id="box_pred_maint_gemini" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;&quot;&gt;⚙️ Predictive Maintenance Reasoning Agent&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Remaining Useful Life (RUL) estimation curve&lt;br&gt;• Auto-calculates mean time to failure (MTBF/MTTF)&lt;br&gt;• Generates step-by-step repair runbooks for field technicians&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="775" y="250" width="330" height="105" as="geometry"/>
-        </mxCell>
-
-        <!-- Digital Twin PINN Sandbox -->
-        <mxCell id="card_digital_twin_sim" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#1E40AF;&quot;&gt;🌐 Physics-Informed Digital Twin (PINN)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Simulates stress aerodynamics &amp;amp; thermodynamics under load&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="775" y="365" width="330" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- Model Monitoring & Drift -->
-        <mxCell id="card_vertex_drift_guard" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#166534;&quot;&gt;🔄 Continuous Model Monitoring &amp;amp; Retraining Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Self-healing automated pipeline updates on sensor drift&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="775" y="440" width="330" height="65" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== COLUMN 4: APPLICATION LAYER & BUSINESS ACTIONS ==================== -->
-        <!-- x = 1140 .. 1545 (width = 405) -->
-        <mxCell id="col4_bg" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FECDD3;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="85" width="405" height="740" as="geometry"/>
-        </mxCell>
-        <mxCell id="col4_hdr" value="&lt;b style=&quot;font-size:10px;color:#9F1239;&quot;&gt;⚡ INDUSTRIAL ACTIONS &amp;amp; CLOSED-LOOP CONTROL&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#BE123C;strokeColor=#9F1239;strokeWidth=1;align=center;verticalAlign=middle;color:#FFFFFF;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="85" width="405" height="30" as="geometry"/>
-        </mxCell>
-
-        <!-- Looker BI Cockpit -->
-        <mxCell id="card_looker_mfg" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#166534;&quot;&gt;📊 Looker Industrial OEE Cockpit&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Real-time availability, performance, yield &amp;amp; risk heatmaps&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="125" width="375" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- 4 Action Buttons -->
-        <mxCell id="btn_sched_maint" value="&lt;table style=&quot;width:100%;padding:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;🛠️ Schedule Maintenance (SAP PM / Maximo)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="200" width="375" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="btn_opt_speed" value="&lt;table style=&quot;width:100%;padding:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;⏱️ Push Optimal RPM / Feed Setpoint to PLC&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="250" width="375" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="btn_order_parts" value="&lt;table style=&quot;width:100%;padding:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt;💳 Automated ERP Parts Procurement&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="300" width="375" height="42" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="btn_retrain_model" value="&lt;table style=&quot;width:100%;padding:2px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#166534;&quot;&gt;🔄 Trigger Closed-Loop Fine-Tuning Retraining&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;align=left;verticalAlign=middle;padding=3;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="350" width="375" height="42" as="geometry"/>
-        </mxCell>
-
-        <!-- Emergency Stop Interlock -->
-        <mxCell id="card_emergency_stop_siren" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#991B1B;&quot;&gt;🚨 Autonomous E-Stop &amp;amp; Safety Interlock&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Halts machinery within 15ms upon critical thermal runaway&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#F87171;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="405" width="375" height="65" as="geometry"/>
-        </mxCell>
-
-        <!-- AR Field Tech Dispatch -->
-        <mxCell id="card_field_tech_fcm" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;📱 FCM Real-Time AR Field Technician Dispatch&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#475569;&quot;&gt;Interactive 3D repair guidance pushed directly to rugged tablets&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;" vertex="1" parent="1">
-          <mxGeometry x="1155" y="480" width="375" height="65" as="geometry"/>
-        </mxCell>
-
-
-        <!-- ==================== FLOW CONNECTORS ==================== -->
-        <mxCell id="e_c1_c2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col1_bg" target="col2_bg"/>
-        <mxCell id="e_c2_c3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col2_bg" target="col3_bg"/>
-        <mxCell id="e_c3_c4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="col3_bg" target="col4_bg"/>
-
-        <!-- Shop Floor to Edge Ingest -->
-        <mxCell id="e_turb_ps" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_ge_turbines" target="card_pubsub_mfg"/>
-        <mxCell id="e_cam_ps" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_cameras_badge" target="card_pubsub_mfg"/>
-        <mxCell id="e_fact_ps" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_factory_machinery" target="card_pubsub_mfg"/>
-
-        <!-- Ingestion to MDE Engine -->
-        <mxCell id="e_ps_df" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_pubsub_mfg" target="card_dataflow_mfg"/>
-        <mxCell id="e_df_mde" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_dataflow_mfg" target="card_mde_engine"/>
-
-        <!-- MDE to Lakehouse and Feature Store -->
-        <mxCell id="e_mde_bq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_mde_engine" target="card_bq_mfg"/>
-        <mxCell id="e_mde_feat" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="card_mde_engine" target="card_vertex_feat_store"/>
-
-        <!-- Lakehouse/Features into Gemini Multimodal Anomaly & Reasoner -->
-        <mxCell id="e_bq_gemini" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_bq_mfg" target="box_anomaly_gemini"/>
-        <mxCell id="e_feat_gemini" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="card_vertex_feat_store" target="box_anomaly_gemini"/>
-        <mxCell id="e_anomaly_pm" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_anomaly_gemini" target="box_pred_maint_gemini"/>
-        <mxCell id="e_pm_twin" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="card_digital_twin_sim"/>
-
-        <!-- Model Monitoring Feedback Loop -->
-        <mxCell id="e_drift_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;dashed=1;" edge="1" parent="1" source="card_vertex_drift_guard" target="card_dataflow_mfg"/>
-
-        <!-- Gemini Reasoning into Looker and Closed-Loop Actions -->
-        <mxCell id="e_pm_looker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="card_looker_mfg"/>
-        <mxCell id="e_pm_btn1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="btn_sched_maint"/>
-        <mxCell id="e_pm_btn2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="btn_opt_speed"/>
-        <mxCell id="e_pm_btn3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="box_pred_maint_gemini" target="btn_order_parts"/>
-        <mxCell id="e_pm_estop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;" edge="1" parent="1" source="box_anomaly_gemini" target="card_emergency_stop_siren"/>
-        <mxCell id="e_pm_tech" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;" edge="1" parent="1" source="btn_sched_maint" target="card_field_tech_fcm"/>
-
-        <!-- Actuator Feedback Loop -->
-        <mxCell id="e_act_loop" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.2;endArrow=classic;dashed=1;" edge="1" parent="1" source="btn_opt_speed" target="card_plc_actuator_target"/>
-        <mxCell id="e_estop_reject" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.2;endArrow=classic;dashed=1;" edge="1" parent="1" source="card_emergency_stop_siren" target="card_edge_tpu_rejector"/>
-
-
-        <!-- ==================== FOOTER LEGEND ==================== -->
-        <mxCell id="legend_box" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Industrial AI Mesh:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🏭 &lt;b&gt;Shop Floor IoT Ingest&lt;/b&gt;&lt;/td&gt;&lt;td&gt;⚙️ &lt;b&gt;Manufacturing Data Engine&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🧠 &lt;b&gt;Gemini Multimodal Reasoner&lt;/b&gt;&lt;/td&gt;&lt;td&gt;⚡ &lt;b&gt;Closed-Loop PLC Control&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Enterprise Manufacturing Standard&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="850" width="1530" height="38" as="geometry"/>
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+ c.push(zone('ops',6,'CROSS-CUTTING RELIABILITY, SECURITY & OPERATIONS','Controls apply according to data class, risk and plant architecture',25,675,1700,235,'#334155','#F8FAFC'));
+ c.push(mini('sec','Security & identity','IAM • workload identity • encryption/KMS • network segmentation • VPC Service Controls only for supported cloud services',50,742,300,96,'#334155'));
+ c.push(mini('obs','Observability','Cloud Monitoring/Logging • pipeline health • model endpoint health • data freshness • alert routing',370,742,300,96,'#334155'));
+ c.push(mini('modelgov','Model governance','Versioned data/model/evaluation • approval evidence • rollback • retraining triggers • owner',690,742,300,96,'#334155'));
+ c.push(mini('otsec','OT/IT boundary','Industrial DMZ / approved routes • no implicit cloud-to-PLC write path • plant safety and cyber policy dominate',1010,742,300,96,'#D93025','#FFF7F7'));
+ c.push(mini('value','Reliability outcomes','Leading indicators: precision/recall at useful horizon, alert burden, planned-vs-unplanned work, downtime and maintenance effectiveness',1330,742,370,96,'#334155'));
+ c.push(v('legend','<b>FLOW</b>  <span style="color:#2563EB">━━ factory signals</span>  <span style="color:#0F8B82">━━ contextualized/feedback data</span>  <span style="color:#6554C0">━━ analytical history</span>  <span style="color:#B83280">━━ AI evidence</span>  <span style="color:#E87900">━━ authorized maintenance action</span>','rounded=1;arcSize=6;whiteSpace=wrap;html=1;overflow=hidden;spacing=5;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontColor=#334155;fontSize=10;align=center;verticalAlign=middle;',50,858,1650,34));
+ return `<mxfile host="app.diagrams.net" modified="2026-08-20T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device"><diagram id="equipment_predictive_maintenance" name="Equipment Predictive Maintenance and Reliability Intelligence"><mxGraphModel dx="1760" dy="940" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1760" pageHeight="940" background="#FFFFFF"><root>${c.join('\n')}</root></mxGraphModel></diagram></mxfile>`;
 }
