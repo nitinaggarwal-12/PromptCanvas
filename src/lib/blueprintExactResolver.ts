@@ -7,6 +7,7 @@ import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24Safe';
 import { getApprovedSixRsMigrationMatrixXml } from './approvedBlueprint29Safe';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildDataResidencyPhase1Xml } from './masterBuilders/build_master_data_residency_phase1';
+import { buildServerlessEdaPhase1Xml } from './masterBuilders/build_master_serverless_eda_phase1';
 import { buildDataOpsPhase1Xml } from './masterBuilders/build_master_dataops_phase1';
 import { buildFinancialAdvisingPhase1Xml } from './masterBuilders/build_master_financial_advising_phase1';
 import { buildPredictiveMaintenancePhase1Xml } from './masterBuilders/build_master_predictive_maintenance_phase1';
@@ -34,7 +35,6 @@ import {
   getExactStreamingAnalyticsXml,
   getExactLlmopsLifecycleXml,
   getExactLlmCapacityQuotaXml,
-  getExactServerlessGcpReferenceXml,
   getExactLegacyDataDependencyMapXml,
   getExactGcpLandingZoneVpcXml,
   getExactEnterpriseAgentRuntimeXml,
@@ -67,9 +67,7 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   federated_iam_sso: getExactFederatedIamSsoXml,
   tech_micro_frontends: getExactMicroFrontendsXml,
   logical_ai_config_tenant: getExactLogicalAiConfigTenantXml,
-  // Blueprint 15: user-approved exact native multi-agent sequence master.
   sequence_diagram: getApprovedMultiAgentSequenceBlueprintXml,
-  // Blueprint 16: user-approved secure deployment topology master.
   secure_deployment_map: getApprovedSecureDeploymentTopologyXml,
   gcp_landing_zone_vpc: getExactGcpLandingZoneVpcXml,
   data_residency_sovereign_map: buildDataResidencyPhase1Xml,
@@ -78,13 +76,11 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   tech_eval_safety: getExactEvalSafetyXml,
   tech_ai_trism_guardrails: getExactAiTrismGuardrailsXml,
   ai_agent_approval_workflow: getExactAiAgentApprovalWorkflowXml,
-  // Blueprint 24: approved master supersedes the former diagramCompiler implementation.
   devops_cicd_pipeline: getApprovedDevopsCicdBlueprintXml,
   tech_event_driven_eda: () => getTechnicalArchitectureXml('tech_event_driven_eda'),
-  tech_serverless_gcp: getExactServerlessGcpReferenceXml,
+  tech_serverless_gcp: buildServerlessEdaPhase1Xml,
   tech_multimodal_ingestion: getExactMultimodalIngestionXml,
   tech_streaming_analytics: getExactStreamingAnalyticsXml,
-  // Blueprint 29: approved high-fidelity 6Rs migration disposition master.
   six_rs_migration_matrix: getApprovedSixRsMigrationMatrixXml,
   enterprise_sre_observability: getExactEnterpriseSreObservabilityXml,
   golive_warroom_runbook: getExactGoLiveWarRoomRunbookXml,
