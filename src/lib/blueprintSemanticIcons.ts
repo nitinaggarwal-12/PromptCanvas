@@ -10,8 +10,26 @@ const NOTATION_SENSITIVE_IDS = new Set([
   'data_lineage_provenance',
 ]);
 
+// Google Cloud product icons below come from the official, unmodified Google Cloud
+// icon library packaged by gcp-icons. Only verified product keys are used. If an exact
+// product icon is not available, the card remains text-first rather than receiving a
+// misleading generic Google mark.
+const GCP_ICON_BASE = 'https://cdn.jsdelivr.net/npm/gcp-icons@1.0.6/dist/icons/';
 const ICONS = {
   googleCloud: GOOGLE_CLOUD_MARK,
+  agents: `${GCP_ICON_BASE}agents-512-color.svg`,
+  alloydb: `${GCP_ICON_BASE}alloydb-512-color.svg`,
+  apigee: `${GCP_ICON_BASE}apigee-512-color-rgb.svg`,
+  bigquery: `${GCP_ICON_BASE}bigquery-512-color.svg`,
+  cloudStorage: `${GCP_ICON_BASE}cloud-storage-512-color.svg`,
+  cloudRun: `${GCP_ICON_BASE}cloudrun-512-color-rgb.svg`,
+  spanner: `${GCP_ICON_BASE}cloudspanner-512-color.svg`,
+  cloudSql: `${GCP_ICON_BASE}cloudsql-512-color.svg`,
+  distributedCloud: `${GCP_ICON_BASE}distributedcloud-512-color.svg`,
+  gke: `${GCP_ICON_BASE}gke-512-color.svg`,
+  looker: `${GCP_ICON_BASE}looker-512-color.svg`,
+  securityCommandCenter: `${GCP_ICON_BASE}securitycommandcenter-512-color.svg`,
+  vertexAi: `${GCP_ICON_BASE}vertexai-512-color.svg`,
   microsoft: 'https://cdn.simpleicons.org/microsoft',
   salesforce: 'https://cdn.simpleicons.org/salesforce',
   sap: 'https://cdn.simpleicons.org/sap',
@@ -39,7 +57,7 @@ const ICONS = {
 type IconRule = {
   pattern: RegExp;
   icon: string;
-  family: 'vendor' | 'platform';
+  family: 'vendor' | 'gcp-product';
 };
 
 const ICON_RULES: IconRule[] = [
@@ -66,10 +84,20 @@ const ICON_RULES: IconRule[] = [
   { pattern: /\bReact\b/i, icon: ICONS.react, family: 'vendor' },
   { pattern: /\bNext\.?(?:js)?\b/i, icon: ICONS.nextjs, family: 'vendor' },
 
-  // Google Cloud family. The self-contained official brand mark is intentionally used
-  // as the safe fallback instead of inventing product glyphs when no bundled product
-  // artwork exists in the viewer.
-  { pattern: /\bGoogle Cloud\b|\bGemini\b|\bVertex AI\b|\bAgent Runtime\b|\bAgent Gateway\b|\bAgent Registry\b|\bAgent Identity\b|\bModel Armor\b|\bBigQuery\b|\bCloud Storage\b|\bCloud Run\b|\bCloud SQL\b|\bAlloyDB\b|\bSpanner\b|\bBigtable\b|\bPub\/Sub\b|\bDataflow\b|\bApigee\b|\bCloud Build\b|\bArtifact Registry\b|\bCloud Deploy\b|\bCloud Armor\b|\bCloud Load Balancing\b|\bCloud Router\b|\bCloud Interconnect\b|\bNetwork Connectivity Center\b|\bPrivate Service Connect\b|\bCloud DNS\b|\bCloud NGFW\b|\bSecurity Command Center\b|\bCloud Monitoring\b|\bCloud Logging\b|\bSecret Manager\b|\bCloud KMS\b|\bWorkflows\b|\bEventarc\b|\bManufacturing Data Engine\b|\bManufacturing Connect\b|\bGoogle Distributed Cloud\b|\bKnowledge Catalog\b|\bSensitive Data Protection\b|\bVPC Service Controls\b/i, icon: ICONS.googleCloud, family: 'platform' },
+  // Exact Google Cloud product identities only. No generic "Google" fallback.
+  { pattern: /\bGemini Enterprise Agent Platform\b|\bAgent Runtime\b|\bAgent Gateway\b|\bAgent Registry\b|\bAgent Identity\b/i, icon: ICONS.agents, family: 'gcp-product' },
+  { pattern: /\bVertex AI\b/i, icon: ICONS.vertexAi, family: 'gcp-product' },
+  { pattern: /\bBigQuery\b/i, icon: ICONS.bigquery, family: 'gcp-product' },
+  { pattern: /\bCloud Storage\b/i, icon: ICONS.cloudStorage, family: 'gcp-product' },
+  { pattern: /\bCloud Run\b/i, icon: ICONS.cloudRun, family: 'gcp-product' },
+  { pattern: /\bAlloyDB\b/i, icon: ICONS.alloydb, family: 'gcp-product' },
+  { pattern: /\bCloud SQL\b/i, icon: ICONS.cloudSql, family: 'gcp-product' },
+  { pattern: /\bSpanner\b/i, icon: ICONS.spanner, family: 'gcp-product' },
+  { pattern: /\bApigee\b/i, icon: ICONS.apigee, family: 'gcp-product' },
+  { pattern: /\bGoogle Kubernetes Engine\b|\bGKE\b/i, icon: ICONS.gke, family: 'gcp-product' },
+  { pattern: /\bGoogle Distributed Cloud\b/i, icon: ICONS.distributedCloud, family: 'gcp-product' },
+  { pattern: /\bLooker\b/i, icon: ICONS.looker, family: 'gcp-product' },
+  { pattern: /\bSecurity Command Center\b/i, icon: ICONS.securityCommandCenter, family: 'gcp-product' },
 ];
 
 const EMOJI_RE = /(?:\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]|\uD83D[\uDE80-\uDEFF]|\uD83E[\uDD00-\uDDFF]|[\u2600-\u27BF])\uFE0F?/g;
@@ -120,22 +148,90 @@ function iconHtml(iconUrl: string, body: string, compact: boolean): string {
     `&lt;/tr&gt;&lt;/table&gt;`;
 }
 
+function getCellGeometry(xml: string, id: string): { x: number; y: number; width: number; height: number } | null {
+  const match = xml.match(new RegExp(`<mxCell\\b[^>]*\\bid="${id}"[^>]*>[\\s\\S]*?<mxGeometry\\b([^>]*)`, 'i'));
+  if (!match) return null;
+  const g = match[1] || '';
+  return {
+    x: numericAttr(g, 'x'),
+    y: numericAttr(g, 'y'),
+    width: numericAttr(g, 'width'),
+    height: numericAttr(g, 'height'),
+  };
+}
+
+function setGeometryAttr(attrs: string, key: string, value: number): string {
+  const re = new RegExp(`(\\b${key}=")[^"]*(")`, 'i');
+  return re.test(attrs)
+    ? attrs.replace(re, (_m, p1: string, p2: string) => `${p1}${value}${p2}`)
+    : `${attrs} ${key}="${value}"`;
+}
+
+function expandGeneratedCardText(xml: string, baseId: string): string {
+  const card = getCellGeometry(xml, baseId);
+  if (!card) return xml;
+  const textId = `${baseId}_t`;
+  const re = new RegExp(`(<mxCell\\b[^>]*\\bid="${textId}"[^>]*>)([\\s\\S]*?)(<\\/mxCell>)`, 'i');
+  return xml.replace(re, (_full, open: string, body: string, close: string) => {
+    const gm = body.match(/<mxGeometry\b([^>]*?)(?:\/)?\s*>/i);
+    if (!gm) return `${open}${body}${close}`;
+    let ga = (gm[1] || '').trimEnd();
+    ga = setGeometryAttr(ga, 'x', card.x + 14);
+    ga = setGeometryAttr(ga, 'width', Math.max(40, card.width - 28));
+    const nextBody = body.replace(gm[0], `<mxGeometry ${ga.trim()}/>`);
+    return `${open}${nextBody}${close}`;
+  });
+}
+
 /**
- * Phase 3.3 semantic-icon pass.
- *
- * - removes emoji placeholders from non-notation catalog diagrams
- * - adds recognizable vendor/cloud identity to sufficiently large semantic cards
- * - preserves original editable mxCell geometry and text
- * - avoids inventing Google Cloud product glyphs when a reliable bundled product icon
- *   is unavailable; those cards use the self-contained Google Cloud brand mark instead
+ * Builders created during the rebuild sometimes emitted the same embedded GCP mark for
+ * every generated card. Upgrade those placeholders to an exact icon when we have one;
+ * otherwise remove the placeholder and let the text use the full card width.
+ */
+function normalizeGeneratedCardIcons(xml: string): string {
+  const iconCellRe = /<mxCell\b([^>]*\bid="([^"]+)_i"[^>]*\bvertex="1"[^>]*)>([\s\S]*?)<\/mxCell>/gi;
+  let next = xml;
+  const matches = Array.from(xml.matchAll(iconCellRe));
+
+  for (const match of matches) {
+    const full = match[0];
+    const attrs = match[1] || '';
+    const baseId = match[2] || '';
+    const styleMatch = attrs.match(/style="([^"]*)"/i);
+    if (!styleMatch) continue;
+    const style = styleMatch[1];
+    if (!/shape=image/i.test(style) || !/image=data:image\/svg\+xml/i.test(style)) continue;
+
+    const textCell = next.match(new RegExp(`<mxCell\\b[^>]*\\bid="${baseId}_t"[^>]*\\bvalue="([^"]*)"`, 'i'));
+    const text = plainText(textCell?.[1] || '');
+    const rule = selectIcon(text);
+
+    if (rule) {
+      const newStyle = style.replace(/image=data:image\/svg\+xml[^;]*;/i, `image=${rule.icon};`);
+      next = next.replace(full, full.replace(styleMatch[0], `style="${newStyle}"`));
+    } else {
+      next = next.replace(full, '');
+      next = expandGeneratedCardText(next, baseId);
+    }
+  }
+  return next;
+}
+
+/**
+ * Semantic icon pass:
+ * - removes emoji placeholders
+ * - uses authentic vendor icons and verified Google Cloud product icons
+ * - never paints a generic Google/GCP logo onto every cloud-service card
+ * - preserves notation-sensitive diagrams and editable mxCell geometry
  */
 export function applyBlueprintSemanticIcons(xml: string, architectureId?: string | null): string {
   if (!xml || xml.includes('pc-semantic-icons-v1')) return xml;
   const id = String(architectureId || '').toLowerCase();
   if (NOTATION_SENSITIVE_IDS.has(id)) return xml;
 
+  let next = normalizeGeneratedCardIcons(xml);
   const cellRe = /<mxCell\b([^>]*\bvertex="1"[^>]*)>([\s\S]*?)<\/mxCell>/gi;
-  let next = xml.replace(cellRe, (full, attrs: string, body: string) => {
+  next = next.replace(cellRe, (full, attrs: string, body: string) => {
     const valueMatch = attrs.match(/\bvalue="([^"]*)"/i);
     if (!valueMatch) return full;
 
@@ -145,16 +241,18 @@ export function applyBlueprintSemanticIcons(xml: string, architectureId?: string
     const geometry = body.match(/<mxGeometry\b([^>]*)\/?\s*>/i)?.[1] || '';
     const width = numericAttr(geometry, 'width');
     const height = numericAttr(geometry, 'height');
+    const cellId = attr(attrs, 'id');
 
     let replacementValue = cleanedValue;
     const text = plainText(cleanedValue);
     const rule = selectIcon(text);
     const alreadyHasImage = /&lt;img\b/i.test(cleanedValue) || /shape=image/i.test(style);
+    const isGeneratedCardText = /_t$/i.test(cellId);
     const isShapeThatShouldNotBeWrapped = /shape=(?:image|line|group)|ellipse|rhombus|hexagon|swimlane/i.test(style);
     const isHeaderLike = height <= 42 || (width >= 500 && height <= 70) || /fontSize=(?:1[5-9]|[2-9]\d)/i.test(style);
     const isUsefulCard = width >= 135 && height >= 52 && text.length >= 3 && text.length <= 520;
 
-    if (rule && !alreadyHasImage && !isShapeThatShouldNotBeWrapped && !isHeaderLike && isUsefulCard) {
+    if (rule && !alreadyHasImage && !isGeneratedCardText && !isShapeThatShouldNotBeWrapped && !isHeaderLike && isUsefulCard) {
       replacementValue = iconHtml(rule.icon, cleanedValue, height < 70 || width < 190);
     }
 
@@ -163,7 +261,6 @@ export function applyBlueprintSemanticIcons(xml: string, architectureId?: string
     return `<mxCell${nextAttrs}>${body}</mxCell>`;
   });
 
-  // Strip remaining emoji placeholders from non-cell XML text without touching URLs.
   next = next.replace(EMOJI_RE, '').replace(/\uFE0F/g, '').replace(/\u200D/g, '');
   next = next.replace(/(<mxGraphModel\b)/, '<!-- pc-semantic-icons-v1 -->\n$1');
   return next;
