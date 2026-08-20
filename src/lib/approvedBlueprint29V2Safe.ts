@@ -35,11 +35,11 @@ export function getApprovedSixRsMigrationMatrixV2Xml():string{
  n.push(...box('snapshot','Inventory snapshot','318 applications • 842 databases • 156 TB data • 612 integrations',30,684,217,78,'#7AA7E8','#F4F8FF','#073B83'));
 
  n.push(cell('assess','',`${BOX}fillColor=#F8FAFF;strokeColor=#B4C8EA;`,271,184,420,600));
- const dims=[['Business 30%','Business value • strategic alignment • criticality • stakeholder impact','#1F9D62','#F2FBF6'],['Technical 40%','Technical debt • complexity • maintainability • performance • dependency count','#175CD3','#F4F8FF'],['Cloud readiness 30%','Platform fit • service availability • migration skill • effort/risk • operational maturity','#7F56D9','#F8F5FF']];
+ const dims=[['Business 30%','Business value • strategic alignment • criticality • stakeholder impact','#1F9D62','#F2FBF6'],['Technical 40%','Technical debt • complexity • maintainability • performance • dependency count','#175CD3','#F4F8FF'],['Cloud Readiness 30%','Platform fit • service availability • migration skill • effort/risk • operational maturity','#7F56D9','#F8F5FF']];
  dims.forEach((r,i)=>n.push(...box(`dim${i}`,r[0],r[1],288,205+i*93,220,82,r[2],r[3],r[2])));
  n.push(...box('score','Scoring model (0–100)','Business value • technical fit • cloud compatibility • effort ↓ • risk ↓ • TCO • time-to-value • compliance/data sensitivity',520,205,154,268,'#D0D5DD','#FFFFFF','#073B83'));
- n.push(...box('rules','Disposition rules','Scores do not choose alone. Apply hard constraints first, then modernization fit, then value/effort/risk trade-off.',288,500,386,82,'#175CD3','#EFF6FF','#073B83'));
- n.push(...box('constraints','Hard constraints','Regulatory/residency • unsupported platform • shared DB coupling • vendor lifecycle • licensing • latency • business blackout windows',288,594,386,76,'#D92D20','#FFF5F5','#B42318'));
+ n.push(...box('rules','Disposition Engine','Scores do not choose alone. Apply hard constraints first, then modernization fit, then value/effort/risk trade-off.',288,500,386,82,'#175CD3','#EFF6FF','#073B83'));
+ n.push(...box('constraints','Hard Constraints','Regulatory/residency • unsupported platform • shared DB coupling • vendor lifecycle • licensing • latency • business blackout windows',288,594,386,76,'#D92D20','#FFF5F5','#B42318'));
  n.push(...box('dependencies','Dependency & wave logic','Upstream/downstream integrations • shared data • identity • network • cutover order • rollback • migration wave prerequisites',288,682,386,76,'#7F56D9','#F8F5FF','#6941C6'));
  e.push(edge('a1','estate','assess'));
  e.push(edge('a2','score','rules'));
@@ -61,19 +61,19 @@ export function getApprovedSixRsMigrationMatrixV2Xml():string{
    rows.forEach((rr,j)=>{const hh=j<3?73:45; n.push(cell(`r_${r[0]}_${j}`,`&lt;b&gt;${rr[0]}&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.4px;color:#475467&quot;&gt;${esc(rr[1])}&lt;/span&gt;`,`${TEXT}fontSize=10.2;fontColor=#101828;align=center;spacing=3;whiteSpace=wrap;overflow=hidden;`,x+4,yy,cw-8,hh)); yy+=hh;});
  });
  e.push(edge('a5','rules','r_rehost','#175CD3','recommend'));
- n.push(...box('rationale','Decision confidence & rationale','Confidence: High / Medium / Low • primary drivers • blocking constraints • dependencies • assumptions • recommended next action + owner',711,734,775,66,'#7AA7E8','#F8FBFF','#073B83'));
+ n.push(...box('rationale','Decision Confidence & Rationale','Confidence: High / Medium / Low • Primary Drivers • Constraints • Dependencies • Assumptions • recommended next action + owner',711,734,775,66,'#7AA7E8','#F8FBFF','#073B83'));
  n.push(...box('illustrative','Evidence note','Timelines and value statements are illustrative planning ranges, not guarantees. Replace with workload-specific estimates and validated business case.',711,808,775,52,'#E87900','#FFF7ED','#9A3412'));
 
  n.push(cell('outcomes','',`${BOX}fillColor=#F8FAFF;strokeColor=#B4C8EA;`,1501,184,243,676));
  const outs=[['Cost optimization','Reduce OpEx/licensing; improve efficiency'],['Risk reduction','Lower security and operational risk'],['Agility & innovation','Faster delivery and time-to-market'],['Operational excellence','Automate, standardize, improve reliability'],['Strategic alignment','Enable business goals and transformation']];
  outs.forEach((r,i)=>n.push(...box(`out${i}`,r[0],r[1],1515,202+i*86,215,74,['#1F9D62','#D92D20','#175CD3','#7F56D9','#E87900'][i],'#FFFFFF')));
- n.push(...box('artifacts','Reporting & execution artifacts','6R report • workload heatmap • dependency map • migration roadmap • business case/ROI • risk & compliance report • wave plan',1515,640,215,194,'#175CD3','#F8FBFF','#073B83'));
+ n.push(...box('artifacts','Reporting & Artifacts','6R Disposition Report • Workload Heatmap • Dependency Map • Migration Roadmap • Business Case & ROI • Risk & Compliance Report • Migration Wave Plan',1515,640,215,194,'#175CD3','#F8FBFF','#073B83'));
  e.push(edge('a6','r_repurchase','outcomes','#175CD3'));
 
- n.push(cell('cross','',`${BOX}fillColor=#F8FAFF;strokeColor=#B4C8EA;`,16,880,1728,112));
- n.push(text('crossh','CROSS-CUTTING CONTROLS — applied to every disposition',34,887,1690,24,11.5,'#073B83','center',true));
- const cc=[['Security & compliance','IAM • least privilege • encryption • data classification'],['Network & connectivity','VPC • firewall • private access • Interconnect/VPN/DNS'],['Data management','Backup • DR • retention • archival • lifecycle'],['Observability','Monitoring • logging • alerting • dashboards • SLOs'],['FinOps','TCO • budgets • rightsizing • commitments • chargeback'],['Operational readiness','Runbooks • automation • SRE • capacity • support']];
- cc.forEach((r,i)=>n.push(...box(`cc${i}`,r[0],r[1],28+i*281,919,268,60,'#D0D5DD','#FFFFFF','#073B83')));
- n.push(text('legend','Effort / Risk: Low → Medium → High    •    Speed: Fast → Medium → Slow    •    Decision order: constraints → fit → value/effort/risk → dependencies/wave',24,1000,1712,24,10.2,'#475467','center'));
+ n.push(cell('cross','',`${BOX}fillColor=#F8FAFF;strokeColor=#B4C8EA;`,16,872,1728,112));
+ n.push(text('crossh','CROSS-CUTTING CONTROLS — applied to every disposition',34,878,1690,24,11.5,'#073B83','center',true));
+ const cc=[['Security & Compliance','IAM • least privilege • encryption • data classification'],['Network & Connectivity','VPC • firewall • private access • Interconnect/VPN/DNS'],['Data Management','Backup • DR • retention • archival • lifecycle'],['Observability','Monitoring • logging • alerting • dashboards • SLOs'],['FinOps & Cost Governance','TCO • budgets • rightsizing • commitments • chargeback'],['Operational Readiness','Runbooks • automation • SRE • capacity • support']];
+ cc.forEach((r,i)=>n.push(...box(`cc${i}`,r[0],r[1],28+i*281,910,268,60,'#D0D5DD','#FFFFFF','#073B83')));
+ n.push(cell('semantics','&lt;b&gt;SCORE RANGE (0–100)&lt;/b&gt;: 80–100 Strong Fit / Low Risk • 50–79 Moderate Fit / Moderate Risk • 0–49 Weak Fit / High Risk   |   &lt;b&gt;CONFIDENCE&lt;/b&gt;: High &gt;75% • Medium 40–75% • Low &lt;40%   |   Effort/Risk: Low → Medium → High • Speed: Fast → Medium → Slow',`${TEXT}fontSize=9.8;fontColor=#475467;align=center;whiteSpace=wrap;overflow=hidden;`,24,990,1712,34));
  return `<mxfile host="app.diagrams.net" modified="2026-08-20T00:00:00.000Z" agent="PromptCanvas" version="24.7.17"><diagram id="approved_blueprint_29_v2" name="6Rs Migration Disposition Matrix — P5-APP-L-01"><mxGraphModel dx="${W}" dy="${H}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="${W}" pageHeight="${H}" math="0" shadow="0"><root>${n.join('')}${e.join('')}</root></mxGraphModel></diagram></mxfile>`;
 }
