@@ -23,6 +23,11 @@ export { PHASE_NAME_OPTIONS, DEFAULT_LAYOUT_DIRECTION_OPTIONS, SALES_CYCLE_STAGE
 const GLOBAL_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Cloud DLP/g, 'Sensitive Data Protection'],
   [/Dataplex Universal Catalog/g, 'Knowledge Catalog'],
+  [/BigLake metastore/gi, 'Lakehouse runtime catalog'],
+  [/BigLake Apache Iceberg/gi, 'Lakehouse for Apache Iceberg'],
+  [/BigQuery BigLake/gi, 'BigQuery + Lakehouse for Apache Iceberg'],
+  [/Google Cloud Serverless for Apache Spark/gi, 'Managed Service for Apache Spark'],
+  [/Dataproc Serverless for Spark/gi, 'Managed Service for Apache Spark'],
   [/Cloud Source Repositories/g, 'Secure Source Manager'],
   [/Cloud Source Repos/g, 'Secure Source Manager'],
   [/Vertex AI Quota Governor/g, 'Vertex AI quotas & Provisioned Throughput'],
@@ -72,6 +77,29 @@ const METADATA_PATCHES: Record<string, MetadataPatch> = {
     notationStandard: 'Enterprise Reference Architecture',
     uiCardDesc: 'High-level enterprise reference architecture spanning experience, applications, integration, data, AI, cloud platform, and cross-cutting security, governance, observability, reliability, DevSecOps, and FinOps.',
     phaseGoal: 'Establish a clear enterprise orientation map and layer boundaries, with specialized blueprints used for implementation-level detail.',
+  },
+
+  // Blueprint 9 is the current Google Cloud open lakehouse reference, not a GE-specific agent mesh.
+  'P3-DAT-L-04_gcp_enterprise_data_lakehouse': {
+    diagramName: 'Enterprise Open Lakehouse & AI Data Foundation on Google Cloud',
+    domain: 'Data & Analytics',
+    abstractionLevel: 'Logical',
+    notationStandard: 'Open Lakehouse Reference Architecture',
+    uiCardDesc: 'Governed open lakehouse using Lakehouse for Apache Iceberg, Lakehouse runtime catalog, BigQuery, Managed Service for Apache Spark, Knowledge Catalog, batch/CDC/stream ingestion, and explicit analytics/AI consumption paths.',
+    phaseGoal: 'Establish an interoperable governed data foundation across native BigQuery and Apache Iceberg workloads without conflating the lakehouse with an agent runtime.',
+    coreGcpServices: [
+      'Lakehouse for Apache Iceberg',
+      'Lakehouse runtime catalog',
+      'BigQuery',
+      'Managed Service for Apache Spark',
+      'Knowledge Catalog',
+      'Cloud Storage',
+      'Datastream',
+      'Pub/Sub',
+      'Dataflow',
+      'Sensitive Data Protection',
+    ],
+    generativeBuildSequence: '1. Draw operational, SaaS, file/object, streaming and optional cross-cloud sources. 2. Separate Datastream CDC, Storage Transfer, Pub/Sub and Dataflow ingestion paths. 3. Draw Lakehouse for Apache Iceberg on Cloud Storage with the Lakehouse runtime catalog, plus native BigQuery storage where appropriate. 4. Draw BigQuery and Managed Service for Apache Spark compute. 5. Add Knowledge Catalog, Sensitive Data Protection, IAM, scoped credentials and audit/security controls. 6. Draw BI, data-science, Gemini Enterprise and custom-agent consumption as governed consumers rather than as the lakehouse control plane.',
   },
 
   // Data governance is fundamentally a governance/control-plane blueprint.
