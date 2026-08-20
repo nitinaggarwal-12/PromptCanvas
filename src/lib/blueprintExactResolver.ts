@@ -1,7 +1,7 @@
 import {
   getExactErdReferenceXml,
-  getExactDevopsCicdPipelineReferenceXml,
 } from './diagramCompiler';
+import { getApprovedDevopsCicdBlueprintXml } from './approvedBlueprint24';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import { buildMultiAgentSequenceXml } from './masterBuilders/build_master_multi_agent_sequence';
 import { buildSecureDeploymentPhase1Xml } from './masterBuilders/build_master_secure_deployment_phase1';
@@ -76,7 +76,8 @@ export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>
   tech_eval_safety: getExactEvalSafetyXml,
   tech_ai_trism_guardrails: getExactAiTrismGuardrailsXml,
   ai_agent_approval_workflow: getExactAiAgentApprovalWorkflowXml,
-  devops_cicd_pipeline: getExactDevopsCicdPipelineReferenceXml,
+  // Blueprint 24: approved master supersedes the former diagramCompiler implementation.
+  devops_cicd_pipeline: getApprovedDevopsCicdBlueprintXml,
   tech_event_driven_eda: () => getTechnicalArchitectureXml('tech_event_driven_eda'),
   tech_serverless_gcp: getExactServerlessGcpReferenceXml,
   tech_multimodal_ingestion: getExactMultimodalIngestionXml,
