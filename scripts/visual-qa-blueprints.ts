@@ -9,6 +9,13 @@ const TARGETS = [
   { id: 'tech_supply_chain', label: '39-predictive-maintenance' },
 ];
 
+interface VisualInspection {
+  blackOverlays: Array<{ tag: string; width: number; height: number; areaRatio: number; source: string }>;
+  svgWidth: number;
+  svgHeight: number;
+  directChildren: number;
+}
+
 const outDir = path.resolve('artifacts/visual-qa');
 fs.mkdirSync(outDir, { recursive: true });
 
@@ -89,7 +96,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff}
       // Use a browser-native function string instead of a TS-transformed closure. tsx/esbuild
       // can inject its __name helper into functions passed directly to page.evaluate(), but that
       // helper does not exist in the browser execution context.
-      const inspection = await page.evaluate(`(() => {
+      const inspection = (await page.evaluate(`(() => {
         const root = document.getElementById('diagram');
         const svg = root && root.querySelector('svg');
         if (!root || !svg) return { blackOverlays: [], svgWidth: 0, svgHeight: 0, directChildren: 0 };
@@ -132,7 +139,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff}
           svgHeight: Math.round(svgRect.height),
           directChildren: root.children.length,
         };
-      })()`);
+      })()`)) as VisualInspection;
 
       await page.screenshot({ path: path.join(outDir, `${target.label}.png`), fullPage: false });
       fs.writeFileSync(path.join(outDir, `${target.label}.json`), JSON.stringify(inspection, null, 2));
