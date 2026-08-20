@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { XMLParser } from 'fast-xml-parser';
-import { getApprovedSixRsMigrationMatrixXml } from '../../src/lib/approvedBlueprint29Safe';
+import { getExactCatalogBlueprintXml } from '../../src/lib/blueprintExactResolver';
 
 describe('Blueprint 29 approved 6Rs migration disposition master', () => {
-  const xml = getApprovedSixRsMigrationMatrixXml();
+  const xml = getExactCatalogBlueprintXml('six_rs_migration_matrix') || '';
 
   it('emits parseable mxGraph XML on the readable approved canvas', () => {
     expect(() => new XMLParser({ ignoreAttributes: false }).parse(xml)).not.toThrow();
     expect(xml).toContain('pageWidth="1760"');
     expect(xml).toContain('pageHeight="1040"');
-    expect(xml).toContain('id="six_rs_migration_disposition_matrix"');
+    expect(xml).toContain('id="catalog_six_rs_migration_matrix"');
   });
 
   it('contains every migration disposition with no missing Repurchase path', () => {
@@ -48,7 +48,12 @@ describe('Blueprint 29 approved 6Rs migration disposition master', () => {
     expect(xml).toContain('SCORE RANGE (0–100)');
     expect(xml).toContain('80–100 Strong Fit / Low Risk');
     expect(xml).toContain('CONFIDENCE');
-    expect(xml).toContain('High &amp;gt;75%');
+    expect(xml).toContain('High &gt;75%');
+  });
+
+  it('contains zero bare ampersands in canonical XML', () => {
+    const xmlWithoutComments = xml.replace(/<!--[\s\S]*?-->/g, '');
+    expect(xmlWithoutComments.match(/&(?!([a-zA-Z0-9]+|#\d+|#x[0-9a-fA-F]+);)/g) || []).toHaveLength(0);
   });
 
   it('is self-contained and does not depend on external diagram assets', () => {
