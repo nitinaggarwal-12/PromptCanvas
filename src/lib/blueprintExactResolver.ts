@@ -168,8 +168,21 @@ export const CATALOG_CANONICAL_IDS = Object.freeze([
   'mcp_context_gateway',
 ] as const);
 
+function stampCanonicalIdentity(xml: string, canonicalId: string): string {
+  if (!xml) return xml;
+  let next = xml;
+  const safeDiagramId = `catalog_${canonicalId}`;
+  if (/<diagram\b[^>]*\bid="[^"]*"/i.test(next)) {
+    next = next.replace(/(<diagram\b[^>]*\bid=")[^"]*(")/i, `$1${safeDiagramId}$2`);
+  }
+  if (!next.includes(`pc-catalog-id:${canonicalId}`)) {
+    next = next.replace(/(<mxGraphModel\b)/, `<!-- pc-catalog-id:${canonicalId} -->\n$1`);
+  }
+  return next;
+}
+
 export function getExactCatalogBlueprintXml(canonicalId: string): string | null {
   if (canonicalId === 'unified_system_view') return null;
   const factory = CATALOG_EXACT_FACTORIES[canonicalId];
-  return factory ? factory() : null;
+  return factory ? stampCanonicalIdentity(factory(), canonicalId) : null;
 }
