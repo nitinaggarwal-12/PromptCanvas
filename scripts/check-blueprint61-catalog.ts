@@ -9,10 +9,11 @@ const failures: string[] = [];
 function decodeRuntimeDiagram(xml: string): string {
   const body = xml.match(/<diagram\b[^>]*>([\s\S]*?)<\/diagram>/i)?.[1] || '';
   if (!body) return '';
+  if (body.includes('<mxGraphModel')) return body;
   try {
     return decodeURIComponent(inflateRawSync(Buffer.from(body, 'base64')).toString('utf8'));
   } catch {
-    return '';
+    return body;
   }
 }
 
