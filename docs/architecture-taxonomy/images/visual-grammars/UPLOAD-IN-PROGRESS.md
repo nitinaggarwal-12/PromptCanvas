@@ -1,1 +1,0 @@
-Binary PNG upload in progress. This marker will be removed after all 34 canonical visual-grammar previews are committed and verified.
