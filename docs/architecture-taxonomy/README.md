@@ -1,280 +1,96 @@
-# PromptCanvas Architecture Taxonomy
+# PromptCanvas Canonical Architecture Taxonomy v1.0
 
-This document defines the canonical product taxonomy for PromptCanvas. It replaces a flat template-centric mental model with a semantic architecture model that supports architecture generation, document generation, assurance, traceability, and operational lifecycle management.
+**Status: FROZEN / CANONICAL**
 
-## Product model
+This specification replaces the prior flat blueprint taxonomy. PromptCanvas uses one semantic architecture model as the source of truth. Diagrams are views; documents are compositions of views plus narrative; technologies are bindings; industry solutions are accelerators composed from reusable architecture families.
 
-**30 Blueprint Families** × **3 Architecture Levels** × **30 Supporting View Types** × **Technology/Cloud Variants** × **16 Document Types** × **Industry Accelerators** × **Architecture Assurance Frameworks**, all backed by one semantic architecture model with end-to-end traceability.
+## Immutable architecture levels
 
-Lifecycle:
-
-**Requirements → Architecture → L1 → L2 → L3 → Documents → Decisions → Implementation → Assurance → Tests → Evidence → Operations → Change → Architecture**
-
-## Architecture Levels
-
-| Level | Name | Question | Primary Audience | Canonical Content |
-|---|---|---|---|---|
-| L1 | Conceptual / Executive | What and why? | Executive, business, product | Actors, capabilities, systems, outcomes, major flows, boundaries |
-| L2 | Logical / Solution | How does it work? | Architects, security, data/AI/platform leads | Components, responsibilities, interfaces, zones, data/control flows |
-| L3 | Physical / Implementation | How exactly is it built? | Engineers, SRE, DevOps | Products/services, regions, networks, IAM, protocols, configuration, deployment, observability |
-
-## 30 Blueprint Families
-
-| ID | Domain | Blueprint Family | L1 | L2 | L3 | Primary Supporting Views | Common Variants | Primary Documents | Assurance |
-|---|---|---|---|---|---|---|---|---|---|
-| STR-01 | Strategy | Enterprise Conceptual & System Landscape | Actors, capabilities, systems, outcomes | Domains, applications, integrations, ownership | Systems, endpoints, platforms, dependencies | Current, Target, Unified | BRD, PRD, HLD, SDD, Executive Brief | TOGAF, Well-Architected, NIST |
-| STR-02 | Strategy | Business Process & Value Stream | Journey, actors, value stages | Swimlanes, decisions, handoffs, systems | Workflow engines, APIs, queues, automation | As-Is, To-Be, VSM | BRD, PRD, FDD, Migration Design | Lean, Six Sigma, COBIT |
-| STR-03 | Governance | AI Operating Model & Governance | Stakeholders, governance, accountability | RACI, risk tiers, HITL, approvals | Policies, IAM, audit, enforcement | HITL, AI CoE, Federated | BRD, AI Design, HLD, Assurance | NIST AI RMF, ISO 42001, AI TRiSM |
-| STR-04 | Transformation | Cloud Migration & Modernization | Current estate, target, objectives | 6Rs, waves, dependencies, coexistence | Replication, cutover, migration implementation | 6R, Strangler, Replatform | BRD, HLD, Migration Design, Runbook | CAF, Well-Architected, NIST |
-| STR-05 | FinOps | FinOps & Cloud Economics | Spend, value, accountability | Allocation, budgets, optimization | Billing exports, labels, dashboards, automation | Showback, Chargeback | BRD, HLD, Executive Brief | FinOps Framework, Well-Architected Cost |
-| APP-01 | Application | Application & Service Architecture | Users, systems, capabilities | Containers/services, APIs, stores | Runtime services, endpoints, databases, queues | Monolith, Microservices, Modular | PRD, FDD, HLD, LLD, SDD, TDD | OWASP, Well-Architected, NIST |
-| APP-02 | Application | Serverless Application Architecture | User, app, backend, data | API, functions/services, events, identity | Cloud runtime, gateway, IAM, scaling | API, Web, Event | PRD, HLD, LLD, TDD | Well-Architected, OWASP |
-| APP-03 | Integration | Event-Driven Architecture & Event Mesh | Producers, events, consumers | Topics, schemas, routing, retries, DLQ | Broker configuration, partitions, replay | Pub/Sub, Kafka, EventBridge | FDD, HLD, LLD, TDD | Well-Architected, AsyncAPI, NIST |
-| APP-04 | Experience | Frontend & Digital Experience | Users, channels, experiences | Shell, micro-frontends, BFFs, identity | Hosting, federation, CDN, telemetry | SPA, Micro-frontend, Mobile | PRD, FDD, HLD, LLD | OWASP, WCAG |
-| APP-05 | DevSecOps | DevSecOps & Software Delivery | Code→build→validate→release→operate | CI/CD stages, environments, approvals | Triggers, runners, registries, signing, deployment | GitOps, Canary, Blue-Green, Security-Gated | HLD, LLD, TDD, Security Design, Runbook | SLSA, SSDF, CIS, OWASP |
-| CLD-01 | Cloud | Cloud Foundation & Secure Deployment | Cloud boundaries, workloads, connectivity | Landing zones, projects/accounts, network zones | VPCs, subnets, routes, NAT, firewalls, DNS | Single, Multi-project, Hub-Spoke | HLD, LLD, Security Design, SDD | CIS, NIST, Well-Architected, CSA CCM |
-| CLD-02 | Resilience | HA, Resilience & Disaster Recovery | Critical services, regions, RTO/RPO | Failure domains, replication, failover | Multi-region resources, DNS, backups, automation | Active-Active, Active-Passive, Backup-Restore | HLD, LLD, DR/BCP, Runbook | ISO 22301, Well-Architected Reliability |
-| SEC-01 | Security | Identity, Federation & Access | Humans, workloads, identity providers | Federation, RBAC/ABAC, privileged access | SAML/OIDC, service accounts, workload identity | Workforce, Customer, Workload | Security Design, HLD, LLD, SDD | Zero Trust, NIST 800-63, CIS |
-| SEC-02 | Security | Sovereignty & Data Residency | Jurisdictions, data classes, residency | Regional processing, cross-border flow | Regions, CMEK/EKM, policy enforcement | Sovereign, Regional, Global | Security Design, Data Design, HLD | GDPR, HIPAA, NIST |
-| OPS-01 | Operations | SRE, Reliability & Observability | Services, users, reliability objectives | SLIs/SLOs, telemetry, incidents | Logs, metrics, traces, alerts, runbooks | Logs, Metrics, Traces, SLO | HLD, LLD, Runbook, Assurance | SRE, DORA, Well-Architected |
-| OPS-02 | Operations | Operational Readiness & Go-Live | Go-live stages, owners, gates | Cutover waves, go/no-go, rollback | Scripts, validation, war room, reconciliation | Big Bang, Phased, Blue-Green | Runbook, HLD, Migration Design | ITIL, COBIT |
-| DAT-01 | Data | Enterprise Data Platform & Lakehouse | Sources→platform→consumers | Ingestion, storage, processing, serving | Tables, pipelines, formats, compute, IAM | Lakehouse, Warehouse, Mesh | Data Design, HLD, LLD, SDD | DAMA, Well-Architected, NIST |
-| DAT-02 | Data | Data Modeling & Information Architecture | Concepts and subject areas | Logical entities, relationships, facts/dimensions | Tables, columns, PK/FK, partitions | Dimensional, 3NF, Data Vault | FDD, Data Design, LLD, TDD | DAMA |
-| DAT-03 | Data | Streaming & Real-Time Analytics | Sources→real-time insight/action | Ingestion, processing, state, serving | Topics, partitions, windows, offsets, stores | Streaming, CDC, IoT | Data Design, HLD, LLD, TDD | Well-Architected, AsyncAPI |
-| DAT-04 | Data Governance | Data Governance, Catalog & Access | Domains, owners, sensitive data | Catalog, classification, lineage, access | Tags, policies, masking, row/column security | Central, Federated | Data Design, Security Design, HLD | DAMA, NIST, GDPR, HIPAA |
-| DAT-05 | DataOps | DataOps, Quality & Observability | Data products, quality objectives | Contracts, tests, anomalies, ownership | Rules, monitors, quarantine, reprocessing | Batch, Streaming, Data Product | Data Design, LLD, Runbook | DAMA, DataOps |
-| AI-01 | GenAI | Agentic RAG & Enterprise Knowledge | User→AI→knowledge→grounded answer | Ingestion, retrieval, reranking, generation | Embeddings, vector DB, prompts, retrieval params | Basic RAG, Agentic RAG, Graph RAG | AI Design, HLD, LLD, TDD | NIST AI RMF, OWASP LLM, AI TRiSM |
-| AI-02 | Agentic AI | Multi-Agent Orchestration & Agent Mesh | Business objective and agent roles | Supervisor, DAG, hub-spoke, swarm | Framework state, messages, retries, checkpoints | Supervisor, DAG, Hub-Spoke, Swarm | AI Design, HLD, LLD, TDD | NIST AI RMF, OWASP Agentic |
-| AI-03 | Agentic Platform | Enterprise Agent Runtime & Harness | Agent platform and users | Runtime, memory, sessions, tools, policy | Containers, queues, stores, sandbox, telemetry | Serverless, Kubernetes | AI Design, HLD, LLD, SDD | NIST AI RMF, CIS, SRE |
-| AI-04 | Agent Integration | MCP & Tool Integration | Agents and enterprise tools | MCP gateway, servers, registry, policy | Tool schemas, OAuth, transport, secrets | MCP, A2A, REST, gRPC | AI Design, HLD, LLD, Security Design | OWASP Agentic, Zero Trust |
-| AI-05 | AI Platform | Multi-Tenant AI Platform | Tenants and shared platform | Control plane/data plane, quotas, isolation | Tenant routing, keys, endpoints, stores | Shared, Dedicated, Hybrid | PRD, HLD, LLD, Security Design | CIS, NIST, SaaS isolation controls |
-| AI-06 | AI Governance | AI Trust, Risk, Guardrails & Evaluation | Risks, models, humans, controls | Guardrails, HITL, evaluation, red team | Filters, eval datasets, thresholds, judge models | TRiSM, LLM Judge, HITL, Red Team | AI Design, Security Design, Assurance | NIST AI RMF, ISO 42001, OWASP LLM, AI TRiSM |
-| IND-01 | Industry—Finance | Real-Time Payments & Transaction Architecture | Customer, bank, network, clearing | Payment orchestration, fraud, ledger | ISO 20022, HSM, message flows, settlement | Real-Time, Batch, Cross-Border | HLD, LLD, Security Design, TDD | PCI DSS, ISO 20022, NIST |
-| IND-02 | Industry—HCLS | Genomics & Clinical Bioinformatics | Patient/specimen→analysis→clinical use | QC, alignment, variant calling, annotation | FASTQ/BAM/VCF, workflow engine, compute | Clinical, Research, Hybrid | Data Design, HLD, LLD, TDD | HIPAA, GxP where applicable, NIST |
-| IND-03 | Industry—Supply Chain | Supply Chain, Fleet & IoT | Devices/assets→operations→outcomes | Edge, telemetry, digital twin, optimization | MQTT, device certs, time series, OTA | Fleet, Factory, Logistics | HLD, LLD, Data Design, TDD | IEC 62443, NIST IoT |
-
-## 30 Supporting View Types
-
-| ID | View | Typical Level |
+| Level | Name | Canonical question |
 |---|---|---|
-| V01 | System Context | L1 |
-| V02 | Capability Map | L1 |
-| V03 | Business Process / Swimlane | L1/L2 |
-| V04 | Value Stream Map | L1 |
-| V05 | As-Is vs To-Be | L1/L2 |
-| V06 | C4 System Context | L1 |
-| V07 | C4 Container | L2 |
-| V08 | Component Architecture | L2/L3 |
-| V09 | Data Flow Diagram | L1/L2/L3 |
-| V10 | Integration Architecture | L2 |
-| V11 | Sequence Diagram | L2/L3 |
-| V12 | State Machine | L2/L3 |
-| V13 | Decision Flow | L1/L2 |
-| V14 | ERD / Data Model | L2/L3 |
-| V15 | Network Topology | L2/L3 |
-| V16 | Deployment Architecture | L2/L3 |
-| V17 | IAM / Identity Flow | L2/L3 |
-| V18 | Security / Trust Boundary | L2/L3 |
-| V19 | HA / DR | L2/L3 |
-| V20 | CI/CD Flow | L2/L3 |
-| V21 | Observability | L2/L3 |
-| V22 | Migration / Transition | L1/L2 |
-| V23 | Agent Interaction | L1/L2 |
-| V24 | RAG Flow | L2/L3 |
-| V25 | MCP / Tool Interaction | L2/L3 |
-| V26 | HITL / Governance | L1/L2 |
-| V27 | Threat Model | L2/L3 |
-| V28 | Failure / Exception Flow | L2/L3 |
-| V29 | Cutover / Runbook Flow | L3 |
-| V30 | FinOps / Cost Flow | L1/L2 |
+| L1 | Conceptual / Executive | What and why? |
+| L2 | Logical / Solution | How does it work? |
+| L3 | Physical / Implementation | How exactly is it built? |
 
-## 16 Document Types
+## Final denormalized canonical mapping
 
-| ID | Document | Typical Levels | Required / Core Views |
-|---|---|---|---|
-| DOC-01 | BRD | L1 | Context, Process, Capability, As-Is/To-Be |
-| DOC-02 | PRD | L1/L2 | Product Context, Journey, Logical Solution |
-| DOC-03 | FDD | L2 | Functional Flow, Sequence, Data Flow, Decision |
-| DOC-04 | HLD | L1/L2 | Context, Solution, Integration, Security, Deployment |
-| DOC-05 | LLD | L2/L3 | Components, Sequence, Network, IAM, Deployment |
-| DOC-06 | SDD | L1/L2/L3 | End-to-end System Architecture |
-| DOC-07 | TDD | L2/L3 | Components, APIs, Data, Deployment |
-| DOC-08 | Executive Architecture Brief | L1 | Context, Target State, Outcomes |
-| DOC-09 | ADR | L1/L2 | Decision Context, Options, Selected Design |
-| DOC-10 | Security Design | L2/L3 | Trust, IAM, Network, Threat Model |
-| DOC-11 | Data Design | L1/L2/L3 | Data Flow, Model, Governance |
-| DOC-12 | AI / Agentic Design | L1/L2/L3 | Agent/RAG/MCP/Guardrails |
-| DOC-13 | Migration Design | L1/L2/L3 | As-Is, Target, Transition, Cutover |
-| DOC-14 | DR / BCP Design | L1/L2/L3 | Resilience, Failover, Recovery |
-| DOC-15 | Operational Runbook | L2/L3 | Operations, Failure, Escalation |
-| DOC-16 | Architecture Assurance Report | L1/L2/L3 | Findings mapped to architecture |
+| Stable ID | Family Type | Domain | Canonical Family | Core Capability Tags | L1 | L2 | L3 | Default / Supporting Views | Patterns / Variants | Technology / Cloud Bindings | Document Mapping | Industry Applicability | Assurance / Standards | NFR / Quality Attributes | Traceability | Lifecycle | Namespace / Future-Proof Rule |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| APP-01 | Core Architecture | Application | Application & Service Architecture | compute; API; service; storage; integration | Users, systems, capabilities, boundaries | Applications, services, containers, responsibilities, dependencies | Runtime components, endpoints, DBs, queues, caches | Context; C4; Container; Component; Sequence; Data Flow | Microservices; Modular Monolith; 3-Tier; Layered | Generic; GCP; AWS; Azure; Kubernetes | PRD; FDD; HLD; LLD; SDD; TDD | Universal | OWASP; NIST; Cloud WAF | Performance; Scale; Availability; Maintainability | FR → Service → Component → Interface → Test | Canonical | APP-*; capability first, product second |
+| APP-02 | Core Architecture | Application | Serverless Application Architecture | serverless; compute; API; events; storage | User → app → capabilities → data | Gateway, serverless services, identity, events, persistence | Functions/containers, triggers, IAM, secrets, scaling | Context; Component; Data Flow; Deployment | Web; API; Async; Event-driven | Cloud Run; Functions; Lambda; Azure Functions | PRD; HLD; LLD; TDD | Universal | OWASP; Cloud WAF | Scale; Cost; Performance; Availability | FR → Function → Endpoint → Deployment | Canonical | APP-*; services are replaceable bindings |
+| APP-03 | Core Architecture | Integration | Event-Driven Architecture & Event Mesh | messaging; eventing; integration; streaming | Producers → events → consumers → outcomes | Broker, topics, schemas, routing, choreography | Partitions, retention, replay, ordering, DLQ, IAM | Data Flow; Integration; Sequence; Failure | Choreography; Orchestration; Event Mesh | Pub/Sub; Kafka; Confluent; EventBridge; Event Hubs | FDD; HLD; LLD; TDD | Universal | AsyncAPI; NIST; Cloud WAF | Latency; Reliability; Throughput; Recoverability | Event → Producer → Contract → Consumer → Test | Canonical | APP-*; event semantics vendor-neutral |
+| APP-04 | Core Architecture | Experience | Frontend & Digital Experience Architecture | UI; frontend; identity; API; CDN | Personas, channels, experiences | Shell, micro-frontends, BFFs, identity, shared services | Hosting, CDN, federation, cache, telemetry | Context; Container; Component; Deployment | SPA; Micro-frontend; Mobile; Omnichannel | React; Angular; Next.js; Firebase; CDN | PRD; FDD; HLD; LLD | Consumer; Retail; SaaS | OWASP; WCAG | Performance; Accessibility; Usability | PR → Journey → UI → API → Test | Canonical | APP-*; UI framework never defines family |
+| APP-05 | Core Architecture | Integration | API Platform & Integration Architecture | API; gateway; integration; identity; policy | Consumers → APIs → capabilities | Gateway, API products, mediation, auth, lifecycle | Routes, policies, quotas, schemas, certs, analytics | Context; Integration; Sequence; IAM; Security | REST; GraphQL; gRPC; Async API; Partner API | Apigee; Kong; MuleSoft; Azure APIM; API Gateway | PRD; FDD; HLD; LLD; Security Design; TDD | Universal | OWASP API; Zero Trust; NIST | Security; Interoperability; Performance | FR → API → Contract → Consumer → Test | Canonical | APP-*; protocols/gateways are bindings |
+| PLT-01 | Platform Architecture | Cloud | Cloud Foundation & Landing Zone | network; IAM; governance; compute; org structure | Enterprise/cloud boundaries and workload classes | Organizations, projects/accounts, zones, shared services | VPCs, subnets, routes, NAT, DNS, policies | Network; Deployment; IAM; Trust Boundary | Hub-Spoke; Shared VPC; Multi-Project; Private Access | GCP; AWS; Azure; Hybrid; Multi-cloud | HLD; LLD; SDD; Security Design | Universal | CIS; NIST; CSA CCM; Cloud WAF | Security; Availability; Operability; Cost | NFR → Zone → Resource → Policy → Evidence | Canonical | PLT-*; provider resources are bindings |
+| PLT-02 | Platform Architecture | Containers | Kubernetes & Container Platform | container; orchestration; network; identity; observability | Workloads, platform, users, external systems | Clusters, namespaces, ingress, mesh, platform services | Node pools, workload identity, autoscaling, policies | Deployment; Network; IAM; Observability; Security | Single/Multi-cluster; Service Mesh; GitOps | GKE; EKS; AKS; OpenShift; Kubernetes | HLD; LLD; TDD; Runbook | Universal | CIS Kubernetes; NIST | Scale; Reliability; Security; Operability | Workload → Cluster → Policy → Deployment → Evidence | Canonical | PLT-*; runtime versions independent |
+| PLT-03 | Platform Architecture | DevSecOps | CI/CD & Software Delivery Architecture | pipeline; artifact; security; deployment; automation | Developer → Source → Build → Test → Release → Deploy | Pipelines, artifacts, environments, gates, promotion | Runners, registry, SBOM, signing, scanning, rollout | CI/CD; Deployment; Security; Sequence; Failure | GitOps; Canary; Blue-Green; Rolling; Security-Gated | Cloud Build; GitHub Actions; GitLab; Jenkins; Azure DevOps; Argo CD | HLD; LLD; TDD; Security Design; Runbook | Universal | SLSA; NIST SSDF; CIS; OWASP | Deployability; Security; Recoverability | Requirement → Pipeline → Gate → Artifact → Evidence | Canonical | PLT-*; tool is binding, lifecycle is canonical |
+| PLT-04 | Platform Architecture | Data | Enterprise Data Platform & Lakehouse | storage; compute; ingestion; analytics; governance | Sources → platform → consumers | Ingestion, lake/lakehouse, warehouse, semantic layer | Pipelines, tables, compute, formats, partitions | Data Flow; Integration; ERD; Deployment | Lakehouse; Warehouse; Data Mesh; Medallion | BigQuery; Databricks; Snowflake; Redshift; Fabric | Data Design; HLD; LLD; SDD | Universal Data | DAMA; NIST; Cloud WAF | Scale; Performance; Quality; Cost | Data Req → Dataset → Pipeline → Consumer → Test | Canonical | PLT-*; capability-first ingest/store/process/serve |
+| PLT-05 | Platform Architecture | AI Platform | Enterprise Agent Runtime & Harness | agent runtime; memory; orchestration; tools; observability | Agent platform, users, enterprise systems | Runtime, sessions, memory, tools, model gateway, policy | Containers, queues, stores, sandbox, telemetry | Component; Deployment; Observability; Security | Managed; Serverless; Kubernetes; Hybrid | Vertex AI Agent Engine; Cloud Run; GKE; Azure AI | AI Design; HLD; LLD; SDD | Enterprise AI | NIST AI RMF; CIS; SRE | Scale; Reliability; Security; Observability | Agent → Runtime → Resource → Control → Evidence | Canonical | PLT-*; framework churn does not change family |
+| PLT-06 | Platform Architecture | AI / SaaS | Multi-Tenant AI / SaaS Platform | tenancy; isolation; control plane; data plane; metering | Tenants, shared platform, boundaries | Control plane, data plane, quotas, onboarding | Routing, keys, tenant stores, model endpoints | Context; Component; Network; IAM | Shared; Dedicated; Hybrid; DB-per-Tenant; Shared Schema | GCP; AWS; Azure; Kubernetes; SaaS | PRD; HLD; LLD; Security Design | SaaS; AI ISV | CIS; NIST; Zero Trust | Isolation; Scale; Security; Cost | Tenant Req → Tenant → Resource → Policy → Evidence | Canonical | PLT-*; isolation tech is replaceable |
+| DAT-01 | Core Architecture | Data | Data Modeling & Information Architecture | schema; semantics; metadata; data contract | Business concepts and subject areas | Entities, facts, dimensions, relationships | Tables, columns, PK/FK, partitions, constraints | ERD; Data Flow | Dimensional; 3NF; Data Vault; Document | BigQuery; PostgreSQL; Snowflake; Databricks | FDD; Data Design; LLD; TDD | Universal | DAMA | Integrity; Maintainability; Performance | Term → Entity → Attribute → Rule → Test | Canonical | DAT-*; semantic model independent of engine |
+| DAT-02 | Core Architecture | Data | Streaming & Real-Time Analytics | streaming; messaging; state; analytics | Sources → real-time insight/action | Ingestion, processing, enrichment, serving | Topics, offsets, windows, watermarks, state stores | Data Flow; Sequence; Failure; Observability | Streaming; CDC; IoT; Real-time Analytics | Pub/Sub; Kafka; Dataflow; Flink; Kinesis | Data Design; HLD; LLD; TDD | Finance; IoT; Retail; Telecom | AsyncAPI; Cloud WAF | Latency; Throughput; Reliability | Event Req → Stream → Processor → KPI → Evidence | Canonical | DAT-*; engine version independent |
+| DAT-03 | Cross-Cutting | Data Governance | Data Governance, Catalog & Access | governance; lineage; classification; privacy; access | Domains, owners, sensitive classes | Catalog, lineage, stewardship, entitlement | Tags, masking, DLP, RLS/CLS, audit | Capability; Data Flow; IAM; Security | Centralized; Federated; Mesh Governance | Dataplex; Unity Catalog; Purview; Collibra | Data Design; Security Design; HLD; Assurance | Regulated; Enterprise | DAMA; GDPR; HIPAA; NIST | Privacy; Compliance; Integrity | Policy → Dataset → Classification → Control → Evidence | Canonical | DAT-*; governance capability vendor-neutral |
+| DAT-04 | Cross-Cutting | DataOps | Data Quality & Data Observability | quality; monitoring; contract; anomaly | Data products, owners, expectations | Contracts, tests, anomaly detection | Rules, thresholds, monitors, quarantine, reprocessing | Data Flow; Observability; Failure | Batch; Streaming; Data Product | Great Expectations; Soda; Monte Carlo; Dataplex | Data Design; LLD; Runbook; Assurance | Universal Data | DAMA; DataOps | Accuracy; Timeliness; Completeness; Reliability | DQ Req → Rule → Dataset → Alert → Evidence | Canonical | DAT-*; tool-independent quality model |
+| ML-01 | Core Architecture | ML | MLOps & ML Lifecycle Architecture | training; registry; serving; feature; monitoring | Data → train → model → prediction → feedback | Feature engineering, training, registry, serving | Jobs, endpoints, experiments, retraining | Data Flow; Deployment; CI/CD; Observability | Batch/Online; AutoML; Champion-Challenger | Vertex AI; SageMaker; Azure ML; MLflow; Databricks | AI/ML Design; HLD; LLD; TDD | Universal ML | NIST AI RMF | Accuracy; Drift; Reproducibility; Latency | ML Req → Dataset → Experiment → Model → Eval → Evidence | Canonical | ML-*; lifecycle stable, platform replaceable |
+| AI-01 | Core Architecture | GenAI | RAG & Enterprise Knowledge Architecture | retrieval; generation; embedding; search; grounding | User → AI → knowledge → grounded response | Ingestion, chunking, indexing, retrieval, reranking | Models, vectors, prompts, retrieval config, cache | RAG; Data Flow; Sequence; Security | Basic RAG; Hybrid Search; GraphRAG; Multimodal RAG | Vertex AI; Gemini; OpenAI; Azure OpenAI; Bedrock | AI Design; HLD; LLD; TDD | HCLS; Legal; Search; Support | NIST AI RMF; OWASP GenAI | Groundedness; Accuracy; Latency; Privacy | Req → Source → Chunk → Retrieval → Response → Eval | Canonical | AI-*; techniques are variants |
+| AI-02 | Core Architecture | Agentic AI | Multi-Agent Orchestration & Agent Mesh | agent; orchestration; planning; delegation; memory | Goal, roles, responsibilities | Supervisor, router, planner, delegation | State, messages, checkpoints, retries, concurrency | Agent Interaction; Sequence; Decision; Failure | Supervisor; DAG; Hub-Spoke; Hierarchical; Planner-Executor; P2P; Swarm | ADK; LangGraph; CrewAI; Semantic Kernel | AI Design; HLD; LLD; TDD | Universal Agentic AI | NIST AI RMF; OWASP GenAI | Autonomy; Safety; Reliability; Latency | Goal → Agent → Tool → Decision → Trace → Eval | Canonical | AI-*; framework is binding, pattern is stable |
+| AI-03 | Core Architecture | Agent Integration | Agent Integration & Protocol Architecture | tool use; agent-to-agent; interface; contract; identity | Agents ↔ agents/tools/capabilities | Gateway, registry, routing, policy, protocol mediation | Tool schemas, credentials, transports, rate limits | MCP/A2A; Integration; Sequence; IAM | MCP; A2A; REST; gRPC; Event | MCP; Google A2A; ADK; Generic APIs | AI Design; HLD; LLD; Security Design | Enterprise Agent Ecosystems | Zero Trust; OWASP GenAI | Interoperability; Security; Reliability | Agent → Interface → Contract → Credential → Audit | Canonical | AI-*; family intentionally protocol-neutral |
+| AI-04 | Cross-Cutting | AI Governance | AI Trust, Risk, Guardrails & Evaluation | risk; safety; evaluation; HITL; monitoring | Risks, humans, models, controls | Guardrails, evals, approvals, red-team | Filters, eval sets, judges, thresholds, monitors | HITL; Threat; Failure; Evaluation | Prompt Eval; Model Eval; Agent Eval; Red Team; LLM Judge | Vertex AI; Gemini; OpenAI; Azure AI; Bedrock | AI Design; Security Design; Assurance Report | Regulated + Universal AI | NIST AI RMF; ISO 42001; OWASP GenAI | Safety; Robustness; Fairness; Privacy | Risk → Control → Eval → Finding → Remediation → Evidence | Canonical | AI-*; framework versions mandatory |
+| SEC-01 | Cross-Cutting | Security | Identity, Federation & Access Architecture | identity; authentication; authorization; policy | Humans, workloads, IdPs, resources | Federation, SSO, RBAC/ABAC, PAM | OIDC/SAML, claims, groups, service accounts | IAM; Trust Boundary; Sequence | Workforce; Customer; Partner; Workload | Cloud IAM; Entra ID; Okta; Ping; Auth0 | Security Design; HLD; LLD; SDD | Universal | NIST 800-63; Zero Trust; CIS | Authentication; Authorization; Least Privilege | Identity Req → Principal → Role → Policy → Evidence | Canonical | SEC-*; IdP is binding |
+| SEC-02 | Cross-Cutting | Security | Application & Workload Security Architecture | threat; secrets; runtime; API security; supply chain | Assets, users, workloads, attack surface | Security layers, API protection, segmentation | WAF, scanning, runtime controls, KMS, policy | Threat; Trust; Network; CI/CD; IAM | Zero Trust; Defense-in-Depth; DevSecOps | Cloud Armor; Defender; GuardDuty; SCC | Security Design; HLD; LLD; TDD | Universal | OWASP; NIST; CIS; SSDF | Confidentiality; Integrity; Availability | Threat → Risk → Control → Component → Test → Evidence | Canonical | SEC-*; control capability independent of tool |
+| SEC-03 | Cross-Cutting | Privacy / Sovereignty | Privacy, Sovereignty & Data Residency | privacy; residency; encryption; governance | Jurisdictions, subjects, data classes | Regional processing, cross-border flow | Regions, keys, perimeters, audit, org policies | Data Flow; Network; Trust; IAM | Regional; Sovereign; Global; On-Prem | GCP; AWS; Azure; Sovereign Cloud | Security Design; Data Design; HLD; Assurance | HCLS; Finance; Government | GDPR; HIPAA; local regulation | Privacy; Compliance; Residency | Regulation → Data → Location → Control → Evidence | Canonical | SEC-*; regulation mappings versioned |
+| RES-01 | Core Architecture | Resilience | HA, Resilience & Disaster Recovery Architecture | availability; replication; failover; backup | Critical capabilities, RTO/RPO | Failure domains, redundancy, replication | DNS, backups, regional resources, recovery automation | HA/DR; Failure; Sequence; Runbook | Active-Active; Active-Passive; Warm Standby; Pilot Light; Backup/Restore | GCP; AWS; Azure; K8s; Multi-cloud | HLD; LLD; DR/BCP; Runbook | Critical Systems | ISO 22301; Cloud WAF Reliability | Availability; Reliability; Recoverability | RTO/RPO → Component → Failure → Recovery Test → Evidence | Canonical | RES-*; tactic independent of provider |
+| OPS-01 | Cross-Cutting | Operations | SRE, Reliability & Observability | observability; SLO; incident; telemetry | Services, consumers, reliability objectives | SLIs/SLOs, telemetry, incidents | Logs, metrics, traces, alerts, synthetic tests | Observability; Failure; Runbook | Centralized; Federated; OpenTelemetry | Cloud Monitoring; Datadog; Grafana; Splunk | HLD; LLD; Runbook; Assurance | Universal Production | Google SRE; DORA; Cloud WAF | Reliability; Operability; Observability | SLO → Signal → Alert → Incident → Evidence | Canonical | OPS-*; telemetry model vendor-neutral |
+| OPS-02 | Operational | Transformation | Cloud Migration & Modernization | migration; dependency; transition; modernization | Current → target estate | 6Rs, waves, dependencies, coexistence | Replication, connectivity, DNS, cutover tooling | As-Is/To-Be; Migration; Dependency; Cutover | Rehost; Replatform; Refactor; Retire; Strangler | GCP; AWS; Azure; VMware; Hybrid | BRD; HLD; Migration Design; Runbook | Universal | Cloud Adoption Frameworks; WAF | Portability; Risk; Availability; Cost | Requirement → Workload → Wave → Decision → Test | Canonical | OPS-*; transformation intent survives tooling |
+| OPS-03 | Operational | Delivery | Operational Readiness, Cutover & Go-Live | readiness; release; validation; rollback | Milestones, stakeholders, gates | Waves, dependencies, go/no-go, rollback | Scripts, checks, war room, reconciliation | Process; Decision; Failure; Cutover | Big Bang; Phased; Parallel; Blue-Green | Generic; GCP; AWS; Azure; Kubernetes | HLD; Migration Design; Operational Runbook | Universal | ITIL; COBIT | Recoverability; Operability; Supportability | Requirement → Gate → Task → Approval → Evidence | Canonical | OPS-*; executed runbooks immutable |
+| GOV-01 | Cross-Cutting | Enterprise Governance | Architecture Governance, Principles & Guardrails | principle; standard; policy; decision; technology catalog | Business/technology principles | Approved patterns, exception process, policy domains | Policy-as-code, org constraints, approved technologies | Capability; Decision; Governance; Trust | API-First; Cloud-First; Zero Trust; Managed-First; Private-First | Enterprise-specific | BRD; HLD; ADR; Assurance | Universal | TOGAF; COBIT; Enterprise Standards | Compliance; Portability; Maintainability | Principle → Constraint → Decision → Component → Finding | Canonical | GOV-* / ORG-GOV-*; principles superseded, never deleted |
+| GOV-02 | Cross-Cutting | AI Governance | AI Operating Model & Governance | accountability; governance; approval; risk tier | Stakeholders, accountability, governance bodies | RACI, risk tiers, lifecycle, approvals | Policy, approval, audit, evidence, enforcement | Capability; Process; Decision; HITL | Centralized; Federated; AI CoE; Risk-Tiered | Generic; Vertex AI; Azure AI; Bedrock | BRD; AI Design; HLD; Assurance | Enterprise AI | NIST AI RMF; ISO 42001; AI TRiSM | Accountability; Safety; Compliance | Policy → Risk → Control → Approval → Evidence | Canonical | GOV-*; governance remains platform-neutral |
+| GOV-03 | Cross-Cutting | FinOps | FinOps & Cloud Economics | cost; allocation; optimization; sustainability | Spend, value, accountability | Allocation, forecasting, budgets, unit economics | Billing exports, tags, dashboards, automation | Cost Flow; Capability; Data Flow | Showback; Chargeback; Unit Economics | GCP Billing; AWS CUR; Azure Cost | BRD; HLD; Executive Brief; Assurance | Universal | FinOps Framework | Cost Efficiency; Sustainability | Cost Objective → Resource → Allocation → KPI | Canonical | GOV-*; pricing data time-versioned |
+| IND-01 | Industry Accelerator | Financial Services | Real-Time Payments & Financial Transactions | payments; ledger; fraud; clearing; settlement | Customer → financial network → settlement | Orchestration, fraud, ledger, clearing | ISO 20022, HSM, idempotency, reconciliation | Data Flow; Sequence; Security; Failure | Real-Time; ACH; Card; Cross-Border | GCP; AWS; Azure; Kafka; Mainframe | HLD; LLD; Security Design; TDD | Financial Services | PCI DSS; ISO 20022; NIST | Latency; Integrity; Auditability | Payment Req → Message → Control → Settlement → Evidence | Canonical Accelerator | IND-FIN-*; composes core families |
+| IND-02 | Industry Accelerator | HCLS | Genomics & Clinical Bioinformatics | genomics; clinical; pipeline; lineage; privacy | Patient/specimen → analysis → clinical use | QC, alignment, variant calling, annotation | FASTQ/BAM/CRAM/VCF, workflows, reference data | Data Flow; Data Model; Deployment; Lineage | Germline; Somatic; Cohort; Clinical | GCP; AWS HealthOmics; Databricks; HPC | Data Design; HLD; LLD; TDD | Healthcare; Pharma; Life Sciences | HIPAA; GxP when applicable; NIST | Privacy; Reproducibility; Scale; Integrity | Clinical Req → Sample → Dataset → Analysis → Evidence | Canonical Accelerator | IND-HCLS-*; composes data/security/AI families |
+| IND-03 | Industry Accelerator | Industrial | Supply Chain, Fleet & IoT | IoT; edge; telemetry; optimization; device | Devices/assets → operations → outcomes | Edge, gateway, telemetry, twin | MQTT, certs, broker, time-series, OTA | Data Flow; Network; Deployment; Failure | Fleet; Factory; Asset Monitoring; Predictive Maintenance | GCP; AWS IoT; Azure IoT; Kafka; Edge | HLD; LLD; Data Design; TDD | Manufacturing; Logistics; Automotive | IEC 62443; NIST IoT | Latency; Reliability; Safety; Scale | Device Req → Telemetry → Rule → Action → Evidence | Canonical Accelerator | IND-IOT-*; composes core platform/data/security |
 
-## Technology / Cloud Variant Layer
+## Universal 30 supporting views
 
-Variants are selectors on a blueprint family, not independent blueprint families.
+V01 System Context; V02 Capability Map; V03 Process/Swimlane; V04 Value Stream; V05 As-Is/To-Be; V06 C4 Context; V07 C4 Container; V08 Component Architecture; V09 Data Flow; V10 Integration; V11 Sequence; V12 State Machine; V13 Decision Flow; V14 ERD/Data Model; V15 Network Topology; V16 Deployment Architecture; V17 IAM/Identity Flow; V18 Security/Trust Boundary; V19 HA/DR; V20 CI/CD; V21 Observability; V22 Migration/Transition; V23 Agent Interaction; V24 RAG Flow; V25 MCP/A2A/Tool Interaction; V26 HITL/Governance; V27 Threat Model; V28 Failure/Exception; V29 Cutover/Runbook; V30 FinOps/Cost.
 
-- Cloud: Generic, GCP, AWS, Azure, OCI
-- Environment: On-Prem, Hybrid, Multi-Cloud
-- Compute: VM, Kubernetes, Serverless, Managed PaaS
-- Data: BigQuery, Databricks, Snowflake, Redshift, Fabric
-- Integration: REST, gRPC, GraphQL, Kafka, Pub/Sub, EventBridge
-- AI: Vertex AI, OpenAI, Azure OpenAI, Bedrock, Anthropic
-- Agent framework: ADK, LangGraph, CrewAI, Semantic Kernel, Generic
-- CI/CD: Cloud Build, GitHub Actions, GitLab, Jenkins, Azure DevOps
-- Identity: Cloud IAM, Entra ID, Okta, Ping, Auth0
-- Observability: Cloud Monitoring, Datadog, Splunk, Grafana, New Relic
-- Deployment: Rolling, Canary, Blue-Green, GitOps
-- Tenancy: Shared, Dedicated, Hybrid
-- Resilience: Single Region, Multi-AZ, Active-Active, Active-Passive
-- Connectivity: Public, Private, VPN, Interconnect/ExpressRoute/Direct Connect
+## Universal 16 document types
 
-## Industry Accelerators
+BRD; PRD; FDD; HLD; LLD; SDD; TDD; Executive Architecture Brief; ADR; Security Design; Data Design; AI/Agentic Design; Migration Design; DR/BCP Design; Operational Runbook; Architecture Assurance Report.
 
-Industry accelerators compose reusable families rather than creating a new architecture primitive for every industry use case.
+Documents consume the semantic model. They never become the architecture source of truth.
 
-- Financial Services / Payments: APP-03, DAT-03, SEC-01, CLD-02, IND-01
-- Healthcare & Life Sciences: DAT-01, DAT-02, DAT-04, AI-01, SEC-02, IND-02
-- Manufacturing / Supply Chain / IoT: APP-03, DAT-03, CLD-01, OPS-01, IND-03
-- Pharma / Clinical AI: AI-01, AI-02, AI-06, DAT-04, SEC-02
-- Retail / Ecommerce: APP-01, APP-03, APP-04, DAT-03
-- Telecom: APP-03, DAT-03, OPS-01, CLD-01
-- Public Sector: CLD-01, SEC-01, SEC-02, OPS-01
-- SaaS / ISV: APP-01, AI-05, CLD-01, APP-05
+## Future-proof semantic fields
 
-## Assurance Framework Layer
+Every taxonomy object MUST support: `stable_id`, `display_name`, `object_type`, `family_type`, `namespace`, `taxonomy_version`, `schema_version`, `object_version`, `status`, `supersedes`, `superseded_by`, `effective_from`, `effective_to`, `capabilities`, `technology_bindings`, `compatibility`, `migration_rule`, `deprecation_reason`, `custom_extension_allowed`, `org_override_allowed`.
 
-- Cloud Architecture: Google Cloud Well-Architected, AWS Well-Architected, Azure Well-Architected
-- Enterprise Architecture: TOGAF
-- Cybersecurity: NIST CSF, NIST 800-53, CIS Controls
-- Zero Trust: NIST 800-207
-- Application Security: OWASP ASVS, OWASP Top 10
-- GenAI Security: OWASP Top 10 for LLM Applications
-- AI Risk: NIST AI RMF
-- AI Management: ISO/IEC 42001
-- AI Governance: AI TRiSM concepts
-- Software Supply Chain: SLSA, NIST SSDF
-- Resilience: ISO 22301
-- Service Management: ITIL
-- Data Governance: DAMA-DMBOK
-- Cost Management: FinOps Framework
-- Privacy / Residency: GDPR and applicable regional regulations
-- Healthcare: HIPAA; GxP controls where applicable
-- Payments: PCI DSS
-- Industrial / OT: IEC 62443
-- Accessibility: WCAG
+## Capability abstraction
 
-## Semantic Architecture Model
+Canonical capability groups: Compute; Storage; Integration; Networking; Identity; Security; Data; AI/ML; Agentic; Operations; Governance; Economics.
 
-The architecture graph is the source of truth. Diagrams and documents are views over the same semantic objects.
+Selection MUST follow: **Requirement → Capability → Architecture Family → Pattern/Variant → L1/L2/L3 → Technology Binding**.
 
-```text
-Project
-├── Requirements
-│   ├── BusinessRequirement
-│   ├── ProductRequirement
-│   ├── FunctionalRequirement
-│   └── NonFunctionalRequirement
-├── Architecture
-│   ├── Actor
-│   ├── Capability
-│   ├── System
-│   ├── Component
-│   ├── Service
-│   ├── Interface
-│   ├── API
-│   ├── Event
-│   ├── DataAsset
-│   ├── NetworkZone
-│   ├── Identity
-│   ├── Control
-│   └── Flow
-├── Views
-│   ├── BlueprintFamily
-│   ├── ArchitectureLevel
-│   └── SupportingView
-├── Documents
-├── Decisions
-│   └── ADR
-├── Assurance
-│   ├── Framework
-│   ├── Rule
-│   ├── Finding
-│   ├── Risk
-│   ├── Control
-│   └── Recommendation
-├── Implementation
-│   ├── Code
-│   ├── Infrastructure
-│   ├── Pipeline
-│   ├── Configuration
-│   └── Deployment
-├── Validation
-│   ├── Test
-│   └── Evidence
-└── Operations
-    ├── SLO
-    ├── Alert
-    ├── Runbook
-    ├── Incident
-    └── Change
-```
+## Namespace model
 
-## Traceability
+`CORE-*` canonical objects; `VIEW-*` supporting views; `DOC-*` document types; `TECH-*` technology catalog; `STD-*` assurance frameworks; `IND-*` industry accelerators; `ORG-*` enterprise extensions; `CUSTOM-*` user-created patterns; `LEGACY-*` imported/deprecated objects.
 
-Canonical relationship chain:
+## Versioning and deprecation rules
 
-`Requirement → Architecture Component → Architecture View → Document Section → Decision → Implementation Artifact → Control → Test → Evidence → Runbook / Operation`
+1. Stable IDs are never reused.
+2. Display labels may change without breaking references.
+3. Canonical objects are never hard-deleted; use `deprecated`.
+4. Every deprecated object declares `superseded_by` where applicable.
+5. Historical architectures must remain renderable.
+6. Technology deprecation does not deprecate the architecture family.
+7. Assurance framework versions are explicit.
+8. Schema/taxonomy migration rules are versioned.
+9. Organization extensions remain isolated from core upgrades.
+10. Old executed runbooks/evidence are immutable historical records.
 
-Traceability must be bidirectional so the product can answer both:
+## Semantic model
 
-- Why does this architecture element exist?
-- What is impacted if this architecture element changes?
+Goal / Outcome → BR / PR / FR / NFR → Constraint / Assumption / Dependency / Risk → Quality Attribute → Capability → Architecture Principle / Guardrail → Canonical Architecture Family → Pattern / Variant → L1 → L2 → L3 → Interface / Contract → Technology Binding → Environment / Region / Account / Project → Document Section → ADR / Trade-off → Implementation → Assurance Framework / Control → Test → Evidence → SLO / Alert / Runbook → Version / Change / Impact Analysis ↺ Architecture.
 
-## Conditional Diagram / Document Rules
+## Canonical rule
 
-The document generator should select views based on architecture metadata.
-
-| Condition | Add |
-|---|---|
-| uses_ai = true | AI Trust & Guardrails L2 |
-| uses_agents = true | Agent Interaction L2 |
-| uses_rag = true | RAG Architecture L2/L3 |
-| uses_mcp = true | MCP Integration L2/L3 |
-| human_approval = true | HITL Flow |
-| sensitive_data = true | Data Governance + Security |
-| pii_phi = true | Data Flow + Trust Boundaries + IAM |
-| multi_region = true | HA/DR |
-| internet_facing = true | Security + Network |
-| hybrid_cloud = true | Hybrid Connectivity |
-| event_driven = true | Event Architecture |
-| streaming = true | Streaming Architecture |
-| multi_tenant = true | Tenant Isolation |
-| production = true | CI/CD + Observability + SRE |
-| migration = true | As-Is + To-Be + Transition |
-| high_risk_ai = true | Guardrails + Evaluation + HITL |
-| regulated = true | Governance + Residency + Audit |
-
-## Product Navigation Model
-
-Create:
-- Architecture: From Blueprint, From Requirements, From Prompt, Import Existing Architecture
-- Document: BRD, PRD, FDD, HLD, LLD, SDD, TDD, Security, Data, AI/Agent, Migration, DR/BCP, Runbook, Executive Brief
-- Assess: Architecture Review, Security Review, Well-Architected Review, AI Risk Review, Cost Review, Production Readiness
-- Explore: Blueprint Families, Industry Accelerators, Architecture Patterns, Technology Catalog, Reference Architectures
-
-## Canonical lifecycle
-
-1. Requirements
-2. Architecture semantic model
-3. L1 Conceptual
-4. L2 Logical / Solution
-5. L3 Physical / Implementation
-6. Documents
-7. Decisions / ADRs
-8. Implementation
-9. Assurance
-10. Tests
-11. Evidence
-12. Operations
-13. Change impact
-14. Architecture refresh
+A new top-level family is created only for a genuinely distinct architecture problem. New products, vendors, cloud services, protocols, deployment strategies, DR strategies, agent frameworks, RAG techniques, databases, compliance versions, or runtime choices default to a **capability, variant, technology binding, supporting view, or versioned extension**.
