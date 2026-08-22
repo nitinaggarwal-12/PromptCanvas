@@ -1,5 +1,5 @@
 export function generateTemplate01ExactXml(): string {
-  const esc = (v: string) => v
+  const esc = (v?: string | null) => (v ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

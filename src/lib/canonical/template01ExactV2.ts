@@ -1,4 +1,4 @@
-const E = (v: string) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const E = (v?: string | null) => (v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export function generateTemplate01ExactV2Xml(): string {
   const c: string[] = [];
@@ -32,7 +32,7 @@ export function generateTemplate01ExactV2Xml(): string {
   ];
   actors.forEach((a,i)=>{
     const y=160+i*145;
-    tinyIcon(`actorIcon${i}`,a[4],34,y+14,a[3]);
+    tinyIcon(`actorIcon${i}`,a[3],34,y+14,a[2]);
     text(`actorName${i}`,a[0],108,y,102,38,'fontStyle=1;fontSize=14;align=left;');
     text(`actorDesc${i}`,a[1],108,y+39,100,88,'fontSize=11;align=left;verticalAlign=top;');
   });
