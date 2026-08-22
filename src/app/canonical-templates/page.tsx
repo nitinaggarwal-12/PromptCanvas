@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -15,14 +14,19 @@ import {
   ScanSearch,
   Sparkles,
 } from 'lucide-react';
-import { generateTemplate01ExactXml } from '@/lib/canonical/template01Exact';
+import { generateTemplate01ExactV2Xml } from '@/lib/canonical/template01ExactV2';
 
 const DRAWIO_EMBED_URL =
   'https://embed.diagrams.net/?embed=1&proto=json&spin=1&ui=kennedy&libraries=1&saveAndExit=0&noSaveBtn=0';
 
+// images/01.png lives at repository root, not Next.js /public. Use the raw GitHub asset
+// so the deployed Railway app always renders the authoritative full-resolution source.
+const SOURCE_IMAGE_URL =
+  'https://raw.githubusercontent.com/nitinaggarwal-12/PromptCanvas/main/images/01.png';
+
 export default function CanonicalTemplatesPage() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const canonicalXml = useMemo(() => generateTemplate01ExactXml(), []);
+  const canonicalXml = useMemo(() => generateTemplate01ExactV2Xml(), []);
   const [xml, setXml] = useState(canonicalXml);
   const [copied, setCopied] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
@@ -124,11 +128,11 @@ export default function CanonicalTemplatesPage() {
                 <Sparkles className="h-4 w-4 text-indigo-600" />
                 <h1 className="truncate text-lg font-black tracking-tight">Canonical Templates</h1>
                 <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-700">
-                  Template 01 complete
+                  Template 01 · coordinate matched
                 </span>
               </div>
               <p className="truncate text-xs text-slate-500">
-                01 · System Context Diagram · NovaCura Integrated Healthcare Platform · fully editable Draw.io XML
+                01 · System Context Diagram · 1536×1024 source geometry · fully editable Draw.io XML
               </p>
             </div>
           </div>
@@ -141,7 +145,7 @@ export default function CanonicalTemplatesPage() {
               {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Clipboard className="h-3.5 w-3.5" />}
               {copied ? 'Copied' : 'Copy XML'}
             </button>
-            <button onClick={requestPreview} className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 shadow-sm transition hover:bg-indigo-100">
+            <button onClick={requestPreview} disabled={!editorReady} className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 shadow-sm transition hover:bg-indigo-100 disabled:opacity-50">
               <ScanSearch className="h-3.5 w-3.5" /> Refresh QA
             </button>
             <button onClick={downloadXml} className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3.5 py-2 text-xs font-black text-white shadow-sm transition hover:bg-slate-800">
@@ -159,21 +163,22 @@ export default function CanonicalTemplatesPage() {
                 <div className="flex items-center gap-2 text-sm font-black">
                   <ImageIcon className="h-4 w-4 text-indigo-600" /> Source image 01
                 </div>
-                <p className="mt-1 text-xs text-slate-500">Authoritative full-resolution PNG from /images/01.png.</p>
+                <p className="mt-1 text-xs text-slate-500">Authoritative full-resolution PNG from GitHub.</p>
               </div>
-              <a href="/images/01.png" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800">
+              <a href={SOURCE_IMAGE_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800">
                 Open PNG <ExternalLink className="h-3 w-3" />
               </a>
             </div>
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-              <Image src="/images/01.png" alt="Canonical source image 01" width={1536} height={1024} className="h-auto w-full object-contain" priority />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={SOURCE_IMAGE_URL} alt="Canonical source image 01" width={1536} height={1024} className="h-auto w-full object-contain" />
             </div>
             <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50/70 p-3">
               <div className="flex items-center gap-2 text-xs font-black text-emerald-950">
-                <FileCode2 className="h-4 w-4" /> Exact replica contract
+                <FileCode2 className="h-4 w-4" /> Editable replica contract
               </div>
               <p className="mt-1.5 text-xs leading-5 text-emerald-900/80">
-                The canvas reproduces the full 01 composition as native Draw.io objects: title, description, legend, actors, NovaCura boundary, eight capability cards, integration and data layers, external systems, protocol labels, secure connectors, key flows, security/compliance, notes and diagram metadata. No flattened background is used.
+                The canvas is rebuilt at the source image&apos;s 1536×1024 coordinate system. Header, legend, actors, NovaCura boundary, eight capability cards, integration/data layers, eight external systems, protocol flows and four bottom panels are native editable mxCells. The PNG is reference-only.
               </p>
             </div>
           </section>
@@ -211,15 +216,17 @@ export default function CanonicalTemplatesPage() {
           <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
               <div className="mb-2 px-1 text-[10px] font-black uppercase tracking-wider text-slate-500">Source PNG</div>
-              <Image src="/images/01.png" alt="Source 01 for fidelity QA" width={1536} height={1024} className="h-auto w-full rounded-lg border border-slate-200 bg-white object-contain" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={SOURCE_IMAGE_URL} alt="Source 01 for fidelity QA" width={1536} height={1024} className="h-auto w-full rounded-lg border border-slate-200 bg-white object-contain" />
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
               <div className="mb-2 flex items-center justify-between px-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
                 <span>Editable XML export</span>
-                <button onClick={requestPreview} className="text-indigo-600 hover:text-indigo-800">Refresh</button>
+                <button onClick={requestPreview} disabled={!editorReady} className="text-indigo-600 hover:text-indigo-800 disabled:opacity-50">Refresh</button>
               </div>
               <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white">
-                <Image src="/images/01.png" alt="Overlay source" width={1536} height={1024} className="h-auto w-full object-contain" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={SOURCE_IMAGE_URL} alt="Overlay source" width={1536} height={1024} className="h-auto w-full object-contain" />
                 {exportedPreview && showOverlay && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={exportedPreview} alt="Editable XML SVG export overlay" className="absolute inset-0 h-full w-full object-contain" style={{ opacity: overlayOpacity / 100 }} />
