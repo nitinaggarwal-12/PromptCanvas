@@ -15,14 +15,14 @@ import {
   ScanSearch,
   Sparkles,
 } from 'lucide-react';
-import { generateSystemContextXml } from '@/lib/canonical/canonicalTemplates';
+import { generateTemplate01ExactXml } from '@/lib/canonical/template01Exact';
 
 const DRAWIO_EMBED_URL =
   'https://embed.diagrams.net/?embed=1&proto=json&spin=1&ui=kennedy&libraries=1&saveAndExit=0&noSaveBtn=0';
 
 export default function CanonicalTemplatesPage() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const canonicalXml = useMemo(() => generateSystemContextXml('biopharma', 'light'), []);
+  const canonicalXml = useMemo(() => generateTemplate01ExactXml(), []);
   const [xml, setXml] = useState(canonicalXml);
   const [copied, setCopied] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
@@ -39,17 +39,18 @@ export default function CanonicalTemplatesPage() {
       action: 'load',
       xml: nextXml,
       autosave: 1,
-      title: '01 - System Context - Canonical Template',
+      title: '01 - System Context Diagram - NovaCura',
     });
   };
 
-  const requestPreviewExport = () => {
-    if (!editorReady) return;
+  const requestPreview = () => {
     postToEditor({
       action: 'export',
       format: 'svg',
       xml,
-      spin: 'Updating fidelity preview…',
+      spinKey: 'canonical-01-export',
+      border: 0,
+      scale: 1,
     });
   };
 
@@ -69,11 +70,7 @@ export default function CanonicalTemplatesPage() {
         loadXmlIntoEditor(xml);
       }
 
-      if ((message.event === 'save' || message.event === 'autosave') && message.xml) {
-        setXml(message.xml);
-      }
-
-      if (message.event === 'exit' && message.xml) {
+      if ((message.event === 'save' || message.event === 'autosave' || message.event === 'exit') && message.xml) {
         setXml(message.xml);
       }
 
@@ -86,17 +83,10 @@ export default function CanonicalTemplatesPage() {
     return () => window.removeEventListener('message', onMessage);
   }, [xml]);
 
-  useEffect(() => {
-    if (!editorReady) return;
-    const timer = window.setTimeout(() => requestPreviewExport(), 900);
-    return () => window.clearTimeout(timer);
-  }, [editorReady]);
-
   const resetReplica = () => {
     setXml(canonicalXml);
     setExportedPreview('');
     loadXmlIntoEditor(canonicalXml);
-    window.setTimeout(() => requestPreviewExport(), 700);
   };
 
   const copyXml = async () => {
@@ -110,7 +100,7 @@ export default function CanonicalTemplatesPage() {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = '01-system-context-canonical.drawio.xml';
+    anchor.download = '01-system-context-novacura-canonical.drawio.xml';
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -120,7 +110,7 @@ export default function CanonicalTemplatesPage() {
   return (
     <div className="min-h-screen bg-[#f6f8fb] text-slate-950">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-[1800px] items-center justify-between gap-4 px-5 lg:px-8">
+        <div className="mx-auto flex h-16 max-w-[1900px] items-center justify-between gap-4 px-5 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
@@ -134,177 +124,56 @@ export default function CanonicalTemplatesPage() {
                 <Sparkles className="h-4 w-4 text-indigo-600" />
                 <h1 className="truncate text-lg font-black tracking-tight">Canonical Templates</h1>
                 <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-700">
-                  Editable Draw.io
+                  Template 01 complete
                 </span>
               </div>
               <p className="truncate text-xs text-slate-500">
-                Template 01 · System Context · exact-source reference: /images/01.png
+                01 · System Context Diagram · NovaCura Integrated Healthcare Platform · fully editable Draw.io XML
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={requestPreviewExport}
-              disabled={!editorReady}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 shadow-sm transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <ScanSearch className="h-3.5 w-3.5" />
-              Refresh QA preview
+            <button onClick={resetReplica} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">
+              <RefreshCw className="h-3.5 w-3.5" /> Reset
             </button>
-            <button
-              onClick={resetReplica}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
-            >
-              <RefreshCw className="h-3.5 w-3.5" />
-              Reset replica
-            </button>
-            <button
-              onClick={copyXml}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
-            >
+            <button onClick={copyXml} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">
               {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Clipboard className="h-3.5 w-3.5" />}
               {copied ? 'Copied' : 'Copy XML'}
             </button>
-            <button
-              onClick={downloadXml}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3.5 py-2 text-xs font-black text-white shadow-sm transition hover:bg-slate-800"
-            >
-              <Download className="h-3.5 w-3.5" />
-              Download XML
+            <button onClick={requestPreview} className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 shadow-sm transition hover:bg-indigo-100">
+              <ScanSearch className="h-3.5 w-3.5" /> Refresh QA
+            </button>
+            <button onClick={downloadXml} className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3.5 py-2 text-xs font-black text-white shadow-sm transition hover:bg-slate-800">
+              <Download className="h-3.5 w-3.5" /> Download XML
             </button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1800px] px-5 py-5 lg:px-8">
-        <section className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-2 text-sm font-black">
-                <ScanSearch className="h-4 w-4 text-indigo-600" />
-                Pixel-level fidelity QA
-              </div>
-              <p className="mt-1 text-xs text-slate-500">
-                Compare the original PNG against a fresh SVG export of the editable Draw.io graph. Use the overlay to spot geometry, typography, spacing, and connector differences.
-              </p>
-            </div>
-            <div className="flex items-center gap-3 text-xs">
-              <label className="flex items-center gap-2 font-bold text-slate-600">
-                <input
-                  type="checkbox"
-                  checked={showOverlay}
-                  onChange={(event) => setShowOverlay(event.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300"
-                />
-                Overlay editable export
-              </label>
-              <label className="flex items-center gap-2 font-bold text-slate-600">
-                Opacity
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={overlayOpacity}
-                  onChange={(event) => setOverlayOpacity(Number(event.target.value))}
-                  className="w-28"
-                />
-                <span className="w-8 text-right font-mono text-[10px] text-slate-500">{overlayOpacity}%</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-            <div>
-              <div className="mb-2 text-[11px] font-black uppercase tracking-wider text-slate-500">Original source · images/01.png</div>
-              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                <Image
-                  src="/images/01.png"
-                  alt="Canonical source image 01"
-                  width={1536}
-                  height={1024}
-                  className="h-auto w-full object-contain"
-                  priority
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-2 text-[11px] font-black uppercase tracking-wider text-slate-500">Editable XML export + overlay</div>
-              <div className="relative aspect-[3/2] overflow-hidden rounded-xl border border-slate-200 bg-white">
-                <Image
-                  src="/images/01.png"
-                  alt="Canonical source image 01 overlay reference"
-                  fill
-                  className="object-contain"
-                />
-                {showOverlay && exportedPreview ? (
-                  // SVG export is produced by diagrams.net from the semantic XML, never by flattening the source PNG.
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={exportedPreview}
-                    alt="Editable Draw.io SVG export"
-                    className="absolute inset-0 h-full w-full object-contain"
-                    style={{ opacity: overlayOpacity / 100 }}
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/70 text-center text-xs font-bold text-slate-500 backdrop-blur-[1px]">
-                    {editorReady ? 'Click “Refresh QA preview” to export the editable graph.' : 'Waiting for the Draw.io editor to initialize…'}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">
-            {['Canvas bounds', 'Section geometry', 'Typography', 'Colors', 'Node spacing', 'Connectors', 'Boundaries', 'Legibility'].map((item) => (
-              <div key={item} className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-center text-[10px] font-bold text-slate-600">
-                {item}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className="mb-4 grid grid-cols-1 gap-3 xl:grid-cols-[minmax(360px,0.48fr)_minmax(760px,1fr)]">
+      <main className="mx-auto max-w-[1900px] px-5 py-5 lg:px-8">
+        <div className="mb-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(420px,0.48fr)_minmax(850px,1fr)]">
           <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2 text-sm font-black">
-                  <ImageIcon className="h-4 w-4 text-indigo-600" />
-                  Source image 01
+                  <ImageIcon className="h-4 w-4 text-indigo-600" /> Source image 01
                 </div>
-                <p className="mt-1 text-xs text-slate-500">Original full-resolution PNG committed in PromptCanvas.</p>
+                <p className="mt-1 text-xs text-slate-500">Authoritative full-resolution PNG from /images/01.png.</p>
               </div>
-              <a
-                href="/images/01.png"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800"
-              >
-                Open PNG
-                <ExternalLink className="h-3 w-3" />
+              <a href="/images/01.png" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                Open PNG <ExternalLink className="h-3 w-3" />
               </a>
             </div>
-
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-              <Image
-                src="/images/01.png"
-                alt="Canonical source image 01"
-                width={1536}
-                height={1024}
-                className="h-auto w-full object-contain"
-              />
+              <Image src="/images/01.png" alt="Canonical source image 01" width={1536} height={1024} className="h-auto w-full object-contain" priority />
             </div>
-
-            <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50/70 p-3">
-              <div className="flex items-center gap-2 text-xs font-black text-indigo-950">
-                <FileCode2 className="h-4 w-4" />
-                Replica contract
+            <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50/70 p-3">
+              <div className="flex items-center gap-2 text-xs font-black text-emerald-950">
+                <FileCode2 className="h-4 w-4" /> Exact replica contract
               </div>
-              <p className="mt-1.5 text-xs leading-5 text-indigo-900/80">
-                The right-hand canvas is a semantic Draw.io reconstruction of image 01. Every box, label,
-                boundary and connector is an editable mxCell — the PNG is reference-only and is never embedded
-                as a flattened background.
+              <p className="mt-1.5 text-xs leading-5 text-emerald-900/80">
+                The canvas reproduces the full 01 composition as native Draw.io objects: title, description, legend, actors, NovaCura boundary, eight capability cards, integration and data layers, external systems, protocol labels, secure connectors, key flows, security/compliance, notes and diagram metadata. No flattened background is used.
               </p>
             </div>
           </section>
@@ -313,36 +182,71 @@ export default function CanonicalTemplatesPage() {
             <div className="flex h-12 items-center justify-between border-b border-slate-200 px-4">
               <div>
                 <div className="text-sm font-black">Editable Draw.io canvas</div>
-                <div className="text-[11px] text-slate-500">
-                  {editorReady ? 'Editor loaded · changes are captured into downloadable XML' : 'Loading diagrams.net editor…'}
-                </div>
+                <div className="text-[11px] text-slate-500">{editorReady ? 'Editor loaded · all components are editable mxCells' : 'Loading diagrams.net editor…'}</div>
               </div>
-              <div className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                Template 01 · L1
-              </div>
+              <div className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Template 01 · L1</div>
             </div>
-
-            <iframe
-              ref={iframeRef}
-              title="Canonical Template 01 Draw.io Editor"
-              src={DRAWIO_EMBED_URL}
-              className="h-[760px] w-full bg-white"
-              allow="clipboard-read; clipboard-write"
-            />
+            <iframe ref={iframeRef} title="Canonical Template 01 Draw.io Editor" src={DRAWIO_EMBED_URL} className="h-[790px] w-full bg-white" allow="clipboard-read; clipboard-write" />
           </section>
         </div>
+
+        <section className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-sm font-black">Visual fidelity QA</h2>
+              <p className="text-xs text-slate-500">Export the editable canvas and compare it directly against image 01.</p>
+            </div>
+            <div className="flex items-center gap-3 text-xs">
+              <label className="flex items-center gap-2 font-semibold text-slate-600">
+                <input type="checkbox" checked={showOverlay} onChange={(e) => setShowOverlay(e.target.checked)} /> Overlay
+              </label>
+              <label className="flex items-center gap-2 font-semibold text-slate-600">
+                Opacity
+                <input type="range" min="0" max="100" value={overlayOpacity} onChange={(e) => setOverlayOpacity(Number(e.target.value))} className="w-32" />
+                <span className="w-8 text-right font-mono text-[10px]">{overlayOpacity}%</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
+              <div className="mb-2 px-1 text-[10px] font-black uppercase tracking-wider text-slate-500">Source PNG</div>
+              <Image src="/images/01.png" alt="Source 01 for fidelity QA" width={1536} height={1024} className="h-auto w-full rounded-lg border border-slate-200 bg-white object-contain" />
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
+              <div className="mb-2 flex items-center justify-between px-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                <span>Editable XML export</span>
+                <button onClick={requestPreview} className="text-indigo-600 hover:text-indigo-800">Refresh</button>
+              </div>
+              <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white">
+                <Image src="/images/01.png" alt="Overlay source" width={1536} height={1024} className="h-auto w-full object-contain" />
+                {exportedPreview && showOverlay && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={exportedPreview} alt="Editable XML SVG export overlay" className="absolute inset-0 h-full w-full object-contain" style={{ opacity: overlayOpacity / 100 }} />
+                )}
+                {exportedPreview && !showOverlay && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={exportedPreview} alt="Editable XML SVG export" className="absolute inset-0 h-full w-full bg-white object-contain" />
+                )}
+                {!exportedPreview && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/90 p-8 text-center text-xs font-semibold text-slate-500">
+                    Click “Refresh QA” to export the current editable diagram and compare it to the source.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
             <div>
               <h2 className="text-sm font-black">Current clean Draw.io XML</h2>
-              <p className="text-xs text-slate-500">Live state from the editor. Download remains fully editable in diagrams.net / draw.io.</p>
+              <p className="text-xs text-slate-500">Live editable state captured from diagrams.net.</p>
             </div>
             <span className="font-mono text-[10px] text-slate-400">{xml.length.toLocaleString()} characters</span>
           </div>
-          <pre className="max-h-56 overflow-auto rounded-xl border border-slate-200 bg-slate-950 p-4 text-[10px] leading-4 text-slate-200">
-            {xml}
-          </pre>
+          <pre className="max-h-56 overflow-auto rounded-xl border border-slate-200 bg-slate-950 p-4 text-[10px] leading-4 text-slate-200">{xml}</pre>
         </section>
       </main>
     </div>
