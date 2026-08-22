@@ -12,6 +12,7 @@ import {
   FileCode2,
   ImageIcon,
   RefreshCw,
+  ScanSearch,
   Sparkles,
 } from 'lucide-react';
 import { generateSystemContextXml } from '@/lib/canonical/canonicalTemplates';
@@ -25,6 +26,9 @@ export default function CanonicalTemplatesPage() {
   const [xml, setXml] = useState(canonicalXml);
   const [copied, setCopied] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
+  const [exportedPreview, setExportedPreview] = useState<string>('');
+  const [overlayOpacity, setOverlayOpacity] = useState(50);
+  const [showOverlay, setShowOverlay] = useState(true);
 
   const postToEditor = (payload: Record<string, unknown>) => {
     iframeRef.current?.contentWindow?.postMessage(JSON.stringify(payload), '*');
@@ -39,11 +43,21 @@ export default function CanonicalTemplatesPage() {
     });
   };
 
+  const requestPreviewExport = () => {
+    if (!editorReady) return;
+    postToEditor({
+      action: 'export',
+      format: 'svg',
+      xml,
+      spin: 'Updating fidelity preview…',
+    });
+  };
+
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       if (typeof event.data !== 'string') return;
 
-      let message: { event?: string; xml?: string };
+      let message: { event?: string; xml?: string; data?: string };
       try {
         message = JSON.parse(event.data);
       } catch {
@@ -62,15 +76,27 @@ export default function CanonicalTemplatesPage() {
       if (message.event === 'exit' && message.xml) {
         setXml(message.xml);
       }
+
+      if (message.event === 'export' && message.data) {
+        setExportedPreview(message.data);
+      }
     };
 
     window.addEventListener('message', onMessage);
     return () => window.removeEventListener('message', onMessage);
   }, [xml]);
 
+  useEffect(() => {
+    if (!editorReady) return;
+    const timer = window.setTimeout(() => requestPreviewExport(), 900);
+    return () => window.clearTimeout(timer);
+  }, [editorReady]);
+
   const resetReplica = () => {
     setXml(canonicalXml);
+    setExportedPreview('');
     loadXmlIntoEditor(canonicalXml);
+    window.setTimeout(() => requestPreviewExport(), 700);
   };
 
   const copyXml = async () => {
@@ -112,12 +138,20 @@ export default function CanonicalTemplatesPage() {
                 </span>
               </div>
               <p className="truncate text-xs text-slate-500">
-                Template 01 · System Context · source reference: /images/01.png
+                Template 01 · System Context · exact-source reference: /images/01.png
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={requestPreviewExport}
+              disabled={!editorReady}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 shadow-sm transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <ScanSearch className="h-3.5 w-3.5" />
+              Refresh QA preview
+            </button>
             <button
               onClick={resetReplica}
               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
@@ -144,6 +178,93 @@ export default function CanonicalTemplatesPage() {
       </header>
 
       <main className="mx-auto max-w-[1800px] px-5 py-5 lg:px-8">
+        <section className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2 text-sm font-black">
+                <ScanSearch className="h-4 w-4 text-indigo-600" />
+                Pixel-level fidelity QA
+              </div>
+              <p className="mt-1 text-xs text-slate-500">
+                Compare the original PNG against a fresh SVG export of the editable Draw.io graph. Use the overlay to spot geometry, typography, spacing, and connector differences.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 text-xs">
+              <label className="flex items-center gap-2 font-bold text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={showOverlay}
+                  onChange={(event) => setShowOverlay(event.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300"
+                />
+                Overlay editable export
+              </label>
+              <label className="flex items-center gap-2 font-bold text-slate-600">
+                Opacity
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={overlayOpacity}
+                  onChange={(event) => setOverlayOpacity(Number(event.target.value))}
+                  className="w-28"
+                />
+                <span className="w-8 text-right font-mono text-[10px] text-slate-500">{overlayOpacity}%</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+            <div>
+              <div className="mb-2 text-[11px] font-black uppercase tracking-wider text-slate-500">Original source · images/01.png</div>
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <Image
+                  src="/images/01.png"
+                  alt="Canonical source image 01"
+                  width={1536}
+                  height={1024}
+                  className="h-auto w-full object-contain"
+                  priority
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-2 text-[11px] font-black uppercase tracking-wider text-slate-500">Editable XML export + overlay</div>
+              <div className="relative aspect-[3/2] overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <Image
+                  src="/images/01.png"
+                  alt="Canonical source image 01 overlay reference"
+                  fill
+                  className="object-contain"
+                />
+                {showOverlay && exportedPreview ? (
+                  // SVG export is produced by diagrams.net from the semantic XML, never by flattening the source PNG.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={exportedPreview}
+                    alt="Editable Draw.io SVG export"
+                    className="absolute inset-0 h-full w-full object-contain"
+                    style={{ opacity: overlayOpacity / 100 }}
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/70 text-center text-xs font-bold text-slate-500 backdrop-blur-[1px]">
+                    {editorReady ? 'Click “Refresh QA preview” to export the editable graph.' : 'Waiting for the Draw.io editor to initialize…'}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">
+            {['Canvas bounds', 'Section geometry', 'Typography', 'Colors', 'Node spacing', 'Connectors', 'Boundaries', 'Legibility'].map((item) => (
+              <div key={item} className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-center text-[10px] font-bold text-slate-600">
+                {item}
+              </div>
+            ))}
+          </div>
+        </section>
+
         <div className="mb-4 grid grid-cols-1 gap-3 xl:grid-cols-[minmax(360px,0.48fr)_minmax(760px,1fr)]">
           <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="mb-3 flex items-center justify-between gap-3">
@@ -172,7 +293,6 @@ export default function CanonicalTemplatesPage() {
                 width={1536}
                 height={1024}
                 className="h-auto w-full object-contain"
-                priority
               />
             </div>
 
