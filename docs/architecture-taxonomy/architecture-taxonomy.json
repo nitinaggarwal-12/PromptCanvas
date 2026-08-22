@@ -1,0 +1,83 @@
+{
+  "version": "1.0.0",
+  "name": "PromptCanvas Architecture Taxonomy",
+  "lifecycle": ["requirements","architecture","l1","l2","l3","documents","decisions","implementation","assurance","tests","evidence","operations","change","architecture"],
+  "levels": [
+    {"id":"L1","name":"Conceptual / Executive","question":"What and why?"},
+    {"id":"L2","name":"Logical / Solution","question":"How does it work?"},
+    {"id":"L3","name":"Physical / Implementation","question":"How exactly is it built?"}
+  ],
+  "supportingViews": [
+    ["V01","System Context","L1"],["V02","Capability Map","L1"],["V03","Business Process / Swimlane","L1/L2"],["V04","Value Stream Map","L1"],["V05","As-Is vs To-Be","L1/L2"],["V06","C4 System Context","L1"],["V07","C4 Container","L2"],["V08","Component Architecture","L2/L3"],["V09","Data Flow Diagram","L1/L2/L3"],["V10","Integration Architecture","L2"],["V11","Sequence Diagram","L2/L3"],["V12","State Machine","L2/L3"],["V13","Decision Flow","L1/L2"],["V14","ERD / Data Model","L2/L3"],["V15","Network Topology","L2/L3"],["V16","Deployment Architecture","L2/L3"],["V17","IAM / Identity Flow","L2/L3"],["V18","Security / Trust Boundary","L2/L3"],["V19","HA / DR","L2/L3"],["V20","CI/CD Flow","L2/L3"],["V21","Observability","L2/L3"],["V22","Migration / Transition","L1/L2"],["V23","Agent Interaction","L1/L2"],["V24","RAG Flow","L2/L3"],["V25","MCP / Tool Interaction","L2/L3"],["V26","HITL / Governance","L1/L2"],["V27","Threat Model","L2/L3"],["V28","Failure / Exception Flow","L2/L3"],["V29","Cutover / Runbook Flow","L3"],["V30","FinOps / Cost Flow","L1/L2"]
+  ],
+  "documentTypes": [
+    ["DOC-01","BRD","L1"],["DOC-02","PRD","L1/L2"],["DOC-03","FDD","L2"],["DOC-04","HLD","L1/L2"],["DOC-05","LLD","L2/L3"],["DOC-06","SDD","L1/L2/L3"],["DOC-07","TDD","L2/L3"],["DOC-08","Executive Architecture Brief","L1"],["DOC-09","ADR","L1/L2"],["DOC-10","Security Design","L2/L3"],["DOC-11","Data Design","L1/L2/L3"],["DOC-12","AI / Agentic Design","L1/L2/L3"],["DOC-13","Migration Design","L1/L2/L3"],["DOC-14","DR / BCP Design","L1/L2/L3"],["DOC-15","Operational Runbook","L2/L3"],["DOC-16","Architecture Assurance Report","L1/L2/L3"]
+  ],
+  "blueprintFamilies": [
+    {"id":"STR-01","domain":"Strategy","name":"Enterprise Conceptual & System Landscape","views":["V01","V02","V05","V10"],"documents":["DOC-01","DOC-02","DOC-04","DOC-06","DOC-08"]},
+    {"id":"STR-02","domain":"Strategy","name":"Business Process & Value Stream","views":["V03","V04","V05","V13"],"documents":["DOC-01","DOC-02","DOC-03","DOC-13"]},
+    {"id":"STR-03","domain":"Governance","name":"AI Operating Model & Governance","views":["V02","V03","V13","V26"],"documents":["DOC-01","DOC-12","DOC-04","DOC-16"]},
+    {"id":"STR-04","domain":"Transformation","name":"Cloud Migration & Modernization","views":["V05","V22","V29"],"documents":["DOC-01","DOC-04","DOC-13","DOC-15"]},
+    {"id":"STR-05","domain":"FinOps","name":"FinOps & Cloud Economics","views":["V02","V30","V09"],"documents":["DOC-01","DOC-04","DOC-08","DOC-16"]},
+    {"id":"APP-01","domain":"Application","name":"Application & Service Architecture","views":["V01","V06","V07","V08","V11"],"documents":["DOC-02","DOC-03","DOC-04","DOC-05","DOC-06","DOC-07"]},
+    {"id":"APP-02","domain":"Application","name":"Serverless Application Architecture","views":["V01","V08","V09","V16"],"documents":["DOC-02","DOC-04","DOC-05","DOC-07"]},
+    {"id":"APP-03","domain":"Integration","name":"Event-Driven Architecture & Event Mesh","views":["V09","V10","V11","V28"],"documents":["DOC-03","DOC-04","DOC-05","DOC-07"]},
+    {"id":"APP-04","domain":"Experience","name":"Frontend & Digital Experience","views":["V01","V07","V08","V16"],"documents":["DOC-02","DOC-03","DOC-04","DOC-05"]},
+    {"id":"APP-05","domain":"DevSecOps","name":"DevSecOps & Software Delivery","views":["V20","V16","V18","V11"],"documents":["DOC-04","DOC-05","DOC-07","DOC-10","DOC-15"]},
+    {"id":"CLD-01","domain":"Cloud","name":"Cloud Foundation & Secure Deployment","views":["V15","V16","V18"],"documents":["DOC-04","DOC-05","DOC-10","DOC-06"]},
+    {"id":"CLD-02","domain":"Resilience","name":"HA, Resilience & Disaster Recovery","views":["V19","V28","V29","V11"],"documents":["DOC-04","DOC-05","DOC-14","DOC-15"]},
+    {"id":"SEC-01","domain":"Security","name":"Identity, Federation & Access","views":["V17","V18","V11"],"documents":["DOC-10","DOC-04","DOC-05","DOC-06"]},
+    {"id":"SEC-02","domain":"Security","name":"Sovereignty & Data Residency","views":["V09","V15","V18"],"documents":["DOC-10","DOC-11","DOC-04"]},
+    {"id":"OPS-01","domain":"Operations","name":"SRE, Reliability & Observability","views":["V21","V28","V29"],"documents":["DOC-04","DOC-05","DOC-15","DOC-16"]},
+    {"id":"OPS-02","domain":"Operations","name":"Operational Readiness & Go-Live","views":["V03","V13","V29"],"documents":["DOC-15","DOC-04","DOC-13"]},
+    {"id":"DAT-01","domain":"Data","name":"Enterprise Data Platform & Lakehouse","views":["V09","V10","V14","V16"],"documents":["DOC-11","DOC-04","DOC-05","DOC-06"]},
+    {"id":"DAT-02","domain":"Data","name":"Data Modeling & Information Architecture","views":["V14","V09"],"documents":["DOC-03","DOC-11","DOC-05","DOC-07"]},
+    {"id":"DAT-03","domain":"Data","name":"Streaming & Real-Time Analytics","views":["V09","V11","V28"],"documents":["DOC-11","DOC-04","DOC-05","DOC-07"]},
+    {"id":"DAT-04","domain":"Data Governance","name":"Data Governance, Catalog & Access","views":["V02","V09","V18"],"documents":["DOC-11","DOC-10","DOC-04"]},
+    {"id":"DAT-05","domain":"DataOps","name":"DataOps, Quality & Observability","views":["V09","V21","V28"],"documents":["DOC-11","DOC-05","DOC-15"]},
+    {"id":"AI-01","domain":"GenAI","name":"Agentic RAG & Enterprise Knowledge","views":["V23","V24","V09","V11"],"documents":["DOC-12","DOC-04","DOC-05","DOC-07"]},
+    {"id":"AI-02","domain":"Agentic AI","name":"Multi-Agent Orchestration & Agent Mesh","views":["V23","V11","V13"],"documents":["DOC-12","DOC-04","DOC-05","DOC-07"]},
+    {"id":"AI-03","domain":"Agentic Platform","name":"Enterprise Agent Runtime & Harness","views":["V08","V16","V21"],"documents":["DOC-12","DOC-04","DOC-05","DOC-06"]},
+    {"id":"AI-04","domain":"Agent Integration","name":"MCP & Tool Integration","views":["V25","V10","V11","V18"],"documents":["DOC-12","DOC-04","DOC-05","DOC-10"]},
+    {"id":"AI-05","domain":"AI Platform","name":"Multi-Tenant AI Platform","views":["V01","V08","V15","V17"],"documents":["DOC-02","DOC-04","DOC-05","DOC-10"]},
+    {"id":"AI-06","domain":"AI Governance","name":"AI Trust, Risk, Guardrails & Evaluation","views":["V26","V27","V28","V23"],"documents":["DOC-12","DOC-10","DOC-16"]},
+    {"id":"IND-01","domain":"Industry—Finance","name":"Real-Time Payments & Transaction Architecture","views":["V09","V11","V18"],"documents":["DOC-04","DOC-05","DOC-10","DOC-07"]},
+    {"id":"IND-02","domain":"Industry—HCLS","name":"Genomics & Clinical Bioinformatics","views":["V09","V14","V16"],"documents":["DOC-11","DOC-04","DOC-05","DOC-07"]},
+    {"id":"IND-03","domain":"Industry—Supply Chain","name":"Supply Chain, Fleet & IoT","views":["V09","V15","V16"],"documents":["DOC-04","DOC-05","DOC-11","DOC-07"]}
+  ],
+  "technologyVariantDimensions": {
+    "cloud":["Generic","GCP","AWS","Azure","OCI"],
+    "environment":["On-Prem","Hybrid","Multi-Cloud"],
+    "compute":["VM","Kubernetes","Serverless","Managed PaaS"],
+    "data":["BigQuery","Databricks","Snowflake","Redshift","Fabric"],
+    "integration":["REST","gRPC","GraphQL","Kafka","Pub/Sub","EventBridge"],
+    "ai":["Vertex AI","OpenAI","Azure OpenAI","Bedrock","Anthropic"],
+    "agentFramework":["ADK","LangGraph","CrewAI","Semantic Kernel","Generic"],
+    "cicd":["Cloud Build","GitHub Actions","GitLab","Jenkins","Azure DevOps"],
+    "identity":["Cloud IAM","Entra ID","Okta","Ping","Auth0"],
+    "observability":["Cloud Monitoring","Datadog","Splunk","Grafana","New Relic"],
+    "deployment":["Rolling","Canary","Blue-Green","GitOps"],
+    "tenancy":["Shared","Dedicated","Hybrid"],
+    "resilience":["Single Region","Multi-AZ","Active-Active","Active-Passive"],
+    "connectivity":["Public","Private","VPN","Interconnect/ExpressRoute/Direct Connect"]
+  },
+  "industryAccelerators": {
+    "financialServicesPayments":["APP-03","DAT-03","SEC-01","CLD-02","IND-01"],
+    "healthcareLifeSciences":["DAT-01","DAT-02","DAT-04","AI-01","SEC-02","IND-02"],
+    "manufacturingSupplyChainIoT":["APP-03","DAT-03","CLD-01","OPS-01","IND-03"],
+    "pharmaClinicalAI":["AI-01","AI-02","AI-06","DAT-04","SEC-02"],
+    "retailEcommerce":["APP-01","APP-03","APP-04","DAT-03"],
+    "telecom":["APP-03","DAT-03","OPS-01","CLD-01"],
+    "publicSector":["CLD-01","SEC-01","SEC-02","OPS-01"],
+    "saasISV":["APP-01","AI-05","CLD-01","APP-05"]
+  },
+  "assuranceFrameworks": ["Google Cloud Well-Architected","AWS Well-Architected","Azure Well-Architected","TOGAF","NIST CSF","NIST 800-53","CIS Controls","NIST 800-207","OWASP ASVS","OWASP Top 10","OWASP Top 10 for LLM Applications","NIST AI RMF","ISO/IEC 42001","AI TRiSM","SLSA","NIST SSDF","ISO 22301","ITIL","DAMA-DMBOK","FinOps Framework","GDPR","HIPAA","PCI DSS","IEC 62443","WCAG"],
+  "conditionalRules": [
+    {"when":"uses_ai","add":["AI-06:L2"]},{"when":"uses_agents","add":["V23:L2"]},{"when":"uses_rag","add":["V24:L2","V24:L3"]},{"when":"uses_mcp","add":["V25:L2","V25:L3"]},{"when":"human_approval","add":["V26"]},{"when":"sensitive_data","add":["DAT-04:L2","V18:L2"]},{"when":"pii_phi","add":["V09","V18","V17"]},{"when":"multi_region","add":["V19"]},{"when":"internet_facing","add":["V18","V15"]},{"when":"hybrid_cloud","add":["V15"]},{"when":"event_driven","add":["APP-03:L2"]},{"when":"streaming","add":["DAT-03:L2"]},{"when":"multi_tenant","add":["AI-05:L2"]},{"when":"production","add":["APP-05:L2","V21","OPS-01:L2"]},{"when":"migration","add":["V05","V22"]},{"when":"high_risk_ai","add":["AI-06:L2","V26"]},{"when":"regulated","add":["DAT-04:L2","SEC-02:L2"]}
+  ],
+  "semanticModel": {
+    "entities":["Project","Requirement","Actor","Capability","System","Component","Service","Interface","API","Event","DataAsset","NetworkZone","Identity","Control","Flow","BlueprintFamily","ArchitectureView","Document","DocumentSection","ADR","Framework","Rule","Finding","Risk","Recommendation","ImplementationArtifact","Test","Evidence","SLO","Alert","Runbook","Incident","Change"],
+    "canonicalTrace":"Requirement → Architecture Component → Architecture View → Document Section → Decision → Implementation Artifact → Control → Test → Evidence → Runbook / Operation",
+    "bidirectional":true
+  }
+}
