@@ -479,6 +479,7 @@ export default function Dashboard() {
         <div className="p-3 space-y-1">
           {[
             { id: "editor", name: "Design Canvas", icon: Network, href: "/workspace" },
+            { id: "canonical", name: "Canonical Architecture Hub", icon: Sparkles, href: "/canonical", badge: "34" },
             { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/workspace?tab=templates" },
             { id: "history", name: "Historical Canvases", icon: History, href: "/history" },
             { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },
@@ -599,6 +600,7 @@ export default function Dashboard() {
               <div className="p-3 space-y-1">
                 {[
                   { id: "editor", name: "Design Canvas", icon: Network, href: "/workspace" },
+                  { id: "canonical", name: "Canonical Architecture Hub", icon: Sparkles, href: "/canonical", badge: "34" },
                   { id: "templates", name: "Templates Gallery", icon: LayoutGrid, href: "/workspace?tab=templates" },
                   { id: "history", name: "Historical Canvases", icon: History, href: "/history" },
                   { id: "dashboard", name: "Operations Dashboard", icon: BarChart3, href: "/dashboard" },

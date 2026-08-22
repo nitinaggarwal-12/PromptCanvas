@@ -147,6 +147,14 @@ export default function LandingPage() {
           <nav className={`hidden lg:flex items-center gap-5 xl:gap-6 text-xs font-bold shrink-0 ${
             isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
+            <Link href="/canonical" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+              isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-sky-600' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'
+            }`}>
+              <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+              <span>Canonical Hub</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">34</span>
+            </Link>
+
             <Link href="/workspace?tab=templates" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
               isLight ? 'hover:bg-slate-100 hover:text-slate-900' : 'hover:bg-slate-800/80 hover:text-white'
             }`}>
@@ -253,6 +261,14 @@ export default function LandingPage() {
               >
                 How It Works
               </a>
+              <Link 
+                href="/canonical" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-sky-400 font-bold flex items-center justify-between"
+              >
+                <span>Canonical Architecture Hub</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">34 Schemas</span>
+              </Link>
               <Link 
                 href="/guide" 
                 onClick={() => setIsMobileNavOpen(false)}

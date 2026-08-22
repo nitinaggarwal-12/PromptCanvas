@@ -6038,6 +6038,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         <div className="p-3 space-y-1 flex-1 overflow-y-auto">
           {[
             { id: 'editor', name: t.designCanvas, icon: Network },
+            { id: 'canonical', name: 'Canonical Architecture Hub', icon: Sparkles, href: '/canonical', badge: '34' },
             { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
             { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
             { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
@@ -6067,6 +6068,11 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   }`} />
                   {isSidebarOpen && <span className="truncate">{item.name}</span>}
                 </div>
+                {isSidebarOpen && (item as any).badge && (
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                    {(item as any).badge}
+                  </span>
+                )}
               </div>
             );
 
@@ -6426,6 +6432,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               <div className="p-3 space-y-1">
                 {[
                   { id: 'editor', name: t.designCanvas, icon: Network },
+                  { id: 'canonical', name: 'Canonical Architecture Hub', icon: Sparkles, href: '/canonical', badge: '34' },
                   { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
                   { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
                   { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },

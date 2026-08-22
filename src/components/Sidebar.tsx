@@ -76,6 +76,17 @@ export function Sidebar({
               <span>Dashboard Overview</span>
             </div>
           </Link>
+          <Link href="/canonical" className="block">
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-sky-400 hover:bg-sky-500/10 border border-sky-500/20 transition-all">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-4 h-4 text-sky-400" />
+                <span>Canonical Architecture Hub</span>
+              </div>
+              <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                HUB
+              </span>
+            </div>
+          </Link>
           <Link href="/guide" className="block">
             <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-teal-400 hover:bg-teal-500/10 border border-teal-500/20 transition-all">
               <BookOpen className="w-4 h-4 text-teal-400" />
