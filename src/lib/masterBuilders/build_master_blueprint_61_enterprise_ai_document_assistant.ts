@@ -207,7 +207,7 @@ export function buildMasterBlueprint61EnterpriseAiDocumentAssistantXml(): string
     edge('e_workers_integrations', 'n_webhooks', 'n_integrations', 'ERP Push', '#DB2777', 0),
     edge('e_cicd_iac', 'n_cicd', 'n_iac', 'Apply IaC Plan', '#7C3AED', 0),
     edge('e_dlp_audit', 'n_dlp', 'n_audit', 'Audit PII Redactions', '#059669', 0),
-    edge('e_orch_log', 'n_orch', 'n_logging', '12. Audit &amp; Metrics', '#059669', 1, 0.5, 0.5, 0, [[422, 750], [650, 750]]),
+    edge('e_orch_log', 'n_orch', 'n_logging', '12. Audit &amp; Metrics', '#059669', 1, 0.5, 1, 0.5, 0, [[422, 750], [650, 750]]),
   ];
 
   return `<mxfile host="app.diagrams.net" modified="2026-08-21T00:20:00.000Z" agent="PromptCanvas Blueprint 61" version="24.7.17" type="device"><diagram id="catalog_enterprise_ai_document_assistant" name="Blueprint 61 - Enterprise AI Document Assistant"><mxGraphModel dx="1900" dy="1300" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="1" pageScale="1" pageWidth="1900" pageHeight="1300" background="#F8FAFC"><root>${cells.join('\n')}</root></mxGraphModel></diagram></mxfile>`;
