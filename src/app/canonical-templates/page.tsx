@@ -14,19 +14,17 @@ import {
   ScanSearch,
   Sparkles,
 } from 'lucide-react';
-import { generateTemplate01ExactV2Xml } from '@/lib/canonical/template01ExactV2';
+import { generateTemplate01ExactV3Xml } from '@/lib/canonical/template01ExactV3';
 
 const DRAWIO_EMBED_URL =
   'https://embed.diagrams.net/?embed=1&proto=json&spin=1&ui=kennedy&libraries=1&saveAndExit=0&noSaveBtn=0';
 
-// images/01.png lives at repository root, not Next.js /public. Use the raw GitHub asset
-// so the deployed Railway app always renders the authoritative full-resolution source.
 const SOURCE_IMAGE_URL =
   'https://raw.githubusercontent.com/nitinaggarwal-12/PromptCanvas/main/images/01.png';
 
 export default function CanonicalTemplatesPage() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const canonicalXml = useMemo(() => generateTemplate01ExactV2Xml(), []);
+  const canonicalXml = useMemo(() => generateTemplate01ExactV3Xml(), []);
   const [xml, setXml] = useState(canonicalXml);
   const [copied, setCopied] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
@@ -128,11 +126,11 @@ export default function CanonicalTemplatesPage() {
                 <Sparkles className="h-4 w-4 text-indigo-600" />
                 <h1 className="truncate text-lg font-black tracking-tight">Canonical Templates</h1>
                 <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-700">
-                  Template 01 · coordinate matched
+                  Template 01 · icons + logos
                 </span>
               </div>
               <p className="truncate text-xs text-slate-500">
-                01 · System Context Diagram · 1536×1024 source geometry · fully editable Draw.io XML
+                01 · System Context Diagram · 1536×1024 source geometry · embedded vector iconography · editable Draw.io XML
               </p>
             </div>
           </div>
@@ -178,7 +176,7 @@ export default function CanonicalTemplatesPage() {
                 <FileCode2 className="h-4 w-4" /> Editable replica contract
               </div>
               <p className="mt-1.5 text-xs leading-5 text-emerald-900/80">
-                The canvas is rebuilt at the source image&apos;s 1536×1024 coordinate system. Header, legend, actors, NovaCura boundary, eight capability cards, integration/data layers, eight external systems, protocol flows and four bottom panels are native editable mxCells. The PNG is reference-only.
+                The editable replica now includes embedded SVG icons for governance, user personas, all eight NovaCura capabilities, cross-cutting controls, external ecosystem, AI services and operations, plus embedded Veeva, Salesforce, SAP and Google Vertex AI brand marks. The PNG remains reference-only.
               </p>
             </div>
           </section>
@@ -187,7 +185,7 @@ export default function CanonicalTemplatesPage() {
             <div className="flex h-12 items-center justify-between border-b border-slate-200 px-4">
               <div>
                 <div className="text-sm font-black">Editable Draw.io canvas</div>
-                <div className="text-[11px] text-slate-500">{editorReady ? 'Editor loaded · all components are editable mxCells' : 'Loading diagrams.net editor…'}</div>
+                <div className="text-[11px] text-slate-500">{editorReady ? 'Editor loaded · shapes, connectors, icons and logos are movable/resizable objects' : 'Loading diagrams.net editor…'}</div>
               </div>
               <div className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Template 01 · L1</div>
             </div>
