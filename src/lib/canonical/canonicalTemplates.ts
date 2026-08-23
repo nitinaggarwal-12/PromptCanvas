@@ -32,6 +32,7 @@ export const DOMAIN_PRESETS = [
 ];
 
 import { generateTemplate01ExactV3Xml } from "./template01ExactV3";
+import { generateTemplate02CapabilityMapXml } from "./template02CapabilityMap";
 
 /**
  * High-Fidelity 1:1 XML Generator for Template 01: System Context
@@ -39,6 +40,14 @@ import { generateTemplate01ExactV3Xml } from "./template01ExactV3";
  */
 export function generateSystemContextXml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
   return generateTemplate01ExactV3Xml(domainFlavor, theme);
+}
+
+/**
+ * High-Fidelity 1:1 XML Generator for Template 02: Capability Map
+ * Matches the NOVACURA Capability Map Architecture from Canonical PDF Page 2 / images/02.png
+ */
+export function generateCapabilityMapXml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate02CapabilityMapXml(domainFlavor, theme);
 }
 
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
@@ -62,7 +71,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Enterprise capabilities, AI capabilities, platform capabilities',
     defaultDomain: 'Enterprise AI & Platform Engineering',
     keyComponents: ['Business Capabilities', 'AI Foundation', 'Shared Core Services', 'Governance Matrix'],
-    generateXml: generateSystemContextXml
+    generateXml: generateCapabilityMapXml
   },
   {
     id: '03',
