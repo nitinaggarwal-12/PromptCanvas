@@ -109,7 +109,7 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   act("act_auth", "p_auth", 235, 45, "#F0F9FF", "#0284C7");
   act("act_orch", "p_orch", 300, 395, "#FAF5FF", "#7C3AED");
   act("act_rag", "p_rag", 390, 135, "#FAF5FF", "#7C3AED");
-  act("act_vdb", "p_vdb", 410, 45, "#F0F9FF", "#0284C7");
+  act("act_vdb", "p_vdb", 395, 38, "#F0F9FF", "#0284C7");
   act("act_data", "p_data", 465, 45, "#F0FDF4", "#059669");
   act("act_llm", "p_llm", 545, 55, "#FAF5FF", "#7C3AED");
   act("act_policy", "p_policy", 595, 55, "#FAF5FF", "#6D28D9");

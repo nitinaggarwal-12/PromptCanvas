@@ -1,7 +1,7 @@
 /**
  * Master 1:1 High-Craft Exact Replica Generator for Canonical Template 03: Business Process / Swimlane
  * Matches 100% of images/03.png (End-to-End Drug Development & Commercialization Lifecycle)
- * Spacious 1680x1040 layout, 115px lane heights, 100px+ card widths, and 100% collision-free orthogonal channels.
+ * Spacious 1680x1040 layout, 115px lane heights, 100% collision-free orthogonal channels.
  */
 
 const E = (v?: string | null) =>
@@ -66,10 +66,10 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   // Outer frame for all swimlanes (x: 20..1640, y: 120..945, w: 1620, h: 825)
   rect("swimlane_frame", "", 20, 120, 1620, 825, "fillColor=#FAFAFA;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=0;");
 
-  // Phase vertical separator guidelines
+  // Phase vertical separator guidelines (running only across process rows y=120..810)
   const phaseDividers = [200, 485, 810, 1085, 1365];
   phaseDividers.forEach((x, idx) => {
-    c.push(`<mxCell id="div_phase_${idx}" style="edgeStyle=none;html=1;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=4 4;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x}" y="120" as="sourcePoint"/><mxPoint x="${x}" y="945" as="targetPoint"/></mxGeometry></mxCell>`);
+    c.push(`<mxCell id="div_phase_${idx}" style="edgeStyle=none;html=1;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=4 4;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x}" y="120" as="sourcePoint"/><mxPoint x="${x}" y="810" as="targetPoint"/></mxGeometry></mxCell>`);
   });
 
   // Swimlane horizontal rows (7 rows, height: 115px each for Rows 1-6, 135px for Row 7)
@@ -141,51 +141,48 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   stepCard("card_cand_sel", "Candidate\nSelection", 500, 148, 88, 56, "#2563EB", "📋");
   stepCard("card_preclin", "Preclinical\nStudies", 600, 148, 88, 56, "#2563EB", "🧪");
 
-  // Decision 1: Proceed to Clinical Trials? (Positioned cleanly at x=705, y=146 in open space)
+  // Decision 1: Proceed to Clinical Trials?
   diamond("dec_proceed_trials", "Proceed to\nClinical\nTrials?", 705, 148, 92, 56, "fillColor=#ECFDF5;strokeColor=#10B981;");
 
   // --- ROW 2: CLINICAL OPERATIONS (y: 235..350, center y=292) ---
-  // IND Submission under Pre-IND
   stepCard("card_ind_sub", "IND\nSubmission", 395, 264, 80, 56, "#2563EB", "📄");
   stepCard("card_phase1", "Clinical Trials\nPhase I", 500, 264, 88, 56, "#2563EB", "🩺");
   stepCard("card_phase2", "Clinical Trials\nPhase II", 600, 264, 88, 56, "#2563EB", "👥");
   stepCard("card_phase3", "Clinical Trials\nPhase III", 700, 264, 88, 56, "#2563EB", "📊");
-  stepCard("card_nda_sub", "NDA / BLA\nSubmission", 800, 264, 90, 56, "#2563EB", "📑");
 
-  // Decision 2: Regulatory Approval? (x: 915, y: 264)
-  diamond("dec_reg_approval", "Regulatory\nApproval?", 915, 264, 96, 56, "fillColor=#FFFBEB;strokeColor=#F59E0B;");
+  // In Phase 3: Manufacturing / Submission (x: 810..1080)
+  stepCard("card_nda_sub", "NDA / BLA\nSubmission", 820, 264, 88, 56, "#2563EB", "📑");
+  diamond("dec_reg_approval", "Regulatory\nApproval?", 925, 264, 92, 56, "fillColor=#FFFBEB;strokeColor=#F59E0B;");
 
   // --- ROW 3: REGULATORY AFFAIRS (y: 350..465, center y=407) ---
-  // In Phase 1: Research & Discovery
   stepCard("card_reg_strat", "Regulatory\nStrategy", 215, 378, 80, 56, "#0D9488", "📋");
   stepCard("card_pre_ind", "Pre-IND\nMeeting", 305, 378, 80, 56, "#0D9488", "👥");
 
-  // In Phase 4: Commercialization
-  stepCard("card_ha_review", "Health Authority\nReview", 915, 378, 96, 56, "#EA580C", "🏛️");
-  stepCard("card_approval_lic", "Approval /\nLicence", 1025, 378, 90, 56, "#EA580C", "📜");
+  // In Phase 3 / Phase 4
+  stepCard("card_ha_review", "Health Authority\nReview", 820, 378, 92, 56, "#EA580C", "🏛️");
+  stepCard("card_approval_lic", "Approval /\nLicence", 930, 378, 90, 56, "#EA580C", "📜");
 
   // --- ROW 4: MANUFACTURING OPERATIONS (y: 465..580, center y=522) ---
-  // In Phase 3: Manufacturing (x: 810..1080)
   stepCard("card_proc_dev", "Process\nDevelopment", 600, 494, 88, 56, "#7E22CE", "⚙️");
-  stepCard("card_tech_trans", "Scale-Up & Tech\nTransfer", 710, 494, 92, 56, "#7E22CE", "🧪");
-  stepCard("card_gmp_mfg", "GMP\nManufacturing", 815, 494, 92, 56, "#7E22CE", "🏭");
-  stepCard("card_qc_release", "Quality Control\n& Release", 920, 494, 95, 56, "#7E22CE", "🛡️");
+  stepCard("card_tech_trans", "Scale-Up & Tech\nTransfer", 705, 494, 92, 56, "#7E22CE", "🧪");
+  stepCard("card_gmp_mfg", "GMP\nManufacturing", 820, 494, 92, 56, "#7E22CE", "🏭");
+  stepCard("card_qc_release", "Quality Control\n& Release", 930, 494, 95, 56, "#7E22CE", "🛡️");
 
   // --- ROW 5: COMMERCIAL OPERATIONS (y: 580..695, center y=637) ---
   // In Phase 4: Commercialization (x: 1085..1360)
-  stepCard("card_mkt_access", "Market Access\n& Pricing", 1025, 608, 90, 56, "#EA580C", "📈");
-  stepCard("card_prod_launch", "Product Launch\n& Distribution", 1130, 608, 96, 56, "#EA580C", "🚚");
-  stepCard("card_sales_hcp", "Sales & HCP\nEngagement", 1240, 608, 92, 56, "#EA580C", "👥");
-  stepCard("card_patient_supp", "Patient Support\nPrograms", 1345, 608, 96, 56, "#EA580C", "🤝");
+  stepCard("card_mkt_access", "Market Access\n& Pricing", 1100, 608, 90, 56, "#EA580C", "📈");
+  stepCard("card_prod_launch", "Product Launch\n& Distribution", 1200, 608, 92, 56, "#EA580C", "🚚");
+  stepCard("card_sales_hcp", "Sales & HCP\nEngagement", 1298, 608, 60, 56, "#EA580C", "👥");
+  
+  // In Phase 5: Patient Outcomes (x: 1365..1640)
+  stepCard("card_patient_supp", "Patient Support\nPrograms", 1380, 608, 96, 56, "#EA580C", "🤝");
 
   // --- ROW 6: PATIENT & HEALTHCARE PROVIDERS (y: 695..810, center y=752) ---
-  // In Phase 5: Patient Outcomes (x: 1365..1640)
-  stepCard("card_treat_adh", "Treatment &\nAdherence", 1130, 724, 96, 56, "#059669", "💊");
-  stepCard("card_outcome_mon", "Outcomes\nMonitoring", 1240, 724, 92, 56, "#059669", "📊");
-  stepCard("card_rwe_evid", "Real-World\nEvidence", 1345, 724, 96, 56, "#059669", "🗄️");
+  stepCard("card_treat_adh", "Treatment &\nAdherence", 1100, 724, 90, 56, "#059669", "💊");
+  stepCard("card_outcome_mon", "Outcomes\nMonitoring", 1200, 724, 92, 56, "#059669", "📊");
+  stepCard("card_rwe_evid", "Real-World\nEvidence", 1380, 724, 96, 56, "#059669", "🗄️");
 
   // --- ROW 7: DATA & DIGITAL PLATFORM (y: 810..945) ---
-  // 7 Platform Pods (x: 205..1170)
   const platformPods = [
     { title: "Data Collection\n(EDC, ePRO, Labs)", icon: "🗄️", x: 205, w: 125 },
     { title: "Data Integration\n& Governance", icon: "🕸️", x: 340, w: 125 },
@@ -239,7 +236,6 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   );
 
   // ==================== 4. CONNECTING EDGES & WORKFLOW ROUTING ====================
-  // Row 1 Forward Flow
   edge("e_id_to_disc", "card_id_targets", "card_lead_disc", "", "#1E824C");
   edge("e_disc_to_opt", "card_lead_disc", "card_lead_opt", "", "#1E824C");
   edge("e_opt_to_cand", "card_lead_opt", "card_cand_sel", "", "#1E824C");
@@ -247,56 +243,43 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   edge("e_preclin_to_dec1", "card_preclin", "dec_proceed_trials", "", "#2563EB");
 
   // Decision 1 Branches:
-  // Yes -> Clinical Trials Phase I (Row 2) - drops from bottom of decision diamond, routes to top of Phase I
   c.push(`<mxCell id="e_dec1_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10B981;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9;fontColor=#10B981;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#A7F3D0;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec_proceed_trials" target="card_phase1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="751" y="220"/><mxPoint x="544" y="220"/></Array></mxGeometry></mxCell>`);
-  
-  // No -> Feedback to Lead Optimization (Dashed return loop routed cleanly above Candidate Selection)
   c.push(`<mxCell id="e_dec1_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9;fontColor=#EF4444;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FECACA;padding=2;dashed=1;dashPattern=5 3;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec_proceed_trials" target="card_lead_opt"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="751" y="132"/><mxPoint x="435" y="132"/></Array></mxGeometry></mxCell>`);
 
-  // Row 3 Regulatory Affairs to Clinical Ops IND
   edge("e_reg_strat_to_pre", "card_reg_strat", "card_pre_ind", "", "#0D9488");
   c.push(`<mxCell id="e_pre_to_ind" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_pre_ind" target="card_ind_sub"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   edge("e_ind_to_p1", "card_ind_sub", "card_phase1", "", "#2563EB");
 
-  // Row 2 Clinical Ops Flow
   edge("e_p1_to_p2", "card_phase1", "card_phase2", "", "#2563EB");
   edge("e_p2_to_p3", "card_phase2", "card_phase3", "", "#2563EB");
   edge("e_p3_to_nda", "card_phase3", "card_nda_sub", "", "#2563EB");
   edge("e_nda_to_dec2", "card_nda_sub", "dec_reg_approval", "", "#2563EB");
 
   // Decision 2 Branches:
-  // Yes -> Health Authority Review (Row 3)
   c.push(`<mxCell id="e_dec2_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10B981;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9;fontColor=#10B981;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#A7F3D0;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec_reg_approval" target="card_ha_review"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  
-  // No -> Feedback to Candidate Selection (Dashed return loop routed cleanly across the corridor)
-  c.push(`<mxCell id="e_dec2_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9;fontColor=#EF4444;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FECACA;padding=2;dashed=1;dashPattern=5 3;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec_reg_approval" target="card_cand_sel"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="963" y="132"/><mxPoint x="544" y="132"/></Array></mxGeometry></mxCell>`);
+  c.push(`<mxCell id="e_dec2_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9;fontColor=#EF4444;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FECACA;padding=2;dashed=1;dashPattern=5 3;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec_reg_approval" target="card_cand_sel"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="971" y="132"/><mxPoint x="544" y="132"/></Array></mxGeometry></mxCell>`);
 
-  // Row 3 Regulatory Affairs
   edge("e_ha_to_appr", "card_ha_review", "card_approval_lic", "", "#EA580C");
 
-  // Row 4 Manufacturing Flow
   c.push(`<mxCell id="e_p2_to_proc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7E22CE;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="card_phase2" target="card_proc_dev"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   edge("e_proc_to_tech", "card_proc_dev", "card_tech_trans", "", "#7E22CE");
   edge("e_tech_to_gmp", "card_tech_trans", "card_gmp_mfg", "", "#7E22CE");
   edge("e_gmp_to_qc", "card_gmp_mfg", "card_qc_release", "", "#7E22CE");
 
-  // Row 5 Commercial Operations Flow
   c.push(`<mxCell id="e_appr_to_mkt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="card_approval_lic" target="card_mkt_access"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="e_qc_to_mkt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_qc_release" target="card_mkt_access"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   edge("e_mkt_to_launch", "card_mkt_access", "card_prod_launch", "", "#EA580C");
   edge("e_launch_to_sales", "card_prod_launch", "card_sales_hcp", "", "#EA580C");
   edge("e_sales_to_supp", "card_sales_hcp", "card_patient_supp", "", "#EA580C");
 
-  // Row 6 Patient Care Flow
   c.push(`<mxCell id="e_launch_to_treat" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="card_prod_launch" target="card_treat_adh"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   edge("e_treat_to_outc", "card_treat_adh", "card_outcome_mon", "", "#059669");
   edge("e_outc_to_rwe", "card_outcome_mon", "card_rwe_evid", "", "#059669");
 
-  // Feedback Loop from Real-World Evidence back to Target Discovery (Routed above the phase chevrons at y=76 in open margin)
+  // Feedback Loop from Real-World Evidence back to Target Discovery
   c.push(`<mxCell id="e_rwe_feedback" value="RWE Continuous Improvement Feedback Loop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9;fontColor=#059669;dashed=1;dashPattern=5 3;labelBackgroundColor=#FFFFFF;labelBorderColor=#A7F3D0;padding=3;" edge="1" parent="1" source="card_rwe_evid" target="card_id_targets"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1600" y="752"/><mxPoint x="1600" y="76"/><mxPoint x="255" y="76"/></Array></mxGeometry></mxCell>`);
 
   // ==================== 5. BOTTOM LEGEND ====================
-  // Legend Container (y: 955..998, w: 1620, h: 42)
   rect("legend_bg", "", 20, 955, 1620, 42, "fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;rounded=1;arcSize=8;");
   text("lbl_legend_title", `<b style="font-size:10.5px;color:#0F172A;letter-spacing:1px;">LEGEND</b>`, 25, 960, 75, 32, "align=center;");
 
@@ -320,7 +303,6 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
     );
   });
 
-  // Symbols
   rect("leg_sym_step", `<span style="font-size:8.5px;font-weight:bold;color:#475569;">Process Step</span>`, 830, 962, 95, 28, "fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;rounded=1;arcSize=8;align=center;");
   diamond("leg_sym_dec", `<span style="font-size:8px;font-weight:bold;color:#D97706;">Decision</span>`, 935, 960, 80, 30, "fillColor=#FFFBEB;strokeColor=#F59E0B;");
   text("leg_sym_flow", `<span style="font-size:9px;font-weight:bold;color:#475569;">&mdash;&rarr; Flow</span>`, 1025, 962, 85, 28, "align=center;");

@@ -20,7 +20,8 @@
     "eval:geometry": "tsx evals/score_geometry.ts",
     "eval:geometry:gate": "tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml",
     "eval:templates": "tsx evals/check_template_integrity.ts templates/master_blueprints/xml/*.xml",
-    "eval:templates:gate": "tsx evals/check_template_integrity.ts --allow evals/template-integrity-allowlist.json templates/master_blueprints/xml/*.xml"
+    "eval:templates:gate": "tsx evals/check_template_integrity.ts --allow evals/template-integrity-allowlist.json templates/master_blueprints/xml/*.xml",
+    "test:canonical": "npx tsx scripts/test_canonical_full_suite.ts"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
