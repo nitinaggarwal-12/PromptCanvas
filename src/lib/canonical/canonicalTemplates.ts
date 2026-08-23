@@ -43,6 +43,14 @@ import { generateTemplate09DataFlowXml } from "./template09DataFlow";
 import { generateTemplate10IntegrationArchXml } from "./template10IntegrationArch";
 import { generateTemplate11SequenceDiagramXml } from "./template11SequenceDiagram";
 import { generateTemplate12StateMachineXml } from "./template12StateMachine";
+import { generateTemplate13ClassErdXml } from "./template13ClassErd";
+import { generateTemplate14DeploymentArchXml } from "./template14DeploymentArch";
+import { generateTemplate15NetworkTopologyXml } from "./template15NetworkTopology";
+import { generateTemplate16DeploymentMeshXml } from "./template16DeploymentMesh";
+import { generateTemplate17IdentityAccessFlowXml } from "./template17IdentityAccessFlow";
+import { generateTemplate18SecurityTrustBoundaryXml } from "./template18SecurityTrustBoundary";
+import { generateTemplate19HaDrArchitectureXml } from "./template19HaDrArchitecture";
+import { generateTemplate20CiCdPipelineXml } from "./template20CiCdPipeline";
 import { buildValueStreamMapXml } from "../masterBuilders/master_builder_vsm";
 import { buildAsIsToBeProcessFlowXml } from "../masterBuilders/master_builder_asis_tobe";
 import { buildEnterpriseReferenceArchitectureXml } from "../masterBuilders/build_master_enterprise_reference";
@@ -303,99 +311,99 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   },
   {
     id: '13',
-    name: 'Decision Flow / Decision Tree',
-    family: 'Process',
-    level: 'L1/L2',
-    primaryPurpose: 'Business rules, conditional logic branching, and AI policy evaluation gates',
-    examples: 'Routing trees, approvals, AI confidence thresholds, risk scoring',
-    defaultDomain: 'AI Regulatory Triage & Multi-Tier Escalation Decision Tree',
-    previewImage: '/templates/incident_triage_swimlane.png',
-    keyComponents: ['Inbound Event', 'Decision Diamonds', 'Confidence Gates', 'Action Sinks'],
-    generateXml: () => buildIncidentTriageSreXml()
+    name: 'Class / ERD Diagram',
+    family: 'Structure',
+    level: 'L2/L3',
+    primaryPurpose: '24 core enterprise domain entities across 7 domains with PK/FK attributes and Crow’s Foot notation',
+    examples: 'Relational data model, lakehouse star schema, biopharma enterprise semantic ontology',
+    defaultDomain: 'Bio-Pharma Enterprise Entity Model & Relational Schema',
+    previewImage: '/templates/erd.png',
+    keyComponents: ['24 Entities / Tables', '7 Core Domains', 'Crow’s Foot Cardinality', '4 Analytical Panels'],
+    generateXml: generateTemplate13ClassErdXml
   },
   {
     id: '14',
-    name: 'Data Model / ERD',
-    family: 'Structure',
+    name: 'Deployment Architecture',
+    family: 'Infrastructure',
     level: 'L2/L3',
-    primaryPurpose: 'Database entities, tables, attributes, primary/foreign keys, and cardinalities',
-    examples: 'Relational databases, lakehouse star schema, semantic model',
-    defaultDomain: 'Clinical Trial Genomics & EHR Star Schema',
-    previewImage: '/templates/erd.png',
-    keyComponents: ['Entities/Tables', 'Primary/Foreign Keys', 'Crow\'s Foot Cardinality', 'Data Types'],
-    generateXml: () => buildUnifiedDataGovernanceXml()
+    primaryPurpose: 'Scalable, secure, and highly available multi-region active/passive DR deployment on GCP',
+    examples: 'Primary us-central1, DR us-east1 standby, Global Traffic Director, shared VPC networking',
+    defaultDomain: 'Multi-Region High-Availability Cloud Deployment',
+    previewImage: '/templates/ha_multi_region_application.png',
+    keyComponents: ['Primary Region (us-central1)', 'DR Region (us-east1)', 'Global Traffic Director', '4 Analytical Cards'],
+    generateXml: generateTemplate14DeploymentArchXml
   },
   {
     id: '15',
     name: 'Network Topology',
     family: 'Infrastructure',
     level: 'L2/L3',
-    primaryPurpose: 'Network boundaries, VPCs, subnets, routers, firewalls, and gateways',
-    examples: 'VPC hub-and-spoke, hybrid cloud, zero-trust perimeter',
+    primaryPurpose: 'Multi-AZ Shared VPC (10.10.0.0/16) across us-central1-a/b/c with Public/Private/Data subnets',
+    examples: 'VPC hub-and-spoke, hybrid cloud, zero-trust perimeter, Private Service Connect',
     defaultDomain: 'GCP Enterprise Landing Zone & Shared VPC',
     previewImage: '/templates/gcp_landing_zone_vpc_map.png',
-    keyComponents: ['Public Subnet DMZ', 'Private App Subnet', 'Database Subnet', 'Cloud Interconnect'],
-    generateXml: () => buildGcpLandingZoneVpcXml()
+    keyComponents: ['Public Subnet DMZ', '3 Multi-AZ Subnets', 'Data Subnet Tier', 'Managed Services Bus'],
+    generateXml: generateTemplate15NetworkTopologyXml
   },
   {
     id: '16',
-    name: 'Deployment Architecture',
+    name: 'Deployment Diagram',
     family: 'Infrastructure',
     level: 'L2/L3',
-    primaryPurpose: 'Physical/logical mapping of application workloads onto cloud infrastructure',
-    examples: 'GKE multi-cluster, Cloud Run, multi-region failover',
-    defaultDomain: 'Multi-Region High-Availability Cloud Deployment',
+    primaryPurpose: 'Multi-Zone GKE Autopilot and elastic Cloud Run background worker mesh in us-central1 with DR sync',
+    examples: 'GKE multi-zone, Cloud Run Jobs, regional data tier, warm DR standby in us-east1',
+    defaultDomain: 'Multi-Zone Application & Background Worker Mesh',
     previewImage: '/templates/ha_multi_region_application.png',
-    keyComponents: ['Primary Region', 'Secondary Region', 'Global Load Balancer', 'Data Replication'],
-    generateXml: () => buildMasterHaMultiRegionAppXml()
+    keyComponents: ['Zone A/B/C GKE Autopilot', 'Cloud Run Background Jobs', 'Regional Data Tier', 'Environment Strategy'],
+    generateXml: generateTemplate16DeploymentMeshXml
   },
   {
     id: '17',
     name: 'Identity & Access Flow',
     family: 'Security & Governance',
     level: 'L2/L3',
-    primaryPurpose: 'Authentication, authorization, token exchange, SSO federation, and IAM',
-    examples: 'Workload Identity Federation, OAuth 2.1 / OIDC, BeyondCorp',
+    primaryPurpose: '4-Stage IAM Journey (1 Authenticate, 2 Authorize, 3 Access Resources, 4 Monitor & Audit)',
+    examples: 'Google Cloud Identity, IAM least privilege pyramid, Cloud Audit Logs, Access Transparency',
     defaultDomain: 'Zero-Trust Enterprise IAM & Token Exchange',
     previewImage: '/templates/federated_iam_sso.png',
-    keyComponents: ['External IdP', 'Security Token Service (STS)', 'IAM Workload Pools', 'Audit Ledger'],
-    generateXml: () => buildMasterWorkloadIdentityAuthXml()
+    keyComponents: ['Identity Providers (IdP)', 'IAM Least Privilege Pyramid', 'Resource Access Tier', 'Audit & Retention'],
+    generateXml: generateTemplate17IdentityAccessFlowXml
   },
   {
     id: '18',
     name: 'Security / Trust Boundary',
     family: 'Security & Governance',
     level: 'L1/L2/L3',
-    primaryPurpose: 'Security zones, encryption perimeters, trust levels, and defense-in-depth',
-    examples: 'Zero Trust, PCI-DSS enclaves, PHI protection, Assured Workloads',
+    primaryPurpose: 'Defense-in-depth trust boundaries across Edge, Application, Data, and Management zones',
+    examples: 'Zero Trust perimeter, Data Classification pillar (Restricted, Confidential, Internal, Public)',
     defaultDomain: 'Sovereign Zero-Trust Data Protection Enclave',
     previewImage: '/templates/zero_trust_mesh.png',
-    keyComponents: ['Internet Untrusted Zone', 'Edge WAF DMZ', 'Trusted App Enclave', 'Hardware Key Vault'],
-    generateXml: () => buildMultiFlowZeroTrustPlatformXml()
+    keyComponents: ['Edge / Perimeter Zone', 'Application & Data Zones', 'Data Classification Pillar', 'Cross-Cutting Security Controls'],
+    generateXml: generateTemplate18SecurityTrustBoundaryXml
   },
   {
     id: '19',
     name: 'HA / DR Architecture',
     family: 'Infrastructure',
     level: 'L2/L3',
-    primaryPurpose: 'Resilience engineering, multi-region replication, and failover routing',
-    examples: 'Active-active multi-region, hot standby, backup/restore',
+    primaryPurpose: 'Active-Active and Active-Passive resiliency engineering across us-central1 and us-east1 with 6-step failover',
+    examples: 'Multi-region async replication, RTO <= 1 hr, RPO <= 15 min, Cloud DNS health checks',
     defaultDomain: 'Active-Active Multi-Region Resiliency (Cloud Spanner TrueTime)',
     previewImage: '/templates/tech_multi_region_dr.png',
-    keyComponents: ['Active Region (Iowa)', 'Standby Region (Virginia)', 'DNS Health Checks', 'RTO/RPO Metrics'],
-    generateXml: () => buildCompleteWellArchitectedGcpDrMasterXml()
+    keyComponents: ['Active Primary Region', 'Standby DR Region', 'Cross-Region Data Replication', '6-Step Failover Sequence'],
+    generateXml: generateTemplate19HaDrArchitectureXml
   },
   {
     id: '20',
     name: 'CI/CD Pipeline',
     family: 'Delivery & Operations',
     level: 'L2/L3',
-    primaryPurpose: 'Automated software delivery lifecycle, GitOps synchronization, and rollout',
-    examples: 'GitOps declarative delivery, progressive canary rollout, SLSA L3',
+    primaryPurpose: '9-stage automated GitOps continuous integration and continuous delivery pipeline with quality gates',
+    examples: 'Cloud Build CI, Artifact Registry security scan, Cloud Deploy, Canary / Blue-Green rollout',
     defaultDomain: 'SLSA Level 3 GitOps Continuous Delivery Pipeline',
     previewImage: '/templates/secure_deployment_topology_map.png',
-    keyComponents: ['Source Repo', 'Cloud Build CI', 'Artifact Registry & Scan', 'Canary Rollout Target'],
-    generateXml: () => buildSecureDeploymentTopologyXml()
+    keyComponents: ['9-Stage GitOps Delivery', '4 Quality Gates', '3 Deployment Patterns', 'Automated Rollback Strategy'],
+    generateXml: generateTemplate20CiCdPipelineXml
   },
   {
     id: '21',
