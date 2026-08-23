@@ -1,7 +1,12 @@
-/**
- * 🎨 Blueprint #54 (NEW-DAT-04): Enterprise ETL/ELT & CDC Data Pipeline Architecture
- * Executive Light Theme Master Blueprint
- */
+import { generateTemplate09DataFlowXml } from "../canonical/template09DataFlow";
+
+export function buildMasterEtlEltCdcPipelineXml(): string {
+  return generateTemplate09DataFlowXml("biopharma", "light");
+}
+
+export function buildOldMasterEtlEltCdcPipelineXml(): string {
+  return generateTemplate09DataFlowXml("biopharma", "light");
+}
 
 const esc = (value: string): string =>
   value
@@ -51,7 +56,7 @@ const edge = (id: string, source: string, target: string, label: string, kind: '
   return `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${cfg.stroke};strokeWidth=${cfg.width};dashed=${cfg.dashed};dashPattern=${cfg.pattern};endArrow=${cfg.arrow};endFill=${cfg.arrow === 'block' ? 1 : 0};fontColor=#0F172A;fontSize=10;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=${exitX};exitY=${exitY};exitDx=0;exitDy=0;entryX=${entryX};entryY=${entryY};entryDx=0;entryDy=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry">${pts}</mxGeometry></mxCell>`;
 };
 
-export function buildMasterEtlEltCdcPipelineXml(): string {
+function buildOldMasterEtlEltCdcPipelineXmlInternal(): string {
   const cells: string[] = [
     '<mxCell id="0"/>',
     '<mxCell id="1" parent="0"/>',

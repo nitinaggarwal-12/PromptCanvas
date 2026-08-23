@@ -35,6 +35,12 @@ import { generateTemplate01ExactV3Xml } from "./template01ExactV3";
 import { generateTemplate02CapabilityMapXml } from "./template02CapabilityMap";
 import { generateTemplate03SwimlaneXml } from "./template03Swimlane";
 import { generateTemplate04ValueStreamXml } from "./template04ValueStream";
+import { generateTemplate05AsIsToBeXml } from "./template05AsIsToBe";
+import { generateTemplate06C4ContextXml } from "./template06C4Context";
+import { generateTemplate07C4ContainerXml } from "./template07C4Container";
+import { generateTemplate08ComponentArchXml } from "./template08ComponentArch";
+import { generateTemplate09DataFlowXml } from "./template09DataFlow";
+import { generateTemplate10IntegrationArchXml } from "./template10IntegrationArch";
 import { buildValueStreamMapXml } from "../masterBuilders/master_builder_vsm";
 import { buildAsIsToBeProcessFlowXml } from "../masterBuilders/master_builder_asis_tobe";
 import { buildEnterpriseReferenceArchitectureXml } from "../masterBuilders/build_master_enterprise_reference";
@@ -99,6 +105,54 @@ export function generateValueStream04Xml(domainFlavor = "biopharma", theme: "lig
   return generateTemplate04ValueStreamXml(domainFlavor, theme);
 }
 
+/**
+ * High-Fidelity 1:1 XML Generator for Template 05: As-Is / To-Be
+ * Matches the NOVACURA As-Is vs To-Be Transformation from Canonical PDF Page 5 / images/05.png
+ */
+export function generateAsIsToBe05Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate05AsIsToBeXml(domainFlavor, theme);
+}
+
+/**
+ * High-Fidelity 1:1 XML Generator for Template 06: C4 Context
+ * Matches the NOVACURA C4 Context from Canonical PDF Page 6 / images/06.png
+ */
+export function generateC4Context06Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate06C4ContextXml(domainFlavor, theme);
+}
+
+/**
+ * High-Fidelity 1:1 XML Generator for Template 07: C4 Container
+ * Matches the NOVACURA C4 Container from Canonical PDF Page 7 / images/07.png
+ */
+export function generateC4Container07Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate07C4ContainerXml(domainFlavor, theme);
+}
+
+/**
+ * High-Fidelity 1:1 XML Generator for Template 08: Component Architecture (LLD)
+ * Matches the NOVACURA Component Architecture from Canonical PDF Page 8 / images/08.png
+ */
+export function generateComponentArch08Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate08ComponentArchXml(domainFlavor, theme);
+}
+
+/**
+ * High-Fidelity 1:1 XML Generator for Template 09: Data Flow Architecture
+ * Matches the NOVACURA Data Flow Architecture from Canonical PDF Page 9 / images/09.png
+ */
+export function generateDataFlow09Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate09DataFlowXml(domainFlavor, theme);
+}
+
+/**
+ * High-Fidelity 1:1 XML Generator for Template 10: Integration Architecture
+ * Matches the NOVACURA Integration Architecture from Canonical PDF Page 10 / images/10.png
+ */
+export function generateIntegrationArch10Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate10IntegrationArchXml(domainFlavor, theme);
+}
+
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   {
     id: '01',
@@ -158,7 +212,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Enterprise Cloud Transformation',
     previewImage: '/templates/as_is_vs_to_be_process_flow.png',
     keyComponents: ['As-Is Legacy Silos', 'Transformation Drivers', 'To-Be Cloud Target', 'Business ROI'],
-    generateXml: () => buildAsIsToBeProcessFlowXml()
+    generateXml: generateAsIsToBe05Xml
   },
   {
     id: '06',
@@ -170,7 +224,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Enterprise Product Architecture',
     previewImage: '/templates/tech_c4_system_context.png',
     keyComponents: ['System in Scope', 'User Personas', 'External Software Systems', 'Data Contracts'],
-    generateXml: () => buildEnterpriseReferenceArchitectureXml()
+    generateXml: generateC4Context06Xml
   },
   {
     id: '07',
@@ -182,7 +236,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Cloud Native Microservices Platform',
     previewImage: '/templates/saas_multi_tenant.png',
     keyComponents: ['Web/Mobile Apps', 'API Gateway', 'Microservices Pods', 'Databases & Caches'],
-    generateXml: () => buildMasterSaasMultiTenantXml()
+    generateXml: generateC4Container07Xml
   },
   {
     id: '08',
@@ -194,7 +248,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Microservice Internal Component Structure',
     previewImage: '/templates/micro_frontend_architecture.png',
     keyComponents: ['Controllers', 'Service Adapters', 'Repository Layer', 'Domain Logic Entities'],
-    generateXml: () => buildC4ComponentLldXml()
+    generateXml: generateComponentArch08Xml
   },
   {
     id: '09',
@@ -206,7 +260,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Medallion Data Lakehouse & Stream Processing',
     previewImage: '/templates/etl_elt_cdc_pipeline.png',
     keyComponents: ['Raw Bronze Storage', 'Dataflow Cleaning', 'Silver/Gold Marts', 'Serving APIs'],
-    generateXml: () => buildMasterEtlEltCdcPipelineXml()
+    generateXml: generateDataFlow09Xml
   },
   {
     id: '10',
@@ -218,8 +272,9 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Enterprise API Management & Integration Hub',
     previewImage: '/templates/enterprise_api_management.png',
     keyComponents: ['Apigee Gateway', 'Event Backbone', 'Data Integration Connectors', 'External Sinks'],
-    generateXml: () => buildMasterEnterpriseApiManagementXml()
+    generateXml: generateIntegrationArch10Xml
   },
+
   {
     id: '11',
     name: 'Sequence Diagram',

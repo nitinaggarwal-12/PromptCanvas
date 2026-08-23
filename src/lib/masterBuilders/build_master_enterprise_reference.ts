@@ -1,8 +1,12 @@
-/**
- * Blueprint 6 — Enterprise Reference Architecture
- * Enterprise orientation view: authentic product/vendor identity only, clear Gemini
- * Enterprise capability boundaries, and cross-cutting controls without fake service logos.
- */
+import { generateTemplate06C4ContextXml } from "../canonical/template06C4Context";
+
+export function buildEnterpriseReferenceArchitectureXml(): string {
+  return buildOldEnterpriseReferenceArchitectureXmlInternal();
+}
+
+export function buildOldEnterpriseReferenceArchitectureXml(): string {
+  return generateTemplate06C4ContextXml("biopharma", "light");
+}
 
 const GCP_BRAND =
   'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E';
@@ -57,7 +61,7 @@ const cross = (id: string, badge: string, title: string, subtitle: string, y: nu
 const flow = (id: string, source: string, target: string): string =>
   `<mxCell id="${id}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
 
-export function buildEnterpriseReferenceArchitectureXml(): string {
+function buildOldEnterpriseReferenceArchitectureXmlInternal(): string {
   const cells: string[] = [
     '<mxCell id="0"/>', '<mxCell id="1" parent="0"/>',
     layer('experience', 1, 'EXPERIENCE LAYER', 'Engage users & channels', 20, '#1565C0', '#EFF6FF'),

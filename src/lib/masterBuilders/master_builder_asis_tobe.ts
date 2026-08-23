@@ -1,12 +1,16 @@
-export function buildAsIsToBeProcessFlowXml(): string {
-  return `
-<mxfile host="app.diagrams.net" modified="2026-08-10T16:35:00.000Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="asis_vs_tobe_process_flow" name="As-Is vs. To-Be Process &amp; Architecture Flow">
-    <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="920" background="#FFFFFF">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
+import { generateTemplate05AsIsToBeXml } from "../canonical/template05AsIsToBe";
 
+export function buildAsIsToBeProcessFlowXml(): string {
+  return generateTemplate05AsIsToBeXml("biopharma", "light");
+}
+
+export function buildOldAsIsToBeXml(): string {
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="old_asis_tobe" name="As-Is vs To-Be">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
         <!-- FULL CANVAS FRAME -->
         <mxCell id="frame_asis_tobe" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="0" y="0" width="1560" height="920" as="geometry" />

@@ -1,11 +1,16 @@
+import { generateTemplate08ComponentArchXml } from "../canonical/template08ComponentArch";
+
 export function buildC4ComponentLldXml(): string {
+  return generateTemplate08ComponentArchXml("biopharma", "light");
+}
+
+export function buildOldC4ComponentLldXml(): string {
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="c4_component_lld" name="C4 Level 3.5: GKE Microservices LLD &amp; Gemini AI Deep Dive (ARCH-C4-02)">
-    <mxGraphModel dx="1600" dy="920" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="old_c4_component_lld" name="C4 Component LLD">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-
         <!-- ==================== HEADER BANNER ==================== -->
         <mxCell id="top_logo" value="&lt;span style=&quot;font-size:24px;&quot;&gt;📦&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="10" width="35" height="35" as="geometry"/>
