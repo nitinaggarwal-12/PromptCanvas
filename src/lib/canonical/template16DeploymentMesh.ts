@@ -138,10 +138,14 @@ export function generateTemplate16DeploymentMeshXml(
   // 4. RIGHT DR REGION (us-east1)
   rect("box_dr_reg", "", 935, 115, 200, 390, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;rounded=1;");
   rect("lbl_dr_reg", "<span style='font-size:9px;font-weight:800;color:#1E3A8A;'>DR REGION (us-east1)</span>", 935, 122, 200, 18, "strokeColor=none;fillColor=none;align=center;");
-  rect("dr_gke", "<div style='font-size:7.2px;font-weight:700;'>⚙️ GKE Autopilot (Standby)</div>", 945, 150, 180, 30, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
-  rect("dr_run", "<div style='font-size:7.2px;font-weight:700;'>📦 Cloud Run Jobs (Standby)</div>", 945, 190, 180, 30, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
-  rect("dr_data", "<div style='font-size:7.2px;font-weight:700;'>🗄️ Data Tier (Replicated)</div>", 945, 230, 180, 30, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
-  rect("dr_shared", "<div style='font-size:7.2px;font-weight:700;'>Shared Services (Standby)</div>", 945, 270, 180, 30, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dr_gke", "<div style='font-size:7.2px;font-weight:700;'>⚙️ GKE Autopilot (Standby)</div>", 945, 146, 180, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dr_run", "<div style='font-size:7.2px;font-weight:700;'>📦 Cloud Run Jobs (Standby)</div>", 945, 186, 180, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dr_data", "<div style='font-size:7.2px;font-weight:700;'>🗄️ Data Tier (Replicated)</div>", 945, 226, 180, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dr_shared", "<div style='font-size:7.2px;font-weight:700;'>Shared Services (Standby)</div>", 945, 266, 180, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dr_sync", "<div style='font-size:6.8px;font-weight:700;color:#D97706;'>🔄 Cross-Region Async Sync<br/><span style='font-size:5.8px;color:#64748B;'>Storage &amp; DB Continuous CDC</span></div>", 945, 306, 180, 34, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;");
+  rect("dr_failover", "<div style='font-size:6.8px;font-weight:700;color:#16A34A;'>🚦 Automated Health &amp; Failover<br/><span style='font-size:5.8px;color:#64748B;'>Traffic Director Geo-Steering</span></div>", 945, 348, 180, 34, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;");
+  rect("dr_rpo", "<div style='font-size:6.8px;line-height:1.4;color:#0F172A;'><b>DR Recovery Targets:</b><br/>• RPO Target: <b>≤ 15 minutes</b><br/>• RTO Target: <b>≤ 1.0 hour</b></div>", 945, 390, 180, 48, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  rect("dr_drills", "<div style='font-size:6.5px;color:#64748B;text-align:center;'>Quarterly GxP Failover Simulation Drills<br/>Automated Runbook Checksum Verified</div>", 945, 446, 180, 36, "fillColor=#FFFFFF;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
 
   edge(nid(), "Async Replication & DR Sync", "box_pri_reg", "box_dr_reg", "edgeStyle=none;strokeColor=#1E3A8A;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=4;startSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontSize=7.5;fontStyle=1;");
 
