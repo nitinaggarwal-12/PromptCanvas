@@ -181,7 +181,11 @@ Every modification to diagram compiler, layout engine, cleaner, or preflight cod
 2. **Zero-Mutation Preflight Passthrough**:
    - `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` MUST ALWAYS recognize canonical diagrams (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`, etc.) as structured master diagrams and pass them through with **ZERO coordinate or geometric mutation**.
 3. **16:9 Aspect Ratio Preservation**:
-   - Canonical and master templates are engineered for `16:9` (1440x800 / 1485x800) aspect ratio. Never squash them into `21:9` viewports in modals or embeds.
-4. **Valid `<mxfile><diagram>` Envelope**:
-   - Every canonical template generator MUST emit a complete `<mxfile host="embed.diagrams.net"><diagram id="..." name="..."><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>` document structure to prevent Draw.io viewer wrapping artifacts.
+   - Canonical and master templates are engineered for `16:9` (1440x800 / 1485x800 / 1600x960) aspect ratio. Never squash them into `21:9` viewports in modals or embeds.
+4. **Mandatory `<mxfile><diagram>` Envelope**:
+   - Every diagram generator MUST emit a complete `<mxfile host="embed.diagrams.net"><diagram id="..." name="..."><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>` document structure to prevent Draw.io viewer wrapping artifacts and blank viewports.
+5. **Zero External URL Dependencies**:
+   - Never use `https://api.iconify.design/...` or unverified external HTTP image URLs inside HTML labels. Always use native vector Unicode symbols/emojis or inline SVGs.
+6. **High-Contrast Pill Badges for Connectors**:
+   - All connector labels that traverse or touch container boundaries MUST have solid white or high-contrast pill backgrounds (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;`) to guarantee 100% collision-free legibility.
 

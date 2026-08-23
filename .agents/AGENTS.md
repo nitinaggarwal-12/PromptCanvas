@@ -1,27 +1,66 @@
 # Custom Rules for Antigravity in PromptCanvas
 
-## 🧠 Mandatory Gemini Prompt-to-Architecture Generation Protocol
-* **Core Mandate**:
-  1. Whenever designing, redesigning, enhancing, or generating architecture diagrams, topologies, or blueprint PNG images in PromptCanvas, **ALWAYS** call the Gemini model (`gemini-3.1-pro-preview` / `gemini-2.5-flash`) with complete prompts, domain instructions, component topologies, and numbered data flow sequence rules.
-  2. Synthesize, validate, and enrich the full architecture graph and Draw.io XML using the complete prompt context before rendering the final high-resolution PNG images.
-  3. Adhere strictly to the requested visual theme (Light Executive `#F8FAFC` or Deep Slate-Midnight `#0B111E`) with numbered data flow step labels on every connector.
+## 🧠 Master Diagram Generation & Quality Laws (Permanently Encoded in Brain)
+
+### 1. Mandatory `<mxfile><diagram>` Document Envelope
+* Every architecture diagram generated or modified by ANY system (Gemini prompt compiler, canonical generator, master builder, AI customizer, or clean variant) MUST be enclosed in a valid XML document envelope:
+  ```xml
+  <mxfile host="embed.diagrams.net">
+    <diagram id="template_id" name="Diagram Title">
+      <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+        <root>
+          <mxCell id="0"/>
+          <mxCell id="1" parent="0"/>
+          <!-- Cells go here -->
+        </root>
+      </mxGraphModel>
+    </diagram>
+  </mxfile>
+  ```
+* **Strict Prohibition**: Never return un-enveloped raw `<mxGraphModel>` or loose `<mxCell>` tags, which cause blank canvas rendering in `viewer-static.min.js` and iframe viewports.
 
 ---
 
-## 🎨 Enterprise Architecture Design Standards
-* **Light Executive Theme**: Pristine off-white `#F8FAFC` background, white container cards (`#FFFFFF` with `#CBD5E1` borders and drop shadows), dark navy left header pods (`#1E293B` / `#1E3A8A` with bold white lettering), and high-contrast dark text with official Google Cloud SVG product icons.
-* **Deep Slate-Midnight Theme**: Pure `#0B111E` background, dark frosted container rows (`#0F172A` with `#1E293B` borders), dark left header pods (`#182338` with `#3B82F6` borders and bold white lettering), and glowing `#60A5FA` orthogonal arrows.
-* **Data Flow Numbering**: Every edge must convey explicit, numbered data flow steps (`1. Ingestion` $\rightarrow$ `2. CDC Sync` $\rightarrow$ `3. Transformation` $\rightarrow$ `4. Validation` $\rightarrow$ `5. Consumption`).
+### 2. Zero External URL & Network Dependencies
+* Never use `https://api.iconify.design/...` or unverified external HTTP image URLs inside HTML labels.
+* Always use native vector Unicode symbols/emojis (`🧬`, `🔬`, `🩺`, `⚖️`, `🛡️`, `🏭`, `📊`, `📁`, `✨`, `🔒`, `🏢`, `☁️`, `🤝`, `🏛️`, `🏆`, `🚀`, `🗄️`, `🌐`, `🎧`, `⚙️`, `🎯`, `📥`, `📑`, `🔄`, `📦`, `🔗`, `🧠`) or embedded inline SVGs to ensure 100% offline and headless rendering reliability.
 
 ---
 
-## 🏛️ Canonical Blueprint Immutability & Preflight Passthrough Protocol
-* **Master Ground-Truth Reference (`images/01.png` – `images/37.png`)**:
-  Every canonical template in `src/lib/canonical/` MUST replicate the visual structure, column pitch, row pitch, color-coded chevrons, role pods, and decision gates of its corresponding master image in `images/` with 100% fidelity.
-* **Zero-Mutation Preflight Passthrough**:
-  `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` MUST ALWAYS recognize canonical diagrams (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`, etc.) as structured master diagrams and pass them through with **ZERO coordinate or geometric mutation**.
-* **16:9 Aspect Ratio Preservation**:
-  Canonical and master templates are engineered for `16:9` (1440x800 / 1485x800) aspect ratio. Never squash them into `21:9` viewports in modals or embeds.
-* **Valid `<mxfile><diagram>` Envelope**:
-  Every canonical template generator MUST emit a complete `<mxfile host="embed.diagrams.net"><diagram id="..." name="..."><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>` document structure to prevent Draw.io viewer wrapping artifacts.
+### 3. Collision-Free 2D Geometric Routing & High-Contrast Pill Badges
+* **Channel & Corridor Pitch**: Maintain minimum $140\text{px}$ horizontal column pitch and $80\text{px}$ inter-row channel pitch.
+* **Label Pill Badges**: All connector labels that traverse or touch container boundaries MUST have solid white or high-contrast pill backgrounds:
+  `labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;`
+* **Zero Slicing**: Connecting lines, arrows, and SVG paths must NEVER slice horizontally, vertically, or diagonally across intermediate table boxes, cards, or diamond vertices.
+* **Single Crisp Directional Connectors**: Avoid overlapping lines or duplicate arrowheads on bidirectional connectors. Use explicit single orthogonal directional connectors.
 
+---
+
+### 4. 16:9 Ultra-Wide Responsive Viewport Geometry
+* **Standard Resolution**: Default canvas dimensions are $1600 \times 960\text{px}$ to $1680 \times 1040\text{px}$ (16:9 aspect ratio).
+* **Proportional Scaling**: Headers (`fontSize=24`), Subheaders (`fontSize=13`), Card Titles (`fontSize=9.5 - 10.5`), Card Descriptions (`fontSize=7.5 - 8.5`), and Badges (`fontSize=8`).
+* **Void Minimization**: Card heights and vertical gaps must be tightly proportioned so that item pills and text fill cards evenly without large empty spaces or awkward clipping.
+
+---
+
+### 5. Strict Separation of Domain Flavoring vs. Spatial Geometry
+* Dynamic use case flavoring (`injectUseCaseFlavor`) mutates text titles, card descriptions, and badges while preserving 100% of spatial coordinates (`<mxGeometry x="..." y="...">`).
+
+---
+
+### 6. Canonical Blueprint Immutability & Zero-Mutation Preflight Passthrough
+* **Master Ground-Truth Reference (`images/01.png` – `images/37.png`)**: Every canonical template in `src/lib/canonical/` MUST replicate the visual structure, column pitch, row pitch, color-coded chevrons, role pods, and decision gates of its corresponding master image in `images/` with 100% fidelity.
+* **Zero-Mutation Preflight Passthrough**: `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` MUST ALWAYS recognize canonical diagrams (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`, etc.) as structured master diagrams and pass them through with **ZERO coordinate or geometric mutation**.
+
+---
+
+### 7. Automated Headless Chrome Visual Audit Verification
+* Before presenting ANY visual task or diagram as complete, run the automated Puppeteer test harness to render the SVG, capture high-resolution screenshots into `scratch/screenshots_<task_id>/`, and physically verify that:
+  1. The diagram renders completely without blank canvas errors.
+  2. All text strings, titles (using clean pipe `|` separators), and icons are visible and un-truncated.
+  3. No line collisions, overlapping knots, or unstyled empty boxes exist.
+
+---
+
+### 8. Mandatory Git Push Protocol
+* Whenever code changes are committed (`git commit`), immediately execute `git push origin main` without exception so that live production environments remain synchronized.
