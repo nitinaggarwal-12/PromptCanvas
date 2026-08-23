@@ -132,9 +132,9 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   });
 
   // =========================================================================
-  // 5. CENTRAL CORE BUSINESS CAPABILITIES (x: 248, y: 182, w: 1044, h: 520)
+  // 5. CENTRAL CORE BUSINESS CAPABILITIES (x: 246, y: 176, w: 1048, h: 532)
   // =========================================================================
-  rect("core_container", "", 248, 182, 1044, 520, "strokeColor=#2563EB;strokeWidth=2;fillColor=#FFFFFF;shadow=1;");
+  rect("core_container", "", 246, 176, 1048, 532, "strokeColor=#2563EB;strokeWidth=2;fillColor=#FFFFFF;shadow=1;");
   
   const coreLogoHtml = `<table style="margin:0 auto;text-align:center;">
     <tr>
@@ -145,9 +145,9 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
       </td>
     </tr>
   </table>`;
-  text("core_logo", coreLogoHtml, 420, 188, 700, 36, "align=center;");
+  text("core_logo", coreLogoHtml, 420, 182, 700, 36, "align=center;");
 
-  // Helper for capability box item with proportional vertical sizing to eliminate voids
+  // Helper for capability box item with proportional vertical sizing to eliminate voids & overlap
   const capBox = (
     id: string,
     num: string,
@@ -164,9 +164,9 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   ) => {
     // Dynamic height and padding calculation to evenly distribute items within the box
     const count = items.length;
-    const itemPadding = count <= 4 ? "6.5px 8px" : count === 5 ? "4.5px 8px" : "3px 6px";
-    const itemMargin = count <= 4 ? "6px" : count === 5 ? "4.5px" : "3.5px";
-    const fontSize = count <= 4 ? "9px" : "8.5px";
+    const itemPadding = count <= 4 ? "6px 8px" : count === 5 ? "4px 8px" : "2.5px 6px";
+    const itemMargin = count <= 4 ? "5.5px" : count === 5 ? "4px" : "2.5px";
+    const fontSize = count <= 4 ? "9px" : count === 5 ? "8.5px" : "8px";
 
     let itemsHtml = "";
     items.forEach((it) => {
@@ -177,9 +177,9 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     const aiBadge = isAi ? `<span style="font-size:10px;color:#7C3AED;margin-left:4px;">✨</span>` : "";
     const hIconSpan = headerIcon ? `<span style="font-size:13px;margin-right:3px;">${headerIcon}</span>` : "";
 
-    const html = `<div style="padding:6px 8px;">
-      <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
-        <div style="width:20px;height:20px;border-radius:10px;background:${color};color:#FFFFFF;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;">${num}</div>
+    const html = `<div style="padding:5px 7px;">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
+        <div style="width:19px;height:19px;border-radius:9.5px;background:${color};color:#FFFFFF;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;">${num}</div>
         ${hIconSpan}
         <div style="font-size:10.5px;font-weight:800;color:${color};">${title} ${aiBadge}</div>
       </div>
@@ -189,13 +189,13 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     c.push(`<mxCell id="${id}" value="${E(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${bgTint};strokeColor=${color};strokeWidth=1.2;align=left;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
   };
 
-  // Top Row of 4 Core Capability Boxes (y: 228, h: 222)
+  // Top Row of 4 Core Capability Boxes (y: 224, h: 220)
   capBox("cap_1", "1", "Research & Discovery", [
     { text: "Target Identification", icon: "🎯" },
     { text: "Preclinical Data Management", icon: "🗄️" },
     { text: "Protocol Design", icon: "📋" },
     { text: "Study Planning", icon: "📅" },
-  ], 260, 228, 246, 222, "#1D4ED8", "#EFF6FF", false, "🔬");
+  ], 264, 224, 242, 220, "#1D4ED8", "#EFF6FF", false, "🔬");
 
   capBox("cap_2", "2", "Clinical Development", [
     { text: "Trial Design", icon: "🧪" },
@@ -203,37 +203,37 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { text: "Patient Recruitment & Enrollment", icon: "👥" },
     { text: "Clinical Data Capture", icon: "📊" },
     { text: "Monitoring & Oversight", icon: "🔍" },
-  ], 516, 228, 250, 222, "#1D4ED8", "#EFF6FF", false, "👥");
+  ], 516, 224, 248, 220, "#1D4ED8", "#EFF6FF", false, "👥");
 
   capBox("cap_3", "3", "Regulatory Affairs", [
     { text: "Submission Authoring", icon: "📄" },
     { text: "eCTD / IDMP Management", icon: "📁" },
     { text: "Health Authority Correspondence", icon: "🏛️" },
     { text: "Commitments & Variations", icon: "✅" },
-  ], 776, 228, 250, 222, "#1D4ED8", "#EFF6FF", false, "⚖️");
+  ], 776, 224, 248, 220, "#1D4ED8", "#EFF6FF", false, "⚖️");
 
   capBox("cap_4", "4", "Safety / Pharmacovigilance", [
     { text: "Case Intake", icon: "📥" },
     { text: "Signal Detection", icon: "📡" },
     { text: "Benefit-Risk Assessment", icon: "⚖️" },
     { text: "Safety Reporting", icon: "📊" },
-  ], 1036, 228, 246, 222, "#7C3AED", "#FAF5FF", false, "🛡️");
+  ], 1034, 224, 242, 220, "#7C3AED", "#FAF5FF", false, "🛡️");
 
-  // Bottom Row of 4 Core Capability Boxes (y: 458, h: 232)
+  // Bottom Row of 4 Core Capability Boxes (y: 454, h: 232)
   capBox("cap_5", "5", "Quality & Manufacturing", [
     { text: "QMS / Deviations / CAPA", icon: "🛡️" },
     { text: "Batch Record Review", icon: "📑" },
     { text: "Change Control", icon: "🔄" },
     { text: "Product Release", icon: "📦" },
     { text: "Supplier Quality", icon: "🏭" },
-  ], 260, 458, 246, 232, "#0D9488", "#F0FDFA", false, "🏭");
+  ], 264, 454, 242, 232, "#0D9488", "#F0FDFA", false, "🏭");
 
   capBox("cap_6", "6", "Medical & Commercial", [
     { text: "Medical Information", icon: "💬" },
     { text: "Content & Evidence Management", icon: "📚" },
     { text: "Market Analytics", icon: "📈" },
     { text: "Forecasting & Performance Insights", icon: "📊" },
-  ], 516, 458, 250, 232, "#0284C7", "#F0F9FF", false, "🩺");
+  ], 516, 454, 248, 232, "#0284C7", "#F0F9FF", false, "🩺");
 
   capBox("cap_7", "7", "Knowledge, Data & AI Foundation", [
     { text: "Document & Knowledge Hub", icon: "📁" },
@@ -241,7 +241,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { text: "Data Lake / Warehouse", icon: "☁️" },
     { text: "Semantic Search / Vector Index", icon: "🕸️" },
     { text: "AI Copilot & Workflow Automation", icon: "✨" },
-  ], 776, 458, 250, 232, "#6D28D9", "#FAF5FF", true, "🧠");
+  ], 776, 454, 248, 232, "#6D28D9", "#FAF5FF", true, "🧠");
 
   capBox("cap_8", "8", "Platform, Security & Operations", [
     { text: "Identity & Access Management", icon: "🔒" },
@@ -250,7 +250,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { text: "API & Interoperability Layer", icon: "🌐" },
     { text: "Monitoring & Support", icon: "🎧" },
     { text: "Tenant / Configuration Management", icon: "⚙️" },
-  ], 1036, 458, 246, 232, "#4338CA", "#F5F3FF", false, "🛡️");
+  ], 1034, 454, 242, 232, "#4338CA", "#F5F3FF", false, "🛡️");
 
   // =========================================================================
   // 6. BOTTOM CONTAINER: SHARED DIGITAL FOUNDATION (x: 24, y: 722, w: 1511, h: 96)
