@@ -95,21 +95,20 @@ import { generateTemplate17IdentityAccessFlowXml } from "./template17IdentityAcc
 import { generateTemplate18SecurityTrustBoundaryXml } from "./template18SecurityTrustBoundary";
 import { generateTemplate19HaDrArchitectureXml } from "./template19HaDrArchitecture";
 import { generateTemplate20CiCdPipelineXml } from "./template20CiCdPipeline";
-
-import { buildEnterpriseSreObservabilityXml } from "../masterBuilders/master_builder_enterprise_sre";
-import { build6RsMigrationMatrixXml } from "../masterBuilders/master_builder_6rs";
-import { buildAgenticMeshXml } from "../masterBuilders/build_master_agentic_mesh";
-import { buildMasterGraphragKnowledgeGraphXml } from "../masterBuilders/build_master_graphrag_knowledge_graph";
-import { buildMcpContextGatewayXml } from "../masterBuilders/master_builder_mcp_gateway";
-import { buildEvalSafetyXml } from "../masterBuilders/build_master_eval_safety";
-import { buildThreatModelingStrideXml } from "../masterBuilders/build_master_threat_modeling_stride";
-import { buildServerlessEdaXml } from "../masterBuilders/build_master_serverless_eda";
-import { buildGoLiveWarRoomRunbookXml } from "../masterBuilders/master_builder_golive_warroom";
-import { buildPristineFinopsXml } from "../masterBuilders/master_builder_finops";
-import { buildLegacyDataDependencyMapXml } from "../masterBuilders/build_master_legacy_data_dependency";
-import { buildPristineAiCoeXml } from "../masterBuilders/master_builder_ai_coe";
-import { buildAiTrismGuardrailsXml } from "../masterBuilders/master_builder_ai_trism";
-import { buildDataResidencySovereignMapXml } from "../masterBuilders/master_builder_data_residency";
+import { generateTemplate21ObservabilityArchitectureXml } from "./template21ObservabilityArchitecture";
+import { generateTemplate22MigrationTransitionXml } from "./template22MigrationTransition";
+import { generateTemplate23AgentInteractionXml } from "./template23AgentInteraction";
+import { generateTemplate24RagKnowledgeFlowXml } from "./template24RagKnowledgeFlow";
+import { generateTemplate25ToolProtocolInteractionXml } from "./template25ToolProtocolInteraction";
+import { generateTemplate26HitlGovernanceFlowXml } from "./template26HitlGovernanceFlow";
+import { generateTemplate27ThreatModelXml } from "./template27ThreatModel";
+import { generateTemplate28FailureExceptionFlowXml } from "./template28FailureExceptionFlow";
+import { generateTemplate29CutoverRunbookXml } from "./template29CutoverRunbook";
+import { generateTemplate30FinopsCostFlowXml } from "./template30FinopsCostFlow";
+import { generateTemplate31DependencyMapXml } from "./template31DependencyMap";
+import { generateTemplate32RoadmapEvolutionXml } from "./template32RoadmapEvolution";
+import { generateTemplate33MatrixHeatmapXml } from "./template33MatrixHeatmap";
+import { generateTemplate34GeographicArchitectureXml } from "./template34GeographicArchitecture";
 
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   {
@@ -354,123 +353,123 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   },
   {
     id: '21',
-    name: 'Observability / SRE',
+    name: 'Observability Architecture',
     family: 'Delivery & Operations',
     level: 'L2/L3',
     primaryPurpose: 'Telemetry collection, distributed tracing, metric aggregation, and SLO alerts',
     examples: 'Logs, metrics, traces, SLO error budget burn rates',
-    defaultDomain: 'Enterprise SRE Observability & OpenTelemetry Mesh',
+    defaultDomain: 'NovaCura – Full-Stack Observability',
     previewImage: '/templates/enterprise_sre_observability.png',
-    keyComponents: ['OpenTelemetry Sidecars', 'Cloud Logging / Monitoring', 'Prometheus', 'SLO Alert Engine'],
-    generateXml: () => buildEnterpriseSreObservabilityXml()
+    keyComponents: ['Telemetry Sources', 'Observability Pillars', 'Google Cloud Pipeline', 'Foundation & Outcomes'],
+    generateXml: generateTemplate21ObservabilityArchitectureXml
   },
   {
     id: '22',
-    name: 'Migration / Transition',
+    name: 'Migration / Transition Architecture',
     family: 'Delivery & Operations',
     level: 'L1/L2/L3',
     primaryPurpose: 'Step-by-step movement of legacy workloads to cloud target state',
     examples: 'Datacenter to GCP, database CDC migration, Strangler Fig pattern',
-    defaultDomain: '6-Rs Wave Migration & Cloud Factory',
+    defaultDomain: 'NovaCura – Platform Modernization & Migration',
     previewImage: '/templates/six_rs_migration_matrix.png',
-    keyComponents: ['Assess & Discover', 'Target Landing Zone', 'Live CDC Replication', 'Cutover & Decommission'],
-    generateXml: () => build6RsMigrationMatrixXml()
+    keyComponents: ['Current State', '5 Migration Phases', 'Target State', '6-Rs Patterns & Deliverables'],
+    generateXml: generateTemplate22MigrationTransitionXml
   },
   {
     id: '23',
-    name: 'Agent Interaction',
+    name: 'Agent Interaction Architecture',
     family: 'Flow',
     level: 'L1/L2/L3',
     primaryPurpose: 'Multi-agent collaboration, supervisor delegation, and task synthesis',
     examples: 'Supervisor-subagents, swarm mesh, planner/executor',
-    defaultDomain: 'Hierarchical Multi-Agent Clinical Reasoning Swarm',
+    defaultDomain: 'NovaCura – Multi-Agent Collaboration for Regulatory Intelligence',
     previewImage: '/templates/tech_agentic_mesh.png',
-    keyComponents: ['Supervisor Agent', 'Domain Subagents', 'Shared Redis Memory', 'Safety Gate'],
-    generateXml: () => buildAgenticMeshXml()
+    keyComponents: ['7-Step Flow', 'Agent Ecosystem (Core/Specialized)', '6 Collaboration Patterns', 'Shared Memory'],
+    generateXml: generateTemplate23AgentInteractionXml
   },
   {
     id: '24',
-    name: 'RAG / Knowledge Flow',
+    name: 'RAG / Knowledge Flow Architecture',
     family: 'Flow',
     level: 'L2/L3',
     primaryPurpose: 'Document chunking, vector embeddings, hybrid graph retrieval, and grounding',
     examples: 'Vector RAG, GraphRAG, multimodal clinical RAG',
-    defaultDomain: 'Multi-Hop GraphRAG Knowledge Engine',
+    defaultDomain: 'NovaCura – Regulatory Q&A with Internal & External Knowledge',
     previewImage: '/templates/graphrag_knowledge_graph.png',
-    keyComponents: ['Document Parser', 'Vector Embeddings', 'Spanner Graph (ISO GQL)', 'Gemini Model Armor'],
-    generateXml: () => buildMasterGraphragKnowledgeGraphXml()
+    keyComponents: ['Knowledge Sources', '8-Step RAG Pipeline', 'Knowledge Stores', '6 RAG Flow Patterns'],
+    generateXml: generateTemplate24RagKnowledgeFlowXml
   },
   {
     id: '25',
-    name: 'Tool / Protocol Interaction',
+    name: 'Tool / Protocol Interaction Architecture',
     family: 'Flow',
     level: 'L2/L3',
     primaryPurpose: 'Standardized communication between AI models and tools via MCP, A2A, JSON-RPC',
     examples: 'Model Context Protocol (MCP), Agent-to-Agent (A2A), OpenAPI tool bridges',
-    defaultDomain: 'Model Context Protocol (MCP) Enterprise Gateway',
+    defaultDomain: 'NovaCura – Agentic Platform Integrations & Protocol Interactions',
     previewImage: '/templates/mcp_context_gateway.png',
-    keyComponents: ['Agent Client', 'MCP JSON-RPC Bridge', 'MicroVM Sandboxes', 'Enterprise Tool Registry'],
-    generateXml: () => buildMcpContextGatewayXml()
+    keyComponents: ['Tool Categories', '5 Protocol Layers', 'Interaction Flow', 'Protocol Mappings'],
+    generateXml: generateTemplate25ToolProtocolInteractionXml
   },
   {
     id: '26',
-    name: 'HITL / Governance Flow',
+    name: 'HITL / Governance Architecture',
     family: 'Security & Governance',
     level: 'L1/L2',
     primaryPurpose: 'Human-in-the-Loop approval gates, confidence thresholds, and risk review',
     examples: 'AI approval gates, escalation workflows, risk triage',
-    defaultDomain: 'FDA 21 CFR Part 11 Electronic Signature HITL Gate',
+    defaultDomain: 'NovaCura – Responsible AI with Human-in-the-Loop & Governance',
     previewImage: '/templates/tech_eval_safety.png',
-    keyComponents: ['AI Recommendation', 'Confidence Scorer', 'Medical Review Cockpit', 'Immutable Audit Signoff'],
-    generateXml: () => buildEvalSafetyXml()
+    keyComponents: ['Inputs & Triggers', '6-Step Workflow', 'RACI Matrix', 'HITL Checkpoints & Audit'],
+    generateXml: generateTemplate26HitlGovernanceFlowXml
   },
   {
     id: '27',
-    name: 'Threat Model',
+    name: 'Threat Model Architecture',
     family: 'Security & Governance',
     level: 'L2/L3',
     primaryPurpose: 'STRIDE threat modeling, attack surfaces, malicious vectors, and mitigations',
     examples: 'STRIDE model, prompt injection defense, API attack vectors',
-    defaultDomain: 'STRIDE Threat Modeling & AI Defense Architecture',
+    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/zero_trust_mesh.png',
-    keyComponents: ['Threat Actors', 'Attack Surface Map', 'STRIDE Matrix', 'Mitigating Controls'],
-    generateXml: () => buildThreatModelingStrideXml()
+    keyComponents: ['Trust Zones', 'Shared Security Services', 'Attack Surface Map', 'STRIDE Catalog & Scenarios'],
+    generateXml: generateTemplate27ThreatModelXml
   },
   {
     id: '28',
-    name: 'Failure / Exception Flow',
+    name: 'Failure / Exception Flow Architecture',
     family: 'Delivery & Operations',
     level: 'L2/L3',
     primaryPurpose: 'Failure modes, retry policies, exponential backoff, DLQs, and circuit breakers',
     examples: 'DLQ, retries, circuit breakers, agent timeouts',
-    defaultDomain: 'Distributed Saga Failure Compensation & DLQ Quarantine',
+    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/serverless_eda_architecture.png',
-    keyComponents: ['Failure Detection', 'Circuit Breaker', 'Compensating Rollback', 'Quarantine DLQ'],
-    generateXml: () => buildServerlessEdaXml()
+    keyComponents: ['Failure Sources', '6-Step End-to-End Flow', '6 Failure Scenarios', 'Severity & Escalation'],
+    generateXml: generateTemplate28FailureExceptionFlowXml
   },
   {
     id: '29',
-    name: 'Cutover / Operational Runbook',
+    name: 'Cutover / Runbook Architecture',
     family: 'Delivery & Operations',
     level: 'L3',
     primaryPurpose: 'Step-by-step production cutover checklist, maintenance window, and rollback',
     examples: 'Production launch, DR exercise, cloud cutover runbook',
-    defaultDomain: 'Production Go-Live War Room & Cutover Checklist',
+    defaultDomain: 'NovaCura – Production Go-Live & Environment Cutover',
     previewImage: '/templates/golive_warroom_runbook.png',
-    keyComponents: ['Pre-Cutover (T-120)', 'Cutover Window', 'Smoke Verification', 'Rollback Trigger Matrix'],
-    generateXml: () => buildGoLiveWarRoomRunbookXml()
+    keyComponents: ['Cutover Lifecycle', '8 Detailed Steps', 'Rollback Plan', 'RACI & Timeline Window'],
+    generateXml: generateTemplate29CutoverRunbookXml
   },
   {
     id: '30',
-    name: 'FinOps / Cost Flow',
+    name: 'FinOps / Cost Flow Architecture',
     family: 'Delivery & Operations',
     level: 'L1/L2',
     primaryPurpose: 'Cloud spend ingestion, shared resource allocation, and cost optimization',
     examples: 'Cloud spend, AI token cost attribution, tenant unit economics',
-    defaultDomain: 'Enterprise Cloud FinOps & AI Token Cost Attribution',
+    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/cloud_finops_chargeback_model.png',
-    keyComponents: ['Billing Export', 'Cost Attribution Marts', 'Idle Resource Reclaimer', 'Executive Cockpit'],
-    generateXml: () => buildPristineFinopsXml()
+    keyComponents: ['6-Step Cost Flow', 'Data & Tooling Layer', 'Allocation Models', 'FinOps Governance'],
+    generateXml: generateTemplate30FinopsCostFlowXml
   },
   {
     id: '31',
@@ -479,34 +478,34 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     level: 'L2',
     primaryPurpose: 'Arbitrary many-to-many dependencies across systems, services, and datasets',
     examples: 'Microservice dependency graph, blast-radius impact analysis',
-    defaultDomain: 'Multi-Tier System & Database Dependency Matrix',
+    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/legacy_data_dependency_map.png',
-    keyComponents: ['Applications', 'Data Stores', 'Integrations', 'Criticality Risk Heatmap'],
-    generateXml: () => buildLegacyDataDependencyMapXml()
+    keyComponents: ['Users', 'Applications', 'Data Layer', 'Integrations', 'Platform & Teams'],
+    generateXml: generateTemplate31DependencyMapXml
   },
   {
     id: '32',
-    name: 'Timeline / Roadmap / Architecture Evolution',
+    name: 'Architecture Evolution & Roadmap',
     family: 'Analysis & Planning',
     level: 'L1/L2',
     primaryPurpose: 'Multi-year architecture roadmap, maturity milestones, and migration waves',
     examples: 'Target state evolution, 3-year AI transformation roadmap',
-    defaultDomain: 'Enterprise Cloud & AI Maturity Evolution Roadmap',
+    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/tech_ai_coe.png',
-    keyComponents: ['Phase 0 Foundation', 'Phase 1 Scale', 'Phase 2 Autonomous AI', 'Strategic Drivers'],
-    generateXml: () => buildPristineAiCoeXml()
+    keyComponents: ['Phase 0 Foundation', 'Phase 1 Scale', 'Phase 2 Intelligent', 'Phase 3 Autonomous'],
+    generateXml: generateTemplate32RoadmapEvolutionXml
   },
   {
     id: '33',
-    name: 'Matrix / Heatmap',
+    name: 'Architecture Matrix Heatmap',
     family: 'Analysis & Planning',
     level: 'L1/L2',
     primaryPurpose: '2-dimensional evaluation matrix: capabilities vs systems, controls vs workloads',
     examples: 'Vendor evaluation matrix, security control compliance heatmap',
-    defaultDomain: 'Architecture Evaluation Matrix & Capability Heatmap',
+    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/tech_ai_trism_guardrails.png',
-    keyComponents: ['Evaluation Criteria', 'Option Scoring (1-5)', 'Weighted Rank', 'Strategic Recommendation'],
-    generateXml: () => buildAiTrismGuardrailsXml()
+    keyComponents: ['9 Evaluation Criteria', '5 Options (A-E)', 'Weighted Scores & Ranks', 'Strategic Recommendation'],
+    generateXml: generateTemplate33MatrixHeatmapXml
   },
   {
     id: '34',
@@ -515,9 +514,9 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     level: 'L1/L2/L3',
     primaryPurpose: 'Geographic layout, sovereign cloud boundaries, and multi-region replication',
     examples: 'Global user base, multi-region sovereign cloud, edge CDN',
-    defaultDomain: 'Global Sovereign Cloud & Data Residency Architecture',
+    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/tech_data_residency.png',
-    keyComponents: ['North America (US-East)', 'Europe (EU-Central)', 'APAC (Tokyo)', 'Global Edge Anycast'],
-    generateXml: () => buildDataResidencySovereignMapXml()
+    keyComponents: ['Global User Base', 'Regional Overview', '6 Regional Enclave Pods', 'Global Multi-Region Services'],
+    generateXml: generateTemplate34GeographicArchitectureXml
   }
 ];

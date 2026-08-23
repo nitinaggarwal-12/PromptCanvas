@@ -170,16 +170,23 @@ export default function DiagramViewerRenderSafe({
         canvasContainer.scrollTop = 0;
       }
     } catch (e) {}
-    canvasContainer.addEventListener('scroll', function() {
-      try { sessionStorage.setItem(storageKey, JSON.stringify({ left:canvasContainer.scrollLeft, top:canvasContainer.scrollTop })); } catch (e) {}
-    });
-  }
-
   function getCleanGraphXml(xmlStr) {
     if (!xmlStr) return '';
-    const s = xmlStr.indexOf('<mxGraphModel');
-    const e = xmlStr.lastIndexOf('</mxGraphModel>');
-    return s !== -1 && e !== -1 ? xmlStr.substring(s, e + 15) : xmlStr;
+    const trimmed = xmlStr.trim();
+    if (trimmed.startsWith('<mxfile') || trimmed.includes('<mxfile')) {
+      const s = trimmed.indexOf('<mxfile');
+      const e = trimmed.lastIndexOf('</mxfile>');
+      if (s !== -1 && e !== -1) {
+        return trimmed.substring(s, e + 9);
+      }
+    }
+    const s = trimmed.indexOf('<mxGraphModel');
+    const e = trimmed.lastIndexOf('</mxGraphModel>');
+    if (s !== -1 && e !== -1) {
+      const modelXml = trimmed.substring(s, e + 15);
+      return '<mxfile host="embed.diagrams.net"><diagram id="diagram_1" name="Diagram">' + modelXml + '</diagram></mxfile>';
+    }
+    return trimmed;
   }
 
   const configObj = ${JSON.stringify({
