@@ -270,21 +270,21 @@ export function buildThreatModelingStrideXml(): string {
 
         <!-- 1. [I] Information Disclosure Guard (VPC-SC) -->
         <mxCell id="box_stride_i" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D8B4FE;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="1165" y="98" width="400" height="152" as="geometry"/>
+          <mxGeometry x="1165" y="98" width="400" height="150" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_stride_i_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#7E22CE;&quot;&gt;[I] Information Disclosure Guard&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;VPC Service Controls (VPC-SC) Outer Perimeter Wall&lt;br&gt;Zero Data Exfiltration to Unauthorized External Accounts&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="1170" y="102" width="390" height="38" as="geometry"/>
+        <mxCell id="lbl_stride_i_hdr" value="&lt;b style=&quot;font-size:10px;color:#7E22CE;&quot;&gt;[I] Information Disclosure Guard&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:7px;color:#475569;&quot;&gt;VPC Service Controls (VPC-SC) Outer Perimeter Wall&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="102" width="390" height="22" as="geometry"/>
         </mxCell>
 
         <!-- VPC-SC Wall & Perimeter Architecture Diagram -->
         <mxCell id="card_outer_wall" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;Outer Perimeter Wall&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:18px;&quot;&gt;🧱&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1175" y="148" width="75" height="92" as="geometry"/>
+          <mxGeometry x="1175" y="132" width="75" height="106" as="geometry"/>
         </mxCell>
         <mxCell id="card_service_perimeters" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b style=&quot;font-size:7.5px;color:#7E22CE;&quot;&gt;Service Perimeters&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:6.5px;color:#475569;&quot;&gt;(Data, Compute, AI Models)&lt;/span&gt;&lt;br&gt;&lt;div style=&quot;margin-top:4px;&quot;&gt;&lt;span style=&quot;background:#E9D5FF;border:1px solid #C084FC;border-radius:4px;padding:2px 4px;font-size:7px;&quot;&gt;🗄️ BigQuery&lt;/span&gt; &lt;span style=&quot;background:#E9D5FF;border:1px solid #C084FC;border-radius:4px;padding:2px 4px;font-size:7px;&quot;&gt;🪣 GCS&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1275" y="148" width="175" height="92" as="geometry"/>
+          <mxGeometry x="1275" y="132" width="175" height="106" as="geometry"/>
         </mxCell>
         <mxCell id="card_blocked_ext" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:16px;&quot;&gt;❌ 👤&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;color:#991B1B;font-weight:bold;&quot;&gt;Blocked Ext&lt;br&gt;Account&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="1475" y="148" width="80" height="92" as="geometry"/>
+          <mxGeometry x="1475" y="132" width="80" height="106" as="geometry"/>
         </mxCell>
         <mxCell id="arr_wall_to_perim" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;endArrow=block;endFill=1;strokeColor=#7E22CE;strokeWidth=1.5;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_outer_wall" target="card_service_perimeters">
           <mxGeometry relative="1" as="geometry"/>
@@ -336,7 +336,7 @@ export function buildThreatModelingStrideXml(): string {
 
         <!-- ==================== INTER-ZONE CONNECTORS ==================== -->
         <!-- [1] Threat Actors -> Cloud Armor WAF -->
-        <mxCell id="arr_col1_to_col2" value="&lt;b style=&quot;font-size:7px;color:#991B1B;&quot;&gt;[1] Ingress Threat Vectors&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;endArrow=block;endFill=1;strokeColor=#EF4444;strokeWidth=1.5;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#F87171;padding=2;" edge="1" parent="1" source="box_threat_actors" target="box_cloud_armor">
+        <mxCell id="arr_col1_to_col2" value="&lt;b style=&quot;font-size:6.5px;color:#991B1B;&quot;&gt;[1] Ingress Attacks&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;endArrow=block;endFill=1;strokeColor=#EF4444;strokeWidth=1.5;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#F87171;padding=2;" edge="1" parent="1" source="box_threat_actors" target="box_cloud_armor">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 

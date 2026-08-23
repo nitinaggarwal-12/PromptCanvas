@@ -33,7 +33,7 @@ export const DOMAIN_PRESETS = [
 
 import { generateTemplate01ExactV3Xml } from "./template01ExactV3";
 import { generateTemplate02CapabilityMapXml } from "./template02CapabilityMap";
-import { buildIncidentTriageSwimlaneXml } from "../masterBuilders/build_master_incident_triage_swimlane";
+import { generateTemplate03SwimlaneXml } from "./template03Swimlane";
 import { buildValueStreamMapXml } from "../masterBuilders/master_builder_vsm";
 import { buildAsIsToBeProcessFlowXml } from "../masterBuilders/master_builder_asis_tobe";
 import { buildEnterpriseReferenceArchitectureXml } from "../masterBuilders/build_master_enterprise_reference";
@@ -82,6 +82,14 @@ export function generateCapabilityMapXml(domainFlavor = "biopharma", theme: "lig
   return generateTemplate02CapabilityMapXml(domainFlavor, theme);
 }
 
+/**
+ * High-Fidelity 1:1 XML Generator for Template 03: Business Process / Swimlane
+ * Matches the NOVACURA Drug Development & Commercialization Lifecycle from Canonical PDF Page 3 / images/03.png
+ */
+export function generateSwimlane03Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate03SwimlaneXml(domainFlavor, theme);
+}
+
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   {
     id: '01',
@@ -117,7 +125,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Clinical Trials & Regulatory Operations',
     previewImage: '/templates/incident_triage_swimlane.png',
     keyComponents: ['Department Swimlanes', 'Hand-off Triggers', 'Approval Decision Gates', 'Audit Milestones'],
-    generateXml: () => buildIncidentTriageSwimlaneXml()
+    generateXml: generateSwimlane03Xml
   },
   {
     id: '04',

@@ -69,7 +69,7 @@ export function buildSecureDeploymentTopologyXml(): string {
 
         <!-- ==================== OUTER GOOGLE CLOUD PROJECT CONTAINER ==================== -->
         <mxCell id="gcp_project_container" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#D1FAE5;strokeColor=#34D399;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="25" y="130" width="1285" height="570" as="geometry"/>
+          <mxGeometry x="25" y="130" width="1235" height="570" as="geometry"/>
         </mxCell>
         <mxCell id="gcp_project_title" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;☁️ Google Cloud Project (Managed Security Perimeter)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="40" y="135" width="400" height="20" as="geometry"/>
@@ -235,7 +235,7 @@ export function buildSecureDeploymentTopologyXml(): string {
 
         <!-- ==================== SECTION 4: TARGET ENVIRONMENTS & NETWORKING ==================== -->
         <mxCell id="sec4_hdr" value="&lt;b style=&quot;font-size:9px;color:#0F172A;&quot;&gt;SECTION 4: TARGET ENVIRONMENTS &amp;amp; NETWORKING&lt;br&gt;&lt;span style=&quot;font-size:7px;color:#475569;font-weight:normal;&quot;&gt;Production focused&lt;/span&gt;&lt;/b&gt;" style="text;html=1;align=right;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="840" y="135" width="450" height="24" as="geometry"/>
+          <mxGeometry x="780" y="135" width="460" height="24" as="geometry"/>
         </mxCell>
 
         <!-- Mini Dev & Staging Environments -->
@@ -275,10 +275,10 @@ export function buildSecureDeploymentTopologyXml(): string {
 
         <!-- ==================== PRODUCTION ENVIRONMENT CONTAINER ==================== -->
         <mxCell id="prod_env_container" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="715" y="215" width="585" height="475" as="geometry"/>
+          <mxGeometry x="715" y="215" width="530" height="475" as="geometry"/>
         </mxCell>
         <mxCell id="prod_env_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Production Environment (Zero-Trust GKE &amp;amp; Private VPC)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="720" y="218" width="575" height="18" as="geometry"/>
+          <mxGeometry x="720" y="218" width="520" height="18" as="geometry"/>
         </mxCell>
 
 

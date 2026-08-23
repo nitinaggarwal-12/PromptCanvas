@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Sparkles, Plus, Check, Shield, Layers, Database, Bot, Cpu, Factory, Briefcase, Activity, Lock, X } from 'lucide-react';
 
 export interface BlueprintCatalogItem {
@@ -245,11 +245,27 @@ export const BlueprintCatalogModal: React.FC<BlueprintCatalogModalProps> = ({
     });
   }, [searchQuery, selectedCategory]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[1000] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 md:p-6 overflow-y-auto">
-      <div className={`rounded-3xl max-w-7xl w-full max-h-[92vh] overflow-y-auto shadow-2xl p-5 md:p-8 space-y-6 flex flex-col transition-all ${
+    <div 
+      onClick={onClose}
+      className="fixed inset-0 z-[1000] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 md:p-6 overflow-y-auto cursor-pointer"
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className={`rounded-3xl max-w-7xl w-full max-h-[92vh] overflow-y-auto shadow-2xl p-5 md:p-8 space-y-6 flex flex-col transition-all cursor-default ${
         isLight
           ? 'bg-white border-2 border-amber-400/80 text-slate-900 shadow-slate-300/60'
           : 'bg-[#0b101d] border-2 border-amber-500/40 text-white'

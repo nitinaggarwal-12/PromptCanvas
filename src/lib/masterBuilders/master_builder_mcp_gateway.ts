@@ -178,12 +178,12 @@ export function buildMcpContextGatewayXml(): string {
     // Main request path
     edge('e_host_client', 'host_agent_engine', 'client_discovery', 'MCP client', 'request'),
     edge('e_client_gateway', 'client_builder', 'gateway_ingress', 'Streamable HTTP', 'request'),
-    edge('e_gateway_server', 'gateway_route', 'srv_custom', 'Approved tool invocation', 'request'),
-    edge('e_server_tool', 'srv_custom', 'tool_gcp', 'Backend API / data access', 'request'),
+    edge('e_gateway_server', 'gateway_route', 'srv_custom', 'Approved Tool', 'request'),
+    edge('e_server_tool', 'srv_custom', 'tool_gcp', 'Backend API', 'request'),
 
     // Responses
-    edge('e_tool_server_resp', 'tool_gcp', 'srv_custom', 'Tool result', 'response', 0, 0.7, 1, 0.7),
-    edge('e_server_gateway_resp', 'srv_custom', 'gateway_route', 'MCP response / error', 'response', 0, 0.72, 1, 0.72),
+    edge('e_tool_server_resp', 'tool_gcp', 'srv_custom', 'Tool Result', 'response', 0, 0.7, 1, 0.7),
+    edge('e_server_gateway_resp', 'srv_custom', 'gateway_route', 'MCP Result', 'response', 0, 0.72, 1, 0.72),
     edge('e_gateway_client_resp', 'gateway_ingress', 'client_normalize', 'MCP response', 'response', 0, 0.72, 1, 0.72),
     edge('e_client_host_resp', 'client_normalize', 'host_agent_engine', 'Normalized result', 'response', 0, 0.72, 1, 0.72),
 

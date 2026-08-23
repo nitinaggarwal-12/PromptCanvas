@@ -65,7 +65,14 @@ export function buildAiTrismGuardrailsXml():string{
  c.push(mini('denial','Denied response/action','Fail closed when required authorization or content-security conditions are not satisfied',1420,397,295,80,'#D93025','#FFF7F7'));
  c.push(mini('experience_rule','Experience-specific controls','Gemini Enterprise connector/assistant paths and custom Agent Platform paths can have different enforcement surfaces.',1420,485,295,82,'#E87900'));
 
- c.push(edge('r1','ge','ingress_gateway','request','#2563EB')); c.push(edge('r2','ingress_gateway','armor_in','screen','#D93025')); c.push(edge('r3','armor_in','runtime_core','allowed / sanitized','#7B61A8')); c.push(edge('r4','action_policy','egress_gateway','tool / agent / model call','#0F8B82')); c.push(edge('r5','egress_gateway','destinations','authorized destination','#0F8B82')); c.push(edge('r6','destinations','armor_out','result','#64748B',true,0,.7,1,.7)); c.push(edge('r7','armor_out','response_policy','screened result','#E87900')); c.push(edge('r8','response_policy','consumer','release','#E87900')); c.push(edge('r9','consumer','ingress_gateway','response','#64748B',true,0,.7,1,.75)); c.push(edge('r10','ingress_gateway','ge','response','#64748B',true,0,.75,1,.75));
+  c.push(edge('r1','ge','ingress_gateway','1. Client Request','#2563EB',false,1,0.5,0,0.5));
+  c.push(edge('r2','ingress_gateway','armor_in','2. Ingress Screen','#D93025',false,0.5,1,0.5,0));
+  c.push(edge('r3','ingress_gateway','runtime_core','3. Sanitized Runtime','#7B61A8',false,1,0.5,0,0.5));
+  c.push(edge('r4','runtime_core','action_policy','4. Decision & Policy','#7B61A8',false,0.5,1,0.5,0));
+  c.push(edge('r5','runtime_core','egress_gateway','5. Outbound Egress','#0F8B82',false,1,0.5,0,0.5));
+  c.push(edge('r6','egress_gateway','armor_out','6. Egress Inspection','#0F8B82',false,0.5,1,0.5,0));
+  c.push(edge('r7','egress_gateway','response_policy','7. Result Return','#E87900',false,1,0.5,0,0.5));
+  c.push(edge('r8','response_policy','consumer','8. Release Gate','#E87900',false,0.5,1,0.5,0));
 
  c.push(zone('ops',6,'TRUST, RISK & SECURITY OPERATING PLANE','Evidence, monitoring, incident response and controlled change',25,680,1710,255,'#334155','#F8FAFC'));
  c.push(mini('content_monitor','Content security monitoring','Model Armor findings/spans • blocked/redacted outcomes • false-positive review • template effectiveness',50,750,300,94,'#334155'));

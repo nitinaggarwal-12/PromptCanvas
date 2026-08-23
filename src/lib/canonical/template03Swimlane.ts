@@ -1,0 +1,351 @@
+/**
+ * Master 1:1 Exact Replica Generator for Canonical Template 03: Business Process / Swimlane
+ * Matches 100% of images/03.png (End-to-End Drug Development & Commercialization Lifecycle)
+ * With dynamic domain flavoring, dark/light theme support, and collision-free geometry.
+ */
+
+const E = (v?: string | null) =>
+  (v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  const isDark = theme === "dark";
+  const bg = isDark ? "#0B111E" : "#FFFFFF";
+  const c: string[] = [];
+
+  const rect = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
+    c.push(
+      `<mxCell id="${id}" value="${E(v)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontColor=#0F172A;fontSize=11;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  const text = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
+    c.push(
+      `<mxCell id="${id}" value="${E(v)}" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  const diamond = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
+    c.push(
+      `<mxCell id="${id}" value="${E(v)}" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.5;fontColor=#0F172A;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  const edge = (id: string, src: string, tgt: string, label = "", color = "#475569", dash = false, s = "") =>
+    c.push(
+      `<mxCell id="${id}" value="${E(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=8;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${color};strokeWidth=1.5;endArrow=block;endFill=1;fontSize=8.5;fontColor=${color};fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;${dash ? "dashed=1;dashPattern=5 3;" : ""}${s}" edge="1" parent="1" source="${src}" target="${tgt}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
+
+  // ==================== 1. TOP HEADER BANNER ====================
+  // Header Badge "03"
+  rect("hdr_num", `<span style="font-size:24px;font-weight:900;color:#FFFFFF;">03</span>`, 20, 14, 68, 56, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=1;arcSize=15;align=center;verticalAlign=middle;");
+  
+  // Title & Subtitle
+  text("hdr_title", "BUSINESS PROCESS / SWIMLANE — NOVACURA BIO-PHARMA PRODUCT", 100, 16, 950, 26, "fontSize=22;fontStyle=1;align=left;fontColor=#0F172A;fontFamily=Inter,sans-serif;");
+  text("hdr_sub", "End-to-End Drug Development & Commercialization Lifecycle", 100, 44, 700, 20, "fontSize=13;fontStyle=1;fontColor=#475569;align=left;fontFamily=Inter,sans-serif;");
+
+  // Top Right Logo
+  rect("hdr_logo", `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:26px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:16px;font-weight:900;color:#0F2A4A;letter-spacing:1px;">NOVACURA</div><div style="font-size:8px;color:#64748B;font-weight:600;">Transforming Therapies. Improving Lives.</div></td></tr></table>`, 1180, 14, 280, 56, "fillColor=none;strokeColor=none;");
+
+  // ==================== 2. PHASE COLUMN HEADERS (CHEVRONS) ====================
+  // Phase 0: SWIMLANES (x: 20..185)
+  rect("ph_swimlanes", `<b style="font-size:12px;color:#FFFFFF;letter-spacing:1px;">SWIMLANES</b>`, 20, 84, 165, 36, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;arcSize=0;align=center;");
+  
+  // Phase 1: 1. RESEARCH & DISCOVERY (x: 190..450, w: 260)
+  rect("ph_1", `<b style="font-size:11.5px;color:#FFFFFF;letter-spacing:0.5px;">1. RESEARCH &amp; DISCOVERY</b>`, 190, 84, 260, 36, "fillColor=#1E824C;strokeColor=#1E824C;rounded=0;arcSize=0;align=center;");
+
+  // Phase 2: 2. DEVELOPMENT (x: 455..740, w: 285)
+  rect("ph_2", `<b style="font-size:11.5px;color:#FFFFFF;letter-spacing:0.5px;">2. DEVELOPMENT</b>`, 455, 84, 285, 36, "fillColor=#2563EB;strokeColor=#2563EB;rounded=0;arcSize=0;align=center;");
+
+  // Phase 3: 3. MANUFACTURING (x: 745..975, w: 230)
+  rect("ph_3", `<b style="font-size:11.5px;color:#FFFFFF;letter-spacing:0.5px;">3. MANUFACTURING</b>`, 745, 84, 230, 36, "fillColor=#7E22CE;strokeColor=#7E22CE;rounded=0;arcSize=0;align=center;");
+
+  // Phase 4: 4. COMMERCIALIZATION (x: 980..1220, w: 240)
+  rect("ph_4", `<b style="font-size:11.5px;color:#FFFFFF;letter-spacing:0.5px;">4. COMMERCIALIZATION</b>`, 980, 84, 240, 36, "fillColor=#EA580C;strokeColor=#EA580C;rounded=0;arcSize=0;align=center;");
+
+  // Phase 5: 5. PATIENT OUTCOMES (x: 1225..1465, w: 240)
+  rect("ph_5", `<b style="font-size:11.5px;color:#FFFFFF;letter-spacing:0.5px;">5. PATIENT OUTCOMES</b>`, 1225, 84, 240, 36, "fillColor=#0D9488;strokeColor=#0D9488;rounded=0;arcSize=0;align=center;");
+
+  // ==================== SWIMLANE BACKGROUND GRID ====================
+  // Outer frame for all swimlanes
+  rect("swimlane_frame", "", 20, 120, 1445, 615, "fillColor=#FAFAFA;strokeColor=#E2E8F0;strokeWidth=1.5;rounded=0;");
+
+  // Phase vertical separator guidelines
+  const phaseDividers = [190, 455, 745, 980, 1225];
+  phaseDividers.forEach((x, idx) => {
+    c.push(`<mxCell id="div_phase_${idx}" style="edgeStyle=none;html=1;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=4 4;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x}" y="120" as="sourcePoint"/><mxPoint x="${x}" y="735" as="targetPoint"/></mxGeometry></mxCell>`);
+  });
+
+  // Swimlane horizontal rows (7 rows)
+  const lanes = [
+    { id: "lane_research", y: 120, h: 90, icon: "🧪", color: "#1E824C", title: "RESEARCH\nSCIENTIST", desc: "Discover & validate\nnovel therapies" },
+    { id: "lane_clinops", y: 210, h: 90, icon: "👥", color: "#2563EB", title: "CLINICAL\nOPERATIONS", desc: "Design & execute\nclinical trials" },
+    { id: "lane_reg", y: 300, h: 85, icon: "🛡️", color: "#0D9488", title: "REGULATORY\nAFFAIRS", desc: "Ensure compliance\n& regulatory\nsubmissions" },
+    { id: "lane_mfg", y: 385, h: 85, icon: "🏭", color: "#7E22CE", title: "MANUFACTURING\nOPERATIONS", desc: "Manufacture with\nquality & compliance" },
+    { id: "lane_comm", y: 470, h: 85, icon: "📊", color: "#EA580C", title: "COMMERCIAL\nOPERATIONS", desc: "Deliver to market &\nengage customers" },
+    { id: "lane_patient", y: 555, h: 80, icon: "🩺", color: "#059669", title: "PATIENT &\nHEALTHCARE\nPROVIDERS", desc: "Care delivery &\npatient outcomes" },
+    { id: "lane_platform", y: 635, h: 100, icon: "🗄️", color: "#0F2A4A", title: "DATA & DIGITAL\nPLATFORM", desc: "Enable data, analytics\n& insights" },
+  ];
+
+  lanes.forEach((lane, idx) => {
+    // Horizontal lane separator
+    if (idx > 0) {
+      c.push(`<mxCell id="div_lane_${idx}" style="edgeStyle=none;html=1;strokeColor=#E2E8F0;strokeWidth=1.2;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="20" y="${lane.y}" as="sourcePoint"/><mxPoint x="1465" y="${lane.y}" as="targetPoint"/></mxGeometry></mxCell>`);
+    }
+
+    // Lane Role Pod (Left Column x=20..185)
+    rect(
+      `${lane.id}_pod`,
+      `<table style="width:100%;height:100%;border-collapse:collapse;">
+        <tr>
+          <td style="width:40px;vertical-align:middle;text-align:center;">
+            <div style="width:34px;height:34px;border-radius:17px;background:${lane.color};display:flex;align-items:center;justify-content:center;margin:0 auto;">
+              <span style="font-size:16px;">${lane.icon}</span>
+            </div>
+          </td>
+          <td style="vertical-align:middle;padding-left:4px;text-align:left;">
+            <div style="font-size:9.5px;font-weight:900;color:${lane.color};line-height:1.1;">${lane.title.replace(/\n/g, "<br/>")}</div>
+            <div style="font-size:7.5px;color:#64748B;line-height:1.1;margin-top:2px;">${lane.desc.replace(/\n/g, "<br/>")}</div>
+          </td>
+        </tr>
+      </table>`,
+      20,
+      lane.y,
+      165,
+      lane.h,
+      "fillColor=#FFFFFF;strokeColor=none;rounded=0;"
+    );
+  });
+
+  // ==================== 3. PROCESS NODES (CARDS & DIAMONDS) ====================
+
+  // Helper for process step card
+  const stepCard = (id: string, title: string, x: number, y: number, w: number, h: number, color = "#1E824C", icon = "") => {
+    const iconHtml = icon ? `<div style="font-size:13px;margin-bottom:2px;">${icon}</div>` : "";
+    rect(
+      id,
+      `<table style="width:100%;height:100%;text-align:center;">
+        <tr>
+          <td style="vertical-align:middle;text-align:center;padding:2px;">
+            ${iconHtml}
+            <div style="font-size:9px;font-weight:bold;color:#0F172A;line-height:1.15;">${title.replace(/\n/g, "<br/>")}</div>
+          </td>
+        </tr>
+      </table>`,
+      x,
+      y,
+      w,
+      h,
+      `fillColor=#FFFFFF;strokeColor=${color};strokeWidth=1.3;rounded=1;arcSize=10;shadow=1;`
+    );
+  };
+
+  // --- ROW 1: RESEARCH SCIENTIST (y=120..210, center y=165) ---
+  // In Phase 1: Research & Discovery
+  stepCard("card_id_targets", "Identify\nTargets", 205, 138, 72, 48, "#1E824C");
+  stepCard("card_lead_disc", "Lead\nDiscovery", 295, 138, 72, 48, "#1E824C", "🔬");
+  stepCard("card_lead_opt", "Lead\nOptimization", 385, 138, 75, 48, "#1E824C", "🧬");
+
+  // In Phase 2: Development
+  stepCard("card_cand_sel", "Candidate\nSelection", 495, 138, 75, 48, "#2563EB");
+  stepCard("card_preclin", "Preclinical\nStudies", 595, 138, 75, 48, "#2563EB", "🐟");
+
+  // Decision 1: Proceed to Clinical Trials? (Centered between Preclinical and Phase I)
+  diamond("dec_proceed_trials", "Proceed to\nClinical\nTrials?", 530, 192, 95, 46, "fillColor=#ECFDF5;strokeColor=#10B981;");
+
+  // --- ROW 2: CLINICAL OPERATIONS (y=210..300, center y=255) ---
+  // In Phase 1 & 2
+  stepCard("card_ind_sub", "IND\nSubmission", 385, 232, 75, 46, "#2563EB", "📄");
+  stepCard("card_phase1", "Clinical Trials\nPhase I", 495, 246, 78, 46, "#2563EB", "🩺");
+  stepCard("card_phase2", "Clinical Trials\nPhase II", 595, 246, 78, 46, "#2563EB");
+  stepCard("card_phase3", "Clinical Trials\nPhase III", 695, 246, 78, 46, "#2563EB");
+  stepCard("card_nda_sub", "NDA / BLA\nSubmission", 795, 246, 78, 46, "#2563EB", "📑");
+
+  // Decision 2: Regulatory Approval? (x: 900, y: 246)
+  diamond("dec_reg_approval", "Regulatory\nApproval?", 900, 246, 85, 46, "fillColor=#FFFBEB;strokeColor=#F59E0B;");
+
+  // --- ROW 3: REGULATORY AFFAIRS (y=300..385, center y=342) ---
+  // In Phase 1: Research & Discovery
+  stepCard("card_reg_strat", "Regulatory\nStrategy", 205, 318, 75, 46, "#0D9488", "📋");
+  stepCard("card_pre_ind", "Pre-IND\nMeeting", 295, 318, 75, 46, "#0D9488", "👥");
+
+  // In Phase 4: Commercialization
+  stepCard("card_ha_review", "Health Authority\nReview", 900, 318, 85, 46, "#EA580C", "🏛️");
+  stepCard("card_approval_lic", "Approval /\nLicence", 1010, 318, 75, 46, "#EA580C", "📜");
+
+  // --- ROW 4: MANUFACTURING OPERATIONS (y=385..470, center y=427) ---
+  // In Phase 3: Manufacturing
+  stepCard("card_proc_dev", "Process\nDevelopment", 595, 404, 78, 46, "#7E22CE", "⚙️");
+  stepCard("card_tech_trans", "Scale-Up & Tech\nTransfer", 695, 404, 85, 46, "#7E22CE", "🧪");
+  stepCard("card_gmp_mfg", "GMP\nManufacturing", 795, 404, 80, 46, "#7E22CE", "🏭");
+  stepCard("card_qc_release", "Quality Control\n& Release", 895, 404, 80, 46, "#7E22CE", "🛡️");
+
+  // --- ROW 5: COMMERCIAL OPERATIONS (y=470..555, center y=512) ---
+  // In Phase 4: Commercialization
+  stepCard("card_mkt_access", "Market Access\n& Pricing", 1010, 488, 80, 46, "#EA580C", "📈");
+  stepCard("card_prod_launch", "Product Launch\n& Distribution", 1105, 488, 85, 46, "#EA580C", "🚚");
+  stepCard("card_sales_hcp", "Sales & HCP\nEngagement", 1205, 488, 80, 46, "#EA580C", "👥");
+  stepCard("card_patient_supp", "Patient Support\nPrograms", 1300, 488, 85, 46, "#EA580C", "🤝");
+
+  // --- ROW 6: PATIENT & HEALTHCARE PROVIDERS (y=555..635, center y=595) ---
+  // In Phase 5: Patient Outcomes
+  stepCard("card_treat_adh", "Treatment &\nAdherence", 1105, 572, 85, 46, "#059669", "💊");
+  stepCard("card_outcome_mon", "Outcomes\nMonitoring", 1205, 572, 80, 46, "#059669", "📊");
+  stepCard("card_rwe_evid", "Real-World\nEvidence", 1300, 572, 85, 46, "#059669", "🗄️");
+
+  // --- ROW 7: DATA & DIGITAL PLATFORM (y=635..735) ---
+  // Platform Pods (Horizontally aligned x=195..1080)
+  const platformPods = [
+    { title: "Data Collection\n(EDC, ePRO, Labs)", icon: "🗄️", x: 195, w: 120 },
+    { title: "Data Integration\n& Governance", icon: "🕸️", x: 325, w: 120 },
+    { title: "Analytics &\nAI/ML Insights", icon: "🧠", x: 455, w: 115 },
+    { title: "Document & Content\nManagement", icon: "📁", x: 580, w: 130 },
+    { title: "Security, Privacy\n& Compliance", icon: "🛡️", x: 720, w: 120 },
+    { title: "Audit Trail &\nLineage", icon: "🔍", x: 850, w: 110 },
+    { title: "Reporting &\nDashboards", icon: "📊", x: 970, w: 110 },
+  ];
+
+  platformPods.forEach((pod, i) => {
+    rect(
+      `pod_plat_${i}`,
+      `<table style="width:100%;height:100%;text-align:center;">
+        <tr>
+          <td style="vertical-align:middle;text-align:center;padding:2px;">
+            <div style="font-size:16px;">${pod.icon}</div>
+            <div style="font-size:8px;font-weight:bold;color:#0F2A4A;line-height:1.15;margin-top:2px;">${pod.title.replace(/\n/g, "<br/>")}</div>
+          </td>
+        </tr>
+      </table>`,
+      pod.x,
+      648,
+      pod.w,
+      72,
+      "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;arcSize=10;"
+    );
+  });
+
+  // Right Enclosure: KEY SYSTEMS & TOOLS (Examples)
+  rect(
+    "box_key_systems",
+    `<div style="font-size:8.5px;font-weight:900;color:#0F2A4A;letter-spacing:0.5px;text-align:center;margin-bottom:4px;">KEY SYSTEMS &amp; TOOLS (Examples)</div>
+    <table style="width:100%;border-collapse:collapse;text-align:center;">
+      <tr>
+        <td style="font-size:7px;font-weight:bold;color:#EA580C;padding:1px;"><b style="font-size:8.5px;">Veeva</b><br/>Veeva Vault</td>
+        <td style="font-size:7px;font-weight:bold;color:#0284C7;padding:1px;"><b style="font-size:8.5px;">Medidata</b><br/>Rave EDC</td>
+        <td style="font-size:7px;font-weight:bold;color:#0F172A;padding:1px;"><b style="font-size:8.5px;">SAP</b><br/>S/4HANA</td>
+        <td style="font-size:7px;font-weight:bold;color:#2563EB;padding:1px;"><b style="font-size:8.5px;">IQVIA</b><br/>Orchestrate</td>
+        <td style="font-size:7px;font-weight:bold;color:#0284C7;padding:1px;"><b style="font-size:8.5px;">Salesforce</b><br/>Health Cloud</td>
+      </tr>
+      <tr>
+        <td style="padding:2px;font-size:11px;">☁️<br/><span style="font-size:6.5px;color:#475569;">Google Cloud</span></td>
+        <td style="padding:2px;font-size:11px;">🔍<br/><span style="font-size:6.5px;color:#475569;">BigQuery</span></td>
+        <td style="padding:2px;font-size:11px;">🕸️<br/><span style="font-size:6.5px;color:#475569;">Dataplex</span></td>
+        <td style="padding:2px;font-size:11px;">✨<br/><span style="font-size:6.5px;color:#475569;">Vertex AI</span></td>
+        <td style="padding:2px;font-size:11px;">📊<br/><span style="font-size:6.5px;color:#475569;">Looker</span></td>
+      </tr>
+    </table>`,
+    1095,
+    642,
+    360,
+    84,
+    "fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;rounded=1;arcSize=8;shadow=1;"
+  );
+
+  // ==================== 4. CONNECTING EDGES & WORKFLOW ROUTING ====================
+  // Row 1 Forward Flow
+  edge("e_id_to_disc", "card_id_targets", "card_lead_disc", "", "#1E824C");
+  edge("e_disc_to_opt", "card_lead_disc", "card_lead_opt", "", "#1E824C");
+  edge("e_opt_to_cand", "card_lead_opt", "card_cand_sel", "", "#1E824C");
+  edge("e_cand_to_preclin", "card_cand_sel", "card_preclin", "", "#2563EB");
+  
+  // Preclinical to Proceed to Clinical Trials decision
+  c.push(`<mxCell id="e_preclin_to_dec1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="card_preclin" target="dec_proceed_trials"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Decision 1 Branches:
+  // Yes -> Clinical Trials Phase I (Row 2)
+  c.push(`<mxCell id="e_dec1_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10B981;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=8.5;fontColor=#10B981;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#A7F3D0;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec_proceed_trials" target="card_phase1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  
+  // No -> Feedback to Lead Optimization (Dashed return loop)
+  c.push(`<mxCell id="e_dec1_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=8.5;fontColor=#EF4444;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FECACA;padding=2;dashed=1;dashPattern=5 3;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="dec_proceed_trials" target="card_lead_opt"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Row 3 Regulatory Affairs to Clinical Ops IND
+  edge("e_reg_strat_to_pre", "card_reg_strat", "card_pre_ind", "", "#0D9488");
+  c.push(`<mxCell id="e_pre_to_ind" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_pre_ind" target="card_ind_sub"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  edge("e_ind_to_p1", "card_ind_sub", "card_phase1", "", "#2563EB");
+
+  // Row 2 Clinical Ops Flow
+  edge("e_p1_to_p2", "card_phase1", "card_phase2", "", "#2563EB");
+  edge("e_p2_to_p3", "card_phase2", "card_phase3", "", "#2563EB");
+  edge("e_p3_to_nda", "card_phase3", "card_nda_sub", "", "#2563EB");
+  edge("e_nda_to_dec2", "card_nda_sub", "dec_reg_approval", "", "#2563EB");
+
+  // Decision 2 Branches:
+  // Yes -> Health Authority Review (Row 3)
+  c.push(`<mxCell id="e_dec2_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10B981;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=8.5;fontColor=#10B981;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#A7F3D0;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec_reg_approval" target="card_ha_review"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  
+  // No -> Feedback to Candidate Selection / Preclinical
+  c.push(`<mxCell id="e_dec2_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=8.5;fontColor=#EF4444;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FECACA;padding=2;dashed=1;dashPattern=5 3;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec_reg_approval" target="card_cand_sel"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="942" y="125"/><mxPoint x="532" y="125"/></Array></mxGeometry></mxCell>`);
+
+  // Row 3 Regulatory Affairs
+  edge("e_ha_to_appr", "card_ha_review", "card_approval_lic", "", "#EA580C");
+
+  // Row 4 Manufacturing Flow
+  c.push(`<mxCell id="e_p2_to_proc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7E22CE;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="card_phase2" target="card_proc_dev"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  edge("e_proc_to_tech", "card_proc_dev", "card_tech_trans", "", "#7E22CE");
+  edge("e_tech_to_gmp", "card_tech_trans", "card_gmp_mfg", "", "#7E22CE");
+  edge("e_gmp_to_qc", "card_gmp_mfg", "card_qc_release", "", "#7E22CE");
+
+  // Row 5 Commercial Operations Flow
+  c.push(`<mxCell id="e_appr_to_mkt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="card_approval_lic" target="card_mkt_access"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_qc_to_mkt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="card_qc_release" target="card_mkt_access"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  edge("e_mkt_to_launch", "card_mkt_access", "card_prod_launch", "", "#EA580C");
+  edge("e_launch_to_sales", "card_prod_launch", "card_sales_hcp", "", "#EA580C");
+  edge("e_sales_to_supp", "card_sales_hcp", "card_patient_supp", "", "#EA580C");
+
+  // Row 6 Patient Care Flow
+  c.push(`<mxCell id="e_launch_to_treat" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="card_prod_launch" target="card_treat_adh"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  edge("e_treat_to_outc", "card_treat_adh", "card_outcome_mon", "", "#059669");
+  edge("e_outc_to_rwe", "card_outcome_mon", "card_rwe_evid", "", "#059669");
+
+  // Feedback Loop from Real-World Evidence back to Target Discovery
+  c.push(`<mxCell id="e_rwe_feedback" value="RWE Continuous Improvement Feedback Loop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=8;fontColor=#059669;dashed=1;dashPattern=5 3;labelBackgroundColor=#FFFFFF;labelBorderColor=#A7F3D0;padding=2;" edge="1" parent="1" source="card_rwe_evid" target="card_id_targets"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1420" y="595"/><mxPoint x="1420" y="115"/><mxPoint x="241" y="115"/></Array></mxGeometry></mxCell>`);
+
+  // ==================== 5. BOTTOM LEGEND ====================
+  // Legend Container
+  rect("legend_bg", "", 20, 745, 1445, 34, "fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1;rounded=1;arcSize=6;");
+  text("lbl_legend_title", `<b style="font-size:10px;color:#0F172A;letter-spacing:1px;">LEGEND</b>`, 25, 748, 65, 26, "align=center;");
+
+  const legendItems = [
+    { title: "Research & Discovery", color: "#1E824C", bg: "#DCFCE7", x: 95, w: 140 },
+    { title: "Development", color: "#2563EB", bg: "#DBEAFE", x: 245, w: 100 },
+    { title: "Manufacturing", color: "#7E22CE", bg: "#F3E8FF", x: 355, w: 110 },
+    { title: "Commercialization", color: "#EA580C", bg: "#FFEDD5", x: 475, w: 125 },
+    { title: "Patient Outcomes", color: "#0D9488", bg: "#CCFBF1", x: 610, w: 120 },
+  ];
+
+  legendItems.forEach((item, i) => {
+    rect(
+      `leg_item_${i}`,
+      `<span style="font-size:8.5px;font-weight:bold;color:${item.color};">${item.title}</span>`,
+      item.x,
+      750,
+      item.w,
+      24,
+      `fillColor=${item.bg};strokeColor=${item.color};strokeWidth=1;rounded=1;arcSize=20;align=center;`
+    );
+  });
+
+  // Symbols
+  rect("leg_sym_step", `<span style="font-size:8px;font-weight:bold;color:#475569;">Process Step</span>`, 740, 750, 85, 24, "fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1;rounded=1;arcSize=6;align=center;");
+  diamond("leg_sym_dec", `<span style="font-size:7.5px;font-weight:bold;color:#D97706;">Decision</span>`, 835, 748, 70, 26, "fillColor=#FFFBEB;strokeColor=#F59E0B;");
+  text("leg_sym_flow", `<span style="font-size:8.5px;font-weight:bold;color:#475569;">&mdash;&rarr; Flow</span>`, 915, 750, 75, 24, "align=center;");
+  text("leg_sym_dash", `<span style="font-size:8.5px;font-weight:bold;color:#475569;">- - - &rarr; Feedback Loop</span>`, 995, 750, 130, 24, "align=center;");
+
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="template_03_swimlane" name="03 — Business Process / Swimlane">
+    <mxGraphModel dx="1400" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1485" pageHeight="800" background="${bg}" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join("\n        ")}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
