@@ -69,6 +69,8 @@ export function generateTemplate15NetworkTopologyXml(
   rect("ext_cdn", "<div style='font-size:6.8px;font-weight:700;'>⚡<br/>Cloud CDN</div>", 155, 390, 75, 32, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
   rect("ext_dns", "<div style='font-size:6.8px;font-weight:700;'>🌐<br/>Cloud DNS</div>", 155, 432, 75, 32, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
+  edge(nid(), "", "cloud_internet", "box_ext_conn", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
+
   // 3. CENTER MAIN BOX: GCP PROJECT & SHARED VPC (10.10.0.0/16)
   rect("box_vpc_outer", "", 255, 140, 680, 480, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;dashPattern=6 4;rounded=1;");
   rect("lbl_vpc_title", "<span style='font-size:9.5px;font-weight:800;color:#2563EB;'>GCP PROJECT: novacura-prod &nbsp;|&nbsp; VPC: novacura-prod-vpc (10.10.0.0/16)</span>", 265, 148, 500, 18, "strokeColor=none;fillColor=none;align=left;");
@@ -81,7 +83,7 @@ export function generateTemplate15NetworkTopologyXml(
   rect("pub_apigw", "<div style='font-size:7.5px;font-weight:700;'>🔌<br/>API Gateway<br/><span style='font-size:6px;color:#64748B;'>(Apigee X)</span></div>", 520, 196, 110, 44, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
   rect("pub_waf", "<div style='font-size:7.5px;font-weight:700;'>🛡️<br/>Web Application<br/>Firewall (WAF)</div>", 720, 196, 130, 44, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  edge(nid(), "", "cloud_internet", "pub_lb", "edgeStyle=orthogonalEdgeStyle;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
+  edge(nid(), "", "box_ext_conn", "pub_lb", "edgeStyle=orthogonalEdgeStyle;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
   edge(nid(), "", "pub_lb", "pub_apigw", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
   edge(nid(), "", "pub_apigw", "pub_waf", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
 
@@ -110,11 +112,26 @@ export function generateTemplate15NetworkTopologyXml(
   rect("zc_app", "<div style='font-size:7.2px;font-weight:700;'>⚙️ <b>App Tier</b><br/><span style='font-size:6px;color:#64748B;'>GKE (Microservices)</span></div>", 725, 360, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
   rect("zc_cache", "<div style='font-size:7.2px;font-weight:700;'>⚡ <b>Cache Tier</b><br/><span style='font-size:6px;color:#64748B;'>Redis (Memorystore)</span></div>", 725, 406, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // Lateral zone communication arrows
+  // Vertical down arrows from Public Subnet to Web Tiers
+  edge(nid(), "", "pub_lb", "za_web", "edgeStyle=orthogonalEdgeStyle;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;");
+  edge(nid(), "", "pub_apigw", "zb_web", "edgeStyle=orthogonalEdgeStyle;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;");
+  edge(nid(), "", "pub_waf", "zc_web", "edgeStyle=orthogonalEdgeStyle;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;");
+
+  // Vertical down arrows inside each zone: Web -> App -> Cache
+  edge(nid(), "", "za_web", "za_app", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "za_app", "za_cache", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "zb_web", "zb_app", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "zb_app", "zb_cache", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "zc_web", "zc_app", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "zc_app", "zc_cache", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+
+  // Lateral zone communication arrows (dashed bidirectional)
   edge(nid(), "", "za_web", "zb_web", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
   edge(nid(), "", "zb_web", "zc_web", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
   edge(nid(), "", "za_app", "zb_app", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
   edge(nid(), "", "zb_app", "zc_app", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
+  edge(nid(), "", "za_cache", "zb_cache", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
+  edge(nid(), "", "zb_cache", "zc_cache", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
 
   // 3.3 DATA SUBNET (10.10.10.0/24)
   rect("box_data_subnet", "", 270, 480, 650, 115, "fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1.2;rounded=1;");
@@ -123,6 +140,11 @@ export function generateTemplate15NetworkTopologyXml(
   rect("d_sql", "<div style='font-size:7.2px;font-weight:700;'>🗄️<br/>Primary Database<br/><span style='font-size:6px;color:#64748B;'>Cloud SQL (PostgreSQL)<br/>HA (Multi-AZ)</span></div>", 295, 508, 170, 52, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
   rect("d_gcs", "<div style='font-size:7.2px;font-weight:700;'>🗃️<br/>Object Storage<br/><span style='font-size:6px;color:#64748B;'>Cloud Storage<br/>(Documents)</span></div>", 510, 508, 170, 52, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
   rect("d_search", "<div style='font-size:7.2px;font-weight:700;'>🔍<br/>Search Index<br/><span style='font-size:6px;color:#64748B;'>OpenSearch Service<br/>(Managed)</span></div>", 725, 508, 170, 52, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+
+  // Vertical down arrows from Cache Tiers to Data Subnet
+  edge(nid(), "", "za_cache", "d_sql", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=4;");
+  edge(nid(), "", "zb_cache", "d_gcs", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=4;");
+  edge(nid(), "", "zc_cache", "d_search", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=4;");
 
   edge(nid(), "", "d_sql", "d_gcs", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
   edge(nid(), "", "d_gcs", "d_search", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
@@ -139,9 +161,14 @@ export function generateTemplate15NetworkTopologyXml(
   rect("ms_log", "<div style='font-size:7.2px;font-weight:700;'>📑 Cloud Logging<br/><span style='font-size:6px;color:#64748B;'>(Logs)</span></div>", 968, 420, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
   rect("ms_mon", "<div style='font-size:7.2px;font-weight:700;'>📈 Cloud Monitoring<br/><span style='font-size:6px;color:#64748B;'>(Metrics & Alerts)</span></div>", 968, 465, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  edge(nid(), "", "box_vpc_outer", "ms_bq", "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
-  edge(nid(), "", "box_vpc_outer", "ms_pubsub", "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
-  edge(nid(), "", "box_vpc_outer", "ms_vertex", "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  // Clean horizontal dashed arrows from right of VPC straight into Managed Services
+  edge(nid(), "", "box_vpc_outer", "ms_bq", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  edge(nid(), "", "box_vpc_outer", "ms_pubsub", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  edge(nid(), "", "box_vpc_outer", "ms_tasks", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  edge(nid(), "", "box_vpc_outer", "ms_vertex", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  edge(nid(), "", "box_vpc_outer", "ms_secret", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  edge(nid(), "", "box_vpc_outer", "ms_log", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  edge(nid(), "", "box_vpc_outer", "ms_mon", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
 
   // 5. BOTTOM ROW: ON-PREMISES, NETWORK SECURITY, LEGEND, NOTES
   rect("box_onprem", "", 20, 630, 220, 140, "fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;");
@@ -149,13 +176,18 @@ export function generateTemplate15NetworkTopologyXml(
   rect("op_dc", "<div style='font-size:7.2px;font-weight:700;'>🗄️<br/>Datacenter /<br/>On-Prem Systems</div>", 32, 665, 85, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
   rect("op_vpn", "<div style='font-size:7.2px;font-weight:700;'>🔒<br/>VPN /<br/>Interconnect</div>", 138, 665, 85, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
   edge(nid(), "", "op_dc", "op_vpn", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
-  edge(nid(), "", "op_vpn", "box_vpc_outer", "edgeStyle=orthogonalEdgeStyle;strokeColor=#16A34A;strokeWidth=1.5;endArrow=block;endSize=4;", [{x: 235, y: 687}, {x: 255, y: 550}]);
 
+  // Network Security Box in bottom middle
   rect("box_net_sec", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:8px;'>NETWORK SECURITY</div>" +
     "<div style='font-size:7.5px;color:#0F172A;'>" +
     "🛡️ <b>VPC Firewall</b> (Ingress/Egress) &nbsp;&nbsp;&nbsp; ⚡ <b>Private Google Access</b><br/><br/>" +
     "📑 <b>VPC Flow Logs</b> &nbsp;&nbsp;&nbsp; 🛡️ <b>IDS/IPS</b> (Threat Detection)" +
     "</div>", 255, 630, 420, 140, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=center;verticalAlign=middle;");
+
+  // Vertical dashed arrow between Network Security and VPC bottom
+  edge(nid(), "", "box_net_sec", "box_vpc_outer", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=4;startSize=4;");
+  // Clean horizontal dashed line from VPN to Network Security
+  edge(nid(), "", "op_vpn", "box_net_sec", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;");
 
   rect("box_legend", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:6px;'>LEGEND</div>" +
     "<div style='font-size:7.2px;line-height:1.7;color:#0F172A;'>" +

@@ -149,6 +149,13 @@ export function generateTemplate20CiCdPipelineXml(
     "⎈ <b>Config Management</b><br/><span style='font-size:5.5px;color:#64748B;'>(Helm / Kustomize)</span>" +
     "</div>", 20, 380, 970, 55, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.2;rounded=1;align=center;verticalAlign=middle;");
 
+  // Vertical drop dashed lines from stages into enablers
+  edge(nid(), "", "s1_box", "box_enablers", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1;dashed=1;dashPattern=3 3;endArrow=none;");
+  edge(nid(), "", "s2_box", "box_enablers", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1;dashed=1;dashPattern=3 3;endArrow=none;");
+  edge(nid(), "", "s4_box", "box_enablers", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1;dashed=1;dashPattern=3 3;endArrow=none;");
+  edge(nid(), "", "s6_box", "box_enablers", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1;dashed=1;dashPattern=3 3;endArrow=none;");
+  edge(nid(), "", "s8_box", "box_enablers", "edgeStyle=none;strokeColor=#94A3B8;strokeWidth=1;dashed=1;dashPattern=3 3;endArrow=none;");
+
   // 4. DEPLOYMENT PATTERNS SUB-DIAGRAMS
   rect("box_dep_patterns", "", 20, 445, 970, 175, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;");
   rect("lbl_dep_patterns", "<span style='font-size:8.5px;font-weight:800;color:#1E3A8A;'>DEPLOYMENT PATTERNS</span>", 20, 452, 970, 16, "strokeColor=none;fillColor=none;align=center;");
@@ -170,7 +177,7 @@ export function generateTemplate20CiCdPipelineXml(
   rect("can_v1", "<div style='font-size:6.8px;font-weight:700;color:#2563EB;'>Version N<br/>(90%)</div>", 545, 498, 75, 30, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;");
   rect("can_v2", "<div style='font-size:6.8px;font-weight:700;color:#16A34A;'>Version N+1<br/>(10%)</div>", 545, 545, 75, 30, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;");
   edge(nid(), "", "can_users", "can_lb", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
-  edge(nid(), "", "can_lb", "can_v1", "edgeStyle=orthogonalEdgeStyle;strokeColor=#2563EB;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "can_lb", "can_v1", "edgeStyle=orthogonalEdgeStyle;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
   edge(nid(), "", "can_lb", "can_v2", "edgeStyle=orthogonalEdgeStyle;strokeColor=#16A34A;strokeWidth=1.2;endArrow=block;endSize=3;");
 
   // Pattern 3: Rolling
@@ -219,7 +226,7 @@ export function generateTemplate20CiCdPipelineXml(
     "🏷️ <b>Release Tag</b>" +
     "</div>", 1005, 495, 275, 125, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;");
 
-  // 6. BOTTOM ROW: 4 PANELS
+  // 6. BOTTOM ROW: 4 PANELS (WITH 10-ICON TECHNOLOGIES MATRIX)
   rect("bot_p1", "<div style='font-size:8px;font-weight:800;color:#16A34A;margin-bottom:6px;'>KEY BENEFITS</div>" +
     "<div style='font-size:7px;line-height:1.6;color:#0F172A;'>" +
     "✔ Faster delivery with automated pipeline<br/>" +
@@ -232,10 +239,8 @@ export function generateTemplate20CiCdPipelineXml(
 
   rect("bot_p2", "<div style='font-size:8px;font-weight:800;color:#2563EB;margin-bottom:6px;'>TECHNOLOGIES</div>" +
     "<div style='font-size:6.8px;line-height:1.6;color:#0F172A;'>" +
-    "🔨 <b>Cloud Build</b> &nbsp;&nbsp; ⚙️ <b>GKE</b> &nbsp;&nbsp; 🗃️ <b>Artifact Registry</b><br/>" +
-    "🚀 <b>Cloud Deploy</b> &nbsp;&nbsp; 📊 <b>Cloud Monitoring</b><br/>" +
-    "🐙 <b>GitHub</b> &nbsp;&nbsp; 🔍 <b>SonarQube</b> &nbsp;&nbsp; 🛡️ <b>Snyk</b><br/>" +
-    "📦 <b>Trivy</b> &nbsp;&nbsp; 🏗️ <b>Terraform</b> &nbsp;&nbsp; ⎈ <b>Helm</b>" +
+    "🔨 <b>Cloud Build</b> &nbsp;&nbsp; ⚙️ <b>GKE</b> &nbsp;&nbsp; 🗃️ <b>Artifact Registry</b> &nbsp;&nbsp; 🚀 <b>Cloud Deploy</b> &nbsp;&nbsp; 📊 <b>Cloud Monitoring</b><br/><br/>" +
+    "🐙 <b>GitHub</b> &nbsp;&nbsp; 🔍 <b>SonarQube</b> &nbsp;&nbsp; 🛡️ <b>Snyk</b> &nbsp;&nbsp; 📦 <b>Trivy</b> &nbsp;&nbsp; 🏗️ <b>Terraform</b> &nbsp;&nbsp; ⎈ <b>Helm</b>" +
     "</div>", 270, 630, 290, 140, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=6;");
 
   rect("bot_p3", "<div style='font-size:8px;font-weight:800;color:#7C3AED;margin-bottom:6px;'>NOTES</div>" +

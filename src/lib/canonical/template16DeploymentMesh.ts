@@ -35,7 +35,7 @@ export function generateTemplate16DeploymentMeshXml(
 
 
   // 1. BRAND HEADER & METADATA
-  rect("num_badge", "14", 20, 20, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
+  rect("num_badge", "16", 20, 20, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
   rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>DEPLOYMENT DIAGRAM</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>NOVACURA - Enterprise AI Platform for Biopharma &nbsp;|&nbsp; Target Environment: Google Cloud Platform (Multi-Region / Multi-Zone)</div>", 78, 18, 900, 50, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:18px;font-weight:800;color:#1E3A8A;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 1180, 18, 350, 45, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
 
