@@ -1,295 +1,230 @@
 /**
- * 🏛️ CANONICAL MASTER BLUEPRINT 19 — HA / DR ARCHITECTURE
- * 
- * 1:1 Ground-Truth Reproduction of images/19.png
- * "19 HA / DR Architecture | Use Case: NovaCura – High Availability & Disaster Recovery"
- * Active-Active / Active-Passive Resiliency across us-central1 and us-east1,
- * Cross-Region Data Replication, 6-Step Failover Flow, RTO/RPO Metrics, 4 Bottom Panels.
- * 
- * Geometric Coordinates: 1600x1000px
+ * Canonical Architecture Template 19: Template 19: HA / DR Architecture
+ * High-fidelity 16:9 replication of images/19.png
  */
 
-export function generateTemplate19HaDrArchitectureXml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+export function generateTemplate19HaDrArchitectureXml(
+  flavor: string = "biopharma",
+  theme: "dark" | "light" = "light"
+): string {
+  const isDark = theme === "dark";
   const E = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const c: string[] = [];
+  let idCounter = 100;
+  const nid = () => `c_${idCounter++}`;
 
   const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
-    c.push(`<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
+    c.push(
+      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
+      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
+      `</mxCell>`
+    );
   };
 
-  const text = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
-    c.push(`<mxCell id="${id}" value="${E(val)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
+  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
+    let ptsXml = "";
+    if (pts.length > 0) {
+      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
+    }
+    c.push(
+      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
+      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
+      `</mxCell>`
+    );
   };
 
-  const edge = (id: string, label: string, x1: number, y1: number, x2: number, y2: number, color = "#0F172A", dashed = false, arrow = "block", pts: [number, number][] = []) => {
-    const dashStyle = dashed ? "dashed=1;dashPattern=5 4;" : "";
-    const ptsXml = pts.length > 0 ? `<Array as="points">${pts.map(p => `<mxPoint x="${p[0]}" y="${p[1]}"/>`).join("")}</Array>` : "";
-    const labelStyle = label ? `fontSize=8;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;` : "";
-    c.push(`<mxCell id="${id}" value="${E(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${dashStyle}strokeColor=${color};strokeWidth=1.2;endArrow=${arrow};endFill=1;${labelStyle}" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x1}" y="${y1}" as="sourcePoint"/><mxPoint x="${x2}" y="${y2}" as="targetPoint"/>${ptsXml}</mxGeometry></mxCell>`);
-  };
 
-  // =========================================================================
-  // 1. MASTER HEADER & TOP-RIGHT BRAND BLOCK
-  // =========================================================================
-  rect("badge_19", "<b style='font-size:24px;color:#FFFFFF;'>19</b>", 20, 14, 52, 40, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;arcSize=0;align=center;verticalAlign=middle;");
+  // 1. BRAND HEADER & METADATA
+  rect("num_badge", "19", 20, 20, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
+  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>HA / DR Architecture</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: NovaCura – High Availability &amp; Disaster Recovery &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Primary Region: us-central1 &nbsp;|&nbsp; DR Region: us-east1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 18, 900, 50, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:18px;font-weight:800;color:#1E3A8A;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 1180, 18, 350, 45, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
 
-  const titleHtml = `<div style="font-family:Inter,system-ui,sans-serif;">
-    <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:1px;line-height:1.1;">HA / DR Architecture</div>
-    <div style="font-size:11px;font-weight:700;color:#475569;margin-top:2px;">Use Case: NovaCura – High Availability &amp; Disaster Recovery &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Primary: us-central1 &nbsp;|&nbsp; DR: us-east1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>
-  </div>`;
-  text("header_title", titleHtml, 82, 14, 850, 42, "align=left;verticalAlign=middle;");
+  // Objective Card
+  rect("card_obj", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:4px;'>OBJECTIVE</div><div style='font-size:7.5px;line-height:1.5;color:#0F172A;'>Ensure continuous availability of NovaCura platform with high availability within a region and disaster recovery across regions with defined RTO and RPO targets.</div>", 1000, 18, 280, 50, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=6;");
 
-  const brandHtml = `<div style="text-align:right;font-family:Inter,system-ui,sans-serif;">
-    <div style="display:inline-flex;align-items:center;gap:6px;">
-      <span style="font-size:20px;">🧬</span>
-      <span style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</span>
-    </div>
-    <div style="font-size:9.5px;font-style:italic;color:#64748B;margin-top:2px;">AI-Powered Regulatory Intelligence Platform</div>
-  </div>`;
-  text("brand_block", brandHtml, 1260, 12, 320, 44, "align=right;verticalAlign=top;");
+  // 2. PRIMARY REGION (us-central1, ACTIVE)
+  rect("hdr_pri", "<span style='font-size:9.5px;font-weight:800;color:#FFFFFF;'>PRIMARY REGION (us-central1)</span>", 150, 85, 230, 26, "fillColor=#1E3A8A;strokeColor=#1E3A8A;rounded=1;align=center;verticalAlign=middle;");
+  rect("badge_pri_act", "<span style='font-size:8px;font-weight:800;color:#16A34A;'>ACTIVE</span>", 390, 85, 80, 26, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
 
-  // Objective Card (Top Right)
-  const objHtml = `<div style="padding:4px 6px;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:2px;">OBJECTIVE</div>
-    <div style="font-size:7.5px;color:#334155;line-height:1.35;">Ensure continuous availability of NovaCura platform with high availability within a region and disaster recovery across regions with defined RTO and RPO targets.</div>
-  </div>`;
-  rect("card_obj", objHtml, 1140, 64, 440, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
+  rect("box_pri_reg", "", 20, 115, 450, 395, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.2;rounded=1;");
 
-  // =========================================================================
-  // 2. PRIMARY REGION (us-central1) [ACTIVE] (x: 20, y: 140, w: 580, h: 470)
-  // =========================================================================
-  rect("primary_badge", "<b style='color:#FFF;font-size:9px;'>PRIMARY REGION (us-central1)</b>", 20, 140, 240, 24, "fillColor=#1D4ED8;strokeColor=#1D4ED8;align=center;verticalAlign=middle;");
-  rect("primary_active_tag", "<b style='color:#15803D;font-size:8px;'>ACTIVE</b>", 270, 140, 70, 24, "fillColor=#F0FDF4;strokeColor=#16A34A;align=center;verticalAlign=middle;");
+  // Primary: Edge
+  rect("lbl_pe", "<span style='font-size:7.5px;font-weight:800;color:#1E3A8A;'>EDGE</span>", 30, 125, 60, 14, "strokeColor=none;fillColor=none;align=left;");
+  rect("pe_box", "", 100, 122, 360, 60, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;");
+  rect("pe_cdn", "<div style='font-size:6.8px;font-weight:700;'>⚡ Cloud CDN</div>", 110, 134, 100, 36, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pe_armor", "<div style='font-size:6.8px;font-weight:700;'>🛡️ Cloud Armor<br/><span style='font-size:5.5px;color:#64748B;'>(WAF)</span></div>", 230, 134, 100, 36, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pe_lb", "<div style='font-size:6.8px;font-weight:700;'>⚖️ Cloud Load<br/>Balancing</div>", 350, 134, 100, 36, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  rect("primary_box", "", 20, 168, 580, 442, "fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=1;");
+  // Primary: Application Layer
+  rect("lbl_pa", "<span style='font-size:7.5px;font-weight:800;color:#1E3A8A;'>APPLICATION<br/>LAYER</span>", 30, 195, 65, 20, "strokeColor=none;fillColor=none;align=left;");
+  rect("pa_box", "", 100, 190, 360, 68, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("pa_fe", "<div style='font-size:6.5px;font-weight:700;'>🖥️ Frontend<br/><span style='font-size:5px;color:#64748B;'>(GKE)</span></div>", 105, 204, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pa_be", "<div style='font-size:6.5px;font-weight:700;'>⚙️ Backend<br/><span style='font-size:5px;color:#64748B;'>(GKE)</span></div>", 195, 204, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pa_ai", "<div style='font-size:6.5px;font-weight:700;'>🧠 AI/ML Services<br/><span style='font-size:5px;color:#64748B;'>(Vertex AI)</span></div>", 285, 204, 85, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pa_gw", "<div style='font-size:6.5px;font-weight:700;'>🔌 API Gateway<br/><span style='font-size:5px;color:#64748B;'>(Endpoints)</span></div>", 380, 204, 75, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // Edge Tier
-  text("p_edge_title", "<span style='font-size:7.5px;font-weight:900;color:#64748B;'>EDGE</span>", 25, 175, 50, 15, "align=left;");
-  rect("p_edge_frame", "", 80, 175, 510, 70, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;");
-  rect("p_cdn", "<div style='font-size:14px;'>⚡</div><div style='font-size:7px;font-weight:700;'>Cloud CDN</div>", 120, 185, 120, 50, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_armor", "<div style='font-size:14px;'>🛡️</div><div style='font-size:7px;font-weight:700;'>Cloud Armor<br><span style='font-size:6px;color:#64748B;'>(WAF)</span></div>", 275, 185, 120, 50, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_lb", "<div style='font-size:14px;'>⚖️</div><div style='font-size:7px;font-weight:700;'>Cloud Load<br>Balancing</div>", 430, 185, 120, 50, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // Primary: Data Layer
+  rect("lbl_pd", "<span style='font-size:7.5px;font-weight:800;color:#1E3A8A;'>DATA LAYER</span>", 30, 280, 60, 14, "strokeColor=none;fillColor=none;align=left;");
+  rect("pd_box", "", 100, 268, 360, 68, "fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("pd_sql", "<div style='font-size:6.5px;font-weight:700;'>🗄️ Cloud SQL<br/><span style='font-size:5px;color:#64748B;'>(Primary)</span></div>", 105, 282, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pd_bq", "<div style='font-size:6.5px;font-weight:700;'>📊 BigQuery<br/><span style='font-size:5px;color:#64748B;'>(Primary)</span></div>", 195, 282, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pd_redis", "<div style='font-size:6.5px;font-weight:700;'>⚡ Memorystore<br/><span style='font-size:5px;color:#64748B;'>(Redis)</span></div>", 285, 282, 85, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pd_gcs", "<div style='font-size:6.5px;font-weight:700;'>🗃️ Cloud Storage<br/><span style='font-size:5px;color:#64748B;'>(Regional)</span></div>", 380, 282, 75, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // Application Layer
-  text("p_app_title", "<span style='font-size:7.5px;font-weight:900;color:#64748B;'>APPLICATION<br>LAYER</span>", 25, 260, 55, 25, "align=left;");
-  rect("p_app_frame", "", 80, 255, 510, 95, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;");
-  rect("p_front", "<div style='font-size:14px;'>⚙️</div><div style='font-size:7px;font-weight:700;'>Frontend<br><span style='font-size:6px;color:#64748B;'>(GKE)</span></div>", 95, 268, 105, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_back", "<div style='font-size:14px;'>⚙️</div><div style='font-size:7px;font-weight:700;'>Backend Services<br><span style='font-size:6px;color:#64748B;'>(GKE)</span></div>", 220, 268, 105, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_ai", "<div style='font-size:14px;'>🧠</div><div style='font-size:7px;font-weight:700;'>AI/ML Services<br><span style='font-size:6px;color:#64748B;'>(Vertex AI)</span></div>", 345, 268, 105, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_api", "<div style='font-size:14px;'>🔌</div><div style='font-size:7px;font-weight:700;'>API Gateway<br><span style='font-size:6px;color:#64748B;'>(Cloud Endpoints)</span></div>", 470, 268, 105, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // Primary: Platform Services
+  rect("lbl_pp", "<span style='font-size:7.5px;font-weight:800;color:#1E3A8A;'>PLATFORM<br/>SERVICES</span>", 30, 360, 65, 20, "strokeColor=none;fillColor=none;align=left;");
+  rect("pp_box", "", 100, 346, 360, 68, "fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("pp_iam", "<div style='font-size:6.5px;font-weight:700;'>🛡️ IAM</div>", 105, 360, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pp_kms", "<div style='font-size:6.5px;font-weight:700;'>🔐 Cloud KMS</div>", 195, 360, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pp_sec", "<div style='font-size:6.5px;font-weight:700;'>🔒 Secret Manager</div>", 285, 360, 85, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pp_mon", "<div style='font-size:6.5px;font-weight:700;'>📊 Monitoring<br/>&amp; Logging</div>", 380, 360, 75, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // Data Layer
-  text("p_data_title", "<span style='font-size:7.5px;font-weight:900;color:#64748B;'>DATA LAYER</span>", 25, 370, 55, 15, "align=left;");
-  rect("p_data_frame", "", 80, 360, 510, 95, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;");
-  rect("p_sql", "<div style='font-size:14px;'>🗄️</div><div style='font-size:7px;font-weight:700;'>Cloud SQL<br><span style='font-size:6px;color:#64748B;'>(Primary)</span></div>", 95, 373, 105, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_bq", "<div style='font-size:14px;'>📊</div><div style='font-size:7px;font-weight:700;'>BigQuery<br><span style='font-size:6px;color:#64748B;'>(Primary)</span></div>", 220, 373, 105, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_mem", "<div style='font-size:14px;'>⚡</div><div style='font-size:7px;font-weight:700;'>Memorystore<br><span style='font-size:6px;color:#64748B;'>(Redis)</span></div>", 345, 373, 105, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_gcs", "<div style='font-size:14px;'>📦</div><div style='font-size:7px;font-weight:700;'>Cloud Storage<br><span style='font-size:6px;color:#64748B;'>(Regional)</span></div>", 470, 373, 105, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // 3. CENTER TRAFFIC ROUTING HUB
+  rect("hub_lb", "<div style='font-size:7px;font-weight:700;'>⚖️<br/>Global HTTP(S)<br/>Load Balancer</div>", 485, 150, 100, 50, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;align=center;");
+  rect("hub_dns", "<div style='font-size:7px;font-weight:700;'>🌐<br/>Cloud DNS<br/><span style='font-size:5.5px;color:#64748B;'>(Health Checks)</span></div>", 485, 270, 100, 50, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;align=center;");
+  rect("hub_failover", "<div style='font-size:6.8px;font-weight:700;'>📡<br/>Failover via<br/>Traffic Director / DNS</div>", 480, 390, 110, 50, "fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.2;rounded=1;align=center;");
 
-  // Platform Services
-  text("p_plat_title", "<span style='font-size:7.5px;font-weight:900;color:#64748B;'>PLATFORM<br>SERVICES</span>", 25, 475, 55, 25, "align=left;");
-  rect("p_plat_frame", "", 80, 465, 510, 85, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;");
-  rect("p_iam", "<div style='font-size:14px;'>🛡️</div><div style='font-size:7px;font-weight:700;'>IAM</div>", 95, 475, 105, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_kms", "<div style='font-size:14px;'>🔑</div><div style='font-size:7px;font-weight:700;'>Cloud KMS</div>", 220, 475, 105, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_sm", "<div style='font-size:14px;'>🔒</div><div style='font-size:7px;font-weight:700;'>Secret Manager</div>", 345, 475, 105, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("p_mon", "<div style='font-size:14px;'>📑</div><div style='font-size:7px;font-weight:700;'>Cloud Monitoring<br>&amp; Logging</div>", 470, 475, 105, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  edge(nid(), "", "hub_lb", "pe_box", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endSize=4;");
+  edge(nid(), "", "hub_dns", "pa_box", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;");
 
-  // =========================================================================
-  // 3. CENTER TRAFFIC ROUTING (x: 615, w: 120)
-  // =========================================================================
-  rect("c_lb", "<div style='font-size:16px;'>⚖️</div><div style='font-size:7px;font-weight:700;'>Global<br>HTTP(S)<br>Load Balancer</div>", 615, 220, 115, 75, "fillColor=#EFF6FF;strokeColor=#0284C7;align=center;verticalAlign=middle;");
-  rect("c_dns", "<div style='font-size:16px;'>🌐</div><div style='font-size:7px;font-weight:700;'>Cloud DNS<br><span style='font-size:6px;color:#64748B;'>(Health Checks)</span></div>", 615, 335, 115, 75, "fillColor=#EFF6FF;strokeColor=#0284C7;align=center;verticalAlign=middle;");
-  rect("c_failover", "<div style='font-size:7px;font-weight:900;'>Failover via<br>Traffic Director /<br>DNS</div>", 615, 445, 115, 65, "fillColor=#FFF7ED;strokeColor=#EA580C;align=center;verticalAlign=middle;");
+  // 4. DR REGION (us-east1, STANDBY)
+  rect("hdr_dr", "<span style='font-size:9.5px;font-weight:800;color:#FFFFFF;'>DR REGION (us-east1)</span>", 605, 85, 210, 26, "fillColor=#1E3A8A;strokeColor=#1E3A8A;rounded=1;align=center;verticalAlign=middle;");
+  rect("badge_dr_stb", "<span style='font-size:8px;font-weight:800;color:#D97706;'>STANDBY</span>", 825, 85, 80, 26, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
 
-  // Connectors from LB/DNS to Regions
-  edge("e_lb_p", "", 615, 257, 590, 210, "#0284C7");
-  edge("e_lb_dr", "", 730, 257, 755, 210, "#0284C7");
+  rect("box_dr_reg", "", 600, 115, 380, 395, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.2;rounded=1;");
 
-  // =========================================================================
-  // 4. DR REGION (us-east1) [STANDBY] (x: 745, y: 140, w: 490, h: 470)
-  // =========================================================================
-  rect("dr_badge", "<b style='color:#FFF;font-size:9px;'>DR REGION (us-east1)</b>", 745, 140, 200, 24, "fillColor=#1D4ED8;strokeColor=#1D4ED8;align=center;verticalAlign=middle;");
-  rect("dr_standby_tag", "<b style='color:#C2410C;font-size:8px;'>STANDBY</b>", 955, 140, 75, 24, "fillColor=#FFF7ED;strokeColor=#EA580C;align=center;verticalAlign=middle;");
+  // DR: Edge
+  rect("de_box", "", 610, 122, 360, 60, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;");
+  rect("de_cdn", "<div style='font-size:6.8px;font-weight:700;'>⚡ Cloud CDN</div>", 620, 134, 100, 36, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("de_armor", "<div style='font-size:6.8px;font-weight:700;'>🛡️ Cloud Armor<br/><span style='font-size:5.5px;color:#64748B;'>(WAF)</span></div>", 740, 134, 100, 36, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("de_lb", "<div style='font-size:6.8px;font-weight:700;'>⚖️ Cloud Load<br/>Balancing</div>", 860, 134, 100, 36, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  rect("dr_box", "", 745, 168, 490, 442, "fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=1;");
+  // DR: Application Layer
+  rect("da_box", "", 610, 190, 360, 68, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("da_fe", "<div style='font-size:6.5px;font-weight:700;'>🖥️ Frontend<br/><span style='font-size:5px;color:#64748B;'>(GKE)</span></div>", 615, 204, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("da_be", "<div style='font-size:6.5px;font-weight:700;'>⚙️ Backend<br/><span style='font-size:5px;color:#64748B;'>(GKE)</span></div>", 705, 204, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("da_ai", "<div style='font-size:6.5px;font-weight:700;'>🧠 AI/ML Services<br/><span style='font-size:5px;color:#64748B;'>(Vertex AI)</span></div>", 795, 204, 85, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("da_gw", "<div style='font-size:6.5px;font-weight:700;'>🔌 API Gateway<br/><span style='font-size:5px;color:#64748B;'>(Endpoints)</span></div>", 890, 204, 75, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // DR Edge
-  rect("dr_edge_frame", "", 755, 175, 470, 70, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;");
-  rect("dr_cdn", "<div style='font-size:14px;'>⚡</div><div style='font-size:7px;font-weight:700;'>Cloud CDN</div>", 770, 185, 105, 50, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_armor", "<div style='font-size:14px;'>🛡️</div><div style='font-size:7px;font-weight:700;'>Cloud Armor<br><span style='font-size:6px;color:#64748B;'>(WAF)</span></div>", 895, 185, 105, 50, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_lb", "<div style='font-size:14px;'>⚖️</div><div style='font-size:7px;font-weight:700;'>Cloud Load<br>Balancing</div>", 1020, 185, 105, 50, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // DR: Data Layer
+  rect("dd_box", "", 610, 268, 360, 68, "fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("dd_sql", "<div style='font-size:6.5px;font-weight:700;'>🗄️ Cloud SQL<br/><span style='font-size:5px;color:#64748B;'>(Standby)</span></div>", 615, 282, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dd_bq", "<div style='font-size:6.5px;font-weight:700;'>📊 BigQuery<br/><span style='font-size:5px;color:#64748B;'>(Standby)</span></div>", 705, 282, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dd_redis", "<div style='font-size:6.5px;font-weight:700;'>⚡ Memorystore<br/><span style='font-size:5px;color:#64748B;'>(Redis)</span></div>", 795, 282, 85, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dd_gcs", "<div style='font-size:6.5px;font-weight:700;'>🗃️ Cloud Storage<br/><span style='font-size:5px;color:#64748B;'>(Regional)</span></div>", 890, 282, 75, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // DR Application Layer
-  rect("dr_app_frame", "", 755, 255, 470, 95, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;");
-  rect("dr_front", "<div style='font-size:14px;'>⚙️</div><div style='font-size:7px;font-weight:700;'>Frontend<br><span style='font-size:6px;color:#64748B;'>(GKE)</span></div>", 765, 268, 95, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_back", "<div style='font-size:14px;'>⚙️</div><div style='font-size:7px;font-weight:700;'>Backend Services<br><span style='font-size:6px;color:#64748B;'>(GKE)</span></div>", 875, 268, 95, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_ai", "<div style='font-size:14px;'>🧠</div><div style='font-size:7px;font-weight:700;'>AI/ML Services<br><span style='font-size:6px;color:#64748B;'>(Vertex AI)</span></div>", 985, 268, 95, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_api", "<div style='font-size:14px;'>🔌</div><div style='font-size:7px;font-weight:700;'>API Gateway<br><span style='font-size:6px;color:#64748B;'>(Cloud Endpoints)</span></div>", 1095, 268, 95, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // DR: Platform Services
+  rect("dp_box", "", 610, 346, 360, 68, "fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("dp_iam", "<div style='font-size:6.5px;font-weight:700;'>🛡️ IAM</div>", 615, 360, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dp_kms", "<div style='font-size:6.5px;font-weight:700;'>🔐 Cloud KMS</div>", 705, 360, 80, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dp_sec", "<div style='font-size:6.5px;font-weight:700;'>🔒 Secret Manager</div>", 795, 360, 85, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("dp_mon", "<div style='font-size:6.5px;font-weight:700;'>📊 Monitoring<br/>&amp; Logging</div>", 890, 360, 75, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // DR Data Layer
-  rect("dr_data_frame", "", 755, 360, 470, 95, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;");
-  rect("dr_sql", "<div style='font-size:14px;'>🗄️</div><div style='font-size:7px;font-weight:700;'>Cloud SQL<br><span style='font-size:6px;color:#64748B;'>(Standby)</span></div>", 765, 373, 95, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_bq", "<div style='font-size:14px;'>📊</div><div style='font-size:7px;font-weight:700;'>BigQuery<br><span style='font-size:6px;color:#64748B;'>(Standby)</span></div>", 875, 373, 95, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_mem", "<div style='font-size:14px;'>⚡</div><div style='font-size:7px;font-weight:700;'>Memorystore<br><span style='font-size:6px;color:#64748B;'>(Redis)</span></div>", 985, 373, 95, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_gcs", "<div style='font-size:14px;'>📦</div><div style='font-size:7px;font-weight:700;'>Cloud Storage<br><span style='font-size:6px;color:#64748B;'>(Regional)</span></div>", 1095, 373, 95, 70, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  edge(nid(), "", "hub_lb", "de_box", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endSize=4;");
+  edge(nid(), "", "hub_failover", "dp_box", "edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;");
 
-  // DR Platform Services
-  rect("dr_plat_frame", "", 755, 465, 470, 85, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;rounded=1;");
-  rect("dr_iam", "<div style='font-size:14px;'>🛡️</div><div style='font-size:7px;font-weight:700;'>IAM</div>", 765, 475, 95, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_kms", "<div style='font-size:14px;'>🔑</div><div style='font-size:7px;font-weight:700;'>Cloud KMS</div>", 875, 475, 95, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_sm", "<div style='font-size:14px;'>🔒</div><div style='font-size:7px;font-weight:700;'>Secret Manager</div>", 985, 475, 95, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  rect("dr_mon", "<div style='font-size:14px;'>📑</div><div style='font-size:7px;font-weight:700;'>Cloud Monitoring<br>&amp; Logging</div>", 1095, 475, 95, 65, "fillColor=#FFFFFF;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // 5. RIGHT COLUMN: RTO/RPO TARGETS & STRATEGIES
+  rect("hdr_targets", "<span style='font-size:8.5px;font-weight:800;color:#1E3A8A;'>RTO / RPO TARGETS</span>", 1000, 78, 280, 22, "fillColor=#EFF6FF;strokeColor=#1E3A8A;rounded=1;align=center;verticalAlign=middle;");
+  rect("box_targets", "<div style='display:flex;justify-content:space-around;text-align:center;padding-top:6px;'>" +
+    "<div>⏱️<br/><b style='font-size:9.5px;color:#1E3A8A;'>RTO</b><br/><span style='font-size:8px;font-weight:700;color:#16A34A;'>≤ 1 Hour</span></div>" +
+    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+    "<div>⏱️<br/><b style='font-size:9.5px;color:#1E3A8A;'>RPO</b><br/><span style='font-size:8px;font-weight:700;color:#16A34A;'>≤ 15 Minutes</span></div>" +
+    "</div>", 1000, 100, 280, 60, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=center;verticalAlign=middle;");
 
-  // =========================================================================
-  // 5. RIGHT SIDEBAR: RTO/RPO & STRATEGIES (x: 1250, w: 330)
-  // =========================================================================
-  // RTO / RPO Targets (y: 140, h: 110)
-  const rtoHtml = `<div style="padding:4px;text-align:center;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:4px;">RTO / RPO TARGETS</div>
-    <div style="display:flex;align-items:center;justify-content:space-around;">
-      <div><div style="font-size:20px;">⏱️</div><div style="font-size:7.5px;font-weight:900;">RTO</div><div style="font-size:7px;color:#1D4ED8;font-weight:800;">≤ 1 Hour</div></div>
-      <div><div style="font-size:20px;">⏱️</div><div style="font-size:7.5px;font-weight:900;">RPO</div><div style="font-size:7px;color:#1D4ED8;font-weight:800;">≤ 15 Minutes</div></div>
-    </div>
-  </div>`;
-  rect("card_rto", rtoHtml, 1250, 140, 330, 110, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;");
+  rect("hdr_ha_strat", "<span style='font-size:8px;font-weight:800;color:#16A34A;'>HA STRATEGY (WITHIN REGION)</span>", 1000, 170, 280, 20, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=left;padding-left:6px;");
+  rect("card_ha_strat", "<div style='font-size:7px;line-height:1.6;padding:4px;color:#0F172A;'>" +
+    "✔ Multi-zone GKE node pools (3 zones)<br/>" +
+    "✔ Regional Cloud Load Balancing<br/>" +
+    "✔ Zonal Cloud SQL with automatic failover<br/>" +
+    "✔ Multi-zone Memorystore (Redis)<br/>" +
+    "✔ SLO-based auto-healing &amp; self-monitoring" +
+    "</div>", 1000, 190, 280, 95, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;");
 
-  // HA Strategy
-  const haStratHtml = `<div style="padding:6px;">
-    <div style="font-size:8px;font-weight:900;color:#0284C7;margin-bottom:4px;">HA STRATEGY (WITHIN REGION)</div>
-    <div style="font-size:7px;color:#1E293B;line-height:1.45;">
-      <div>✔ Multi-zone GKE node pools (3 zones)</div>
-      <div>✔ Regional Cloud Load Balancing</div>
-      <div>✔ Zonal Cloud SQL with auto-failover</div>
-      <div>✔ Multi-zone Memorystore (Redis)</div>
-      <div>✔ SLO-based auto-healing</div>
-    </div>
-  </div>`;
-  rect("card_ha_strat", haStratHtml, 1250, 260, 330, 160, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=left;verticalAlign=top;");
+  rect("hdr_dr_strat", "<span style='font-size:8px;font-weight:800;color:#EA580C;'>DR STRATEGY (CROSS-REGION)</span>", 1000, 295, 280, 20, "fillColor=#FFF7ED;strokeColor=#EA580C;rounded=1;align=left;padding-left:6px;");
+  rect("card_dr_strat", "<div style='font-size:7px;line-height:1.6;padding:4px;color:#0F172A;'>" +
+    "✔ Cross-region asynchronous replication<br/>" +
+    "✔ Scheduled backups to DR region<br/>" +
+    "✔ Infrastructure as Code (Terraform)<br/>" +
+    "✔ Runbooks &amp; automated failover workflows<br/>" +
+    "✔ Regular DR drills &amp; validations" +
+    "</div>", 1000, 315, 280, 95, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;");
 
-  // DR Strategy
-  const drStratHtml = `<div style="padding:6px;">
-    <div style="font-size:8px;font-weight:900;color:#C2410C;margin-bottom:4px;">DR STRATEGY (CROSS-REGION)</div>
-    <div style="font-size:7px;color:#1E293B;line-height:1.45;">
-      <div>✔ Cross-region asynchronous replication</div>
-      <div>✔ Scheduled backups to DR region</div>
-      <div>✔ Infrastructure as Code (Terraform)</div>
-      <div>✔ Runbooks &amp; automated workflows</div>
-      <div>✔ Regular DR drills &amp; validations</div>
-    </div>
-  </div>`;
-  rect("card_dr_strat", drStratHtml, 1250, 430, 330, 180, "fillColor=#FFFFFF;strokeColor=#EA580C;strokeWidth=1.2;align=left;verticalAlign=top;");
+  // 6. MIDDLE REPLICATION BAR & FAILOVER FLOW
+  rect("box_cross_rep", "", 20, 520, 560, 100, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;");
+  rect("lbl_cross_rep", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>CROSS-REGION DATA REPLICATION &amp; BACKUP</span>", 20, 526, 560, 14, "strokeColor=none;fillColor=none;align=center;");
 
-  // =========================================================================
-  // 6. MIDDLE STRIP: CROSS-REGION REPLICATION & FAILOVER FLOW (y: 620, h: 120)
-  // =========================================================================
-  // Cross-Region Data Replication
-  const repHtml = `<div style="padding:4px 6px;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:4px;text-align:center;">CROSS-REGION DATA REPLICATION &amp; BACKUP</div>
-    <div style="display:flex;align-items:center;justify-content:space-around;font-size:6.5px;font-weight:700;">
-      <div>🗄️ Cloud SQL<br><span style="color:#64748B;">Async Rep</span></div>
-      <span>➔</span>
-      <div>📊 BigQuery<br><span style="color:#64748B;">Cross-Region</span></div>
-      <span>➔</span>
-      <div>📦 Cloud Storage<br><span style="color:#64748B;">Dual-Region</span></div>
-      <span>➔</span>
-      <div>⚡ Memorystore<br><span style="color:#64748B;">Snapshots</span></div>
-      <span>➔</span>
-      <div>💾 Backups<br><span style="color:#64748B;">(GCS Bucket)</span></div>
-      <span>➔</span>
-      <div>🗄️ Archive<br><span style="color:#64748B;">Coldline</span></div>
-    </div>
-  </div>`;
-  rect("card_cross_rep", repHtml, 20, 620, 770, 120, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=center;verticalAlign=middle;");
+  rect("rep_sql", "<div style='font-size:6px;font-weight:700;'>🗄️<br/>Cloud SQL<br/><span style='font-size:5px;color:#64748B;'>Async Rep</span></div>", 30, 546, 75, 42, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;");
+  rect("rep_bq", "<div style='font-size:6px;font-weight:700;'>📊<br/>BigQuery<br/><span style='font-size:5px;color:#64748B;'>Replication</span></div>", 120, 546, 75, 42, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;");
+  rect("rep_gcs", "<div style='font-size:6px;font-weight:700;'>🗃️<br/>Cloud Storage<br/><span style='font-size:5px;color:#64748B;'>Dual-Region</span></div>", 210, 546, 80, 42, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;");
+  rect("rep_redis", "<div style='font-size:6px;font-weight:700;'>⚡<br/>Memorystore<br/><span style='font-size:5px;color:#64748B;'>Snapshots</span></div>", 305, 546, 80, 42, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;");
+  rect("rep_bkup", "<div style='font-size:6px;font-weight:700;'>💾<br/>Backups<br/><span style='font-size:5px;color:#64748B;'>(GCS Bucket)</span></div>", 400, 546, 75, 42, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;");
+  rect("rep_arch", "<div style='font-size:6px;font-weight:700;'>🗄️<br/>Archive<br/><span style='font-size:5px;color:#64748B;'>Coldline</span></div>", 490, 546, 75, 42, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;");
 
-  // Failover Flow
-  const failoverHtml = `<div style="padding:4px 6px;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:4px;text-align:center;">FAILOVER FLOW</div>
-    <div style="display:flex;align-items:center;justify-content:space-around;font-size:6.5px;font-weight:700;">
-      <div>1. Failure<br>Detected</div>
-      <span>➔</span>
-      <div>2. Health Check<br>Fails</div>
-      <span>➔</span>
-      <div>3. Traffic Shift<br>(DNS / TD)</div>
-      <span>➔</span>
-      <div>4. DR Services<br>Activated</div>
-      <span>➔</span>
-      <div>5. Data Validated</div>
-      <span>➔</span>
-      <div>6. Operations<br>Resumed</div>
-    </div>
-  </div>`;
-  rect("card_fail_flow", failoverHtml, 805, 620, 775, 120, "fillColor=#FFFFFF;strokeColor=#EA580C;strokeWidth=1.2;align=center;verticalAlign=middle;");
+  edge(nid(), "", "rep_sql", "rep_bq", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "rep_bq", "rep_gcs", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "rep_gcs", "rep_redis", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "rep_redis", "rep_bkup", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "rep_bkup", "rep_arch", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
 
-  // =========================================================================
-  // 7. BOTTOM PANELS (y: 755, h: 195)
-  // =========================================================================
-  // Panel 1: KEY BENEFITS (x: 20, w: 320)
-  const benHdrHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:8.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;margin-bottom:6px;">KEY BENEFITS</div>
-    <div style="font-size:7px;color:#1E293B;line-height:1.45;">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>High availability within region with auto recovery</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>Disaster recovery across region with defined RTO/RPO</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>Minimal data loss with cross-region replication</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>Resilient, fault-tolerant architecture</span></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>Regular DR testing ensures audit readiness</span></div>
-    </div>
-  </div>`;
-  rect("card_ben_hdr", benHdrHtml, 20, 755, 320, 195, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
+  // Failover Flow Panel (Right of Replication Bar)
+  rect("box_fail_flow", "", 600, 520, 680, 100, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.2;rounded=1;");
+  rect("lbl_fail_flow", "<span style='font-size:8px;font-weight:800;color:#1E3A8A;'>FAILOVER FLOW</span>", 600, 526, 680, 14, "strokeColor=none;fillColor=none;align=center;");
 
-  // Panel 2: TECHNOLOGIES (x: 350, w: 370)
-  const techHdrHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:8.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;margin-bottom:6px;text-align:center;">TECHNOLOGIES</div>
-    <table style="width:100%;text-align:center;font-size:7px;font-weight:700;color:#1E293B;">
-      <tr>
-        <td style="padding:2px;"><div style="font-size:14px;">⚙️</div>GKE</td>
-        <td style="padding:2px;"><div style="font-size:14px;">🗄️</div>Cloud SQL</td>
-        <td style="padding:2px;"><div style="font-size:14px;">📊</div>BigQuery</td>
-        <td style="padding:2px;"><div style="font-size:14px;">📦</div>Cloud Storage</td>
-      </tr>
-      <tr>
-        <td style="padding:2px;"><div style="font-size:14px;">⚡</div>Memorystore</td>
-        <td style="padding:2px;"><div style="font-size:14px;">⚖️</div>Cloud LB</td>
-        <td style="padding:2px;"><div style="font-size:14px;">🛡️</div>Cloud Armor</td>
-        <td style="padding:2px;"><div style="font-size:14px;">🌐</div>Cloud DNS</td>
-      </tr>
-    </table>
-  </div>`;
-  rect("card_tech_hdr", techHdrHtml, 350, 755, 370, 195, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
+  rect("ff_s1", "<div style='font-size:6.5px;font-weight:700;'>📈<br/>1. Failure<br/>Detected</div>", 610, 546, 95, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ff_s2", "<div style='font-size:6.5px;font-weight:700;'>❌<br/>2. Health Check<br/>Fails</div>", 720, 546, 100, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ff_s3", "<div style='font-size:6.5px;font-weight:700;'>📡<br/>3. Traffic Shift<br/>(DNS / Director)</div>", 835, 546, 100, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ff_s4", "<div style='font-size:6.5px;font-weight:700;'>⚙️<br/>4. DR Services<br/>Activated</div>", 950, 546, 100, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ff_s5", "<div style='font-size:6.5px;font-weight:700;'>🗄️<br/>5. Consistency<br/>Validated</div>", 1065, 546, 100, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ff_s6", "<div style='font-size:6.5px;font-weight:700;'>✔️<br/>6. Operations<br/>Resumed</div>", 1180, 546, 90, 44, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;");
 
-  // Panel 3: BACKUP & RETENTION POLICY (x: 730, w: 380)
-  const bkpPolicyHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:8.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;margin-bottom:6px;">BACKUP &amp; RETENTION POLICY</div>
-    <div style="font-size:7px;color:#1E293B;line-height:1.45;">
-      <div>💾 Daily Automated Backups</div>
-      <div>⏱️ Point-in-Time Recovery (PITR)</div>
-      <div>📅 Retention: 30 Days (Standard)</div>
-      <div>📦 Archive Retention: 1 Year</div>
-      <div>🔍 Backup Validation: Weekly</div>
-    </div>
-  </div>`;
-  rect("card_bkp_pol", bkpPolicyHtml, 730, 755, 380, 195, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
+  edge(nid(), "", "ff_s1", "ff_s2", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "ff_s2", "ff_s3", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "ff_s3", "ff_s4", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "ff_s4", "ff_s5", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  edge(nid(), "", "ff_s5", "ff_s6", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
 
-  // Panel 4: NOTES (x: 1120, w: 460)
-  const notesHdrHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:8.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;margin-bottom:6px;">NOTES</div>
-    <div style="font-size:7px;color:#334155;line-height:1.45;">
-      <div>• DR region resources run in standby mode (minimal cost).</div>
-      <div>• Failover can be manual or automated based on severity.</div>
-      <div>• Regular DR drills: Quarterly.</div>
-      <div>• All data encrypted at rest and in transit.</div>
-      <div>• Complies with SOC 2, HIPAA, and ISO 27001.</div>
-    </div>
-  </div>`;
-  rect("card_notes_hdr", notesHdrHtml, 1120, 755, 460, 195, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
+  // 7. BOTTOM ROW: 4 PANELS
+  rect("bot_p1", "<div style='font-size:8px;font-weight:800;color:#16A34A;margin-bottom:6px;'>KEY BENEFITS</div>" +
+    "<div style='font-size:7px;line-height:1.6;color:#0F172A;'>" +
+    "✔ High availability within region with automatic recovery<br/>" +
+    "✔ Disaster recovery across region with defined RTO/RPO<br/>" +
+    "✔ Minimal data loss with cross-region replication<br/>" +
+    "✔ Resilient, fault-tolerant, and self-healing architecture<br/>" +
+    "✔ Regular DR testing ensures readiness and compliance" +
+    "</div>", 20, 635, 290, 135, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=6;");
 
-  // =========================================================================
-  // 8. FOOTER METADATA
-  // =========================================================================
-  text("footer_version", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Version: 1.0</span>", 20, 970, 200, 20, "align=left;");
-  text("footer_date", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Date: May 2024</span>", 1400, 970, 180, 20, "align=right;");
+  rect("bot_p2", "<div style='font-size:8px;font-weight:800;color:#2563EB;margin-bottom:6px;'>TECHNOLOGIES</div>" +
+    "<div style='font-size:6.8px;line-height:1.6;color:#0F172A;'>" +
+    "⚙️ <b>GKE</b> &nbsp;&nbsp;&nbsp; 🗄️ <b>Cloud SQL</b> &nbsp;&nbsp;&nbsp; 📊 <b>BigQuery</b><br/>" +
+    "🗃️ <b>Cloud Storage</b> &nbsp;&nbsp;&nbsp; ⚡ <b>Memorystore</b> &nbsp;&nbsp;&nbsp; ⚖️ <b>Cloud LB</b><br/>" +
+    "🛡️ <b>Cloud Armor</b> &nbsp;&nbsp;&nbsp; ⚡ <b>Cloud CDN</b> &nbsp;&nbsp;&nbsp; 🌐 <b>Cloud DNS</b>" +
+    "</div>", 320, 635, 340, 135, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=6;");
+
+  rect("bot_p3", "<div style='font-size:8px;font-weight:800;color:#7C3AED;margin-bottom:6px;'>BACKUP &amp; RETENTION POLICY</div>" +
+    "<div style='font-size:7px;line-height:1.6;color:#0F172A;'>" +
+    "💾 Daily Automated Backups<br/>" +
+    "⏱️ Point-in-Time Recovery (PITR)<br/>" +
+    "📅 Retention: 30 Days (Standard)<br/>" +
+    "🗄️ Archive Retention: 1 Year<br/>" +
+    "🔍 Backup Validation: Weekly" +
+    "</div>", 670, 635, 240, 135, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=6;");
+
+  rect("bot_p4", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:6px;'>NOTES</div>" +
+    "<div style='font-size:7px;line-height:1.6;color:#0F172A;'>" +
+    "• DR region resources run in standby mode (minimal cost).<br/>" +
+    "• Failover can be manual or automated based on severity.<br/>" +
+    "• Regular DR drills: Quarterly.<br/>" +
+    "• All data encrypted at rest and in transit.<br/>" +
+    "• Complies with SOC 2, HIPAA, and ISO 27001." +
+    "</div>", 920, 635, 360, 135, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=6;");
+
+  // Footer Metadata
+  rect("footer_version", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Version: 1.0</span>", 20, 780, 200, 18, "strokeColor=none;fillColor=none;align=left;");
+  rect("footer_date", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Date: May 2024</span>", 1145, 780, 135, 18, "strokeColor=none;fillColor=none;align=right;");
+
 
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="template_19_ha_dr" name="Template 19: HA / DR Architecture">
+  <diagram id="template_19_ha_dr_architecture" name="Template 19: HA / DR Architecture">
     <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>

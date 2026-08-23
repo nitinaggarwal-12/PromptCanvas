@@ -139,7 +139,7 @@ Every diagram generated across any system MUST strictly follow these core pillar
 
 Before declaring any diagram complete across any project, execute the automated headless Chrome test harness:
 ```bash
-npx tsx scratch/test_canonical_11_20.ts
+npx tsx scratch/test_canonical_11_20_perfect.ts
 ```
 Verify the generated 2x Retina PNG screenshot:
 1. Canvas is 100% visible with valid SVG elements.
@@ -149,3 +149,17 @@ Verify the generated 2x Retina PNG screenshot:
 5. No cards or text truncated at container boundaries.
 6. Zero empty white voids at the bottom of cards.
 7. Opaque background shielding on all flow enclaves (`ALT`, `OPT`, `LOOP`).
+
+---
+
+## 🏛️ Pillar 7: Ground-Truth Structural Parity Quality Gate (Master Blueprints 01–37)
+
+Never declare any canonical master template complete based solely on compilation (`tsc`) or non-crashing headless renders (`svg.length > 0`).
+
+Every master template MUST undergo a structural ground-truth feature audit against its master reference in `images/*.png`:
+1. **Matrix Density Parity**: Verify exact microservice/card grid counts in each tier (e.g. 5x2 grid in Template 14).
+2. **Sub-diagram Enclaves**: Confirm all sub-diagram modules are present (e.g., 3 Deployment Patterns: Blue/Green, Canary, Rolling in Template 20; Failover Flow in Template 19; Privilege Pyramid in Template 17).
+3. **Decision Diamonds & Feedback Loops**: Ensure decision diamonds have both `Yes` forward paths and `No` failover/return loops with closed-loop feedback routing to source nodes.
+4. **Cross-Cutting Control Bars & CIDR Annotations**: Confirm all full-width enabler banners, VPC CIDRs (`10.10.0.0/16`), and subnet annotations are fully articulated.
+5. **Direct Visual Review**: Inspect the rendered PNG against the reference image before marking complete.
+

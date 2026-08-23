@@ -1,238 +1,183 @@
 /**
- * 🏛️ CANONICAL MASTER BLUEPRINT 15 — NETWORK TOPOLOGY DIAGRAM
- * 
- * 1:1 Ground-Truth Reproduction of images/15.png
- * "15 Network Topology Diagram | Regulatory Intelligence Platform (NOVA CURA)"
- * Multi-AZ Shared VPC (10.10.0.0/16) across us-central1-a/b/c, Public/Private/Data Subnets,
- * Managed Services Bus, On-Premises Interconnect, Network Security, Legend & Notes.
- * 
- * Geometric Coordinates: 1600x1000px
+ * Canonical Architecture Template 15: Template 15: Network Topology Diagram
+ * High-fidelity 16:9 replication of images/15.png
  */
 
-export function generateTemplate15NetworkTopologyXml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+export function generateTemplate15NetworkTopologyXml(
+  flavor: string = "biopharma",
+  theme: "dark" | "light" = "light"
+): string {
+  const isDark = theme === "dark";
   const E = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const c: string[] = [];
+  let idCounter = 100;
+  const nid = () => `c_${idCounter++}`;
 
   const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
-    c.push(`<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
+    c.push(
+      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
+      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
+      `</mxCell>`
+    );
   };
 
-  const text = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
-    c.push(`<mxCell id="${id}" value="${E(val)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
+  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
+    let ptsXml = "";
+    if (pts.length > 0) {
+      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
+    }
+    c.push(
+      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
+      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
+      `</mxCell>`
+    );
   };
 
-  const edge = (id: string, label: string, x1: number, y1: number, x2: number, y2: number, color = "#0F172A", dashed = false, arrow = "block", pts: [number, number][] = []) => {
-    const dashStyle = dashed ? "dashed=1;dashPattern=5 4;" : "";
-    const ptsXml = pts.length > 0 ? `<Array as="points">${pts.map(p => `<mxPoint x="${p[0]}" y="${p[1]}"/>`).join("")}</Array>` : "";
-    const labelStyle = label ? `fontSize=8;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;` : "";
-    c.push(`<mxCell id="${id}" value="${E(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${dashStyle}strokeColor=${color};strokeWidth=1.2;endArrow=${arrow};endFill=1;${labelStyle}" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x1}" y="${y1}" as="sourcePoint"/><mxPoint x="${x2}" y="${y2}" as="targetPoint"/>${ptsXml}</mxGeometry></mxCell>`);
-  };
 
-  // =========================================================================
-  // 1. MASTER HEADER & TOP-RIGHT BRAND BLOCK
-  // =========================================================================
-  rect("badge_15", "<b style='font-size:24px;color:#FFFFFF;'>15</b>", 20, 14, 52, 40, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;arcSize=0;align=center;verticalAlign=middle;");
+  // 1. BRAND HEADER & METADATA
+  rect("num_badge", "15", 20, 20, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
+  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>Network Topology Diagram</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: Regulatory Intelligence Platform (NOVA CURA) | Environment: Production | Region: us-central1 | Last Updated: May 8, 2025</div>", 78, 18, 850, 50, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:18px;font-weight:800;color:#1E3A8A;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 1150, 18, 380, 45, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
 
-  const titleHtml = `<div style="font-family:Inter,system-ui,sans-serif;">
-    <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:1px;line-height:1.1;">Network Topology Diagram</div>
-    <div style="font-size:11px;font-weight:700;color:#475569;margin-top:2px;">Use Case: Regulatory Intelligence Platform (NOVA CURA) &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>
-  </div>`;
-  text("header_title", titleHtml, 82, 14, 850, 42, "align=left;verticalAlign=middle;");
+  // Top Right Network Overview Card
+  rect("card_net_over", "<div style='font-size:8px;font-weight:800;color:#0F172A;margin-bottom:4px;'>NETWORK OVERVIEW</div>" +
+    "<div style='font-size:7px;line-height:1.6;color:#64748B;'>" +
+    "<b>Cloud Provider:</b> Google Cloud Platform (GCP)<br/>" +
+    "<b>Region / VPC:</b> us-central1 (Iowa) | novacura-prod-vpc (10.10.0.0/16)<br/>" +
+    "<b>Multi-AZ / HA:</b> Enabled | HA: Enabled<br/>" +
+    "<b>Connectivity:</b> Internet, VPN, Private Service Connect" +
+    "</div>", 980, 78, 300, 68, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=6;");
 
-  const brandHtml = `<div style="text-align:right;font-family:Inter,system-ui,sans-serif;">
-    <div style="display:inline-flex;align-items:center;gap:6px;">
-      <span style="font-size:20px;">🧬</span>
-      <span style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</span>
-    </div>
-    <div style="font-size:9.5px;font-style:italic;color:#64748B;margin-top:2px;">AI-Powered Regulatory Intelligence Platform</div>
-  </div>`;
-  text("brand_block", brandHtml, 1260, 12, 320, 44, "align=right;verticalAlign=top;");
-
-  // Network Overview (Top Right)
-  const overviewHtml = `<div style="padding:4px 6px;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:3px;letter-spacing:0.5px;">NETWORK OVERVIEW</div>
-    <table style="width:100%;font-size:7px;color:#1E293B;line-height:1.35;">
-      <tr><td style="font-weight:700;color:#64748B;width:75px;">Cloud Provider:</td><td>Google Cloud Platform (GCP)</td></tr>
-      <tr><td style="font-weight:700;color:#64748B;">Region / VPC:</td><td>us-central1 (Iowa) | novacura-prod-vpc (10.10.0.0/16)</td></tr>
-      <tr><td style="font-weight:700;color:#64748B;">Multi-AZ / HA:</td><td>Enabled | HA: Enabled</td></tr>
-      <tr><td style="font-weight:700;color:#64748B;">Connectivity:</td><td>Internet, VPN, Private Service Connect</td></tr>
-    </table>
-  </div>`;
-  rect("card_net_overview", overviewHtml, 1140, 64, 440, 75, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
-
-  // =========================================================================
-  // 2. LEFT SIDEBAR: USERS & CLIENTS (x: 20, w: 155) & EXTERNAL CONNECTIVITY (x: 190, w: 135)
-  // =========================================================================
-  const usersHtml = `<div style="padding:6px;">
-    <div style="background:#0F2A4A;color:#FFFFFF;font-size:9px;font-weight:900;text-align:center;padding:3px;border-radius:2px;margin-bottom:8px;">USERS &amp; CLIENTS</div>
-    <div style="font-size:8px;text-align:center;line-height:1.4;">
-      <div style="margin-bottom:12px;"><div style="font-size:18px;">👤</div><b>Regulatory Analysts</b></div>
-      <div style="margin-bottom:12px;"><div style="font-size:18px;">💻</div><b>Business Users</b></div>
-      <div style="margin-bottom:12px;"><div style="font-size:18px;">📱</div><b>Mobile App Users</b></div>
-      <div style="margin-bottom:12px;"><div style="font-size:18px;">⚙️</div><b>Partner Systems</b></div>
-      <div><div style="font-size:18px;">🌐</div><b>Public APIs / Integrations</b></div>
-    </div>
-  </div>`;
-  rect("card_users_clients", usersHtml, 20, 190, 155, 475, "fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=top;");
+  // 2. LEFT COLUMN: USERS, INTERNET, EXTERNAL CONNECTIVITY
+  rect("hdr_users", "<span style='font-size:8.5px;font-weight:800;color:#16A34A;'>USERS & CLIENTS</span>", 20, 150, 120, 22, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
+  rect("box_users", "", 20, 172, 120, 290, "fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;");
+  
+  rect("u_reg", "<div style='font-size:7.5px;font-weight:700;'>👤<br/>Regulatory Analysts</div>", 28, 182, 104, 38, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("u_biz", "<div style='font-size:7.5px;font-weight:700;'>💻<br/>Business Users</div>", 28, 232, 104, 38, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("u_mob", "<div style='font-size:7.5px;font-weight:700;'>📱<br/>Mobile App Users</div>", 28, 282, 104, 38, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("u_part", "<div style='font-size:7.5px;font-weight:700;'>⚙️<br/>Partner Systems</div>", 28, 332, 104, 38, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("u_api", "<div style='font-size:7.5px;font-weight:700;'>🌐<br/>Public APIs / Integrations</div>", 28, 382, 104, 38, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
 
   // Internet Cloud
-  c.push(`<mxCell id="cloud_internet" value="Internet" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#0284C7;strokeWidth=1.2;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="190" y="240" width="105" height="60" as="geometry"/></mxCell>`);
-  edge("e_users_internet", "", 175, 270, 190, 270, "#0F172A");
+  rect("cloud_internet", "<span style='font-size:8.5px;font-weight:800;color:#0284C7;'>Internet</span>", 155, 235, 75, 45, "shape=cloud;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1.2;align=center;verticalAlign=middle;");
+  edge(nid(), "", "box_users", "cloud_internet", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
 
-  // External Connectivity Box (x: 180, y: 360, w: 130, h: 270)
-  const extConnHtml = `<div style="padding:6px;text-align:center;">
-    <div style="font-size:8px;font-weight:900;color:#7C3AED;margin-bottom:8px;">EXTERNAL CONNECTIVITY</div>
-    <div style="margin-bottom:14px;"><div style="font-size:16px;">🛡️</div><div style="font-size:7.5px;font-weight:700;">Cloud Armor<br><span style="font-size:6.5px;color:#64748B;">(DDoS Protection)</span></div></div>
-    <div style="margin-bottom:14px;"><div style="font-size:16px;">⚡</div><div style="font-size:7.5px;font-weight:700;">Cloud CDN</div></div>
-    <div><div style="font-size:16px;">🌐</div><div style="font-size:7.5px;font-weight:700;">Cloud DNS</div></div>
-  </div>`;
-  rect("card_ext_conn", extConnHtml, 180, 360, 130, 270, "fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;align=center;verticalAlign=top;");
+  // External Connectivity Box
+  rect("box_ext_conn", "", 150, 310, 85, 170, "fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1.2;rounded=1;");
+  rect("lbl_ext_conn", "<span style='font-size:7.5px;font-weight:800;color:#9333EA;'>EXTERNAL<br/>CONNECTIVITY</span>", 150, 315, 85, 22, "strokeColor=none;fillColor=none;align=center;");
+  rect("ext_armor", "<div style='font-size:6.8px;font-weight:700;'>🛡️<br/>Cloud Armor<br/><span style='font-size:5.5px;color:#64748B;'>(DDoS Protection)</span></div>", 155, 342, 75, 38, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ext_cdn", "<div style='font-size:6.8px;font-weight:700;'>⚡<br/>Cloud CDN</div>", 155, 390, 75, 32, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ext_dns", "<div style='font-size:6.8px;font-weight:700;'>🌐<br/>Cloud DNS</div>", 155, 432, 75, 32, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // =========================================================================
-  // 3. CENTER VPC TOPOLOGY (x: 330, y: 150, w: 840, h: 630)
-  // =========================================================================
-  rect("vpc_outer_frame", "", 330, 150, 840, 630, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=6 4;rounded=1;arcSize=2;");
-  text("vpc_label", "<span style='font-size:9px;font-weight:900;color:#0284C7;'>GCP PROJECT: novacura-prod &nbsp;|&nbsp; VPC: novacura-prod-vpc (10.10.0.0/16)</span>", 345, 158, 600, 20, "align=left;");
+  // 3. CENTER MAIN BOX: GCP PROJECT & SHARED VPC (10.10.0.0/16)
+  rect("box_vpc_outer", "", 255, 140, 680, 480, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;dashPattern=6 4;rounded=1;");
+  rect("lbl_vpc_title", "<span style='font-size:9.5px;font-weight:800;color:#2563EB;'>GCP PROJECT: novacura-prod &nbsp;|&nbsp; VPC: novacura-prod-vpc (10.10.0.0/16)</span>", 265, 148, 500, 18, "strokeColor=none;fillColor=none;align=left;");
 
-  // --- PUBLIC SUBNET (10.10.0.0/24) ---
-  rect("public_subnet_frame", "", 350, 190, 800, 95, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;arcSize=2;");
-  text("public_subnet_title", "<span style='font-size:8px;font-weight:900;color:#15803D;'>PUBLIC SUBNET (10.10.0.0/24)</span>", 360, 196, 780, 15, "align=center;");
+  // 3.1 PUBLIC SUBNET (10.10.0.0/24)
+  rect("box_pub_subnet", "", 270, 172, 650, 80, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;");
+  rect("lbl_pub_subnet", "<span style='font-size:8px;font-weight:800;color:#16A34A;'>PUBLIC SUBNET (10.10.0.0/24)</span>", 490, 176, 210, 14, "strokeColor=none;fillColor=none;align=center;");
 
-  rect("pub_lb", "<div style='font-size:16px;'>⚖️</div><div style='font-size:7.5px;font-weight:700;'>External<br>HTTP(S) Load Balancer</div>", 380, 220, 180, 50, "fillColor=#FFFFFF;strokeColor=#0284C7;align=center;verticalAlign=middle;");
-  rect("pub_apigee", "<div style='font-size:16px;'>🔌</div><div style='font-size:7.5px;font-weight:700;'>API Gateway<br>(Apigee X)</div>", 660, 220, 150, 50, "fillColor=#FFFFFF;strokeColor=#0284C7;align=center;verticalAlign=middle;");
-  rect("pub_waf", "<div style='font-size:16px;'>🛡️</div><div style='font-size:7.5px;font-weight:700;'>Web Application<br>Firewall (WAF)</div>", 910, 220, 160, 50, "fillColor=#FFFFFF;strokeColor=#0284C7;align=center;verticalAlign=middle;");
+  rect("pub_lb", "<div style='font-size:7.5px;font-weight:700;'>⚖️<br/>External<br/>HTTP(S) Load Balancer</div>", 290, 196, 140, 44, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pub_apigw", "<div style='font-size:7.5px;font-weight:700;'>🔌<br/>API Gateway<br/><span style='font-size:6px;color:#64748B;'>(Apigee X)</span></div>", 520, 196, 110, 44, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("pub_waf", "<div style='font-size:7.5px;font-weight:700;'>🛡️<br/>Web Application<br/>Firewall (WAF)</div>", 720, 196, 130, 44, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  edge("e_lb_apigee", "", 560, 245, 660, 245, "#0F172A");
-  edge("e_apigee_waf", "", 810, 245, 910, 245, "#0F172A");
+  edge(nid(), "", "cloud_internet", "pub_lb", "edgeStyle=orthogonalEdgeStyle;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
+  edge(nid(), "", "pub_lb", "pub_apigw", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
+  edge(nid(), "", "pub_apigw", "pub_waf", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
 
-  // --- PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24) ---
-  rect("private_subnet_frame", "", 350, 315, 800, 310, "fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;arcSize=2;");
-  text("private_subnet_title", "<span style='font-size:8px;font-weight:900;color:#1D4ED8;'>PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24)</span>", 360, 322, 780, 15, "align=center;");
+  // 3.2 PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24)
+  rect("box_priv_subnets", "", 270, 265, 650, 205, "fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;");
+  rect("lbl_priv_subnets", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24)</span>", 470, 270, 250, 14, "strokeColor=none;fillColor=none;align=center;");
 
-  // 3 AZs: us-central1-a, us-central1-b, us-central1-c
-  const azs = [
-    { id: "az_a", name: "us-central1-a", x: 370 },
-    { id: "az_b", name: "us-central1-b", x: 630 },
-    { id: "az_c", name: "us-central1-c", x: 890 },
-  ];
+  // Zone A Column
+  rect("box_zone_a", "", 285, 290, 190, 168, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("lbl_zone_a", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>us-central1-a</span>", 285, 295, 190, 14, "strokeColor=none;fillColor=none;align=center;");
+  rect("za_web", "<div style='font-size:7.2px;font-weight:700;'>🖥️ <b>Web Tier</b><br/><span style='font-size:6px;color:#64748B;'>Compute Engine (App Instances)</span></div>", 295, 314, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("za_app", "<div style='font-size:7.2px;font-weight:700;'>⚙️ <b>App Tier</b><br/><span style='font-size:6px;color:#64748B;'>GKE (Microservices)</span></div>", 295, 360, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("za_cache", "<div style='font-size:7.2px;font-weight:700;'>⚡ <b>Cache Tier</b><br/><span style='font-size:6px;color:#64748B;'>Redis (Memorystore)</span></div>", 295, 406, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  azs.forEach(az => {
-    rect(`${az.id}_frame`, "", az.x, 345, 240, 265, "fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;dashed=1;dashPattern=4 3;rounded=1;arcSize=3;");
-    text(`${az.id}_title`, `<span style='font-size:8px;font-weight:900;color:#0284C7;'>${az.name}</span>`, az.x, 350, 240, 15, "align=center;");
+  // Zone B Column
+  rect("box_zone_b", "", 500, 290, 190, 168, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("lbl_zone_b", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>us-central1-b</span>", 500, 295, 190, 14, "strokeColor=none;fillColor=none;align=center;");
+  rect("zb_web", "<div style='font-size:7.2px;font-weight:700;'>🖥️ <b>Web Tier</b><br/><span style='font-size:6px;color:#64748B;'>Compute Engine (App Instances)</span></div>", 510, 314, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("zb_app", "<div style='font-size:7.2px;font-weight:700;'>⚙️ <b>App Tier</b><br/><span style='font-size:6px;color:#64748B;'>GKE (Microservices)</span></div>", 510, 360, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("zb_cache", "<div style='font-size:7.2px;font-weight:700;'>⚡ <b>Cache Tier</b><br/><span style='font-size:6px;color:#64748B;'>Redis (Memorystore)</span></div>", 510, 406, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-    // Web Tier
-    rect(`${az.id}_web`, "<div style='display:flex;align-items:center;gap:6px;'><span style='font-size:16px;'>💻</span><div><div style='font-size:7.5px;font-weight:900;'>Web Tier</div><div style='font-size:6.5px;color:#64748B;'>Compute Engine (App Instances)</div></div></div>", az.x + 10, 375, 220, 48, "fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // Zone C Column
+  rect("box_zone_c", "", 715, 290, 190, 168, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;dashed=1;dashPattern=4 4;rounded=1;");
+  rect("lbl_zone_c", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>us-central1-c</span>", 715, 295, 190, 14, "strokeColor=none;fillColor=none;align=center;");
+  rect("zc_web", "<div style='font-size:7.2px;font-weight:700;'>🖥️ <b>Web Tier</b><br/><span style='font-size:6px;color:#64748B;'>Compute Engine (App Instances)</span></div>", 725, 314, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("zc_app", "<div style='font-size:7.2px;font-weight:700;'>⚙️ <b>App Tier</b><br/><span style='font-size:6px;color:#64748B;'>GKE (Microservices)</span></div>", 725, 360, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("zc_cache", "<div style='font-size:7.2px;font-weight:700;'>⚡ <b>Cache Tier</b><br/><span style='font-size:6px;color:#64748B;'>Redis (Memorystore)</span></div>", 725, 406, 170, 32, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-    // App Tier
-    rect(`${az.id}_app`, "<div style='display:flex;align-items:center;gap:6px;'><span style='font-size:16px;'>⚙️</span><div><div style='font-size:7.5px;font-weight:900;'>App Tier</div><div style='font-size:6.5px;color:#64748B;'>GKE (Microservices)</div></div></div>", az.x + 10, 450, 220, 48, "fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // Lateral zone communication arrows
+  edge(nid(), "", "za_web", "zb_web", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
+  edge(nid(), "", "zb_web", "zc_web", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
+  edge(nid(), "", "za_app", "zb_app", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
+  edge(nid(), "", "zb_app", "zc_app", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
 
-    // Cache Tier
-    rect(`${az.id}_cache`, "<div style='display:flex;align-items:center;gap:6px;'><span style='font-size:16px;'>⚡</span><div><div style='font-size:7.5px;font-weight:900;'>Cache Tier</div><div style='font-size:6.5px;color:#64748B;'>Redis (Memorystore)</div></div></div>", az.x + 10, 525, 220, 48, "fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  // 3.3 DATA SUBNET (10.10.10.0/24)
+  rect("box_data_subnet", "", 270, 480, 650, 115, "fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1.2;rounded=1;");
+  rect("lbl_data_subnet", "<span style='font-size:8px;font-weight:800;color:#9333EA;'>DATA SUBNET (10.10.10.0/24)</span>", 490, 485, 210, 14, "strokeColor=none;fillColor=none;align=center;");
 
-    // Inter-tier connectors within AZ
-    edge(`e_${az.id}_web_app`, "", az.x + 120, 423, az.x + 120, 450, "#0F172A");
-    edge(`e_${az.id}_app_cache`, "", az.x + 120, 498, az.x + 120, 525, "#0F172A");
-  });
+  rect("d_sql", "<div style='font-size:7.2px;font-weight:700;'>🗄️<br/>Primary Database<br/><span style='font-size:6px;color:#64748B;'>Cloud SQL (PostgreSQL)<br/>HA (Multi-AZ)</span></div>", 295, 508, 170, 52, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("d_gcs", "<div style='font-size:7.2px;font-weight:700;'>🗃️<br/>Object Storage<br/><span style='font-size:6px;color:#64748B;'>Cloud Storage<br/>(Documents)</span></div>", 510, 508, 170, 52, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("d_search", "<div style='font-size:7.2px;font-weight:700;'>🔍<br/>Search Index<br/><span style='font-size:6px;color:#64748B;'>OpenSearch Service<br/>(Managed)</span></div>", 725, 508, 170, 52, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  // Cross-AZ connectors
-  edge("e_az_a_b", "", 610, 474, 630, 474, "#64748B", true, "open");
-  edge("e_az_b_c", "", 870, 474, 890, 474, "#64748B", true, "open");
+  edge(nid(), "", "d_sql", "d_gcs", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
+  edge(nid(), "", "d_gcs", "d_search", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;startArrow=block;endSize=3;startSize=3;");
 
-  // Public subnet down to Private subnet
-  edge("e_pub_priv_a", "", 470, 270, 490, 345, "#0F172A", true, "open");
-  edge("e_pub_priv_b", "", 735, 270, 750, 345, "#0F172A", true, "open");
-  edge("e_pub_priv_c", "", 990, 270, 1010, 345, "#0F172A", true, "open");
+  // 4. RIGHT COLUMN: MANAGED SERVICES BUS
+  rect("box_managed_srv", "", 955, 160, 180, 460, "fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.2;rounded=1;");
+  rect("lbl_managed_srv", "<span style='font-size:8.5px;font-weight:800;color:#D97706;'>MANAGED SERVICES</span>", 955, 168, 180, 16, "strokeColor=none;fillColor=none;align=center;");
 
-  // --- DATA SUBNET (10.10.10.0/24) ---
-  rect("data_subnet_frame", "", 350, 645, 800, 120, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.2;rounded=1;arcSize=2;");
-  text("data_subnet_title", "<span style='font-size:8px;font-weight:900;color:#7C3AED;'>DATA SUBNET (10.10.10.0/24)</span>", 360, 652, 780, 15, "align=center;");
+  rect("ms_bq", "<div style='font-size:7.2px;font-weight:700;'>📊 BigQuery<br/><span style='font-size:6px;color:#64748B;'>(Analytics & BI)</span></div>", 968, 195, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ms_pubsub", "<div style='font-size:7.2px;font-weight:700;'>📬 Pub/Sub<br/><span style='font-size:6px;color:#64748B;'>(Event Streaming)</span></div>", 968, 240, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ms_tasks", "<div style='font-size:7.2px;font-weight:700;'>📋 Cloud Tasks<br/><span style='font-size:6px;color:#64748B;'>(Background Jobs)</span></div>", 968, 285, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ms_vertex", "<div style='font-size:7.2px;font-weight:700;'>🧠 Vertex AI<br/><span style='font-size:6px;color:#64748B;'>(AI/ML Services)</span></div>", 968, 330, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ms_secret", "<div style='font-size:7.2px;font-weight:700;'>🔒 Secret Manager<br/><span style='font-size:6px;color:#64748B;'>(Secrets & Keys)</span></div>", 968, 375, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ms_log", "<div style='font-size:7.2px;font-weight:700;'>📑 Cloud Logging<br/><span style='font-size:6px;color:#64748B;'>(Logs)</span></div>", 968, 420, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("ms_mon", "<div style='font-size:7.2px;font-weight:700;'>📈 Cloud Monitoring<br/><span style='font-size:6px;color:#64748B;'>(Metrics & Alerts)</span></div>", 968, 465, 154, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;");
 
-  rect("db_primary", "<div style='font-size:16px;'>🗄️</div><div style='font-size:7.5px;font-weight:900;'>Primary Database</div><div style='font-size:6.5px;color:#64748B;'>Cloud SQL (PostgreSQL)<br>HA (Multi-AZ)</div>", 380, 675, 190, 65, "fillColor=#FFFFFF;strokeColor=#7C3AED;align=center;verticalAlign=middle;");
-  rect("db_storage", "<div style='font-size:16px;'>📦</div><div style='font-size:7.5px;font-weight:900;'>Object Storage</div><div style='font-size:6.5px;color:#64748B;'>Cloud Storage<br>(Documents)</div>", 655, 675, 180, 65, "fillColor=#FFFFFF;strokeColor=#7C3AED;align=center;verticalAlign=middle;");
-  rect("db_search", "<div style='font-size:16px;'>🔍</div><div style='font-size:7.5px;font-weight:900;'>Search Index</div><div style='font-size:6.5px;color:#64748B;'>OpenSearch Service<br>(Managed)</div>", 915, 675, 180, 65, "fillColor=#FFFFFF;strokeColor=#7C3AED;align=center;verticalAlign=middle;");
+  edge(nid(), "", "box_vpc_outer", "ms_bq", "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  edge(nid(), "", "box_vpc_outer", "ms_pubsub", "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
+  edge(nid(), "", "box_vpc_outer", "ms_vertex", "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endSize=3;");
 
-  edge("e_db_storage", "", 570, 707, 655, 707, "#64748B", true, "open");
-  edge("e_storage_search", "", 835, 707, 915, 707, "#64748B", true, "open");
-  edge("e_cache_data", "", 750, 610, 750, 645, "#0F172A");
+  // 5. BOTTOM ROW: ON-PREMISES, NETWORK SECURITY, LEGEND, NOTES
+  rect("box_onprem", "", 20, 630, 220, 140, "fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;");
+  rect("lbl_onprem", "<span style='font-size:8px;font-weight:800;color:#16A34A;'>🏢 ON-PREMISES / CUSTOMER NETWORK</span>", 20, 636, 220, 16, "strokeColor=none;fillColor=none;align=center;");
+  rect("op_dc", "<div style='font-size:7.2px;font-weight:700;'>🗄️<br/>Datacenter /<br/>On-Prem Systems</div>", 32, 665, 85, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  rect("op_vpn", "<div style='font-size:7.2px;font-weight:700;'>🔒<br/>VPN /<br/>Interconnect</div>", 138, 665, 85, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;");
+  edge(nid(), "", "op_dc", "op_vpn", "edgeStyle=none;strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
+  edge(nid(), "", "op_vpn", "box_vpc_outer", "edgeStyle=orthogonalEdgeStyle;strokeColor=#16A34A;strokeWidth=1.5;endArrow=block;endSize=4;", [{x: 235, y: 687}, {x: 255, y: 550}]);
 
-  // =========================================================================
-  // 4. RIGHT SIDEBAR: MANAGED SERVICES (x: 1200, w: 220)
-  // =========================================================================
-  const managedServicesHtml = `<div style="padding:6px;">
-    <div style="background:#0F2A4A;color:#FFFFFF;font-size:9px;font-weight:900;text-align:center;padding:3px;border-radius:2px;margin-bottom:8px;">MANAGED SERVICES</div>
-    <div style="font-size:7.5px;color:#1E293B;line-height:1.4;">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><span style="font-size:16px;">📊</span><div><b>BigQuery</b><br><span style="font-size:6.5px;color:#64748B;">(Analytics &amp; BI)</span></div></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><span style="font-size:16px;">📡</span><div><b>Pub/Sub</b><br><span style="font-size:6.5px;color:#64748B;">(Event Streaming)</span></div></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><span style="font-size:16px;">📋</span><div><b>Cloud Tasks</b><br><span style="font-size:6.5px;color:#64748B;">(Background Jobs)</span></div></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><span style="font-size:16px;">🧠</span><div><b>Vertex AI</b><br><span style="font-size:6.5px;color:#64748B;">(AI/ML Services)</span></div></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><span style="font-size:16px;">🔒</span><div><b>Secret Manager</b><br><span style="font-size:6.5px;color:#64748B;">(Secrets &amp; Keys)</span></div></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><span style="font-size:16px;">📑</span><div><b>Cloud Logging</b><br><span style="font-size:6.5px;color:#64748B;">(Logs)</span></div></div>
-      <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:16px;">📈</span><div><b>Cloud Monitoring</b><br><span style="font-size:6.5px;color:#64748B;">(Metrics &amp; Alerts)</span></div></div>
-    </div>
-  </div>`;
-  rect("card_managed_services", managedServicesHtml, 1200, 160, 220, 520, "fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.2;align=left;verticalAlign=top;");
+  rect("box_net_sec", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:8px;'>NETWORK SECURITY</div>" +
+    "<div style='font-size:7.5px;color:#0F172A;'>" +
+    "🛡️ <b>VPC Firewall</b> (Ingress/Egress) &nbsp;&nbsp;&nbsp; ⚡ <b>Private Google Access</b><br/><br/>" +
+    "📑 <b>VPC Flow Logs</b> &nbsp;&nbsp;&nbsp; 🛡️ <b>IDS/IPS</b> (Threat Detection)" +
+    "</div>", 255, 630, 420, 140, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=center;verticalAlign=middle;");
 
-  // Connectors from VPC to Managed Services
-  edge("e_vpc_managed", "", 1170, 380, 1200, 380, "#64748B", true, "open");
+  rect("box_legend", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:6px;'>LEGEND</div>" +
+    "<div style='font-size:7.2px;line-height:1.7;color:#0F172A;'>" +
+    "─── Internet Traffic<br/>" +
+    "- - - Private/Internal Traffic<br/>" +
+    "······ Service Integration<br/>" +
+    "🟩 Public Network &nbsp;&nbsp; 🟦 Private Network &nbsp;&nbsp; 🟪 Data Network" +
+    "</div>", 690, 630, 200, 140, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=8;");
 
-  // =========================================================================
-  // 5. BOTTOM PANELS: ON-PREM, NETWORK SECURITY, LEGEND, NOTES (y: 800, h: 160)
-  // =========================================================================
-  // On-Premises / Customer Network (x: 20, w: 320)
-  const onPremHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:6px;">🏢 ON-PREMISES / CUSTOMER NETWORK</div>
-    <div style="display:flex;align-items:center;justify-content:space-around;">
-      <div style="border:1px solid #CBD5E1;padding:4px 6px;border-radius:3px;font-size:7px;text-align:center;">🗄️ Datacenter /<br>On-Prem Systems</div>
-      <span>➔</span>
-      <div style="border:1px solid #16A34A;background:#F0FDF4;padding:4px 6px;border-radius:3px;font-size:7px;text-align:center;color:#15803D;">🔒 VPN /<br>Interconnect</div>
-    </div>
-  </div>`;
-  rect("card_on_prem", onPremHtml, 20, 800, 320, 150, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
+  rect("box_notes", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:6px;'>NOTES</div>" +
+    "<div style='font-size:7.2px;line-height:1.6;color:#0F172A;'>" +
+    "• All subnets are in us-central1 (Iowa)<br/>" +
+    "• Private Google Access enabled for secure cloud egress<br/>" +
+    "• VPC-native controls for micro-segmentation<br/>" +
+    "• Multi-AZ for high availability (99.99%)<br/>" +
+    "• Encrypted in transit (TLS 1.2+) and at rest (Google-managed keys)" +
+    "</div>", 905, 630, 230, 140, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=8;");
 
-  // Network Security (x: 360, w: 500)
-  const netSecHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:8px;text-align:center;">NETWORK SECURITY</div>
-    <div style="display:flex;align-items:center;justify-content:space-around;font-size:7px;font-weight:700;">
-      <div>🛡️ VPC Firewall<br><span style="font-size:6px;color:#64748B;">(Ingress/Egress Rules)</span></div>
-      <div>⚡ Private Google<br>Access</div>
-      <div>📑 VPC<br>Flow Logs</div>
-      <div>🛡️ IDS/IPS<br><span style="font-size:6px;color:#64748B;">(Threat Detection)</span></div>
-    </div>
-  </div>`;
-  rect("card_net_sec", netSecHtml, 360, 800, 500, 150, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=top;");
+  // Footer Metadata
+  rect("footer_version", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Version: 1.0</span>", 20, 780, 200, 18, "strokeColor=none;fillColor=none;align=left;");
+  rect("footer_date", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Date: May 2024</span>", 1000, 780, 135, 18, "strokeColor=none;fillColor=none;align=right;");
 
-  // Legend (x: 880, w: 260)
-  const legendNetHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:4px;">LEGEND</div>
-    <table style="width:100%;font-size:7px;color:#1E293B;line-height:1.4;">
-      <tr><td style="width:50px;">─────</td><td>Internet Traffic</td></tr>
-      <tr><td>- - - - -</td><td>Private/Internal Traffic</td></tr>
-      <tr><td>·········</td><td>Service Integration</td></tr>
-    </table>
-  </div>`;
-  rect("card_legend_net", legendNetHtml, 880, 800, 260, 150, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
-
-  // Notes (x: 1160, w: 420)
-  const notesNetHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:8px;font-weight:900;color:#0F2A4A;margin-bottom:4px;">NOTES</div>
-    <div style="font-size:7px;color:#334155;line-height:1.45;">
-      <div>• All subnets are in us-central1 (Iowa)</div>
-      <div>• Private Google Access enabled for secure cloud egress</div>
-      <div>• VPC-native controls for micro-segmentation</div>
-      <div>• Multi-AZ for high availability (99.99%)</div>
-      <div>• Encrypted in transit (TLS 1.2+) and at rest (Google-managed keys)</div>
-    </div>
-  </div>`;
-  rect("card_notes_net", notesNetHtml, 1160, 800, 420, 150, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
-
-  // Connect On-Prem to VPC
-  edge("e_onprem_vpc", "", 340, 860, 360, 860, "#16A34A");
-
-  // =========================================================================
-  // 6. FOOTER METADATA
-  // =========================================================================
-  text("footer_version", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Version: 1.0</span>", 20, 970, 200, 20, "align=left;");
-  text("footer_date", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Date: May 2024</span>", 1400, 970, 180, 20, "align=right;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_15_network_topology" name="Template 15: Network Topology Diagram">
