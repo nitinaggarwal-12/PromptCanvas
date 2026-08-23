@@ -116,3 +116,14 @@
 
 ### 15. Mandatory Git Push Protocol
 * Whenever code changes are committed (`git commit`), immediately execute `git push origin main` without exception so that live production environments remain synchronized.
+
+---
+
+### 16. Mandatory Ground-Truth Structural Parity Quality Gate
+* Never declare a canonical blueprint complete based solely on compilation (`tsc`) or clean rendering (`svg.length > 0`).
+* Every template MUST be audited against an explicit feature checklist derived from its reference image in `images/`, verifying:
+  1. Exact element and microservice card count in each tier/zone.
+  2. All sub-diagram enclaves (e.g. Deployment Patterns in CI/CD, Failover Flow, Replication Buses).
+  3. Decision diamonds, branch outcomes (`Yes` / `No`), and closed feedback return loops.
+  4. Complete cross-cutting enablers, security controls, and CIDR/network annotations.
+  5. Side-by-side screenshot review against the ground-truth image before marking complete.
