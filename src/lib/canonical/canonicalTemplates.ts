@@ -31,6 +31,50 @@ export const DOMAIN_PRESETS = [
   { id: 'saas', name: 'Enterprise SaaS Multi-Tenant Cloud Platform', prefix: 'AETHER' },
 ];
 
+export interface ArchitectureDocumentBinding {
+  docId: string;
+  title: string;
+  primaryPurpose: string;
+  requiredDiagramViews: string[];
+}
+
+export const ARCHITECTURE_DOCUMENT_BINDINGS: ArchitectureDocumentBinding[] = [
+  { docId: 'DOC-01', title: 'Product Requirements Document (PRD)', primaryPurpose: 'Business requirements, user personas, functional scope, and success KPIs', requiredDiagramViews: ['01 System Context', '02 Capability Map', '04 Value Stream'] },
+  { docId: 'DOC-02', title: 'Functional Design Document (FDD)', primaryPurpose: 'Detailed functional specifications, business rules, and user interaction workflows', requiredDiagramViews: ['03 Business Process', '11 Sequence Diagram', '13 Decision Flow'] },
+  { docId: 'DOC-03', title: 'High-Level Architecture Design (HLD)', primaryPurpose: 'End-to-end system architecture, major platform subsystems, integration, and cloud landing zone', requiredDiagramViews: ['06 C4 Context', '07 C4 Container', '10 Integration', '15 Network Topology'] },
+  { docId: 'DOC-04', title: 'Low-Level Technical Design (LLD)', primaryPurpose: 'Detailed component design, internal class structures, API schemas, and thread/connection pools', requiredDiagramViews: ['08 Component Architecture', '11 Sequence Diagram', '14 Data Model / ERD'] },
+  { docId: 'DOC-05', title: 'Data Architecture & Governance Spec', primaryPurpose: 'Data mesh topology, medallion lakehouse, schema catalog, data quality SLAs, and privacy tags', requiredDiagramViews: ['09 Data Flow Architecture', '14 Data Model / ERD', '34 Geographic Architecture'] },
+  { docId: 'DOC-06', title: 'Enterprise Security Architecture & Threat Model', primaryPurpose: 'Zero-trust boundaries, STRIDE threat model, identity federation, and encryption specs', requiredDiagramViews: ['17 Identity & Access Flow', '18 Security / Trust Boundary', '27 Threat Model'] },
+  { docId: 'DOC-07', title: 'AI System Card & Cognitive Architecture Spec', primaryPurpose: 'Model specifications, multi-agent orchestration, RAG knowledge graph, and prompt safety guardrails', requiredDiagramViews: ['23 Agent Interaction', '24 RAG / Knowledge Flow', '25 Tool / Protocol', '26 HITL Flow'] },
+  { docId: 'DOC-08', title: 'Infrastructure & Cloud Deployment Spec', primaryPurpose: 'Physical cloud resource mapping, GKE cluster topology, multi-zone compute, and subnet CIDRs', requiredDiagramViews: ['15 Network Topology', '16 Deployment Architecture', '34 Geographic'] },
+  { docId: 'DOC-09', title: 'High Availability & Disaster Recovery (BCDR) Plan', primaryPurpose: 'RTO/RPO targets, multi-region replication, failover automation, and disaster recovery exercises', requiredDiagramViews: ['19 HA / DR Architecture', '34 Geographic', '28 Failure / Exception Flow'] },
+  { docId: 'DOC-10', title: 'Software Delivery & CI/CD Specification', primaryPurpose: 'Automated build/test pipelines, GitOps declarative delivery, progressive canary rollout, and SLSA L3', requiredDiagramViews: ['20 CI/CD Pipeline', '16 Deployment Architecture', '08 Component'] },
+  { docId: 'DOC-11', title: 'Site Reliability Engineering (SRE) & Telemetry Spec', primaryPurpose: 'SLO/SLA definitions, error budget policies, OpenTelemetry distributed tracing, and alert matrices', requiredDiagramViews: ['21 Observability / SRE', '28 Failure / Exception Flow', '07 Container'] },
+  { docId: 'DOC-12', title: 'Migration & Modernization Strategy (6-Rs)', primaryPurpose: 'Legacy inventory assessment, dependency mapping, migration wave prioritization, and cutover', requiredDiagramViews: ['05 As-Is / To-Be', '22 Migration / Transition', '31 Dependency Map', '32 Roadmap'] },
+  { docId: 'DOC-13', title: 'Production Go-Live & Cutover Runbook', primaryPurpose: 'Minute-by-minute execution steps for launch, war room operations, smoke tests, and rollback', requiredDiagramViews: ['29 Cutover / Operational Runbook', '03 Swimlane', '11 Sequence'] },
+  { docId: 'DOC-14', title: 'Cloud FinOps & Unit Economics Model', primaryPurpose: 'Cloud spend allocation by business unit, automated idle reclaimer, and AI token cost budgeting', requiredDiagramViews: ['30 FinOps / Cost Flow', '04 Value Stream', '33 Matrix / Heatmap'] },
+  { docId: 'DOC-15', title: 'Regulatory Compliance & GxP / HIPAA Validation Pack', primaryPurpose: '21 CFR Part 11 electronic records, HIPAA audit trails, sovereign cloud boundaries, and CSV protocols', requiredDiagramViews: ['18 Security / Trust Boundary', '26 HITL Flow', '34 Geographic Architecture'] },
+  { docId: 'DOC-16', title: 'Architecture Decision Record (ADR) Log', primaryPurpose: 'Formal record of architectural trade-offs, technology evaluations, and approved decision rationale', requiredDiagramViews: ['13 Decision Flow / Tree', '33 Matrix / Heatmap', '06 C4 Context'] },
+];
+
+export interface BiopharmaReferenceTier {
+  tierNumber: number;
+  tierName: string;
+  subsystem: string;
+  gcpTechStack: string;
+  visualGrammars: string[];
+  complianceControls: string;
+}
+
+export const BIOPHARMA_REFERENCE_TIERS: BiopharmaReferenceTier[] = [
+  { tierNumber: 1, tierName: 'Tier 1: Clinical Ingress & Sequencer Edge', subsystem: 'Next-Gen Sequencing (NGS) Edge Gateways & Hospital EHRs', gcpTechStack: 'Google Cloud Life Sciences API, FastQ / BAM Ingestion, Apigee X FHIR Gateway', visualGrammars: ['01 Context', '10 Integration', '15 Network'], complianceControls: 'HIPAA Encryption in-transit, TLS 1.3, Mutual mTLS, 21 CFR Part 11 Audit' },
+  { tierNumber: 2, tierName: 'Tier 2: Ingestion, Streaming & Raw Lake', subsystem: 'Bronze Raw Genomic Data Lake & Real-Time Sample Streams', gcpTechStack: 'Cloud Storage Immutable Buckets (CMEK), Cloud Pub/Sub, Datastream CDC', visualGrammars: ['09 Data Flow', '16 Deployment', '18 Trust Boundary'], complianceControls: 'Customer-Managed KMS Keys (HSM), Write-Once-Read-Many (WORM) Object Retention' },
+  { tierNumber: 3, tierName: 'Tier 3: Distributed Genomic Processing & Variant Calling', subsystem: 'Silver Conformed Genomic Variants & Bioinformatic Pipelines', gcpTechStack: 'Cloud Dataflow (Apache Beam), Dataproc Serverless (Spark/GATK), BigQuery Silver Variant Store', visualGrammars: ['08 Component', '09 Data Flow', '20 CI/CD Pipeline'], complianceControls: 'Reproducible Pipeline Execution, Automated Quality Gate SLAs, Lineage Tracking' },
+  { tierNumber: 4, tierName: 'Tier 4: Biomedical Knowledge Graph & Hybrid RAG', subsystem: 'Multi-Hop Precision Oncology Knowledge Graph & Vector Search', gcpTechStack: 'Cloud Spanner Graph (ISO GQL Multi-Hop), Vertex AI Vector Search (ScaNN 768-dim), Document AI Clinical Parser', visualGrammars: ['14 Data Model / ERD', '24 RAG / Knowledge Flow', '31 Dependency Map'], complianceControls: 'RAG Triad Verification (Faithfulness > 0.98), Model Armor Clinical Prompt Shield' },
+  { tierNumber: 5, tierName: 'Tier 5: Multi-Agent Clinical Reasoning & HITL Gate', subsystem: 'Precision Oncology Clinical Decision Support Agents & FDA Regulatory Assistant', gcpTechStack: 'Gemini 2.5 Pro ReAct Orchestrator, Vertex AI Agent Engine, Oncologist Review Cockpit', visualGrammars: ['23 Agent Interaction', '25 Tool/Protocol (MCP)', '26 HITL Governance Flow'], complianceControls: 'FDA 21 CFR Part 11 Dual-Electronic Signatures, Human-in-the-Loop Mandatory Signoff' },
+  { tierNumber: 6, tierName: 'Tier 6: Cross-Cutting Sovereign Security & GxP Observability', subsystem: 'Sovereign Cloud Residency, Workload Identity & Immutable Audit Ledger', gcpTechStack: 'Assured Workloads (EU/US Sovereignty), IAM Workload Identity Federation, Cloud Audit Logs, Security Command Center', visualGrammars: ['17 IAM Flow', '18 Security / Trust Boundary', '21 SRE Observability', '34 Geographic'], complianceControls: 'EU GDPR Patient Data Residency, HIPAA BAA Compliance, Tamper-Proof Audit Trails' },
+];
+
 import { generateTemplate01ExactV3Xml } from "./template01ExactV3";
 import { generateTemplate02CapabilityMapXml } from "./template02CapabilityMap";
 import { generateTemplate03SwimlaneXml } from "./template03Swimlane";
@@ -43,31 +87,15 @@ import { generateTemplate09DataFlowXml } from "./template09DataFlow";
 import { generateTemplate10IntegrationArchXml } from "./template10IntegrationArch";
 import { generateTemplate11SequenceDiagramXml } from "./template11SequenceDiagram";
 import { generateTemplate12StateMachineXml } from "./template12StateMachine";
-import { generateTemplate13ClassErdXml } from "./template13ClassErd";
-import { generateTemplate14DeploymentArchXml } from "./template14DeploymentArch";
+import { generateTemplate13DecisionFlowXml } from "./template13DecisionFlow";
+import { generateTemplate14DataModelErdXml } from "./template14DataModelErd";
 import { generateTemplate15NetworkTopologyXml } from "./template15NetworkTopology";
 import { generateTemplate16DeploymentMeshXml } from "./template16DeploymentMesh";
 import { generateTemplate17IdentityAccessFlowXml } from "./template17IdentityAccessFlow";
 import { generateTemplate18SecurityTrustBoundaryXml } from "./template18SecurityTrustBoundary";
 import { generateTemplate19HaDrArchitectureXml } from "./template19HaDrArchitecture";
 import { generateTemplate20CiCdPipelineXml } from "./template20CiCdPipeline";
-import { buildValueStreamMapXml } from "../masterBuilders/master_builder_vsm";
-import { buildAsIsToBeProcessFlowXml } from "../masterBuilders/master_builder_asis_tobe";
-import { buildEnterpriseReferenceArchitectureXml } from "../masterBuilders/build_master_enterprise_reference";
-import { buildMasterSaasMultiTenantXml } from "../masterBuilders/build_master_saas_multi_tenant";
-import { buildC4ComponentLldXml } from "../masterBuilders/build_master_c4_component_lld";
-import { buildMasterEtlEltCdcPipelineXml } from "../masterBuilders/build_master_etl_elt_cdc_pipeline";
-import { buildMasterEnterpriseApiManagementXml } from "../masterBuilders/build_master_enterprise_api_management";
-import { buildMultiAgentSequenceXml } from "../masterBuilders/build_master_multi_agent_sequence";
-import { buildAiAgentApprovalWorkflowXml } from "../masterBuilders/build_master_ai_agent_approval_workflow";
-import { buildIncidentTriageSreXml } from "../masterBuilders/build_master_incident_triage_sre";
-import { buildUnifiedDataGovernanceXml } from "../masterBuilders/master_builder_unified_data_governance";
-import { buildGcpLandingZoneVpcXml } from "../masterBuilders/build_master_gcp_landing_zone_vpc";
-import { buildMasterHaMultiRegionAppXml } from "../masterBuilders/build_master_ha_multi_region_application";
-import { buildMasterWorkloadIdentityAuthXml } from "../masterBuilders/build_master_workload_identity_authorization";
-import { buildMultiFlowZeroTrustPlatformXml } from "../masterBuilders/build_master_multiflow_zerotrust_platform";
-import { buildCompleteWellArchitectedGcpDrMasterXml } from "../masterBuilders/master_builder";
-import { buildSecureDeploymentTopologyXml } from "../masterBuilders/build_master_secure_deployment";
+
 import { buildEnterpriseSreObservabilityXml } from "../masterBuilders/master_builder_enterprise_sre";
 import { build6RsMigrationMatrixXml } from "../masterBuilders/master_builder_6rs";
 import { buildAgenticMeshXml } from "../masterBuilders/build_master_agentic_mesh";
@@ -83,98 +111,18 @@ import { buildPristineAiCoeXml } from "../masterBuilders/master_builder_ai_coe";
 import { buildAiTrismGuardrailsXml } from "../masterBuilders/master_builder_ai_trism";
 import { buildDataResidencySovereignMapXml } from "../masterBuilders/master_builder_data_residency";
 
-/**
- * High-Fidelity 1:1 XML Generator for Template 01: System Context
- * Matches the NOVACURA Bio-Pharma Platform Architecture from Canonical PDF Page 1 / images/01.png
- */
-export function generateSystemContextXml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate01ExactV3Xml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 02: Capability Map
- * Matches the NOVACURA Capability Map Architecture from Canonical PDF Page 2 / images/02.png
- */
-export function generateCapabilityMapXml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate02CapabilityMapXml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 03: Business Process / Swimlane
- * Matches the NOVACURA Drug Development & Commercialization Lifecycle from Canonical PDF Page 3 / images/03.png
- */
-export function generateSwimlane03Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate03SwimlaneXml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 04: Value Stream Map
- * Matches the NOVACURA End-to-End Value Delivery from Canonical PDF Page 4 / images/04.png
- */
-export function generateValueStream04Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate04ValueStreamXml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 05: As-Is / To-Be
- * Matches the NOVACURA As-Is vs To-Be Transformation from Canonical PDF Page 5 / images/05.png
- */
-export function generateAsIsToBe05Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate05AsIsToBeXml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 06: C4 Context
- * Matches the NOVACURA C4 Context from Canonical PDF Page 6 / images/06.png
- */
-export function generateC4Context06Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate06C4ContextXml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 07: C4 Container
- * Matches the NOVACURA C4 Container from Canonical PDF Page 7 / images/07.png
- */
-export function generateC4Container07Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate07C4ContainerXml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 08: Component Architecture (LLD)
- * Matches the NOVACURA Component Architecture from Canonical PDF Page 8 / images/08.png
- */
-export function generateComponentArch08Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate08ComponentArchXml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 09: Data Flow Architecture
- * Matches the NOVACURA Data Flow Architecture from Canonical PDF Page 9 / images/09.png
- */
-export function generateDataFlow09Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate09DataFlowXml(domainFlavor, theme);
-}
-
-/**
- * High-Fidelity 1:1 XML Generator for Template 10: Integration Architecture
- * Matches the NOVACURA Integration Architecture from Canonical PDF Page 10 / images/10.png
- */
-export function generateIntegrationArch10Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
-  return generateTemplate10IntegrationArchXml(domainFlavor, theme);
-}
-
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   {
     id: '01',
     name: 'System Context',
     family: 'Understand',
     level: 'L1',
-    primaryPurpose: 'System boundary + internal/external actors + connected ecosystem',
+    primaryPurpose: 'System boundary + external users + external enterprise systems',
     examples: 'Enterprise App, SaaS Platform, AI Copilot, Life Sciences, Payments',
     defaultDomain: 'Bio-Pharma Precision Oncology & Regulatory AI',
     previewImage: '/templates/tech_c4_system_context.png',
     keyComponents: ['Platform Boundary', 'Internal Actors', 'External Partners', 'Connected Systems', 'Governance'],
-    generateXml: generateSystemContextXml
+    generateXml: generateTemplate01ExactV3Xml
   },
   {
     id: '02',
@@ -186,91 +134,91 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Enterprise AI & Platform Engineering',
     previewImage: '/templates/total_unified_system_view.png',
     keyComponents: ['Business Capabilities', 'AI Foundation', 'Shared Core Services', 'Governance Matrix'],
-    generateXml: generateCapabilityMapXml
+    generateXml: generateTemplate02CapabilityMapXml
   },
   {
     id: '03',
     name: 'Business Process / Swimlane',
     family: 'Process',
     level: 'L1/L2',
-    primaryPurpose: 'Roles, activities, handoffs, and decisions across departments',
+    primaryPurpose: 'Roles, activities, decisions, and handoffs across operational departments',
     examples: 'Claims triage, onboarding, approval gates, DevOps release',
     defaultDomain: 'Clinical Trials & Regulatory Operations',
     previewImage: '/templates/incident_triage_swimlane.png',
     keyComponents: ['Department Swimlanes', 'Hand-off Triggers', 'Approval Decision Gates', 'Audit Milestones'],
-    generateXml: generateSwimlane03Xml
+    generateXml: generateTemplate03SwimlaneXml
   },
   {
     id: '04',
     name: 'Value Stream',
     family: 'Understand',
     level: 'L1',
-    primaryPurpose: 'End-to-end value delivery stages, cycle times, and outcomes',
+    primaryPurpose: 'End-to-end value delivery stages, process times, and lead times',
     examples: 'Migration VSM, software delivery, patient journey',
     defaultDomain: 'Research-to-Commercial Patient Journey',
     previewImage: '/templates/value_stream_map_vsm.png',
     keyComponents: ['Value Stages', 'Key Activities', 'Process & Lead Time Metrics', 'Delivered Outcomes'],
-    generateXml: generateValueStream04Xml
+    generateXml: generateTemplate04ValueStreamXml
   },
   {
     id: '05',
     name: 'As-Is / To-Be',
     family: 'Understand',
     level: 'L1',
-    primaryPurpose: 'Transformation comparison between legacy silos and cloud target state',
+    primaryPurpose: 'High-contrast architectural transformation comparison (Current vs Target)',
     examples: 'Cloud migration, modernization, AI transformation',
     defaultDomain: 'Enterprise Cloud Transformation',
     previewImage: '/templates/as_is_vs_to_be_process_flow.png',
     keyComponents: ['As-Is Legacy Silos', 'Transformation Drivers', 'To-Be Cloud Target', 'Business ROI'],
-    generateXml: generateAsIsToBe05Xml
+    generateXml: generateTemplate05AsIsToBeXml
   },
   {
     id: '06',
     name: 'C4 Context',
     family: 'Structure',
     level: 'L1',
-    primaryPurpose: 'C4 Level 1 zoom: System in scope surrounded by people and enterprise systems',
+    primaryPurpose: 'C4 model Level-1 zoom: software system in scope surrounded by people and systems',
     examples: 'Enterprise application ecosystem, SaaS boundary',
     defaultDomain: 'Enterprise Product Architecture',
     previewImage: '/templates/tech_c4_system_context.png',
     keyComponents: ['System in Scope', 'User Personas', 'External Software Systems', 'Data Contracts'],
-    generateXml: generateC4Context06Xml
+    generateXml: generateTemplate06C4ContextXml
   },
   {
     id: '07',
     name: 'C4 Container',
     family: 'Structure',
     level: 'L2',
-    primaryPurpose: 'C4 Level 2 zoom: Applications, microservices, databases, and message queues',
+    primaryPurpose: 'C4 model Level-2 zoom: applications, services, databases, and file stores',
     examples: 'Microservices, web applications, serverless clusters',
     defaultDomain: 'Cloud Native Microservices Platform',
     previewImage: '/templates/saas_multi_tenant.png',
     keyComponents: ['Web/Mobile Apps', 'API Gateway', 'Microservices Pods', 'Databases & Caches'],
-    generateXml: generateC4Container07Xml
+    generateXml: generateTemplate07C4ContainerXml
   },
   {
     id: '08',
     name: 'Component Architecture',
     family: 'Structure',
     level: 'L2/L3',
-    primaryPurpose: 'C4 Level 3 zoom: Internal software components, controllers, and service layers',
+    primaryPurpose: 'C4 model Level-3 zoom: internal structural components, controllers, and services',
     examples: 'Services, modules, internal pipelines, class libraries',
     defaultDomain: 'Microservice Internal Component Structure',
     previewImage: '/templates/micro_frontend_architecture.png',
     keyComponents: ['Controllers', 'Service Adapters', 'Repository Layer', 'Domain Logic Entities'],
-    generateXml: generateComponentArch08Xml
+    generateXml: generateTemplate08ComponentArchXml
   },
   {
     id: '09',
     name: 'Data Flow Architecture',
     family: 'Flow',
     level: 'L1/L2/L3',
-    primaryPurpose: 'Movement, processing, transformation, and storage of data across tiers',
+    primaryPurpose: 'Movement, processing, transformation, and storage of data',
     examples: 'ETL/ELT, streaming lakehouse, payments pipeline',
     defaultDomain: 'Medallion Data Lakehouse & Stream Processing',
     previewImage: '/templates/etl_elt_cdc_pipeline.png',
     keyComponents: ['Raw Bronze Storage', 'Dataflow Cleaning', 'Silver/Gold Marts', 'Serving APIs'],
-    generateXml: generateDataFlow09Xml
+    generateXml: generateTemplate09DataFlowXml
   },
   {
     id: '10',
@@ -282,15 +230,14 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Enterprise API Management & Integration Hub',
     previewImage: '/templates/enterprise_api_management.png',
     keyComponents: ['Apigee Gateway', 'Event Backbone', 'Data Integration Connectors', 'External Sinks'],
-    generateXml: generateIntegrationArch10Xml
+    generateXml: generateTemplate10IntegrationArchXml
   },
-
   {
     id: '11',
     name: 'Sequence Diagram',
     family: 'Process',
     level: 'L2/L3',
-    primaryPurpose: 'Time-ordered chronological message exchanges between systems and services',
+    primaryPurpose: 'Time-ordered chronological message exchanges between objects or services',
     examples: 'API call sequences, agent task workflow, login SSO, payments',
     defaultDomain: 'Bio-Pharma Enterprise AI Platform (Scientist Copilot Q&A)',
     previewImage: '/templates/multi_agent_sequence_flow.png',
@@ -299,10 +246,10 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   },
   {
     id: '12',
-    name: 'State Machine Diagram',
+    name: 'State Machine',
     family: 'Process',
     level: 'L2/L3',
-    primaryPurpose: 'Discrete entity lifecycle states, trigger events, and transition guard conditions',
+    primaryPurpose: 'Discrete entity lifecycle states, trigger events, and transition conditions',
     examples: 'Order states, AI agent execution lifecycle, approval workflows',
     defaultDomain: 'Clinical Study Protocol Intelligence State Machine',
     previewImage: '/templates/governance_state_machine.png',
@@ -311,34 +258,34 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   },
   {
     id: '13',
-    name: 'Class / ERD Diagram',
+    name: 'Decision Flow / Decision Tree',
+    family: 'Process',
+    level: 'L1/L2',
+    primaryPurpose: 'Business rules, conditional logic branching, and AI policy gates',
+    examples: 'Clinical trial eligibility, fraud detection rules, automated approval routing',
+    defaultDomain: 'Autonomous Clinical Trial Eligibility & Safety Policy Gate',
+    previewImage: '/templates/governance_state_machine.png',
+    keyComponents: ['Multi-Stage Decision Gates', 'Genomic & DDI Filters', 'AI Confidence Routing', '21 CFR Part 11 Audit Trail'],
+    generateXml: generateTemplate13DecisionFlowXml
+  },
+  {
+    id: '14',
+    name: 'Data Model / ERD',
     family: 'Structure',
     level: 'L2/L3',
-    primaryPurpose: '24 core enterprise domain entities across 7 domains with PK/FK attributes and Crow’s Foot notation',
+    primaryPurpose: 'Database entities, tables, attributes, primary/foreign keys, and cardinalities',
     examples: 'Relational data model, lakehouse star schema, biopharma enterprise semantic ontology',
     defaultDomain: 'Bio-Pharma Enterprise Entity Model & Relational Schema',
     previewImage: '/templates/erd.png',
     keyComponents: ['24 Entities / Tables', '7 Core Domains', 'Crow’s Foot Cardinality', '4 Analytical Panels'],
-    generateXml: generateTemplate13ClassErdXml
-  },
-  {
-    id: '14',
-    name: 'Deployment Architecture',
-    family: 'Infrastructure',
-    level: 'L2/L3',
-    primaryPurpose: 'Scalable, secure, and highly available multi-region active/passive DR deployment on GCP',
-    examples: 'Primary us-central1, DR us-east1 standby, Global Traffic Director, shared VPC networking',
-    defaultDomain: 'Multi-Region High-Availability Cloud Deployment',
-    previewImage: '/templates/ha_multi_region_application.png',
-    keyComponents: ['Primary Region (us-central1)', 'DR Region (us-east1)', 'Global Traffic Director', '4 Analytical Cards'],
-    generateXml: generateTemplate14DeploymentArchXml
+    generateXml: generateTemplate14DataModelErdXml
   },
   {
     id: '15',
     name: 'Network Topology',
     family: 'Infrastructure',
     level: 'L2/L3',
-    primaryPurpose: 'Multi-AZ Shared VPC (10.10.0.0/16) across us-central1-a/b/c with Public/Private/Data subnets',
+    primaryPurpose: 'Network boundaries, VPCs, subnets, routers, firewalls, and gateways',
     examples: 'VPC hub-and-spoke, hybrid cloud, zero-trust perimeter, Private Service Connect',
     defaultDomain: 'GCP Enterprise Landing Zone & Shared VPC',
     previewImage: '/templates/gcp_landing_zone_vpc_map.png',
@@ -347,10 +294,10 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   },
   {
     id: '16',
-    name: 'Deployment Diagram',
+    name: 'Deployment Architecture',
     family: 'Infrastructure',
     level: 'L2/L3',
-    primaryPurpose: 'Multi-Zone GKE Autopilot and elastic Cloud Run background worker mesh in us-central1 with DR sync',
+    primaryPurpose: 'Physical/logical mapping of application workloads onto cloud infrastructure',
     examples: 'GKE multi-zone, Cloud Run Jobs, regional data tier, warm DR standby in us-east1',
     defaultDomain: 'Multi-Zone Application & Background Worker Mesh',
     previewImage: '/templates/ha_multi_region_application.png',
@@ -362,7 +309,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     name: 'Identity & Access Flow',
     family: 'Security & Governance',
     level: 'L2/L3',
-    primaryPurpose: '4-Stage IAM Journey (1 Authenticate, 2 Authorize, 3 Access Resources, 4 Monitor & Audit)',
+    primaryPurpose: 'Authentication, authorization, token exchange, SSO federation, and IAM',
     examples: 'Google Cloud Identity, IAM least privilege pyramid, Cloud Audit Logs, Access Transparency',
     defaultDomain: 'Zero-Trust Enterprise IAM & Token Exchange',
     previewImage: '/templates/federated_iam_sso.png',
@@ -374,7 +321,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     name: 'Security / Trust Boundary',
     family: 'Security & Governance',
     level: 'L1/L2/L3',
-    primaryPurpose: 'Defense-in-depth trust boundaries across Edge, Application, Data, and Management zones',
+    primaryPurpose: 'Security zones, encryption perimeters, trust levels, and defense controls',
     examples: 'Zero Trust perimeter, Data Classification pillar (Restricted, Confidential, Internal, Public)',
     defaultDomain: 'Sovereign Zero-Trust Data Protection Enclave',
     previewImage: '/templates/zero_trust_mesh.png',
@@ -386,7 +333,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     name: 'HA / DR Architecture',
     family: 'Infrastructure',
     level: 'L2/L3',
-    primaryPurpose: 'Active-Active and Active-Passive resiliency engineering across us-central1 and us-east1 with 6-step failover',
+    primaryPurpose: 'Resilience engineering, multi-region replication, and failover routing',
     examples: 'Multi-region async replication, RTO <= 1 hr, RPO <= 15 min, Cloud DNS health checks',
     defaultDomain: 'Active-Active Multi-Region Resiliency (Cloud Spanner TrueTime)',
     previewImage: '/templates/tech_multi_region_dr.png',
@@ -398,7 +345,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     name: 'CI/CD Pipeline',
     family: 'Delivery & Operations',
     level: 'L2/L3',
-    primaryPurpose: '9-stage automated GitOps continuous integration and continuous delivery pipeline with quality gates',
+    primaryPurpose: 'Automated software delivery lifecycle, GitOps synchronization, and rollout',
     examples: 'Cloud Build CI, Artifact Registry security scan, Cloud Deploy, Canary / Blue-Green rollout',
     defaultDomain: 'SLSA Level 3 GitOps Continuous Delivery Pipeline',
     previewImage: '/templates/secure_deployment_topology_map.png',
@@ -422,7 +369,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     name: 'Migration / Transition',
     family: 'Delivery & Operations',
     level: 'L1/L2/L3',
-    primaryPurpose: 'Step-by-step movement of legacy workloads to cloud target state (6-Rs)',
+    primaryPurpose: 'Step-by-step movement of legacy workloads to cloud target state',
     examples: 'Datacenter to GCP, database CDC migration, Strangler Fig pattern',
     defaultDomain: '6-Rs Wave Migration & Cloud Factory',
     previewImage: '/templates/six_rs_migration_matrix.png',
@@ -530,7 +477,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     name: 'Dependency / Relationship Map',
     family: 'Analysis & Planning',
     level: 'L2',
-    primaryPurpose: 'Arbitrary many-to-many dependencies across systems, services, datasets, and teams',
+    primaryPurpose: 'Arbitrary many-to-many dependencies across systems, services, and datasets',
     examples: 'Microservice dependency graph, blast-radius impact analysis',
     defaultDomain: 'Multi-Tier System & Database Dependency Matrix',
     previewImage: '/templates/legacy_data_dependency_map.png',
@@ -554,7 +501,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     name: 'Matrix / Heatmap',
     family: 'Analysis & Planning',
     level: 'L1/L2',
-    primaryPurpose: '2-dimensional evaluation matrix: capability vs system, control vs workload',
+    primaryPurpose: '2-dimensional evaluation matrix: capabilities vs systems, controls vs workloads',
     examples: 'Vendor evaluation matrix, security control compliance heatmap',
     defaultDomain: 'Architecture Evaluation Matrix & Capability Heatmap',
     previewImage: '/templates/tech_ai_trism_guardrails.png',
@@ -566,7 +513,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     name: 'Geographic / Regional Architecture',
     family: 'Infrastructure',
     level: 'L1/L2/L3',
-    primaryPurpose: 'Geographic layout, sovereign cloud boundaries, and global traffic routing',
+    primaryPurpose: 'Geographic layout, sovereign cloud boundaries, and multi-region replication',
     examples: 'Global user base, multi-region sovereign cloud, edge CDN',
     defaultDomain: 'Global Sovereign Cloud & Data Residency Architecture',
     previewImage: '/templates/tech_data_residency.png',
