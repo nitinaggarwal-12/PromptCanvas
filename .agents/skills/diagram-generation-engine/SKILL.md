@@ -7,7 +7,7 @@ description: Comprehensive enterprise skill for compiling, generating, styling, 
 
 This skill is the master blueprint and universal quality standard for generating, compiling, validating, styling, and repairing Draw.io architecture diagrams across **all diagramming projects, AI prompt generators, canonical master templates, and dynamic customizers**.
 
-Every diagram generated across any system MUST strictly follow these four core pillars:
+Every diagram generated across any system MUST strictly follow these core pillars:
 
 ---
 
@@ -91,7 +91,22 @@ Every diagram generated across any system MUST strictly follow these four core p
 
 ---
 
-## 🔤 Pillar 4: Text, Typography & Zero-Void Scaling
+## ⏱️ Pillar 4: Sequence Diagrams, Interaction Enclaves & Activity Loops
+
+1. **Discrete $\ge 26\text{px}$ Channel Pitch in Flow Enclaves (`ALT`, `OPT`, `LOOP`, `PAR`)**:
+   - In alternative, optional, or loop flow boxes, never combine multi-line text and connector arrows into an ambiguous shared block.
+   - Every step inside an enclave MUST use discrete mxCells with exact mathematical vertical offsets ($\ge 26\text{px}$ channel between text top and connector line) so connector lines NEVER slice through text letters or descenders.
+
+2. **Opaque Background Shielding for Enclaves / Floating Containers**:
+   - Any floating sub-box, ALT container, or overlay card that sits on top of background lifelines or grid tracks MUST enforce a solid opaque background (`fillColor=#FFFFFF;` or dark mode equivalent `#0B111E`) to prevent background dashed lines from bleeding through and cutting across foreground text and icons.
+   - Enforce `verticalAlign=top;` on all enclave text cells to lock character baselines.
+
+3. **Self-Referential Activity Loops (Step ⓳ Style)**:
+   - Self-referential processing steps on lifeline activation bars (e.g. `Write logs`, `Compute Embeddings`, `Cache Lookup`) MUST use orthogonal rounded loops exiting and entering the same activation bar edge with high-contrast label pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2.5;`).
+
+---
+
+## 📊 Pillar 5: Analytical Summary Cards, Semantic Step Badges & Tech Matrix
 
 1. **Zero-Void Proportional Card Item Scaling**:
    - Vertical item padding and bottom margins must be dynamically adjusted according to item count:
@@ -100,21 +115,31 @@ Every diagram generated across any system MUST strictly follow these four core p
      - 6 items: `itemPadding: 2.5px 6px; itemMargin: 2.5px; fontSize: 8px;`
    - Cards fill their parent container height evenly with zero awkward empty white voids at the bottom.
 
-2. **HTML Entity Encoding & Plain Text Values**:
+2. **Semantic Step Badge Palette in Summaries**:
+   - Sequence and workflow summary tables MUST use semantic flow coloring for step number badges (❶..⑳) matching the diagram's architecture tiers:
+     - **User / Frontend**: Blue (`#1D4ED8`)
+     - **Gateway / Network**: Teal (`#0D9488`)
+     - **Orchestration / LLM**: Purple (`#7C3AED`)
+     - **Policy / Guardrails**: Dark Violet (`#6D28D9`)
+     - **Data Services / DB**: Green (`#059669`) / Sky (`#0284C7`)
+     - **Audit / Logging**: Cyan / Sky (`#0284C7`)
+     - **Returns / Responses**: Slate (`#64748B`)
+     - **Error / Policy Block**: Red (`#DC2626`)
+
+3. **Exact Technology Matrix Density Match**:
+   - When replicating canonical reference cards (e.g. `TECHNOLOGY STACK`), match the exact reference icon count and 2-row layout (e.g., 4 on top, 2 centered below) with large vector icons (`20px`) and proportional spacing rather than cramming excessive small icons that leave awkward voids.
+
+4. **HTML Entity Encoding & Plain Text Values**:
    - Always escape dynamic text strings: `&` $\to$ `&amp;`, `<` $\to$ `&lt;`, `>` $\to$ `&gt;`, `"` $\to$ `&quot;`.
    - Never wrap edge `value` attributes in unescaped HTML tags.
 
-3. **Title Pipe Separators**:
-   - Always use a clean pipe separator with spaces for master titles:
-     `01 — System Context | NOVACURA Bio-Pharma Platform` (Never `I` or broken dashes).
-
 ---
 
-## 🔁 Pillar 5: Automated E2E Headless Chrome Visual Audit Protocol
+## 🔁 Pillar 6: Automated E2E Headless Chrome Visual Audit Protocol
 
 Before declaring any diagram complete across any project, execute the automated headless Chrome test harness:
 ```bash
-npx tsx scratch/test_canonical_01_10.ts
+npx tsx scratch/test_canonical_11_20.ts
 ```
 Verify the generated 2x Retina PNG screenshot:
 1. Canvas is 100% visible with valid SVG elements.
@@ -123,3 +148,4 @@ Verify the generated 2x Retina PNG screenshot:
 4. Zero corner clipping over rounded container boundaries.
 5. No cards or text truncated at container boundaries.
 6. Zero empty white voids at the bottom of cards.
+7. Opaque background shielding on all flow enclaves (`ALT`, `OPT`, `LOOP`).

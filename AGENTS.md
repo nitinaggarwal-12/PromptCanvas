@@ -123,59 +123,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ---
 
-# 🚀 Mandatory Git Push Protocol
-
-* **Always Push Commits**: Whenever code changes are staged and committed (`git commit`), you MUST immediately execute `git push` (or `git push origin main`) without exception. Never leave commits solely on the local machine so that live CI/CD deployments (e.g. Railway, Vercel) remain synchronized with the repository.
-
----
-
-# 🤖 Autonomous Visual & 2D Geometric Collision Audit Protocol (Mandatory Before Validation)
-
-* **No Blind Validation (Text != Visual)**: Never present a visual artifact (UI layout, Draw.io diagram, canvas, or component) to the user for validation based purely on DOM text string assertions or CLI green exit codes. Text presence does not verify geometric alignment, line routing, or visual clarity.
-* **Mandatory 2D Bounding Box & Collision Harness**: Before presenting ANY visual task as complete across ANY project, you must build and execute an automated 2D geometric and visual audit script (via Puppeteer E2E or Node canvas) that programmatically verifies:
-  1. **Line-to-Box Collision**: Connecting lines, arrows, and SVG paths must NEVER slice horizontally, vertically, or diagonally across intermediate table boxes, cards, or UI components.
-  2. **Border Overlap & Margin Safety**: Floating badges, callouts, and child elements must maintain at least a 30px–60px safety margin from container borders. Never allow callout boxes or text labels to sit on top of container borders or outer frames.
-  3. **Corridor & Channel Pitch**: Maintain wide-open routing channels (minimum 130px–140px column pitch and 80px row pitch) so connecting lines have dedicated, collision-free routing tracks.
-  4. **Text Contrast & Background Pills**: All floating edge labels or badges crossing lines or borders must enforce solid white (`#FFFFFF`) or high-contrast background pills to guarantee 100% legibility.
-* **Closed-Loop Autonomous Self-Correction**: If the programmatic collision harness or visual evaluation detects any line overlap, border slicing, or visual clutter, you must autonomously calculate corrected coordinates, update the codebase, re-run the test harness, and repeat the loop until the geometric collision score is **strictly zero** before asking the user for review.
-
----
-
-# 🔄 MANDATORY INTERACTIVE ACTION-LOOP & ZERO DEAD-END UX PROTOCOL
-
-* **Action Promise Rule**: Any button, menu item, or dropdown trigger that promises an action (`+ Add View`, `Generate`, `Import`, `Select`) MUST resolve directly to an actionable 1-click execution path. Never open a passive read-only table or informational dead-end under an action trigger without a direct execution button (`[ ➕ Add as New View ]`).
-* **Whole-Product User Journey Audit**: Audits must test the complete user journey: Trigger -> Dialog/Modal -> Action Button -> State & Database Commit -> Canvas Render. Never stop audit testing at modal visibility without testing the primary conversion action.
-* **1-Click View Creation from Blueprint Catalog**: Every blueprint in the `Enterprise Architecture Blueprint Matrix` must feature an active `[ ➕ Add as New View ]` button that immediately closes the modal, creates the new view tab, and renders the collision-free master blueprint on the canvas with domain flavor.
-
----
-
-# 🔒 Evidence Integrity & Anti-Fabrication Protocol (STRICT)
-
-## 1. Claims require reproducible artifacts
-* Every claim of success MUST be accompanied by the EXACT command that proves it and its verbatim, untruncated output.
-* Never summarize test results in your own words as the primary evidence. Paste the runner's actual summary line (e.g. `Tests: 42 passed, 0 failed`) from real output.
-
-## 2. Done means independently verifiable
-* Before declaring any phase complete, run the FULL verification suite fresh — `npx tsc --noEmit` and `npm run test` at minimum.
-
----
-
-# 🧠 SYSTEMIC REASONING & STRUCTURAL INVARIANT MANDATES (NEVER BRITTLE)
-
-Every modification to diagram compiler, layout engine, cleaner, or preflight code MUST follow these 4 non-negotiable architectural mandates:
-
-1. **Systemic Blast-Radius & Invariant Analysis Before Code Changes**:
-   - Trace EVERY downstream consumer before editing heuristics or coordinates.
-2. **Container-Aware AST Contracts Over String Regexes**:
-   - Key off permanent XML structural identifiers (`col_ingestion`, `col_processing`), never ephemeral text strings.
-3. **Visual End-to-End Inspection**:
-   - Physically render and visually inspect the actual browser output across creation AND page refresh (`restoreDetailedView`).
-4. **Strict Separation of Domain Flavoring vs. Spatial Geometry**:
-   - Flavoring (`injectUseCaseFlavor`) mutates text titles and badges while preserving 100% of spatial coordinates (`<mxGeometry x="..." y="...">`).
-
----
-
-# 🏛️ CANONICAL BLUEPRINT IMMUTABILITY & PREFLIGHT PASSTHROUGH PROTOCOL
+# 🏛️ Canonical Blueprint Immutability & Master Architecture Rules
 
 1. **Master Ground-Truth Reference (`images/01.png` – `images/37.png`)**:
    - Every canonical template in `src/lib/canonical/` MUST replicate the visual structure, column pitch, row pitch, color-coded chevrons, role pods, and decision gates of its corresponding master image in `images/` with 100% fidelity.
@@ -184,7 +132,7 @@ Every modification to diagram compiler, layout engine, cleaner, or preflight cod
 3. **16:9 Aspect Ratio Preservation**:
    - Canonical and master templates are engineered for `16:9` (1440x800 / 1485x800 / 1600x960) aspect ratio. Never squash them into `21:9` viewports in modals or embeds.
 4. **Mandatory `<mxfile><diagram>` Envelope**:
-   - Every diagram generator MUST emit a complete `<mxfile host="embed.diagrams.net"><diagram id="..." name="..."><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>` document structure to prevent Draw.io viewer wrapping artifacts and blank viewports.
+   - Every diagram generator MUST emit a complete `<mxfile host="embed.diagrams.net"><diagram id="..." name="..."><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>` document structure.
 5. **Zero External URL Dependencies**:
    - Never use `https://api.iconify.design/...` or unverified external HTTP image URLs inside HTML labels. Always use native vector Unicode symbols/emojis or inline SVGs.
 6. **High-Contrast Pill Badges for Connectors**:
@@ -205,7 +153,25 @@ Every modification to diagram compiler, layout engine, cleaner, or preflight cod
    - Any child element or card positioned in the 4 corners of a rounded container (`rounded=1`, border radius $\ge 20\text{px}$) MUST maintain a minimum **$20\text{px} - 24\text{px}$ inset margin** from the container's outer bounds.
    - Never place rectangular child boxes $< 16\text{px}$ from rounded container corners to prevent sharp border clipping over rounded arcs.
 10. **Zero-Void Proportional Card Item Scaling & Brand Header Balance**:
-   - Vertical item padding (`itemPadding: 6px 8px` for 4 items, `4px 8px` for 5 items, `2.5px 6px` for 6 items) and item margins must be dynamically adjusted so cards fill their parent container height evenly with zero awkward empty white voids.
-   - Master architecture templates must include the top-right brand block (`🧬 NOVACURA | Transforming Therapies. Improving Lives.`) to maintain balanced margins against left titles.
-
-
+    - Vertical item padding (`itemPadding: 6px 8px` for 4 items, `4px 8px` for 5 items, `2.5px 6px` for 6 items) and item margins must be dynamically adjusted so cards fill their parent container height evenly with zero awkward empty white voids.
+    - Master architecture templates must include the top-right brand block (`🧬 NOVACURA | Transforming Therapies. Improving Lives.`) to maintain balanced margins against left titles.
+11. **Sequence Diagram & Flow Enclave (ALT / OPT / LOOP / PAR) Discrete Channel & Shielding Law**:
+    - **Discrete $\ge 26\text{px}$ Channel Pitch**: In alternative (`ALT`), optional (`OPT`), loop (`LOOP`), or parallel (`PAR`) enclaves, never combine multi-line text and connector arrows into a shared HTML block. Every step inside an enclave MUST use discrete mxCells with exact mathematical vertical offsets ($\ge 26\text{px}$ channel between text top and connector line) so connector lines NEVER slice through text letters or descenders.
+    - **Opaque Background Shielding**: Floating sub-boxes, ALT containers, or overlay cards that sit on top of background lifelines or grid tracks MUST enforce a solid opaque background (`fillColor=#FFFFFF;` or dark mode equivalent `#0B111E`) to prevent background lines from bleeding through and cutting across foreground text and icons.
+    - **Strict Top Alignment**: Enforce `verticalAlign=top;` on all enclave text cells to lock character baselines against connector arrows.
+12. **Self-Referential Activity Loops (Step ⓳ Style)**:
+    - Self-referential processing steps on lifeline activation bars (e.g. `Write logs`, `Compute Embeddings`, `Cache Lookup`) MUST use orthogonal rounded loops exiting and entering the same activation bar edge with high-contrast label pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2.5;`).
+13. **Semantic Step Badge Palette in Summaries**:
+    - Sequence and workflow summary tables MUST use semantic flow coloring for step number badges (❶..⑳) matching the diagram's architecture tiers:
+      - **User / Frontend**: Blue (`#1D4ED8`)
+      - **Gateway / Network**: Teal (`#0D9488`)
+      - **Orchestration / LLM**: Purple (`#7C3AED`)
+      - **Policy / Guardrails**: Dark Violet (`#6D28D9`)
+      - **Data Services / DB**: Green (`#059669`) / Sky (`#0284C7`)
+      - **Audit / Logging**: Cyan / Sky (`#0284C7`)
+      - **Returns / Responses**: Slate (`#64748B`)
+      - **Error / Policy Block**: Red (`#DC2626`)
+14. **Exact Technology Matrix Density Match**:
+    - When replicating canonical reference cards (e.g. `TECHNOLOGY STACK`), always match the exact reference icon count and 2-row layout (e.g., 4 on top, 2 centered below) with large vector icons (`20px`) and proportional spacing rather than cramming excessive small icons that leave awkward voids.
+15. **Mandatory Git Push Protocol**:
+    - Whenever code changes are committed (`git commit`), immediately execute `git push origin main` without exception so that live production environments remain synchronized.

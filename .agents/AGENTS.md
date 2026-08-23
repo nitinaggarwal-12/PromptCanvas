@@ -52,7 +52,9 @@
 * **Master Ground-Truth Reference (`images/01.png` – `images/37.png`)**: Every canonical template in `src/lib/canonical/` MUST replicate the visual structure, column pitch, row pitch, color-coded chevrons, role pods, and decision gates of its corresponding master image in `images/` with 100% fidelity.
 * **Zero-Mutation Preflight Passthrough**: `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` MUST ALWAYS recognize canonical diagrams (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`, etc.) as structured master diagrams and pass them through with **ZERO coordinate or geometric mutation**.
 
-### 8. Mandatory Typed Connectors, Step Sequences & Closed Feedback Loops
+---
+
+### 7. Mandatory Typed Connectors, Step Sequences & Closed Feedback Loops
 * **Step Numbers & Flow Sequence**: All process workflows, data pipelines, lifecycle maps, and integration architectures MUST feature explicit sequential step number badges (❶..❻ / 1..6) showing what happens when, with drop-lines or chained orthogonal edges.
 * **Typed Connectors Palette**:
   - *Synchronous / Direct API / Data Ingestion*: Solid blue (`#2563EB` / `#1D4ED8`, `strokeWidth=1.5 - 2`).
@@ -64,24 +66,53 @@
 
 ---
 
-### 9. Point-to-Point Connector Straightness & Zero Stepped Jogs
+### 8. Point-to-Point Connector Straightness & Zero Stepped Jogs
 * When connecting between shapes with different heights, widths, or center coordinates, never use default `exitY=0.5;entryY=0.5;` with `edgeStyle=orthogonalEdgeStyle;` across narrow gaps, which forces ugly $90^\circ$ steps along container borders.
 * Always compute exact matching entry/exit coordinates ($Y_{\text{exit}} = Y_{\text{entry}}$ or $X_{\text{exit}} = X_{\text{entry}}$) and enforce `edgeStyle=none;` for direct straight point-to-point connectors.
 
 ---
 
-### 10. Rounded Container Corner Insetting & Margin Safety ($\ge 20\text{px}$)
+### 9. Rounded Container Corner Insetting & Margin Safety ($\ge 20\text{px}$)
 * Any child element or card positioned in the 4 corners of a rounded container (`rounded=1`, border radius $\ge 20\text{px}$) MUST maintain a minimum **$20\text{px} - 24\text{px}$ inset margin** from the container's outer bounds.
 * Never place rectangular child boxes $< 16\text{px}$ from rounded container corners to prevent sharp border clipping over rounded arcs.
 
 ---
 
-### 11. Zero-Void Proportional Card Item Scaling & Brand Header Balance
+### 10. Zero-Void Proportional Card Item Scaling & Brand Header Balance
 * Vertical item padding (`itemPadding: 6px 8px` for 4 items, `4px 8px` for 5 items, `2.5px 6px` for 6 items) and item margins must be dynamically adjusted so cards fill their parent container height evenly with zero awkward empty white voids.
 * Master architecture templates must include the top-right brand block (`🧬 NOVACURA | Transforming Therapies. Improving Lives.`) to maintain balanced margins against left titles.
 
 ---
 
-### 12. Mandatory Git Push Protocol
-* Whenever code changes are committed (`git commit`), immediately execute `git push origin main` without exception so that live production environments remain synchronized.
+### 11. Sequence Diagram & Flow Enclave (ALT / OPT / LOOP / PAR) Discrete Channel & Shielding Law
+* **Discrete $\ge 26\text{px}$ Channel Pitch**: In alternative (`ALT`), optional (`OPT`), loop (`LOOP`), or parallel (`PAR`) enclaves, never combine multi-line text and connector arrows into a shared HTML block. Every step inside an enclave MUST use discrete mxCells with exact mathematical vertical offsets ($\ge 26\text{px}$ channel between text top and connector line) so connector lines NEVER slice through text letters or descenders.
+* **Opaque Background Shielding**: Floating sub-boxes, ALT containers, or overlay cards that sit on top of background lifelines or grid tracks MUST enforce a solid opaque background (`fillColor=#FFFFFF;` or dark mode equivalent `#0B111E`) to prevent background lines from bleeding through and cutting across foreground text and icons.
+* **Strict Top Alignment**: Enforce `verticalAlign=top;` on all enclave text cells to lock character baselines against connector arrows.
 
+---
+
+### 12. Self-Referential Activity Loops (Step ⓳ Style)
+* Self-referential processing steps on lifeline activation bars (e.g. `Write logs`, `Compute Embeddings`, `Cache Lookup`) MUST use orthogonal rounded loops exiting and entering the same activation bar edge with high-contrast label pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2.5;`).
+
+---
+
+### 13. Semantic Step Badge Palette in Summaries
+* Sequence and workflow summary tables MUST use semantic flow coloring for step number badges (❶..⑳) matching the diagram's architecture tiers:
+  - **User / Frontend**: Blue (`#1D4ED8`)
+  - **Gateway / Network**: Teal (`#0D9488`)
+  - **Orchestration / LLM**: Purple (`#7C3AED`)
+  - **Policy / Guardrails**: Dark Violet (`#6D28D9`)
+  - **Data Services / DB**: Green (`#059669`) / Sky (`#0284C7`)
+  - **Audit / Logging**: Cyan / Sky (`#0284C7`)
+  - **Returns / Responses**: Slate (`#64748B`)
+  - **Error / Policy Block**: Red (`#DC2626`)
+
+---
+
+### 14. Exact Technology Matrix Density Match
+* When replicating canonical reference cards (e.g. `TECHNOLOGY STACK`), always match the exact reference icon count and 2-row layout (e.g., 4 on top, 2 centered below) with large vector icons (`20px`) and proportional spacing rather than cramming excessive small icons that leave awkward voids.
+
+---
+
+### 15. Mandatory Git Push Protocol
+* Whenever code changes are committed (`git commit`), immediately execute `git push origin main` without exception so that live production environments remain synchronized.
